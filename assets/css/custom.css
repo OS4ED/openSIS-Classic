@@ -1,0 +1,224 @@
+body {
+    background: #e7e9ef;
+}
+
+/* Bootstrap Overwrite */
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+    background: #d9dfe4;
+}
+li.list-group-item.active a:first-child,
+li.list-group-item.active:hover a:first-child,
+li.list-group-item.active:focus a:first-child,
+li.list-group-item a:first-child {
+    color: #333;
+}
+
+li.list-group-item:hover {
+    background: #f5f5f5;
+}
+
+.table > thead > tr > th {
+    white-space: nowrap;
+}
+
+.navbar-inverse #navbar-mobile.navbar-collapse {
+    border-color: #ced2d7;
+}
+/* Bootstrap Overwrite End */
+
+.sidebar-user-material-content > a {
+    cursor: default;
+}
+
+#loading-image {
+    position: fixed;
+    top: 54px;
+    right: 0;
+    z-index: 999;
+    display: none;
+    color: #fff;
+    background: #0991e8;
+    padding: 11px 15px 11px 11px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.sidebar-control {
+    float: left;
+    padding: 10px 12px;
+    color: #666;
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    margin: 6px 0 6px 20px;
+    background: #f3f3f3;
+}
+
+label.radio {
+    font-weight: normal;
+    text-transform: none;
+}
+.navbar-brand {
+    padding: 5px 20px;
+}
+.navbar-brand > img {
+    height: 35px;
+}
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-nav > li > a:hover {
+    color: #666;
+}
+
+#navbar-mobile .form-group,
+#navbar-mobile form {
+    margin-bottom: 0;
+    height: 50px;
+    margin-left: 15px;
+}
+
+#navbar-mobile.navbar-collapse .navbar-nav {
+    padding: 0;
+}
+#navbar-mobile.navbar-collapse .navbar-nav li {
+    border-bottom: 1px solid #e0e0e0;
+}
+#navbar-mobile.navbar-collapse .navbar-nav li:last-child {
+    border-bottom: 0;
+}
+
+.breadcrumb-line {
+    box-shadow: none;
+    -moz-box-shadow: none;
+}
+.breadcrumb-line:not([class*="bg-"]) {
+    background-color: #0991e8;
+    color: #fff;
+}
+
+.breadcrumb-elements .form-group {
+    margin-bottom: 0;
+    margin-left: 15px;
+
+}
+
+.breadcrumb-elements .form-group form {
+    margin-bottom: 0;
+}
+
+#navbar-mobile .form-group .select2-container {
+    margin-top: 5px;
+    min-width: 80px;
+}
+.breadcrumb-elements .form-group .select2-container {
+    min-width: 80px;    
+}
+
+.select2-dropdown {
+    min-width: 100px;
+}
+
+.fileUpload input[type="file"] {
+    display: none;
+}
+
+.upload-pic {
+    width: 100%;
+}
+
+
+.video-container iframe {
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.days-check div.checkbox {
+    padding: 0;
+}
+
+#navbar-mobile .select2-selection.select2-selection--single,
+.breadcrumb-elements .select2-selection.select2-selection--single{
+    border-bottom: 0;
+    box-shadow: 0 0 0;
+}
+
+.seat-count {
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    padding: 6px 8px;
+    width: 40px;
+}
+
+.sidebar-main {
+    z-index: 10;
+}
+
+div.form-control {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#LOx_layer {
+    display: none !important;
+}
+
+/* Custom Calendar Design  */
+.calendar-title {
+    display: inline-block;
+    font-size: 18px;
+}
+
+.calendar-event {
+    background: #edf9ff;
+}
+
+.calendar-holiday {
+    background: #fff3f5;
+}
+
+.calendar-active {
+    background: #e7ecef;
+}
+.table-bordered.table-calendar > thead > tr > th,
+.table-bordered.table-calendar > tbody > tr > th,
+.table-bordered.table-calendar > tfoot > tr > th,
+.table-bordered.table-calendar > thead > tr > td,
+.table-bordered.table-calendar > tbody > tr > td,
+.table-bordered.table-calendar > tfoot > tr > td {
+    border-color: #b5b9bf;
+}
+.calendar_header th {
+    width: 14.28%;
+}
+
+
+/* Footer Styles */
+.footer {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d3d5db+0,e7e9ef+100 */
+    background: #d3d5db; /* Old browsers */
+    background: -moz-linear-gradient(top,  #d3d5db 0%, #e7e9ef 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #d3d5db 0%,#e7e9ef 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #d3d5db 0%,#e7e9ef 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d5db', endColorstr='#e7e9ef',GradientType=0 ); /* IE6-9 */
+    box-shadow: none;
+    -moz-box-shadow: none;
+    z-index: 9;
+}
+
+@media (max-width: 768px) {
+    #navbar-mobile .form-group, #navbar-mobile form {
+        margin-left: 0;
+    }
+    #navbar-mobile .nav.navbar-nav .form-group .select2-container {
+        padding-left: 20px !important;
+        padding-right: 12px !important;
+    }
+}

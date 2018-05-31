@@ -1,0 +1,233 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Tokenfield for Bootstrap
+*
+*  Styles for tokenfield.js - Advanced tagging/tokenizing plugin for Bootstrap
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Base
+// ------------------------------
+
+.tokenfield {
+    border-width: 0;
+
+    // Remove default .form-control styling
+    &.form-control {
+        height: auto;
+        padding: 0;
+    }
+
+    // Clear floating
+    &:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+    // Token
+    .token {
+        margin-top: (@tags-spacing / 2);
+        margin-bottom: (@tags-spacing / 2);
+        margin-right: @tags-spacing;
+        cursor: default;
+        float: left;
+        position: relative;
+        border-radius: 100px;
+
+        // Skip tokens with custom background color
+        &:not([class*=bg-]) {
+            background-color: @tags-bg;
+            color: @tags-color;
+
+            // Change background on hover
+            &:hover,
+            &:focus {
+                background-color: @tags-hover-bg;
+                color: @tags-hover-color;
+            }
+        }
+
+        // Invalid
+        &.invalid {
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 0;
+            border-bottom: 1px dotted @brand-danger;
+
+            // Active
+            &.active {
+                background-color: @gray-lighter;
+                border: 1px solid @gray-lighter;
+            }
+        }
+
+        // Tag text
+        .token-label {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: @padding-base-vertical @padding-base-horizontal;
+            padding-right: ((@padding-base-horizontal * 1.5) + @font-size-mini);
+        }
+
+        // Close button
+        > .close {
+            font-size: 0;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            color: inherit;
+            right: @padding-base-horizontal;
+            line-height: 1;
+            margin-top: -(@font-size-mini / 2);
+
+            // Icon
+            &:after {
+                content: '\ed6a';
+                font-family: 'icomoon';
+                display: block;
+                font-size: @font-size-mini;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            // Hover action
+            &:hover {
+                .opacity(1);
+            }
+        }
+    }
+
+    //
+    // Contextual classes
+    //
+
+    // Center icons vertically
+    & + .form-control-feedback {
+        margin-top: (@tags-spacing / 2);
+    }
+
+
+    //
+    // Input field
+    //
+
+    // Make typeahead input auto width
+    .twitter-typeahead {
+        width: auto;
+    }
+
+    // Input field
+    .token-input {
+        direction: ltr;
+        background: none;
+        width: 80px!important;
+        max-width: 50%;
+        min-width: 60px;
+        padding: @padding-base-vertical 0;
+        margin-top: (@tags-spacing / 2);
+        margin-bottom: (@tags-spacing / 2);
+        border: 0;
+        outline: 0;
+    }
+
+
+    //
+    // States
+    //
+
+    // Readonly
+    &.readonly .token {
+        .token-label {
+            padding-right: @padding-base-horizontal;
+        }
+
+        // Hide close button in readonly
+        .close {
+            display: none;
+        }
+    }
+
+    // Disabled
+    &.disabled {
+        .token {
+
+            // Mute tokens
+            &,
+            .close {
+                .opacity(0.5);
+            }
+
+            // Revert default background on hover
+            &:hover,
+            &:focus {
+                background-color: @tags-bg;
+                color: @tags-color;
+            }
+        }
+
+        // Add disabled cursor
+        &,
+        .token-input,
+        .token,
+        .token .close {
+            cursor: @cursor-disabled;
+        }
+    }
+}
+
+
+
+// Sizing
+// ------------------------------
+
+// Large
+.input-group-lg .token > .token-label,
+.tokenfield.input-lg .token > span {
+    padding: @padding-large-vertical @padding-large-horizontal;
+    padding-right: ((@padding-large-horizontal * 1.5) + @font-size-mini);
+}
+.input-group-lg .token-input,
+.tokenfield.input-lg .token-input {
+    padding-top: @padding-large-vertical;
+    padding-bottom: @padding-large-vertical;
+}
+.input-group-lg,
+.tokenfield.input-lg {
+    .token > .close {
+        right: @padding-large-horizontal;
+    }
+
+    // Readonly
+    &.readonly .token > .token-label {
+        padding-right: @padding-large-horizontal;
+    }
+}
+
+// Small
+.input-group-sm .token > .token-label,
+.tokenfield.input-sm .token > span {
+    padding: @padding-small-vertical @padding-small-horizontal;
+    padding-right: ((@padding-small-horizontal * 1.5) + @font-size-mini);
+}
+.input-group-sm .token-input,
+.tokenfield.input-sm .token-input {
+    padding-top: @padding-small-vertical;
+    padding-bottom: @padding-small-vertical;
+}
+.input-group-sm,
+.tokenfield.input-sm {
+    .token > .close {
+        right: @padding-small-horizontal;
+    }
+
+    // Readonly
+    &.readonly .token > .token-label {
+        padding-right: @padding-small-horizontal;
+    }
+}

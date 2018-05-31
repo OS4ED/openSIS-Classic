@@ -1,0 +1,152 @@
+/*
+Project Name: OpenSIS Legacy Build
+Date: 20/7/2016
+Version: 0.1
+Authors: OS4ed Design Team
+*/
+
+htlm,
+body {
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial,Helvetica,sans-serif !important;
+}
+
+body {
+    background: #fff url(../images/loginBg.jpg) no-repeat 0 0;
+    background-size: cover;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #686868;
+}
+
+.login-wrapper {
+    display: table;
+    min-height: 100%;
+    height: 100vh;
+    width: 100%;
+}
+
+.page-login {
+    height: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.phone-shadow {
+    background: url(../images/shadow.png) no-repeat center bottom;
+    height: 23px;
+    margin-top: -23px;
+    position: relative;
+}
+
+.page-login .phone-slider {
+    background: url(../images/loginSlider.png) no-repeat 0 0;
+    width: 273px;
+    height: 417px;
+    position: relative;
+    margin: auto;
+}
+
+.page-login .phone-wrapper .phone-slider .carousel {
+    left: 17px;
+    position: absolute;
+    top: 67px;
+}
+
+.page-login .phone-wrapper .phone-shadow-line {
+    background: url(../images/shadow.png) no-repeat 0 0;
+    width: 450px;
+    height: 12px;
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+}
+
+.page-login .phone-wrapper h2 {
+    color: rgb(255, 255, 255);
+    font-family: "Open Sans";
+    font-size: 20px;
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 20px;
+    text-shadow: 0px 1px 2.97px rgba(27, 27, 27, 0.74);
+    line-height: 1.2;
+}
+
+.page-login .phone-wrapper .apps-store-links a {
+    display: inline-block;
+    padding: 0 16px;
+}
+
+.page-login .login-form {
+    width: 100%;
+    margin: auto;
+}
+
+.page-login .login-form .copyright-info span {
+    color: #74ccf2;
+    font-size: 12px;
+}
+
+.page-login .login-form .panel-heading {
+    background-color: #ededed;
+}
+
+.page-login .login-form .panel-heading h1 {
+    color: #686868;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.page-login .login-form .panel-heading span {
+    color: #0d62e0;
+    font-size: 14px;
+}
+
+.page-login .login-form .panel-body h3 {
+    text-align: center;
+    color: #383838;
+    font-size: 20px;
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
+
+.page-login .login-form .panel-body h3 .fa {
+    margin-right: 10px;
+}
+
+.page-login .login-form .panel-body .alert {
+    font-size: 12px;
+    padding: 10px 16px;
+    color: #ac1010;
+}
+
+.page-login .login-form label {
+    font-weight: 400;
+    font-size: 15px;
+    color: #383838;
+}
+
+.page-login .after-login-form {
+    padding-top: 10px;
+}
+
+.page-login .after-login-form a {
+    text-decoration: underline;
+    color: #0d62e0;
+    font-size: 14px;
+}
+
+.page-login .after-login-form p {
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+
+/* checkbox */

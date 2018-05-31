@@ -1,0 +1,90 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+        background: #eaeaea url(../assets/main_bg.jpg);
+}
+body, html {
+    height: 100%;
+    min-height: 100%;
+    font-family: 'Arial', sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.wrap {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+.wrap .error {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+h1 {
+    font-size: 35px;
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+h3 {
+    font-size: 20px;
+    color: #333;
+}
+
+strong {
+    font-weight: bold;
+}
+
+.orr {
+    color:#666;
+    padding-bottom: 30px;
+    font-weight: bold;
+}
+
+ul.browser_list { padding-bottom: 40px; }
+.browser_list li { display: inline-block; padding-right: 30px; }
+.browser_list li img { width: 80px; }

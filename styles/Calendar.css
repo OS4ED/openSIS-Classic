@@ -1,0 +1,17 @@
+/*  Calender */
+.divcal { position:absolute; z-index:999px;}    
+a{text-decoration:none;} 
+.CalendarRed{width:100%;height:100%; border:1px #666 solid; z-index:999px;} 
+.CalendarRed td{border:1px #bbbbbb solid;text-align:center;} 
+.CalendarRed td.SelectedDay{background:#E5E5E5;color:red;} 
+.CalendarRed tr.TitleBar td{font-weight:bold;background:#efefef;color:#4d5358;} 
+.CalendarRed tr.TitleBar td a{color:#4d5358;} 
+.CalendarRed tr.Days td{} 
+.CalendarRed tr.Days td a{color:#000000;} 
+.CalendarRed tr.Days td a:hover{background:#ff7f7f;} 
+.CalendarRed .WeekName td{font-weight:bold;} 
+.CalendarRed{border-collapse:collapse;font:normal 11px Verdana, Arial, sans-serif;background:#FFFFFF;border:1px red solid;} 
+
+.cal_month { width:90px; }
+
+/*  Calender */

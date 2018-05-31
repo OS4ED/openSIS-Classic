@@ -1,0 +1,7 @@
+/*body { margin:0px; padding:0px; background-color:transparent; border:0px;}*/
+#helpdiv td { padding:12px;}
+/*td,p,div { font-family:Arial, Helvetica, sans-serif; font-size:11px;}*/
+.help_bg { background-image:url(../images/help_bg.gif); width:495px; height:17px;}
+
+iframe td { }
+#showhelp { float:right; padding:0px 24px 0px 0px; position:relative; top:-14}

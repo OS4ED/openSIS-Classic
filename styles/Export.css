@@ -1,0 +1,18 @@
+body { margin:0px; padding:12px;}
+td,div,p,select,input,textarea { font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#000;}
+.notice_msg { font-weight:bold; white-space:nowrap;}
+.notice { background-image:url(../themes/gray/notice.png); background-repeat:no-repeat; width:23px; background-position:right; height:18px;}
+/* grid */
+.grid_header, .column_heading { font-weight:bold; white-space:nowrap;}
+.grid { background-color:#e2e2e2;}
+.odd { background-color:#f5f5f5; padding:3px 4px 3px 4px;}
+.even { background-color:#fff; padding:3px 4px 3px 4px;}
+.odd div a, .even div a { color:#7f9db9;} /* hack for Safari */
+.subtabs a { text-decoration:none; color:#436477;}
+.add_row { background-color:#fff;}
+.LO_field div a { color:#dedede;} /* hack for Safari */
+.lone_add { background-color:#fff; border:1px solid #b5d4e2;}
+.lone_add table td { white-space:nowrap;}
+.grid_button { width:26px;}
+/* grid */
+

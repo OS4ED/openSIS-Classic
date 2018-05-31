@@ -1,0 +1,204 @@
+<?php
+
+#**************************************************************************
+#  openSIS is a free student information system for public and non-public 
+#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#
+#  openSIS is  web-based, open source, and comes packed with features that 
+#  include student demographic info, scheduling, grade book, attendance, 
+#  report cards, eligibility, transcripts, parent portal, 
+#  student portal and more.   
+#
+#  Visit the openSIS web site at http://www.opensis.com to learn more.
+#  If you have question regarding this system or the license, please send 
+#  an email to info@os4ed.com.
+#
+#  This program is released under the terms of the GNU General Public License as  
+#  published by the Free Software Foundation, version 2 of the License. 
+#  See license.txt.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#***************************************************************************************
+include('../../RedirectModulesInc.php');
+if (!$_REQUEST['modfunc'] && $_REQUEST['search_modfunc'] != 'list')
+    unset($_SESSION['MassDrops.php']);
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
+    //$END_DATE = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
+    $END_DATE = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['day']; 
+     $END_DATE = $end_date_mod = date('Y-m-d', strtotime($END_DATE));   
+    if (!VerifyDate($END_DATE)) {
+        DrawHeader('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> The date you entered is not valid.</p>');
+        for_error_sch();
+    } else {
+        $mp_table = GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE'));
+        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID FROM schedule WHERE COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+        if (count($_REQUEST['student']) > 0) {
+            foreach ($_REQUEST['student'] as $student_id => $yes) {
+                $start_end_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE,SCHEDULER_LOCK FROM schedule WHERE STUDENT_ID=\'' . $student_id . '\' AND COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+                if (count($start_end_RET)) {
+                    if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y' || $start_end_RET[1]['START_DATE'] > $end_date_mod) {
+                        $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));
+                        $select_stu = $select_stu[1]['FIRST_NAME'] . "&nbsp;" . $select_stu[1]['LAST_NAME'];
+                        if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y') {
+                            $inactive_schedule2 .= $select_stu . "<br>";
+                            $inactive_schedule_found = 2;
+                        }
+                        if ($start_end_RET[1]['START_DATE'] > $end_date_mod) {
+                            $inactive_schedule .= $select_stu . "<br>";
+                            $inactive_schedule_found = 1;
+                        }
+                    } else {
+                        //DBQuery('UPDATE schedule SET END_DATE=\'' . $END_DATE . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('CALL SEAT_COUNT()');
+                        $note = "Selected students have been dropped from the course period.";
+                    }
+                }
+            }
+            unset($_REQUEST['modfunc']);
+            unset($_SESSION['MassDrops.php']);
+            if ($note)
+                DrawHeader('<p class="text-success"><i class="fa fa-check text-success"></i> ' . $note . '</p>');
+            if ($inactive_schedule_found == 1)
+                DrawHeaderHome('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> ' . $inactive_schedule . ' has later schedule date.</p>');
+            if ($inactive_schedule_found == 2)
+                DrawHeaderHome('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> Dropped date can not be changed for ' . $inactive_schedule2 . '.This schedule is locked.</p>');
+        }
+        else {
+            unset($_REQUEST['modfunc']);
+            unset($_SESSION['MassDrops.php']);
+            DrawHeader('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> No Studetn selected</p>');
+        }
+    }
+}
+if (!$_REQUEST['modfunc']) {
+    if ($_REQUEST['search_modfunc'] == 'list') {
+        echo "<FORM name=ww id=ww action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save method=POST>";
+        echo '<div class="panel panel-default">';
+    }
+    if ($_REQUEST['search_modfunc'] != 'list')
+        unset($_SESSION['MassDrops.php']);
+    $extra['SELECT'] = ",CAST(NULL AS CHAR(1)) AS CHECKBOX";
+    $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    $extra['new'] = true;
+
+    if ($_SESSION['MassDrops.php']['course_period_id']) {
+        $extra['FROM'] .= ',schedule w_ss';
+        $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.SCHOOL_ID=ssm.SCHOOL_ID AND w_ss.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND (' . (($_REQUEST['include_inactive']) ? '' : 'w_ss.START_DATE <=\'' . DBDate() . '\' AND') . ' (w_ss.END_DATE>=\'' . DBDate() . '\' OR w_ss.END_DATE IS NULL))';
+        $course = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_ID FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+        $_openSIS['SearchTerms'] .= '<b>Course Period : </b>' . $course[1]['COURSE_TITLE'] . ' : ' . $course[1]['TITLE'];
+    }
+    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose Course Period</A>";
+
+    if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
+
+        echo '<script language=JavaScript>parent.help.location.reload();</script>';
+        
+        echo '<div class="row">';
+        echo '<div class="col-md-6 col-md-offset-3">';
+        PopTable('header', 'Find Students to Drop');
+        echo "<FORM class=no-margin-bottom name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+
+        echo '<div class="form-group">';
+        echo $extra['search'];
+        echo '</div>';
+        echo '<div class="form-group"><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y /> Include advance schedule</label></div></div>';
+        echo '<DIV id=cp_detail></DIV>';
+        echo '<div class="panel-footer">';
+        echo "<INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop();formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' >";
+        echo '</div>';
+
+        
+        echo '</FORM>';
+        PopTable('footer');
+        echo '</div>';
+        echo '</div>'; //.row
+    } else {
+        DrawBC("Scheduling > " . ProgramTitle());
+        echo '<input type="hidden" name="marking_period_id" value=' . strip_tags(trim($_REQUEST['marking_period_id'])) . ' >';
+        $students_RET = GetStuList($extra);
+
+        $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
+
+
+        if (is_array($extra['columns_before'])) {
+            $columns = $extra['columns_before'] + $LO_columns;
+            $LO_columns = $columns;
+        }
+
+        if (is_array($extra['columns_after']))
+            $columns = $LO_columns + $extra['columns_after'];
+        if (!$extra['columns_before'] && !$extra['columns_after'])
+            $columns = $LO_columns;
+        if (count($students_RET) > 0) {
+            echo '<div class="panel-body"><label class="control-label">Drop Date</label><div class="form-inline">' . PrepareDate(DBDate(), '') . '</div></div>';
+            echo '<hr class="no-margin"/>';
+        }
+        if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+            $tmp_REQUEST = $_REQUEST;
+            unset($tmp_REQUEST['expanded_view']);
+            if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0) {
+                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true class=big_font ><i class=\"icon-square-down-right\"></i> Expanded View</A>", '<span class="heading-text">'.str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)).'</span>', $extra['header_right']);
+            } elseif (!UserStudentID() && count($students_RET) != 0) {
+                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false class=big_font><i class=\"icon-square-up-left\"></i> Original View</A>", '<span class="heading-text">'.str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['Search'], 0, -4)).'</span>', $extra['header_right']);
+            }
+            DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
+            if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
+                $_SESSION['List_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
+                echo '<script language=JavaScript>parent.help.location.reload();</script>';
+            }
+            if (!$extra['singular'] || !$extra['plural'])
+                $extra['singular'] = 'Student';
+            $extra['plural'] = 'Students';
+
+            echo "<div id='students' class=\"table-responsive\">";
+            ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            echo "</div>";
+        }
+
+        if (count($students_RET) > 0) {
+            //echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" onclick=\'formload_ajax("ww");\'') . '</span></div></div>';
+            echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</span></div></div>';
+            echo '</div>';
+            echo "</FORM>";
+        }
+    }
+}
+
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
+    if (!clean_param($_REQUEST['course_period_id'], PARAM_INT))
+        include 'modules/scheduling/CoursesforWindow.php';
+    else {
+        $_SESSION['MassDrops.php']['subject_id'] = clean_param($_REQUEST['subject_id'], PARAM_INT);
+        $_SESSION['MassDrops.php']['course_id'] = clean_param($_REQUEST['course_id'], PARAM_INT);
+
+        $_SESSION['MassDrops.php']['course_period_id'] = clean_param($_REQUEST['course_period_id'], PARAM_INT);
+
+        $course_title = DBGet(DBQuery('SELECT TITLE FROM courses WHERE COURSE_ID=\'' . $_SESSION['MassDrops.php']['course_id'] . '\''));
+        $course_title = $course_title[1]['TITLE'];
+        $cp_RET = DBGet(DBQuery('SELECT cp.TITLE,(SELECT TITLE FROM school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID) AS PERIOD_TITLE,cp.MARKING_PERIOD_ID,(SELECT CONCAT(FIRST_NAME,\'' . ' ' . '\',LAST_NAME) FROM staff st WHERE st.STAFF_ID=cp.TEACHER_ID) AS TEACHER,r.TITLE AS ROOM,cp.TOTAL_SEATS-cp.FILLED_SEATS AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID'));
+        $cp_title = $cp_RET[1]['TITLE'];
+        $cp_teacher = $cp_RET[1]['TEACHER'];
+        $period_title = $cp_RET[1]['PERIOD_TITLE'];
+        $mp_title = GetMP($cp_RET[1]['MARKING_PERIOD_ID']);
+        $room = $cp_RET[1]['ROOM'];
+        $seats = $cp_RET[1]['AVAILABLE_SEATS'];
+
+        echo "<script language=javascript>opener.document.getElementById(\"course_div\").innerHTML = \"<div class=form-control readonly=readonly>$cp_title</div>\";opener.document.getElementById(\"submit\").focus(); window.close();</script>";
+    }
+}
+
+function _makeChooseCheckbox($value, $title) {
+    global $THIS_RET;
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+}
+
+?>

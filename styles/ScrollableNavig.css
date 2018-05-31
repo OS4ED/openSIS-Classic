@@ -1,0 +1,67 @@
+
+/* this makes it possible to add next button beside scrollable */
+div.scrollable {
+	float:left;	
+}
+
+/* prev, next, prevPage and nextPage buttons */
+a.prev, a.next, a.prevPage, a.nextPage {
+	display:block;
+	width:26px;
+	height:26px;
+	background:url(../assets/left.png) no-repeat;
+	float:left;
+	margin:0px 0px;
+	cursor:pointer;
+	font-size:1px;
+}
+
+/* mouseover state */
+a.prev:hover, a.next:hover, a.prevPage:hover, a.nextPage:hover {
+	background-position:0px -26px;		
+}
+
+/* disabled navigational button */
+a.disabled {
+	visibility:hidden !important;		
+}
+
+/* next button uses another background image */
+a.next, a.nextPage {
+	background-image:url(../assets/right.png);
+	clear:right;	
+}
+
+
+
+/*********** navigator ***********/
+
+
+/* position and dimensions of the navigator */
+div.navi {
+	margin-left:0px;
+}
+
+
+/* items inside navigator */
+div.navi a {
+	float:left;
+	margin:0px;
+	background:url(scrollable_files/navigator.png) 0 0 no-repeat;
+	display:block;
+	font-size:1px;
+}
+
+/* mouseover state */
+div.navi a:hover {
+	background-position:0 -8px;      
+}
+
+/* active state (current page state) */
+div.navi a.active {
+	background-position:0 -16px;     
+} 	
+
+.menu_left { background-image:url(menu_left.png); width:7px; height:27px; background-position:left top; background-repeat:no-repeat; float:left; }
+.menu_bg { background-image:url(menu_bg.png); height:27px; background-position:top; background-repeat:repeat-x; float:left; }
+.menu_right { background-image:url(menu_right.png); height:27px; widows:7px; background-position:right top; background-repeat:no-repeat; float:left; }

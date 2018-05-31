@@ -1,0 +1,300 @@
+<?php
+
+#**************************************************************************
+#  openSIS is a free student information system for public and non-public 
+#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#
+#  openSIS is  web-based, open source, and comes packed with features that 
+#  include student demographic info, scheduling, grade book, attendance, 
+#  report cards, eligibility, transcripts, parent portal, 
+#  student portal and more.   
+#
+#  Visit the openSIS web site at http://www.opensis.com to learn more.
+#  If you have question regarding this system or the license, please send 
+#  an email to info@os4ed.com.
+#
+#  This program is released under the terms of the GNU General Public License as  
+#  published by the Free Software Foundation, version 2 of the License. 
+#  See license.txt.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#***************************************************************************************
+include('../../RedirectModulesInc.php');
+unset($_SESSION['_REQUEST_vars']['values']);
+unset($_SESSION['_REQUEST_vars']['modfunc']);
+DrawBC("School Setup > " . ProgramTitle());
+// --------------------------------------------------------------- Test SQL ------------------------------------------------------------------ //
+// --------------------------------------------------------------- Tset SQL ------------------------------------------------------------------ //
+ 
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Update' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == '')) {
+    if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
+        if ($_REQUEST['new_school'] != 'true') {
+
+            $sql = 'UPDATE schools SET ';
+
+
+            foreach ($_REQUEST as $col => $val) {
+                $dt_ex = explode("_", $col);
+                if ($dt_ex[0] == 'month') {
+                    if ($_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '') {
+                        $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . MonthFormatter($_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]]) . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
+                }
+            }
+            }
+
+            foreach ($_REQUEST['values'] as $column => $value) {
+                if (substr($column, 0, 6) == 'CUSTOM') {
+                    $custom_id = str_replace("CUSTOM_", "", $column);
+                    $custom_RET = DBGet(DBQuery("SELECT TITLE,TYPE,REQUIRED FROM school_custom_fields WHERE ID=" . $custom_id));
+
+                    $custom = DBGet(DBQuery("SHOW COLUMNS FROM schools WHERE FIELD='" . $column . "'"));
+                    $custom = $custom[1];
+                    if ($custom['NULL'] == 'NO' && trim($value) == '' && $custom['DEFAULT']) {
+                        $value = $custom['DEFAULT'];
+                    } else if ($custom['NULL'] == 'NO' && $value == '' && $custom_RET[1]['REQUIRED'] == 'Y') {
+                        $custom_TITLE = $custom_RET[1]['TITLE'];
+                        echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is required.</b></font><br/>';
+                        $error = true;
+                        break;
+                    } else if ($custom_RET[1]['TYPE'] == 'numeric' && (!is_numeric($value) && $value != '')) {
+                        $custom_TITLE = $custom_RET[1]['TITLE'];
+                        echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is Numeric type.</b></font><br/>';
+                        $error = true;
+                    } else {
+                        $m_custom_RET = DBGet(DBQuery("select ID,TITLE,TYPE from school_custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
+                        if ($m_custom_RET) {
+                            $str = "";
+                            foreach ($value as $m_custom_val) {
+                                if ($m_custom_val)
+                                    $str.="||" . $m_custom_val;
+                            }
+                            if ($str)
+                                $value = $str . "||";
+                            else {
+                                $value = '';
+                            }
+                        }
+                    }
+                }  ###Custom Ends#####
+                if ($column != 'WWW_ADDRESS')
+                $value = paramlib_validation($column, trim($value));
+//                                ',\''.singleQuoteReplace('','',trim($value)).'\''
+                if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                    $sql .= $column . '=\'' . singleQuoteReplace('', '', trim($value)) . '\',';
+                } else {
+                    $sql .= $column . '=\'' . singleQuoteReplace('', '', trim($value)) . '\',';
+                }
+            }
+            $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . UserSchool() . '\'';
+            if ($error != 1)
+                DBQuery($sql);
+            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            $note[] = 'This school has been modified.';
+            $_REQUEST['modfunc'] = '';
+        }
+        else {
+            $fields = $values = '';
+
+            foreach ($_REQUEST['values'] as $column => $value)
+                if ($column != 'ID' && $value) {
+                    if ($column != 'WWW_ADDRESS')
+                    $value = paramlib_validation($column, trim($value));
+                    $fields .= ',' . $column;
+                    $values .= ',\'' . singleQuoteReplace('', '', trim($value)) . '\'';
+                }
+
+            if ($fields && $values) {
+
+
+                $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
+                $id = $id[1]['AUTO_INCREMENT'];
+
+                $sql = 'INSERT INTO schools (SYEAR' . $fields . ') values(' . UserSyear() . '' . $values . ')';
+
+                DBQuery($sql);
+                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . UserID() . ',' . $id . ',' . UserSyear() . ')');
+                if (User('PROFILE_ID') != 0) {
+                    $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
+                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ')');
+                }
+                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
+                DBQuery('INSERT INTO system_preference(school_id, full_day_minute, half_day_minute) VALUES (' . $id . ', NULL, NULL)');
+
+                DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . UserSyear() . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+                $_SESSION['UserSchool'] = $id;
+                unset($_REQUEST['new_school']);
+            }
+//            echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
+//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//            echo "<br><br>";
+//            DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>' . GetSchool(UserSchool()) . '</strong> has been created. To finish the operation, click OK button.', '<INPUT  type=submit value=OK class="btn btn-primary">');
+//            echo '<input type="hidden" name="copy" value="done"/>';
+             echo '<br><strong>School has been created successfully.</strong>';
+              unset($_REQUEST['modfunc']);
+               echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '"; window.close();</script>';
+            echo '</FORM>';
+        }
+    } else {
+        $_REQUEST['modfunc'] = '';
+    }
+
+
+    unset($_SESSION['_REQUEST_vars']['values']);
+    unset($_SESSION['_REQUEST_vars']['modfunc']);
+}
+
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Delete' && User('PROFILE') == 'admin') {
+    if (DeletePrompt('school')) {
+        if (BlockDelete('school')) {
+            DBQuery('DELETE FROM schools WHERE ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_periods WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_semesters WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_quarters WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('DELETE FROM school_progress_periods WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('UPDATE staff SET CURRENT_SCHOOL_ID=NULL WHERE CURRENT_SCHOOL_ID=\'' . UserSchool() . '\'');
+            DBQuery('UPDATE staff SET SCHOOLS=replace(SCHOOLS,\',' . UserSchool() . ',\',\',\')');
+
+            unset($_SESSION['UserSchool']);
+            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            unset($_REQUEST);
+            $_REQUEST['modname'] = "schoolsetup/Schools.php?new_school=true";
+            $_REQUEST['new_school'] = true;
+            unset($_REQUEST['modfunc']);
+            echo '
+				<SCRIPT language="JavaScript">
+				window.location="Side.php?school_id=new&modcat=' . strip_tags(trim($_REQUEST['modcat'])) . '";
+				</SCRIPT>
+				';
+        }
+    }
+}
+//if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
+//    echo '<br><strong>School has been created successfully.</strong>';
+//} else {
+    if (!$_REQUEST['modfunc']) {
+        if (!$_REQUEST['new_school']) {
+            $schooldata = DBGet(DBQuery('SELECT * FROM schools WHERE ID=\'' . UserSchool() . '\''));
+            $schooldata = $schooldata[1];
+            $school_name = GetSchool(UserSchool());
+        } 
+        else
+            $school_name = 'Add a School';
+        if (!$_REQUEST['new_school'])
+            $_REQUEST['new_school'] = false;
+        //echo "<FORM name=school  id=school class=\"form-horizontal\"  enctype='multipart/form-data'  METHOD='POST' ACTION='Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=update&btn=" . $_REQUEST['button'] . "&new_school=$_REQUEST[new_school]'>";
+        echo "<FORM name=school  id=school class=\"form-horizontal\"  enctype='multipart/form-data'  METHOD='POST' ACTION='Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=update'>";
+
+        PopTable('header', 'School Information');
+
+        echo '<div class="row">';
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Name<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['TITLE'], 'values[TITLE]', '', ' size=24 onKeyUp=checkDuplicateName(1,this,' . $schooldata['ID'] . '); onBlur=checkDuplicateName(1,this,' . $schooldata['ID'] . ');') . "</div></div>";
+        echo "<input type=hidden id=checkDuplicateNameTable1 value='schools'/>";
+        echo "<input type=hidden id=checkDuplicateNameField1 value='title'/>";
+        echo "<input type=hidden id=checkDuplicateNameMsg1 value='school name'/>";
+        echo '</div>'; //.col-lg-6
+
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Address<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['ADDRESS'], 'values[ADDRESS]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row
+
+
+        echo '<div class="row">';
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">City<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['CITY'], 'values[CITY]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row
+
+
+        echo '<div class="row">';
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Zip/Postal Code<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Telephone<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row 
+
+
+        echo '<div class="row">';
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Principal<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['PRINCIPAL'], 'values[PRINCIPAL]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Base Grading Scale<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['REPORTING_GP_SCALE'], 'values[REPORTING_GP_SCALE]', '', 'class=cell_floating maxlength=10 size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row
+
+
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">E-Mail</label><div class=\"col-md-8\">" . TextInput($schooldata['E_MAIL'], 'values[E_MAIL]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
+        echo '</div>'; //.col-md-6
+
+        echo '<div class="col-md-6">';
+        
+        if (AllowEdit() || !$schooldata['WWW_ADDRESS']) {
+
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Website</label><div class=\"col-md-8\">" . TextInput($schooldata['WWW_ADDRESS'], 'values[WWW_ADDRESS]', '', 'class=cell_floating size=24') . "</div></div>";
+        } else {
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Website</label><div class=\"col-md-8\"><A HREF=http://$schooldata[WWW_ADDRESS] target=_blank>$schooldata[WWW_ADDRESS]</A></div></div>";
+        }
+        echo '</div>';
+        echo '</div>';
+        
+        echo '<div class="row">';
+        if ($school_name != 'Add a School')
+            include('modules/schoolsetup/includes/SchoolcustomfieldsInc.php');
+        echo '</div>';
+
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
+
+//        $uploaded_sql = DBGet(DBQuery("SELECT VALUE FROM program_config WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR IS NULL AND TITLE='PATH'"));
+//        $_SESSION['logo_path'] = $uploaded_sql[1]['VALUE'];
+//        if (!$_REQUEST['new_school'] && file_exists($uploaded_sql[1]['VALUE']))
+        
+        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserSchool().' AND FILE_INFO=\'schlogo\''));
+    
+        
+        if(!$_REQUEST['new_school'] && count($sch_img_info)>0)
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\"><table width='100%'><tr><td width='5'>" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit'>" : '') . "<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' width=70 class=pic />" . (AllowEdit() != false ? "</a>" : '') . "</td><td class='pl-10'>" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit'>Click here to change logo</a>" : '') . "</td></tr></table></div></div>";
+        else if (!$_REQUEST['new_school'])
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\">" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php'>Click here to upload logo</a>" : '-') . "</div></div>";
+
+        echo '</div>'; //.col-md-4
+        echo '</div>'; //.row  
+        if (User('PROFILE') == 'admin' && AllowEdit()) {
+            echo '<hr class="no-margin"/>';
+            if ($_REQUEST['new_school']) {
+                echo "<div class=\"panel-body no-padding-left no-padding-bottom\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
+            } else {
+
+                echo "<div class=\"panel-body no-padding-left no-padding-bottom\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
+            }
+        }
+
+
+        PopTable('footer');
+
+        echo "</FORM>";
+    }
+
+?>

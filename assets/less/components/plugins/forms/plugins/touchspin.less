@@ -1,0 +1,111 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Touchspin spinners
+*
+*  Styles for touchspin.min.js - spinner form control library
+*
+*  Version: 1.1
+*  Latest update: Oct 20, 2015
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Core
+// ------------------------------
+
+.bootstrap-touchspin {
+
+    // Vertical buttons
+    .input-group-btn-vertical {
+        white-space: nowrap;
+        width: 1%;
+        vertical-align: middle;
+        display: table-cell;
+
+        // Button
+        > .btn {
+            height: @input-height-base;
+            line-height: @line-height-base;
+        }
+
+        // Icon
+        i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -(@icon-font-size / 2);
+            margin-top: -(@icon-font-size / 2);
+            font-weight: normal;
+        }
+
+        // Arrow up
+        .bootstrap-touchspin-up {
+            .border-right-radius(0);
+        }
+
+        // Arrow down
+        .bootstrap-touchspin-down {
+            margin-left: 1px;
+            .border-left-radius(0);
+        }
+    }
+
+    //
+    // Sizing
+    //
+
+    // Large
+    &.input-group-lg .input-group-btn-vertical {
+        > .btn {
+            height: @input-height-large;
+            line-height: @line-height-large;
+            padding-left: @padding-large-horizontal;
+            padding-right: @padding-large-horizontal;
+        }
+    }
+
+    // Small
+    &.input-group-sm .input-group-btn-vertical {
+        > .btn {
+            height: @input-height-small;
+            line-height: @line-height-small;
+            padding-left: @padding-small-horizontal;
+            padding-right: @padding-small-horizontal;
+        }
+    }
+}
+
+
+// Elements
+// ------------------------------
+
+.bootstrap-touchspin-postfix {
+    padding-right: 0;
+
+    // In default size
+    & + .input-group-btn,
+    & + .input-group-btn-vertical {
+            padding-left: @padding-base-horizontal;
+    }
+
+    // In large size
+    .input-group-lg & {
+        padding-right: 0;
+
+        & + .input-group-btn,
+        & + .input-group-btn-vertical {
+                padding-left: @padding-large-horizontal;
+        }
+    }
+
+    // In small size
+    .input-group-sm & {
+        padding-right: 0;
+
+        & + .input-group-btn,
+        & + .input-group-btn-vertical {
+                padding-left: @padding-small-horizontal;
+        }
+    }
+}
+

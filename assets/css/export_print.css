@@ -1,0 +1,11 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.table tr td {
+    padding: 5px;
+}
+.table tr td.subtabs {
+    border-bottom: 1px solid #ccc;
+}

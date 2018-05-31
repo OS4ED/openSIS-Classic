@@ -1,0 +1,288 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Bootstrap multiselect
+*
+*  Styles for multiselect.js - custom multiple select plugin
+*
+*  Version: 1.0
+*  Latest update: May 25, 2015
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Core
+// ------------------------------
+
+.multiselect {
+    width: 100%;
+    min-width: 100%;
+    text-align: left;
+    padding-right: (@padding-base-horizontal + @icon-font-size);
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    // Default button overrides
+    &.btn-default {
+        border-width: 1px 0;
+        padding: @padding-base-vertical 0;
+        padding-right: (@icon-font-size * 1.5);
+        border-radius: 0;
+        text-transform: none;
+        font-weight: 400;
+
+        // States
+        &,
+        &:hover,
+        &:focus,
+        &:active,
+        .btn-group.open > &.dropdown-toggle {
+            border-color: transparent transparent @input-border;
+            background-color: @input-bg;
+            .box-shadow(none);
+        }
+
+        // When opened, change bottom border color
+        &:focus,
+        .btn-group.open > &.dropdown-toggle {
+            border-bottom-color: @input-border-highlight-color;
+            .box-shadow(0 1px 0 @input-border-highlight-color);
+        }
+
+        // Disabled
+        &.disabled {
+            border-bottom-style: dashed;
+        }
+
+        // Stick caret to far right
+        .caret {
+            right: 0;
+        }
+    }
+
+    // Caret
+    .caret {
+        position: absolute;
+        top: 50%;
+        right: @padding-base-horizontal;
+        margin-top: -(@icon-font-size / 2);
+        width: @icon-font-size;
+        text-align: right;
+    }
+
+
+    //
+    // Make it as an input instead of button
+    //
+
+    // Large
+    &.btn-lg {
+        padding-right: (@padding-large-horizontal * 2);
+
+        &.btn-default {
+            padding-right: (@padding-large-horizontal + @padding-large-vertical);
+        }
+    }
+
+    // Small
+    &.btn-sm {
+        padding-right: (@padding-small-horizontal * 2);
+
+        &.btn-default {
+            padding-right: (@padding-small-horizontal + @padding-small-vertical);
+        }
+    }
+
+    // Mini
+    &.btn-xs {
+        padding-right: (@padding-xs-horizontal * 2);
+
+        &.btn-default {
+            padding-right: (@padding-xs-horizontal + @padding-xs-vertical);
+        }
+    }
+}
+
+// Light theme
+.page-header-inverse .form-group,
+.navbar-inverse .navbar-form {
+    .multiselect.btn-default {
+        border-bottom-color: fade(#fff, 30%);
+        color: #fff;
+    }
+
+    // Opened dropdown
+    .btn-group.open > .multiselect.btn-default,
+    .multiselect.btn-default:focus {
+        color: #fff;
+        border-bottom-color: #fff;
+        .box-shadow(0 1px 0 #fff);
+    }
+}
+
+
+// Container
+// ------------------------------
+
+.multiselect-container {
+    min-width: 180px;
+    max-height: 250px;
+    overflow-y: auto;
+
+    > li {
+        padding: 0;
+
+        // Links
+        > a {
+            padding: 0;
+
+            // Label
+            > label {
+                display: block!important;
+                margin: 0;
+                height: 100%;
+                cursor: pointer;
+                padding: (@padding-base-vertical + 1) @padding-base-horizontal;
+                padding-left: (@padding-base-horizontal + @checkbox-size + 10);
+
+                // Inside navbar form
+                .navbar-form & {
+                    display: block;
+                }
+            }
+
+            // Checkboxes and radios
+            .checker,
+            .choice {
+                top: 50%;
+                margin-top: -(@checkbox-size / 2);
+                left: @padding-base-horizontal;
+            }
+
+            // Select all link
+            &.multiselect-all label {
+                font-weight: 500;
+            }
+        }
+
+        // Disabled item
+        &.disabled > a {
+            background-color: transparent;
+
+            > label {
+                cursor: @cursor-disabled;
+            }
+        }
+
+        // Optgroup title
+        &.multiselect-group {
+            > label,
+            &.active > label {
+                margin: 0;
+                padding: (@padding-base-vertical + 1) @content-padding-base;
+                font-size: @font-size-mini;
+                line-height: @line-height-mini;
+                color: @text-muted;
+                text-transform: uppercase;
+                margin-top: (@list-spacing * 2);
+                background-color: transparent;
+                cursor: default;
+            }
+
+            // Disabled color
+            &.disabled {
+                color: @text-muted;
+            }
+
+            // First item
+            &:first-child {
+                > label,
+                &.active > label {
+                    margin-top: @list-spacing;
+                }
+            }
+
+            // Clickable group
+            &.multiselect-group-clickable > label {
+                cursor: pointer;
+            }
+
+            // Disabled group
+            &.disabled {
+                &,
+                &:hover,
+                &:focus {
+                    label {
+                        background-color: transparent;
+                        cursor: @cursor-disabled;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// Width sizing
+// ------------------------------
+
+// Full width
+.multi-select-full {
+
+    // Button group
+    > .btn-group {
+        width: 100%;
+
+        .multiselect-container {
+            width: inherit;
+        }
+    }
+
+    // Add spacing to button groups
+    + .input-group-btn {
+        padding-left: @padding-base-horizontal;
+    }
+}
+
+// Fixed width
+.multi-select-fixed > .btn-group > .btn {
+    width: 250px;
+}
+
+// Auto width
+.multi-select-auto > .btn-group > .btn {
+    width: auto;
+}
+
+
+// Misc
+// ------------------------------
+
+// Filter
+li.multiselect-filter {
+    position: relative;
+    padding: (@padding-base-horizontal - @list-spacing) @padding-base-horizontal;
+    padding-left: ((@padding-base-horizontal * 2) + @font-size-small);
+    margin-bottom: (@padding-base-horizontal - @list-spacing);
+
+    // Center icon vertically
+    i {
+        font-size: @font-size-large;
+        position: absolute;
+        left: @padding-base-horizontal;
+        top: 50%;
+        margin-top: -(@font-size-large / 2);
+    }
+}
+
+// Button group styles
+.btn-group-multiselect {
+    width: 100%;
+
+    .btn {
+        float: none;
+    }
+
+    .multiselect {
+        min-width: 0;
+    }
+}

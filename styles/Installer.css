@@ -1,0 +1,53 @@
+body { margin:0px;}
+td,div,p,select,input,textarea { font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#333;}
+.heading { text-align:center; font-weight:bold; font-size:12px; padding-top:8px; color:#666; background-image:url(../install/images/heading.png); background-repeat:no-repeat; width:525px; height: 298px;}
+.heading2 { text-align:center; font-weight:bold; font-size:12px; padding:8px 2px 10px 2px; color:#666; background-image:url(../install/images/heading.png); background-repeat:no-repeat; width:521px; height: 298px;}
+.btn_wide { background-image:url(../install/images/btn_wide.png); background-repeat:no-repeat; width:80px; height:24px; border:0px; cursor:hand; font-weight:bold; color:#333;}
+.btn_wider { background-image:url(../install/images/btn_wider.png); background-repeat:no-repeat; width:211px; height:24px; border:0px; cursor:hand; font-weight:bold; color:#333; }
+form { margin:0px; padding:0px;}
+.top_margin { height:74px;}
+.header { background-image:url(../assets/top_header_bg.png); width:554px; height:85px; background-repeat:no-repeat; background-position:center top;}
+.content { background-image:url(../assets/content.png); width:554px; background-repeat:repeat-y;}
+.content2 { background:url(../install/images/loading.gif) no-repeat 0px 0px; }
+.footer { background-image:url(../assets/footer_bg.png); width:554px; height:28px; background-repeat:no-repeat; background-position:bottom}
+.padding{ padding:8px 18px 8px 18px}
+.logo_padding { padding:12px 14px 0px 14px;}
+.login_txt { color:#484848; width:161px; font-size:11px;}
+.header_txt { background-color:#f0f0f0; font-weight:bold; color:#737373; font-size:12px; text-align:center; height:23px;}
+.header_padding { padding:0px 9px 0px 8px;}
+.margin{height:4px;}
+.login { background:url(../assets/login_btn.png); cursor:pointer; height:24px; width:64px; background-repeat:no-repeat; border:0px; }
+.copyright {font-size:9px; }
+.input1 { border:1px solid #969696 ;}
+.copyright a { color:#000; text-decoration:none}
+.copyright a:hover { text-decoration:blink;}
+.alert_msg { color:#FF0000; font-weight:bold; text-align:center}
+td select,select, textarea, td textarea { border:1px solid #b1c3cc; color:#195977; font-weight:normal; }
+.clear { height:12px;} 
+li { margin-top:3px; font-weight:bold;}
+
+.error_cause { list-style:none; text-align:left; padding:10px 15px 0px 30px; }
+.error_cause li { text-align:left; padding:3px 10px 4px 30px; }
+.loading_bar { background:url(../install/images/loading.gif) no-repeat 0px 0px; width:221px; height:26px; }
+
+.animated_bg { background:url(../assets/step-3.gif) no-repeat 0px 0px; width:554; height:287px; }
+
+#table1 { font-size:11px; }
+
+.green_font{ color:#418a0b; font-size: 16px; line-height: 25px;}
+.red_font{ color:#b02816; font-size: 16px; line-height: 25px;}
+.new_ins p{font-size: 14px; margin-top: 0px; line-height: 1.2;}
+
+.loader {
+    position: absolute;
+    width: 60%;
+    background: #fff;
+    text-align: center;
+    margin: 70px 20% 0;
+    padding: 54px 0;
+    display: none;
+}
+.loader img { margin-bottom:10px; }
+.loader span { display: block; text-align: center; width: 100%; font-weight: bold; }
+body.loader_shown .loader { display: block; }
+body.loader_shown .step_container { display: none; }

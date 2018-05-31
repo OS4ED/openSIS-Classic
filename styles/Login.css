@@ -1,0 +1,26 @@
+body { background-color:#e3e3e3; padding:0px; margin:0px;}
+.top_margin { height:74px;}
+td,div,p { font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#333;}
+.header { background-image:url(../assets/top_header_bg.png); width:554px; height:85px; background-repeat:no-repeat; background-position:center top;}
+.content { background-image:url(../assets/content.png); width:554px; background-repeat:repeat-y;}
+.footer { background-image:url(../assets/footer_bg.png); width:554px; height:28px; background-repeat:no-repeat; background-position:bottom}
+.padding{ padding:8px 18px 8px 18px}
+.logo_padding { padding:12px 14px 0px 14px;}
+.login_txt { color:#484848; width:202px; font-size:11px;}
+.frgt_pw{color:#000; text-decoration: underline}
+.header_txt { background-color:#f0f0f0; font-weight:bold; color:#737373; font-size:12px; text-align:center; height:23px;}
+.header_padding { padding:0px 9px 0px 8px;}
+.margin{height:4px;}
+.login { background:url(../assets/login_btn.png); cursor:pointer; height:24px; width:64px; background-repeat:no-repeat; border:0px; }
+.copyright {font-size:9px; }
+.input1 { border:1px solid #969696 ;}
+.copyright a { color:#000; text-decoration:none}
+.copyright a:hover { text-decoration:blink;}
+.alert_msg { color:#FF0000; font-weight:bold; text-align:center;padding-left:100px;}
+td select,select, textarea, td textarea { border:1px solid #b1c3cc; color:#333; font-weight:normal; }
+.btn_wide { background-image:url(../ins/images/btn_wide.png); background-repeat:no-repeat; width:80px; height:24px; border:0px; cursor:hand; font-weight:bold; color:#333;}
+
+.retrieval_tab{ background: #eee; width:70%; margin: auto; border-collapse: collapse; margin-top:10px; border:1px solid #ccc;}
+.retrieval_tab a.tab1{ display: block; width: 100%; text-align: center; padding: 7px 0px; color:#222; border-bottom:1px solid #ccc;}
+.retrieval_tab a.tab2{ display: block; width: 100%; text-align: center; padding: 7px 0px; border-left:1px solid #ccc; border-bottom:1px solid #ccc; color:#222;}
+.retrieval_tab a.tab2.active, .retrieval_tab a.tab1.active{ background: #ddd;}

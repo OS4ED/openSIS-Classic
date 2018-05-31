@@ -1,0 +1,63 @@
+.Box {
+  background: #b6b7cb;
+}
+
+.BoxContents {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 10px;
+}
+
+TD.BoxHeading {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.FontBox {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+A.BoxHeading {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+A.column_heading {
+	color: #ffffff;
+	font-size: 11px;
+	text-decoration: none;
+}
+
+.LO_field {
+	color: #000000;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+TD.Box, SPAN.Box {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 10px;
+}
+
+TD.LeftBorder {
+	width: 5px;
+	background-color: transparent;
+	background-image: url(./border2/left.gif);
+	background-repeat: repeat-y;
+}
+
+TD.RightBorder {
+	width: 15px;
+	background-color: transparent;
+	background-image: url(./border2/right.gif);
+	background-repeat: repeat;
+}
+
+A.BottomButton {
+	font-size: 10px;
+	font-family: Verdana, Arial, sans-serif;
+	font-weight: bold;
+	color: #333333;
+}
