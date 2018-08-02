@@ -57,10 +57,25 @@ if(page && page!="index.php"){
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>   
-                        <h3>openSIS Installer</h3>                     
+                        <h3>openSIS Installation</h3>                 
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
+                            <div class="installation-instructions">
+                                <ul class="installation-steps-label">
+                                    <li class="active">Choose Package</li>
+                                    <li>System Requirements</li>
+                                    <li>Database Connection</li>
+                                    <li>Database Creation</li>
+                                    <li>School Information</li>
+                                    <li>Site Admin Account Setup</li>
+                                    <li>Ready to go!</li>
+                                </ul>
+                                <!--<h4 class="no-margin">Installation Prerequisite</h4>
+                                <p>Before you install openSIS, you need to have Apache web server, MySQL database server and php scripting language setup in your machine.</p>
+                                <p>You can download an all-inclusive package from: <a href="https://www.apachefriends.org/download.html">https://www.apachefriends.org/download.html</a></p>
+                                <p>Select the download package for the operating system you are using on your machine. Install that first and then start the openSIS installer.</p>-->
+                            </div>
                             <div class="installation-steps">
                                 <table style="height:270px; width: 70%;" border="0" cellspacing="12" cellpadding="12" align="center">
                                     <tr>
@@ -70,24 +85,18 @@ if(page && page!="index.php"){
                                             echo '</tr><tr>';
                                             echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS" /><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 4.7 thru 6.0)</small></h5></a></td>';
                                         } else {
-                                            echo '<td valign="middle" align="center"><a href="Step1.php"><img src="assets/images/icon-package.png" alt="New Installation" /><br/><h5 class="text-black"><b>New Installation</b><br/><small>(Ver 6.4 responsive design)</small></h5></a></td>';
-                                            echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS"/><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 4.7 thru 6.3)</small></h5></a></td>';
+                                            echo '<td valign="middle" align="center"><a href="SystemCheck.php"><img src="assets/images/icon-package.png" alt="New Installation" /><br/><h5 class="text-black"><b>New Installation</b><br/><small>(Ver 7.0)</small></h5></a></td>';
+                                            echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS"/><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 6.3 thru 6.5)</small></h5></a></td>';
                                         }
                                         ?>
                                     </tr>
                                 </table>
                             </div>
-                            <div class="installation-instructions">
-                                <h4 class="no-margin">Installation Prerequisite</h4>
-                                <p>Before you install openSIS, you need to have Apache web server, MySQL database server and php scripting language setup in your machine.</p>
-                                <p>You can download an all-inclusive package from: <a href="https://www.apachefriends.org/download.html">https://www.apachefriends.org/download.html</a></p>
-                                <p>Select the download package for the operating system you are using on your machine. Install that first and then start the openSIS installer.</p>
-                            </div>
                         </div>
                     </div>
                 </div>
                 <footer>
-                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>).
                 </footer>
             </div>
         </section>

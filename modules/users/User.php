@@ -91,8 +91,8 @@ if (User('PROFILE') != 'admin' && User('PROFILE') != 'teacher' && $_REQUEST['sta
 if ($_REQUEST['modfunc'] == 'remove_stu') {
     $delete = DeletePromptMod('student', "include=GeneralInfoInc&category_id=1&staff_id=$_REQUEST[staff_id]" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
     if ($delete == 1) {
-        DBGet(DBQuery('DELETE FROM students_join_people WHERE STUDENT_ID=' . $_REQUEST['id'] . ' AND PERSON_ID=' . $_REQUEST['staff_id']));
-        echo "<script>window.location.href='Modules.php?modname=$_REQUEST[modname]&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . "'</script>";
+        DBQuery('DELETE FROM students_join_people WHERE STUDENT_ID=' . $_REQUEST['id'] . ' AND PERSON_ID=' . $_REQUEST['staff_id']);
+        echo "<script>window.location.href='Modules.php?modname=$_REQUEST[modname]&staff_id=$_REQUEST[staff_id]'</script>";
     }
 } else {
 
@@ -314,8 +314,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
         elseif (basename($_SERVER['PHP_SELF']) != 'index.php') {
             $staff = array();
             echo "<FORM name=staff id=staff action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&modfunc=update" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . " method=POST>";
-        } 
-        else
+        } else
             echo "<FORM name=F2 id=F2 action=index.php?modfunc=create_account METHOD=POST>";
 
         if (basename($_SERVER['PHP_SELF']) != 'index.php') {

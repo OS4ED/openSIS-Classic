@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
@@ -52,7 +52,7 @@ if (isset($_GET['ins']))
 if ($install == 'comp') {
     if (is_dir('install')) {
         $dir = 'install/'; // IMPORTANT: with '/' at the end
-        $remove_directory = delete_directory($dir);
+        //$remove_directory = delete_directory($dir);
     }
 }
 
@@ -97,15 +97,18 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
     $username = optional_param('USERNAME', '', PARAM_RAW);
-    if ($_REQUEST['remember']) {
-        $cName = 'remember_me_name';
-        $cPwd = 'remember_me_pwd';
-        setcookie($cName, $username, time() + 60 * 60 * 24 * 100, "/");
-        setcookie($cPwd, optional_param('PASSWORD', '', PARAM_RAW), time() + 60 * 60 * 24 * 100, "/");
-    } else {
-        setcookie('remember_me_name', 'gone', time() - 60 * 60 * 24 * 100, "/");
-        setcookie('remember_me_pwd', 'gone', time() - 60 * 60 * 24 * 100, "/");
-    }
+    /* if($_REQUEST['remember']) 
+      {
+      $cName='remember_me_name';
+      $cPwd='remember_me_pwd';
+      setcookie($cName, $username, time()+60*60*24*100, "/");
+      setcookie($cPwd, optional_param('PASSWORD','',PARAM_RAW), time()+60*60*24*100, "/");
+      }
+      else
+      {
+      setcookie('remember_me_name', 'gone', time()-60*60*24*100, "/");
+      setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
+      } */
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
         $password = str_replace("\'", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
     $password = str_replace("&", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
@@ -602,16 +605,53 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
 } elseif ($_REQUEST['modfunc'] != 'create_account') {
     echo '<html>';
     echo '<head>';
+    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">';
     echo '<TITLE>' . Config('TITLE') . '</TITLE>';
     echo '<link rel="shortcut icon" href="favicon.ico">';
     echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<noscript><META http-equiv=REFRESH content="0;url=EnableJavascript.php" /></noscript>';
+    echo '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
+    ?>
+    <style type="text/css">
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        .video-container {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+        .responsive-iframe {
+            width: 1px;
+            min-width: 100%;
+            *width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        /*$(function(){
+            var winW = $(window).width();
+            var winH = $(window).height();
+            $('.responsive-iframe').width(winW);
+            $('.responsive-iframe').height(winH);
+        });
+        $(window).resize(function(){
+            var winW = $(window).width();
+            var winH = $(window).height();
+            $('.responsive-iframe').width(winW);
+            $('.responsive-iframe').height(winH);
+        });*/
+    </script>
+    <?php
+
     echo '</HEAD>';
     echo '<body>';
-    echo '<div class="video-container">';
-    echo '<iframe name="body" style="position: fixed; top:0; left: 0; width: 100%; height: 100%; overflow: scroll;" src="Modules.php?modname=' . ($_REQUEST['modname'] = 'miscellaneous/Portal.php') . '&failed_login=' . $failed_login . '" frameborder="0" style="border: inset #C9C9C9 2px"></iframe>';
-    echo '</div>';
+    //echo '<div class="video-container">';
+    echo '<iframe class="responsive-iframe" name="body" src="Modules.php?modname=' . ($_REQUEST['modname'] = 'miscellaneous/Portal.php') . '&failed_login=' . $failed_login . '" frameborder="0"></iframe>';
+    //echo '</div>';
     echo '</body>';
     echo '</HTML>';
 }

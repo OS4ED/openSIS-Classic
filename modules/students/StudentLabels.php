@@ -41,66 +41,86 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 if ($_REQUEST['teacher'])
                     $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp WHERE st.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\') AS TEACHER';
                 if ($_REQUEST['room'])
-                    $extra['SELECT'] .= ',(SELECT r.TITLE AS ROOM  FROM course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\') AS ROOM';
+                    $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM  FROM course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\') AS ROOM';
             }
             else {
+
                 if ($_REQUEST['teacher'])
-                    $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp,school_periods p,schedule ss,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND st.STAFF_ID=cp.TEACHER_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS TEACHER';
+                    $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp,school_periods p,schedule ss,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND st.STAFF_ID=cp.TEACHER_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS TEACHER';
                 if ($_REQUEST['room'])
-                    $extra['SELECT'] .= ',(SELECT r.TITLE AS ROOM   FROM course_periods cp,school_periods p,schedule ss,course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND  cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS ROOM';
+                    $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM   FROM course_periods cp,school_periods p,schedule ss,course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND  cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS ROOM';
             }
         }
         else {
             if ($_REQUEST['teacher'])
                 $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp WHERE st.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\') AS TEACHER';
             if ($_REQUEST['room'])
-                $extra['SELECT'] .= ',(SELECT r.TITLE AS ROOM FROM course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\') AS ROOM';
+                $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM FROM course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\') AS ROOM';
         }
         $RET = GetStuList($extra);
+        $school_wise = array();
+        foreach ($RET as $ri => $rd) {
+            $school_wise[$rd['SCHOOL_ID']][] = $rd;
+        }
 
-        if (count($RET)) {
-            $skipRET = array();
-            for ($i = ($_REQUEST['start_row'] - 1) * $max_cols + $_REQUEST['start_col']; $i > 1; $i--)
-                $skipRET[-$i] = array('LAST_NAME' => ' ');
+        if (count($school_wise)) {
+            foreach ($school_wise as $si => $sd) {
+//			$skipRET = array();
+//			for($i=($_REQUEST['start_row']-1)*$max_cols+$_REQUEST['start_col']; $i>1; $i--)
+//				$skipRET[-$i] = array('LAST_NAME'=>' ');
+//                        print_r($sd);echo '<br><br>';
+                $handle = PDFstart();
 
             $handle = PDFstart();
 
+                $cols = 0;
+                $rows = 0;
 
-            $cols = 0;
-            $rows = 0;
-
-            echo "<table width=100%  border=0 style=\" font-family:Arial; font-size:12px;\" >";
-            echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Labels</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
-            echo '<table width="100%" border="0" cellspacing="0" cellpadding="0" style=font-family:Arial; font-size:12px;>';
-            foreach ($skipRET + $RET as $i => $student) {
-                if ($cols < 1)
+                echo "<table width=100%  border=0 style=\" font-family:Arial; font-size:12px;\" >";
+                echo "<tr><td width=105>" . DrawLogoParam($si) . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(($si != '' ? $si : UserSchool())) . "<div style=\"font-size:12px;\">Student Labels</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo '<table width="100%" border="0" cellspacing="0" cellpadding="0" style=font-family:Arial; font-size:12px;>';
+                foreach ($sd as $i => $student) {
+                    if ($cols < 1)
+                        echo '<tr>';
+                    echo '<td width="33.3%" height="86" align="center" valign="middle">';
+                    echo '<table border=0 align=center>';
                     echo '<tr>';
-                echo '<td width="33.3%" height="86" align="center" valign="middle">';
-                echo '<table border=0 align=center>';
-                echo '<tr>';
-                echo '<td align=center>' . $student['NICK_NAME'] . ' ' . $student['LAST_NAME'] . '</td></tr>';
-                if ($_REQUEST['teacher']) {
-                    echo '<tr><td align=center>Teacher :';
-                    echo '' . $student['TEACHER'] . '</td></tr>';
-                }
-                if ($_REQUEST['room']) {
-                    echo '<tr><td align=center>Room No :';
-                    echo '' . $student['ROOM'] . '</td></tr>';
-                }
-                echo '</table>';
+                    echo '<td align=center>' . $student['NICK_NAME'] . ' ' . $student['LAST_NAME'] . '</td></tr>';
+                    if ($_REQUEST['teacher']) {
+                        echo '<tr><td align=center>Teacher :';
+                        echo '' . $student['TEACHER'] . '</td></tr>';
+                    }
+                    if ($_REQUEST['room']) {
+                        echo '<tr><td align=center>Room No :';
+                        echo '' . $student['ROOM'] . '</td></tr>';
+                    }
+                    echo '</table>';
 
-                $cols++;
+                    $cols++;
 
-                if ($cols == $max_cols) {
-                    echo '</tr>';
-                    $rows++;
-                    $cols = 0;
+                    if ($cols == $max_cols) {
+                        echo '</tr>';
+                        $rows++;
+                        $cols = 0;
+                    }
+
+                    if ($rows == $max_rows) {
+                        echo '</table><div style="page-break-before: always;">&nbsp;</div>';
+                        echo '<table width="100%"  border="0" cellspacing="0" cellpadding="0">';
+                        $rows = 0;
+                    }
                 }
 
-                if ($rows == $max_rows) {
-                    echo '</table><div style="page-break-before: always;">&nbsp;</div>';
-                    echo '<table width="100%"  border="0" cellspacing="0" cellpadding="0">';
-                    $rows = 0;
+                if ($cols == 0 && $rows == 0) {
+                    
+                } else {
+                    while ($cols != 0 && $cols < $max_cols) {
+                        echo '<td width="33.3%" height="86" align="center" valign="middle">&nbsp;</td>';
+                        $cols++;
+                    }
+                    if ($cols == $max_cols)
+                        echo '</tr>';
+                    echo '</table>';
                 }
             }
 
@@ -135,15 +155,15 @@ if (!$_REQUEST['modfunc']) {
         if (User('PROFILE') == 'admin') {
             if ($_REQUEST['w_course_period_id_which'] == 'course_period' && $_REQUEST['w_course_period_id']) {
                 $course_RET = DBGet(DBQuery('SELECT CONCAT(s.FIRST_NAME,' . ' ' . ',s.LAST_NAME) AS TEACHER,r.TITLE AS ROOM FROM staff s,course_periods cp,course_period_var cpv,rooms r WHERE r.ROOM_ID=cpv.ROOM_ID AND s.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\''));
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=teacher value=Y>Teacher (' . $course_RET[1]['TEACHER'] . ')</label>';
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=room value=Y>Room (' . $course_RET[1]['ROOM'] . ')</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Teacher (' . $course_RET[1]['TEACHER'] . ')</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Room (' . $course_RET[1]['ROOM'] . ')</label>';
             } else {
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=teacher value=Y>Attendance Teacher</label>';
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=room value=Y>Attendance Room</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Attendance Teacher</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Attendance Room</label>';
             }
         } else {
-            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=teacher value=Y>Teacher</label>';
-            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=room value=Y>Room</label>';
+            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Teacher</label>';
+            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Room</label>';
         }
         //$extra['extra_header_left'] .= '</div>';
 
@@ -188,6 +208,42 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
         echo "</FORM>";
     }
+    
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 }
 
 function _makeChooseCheckbox($value, $title) {

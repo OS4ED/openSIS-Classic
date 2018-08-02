@@ -337,7 +337,7 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
             <div id="Date"></div>
         </div>
         <section class="section-forgot-password">
-            <div class="login-wrapper">
+            <div class="login-wrapper clearfix">
 
                 <div class="panel">
 
@@ -416,8 +416,10 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                                             <label>I am a</label>
                                             <div class="radio styled-radio">
                                                 <label onclick="uname_show_fields('student')"><input type="radio" name="uname_user_type" id="uname_student" value="uname_student" checked="checked" /><span></span>Student</label>
-                                                <label onclick="uname_show_fields('staff'); forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span>Staff</label>
-                                                <label onclick="uname_show_fields('parent'); forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_parent" value="uname_parent" /><span></span>Parent</label>
+                                                <label onclick="uname_show_fields('staff');
+                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span>Staff</label>
+                                                <label onclick="uname_show_fields('parent');
+                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_parent" value="uname_parent" /><span></span>Parent</label>
                                             </div>                                            
                                             <input type="hidden" name="user_type_form" id="user_type_form" value="username" disabled="disabled"/>                                            
 
@@ -429,7 +431,7 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                                             <input type="password" name="pass" id="pass" class="form-control" placeholder="Password" />
                                         </div>
                                         <div class="form-group" id="uname_stu_dob">
-                                            <?php echo DateInputAY('', 'username_dob', 2, 'Date of Birth') ?>
+<?php echo DateInputAY('', 'username_dob', 2, 'Date of Birth') ?>
                                         </div>                                        
                                         <div class="form-group" id="uname_stf_email" style="display: none">
                                             <input type="hidden" name="un_email" id="un_email" value=""/>
@@ -451,13 +453,12 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                             </form>
                         </div>
                     </div>
-                    <div class="panel-footer">
-                        <p class="info-text"><?php echo $log_msg[1]['MESSAGE']; ?></p>
-                    </div>
+                    <!--                    <div class="panel-footer">
+                                            <p class="info-text"><?php echo $log_msg[1]['MESSAGE']; ?></p>
+                                        </div>-->
                 </div>
                 <footer>
-                    openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4Ed</a>).
-                    and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL License</a>.
+                    openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
                 </footer>
             </div>
         </section>

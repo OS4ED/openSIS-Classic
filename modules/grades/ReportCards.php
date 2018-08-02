@@ -130,7 +130,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             //start of report card print
 
             $handle = PDFStart();
-
+            $total_stu = 1;
             if (!isset($_REQUEST['elements']['percents']) || (isset($_REQUEST['elements']['percents']) && $_REQUEST['elements']['percents'] == 'Y')) {
                 foreach ($RET as $student_id => $course_periods) {
 
@@ -151,16 +151,27 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $grades_RET[$i]['TEACHER_ID'] = $mps[key($mps)][1]['TEACHER_ID'];
                             $grades_RET[$i]['CGPA'] = round($mps[key($mps)][1]['UNWEIGHTED_GPA'], 3);
                             if ($mps[key($mps)][1]['WEIGHTED_GP'] && $mps[key($mps)][1]['COURSE_WEIGHT']) {
+                                if (substr(key($mps), 0, 1) == 'E')
+                                    $mpkey = substr(key($mps), 1);
+                                else
+                                    $mpkey = key($mps);
                                 $total_grade_point += ($mps[key($mps)][1]['WEIGHTED_GP'] * $mps[key($mps)][1]['CREDIT_ATTEMPTED'] );
                                 $Total_Credit_Hr_Attempted += $mps[key($mps)][1]['CREDIT_ATTEMPTED'];
-                            } elseif ($mps[key($mps)][1]['UNWEIGHTED_GP']) {
+                            }
+                            elseif ($mps[key($mps)][1]['UNWEIGHTED_GP']) {
+                                if (substr(key($mps), 0, 1) == 'E')
+                                    $mpkey = substr(key($mps), 1);
+                                else
+                                    $mpkey = key($mps);
                                 $total_grade_point += ($mps[key($mps)][1]['UNWEIGHTED_GP'] * $mps[key($mps)][1]['CREDIT_ATTEMPTED'] );
                                 $Total_Credit_Hr_Attempted += $mps[key($mps)][1]['CREDIT_ATTEMPTED'];
                             }
 
                             if ($_REQUEST['elements']['gpa'] == 'Y')
-                                $grades_RET[$i]['GPA'] = sprintf("%01.3f", ($total_grade_point / $Total_Credit_Hr_Attempted));
+                                $grades_RET[$i]['GPA'] = ($Total_Credit_Hr_Attempted != 0 && $total_grade_point != 0 ? sprintf("%01.3f", ($total_grade_point / $Total_Credit_Hr_Attempted)) : 0);
                             $total_grade_point = 0;
+                            $To_Credit_Hr_Attempted += $Total_Credit_Hr_Attempted;
+                            $to_Credit_hr_attempt[$student_id] = $To_Credit_Hr_Attempted;
                             $Total_Credit_Hr_Attempted = 0;
 
                             foreach ($_REQUEST['mp_arr'] as $mp) {
@@ -170,9 +181,25 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                                     $dbf = DBGet(DBQuery('SELECT DOES_BREAKOFF,GRADE_SCALE_ID,TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\''));
-                                    $rounding = DBGet(DBQuery('SELECT VALUE FROM program_user_config WHERE USER_ID=\'' . $dbf[1]['TEACHER_ID'] . '\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' '));
-                                    if (count($rounding))
-                                        $_SESSION['ROUNDING'] = $rounding[1]['VALUE'];
+                                    $rounding = DBGet(DBQuery('SELECT VALUE FROM program_user_config WHERE USER_ID=\'' . $dbf[1]['TEACHER_ID'] . '\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . $course_period_id . '\''));
+//                                               if(count($config_RET))
+//			foreach($config_RET as $title=>$value)
+//                        {
+//                                $unused_var=explode('_',$value[1]['VALUE']);
+//                                $programconfig[$staff_id][$title] =$unused_var[0];
+////				$programconfig[$staff_id][$title] = rtrim($value[1]['VALUE'],'_'.$course_period_id);
+//                        }
+//		else
+//			$programconfig[$staff_id] = true;
+
+
+                                    if (count($rounding)) {
+                                        $unused_var = explode('_', $rounding[1]['VALUE']);
+
+
+                                        $_SESSION['ROUNDING'] = $unused_var[0];
+                                    }
+                                    //$_SESSION['ROUNDING']=rtrim($rounding[1]['VALUE'],'_'.UserCoursePeriod());
                                     else
                                         $_SESSION['ROUNDING'] = '';
                                     if ($_SESSION['ROUNDING'] == 'UP')
@@ -183,11 +210,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         $mps[$mp][1]['GRADE_PERCENT'] = round($mps[$mp][1]['GRADE_PERCENT']);
                                     if ($dbf[1]['DOES_BREAKOFF'] == 'Y' && $mps[$mp][1]['GRADE_PERCENT'] !== '' && $mps[$mp][1]['GRADE_PERCENT'] !== NULL) {
                                         $tc_grade = 'n';
-                                        $get_details = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE TITLE LIKE \'' . $course_period_id . '-%' . '\' AND USER_ID=\'' . $grades_RET[$i]['TEACHER_ID'] . '\' AND PROGRAM=\'Gradebook\' ORDER BY VALUE DESC '));
+                                        $get_details = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE TITLE LIKE \'' . $course_period_id . '-%' . '\' AND USER_ID=\'' . $grades_RET[$i]['TEACHER_ID'] . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\' ORDER BY VALUE DESC '));
                                         if (count($get_details)) {
                                             unset($id_mod);
                                             foreach ($get_details as $i_mod => $d_mod) {
-                                                if ($mps[$mp][1]['GRADE_PERCENT'] >= $d_mod['VALUE'] && !isset($id_mod)) {
+                                                $unused_var = explode('_', $d_mod['VALUE']);
+                                                if ($mps[$mp][1]['GRADE_PERCENT'] >= $unused_var[0] && !isset($id_mod)) {
                                                     $id_mod = $i_mod;
                                                 }
                                             }
@@ -205,8 +233,19 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     }
 
                                     if ($_REQUEST['elements']['percents'] == 'Y' && $mps[$mp][1]['GRADE_PERCENT'] > 0) {
-                                        if ($mps[$mp][1]['GRADE_PERCENT'] != NULl)
+
+                                        if ($mps[$mp][1]['GRADE_PERCENT'] != NULl) {
+
+
+//                                                        if($_SESSION['ROUNDING']=='UP')
+//                                                            $mps[$mp][1]['GRADE_PERCENT'] = ceil($mps[$mp][1]['GRADE_PERCENT']);
+//                                                    elseif($_SESSION['ROUNDING']=='DOWN')
+//                                                            $mps[$mp][1]['GRADE_PERCENT'] = floor($mps[$mp][1]['GRADE_PERCENT']);
+//                                                    elseif($_SESSION['ROUNDING']=='NORMAL')
+//                                                            $mps[$mp][1]['GRADE_PERCENT'] = round($mps[$mp][1]['GRADE_PERCENT']);
                                             $grades_RET[$i][$mp] .= '<br>' . $mps[$mp][1]['GRADE_PERCENT'] . '%';
+                                        }
+
 //                                                
                                     }
                                     $last_mp = $mp;
@@ -249,9 +288,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $picture_c_jpg = $StudentPicturesPath . $mps[key($mps)][1]['STUDENT_ID'] . '.JPG';
                                 $picture_l_jpg = $StudentPicturesPath . $mps[key($mps)][1]['STUDENT_ID'] . '.jpg';
                                 if (file_exists($picture_c_jpg) || file_exists($picture_l_jpg))
-                                    echo '<tr><td><IMG SRC="' . $picture_c_jpg . '" width=150 class=pic></td></tr>';
+                                    echo '<tr><td><IMG SRC="' . $picture_c_jpg . '" width=100 class=pic></td></tr>';
                                 else
-                                    echo '<tr><td><IMG src="assets/noimage.jpg" width=150 class=pic></td></tr>';
+                                    echo '<tr><td><IMG src="assets/noimage.jpg" width=100 class=pic></td></tr>';
                             }
                             echo '<tr><td>Student Name :</td>';
                             echo '<td>' . $mps[key($mps)][1]['FULL_NAME'] . '</td></tr>';
@@ -342,9 +381,11 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 echo '<table width="100%"><tr><td style="font-style:italic; font-size:12px;"></td></tr></table>';
                             } echo '<br/><br/>';
                             if (!$_REQUEST['elements']['grade_type']) {
-                                echo '<span style="font-size:13px; font-weight:bold;"></span>';
-                                echo '<!-- NEW PAGE -->';
-                                echo "<div style=\"page-break-before: always;\"></div>";
+                                if ($total_stu < count($RET)) {
+                                    echo '<span style="font-size:13px; font-weight:bold;"></span>';
+                                    echo '<!-- NEW PAGE -->';
+                                    echo "<div style=\"page-break-before: always;\"></div>";
+                                }
                             }
                         }
                     }
@@ -468,13 +509,55 @@ if (!$_REQUEST['modfunc']) {
         echo "</FORM>";
     }
 }
+$modal_flag=1;
+if($_REQUEST['modname']=='grades/ReportCards.php' && $_REQUEST['modfunc']=='save')
+$modal_flag=0;
+if($modal_flag==1)
+{
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h5 class="modal-title">Choose course</h5>
+    </div>
+
+    <div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+    foreach($subjects_RET as $val)
+    {
+    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    }
+    echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
+}
 
 function _makeChooseCheckbox($value, $title) {
     return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
 }
 
 function _makeTeacher($teacher, $column) {
-    $TEACHER_NAME = DBGet(DBQuery("SELECT concat(first_name,' ',last_name) as name from staff where staff_id=$teacher and current_school_id=" . UserSchool()));
+
+    $TEACHER_NAME = DBGet(DBQuery("SELECT concat(first_name,' ',last_name) as name from staff where staff_id=$teacher"));
 
     return $TEACHER_NAME[1]['NAME'];
 }

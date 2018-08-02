@@ -64,7 +64,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     $sys_pref = $sys_pref[1];
 
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
 
     if ($sys_pref == '') {
         echo "<FORM name=sys_pref id=sys_pref class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&action=insert&page_display=SystemPreference method=POST>";
@@ -205,28 +205,28 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     }
 } else if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'INACTIVITY') {
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'User Inactivity Days');
     include("UserActivityDays.php");
     PopTable('footer');
     echo '</div></div>';
 } else if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'FAILURE') {
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Login Failure Allowance');
     include("FailureCount.php");
     PopTable('footer');
     echo '</div></div>';
 } else if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CURRENCY') {
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Currency');
     include("SetCurrency.php");
     PopTable('footer');
     echo '</div></div>';
 } else if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CLASSRANK') {
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Class Rank');
 
     if ($_REQUEST['modfunc'] == 'update') {
@@ -247,7 +247,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=CLASSRANK method=POST>";
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($rank['VALUE'], 'display_rank', 'Display Class Rank?') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($rank['VALUE'], 'display_rank', 'Display Class Rank?', '', false, 'Yes','No','','switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<hr />';
@@ -262,7 +262,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     echo '</div></div>';
 } else if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'UPDATENOTIFY') {
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Display Notifications');
 
     if ($_REQUEST['modfunc'] == 'update') {
@@ -295,11 +295,11 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     echo "<FORM name=failure id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=UPDATENOTIFY method=POST>";
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET['VALUE'], 'display_notify', 'Notify when latest version is available?') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET['VALUE'], 'display_notify', 'Notify when latest version is available?', '', false, 'Yes','No','','switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET_school['VALUE'], 'display_school_notify', 'Notify when school setup is incomplete?') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET_school['VALUE'], 'display_school_notify', 'Notify when school setup is incomplete?', '', false, 'Yes','No','','switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<hr />';
@@ -315,7 +315,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 } else {
 
 
-    echo '<div class="row"><div class="col-md-4 col-md-offset-4">';
+    echo '<div class="row"><div class="col-md-6 col-md-offset-3">';
     echo '<div class="panel panel-white">';
     echo '<div class="panel-heading"><h5 class="panel-title">System Preference</h5></div>';
     echo '<table class="table">';

@@ -42,20 +42,27 @@ if ($_REQUEST['search_modfunc'] == 'list') {
         $_REQUEST['mp'] = GetParentMP('SEM', UserMP());
 
     $sem = GetParentMP('SEM', UserMP());
-    $pro = GetChildrenMP('PRO', UserMP());
-    $pros = explode(',', str_replace("'", '', $pro));
+    if ($sem)
+        $fy = GetParentMP('FY', $sem);
+    else
+        $fy = GetParentMP('FY', UserMP());
+//	$pro = GetChildrenMP('PRO',UserMP());
+//	$pros = explode(',',str_replace("'",'',$pro));
     $pro_grading = false;
     $pro_select = '';
-    foreach ($pros as $pro) {
-        if (GetMP($pro, 'POST_START_DATE')) {
-            if (!$_REQUEST['mp']) {
-                $_REQUEST['mp'] = $pro;
-                $current_RET = DBGet(DBQuery('SELECT g.STUDENT_ID,g.REPORT_CARD_GRADE_ID,g.REPORT_CARD_COMMENT_ID,g.COMMENT FROM student_report_card_grades g,course_periods cp WHERE cp.COURSE_PERIOD_ID=g.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=' . $course_period_id . ' AND g.MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\''), array(), array('STUDENT_ID'));
-            }
-            $pro_grading = true;
-            $pro_select .= "<OPTION value=" . $pro . (($pro == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($pro) . "</OPTION><OPTION value=" . $sem . (('E' . $sem == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($sem) . ' Exam</OPTION>';
-        }
-    }
+//	foreach($pros as $pro)
+//	{
+//		if(GetMP($pro,'POST_START_DATE'))
+//		{
+//			if(!$_REQUEST['mp'])
+//			{
+//				$_REQUEST['mp'] = $pro;
+//				$current_RET = DBGet(DBQuery('SELECT g.STUDENT_ID,g.REPORT_CARD_GRADE_ID,g.REPORT_CARD_COMMENT_ID,g.COMMENT FROM student_report_card_grades g,course_periods cp WHERE cp.COURSE_PERIOD_ID=g.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID='.$course_period_id.' AND g.MARKING_PERIOD_ID=\''.$_REQUEST['mp'].'\''),array(),array('STUDENT_ID'));
+//			}
+//			$pro_grading = true;
+//			$pro_select .= "<OPTION value=".$pro.(($pro==$_REQUEST['mp'])?' SELECTED':'').">".GetMP($pro)."</OPTION><OPTION value=".$sem.(('E'.$sem==$_REQUEST['mp'])?' SELECTED':'').">".GetMP($sem).' Exam</OPTION>';
+//		}
+//	}
     //bjj keeping search terms
     $PHP_tmp_SELF = PreparePHP_SELF();
 
@@ -69,19 +76,21 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 
     if (GetMP($sem, 'POST_START_DATE'))
         $mps_select .= "<OPTION value=" . $sem . (($sem == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($sem) . "</OPTION>";
-
+    if (GetMP($fy, 'DOES_GRADES') == 'Y')
+        $mps_select .= "<OPTION value=" . $fy . (($fy == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($fy) . "</OPTION>";
     if ($pro_grading)
         $mps_select .= $pro_select;
 
     $mps_select .= '</SELECT></div></div>';
     echo '<div class="panel">';
-    echo '<div class="panel-heading"><h6 class="panel-title">'.$mps_select.'</h6></div>';
+    echo '<div class="panel-heading"><h6 class="panel-title">' . $mps_select . '</h6></div>';
     echo '</div>';
 }
 
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
+
 Widgets('letter_grade');
 $extra['search'] .= '</div>'; //.well
 $extra['search'] .= '</div>'; //.col-lg-6
@@ -90,7 +99,41 @@ Widgets('course');
 $extra['search'] .= '</div>'; //.col-lg-6
 $extra['search'] .= '</div>'; //.row
 
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
 
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 
 
 if (!$_REQUEST['list_gpa']) {

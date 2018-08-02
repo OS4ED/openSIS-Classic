@@ -213,7 +213,7 @@ if (!$_REQUEST['modfunc']) {
     Search('student_id', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<BR><CENTER><INPUT type=submit value=\'Create Progress Reports for Selected Students\'  class="btn btn-primary"></CENTER>';
+            echo '<BR><div class="text-center"><INPUT type=submit value=\'Create Progress Reports for Selected Students\'  class="btn btn-primary"></div>';
         echo "</FORM>";
     }
 }

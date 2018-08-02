@@ -32,7 +32,7 @@ DrawBC("Attendance > ".ProgramTitle());
 if($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'])
 {
 $start_date = $_REQUEST['year_start'].'-'.$_REQUEST['month_start'].'-'.$_REQUEST['day_start'];
-//$start_date=ProperDateMAvr($start_date);
+$start_date=ProperDateMAvr($start_date);
 }
 else
 {
@@ -41,7 +41,7 @@ $start_date =date('Y-m').'-01';
 if($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end'])
 {
 $end_date = $_REQUEST['year_end'].'-'.$_REQUEST['month_end'].'-'.$_REQUEST['day_end'];
-//$end_date=ProperDateMAvr($end_date);
+$end_date=ProperDateMAvr($end_date);
 }
 else
 {
@@ -51,8 +51,8 @@ if($_REQUEST['modfunc']=='search')
 {
     echo '<BR>';
 	PopTable('header','Advanced');
-	echo "<FORM name=percentform action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&list_by_day=".strip_tags(trim($_REQUEST[list_by_day]))."&day_start=".strip_tags(trim($_REQUEST[day_start]))."&day_end=".strip_tags(trim($_REQUEST[day_end]))."&month_start=".strip_tags(trim($_REQUEST[month_start]))."&month_end=".strip_tags(trim($_REQUEST[month_end]))."&year_start=".strip_tags(trim($_REQUEST[year_start]))."&year_end=".strip_tags(trim($_REQUEST[year_end]))." method=POST>";
-	echo '<TABLE>';
+	echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&list_by_day=".strip_tags(trim($_REQUEST[list_by_day]))."&day_start=".strip_tags(trim($_REQUEST[day_start]))."&day_end=".strip_tags(trim($_REQUEST[day_end]))."&month_start=".strip_tags(trim($_REQUEST[month_start]))."&month_end=".strip_tags(trim($_REQUEST[month_end]))."&year_start=".strip_tags(trim($_REQUEST[year_start]))."&year_end=".strip_tags(trim($_REQUEST[year_end]))." method=POST>";
+	//echo '<TABLE>';
 	
 
 	Search('general_info',$extra['grades']);
@@ -63,10 +63,10 @@ if($_REQUEST['modfunc']=='search')
 		echo $extra['search'];
 	Search('student_fields',is_array($extra['student_fields'])?$extra['student_fields']:array());
 	if(User('PROFILE')=='admin')
-		echo '<CENTER><INPUT type=checkbox name=_search_all_schools value=Y'.(Preferences('DEFAULT_ALL_SCHOOLS')=='Y'?' CHECKED':'').'><font color=black>Search All Schools</font></CENTER><BR>';
-	echo '<CENTER>'.Buttons('Submit').'</CENTER>';
+		echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y'.(Preferences('DEFAULT_ALL_SCHOOLS')=='Y'?' CHECKED':'').'><span></span>Search All Schools</label></div></div>';
+	$btn = '<div class="p-l-20">'.Buttons('Submit').'</div>';
 	echo '</FORM>';
-	PopTable('footer');
+	PopTable('footer',$btn);
 }
 if(!$_REQUEST['modfunc'])
 {
@@ -79,14 +79,14 @@ if(!$_REQUEST['modfunc'])
 	$extra['WHERE'] .= CustomFields('where');
 
     echo '<div class="panel panel-default">';
-    echo '<div class="panel-body">';
-    echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
+    echo '<div class="panel-heading">';
+    echo "<FORM class=\"form-horizontal clearfix m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
 
-    $advanced_link = "<A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"fa fa-align-left\"></i> Advanced</A>";
+    $advanced_link = "<A class=text-pink HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> Advanced</A>";
     ///////////////////////Old Date Picker///////////////////////////////
 
     ///////////////////////New Date Picker///////////////////////////////
-    echo '<div class="form-inline"><div class="col-md-12">'.DateInputAY($start_date, 'start', 1) .' &nbsp; &nbsp; - ' . DateInputAY($end_date, 'end', 2) . ' <label class="checkbox-inline"><input type="checkbox" value="Y" name="all_school" id="all_school" /> All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12">'.DateInputAY($start_date, 'start', 1) .' &nbsp; &nbsp; - &nbsp; &nbsp; ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
     echo '</FORM>';
     echo '</div>';
 

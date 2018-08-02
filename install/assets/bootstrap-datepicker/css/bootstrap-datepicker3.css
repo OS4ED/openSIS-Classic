@@ -86,6 +86,7 @@
   height: 30px;
   border-radius: 4px;
   border: none;
+  padding: 8px;
 }
 .table-striped .datepicker table tr td,
 .table-striped .datepicker table tr th {

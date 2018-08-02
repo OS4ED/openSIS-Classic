@@ -31,6 +31,33 @@ include("UploadClassFnc.php");
 ini_set('memory_limit', '1200000000M');
 ini_set('max_execution_time', '500000');
 unset($flag);
+
+if ($_REQUEST['modfunc'] == 'clearall') {
+
+    if (DeletePromptParent('Parent')) {
+
+        $person_id = $_REQUEST['person_id'];
+        $student_id = UserStudentID();
+        $relation = $_REQUEST['relation'];
+        ;
+        $qr_ot_stu_asso = DBGet(DBQuery('select * from students_join_people where person_id=\'' . $person_id . '\' and student_id <>\'' . $student_id . '\''));
+        if (count($qr_ot_stu_asso) == 0) {
+
+            DBQuery('delete from people where staff_id=\'' . $person_id . '\'');
+            DBQuery('delete from  login_authentication where user_id=\'' . $person_id . '\' and profile_id=4');
+        }
+
+        DBQuery('delete from students_join_people where person_id=\'' . $person_id . '\' and student_id=\'' . $student_id . '\' and emergency_type=\'' . $relation . '\'');
+//        DBQuery('insert into people (current_school_id,profile,profile_id) values (1,\'parent\',4)');
+//        $pe_qr = DBGet(DBQuery("select max(staff_id) as pid from people"));
+//        $people_id=$pe_qr[1]['PID'];
+//        DBQuery('insert into students_join_people(student_id,person_id,relationship) values(\''.$student_id.'\',\''.$people_id.'\',\''.$relation.'\')');
+//        DBQuery('update student_address set people_id=\''.$people_id.'\' where student_id=\''.$student_id.'\' and type=\''.$relation.'\'' );
+// 
+        unset($_REQUEST['modfunc']);
+        echo "<script>window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3'</script>";
+    }
+}
 if ($_REQUEST['student_enable'] == 'N' && $_REQUEST['student_id'] != 'new') {
     DBQuery('UPDATE students SET IS_DISABLE=NULL WHERE student_id=' . $_REQUEST['student_id']);
 }
@@ -67,10 +94,7 @@ if ($_REQUEST[address_error]) {
 
 if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '') {
     $months_arr = array("JAN" => "01", "FEB" => "02", "MAR" => "03", "APR" => "04", "MAY" => "05", "JUN" => "06", "JUL" => "07", "AUG" => "08", "SEP" => "09", "OCT" => "10", "NOV" => "11", "DEC" => "12");
-    //$s_date = $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] . '-' . $months_arr[strtoupper($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'])] . '-' . $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'];
-    //$s_date = date("Y-m-d", strtotime($s_date));
-
-    $s_date = $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] . '-' . $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'];
+    $s_date = $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] . '-' . $months_arr[$_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']] . '-' . $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'];
 
     if ($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID'] != '') {
         $cal_id = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID'];
@@ -82,34 +106,39 @@ if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['ST
 
     $get_c_dates = DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE,MAX(SCHOOL_DATE) as END_DATE FROM attendance_calendar WHERE CALENDAR_ID=' . $cal_id . ' AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
     if (count($get_c_dates) > 0) {
-        if ($get_c_dates[1]['START_DATE'] > $s_date) {
-            echo $s_date;
-            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
-            $err = 'Start date cannot be before calendar\'s start date';
-        } elseif ($get_c_dates[1]['END_DATE'] < $s_date) {
-            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
-            $err = 'Start date cannot be after calendar\'s end date';
-        } else {
-            $get_sch = DBGet(DBQuery('SELECT * FROM schedule WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND (END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') ORDER BY START_DATE ASC '));
-            if (count($get_sch) > 0) {
-                foreach ($get_sch as $gsi => $gsd) {
-                    if (strtotime($s_date) > strtotime($gsd['START_DATE'])) {
-                        unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                        unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                        unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                        unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
-                        $err = 'Cannot change start date as student has association from ' . date('F j, Y', strtotime($gsd['START_DATE']));
-                        break;
-                    }
+//        if($get_c_dates[1]['START_DATE']>$s_date)
+//        {
+//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+//            $err='Start date cannot be before calendar\'s start date';
+//        }
+//        elseif($get_c_dates[1]['END_DATE']<$s_date)
+//        if($get_c_dates[1]['END_DATE']<$s_date)
+//        {
+//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+//            $err='Start date cannot be after calendar\'s end date';
+//        }
+//        else
+//        {
+        $get_sch = DBGet(DBQuery('SELECT * FROM schedule WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND (END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') ORDER BY START_DATE ASC '));
+        if (count($get_sch) > 0) {
+            foreach ($get_sch as $gsi => $gsd) {
+                if (strtotime($s_date) > strtotime($gsd['START_DATE'])) {
+                    unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+                    unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+                    unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
+                    unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+                    $err = 'Cannot change start date as student has association from ' . date('F j, Y', strtotime($gsd['START_DATE']));
+                    break;
                 }
             }
         }
+//        }
     }
 
     if ($err != '')
@@ -262,7 +291,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
     if ($_REQUEST['err_msg'] == true)
         echo "<center><font color=red><b>Birthdate is invalid, data could not be saved.</b><font></center>";
     if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
-        if ($_POST['button'] == 'Save' && AllowEdit()) {
+        if ($_POST['button'] == 'Save') { #&& AllowEdit()
 
             if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
                 $drop_code = $_REQUEST['drop_code'];
@@ -390,247 +419,246 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
         }
     } elseif (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'lookup') {
         if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
-            if ($_REQUEST['button'] == 'Find' || $_REQUEST['nfunc'] == 'status') {
+          
+            if ($_REQUEST['button'] == 'Find' ) {
                 if ($_REQUEST['nfunc'] == 'status') {
-                    if ($_REQUEST['button'] == 'Select') {
-                        $sel_staff = $_REQUEST['staff'];
-                        $people_info = DBGet(DBQuery('SELECT * FROM people WHERE STAFF_ID=' . $sel_staff));
-                        $people_info = $people_info[1];
-                        foreach ($people_info as $pi => $pd)
-                            $people_info[$pi] = str_replace("'", "\'", $pd);
-                        unset($pi);
-                        unset($pd);
-                        $parent_type = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE PERSON_ID=' . $sel_staff));
-                        $parent_type = $parent_type[1]['RELATIONSHIP'];
-                        $options_RET = DBGet(DBQuery('SELECT DISTINCT RELATIONSHIP FROM students_join_people'));
-
-                        $relation_options = array('Father' => 'Father', 'Mother' => 'Mother', 'Step Mother' => 'Step Mother', 'Step Father' => 'Step Father', 'Grandmother' => 'Grandmother', 'Grandfather' => 'Grandfather', 'Legal Guardian' => 'Legal Guardian', 'Other Family Member' => 'Other Family Member', '---' => '---');
-                        foreach ($options_RET as $k => $v) {
-                            if ($v['RELATIONSHIP'] == $parent_type)
-                                if ($k == 1)
-                                    $key = $k;
-                                else
-                                    $key = $k - 1;
-                        }
-
-                        $options['---'] = '---';
-                        foreach ($relation_options as $k => $v) {
-                            if ($v == $parent_type)
-                                $option.='<option selected>' . $v . '</option>';
-                            else {
-                                $option.='<option>' . $v . '</option>';
-                            }
-                        }
-
-                        $parent_prof_options_arr = DBGet(DBQuery('SELECT id,profile,title FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
-
-                        foreach ($parent_prof_options_arr as $i => $j) {
-                            $s_user_profs_ids_arr[] = $parent_prof_options_arr[$i]['ID'];
-                        }
-
-                        $s_user_profs_id = implode(',', $s_user_profs_ids_arr);
-
-                        $people_address = DBGet(DBQuery('SELECT * FROM student_address WHERE PEOPLE_ID=' . $sel_staff));
-                        $people_address = $people_address[1];
-                        foreach ($people_address as $pi => $pd)
-                            $people_address[$pi] = str_replace("'", "\'", $pd);
-                        unset($pi);
-                        unset($pd);
-                        $people_loginfo = DBGet(DBQuery('SELECT * FROM login_authentication WHERE USER_ID=' . $sel_staff . ' AND PROFILE_ID in (' . $s_user_profs_id . ')'));
-                        $people_loginfo = $people_loginfo[1];
-
-                        $parent_prof_options['---'] = '---';
-                        foreach ($parent_prof_options_arr as $pnm_arr) {
-                            if ($people_loginfo['PROFILE_ID'] == $pnm_arr['ID'])
-                                $parent_prof_options.='<option selected value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
-                            else
-                                $parent_prof_options.='<option value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
-                        }
-
-
-                        $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM  students_join_people WHERE UPPER(EMERGENCY_TYPE)=\'' . strtoupper($_REQUEST['type']) . '\' AND STUDENT_ID=' . $_REQUEST['student_id']));
-                        if ($check_rec[1]['REC_EX'] == 0)
-                            $_REQUEST['address_id'] = 'new';
-                        if ($_REQUEST['type'] == 'primary') {
-                            if ($people_loginfo['USERNAME'] != '') {
-                                if ($_REQUEST['address_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_1\').style.display=\'block\';opener.document.getElementById(\'portal_1\').checked=true;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'pri_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
-                                else {
-
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME] name=values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] name=values[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_1\').style.display=\'block\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_1\'); if(portal!=null) { opener.document.getElementById(\'portal_1\').checked=true;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
-                                    . 'var pwd=opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); '
-                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
-                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                                    . 'opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else {opener.document.getElementById(\'uname1\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd1\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
-                                }
-                            } else {
-                                if ($_REQUEST['address_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_1\').checked=false;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\';opener.document.getElementById(\'portal_div_1\').style.display=\'none\';</script>';
-                                else {
-
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME]  name = values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE]  class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_1\'); if(portal!=null) { opener.document.getElementById(\'portal_1\').checked=false;'
-                                    . 'opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';'
-                                    . 'opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\'; opener.document.getElementById(\'portal_div_1\').style.display=\'none\';} else { var chk1=opener.document.getElementById(\'checked_1\');  if(chk1!=null) chk1.innerHTML=\'<input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" /> \' ; 
-                                  var uname1=opener.document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
-                                  var pwd1=opener.document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';opener.document.getElementById(\'portal_div_1\').style.display=none;} </script>';
-                                }
-                            }
-                        } elseif ($_REQUEST['type'] == 'secondary') {
-                            if ($people_loginfo['USERNAME'] != '') {
-                                if ($_REQUEST['address_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'sec_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
-                                else {
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL] name= values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'var sec_email=opener.document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\');   sec_email.value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
-                                    . 'var pwd=opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); '
-                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
-                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                                    . 'opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else { opener.document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
-                                }
-                            } else {
-                                if ($_REQUEST['address_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';opener.document.getElementById(\'portal_2\').checked=false;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';</script>';
-                                else {
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT>\';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL]  name=values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=values[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'var sec_email=opener.document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\'); sec_email.value=\'' . $people_info['EMAIL'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=false;'
-                                    . 'opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';'
-                                    . 'opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
-                                  var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
-                                   var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';opener.document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
-                                }
-                            }
-                        } else {
-                            if ($people_loginfo['USERNAME'] != '') {
-
-                                if ($_REQUEST['add_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][OTHER][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';opener.document.getElementById(\'addn_hideShow\').style.display =\'block\';opener.document.getElementById(\'ron\').checked=true;opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';opener.document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';opener.document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'opener.document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'other_username\').value=\'' . $people_loginfo['USERNAME'] . '\';opener.document.getElementById(\'other_password\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';window.close();</script>';
-                                else {
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                                    . 'opener.document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                                    . 'opener.document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL] name= values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][OTHER][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][OTHER][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][OTHER][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
-                                    . 'var pwd=opener.document.getElementById(\'values[people][OTHER][PASSWORD]\'); '
-                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
-                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                                    . 'opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } else { opener.document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; }</script>';
-                                }
-                            } else {
-                                if ($_REQUEST['add_id'] == 'new')
-                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';opener.document.getElementById(\'portal_2\').checked=false;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\';opener.document.getElementById(\'addn_hideShow\').style.display =\'block\';opener.document.getElementById(\'ron\').checked=true;opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';opener.document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';opener.document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'opener.document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';window.close();</script>';
-                                else {
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT>\';'
-                                    . 'opener.document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                                    . 'opener.document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL]  name=values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=values[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
-                                    . 'var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ;'
-                                    . 'var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text id=values[people][OTHER][USER_NAME] class=cell_medium size=2 /> \' ;'
-                                    . 'var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=text id=values[people][OTHER][PASSWORD] class=cell_medium size=2  /> \' '
-                                    . '</script>';
-                                    echo '<SCRIPT language=javascript>'
-                                    . 'opener.document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
-                                    . 'opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
-                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][OTHER][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][OTHER][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][OTHER][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=false;'
-                                    . 'opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';'
-                                    . 'opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\'; opener.document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
-                                  var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][OTHER][USER_NAME] id=values[people][OTHER][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" size=2 /><div id="ajax_output_2"></div> \' ;
-                                   var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][OTHER][PASSWORD] id=values[people][OTHER][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"/><span id="passwordStrength2"></span> \';opener.document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
-                                }
-                            }
-                        }
-                        echo '<SCRIPT language=javascript>window.close();</script>';
-                    }
-                    if ($_REQUEST['button'] == 'Cancel') {
-                        echo '<SCRIPT language=javascript>window.close();</script>';
-                    }
+                  
+//                    if ($_REQUEST['button'] == 'Select') {
+//                        $sel_staff = $_REQUEST['staff'];
+//                        
+//                        $people_info = DBGet(DBQuery('SELECT * FROM people WHERE STAFF_ID=' . $sel_staff));
+//                        $people_info = $people_info[1];
+//                        foreach ($people_info as $pi => $pd)
+//                            $people_info[$pi] = str_replace("'", "\'", $pd);
+//                        unset($pi);
+//                        unset($pd);
+//                        $parent_type = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE PERSON_ID=' . $sel_staff));
+//                        $parent_type = $parent_type[1]['RELATIONSHIP'];
+//                        $options_RET = DBGet(DBQuery('SELECT DISTINCT RELATIONSHIP FROM students_join_people'));
+//
+//                        $relation_options = array('Father' => 'Father', 'Mother' => 'Mother', 'Step Mother' => 'Step Mother', 'Step Father' => 'Step Father', 'Grandmother' => 'Grandmother', 'Grandfather' => 'Grandfather', 'Legal Guardian' => 'Legal Guardian', 'Other Family Member' => 'Other Family Member', '---' => '---');
+//                        foreach ($options_RET as $k => $v) {
+//                            $key = $parent_type;
+//                        }
+//
+//                        $options['---'] = '---';
+//                        foreach ($relation_options as $k => $v) {
+//                            if ($v == $parent_type)
+//                                $option .= '<option selected>' . $v . '</option>';
+//                            else {
+//                                $option .= '<option>' . $v . '</option>';
+//                            }
+//                        }
+//
+//                        $parent_prof_options_arr = DBGet(DBQuery('SELECT id,profile,title FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
+//
+//                        foreach ($parent_prof_options_arr as $i => $j) {
+//                            $s_user_profs_ids_arr[] = $parent_prof_options_arr[$i]['ID'];
+//                        }
+//
+//                        $s_user_profs_id = implode(',', $s_user_profs_ids_arr);
+//
+//                        $people_address = DBGet(DBQuery('SELECT * FROM student_address WHERE PEOPLE_ID=' . $sel_staff));
+//                        $people_address = $people_address[1];
+//                        foreach ($people_address as $pi => $pd)
+//                            $people_address[$pi] = str_replace("'", "\'", $pd);
+//                        unset($pi);
+//                        unset($pd);
+//                        $people_loginfo = DBGet(DBQuery('SELECT * FROM login_authentication WHERE USER_ID=' . $sel_staff . ' AND PROFILE_ID in (' . $s_user_profs_id . ')'));
+//                        $people_loginfo = $people_loginfo[1];
+//
+//                        $parent_prof_options['---'] = '---';
+//                        foreach ($parent_prof_options_arr as $pnm_arr) {
+//                            if ($people_loginfo['PROFILE_ID'] == $pnm_arr['ID'])
+//                                $parent_prof_options .= '<option selected value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
+//                            else
+//                                $parent_prof_options .= '<option value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
+//                        }
+//
+//
+//                        $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM  students_join_people WHERE UPPER(EMERGENCY_TYPE)=\'' . strtoupper($_REQUEST['type']) . '\' AND STUDENT_ID=' . $_REQUEST['student_id']));
+//                        if ($check_rec[1]['REC_EX'] == 0)
+//                            $_REQUEST['address_id'] = 'new';
+//                        if ($_REQUEST['type'] == 'primary') {
+//                            if ($people_loginfo['USERNAME'] != '') {
+//                                if ($_REQUEST['address_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';opener.document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_1\').style.display=\'block\';opener.document.getElementById(\'portal_1\').checked=true;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'pri_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
+//                                else {
+//
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME] name=values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] name=values[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';' . 'opener.document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_1\').style.display=\'block\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_1\'); if(portal!=null) { opener.document.getElementById(\'portal_1\').checked=true;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
+//                                    . 'var pwd=opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); '
+//                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
+//                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
+//                                    . 'opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else {opener.document.getElementById(\'uname1\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd1\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
+//                                }
+//                            } else {
+//                                if ($_REQUEST['address_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';opener.document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_1\').checked=false;opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\';opener.document.getElementById(\'portal_div_1\').style.display=\'none\';</script>';
+//                                else {
+//
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME]  name = values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE]  class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';' . 'opener.document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_1\'); if(portal!=null) { opener.document.getElementById(\'portal_1\').checked=false;'
+//                                    . 'opener.document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';'
+//                                    . 'opener.document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\'; opener.document.getElementById(\'portal_div_1\').style.display=\'none\';} else { var chk1=opener.document.getElementById(\'checked_1\');  if(chk1!=null) chk1.innerHTML=\'<input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" /> \' ; 
+//                                  var uname1=opener.document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
+//                                  var pwd1=opener.document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';opener.document.getElementById(\'portal_div_1\').style.display=none;} </script>';
+//                                }
+//                            }
+//                        } elseif ($_REQUEST['type'] == 'secondary') {
+//                            if ($people_loginfo['USERNAME'] != '') {
+//                                if ($_REQUEST['address_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').value=\'' . $key . '\';opener.document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'sec_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
+//                                else {
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL] name= values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'opener.document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'var sec_email=opener.document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\');   sec_email.value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
+//                                    . 'var pwd=opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); '
+//                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
+//                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
+//                                    . 'opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else { opener.document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
+//                                }
+//                            } else {
+//                                if ($_REQUEST['address_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').value=\'' . $key . '\';opener.document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';opener.document.getElementById(\'portal_2\').checked=false;opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';</script>';
+//                                else {
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT>\';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL]  name=values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=values[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'opener.document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'var sec_email=opener.document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=opener.document.getElementById(\'values[people][SECONDARY][EMAIL]\'); sec_email.value=\'' . $people_info['EMAIL'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=false;'
+//                                    . 'opener.document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';'
+//                                    . 'opener.document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
+//                                  var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
+//                                   var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';opener.document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
+//                                }
+//                            }
+//                        } else {
+//                            if ($people_loginfo['USERNAME'] != '') {
+//
+//                                if ($_REQUEST['add_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').value=\'' . $key . '\';opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'hidden_other\').value=\'' . $sel_staff . '\';opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=opener.document.getElementById(\'values[people][OTHER][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';opener.document.getElementById(\'addn_hideShow\').style.display =\'block\';opener.document.getElementById(\'ron\').checked=true;opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';opener.document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';opener.document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'opener.document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'portal_div_2\').style.display=\'block\';opener.document.getElementById(\'other_username\').value=\'' . $people_loginfo['USERNAME'] . '\';opener.document.getElementById(\'other_password\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';window.close();</script>';
+//                                else {
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT> \';'
+//                                    . 'opener.document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+//                                    . 'opener.document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL] name= values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][OTHER][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][OTHER][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][OTHER][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'block\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=true;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
+//                                    . 'var pwd=opener.document.getElementById(\'values[people][OTHER][PASSWORD]\'); '
+//                                    . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
+//                                    . 'pwd.parentNode.replaceChild(pwd2,pwd);'
+//                                    . 'opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';opener.document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } else { opener.document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; opener.document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';opener.document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; }</script>';
+//                                }
+//                            } else {
+//                                if ($_REQUEST['add_id'] == 'new')
+//                                    echo '<SCRIPT language=javascript>opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';opener.document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';opener.document.getElementById(\'portal_div_2\').style.display=\'none\';opener.document.getElementById(\'portal_2\').checked=false;opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\';opener.document.getElementById(\'addn_hideShow\').style.display =\'block\';opener.document.getElementById(\'ron\').checked=true;opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';opener.document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';opener.document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';opener.document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'opener.document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'opener.document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';window.close();</script>';
+//                                else {
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT>\';'
+//                                    . 'opener.document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+//                                    . 'opener.document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+//                                    . 'opener.document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL]  name=values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+//                                    . 'var workphone=opener.document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var homephone=opener.document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var cellphone=opener.document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=values[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
+//                                    . 'var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ;'
+//                                    . 'var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text id=values[people][OTHER][USER_NAME] class=cell_medium size=2 /> \' ;'
+//                                    . 'var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=text id=values[people][OTHER][PASSWORD] class=cell_medium size=2  /> \' '
+//                                    . '</script>';
+//                                    echo '<SCRIPT language=javascript>'
+//                                    . 'opener.document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
+//                                    . 'opener.document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+//                                    . 'opener.document.getElementById(\'inputvalues[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
+//                                    . 'var home_phone=opener.document.getElementById(\'inputvalues[people][OTHER][HOME_PHONE]\'); if(home_phone==null) home_phone=opener.document.getElementById(\'values[people][OTHER][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+//                                    . 'var work_phone=opener.document.getElementById(\'inputvalues[people][OTHER][WORK_PHONE]\'); if(work_phone==null) work_phone=opener.document.getElementById(\'values[people][OTHER][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+//                                    . 'var cell_phone=opener.document.getElementById(\'inputvalues[people][OTHER][CELL_PHONE]\'); if(cell_phone==null) cell_phone=opener.document.getElementById(\'values[people][OTHER][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+//                                    . 'var portal=opener.document.getElementById(\'portal_2\'); if(portal!=null) { opener.document.getElementById(\'portal_2\').checked=false;'
+//                                    . 'opener.document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';'
+//                                    . 'opener.document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\'; opener.document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=opener.document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
+//                                  var uname2=opener.document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][OTHER][USER_NAME] id=values[people][OTHER][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" size=2 /><div id="ajax_output_2"></div> \' ;
+//                                   var pwd2=opener.document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][OTHER][PASSWORD] id=values[people][OTHER][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"/><span id="passwordStrength2"></span> \';opener.document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
+//                                }
+//                            }
+//                        }
+//                        echo '<SCRIPT language=javascript>window.close();</script>';
+//                    }
+//                    if ($_REQUEST['button'] == 'Cancel') {
+//                        echo '<SCRIPT language=javascript>window.close();</script>';
+//                    }
                 } else {
                     if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQUEST['USERINFO_EMAIL'] || $_REQUEST['USERINFO_MOBILE'] || $_REQUEST['USERINFO_SADD'] || $_REQUEST['USERINFO_CITY'] || $_REQUEST['USERINFO_STATE'] || $_REQUEST['USERINFO_ZIP']) {
                         $stf_ids = '';
@@ -691,8 +719,8 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $_REQUEST['add_id'] . '&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
                 echo '<span id="sel_err" class="text-danger"></span>';
                 ListOutput($searched_staffs, $columns, $singular, $plural, false, $group = false, $options, 'ForWindow');
-                //echo '<br>';
-                //echo '<center>';
+                echo '<br>';
+                echo '<center>';
                 if (count($searched_staffs) > 0)
                     echo '<INPUT type=submit name=button value=Select class="btn btn-primary" onclick="return sel_staff_val();">&nbsp;&nbsp;';
                 echo '<INPUT type=submit name=button value=Cancel class="btn btn-default">';
@@ -1014,15 +1042,39 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 echo "<script>window.location.href='Modules.php?modname=students/Student.php&include=EnrollmentInfoInc&category_id=6'</script>";
                         }
                         if (count($_REQUEST['medical_info'])) {
-                            $sql = "UPDATE medical_info SET ";
-                            foreach ($_REQUEST['medical_info'] as $column_name => $value) {
-                                $value = paramlib_validation($column_name, trim($value));
-                                if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-                                    $sql .= "$column_name='" . str_replace("'", "\'", str_replace("`", "''", trim($value))) . "',";
-                                } else
-                                    $sql .= "$column_name='" . str_replace("'", "''", str_replace("'`", "''", trim($value))) . "',";
+                            $get_medical_info = DBGet(DBQuery('SELECT * FROM medical_info WHERE STUDENT_ID=' . $_REQUEST[student_id] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
+                            if (count($get_medical_info) > 0) {
+                                $sql = "UPDATE medical_info SET ";
+                                foreach ($_REQUEST['medical_info'] as $column_name => $value) {
+                                    $value = paramlib_validation($column_name, trim($value));
+                                    if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                                        $sql .= "$column_name='" . str_replace("'", "\'", str_replace("`", "''", trim($value))) . "',";
+                                    } else
+                                        $sql .= "$column_name='" . str_replace("'", "''", str_replace("'`", "''", trim($value))) . "',";
+                                }
+                                $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR=" . UserSyear() . " AND SCHOOL_ID=" . UserSchool() . "";
                             }
-                            $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR=" . UserSyear() . " AND SCHOOL_ID=" . UserSchool() . "";
+                            else {
+                                $sql = "INSERT INTO medical_info  ";
+                                $columns_medical = 'STUDENT_ID,SYEAR,SCHOOL_ID,';
+                                $values_medical = $_REQUEST[student_id] . ',' . UserSyear() . ',' . UserSchool() . ',';
+                                foreach ($_REQUEST['medical_info'] as $column_name => $value) {
+                                    $value = paramlib_validation($column_name, trim($value));
+                                    if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                                        $columns_medical .= $column_name . ',';
+                                        $values_medical .= "'" . str_replace("'", "\'", str_replace("`", "''", trim($value))) . "',";
+                                    } else {
+                                        $columns_medical .= $column_name . ',';
+                                        $values_medical .= "'" . str_replace("'", "\'", str_replace("`", "''", trim($value))) . "',";
+                                    }
+                                }
+
+                                $sql = "INSERT INTO medical_info  (" . substr($columns_medical, 0, -1) . ") VALUES (" . substr($values_medical, 0, -1) . ")";
+                                unset($columns_medical);
+                                unset($values_medical);
+                            }
+
+
                             if (!$error) {
                                 DBQuery($sql);
                             }
@@ -1248,7 +1300,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                         $str = "";
                                         foreach ($value as $m_custom_val) {
                                             if ($m_custom_val)
-                                                $str.="||" . $m_custom_val;
+                                                $str .= "||" . $m_custom_val;
                                         }
                                         if ($str)
                                             $value = $str . "||";
@@ -1754,6 +1806,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             }
 
             if ($_SESSION['inactive_stu_filter']) {
+                if (User('PROFILE') == 'admin') {
+                    $get_rollover_id = DBGet(DBQuery('SELECT ID FROM student_enrollment_codes WHERE SYEAR=' . UserSyear() . ' AND TYPE=\'Roll\' '));
+                    $get_rollover_id = $get_rollover_id[1]['ID'];
+                    $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
+                }
                 $_SESSION['s'] .= $_SESSION['inactive_stu_filter'];
             }
 
@@ -1789,7 +1846,6 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             if (UserStudentID() || $_REQUEST['student_id'] == 'new') {
                 if ($_REQUEST['student_id'] != 'new') {
                     if (User('PROFILE') == 'admin') {
-
                         $s_ln = DBGet(DBQuery("SELECT LAST_NAME,FIRST_NAME,s.STUDENT_ID " . $admin_COMMON . " AND s.STUDENT_ID =" . UserStudentID() . "  " . $_SESSION['s'] . " " . $_SESSION['custom_count_sql']));
 
                         $ln = $s_ln[1]['LAST_NAME'] . $s_ln[1]['FIRST_NAME'] . $s_ln[1]['STUDENT_ID'];

@@ -67,7 +67,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
 
 ##############################################List Output Generation##################################################
 
-            $columns = array('SHORT_NAME' => 'Course', 'PERIOD' => 'Time', 'DAYS' => 'Days', 'ROOM' => 'Location', 'TEACHER' => 'Teacher');
+            $columns = array('SHORT_NAME' => 'Course Period', 'PERIOD' => 'Time', 'DAYS' => 'Days', 'ROOM' => 'Location', 'TEACHER' => 'Teacher');
 
             echo '<tr><td colspan="2" valign="top" align="right">';
             PrintCatalog($period_list, $columns, 'Course', 'Courses', '', '', array('search' => false));
@@ -160,7 +160,11 @@ function _makeDetails($value, $coulmn) {
         default :
             $day_title = array();
             foreach ($get_dt as $gd) {
-                $day_title[] = $gd['DAYS'];
+                if ($gd['DAYS'] != '')
+                    $day_title[] = $gd['DAYS'];
+                else {
+                    $day_title[DaySname(date('l', $gd['COURSE_PERIOD_DATE']))] = DaySname(date('l', $gd['COURSE_PERIOD_DATE']));
+                }
             }
             if (count($day_title) > 0)
                 $return = implode(',', $day_title);

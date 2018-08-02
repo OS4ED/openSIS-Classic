@@ -88,7 +88,7 @@ if ($rolled == 0) {
         } elseif ($i == 0 && $j > 0) {
             $table_list .= '</div><div class="row">';
         }
-        $table_list .= '<div class="col-md-3"><div class="checkbox"><label><INPUT type=checkbox value=Y  name=' . $table . ' CHECKED ' . ($required[$table] ? ' disabled="disabled"' : '') . ' onchange="validate_rollover(this.form,this)"> ' . $name . '</label></div></div>';
+        $table_list .= '<div class="col-md-3"><label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox value=Y  name=' . $table . ' CHECKED ' . ($required[$table] ? ' disabled="disabled"' : '') . ' onchange="validate_rollover(this.form,this)"><span></span> ' . $name . '</label></div>';
         $i++;
         if ($i == 4) {
             $i = 0;
@@ -96,7 +96,7 @@ if ($rolled == 0) {
         $j++;
     }
     $table_list .= '</div>'; //.row
-    $table_list .= '<hr/>';
+    //$table_list .= '<hr/>';
     //
     //===============================
     if (Prompt_rollover('Confirm Rollover', 'Are you sure you want to roll the data for ' . $cur_session . ' to the next school year?', $table_list)) {

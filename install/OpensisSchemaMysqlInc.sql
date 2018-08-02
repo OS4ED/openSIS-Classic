@@ -1349,6 +1349,23 @@ CREATE TABLE IF NOT EXISTS `msg_outbox` (
 --
 --
 
+CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `keyval` varchar(100) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE `device_info` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `device_token` longtext CHARACTER SET utf8 NOT NULL,
+  `device_id` longtext CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 ALTER TABLE school_calendars AUTO_INCREMENT=1;
 
 
@@ -1458,8 +1475,8 @@ ALTER TABLE school_years
 ALTER TABLE student_report_card_comments
     ADD CONSTRAINT student_report_card_comments_pkey PRIMARY KEY (syear, student_id, course_period_id, marking_period_id, report_card_comment_id);
 
-
-
+ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;
+ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;
 -- ALTER TABLE `staff_school_relationship` ADD `start_date` DATE NOT NULL ,
 -- ADD `end_date` DATE NOT NULL ;
 

@@ -27,22 +27,37 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
 while (!UserSyear()) {
     session_write_close();
     session_start();
 }
 $current_hour = date('H');
 $welcome .= 'User : ' . User('NAME');
-if ($_SESSION['LAST_LOGIN'])
-    $welcome .= ' | Last login : ' . ProperDate(substr($_SESSION['LAST_LOGIN'], 0, 10)) . ' at ' . substr($_SESSION['LAST_LOGIN'], 10);
-if ($_SESSION['FAILED_LOGIN'])
-    $welcome .= ' | <span class=red >' . $_SESSION['FAILED_LOGIN'] . '</b> failed login attempts</span>';
+//if ($_SESSION['LAST_LOGIN'])
+//    $welcome .= ' | Last login : ' . ProperDate(substr($_SESSION['LAST_LOGIN'], 0, 10)) . ' at ' . substr($_SESSION['LAST_LOGIN'], 10);
+//if ($_SESSION['FAILED_LOGIN'])
+//    $welcome .= ' | <span class=red >' . $_SESSION['FAILED_LOGIN'] . '</b> failed login attempts</span>';
 
 //----------------------------------------Update Missing Attendance_________________________________-
 
 echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">Please wait.</span> Compiling missing attendance data. Do not click anywhere.</div>
 <div id="resp"></div>';
+$stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
 
+foreach ($stu_missing_atten as $k => $f) {
+
+    $pr_id = $f['PERIOD_ID'];
+    $sch_date = $f['SCHOOL_DATE'];
+    $staff_id = $f['TEACHER_ID'];
+    $c_id = $f['COURSE_PERIOD_ID'];
+    $sch_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
+    $att_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM attendance_period  where SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
+
+    if (count($sch_qr) == count($att_qr)) {
+        DBQuery('DELETE FROM missing_attendance WHERE  TEACHER_ID=' . $staff_id . ' AND SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id);
+    }
+}
 //-----------------------------------------Update missing attendance ends--------------------------------------------------
 
 $userName = User('USERNAME');
@@ -318,11 +333,11 @@ switch (User('PROFILE')) {
 
         $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE,COURSE_PERIOD_ID FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
         foreach ($reassign_cp as $re_key => $reassign_cp_value) {
-
             if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
-                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and cp.marking_period_id=mp.marking_period_id and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
+
+                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
                 $get_pname = $get_pname[1]['CP_NAME'];
-                DBQuery('UPDATE course_periods SET title=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+                DBQuery('UPDATE course_periods SET TITLE=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
                 DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
                 DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE TEACHER_ID=' . $reassign_cp_value['PRE_TEACHER_ID'] . ' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
             }
@@ -373,7 +388,7 @@ switch (User('PROFILE')) {
             echo '</div>';
         }
 
-        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE AS INDEX_DATE,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,calendar_events_visibility cev,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
                     AND ce.SYEAR=\'' . UserSyear() . '\'
@@ -382,7 +397,7 @@ switch (User('PROFILE')) {
                     AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'admin\'' : 'cev.PROFILE_ID=\'' . User('PROFILE_ID')) . '\' 
                     ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
 
-        $events_RET1 = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+        $events_RET1 = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION, ce.SCHOOL_DATE as index_date,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
                     AND ce.SYEAR=\'' . UserSyear() . '\'
@@ -394,6 +409,18 @@ switch (User('PROFILE')) {
         }
 
 
+        $new_arr = array();
+        foreach ($events_RET as $key => $val) {
+            $new_arr[strtotime($val['INDEX_DATE'])][$key] = $val;
+        }
+        ksort($new_arr);
+        $keyt = 1;
+        foreach ($new_arr as $key1 => $val1) {
+            foreach ($val1 as $val2) {
+                $events_RET[$keyt] = $val2;
+                $keyt++;
+            }
+        }
         if (count($events_RET)) {
             echo '<div class="panel panel-default">';
             ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description', 'SCHOOL' => 'School'), 'Upcoming Event', 'Upcoming Events', array(), array(), array('save' => false, 'search' => false));
@@ -405,13 +432,13 @@ switch (User('PROFILE')) {
         if (Preferences('HIDE_ALERTS') != 'Y') {
             $RET = DBGet(DBQuery('SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE<\'' . date('Y-m-d') . '\' LIMIT 0,1 '));
             if (count($RET)) {
-                echo '<div class="alert bg-danger alert-styled-left">';
+                echo '<div class="alert alert-danger alert-styled-left alert-bordered">';
                 //echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
                 echo '<span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <span class="text-bold">Users <i class="icon-arrow-right13"></i> Teacher Programs <i class="icon-arrow-right13"></i> Missing Attendance.</span>';
                 echo '</div>';
             }
         }
-        echo '<div id="attn_alert" style="display: none" class="alert bg-danger alert-styled-left"><b>Warning!!</b> - Teachers have missing attendance. Go to : <b>Users <i class="icon-arrow-right13"></i> Teacher Programs <i class="icon-arrow-right13"></i> Missing Attendance</b></div>';
+        echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <b>Users <i class="icon-arrow-right13"></i> Teacher Programs <i class="icon-arrow-right13"></i> Missing Attendance</b></div>';
         //-------------------------------------------------------------------------------ROLLOVER NOTIFICATION STARTS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $notice_date = DBGet(DBQuery('SELECT END_DATE FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -436,7 +463,7 @@ switch (User('PROFILE')) {
         $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
         foreach ($reassign_cp as $re_key => $reassign_cp_value) {
             if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
-                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and cp.marking_period_id=mp.marking_period_id and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
+                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
                 $get_pname = $get_pname[1]['CP_NAME'];
                 DBQuery('UPDATE course_periods SET title=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
                 DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
@@ -492,7 +519,7 @@ switch (User('PROFILE')) {
             echo '</div>';
         }
         if ($att_qry[1]['count'] != 0)
-            echo '<div id="attn_alert" style="display: none" ><p><font color=#FF0000><b>Warning!! - Teachers have missing attendance. Go to : Users -> Teacher Programs -> Missing Attendance</b></font></p></div>';
+            echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <b>Users -> Teacher Programs -> Missing Attendance</b></div>';
         if (Preferences('HIDE_ALERTS') != 'Y') {
             // warn if missing attendance
 
@@ -507,7 +534,7 @@ switch (User('PROFILE')) {
             $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'0\' ORDER BY SORT_ORDER'));
 
             if (count($RET) && $codes_RET_count[1]['CODES']) {
-                echo '<div class="alert bg-warning alert-styled-left"><span class="text-semibold">Warning!</span> Teachers have missing attendance data.</div>';
+                echo '<div class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!</span> Teachers have missing attendance data.</div>';
 
                 $modname = 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php';
                 $link['remove']['link'] = "Modules.php?modname=$modname&modfunc=attn&attn=miss&from_dasboard=1";
@@ -719,7 +746,7 @@ switch (User('PROFILE')) {
                 $LO_ret = array(0 => array());
 
                 foreach ($assignments_RET as $assignment) {
-                    $LO_ret[] = array('TITLE' => $assignment['TITLE'], 'CATEGORY' => $assignment['CATEGORY'], 'ASSIGNED_DATE' => $assignment['ASSIGNED_DATE'], 'DUE_DATE' => $assignment['DUE_DATE'], 'COMMENT' => html_entity_decode($assignment['COMMENT']));
+                    $LO_ret[] = array('TITLE' => $assignment['TITLE'], 'CATEGORY' => $assignment['CATEGORY'], 'ASSIGNED_DATE' => $assignment['ASSIGNED_DATE'], 'DUE_DATE' => $assignment['DUE_DATE'], 'COMMENT' => html_entity_decode(html_entity_decode($assignment['COMMENT'])));
                 }
                 DrawHeader('Subject - ' . substr($course['TITLE'], strrpos(str_replace(' - ', ' ^ ', $course['TITLE']), '^')));
 

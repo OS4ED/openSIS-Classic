@@ -32,7 +32,7 @@ unset($_SESSION['_REQUEST_vars']['modfunc']);
 DrawBC("School Setup > " . ProgramTitle());
 // --------------------------------------------------------------- Test SQL ------------------------------------------------------------------ //
 // --------------------------------------------------------------- Tset SQL ------------------------------------------------------------------ //
- 
+
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Update' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == '')) {
     if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
         if ($_REQUEST['new_school'] != 'true') {
@@ -44,8 +44,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 $dt_ex = explode("_", $col);
                 if ($dt_ex[0] == 'month') {
                     if ($_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '') {
-                        $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . MonthFormatter($_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]]) . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
-                }
+//                        $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . MonthFormatter($_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]]) . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
+               $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
+                        }
             }
             }
 
@@ -93,6 +94,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 }
             }
             $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . UserSchool() . '\'';
+           
             if ($error != 1)
                 DBQuery($sql);
             echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -131,15 +133,24 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 $_SESSION['UserSchool'] = $id;
                 unset($_REQUEST['new_school']);
             }
-//            echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
-//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
-//            echo "<br><br>";
-//            DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>' . GetSchool(UserSchool()) . '</strong> has been created. To finish the operation, click OK button.', '<INPUT  type=submit value=OK class="btn btn-primary">');
-//            echo '<input type="hidden" name="copy" value="done"/>';
-             echo '<br><strong>School has been created successfully.</strong>';
-              unset($_REQUEST['modfunc']);
-               echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '"; window.close();</script>';
-            echo '</FORM>';
+echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).' method=POST>';
+	echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+	
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-body text-center">';
+        echo '<div class="new-school-created  p-30">';
+        echo '<div class="icon-school">';
+        echo '<span></span>';
+        echo '</div>';
+        echo '<h5 class="p-20">A new school called <b class="text-success">'.GetSchool(UserSchool()).'</b> has been created. To finish the operation, click the button below.</h5>';
+        echo '<div class="text-center"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
+        echo '</div>'; //.new-school-created
+        echo '</div>'; //.panel-body
+        echo '</div>'; //.panel
+        
+	//DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value=OK class="btn_medium">');
+	echo '<input type="hidden" name="copy" value="done"/>';
+	echo '</FORM>';
         }
     } else {
         $_REQUEST['modfunc'] = '';
@@ -178,9 +189,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
         }
     }
 }
-//if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
-//    echo '<br><strong>School has been created successfully.</strong>';
-//} else {
+if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
+    echo '<br><strong>School has been created successfully.</strong>';
+} else {
     if (!$_REQUEST['modfunc']) {
         if (!$_REQUEST['new_school']) {
             $schooldata = DBGet(DBQuery('SELECT * FROM schools WHERE ID=\'' . UserSchool() . '\''));
@@ -216,7 +227,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
@@ -296,5 +307,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
 
         echo "</FORM>";
     }
+}
 
 ?>

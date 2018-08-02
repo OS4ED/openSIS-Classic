@@ -33,6 +33,12 @@ function SubmitButton($value='Submit',$name='',$options='')
 	else
 		return '';
 }
+function SubmitButtonModal($value='Submit',$name='',$options='')
+{
+	
+		return "<INPUT type=submit value='$value'".($name?" name='$name'":'').($options?' '.$options:'').">";
+	
+}
 
 function ResetButton($value='Reset',$options='')
 {

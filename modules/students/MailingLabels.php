@@ -121,8 +121,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     } elseif ($_REQUEST['to_address'] == 'pri_contact') {
 
                         foreach ($addresses as $key => $address) {
-                            $Stu_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
-                            $Stu_address = $Stu_address[1];
+                            $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND EMERGENCY_TYPE=\'Primary\''));
+                            $p_addr = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
+
+
+                            //echo 'SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1';
+                            //echo'<br><br>';
+                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
+                            $Stu_address = $p_addr[1];
                             if ($cols < 1)
                                 echo '<tr>';
                             echo '<td width="33.3%" height="97" align="center" valign="middle"><span style="font-size:12px;">';
@@ -159,7 +165,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     } elseif ($_REQUEST['to_address'] == 'sec_contact') {
 
                         foreach ($addresses as $key => $address) {
-                            $Stu_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
+
+                            $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND EMERGENCY_TYPE=\'Secondary\''));
+                            $Stu_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
+
+                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
                             $Stu_address = $Stu_address[1];
                             if ($cols < 1)
                                 echo '<tr>';
@@ -327,29 +337,40 @@ if (!$_REQUEST['modfunc']) {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
 
 
-        $extra['extra_header_left'] = '<TABLE>';
+        $extra['extra_header_left'] = '<p>Avery Label 15660, 18660, 28660, 5630, 5660, 8660, 5620, 8620 compatible</p>';
 
-        $extra['extra_header_left'] .= '<TR><TD colspan=2>Avery Label 15660, 18660, 28660, 5630, 5660, 8660, 5620, 8620 compatible
-</TD></TR>';
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=to_address value="student" checked>To Student</TD></TR>';
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=to_address value="pri_contact">To Primary Emergency Contact</TD></TR>';
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=to_address value="sec_contact">To Secondary Emergency Contact</TD></TR>';
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=to_address value="contact">To Both Emergency Contacts</TD></TR>';
-
-
-        $extra['extra_header_left'] .= '</TABLE>';
-        $extra['extra_header_right'] = '<TABLE>';
-
-        $extra['extra_header_right'] .= '<TR><TD align=right>Starting row</TD><TD><SELECT name=start_row>';
-        for ($row = 1; $row <= $max_rows; $row++)
-            $extra['extra_header_right'] .= '<OPTION value="' . $row . '">' . $row;
-        $extra['extra_header_right'] .= '</SELECT></TD></TR>';
-        $extra['extra_header_right'] .= '<TR><TD align=right>Starting column</TD><TD><SELECT name=start_col>';
-        for ($col = 1; $col <= $max_cols; $col++)
-            $extra['extra_header_right'] .= '<OPTION value="' . $col . '">' . $col;
-        $extra['extra_header_right'] .= '</SELECT></TD></TR>';
-
-        $extra['extra_header_right'] .= '</TABLE>';
+        //$extra['extra_header_left'] .= '<div class="row">';
+        //$extra['extra_header_left'] .= '<div class="col-md-6">';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="student" checked> To Student</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="pri_contact">To Primary Emergency Contact</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="sec_contact">To Secondary Emergency Contact</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="contact">To Both Emergency Contacts</label></div>';
+        //$extra['extra_header_left'] .= '</div>';
+        //$extra['extra_header_left'] .= '<div class="col-md-6">';
+        $extra['extra_header_right'] .= '<div style="min-width:300px;">';
+        $extra['extra_header_right'] .= '<div class="row">';
+        $extra['extra_header_right'] .= '<div class="col-md-6">';
+        $extra['extra_header_right'] .= '<div class="form-group">';
+        $extra['extra_header_right'] .= '<label>Starting row</label>';
+        $extra['extra_header_right'] .= '<SELECT name="start_row" class="form-control">';
+        for ($row = 1; $row <= $max_rows; $row++) {
+            $extra['extra_header_right'] .= '<OPTION value="' . $row . '">' . $row . '</OPTION>';
+        }
+        $extra['extra_header_right'] .= '</SELECT>';
+        $extra['extra_header_right'] .= '</div>'; //.form-group
+        $extra['extra_header_right'] .= '</div>'; //.col-md-6
+        $extra['extra_header_right'] .= '<div class="col-md-6">';
+        $extra['extra_header_right'] .= '<div class="form-group">';
+        $extra['extra_header_right'] .= '<label>Starting column</label>';
+        $extra['extra_header_right'] .= '<SELECT name="start_col" class="form-control">';
+        for ($col = 1; $col <= $max_cols; $col++) {
+            $extra['extra_header_right'] .= '<OPTION value="' . $col . '">' . $col . '</OPTION>';
+        }
+        $extra['extra_header_right'] .= '</SELECT>';
+        $extra['extra_header_right'] .= '</div>'; //.form-group
+        $extra['extra_header_right'] .= '</div>'; //.col-md-6
+        $extra['extra_header_right'] .= '</div>'; //.row
+        $extra['extra_header_right'] .= '</div>';
     }
 
     $extra['search'] .= '<div class="row">';
@@ -365,7 +386,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '<div class="col-md-6">';
     Widgets('activity');
     $extra['search'] .= '</div><div class="col-md-6">';
-    
+
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
 
@@ -403,6 +424,78 @@ if (!$_REQUEST['modfunc']) {
         echo '<div><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
         echo "</FORM>";
     }
+    
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
+
+echo '<div id="modal_default_request" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h5 class="modal-title">Choose course</h5>
+    </div>
+
+    <div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+    foreach($subjects_RET as $val)
+    {
+    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    }
+    echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal_request"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
+
 }
 
 function _makeChooseCheckbox($value, $title) {

@@ -163,14 +163,14 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
 
-        echo '<hr class="no-margin-top" />';
+        echo '<hr class="no-margin-top m-b-10" />';
 
 
-        echo '<div><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox onClick="toggle_div_visibility(\'show_other_options\',this,\'json_encoder\');" name=values[Preferences][SEARCH] value=Y' . ((Preferences('SEARCH') == 'Y') ? ' CHECKED' : '') . '><span></span> Display student search screen</label></div></div>';
+        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox onClick="toggle_div_visibility(\'show_other_options\',this,\'json_encoder\');" name=values[Preferences][SEARCH] value=Y' . ((Preferences('SEARCH') == 'Y') ? ' CHECKED' : '') . '><span></span> Display student search screen</label>';
         if (User('PROFILE') == 'admin') {
-            echo '<div id="show_other_options" ' . ((Preferences('SEARCH') == 'Y') ? 'style="display:block"' : 'style="display:none"') . '>';
-            echo '<div><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox id="family" name=values[Preferences][DEFAULT_FAMILIES] value=Y' . ((Preferences('DEFAULT_FAMILIES') == 'Y') ? ' CHECKED' : '') . '><span></span> Group by family by default</label></div></div>';
-            echo '<div><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox id="all_school" name=values[Preferences][DEFAULT_ALL_SCHOOLS] value=Y' . ((Preferences('DEFAULT_ALL_SCHOOLS') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all schools by default</label></div></div>';
+            echo '<div id="show_other_options" ' . ((Preferences('SEARCH') == 'Y') ? 'style="display:inline-block"' : 'style="display:none"') . '>';
+            echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox id="family" name=values[Preferences][DEFAULT_FAMILIES] value=Y' . ((Preferences('DEFAULT_FAMILIES') == 'Y') ? ' CHECKED' : '') . '><span></span> Group by family by default</label>';
+            echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox id="all_school" name=values[Preferences][DEFAULT_ALL_SCHOOLS] value=Y' . ((Preferences('DEFAULT_ALL_SCHOOLS') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all schools by default</label>';
             echo '</div>';
         }
     }
@@ -178,30 +178,28 @@ if (!$_REQUEST['modfunc']) {
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'display_options') {
         echo '<div class="form-group">';
 
-        echo '<div class="col-md-4">';
-        echo '<label>Theme</label>';
-        echo '<div class="radio">';
-        if ($handle = opendir($openSISPath . 'themes/')) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != ".." && !in_array($file, $IgnoreFiles)) {
-                    echo '<label class="radio-inline"><INPUT type=radio name=values[Preferences][THEME] value=' . $file . ((Preferences('THEME') == $file) ? ' CHECKED' : '') . '> ' . $file . '</label>';
-                    $count++;
-                }
-            }
-            closedir($handle);
-        }
-        echo '</div>'; //.radio
-        echo '</div>'; //.col-md-4
+//        echo '<div class="col-md-4">';
+//        echo '<label>Theme</label>';
+//        if ($handle = opendir($openSISPath . 'themes/')) {
+//            while (false !== ($file = readdir($handle))) {
+//                if ($file != "." && $file != ".." && !in_array($file, $IgnoreFiles)) {
+//                    echo '<label class="radio radio-inline"><INPUT type=radio name=values[Preferences][THEME] value=' . $file . ((Preferences('THEME') == $file) ? ' CHECKED' : '') . '> ' . $file . '</label>';
+//                    $count++;
+//                }
+//            }
+//            closedir($handle);
+//        }
+//        echo '</div>'; //.col-md-4
 
-        $colors = array('#85e1ff', '#96f3c8', '#e9f396', '#f3bb96', '#f396a7');
-        echo '<div class="col-md-4">';
-        echo '<label class="control-label">Highlight Color</label>';
-        echo '<div class="radio">';
-        foreach ($colors as $color)
-            echo '<label class="radio-inline" style="background: ' . $color . '"><INPUT type=radio name=values[Preferences][HIGHLIGHT] value=' . $color . ((Preferences('HIGHLIGHT') == $color) ? ' CHECKED' : '') . '></label>';
-
-        echo '</div>'; //.radio
-        echo '</div>'; //.col-md-4
+//        $colors = array('#85e1ff', '#96f3c8', '#e9f396', '#f3bb96', '#f396a7');
+//        echo '<div class="col-md-4">';
+//        echo '<label class="control-label">Highlight Color</label>';
+//        echo '<div class="radio">';
+//        foreach ($colors as $color)
+//            echo '<label class="radio-inline" style="background: ' . $color . '"><INPUT type=radio name=values[Preferences][HIGHLIGHT] value=' . $color . ((Preferences('HIGHLIGHT') == $color) ? ' CHECKED' : '') . '></label>';
+//
+//        echo '</div>'; //.radio
+//        echo '</div>'; //.col-md-4
 
 
         echo '<div class="col-md-4">';
@@ -226,9 +224,9 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.col-md-4
 
         echo '</div>'; //.form-group
-        echo '<hr class="no-margin"/>';
-        echo '<div><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=values[Preferences][HIDE_ALERTS] value=Y' . ((Preferences('HIDE_ALERTS') == 'Y') ? ' CHECKED' : '') . '><span></span>Disable login alerts</label></div></div>';
-        echo '<div><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=values[Preferences][HIDDEN] value=Y' . ((Preferences('HIDDEN') == 'Y') ? ' CHECKED' : '') . '><span></span>Display data using hidden fields</label></div></div>';
+        echo '<hr class="no-margin-top m-b-10"/>';
+        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDE_ALERTS] value=Y' . ((Preferences('HIDE_ALERTS') == 'Y') ? ' CHECKED' : '') . '><span></span>Disable login alerts</label>';
+        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDDEN] value=Y' . ((Preferences('HIDDEN') == 'Y') ? ' CHECKED' : '') . '><span></span>Display data using hidden fields</label>';
     }
 
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'password') {

@@ -78,6 +78,9 @@ function Preferences($item,$program='Preferences')
 
 	if($_SESSION['STAFF_ID'] && !$_openSIS['Preferences'][$program])
 	{
+            if($program=='Gradebook')    
+		$QI=DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID='.$_SESSION[STAFF_ID].' AND PROGRAM=\''.$program.'\' AND VALUE LIKE \'%_'.UserCoursePeriod().'\'');
+            else
 		$QI=DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID='.$_SESSION[STAFF_ID].' AND PROGRAM=\''.$program.'\'');
 		$_openSIS['Preferences'][$program] = DBGet($QI,array(),array('TITLE'));
 	}
@@ -87,7 +90,7 @@ function Preferences($item,$program='Preferences')
 				'SEARCH'=>'Y',
 				'DELIMITER'=>'Tab',
 				'COLOR'=>'#FFFFCC',
-				'HIGHLIGHT'=>'active',
+				'HIGHLIGHT'=>'#85E1FF',
 				'TITLES'=>'gray',
 				'THEME'=>'Brushed-Steel',
 				'HIDDEN'=>'Y',
@@ -104,8 +107,7 @@ function Preferences($item,$program='Preferences')
 
 	if($_SESSION['STAFF_ID'] && User('PROFILE')=='parent' || $_SESSION['STUDENT_ID'])
 		$_openSIS['Preferences'][$program]['SEARCH'][1]['VALUE'] = 'N';
-
-	 if($program=='Gradebook')
+        if($program=='Gradebook')
         {
            if($item=='ANOMALOUS_MAX')
            {

@@ -40,8 +40,7 @@ if ($_REQUEST['modname'] == 'scheduling/Scheduler.php' && !$_REQUEST['run']) {
 
     $function = 'Prompt_Home_Schedule';
     DrawBC("Scheduling > " . ProgramTitle());
-} 
-else
+} else
     $function = '_returnTrue';
 if ($function('Confirm Scheduler Run', 'Are you sure you want to run the scheduler?', '        
     <div class="form-group"><div class="checkbox-inline"><label><INPUT type=checkbox name=test_mode   value=Y onclick=showhidediv("div1",this);>Schedule Unscheduled Requests</label></div>
@@ -304,8 +303,7 @@ function _scheduleRequest($request, $not_parent_id = false) {
         // CHOOSE THE BEST CP
         _scheduleBest($request, $possible);
         return true;
-    }
-    else
+    } else
         return false; // if this point is reached, the request could not be scheduled
 }
 
@@ -390,8 +388,7 @@ function Prompt_Home_Schedule($title = 'Confirm', $question = '', $message = '',
         echo "<CENTER><h4>$question</h4><FORM name=run_schedule action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST onSubmit='return confirmAction();'>$message<INPUT type=submit class=\"btn btn-primary\" value=OK > &nbsp; <INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=miscellaneous/Portal.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
-    }
-    else
+    } else
         return true;
 }
 

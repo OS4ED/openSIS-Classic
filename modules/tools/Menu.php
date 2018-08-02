@@ -35,6 +35,6 @@ $menu['tools']['admin'] = array(
                                 1=>'Reports',  
                                'tools/Reports.php?func=Basic'=>'At a Glance',
                                'tools/Reports.php?func=Ins_r'=>'Institute Reports',
-                               'tools/Reports.php?func=Ins_cf'=>'Institute Custom Field Reports',                                
+//                               'tools/Reports.php?func=Ins_cf'=>'Institute Custom Field Reports',                                
     );
 ?>

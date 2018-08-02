@@ -89,7 +89,7 @@ if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
             $other_mps[] = $get_mp_ids[1]['GRANDPARENT_ID'];
         }
     }
-    $QI = "SELECT c.COURSE_ID,c.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS,(SELECT count(*) FROM schedule_requests sr WHERE sr.COURSE_ID=c.COURSE_ID) AS COUNT_REQUESTS FROM courses c,course_periods cp WHERE c.SUBJECT_ID='$_REQUEST[subject_id]' AND c.COURSE_ID=cp.COURSE_ID AND c.SYEAR='" . UserSyear() . "' AND c.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL) AND ('" . date('Y-m-d', strtotime(DBDate())) . "' BETWEEN cp.BEGIN_DATE AND cp.END_DATE) GROUP BY c.COURSE_ID,c.TITLE ORDER BY c.TITLE";
+    $QI = "SELECT c.COURSE_ID,c.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS,(SELECT count(*) FROM schedule_requests sr WHERE sr.COURSE_ID=c.COURSE_ID) AS COUNT_REQUESTS FROM courses c,course_periods cp WHERE c.SUBJECT_ID='$_REQUEST[subject_id]' AND c.COURSE_ID=cp.COURSE_ID AND c.SYEAR='" . UserSyear() . "' AND c.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY c.COURSE_ID,c.TITLE ORDER BY c.TITLE";
     $QI = DBQuery($QI);
     $RET = DBGet($QI, array('OPEN_SEATS' => '_calcOpenSeats'));
     if (count($RET) && $_REQUEST['course_id']) {
@@ -121,7 +121,7 @@ if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course
             $other_mps[] = $get_mp_ids[1]['GRANDPARENT_ID'];
         }
     }
-    $QI = "SELECT cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS FROM course_periods cp WHERE cp.COURSE_ID='" . $_REQUEST['course_id'] . "' AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL) AND ('" . date('Y-m-d', strtotime(DBDate())) . "' BETWEEN cp.BEGIN_DATE AND cp.END_DATE) GROUP BY cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE ORDER BY cp.TITLE";
+    $QI = "SELECT cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS FROM course_periods cp WHERE cp.COURSE_ID='" . $_REQUEST['course_id'] . "' AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE ORDER BY cp.TITLE";
 
     $QI = DBQuery($QI);
     $RET = DBGet($QI, array('OPEN_SEATS' => '_calcOpenSeats'));
@@ -152,9 +152,10 @@ if ($_REQUEST['students']) {
         $sql .= "AND NOT EXISTS (SELECT '' FROM schedule ss WHERE ss.COURSE_ID=sr.COURSE_ID AND ss.STUDENT_ID=sr.STUDENT_ID AND ('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL))";
     }
     else {
+//            AND (('".DBDate()."' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$_REQUEST[course_period_id]')))
         $sql = "SELECT CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,s.STUDENT_ID,s.BIRTHDATE,ssm.GRADE_ID
 				FROM schedule ss,students s,student_enrollment ssm
-				WHERE ('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' ";
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$_REQUEST[course_period_id]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' ";
         if ($_REQUEST['course_period_id'])
             $sql .= "AND ss.COURSE_PERIOD_ID='$_REQUEST[course_period_id]'";
         elseif ($_REQUEST['course_id'])
@@ -176,8 +177,12 @@ echo '</div>'; //.row
 
 function _calcOpenSeats($null) {
     global $THIS_RET;
+    $sql = "SELECT COUNT(*) as TOT
+				FROM schedule ss,students s,student_enrollment ssm
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ss.COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]' ";
 
-    return $THIS_RET['TOTAL_SEATS'] - $THIS_RET['FILLED_SEATS'];
+    $res = DBGet(DBQuery($sql));
+    return $THIS_RET['TOTAL_SEATS'] - $res[1]['TOT'];
 }
 
 ?>

@@ -33,7 +33,7 @@ DrawBC("Attendance > " . ProgramTitle());
 //////////////////////////////For new date picker///////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
     $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
-    //$start_date = ProperDateMAvr($start_date);
+    $start_date = ProperDateMAvr($start_date);
     $start_date_mod = $start_date;
 } else {
     $start_date = date('Y-m') . '-01';
@@ -41,7 +41,7 @@ if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'
 }
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
     $end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
-    //$end_date = ProperDateMAvr($end_date);
+    $end_date = ProperDateMAvr($end_date);
     $end_date_mod = $end_date;
 } else {
     $end_date = ProperDateMAvr();
@@ -52,9 +52,9 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 $get_min_start_date = DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE FROM attendance_calendar WHERE SYEAR=' . UserSyear() . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND SCHOOL_ID=\'' . UserSchool() . '\'' : '')));
 if (strtotime($start_date_mod) < strtotime($get_min_start_date[1]['START_DATE']) && $get_min_start_date[1]['START_DATE'] != '') {
     $start_date_mod = $get_min_start_date[1]['START_DATE'];
-    $start_date = $start_date_mod;  
+    $start_date = $start_date_mod;
     if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'])
-    echo '<font style="color:red"><b>Start date cannot be before school\'s start date</b></font>';
+        echo '<font style="color:red"><b>Start date cannot be before school\'s start date</b></font>';
 }
 
 if ($_REQUEST['modfunc'] == 'search') {
@@ -118,9 +118,9 @@ if (!$_REQUEST['modfunc']) {
         }
 
         if ($_REQUEST['grade'] == '')
-            $student_days_possible = DBGet(DBQuery('SELECT ac.SCHOOL_ID,ac.SCHOOL_DATE,ac.SCHOOL_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.SCHOOL_ID=ac.SCHOOL_ID  AND ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ac.SCHOOL_ID=\'' . UserSchool() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.SCHOOL_DATE,ssm.GRADE_ID'), array('SCHOOL_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
+            $student_days_possible = DBGet(DBQuery('SELECT ac.SCHOOL_ID,ac.SCHOOL_DATE,ac.SCHOOL_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.SCHOOL_ID=ac.SCHOOL_ID  AND ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ac.SCHOOL_ID=\'' . UserSchool() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.SCHOOL_DATE,ssm.GRADE_ID'), array('SCHOOL_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
         if ($_REQUEST['grade'] != '')
-            $student_days_possible = DBGet(DBQuery('SELECT ac.SCHOOL_ID,ac.SCHOOL_DATE,ac.SCHOOL_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE ssm.GRADE_ID IN (SELECT ID FROM school_gradelevels WHERE TITLE=\'' . $_REQUEST['grade'] . '\') AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.SCHOOL_ID=ac.SCHOOL_ID  AND ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ac.SCHOOL_ID=\'' . UserSchool() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
+            $student_days_possible = DBGet(DBQuery('SELECT ac.SCHOOL_ID,ac.SCHOOL_DATE,ac.SCHOOL_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE ssm.GRADE_ID IN (SELECT ID FROM school_gradelevels WHERE TITLE=\'' . $_REQUEST['grade'] . '\') AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ac.SCHOOL_ID=\'' . UserSchool() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
 
         foreach ($student_days_possible as $si => $sd) {
             $present = DBGet(DBQuery('SELECT COUNT(*) AS PRESENT_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'P\') AND SE.SCHOOL_ID=\'' . $sd['SCHOOL_ID'] . '\' AND AP.SCHOOL_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.STUDENT_ID=SE.STUDENT_ID AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
@@ -390,8 +390,8 @@ if (!$_REQUEST['modfunc']) {
                 $ada[$ai]['OTHERS'] = $ada[$ai]['OTHERS'] + $others_st[1]['OTHERS_STU'];
             }
             $ada[$ai]['NOT_TAKEN'] = $ada[$ai]['ATTENDANCE_POSSIBLE'] - ($ada[$ai]['PRESENT'] + $ada[$ai]['ABSENT'] + $ada[$ai]['OTHERS']);
-            
-            
+
+
             $ada[$ai]['ADA'] = (($ada[$ai]['PRESENT'] != 0 && $ada[$ai]['ATTENDANCE_POSSIBLE'] != 0) ? round(($ada[$ai]['PRESENT'] / $ada[$ai]['ATTENDANCE_POSSIBLE']) * 100, 2) : '0') . '%';
             $ada[$ai]['AVERAGE_ABSENT'] = (($ada[$ai]['ABSENT'] != 0 && $ada[$ai]['ATTENDANCE_POSSIBLE'] != 0) ? round(($ada[$ai]['ABSENT'] / $ada[$ai]['ATTENDANCE_POSSIBLE']), 2) : 0);
             $ada[$ai]['AVERAGE_ATTENDANCE'] = (($ada[$ai]['PRESENT'] != 0 && $ada[$ai]['ATTENDANCE_POSSIBLE'] != 0) ? round(($ada[$ai]['PRESENT'] / $ada[$ai]['ATTENDANCE_POSSIBLE']), 2) : '0');

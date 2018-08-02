@@ -31,50 +31,54 @@ if (!$_REQUEST['modfunc']) {
 
     $start_date = date('Y-m') . '-01';
     $end_date = DBDate('mysql');
-    echo "<br><FORM class=\"form-horizontal\" name=log id=log action=Modules.php?modname=$_REQUEST[modname]&modfunc=generate method=POST>";
-    PopTable('header', 'Log Details');
-    
-    echo '<h5 class="text-center">Please Select Date Range</h5>';
-    
     echo '<div class="row">';
-    echo '<div class="col-lg-3 col-lg-offset-3">';
-    
+    echo '<div class="col-md-8 col-md-offset-2">';
+    echo "<FORM class=\"form-horizontal\" name=log id=log action=Modules.php?modname=$_REQUEST[modname]&modfunc=generate method=POST>";
+    PopTable('header', 'Log Details');
+
+    echo '<h5 class="text-center">Please Select Date Range</h5>';
+
+    echo '<div class="row">';
+    echo '<div class="col-lg-6 col-lg-offset-3">';
+
     echo '<div class="form-group">';
     echo '<label class="col-md-2 control-label text-right">From</label><div class="col-md-10">';
     echo DateInputAY($start_date, 'start', 1);
-    echo '</div>'; //.col-md-8
+    echo '</div>'; //.col-md-10
     echo '</div>'; //.form-group
-    
-    echo '</div>'; //.col-lg-4
-    echo '<div class="col-lg-3">';
-    
+
+    echo '</div>'; //.col-lg-6
+    echo '</div>'; //.row
+    echo '<div class="row">';
+    echo '<div class="col-lg-6 col-lg-offset-3">';
+
     echo '<div class="form-group">';
     echo '<label class="col-md-2 control-label text-right">To </label><div class="col-md-10">';
     echo DateInputAY($end_date, 'end', 2);
-    echo '</div>'; //.col-md-8
+    echo '</div>'; //.col-md-10
     echo '</div>'; //.form-group
-    
-    echo '</div>'; //.col-lg-4
+
+    echo '</div>'; //.col-lg-6
     echo '</div>'; //.row
-    
-    echo '<div class="text-center"><input type="submit" class="btn btn-primary" value="Generate" name="generate"></div>';
-    PopTable('footer');
+
+    $btn = '<div class="text-center"><input type="submit" class="btn btn-primary" value="Generate" name="generate"></div>';
+    PopTable('footer', $btn);
     echo '</FORM>';
+    echo '</div>';
+    echo '</div>'; //.row
 }
 
 
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
     $start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . substr($_REQUEST['year_start'], 2, 4);
-    //$org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
-    $org_start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
+    $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
 
     $conv_st_date = con_date($org_start_date);
 }
 
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
     $end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . substr($_REQUEST['year_end'], 2, 4);
-    //$org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
-    $org_end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
+    $org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
 
     $conv_end_date = con_date_end($org_end_date);
 }
@@ -95,7 +99,7 @@ if ($_REQUEST['modfunc'] == 'generate') {
             }
         }
         if (count($alllogs_RET)) {
-            echo '<div>';
+            echo '<div class="panel panel-default">';
             ListOutput($alllogs_RET, array('LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
 
             echo '</div>';
@@ -110,7 +114,7 @@ if ($_REQUEST['modfunc'] == 'generate') {
 }
 
 function con_date($date) {
-    /*$mother_date = $date;
+    $mother_date = $date;
     $year = substr($mother_date, 7);
     $temp_month = substr($mother_date, 3, 3);
 
@@ -142,14 +146,11 @@ function con_date($date) {
     $day = substr($mother_date, 0, 2);
 
     $select_date = $year . '-' . $month . '-' . $day . ' ' . '00:00:00';
-     * */
-    
-    $select_date = $date . ' ' . '00:00:00';
     return $select_date;
 }
 
 function con_date_end($date) {
-    /*$mother_date = $date;
+    $mother_date = $date;
     $year = substr($mother_date, 7);
     $temp_month = substr($mother_date, 3, 3);
 
@@ -181,8 +182,6 @@ function con_date_end($date) {
     $day = substr($mother_date, 0, 2);
 
     $select_date = $year . '-' . $month . '-' . $day . ' ' . '23:59:59';
-    */
-    $select_date = $date . ' ' . '23:59:59';
     return $select_date;
 }
 

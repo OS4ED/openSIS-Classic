@@ -94,7 +94,6 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
         }
 
         DrawBC("Attendance > " . ProgramTitle());
-
         echo "<TABLE width=100% border=0 cellpadding=0 cellspacing=0><TR>";
         echo "<TD bgcolor=#FFFFFF style=border:1;border-style: none none solid none; align=left> &nbsp;";
         echo "<FONT size=-1><IMG SRC=assets/check.gif>";

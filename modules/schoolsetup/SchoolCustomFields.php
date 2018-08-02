@@ -315,7 +315,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Default</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">** for dates: YYYY-MM-DD, for checkboxes: Y, for long text it will be ignored</p></div></div>';
 
     $new = ($_REQUEST['id'] == 'new');
-    $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required') . '</div></div>';
+    $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required','', false, 'Yes', 'No', '', 'switch-success') . '</div></div>';
 
     $header .= '</div>';
     $header .= '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right ml-10" onclick="formcheck_schoolfields();"') . $delete_button . '</div></div>';

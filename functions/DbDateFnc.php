@@ -42,6 +42,28 @@ function DaySname($value,$pattern='1')
         else
         return array_search($value,$days);
 }
+function DaySnameMod($value,$pattern='1')
+{
+	$days=array('Monday'=>'M','Tuesday'=>'T','Wednesday'=>'W','Thursday'=>'H','Friday'=>'F','Saturday'=>'S','Sunday'=>'U');
+        if(in_array($value,$days))
+        {
+        if($pattern==1)
+        return $days[$value];
+        else
+        return array_search($value,$days);
+        }
+        else
+        {
+            $val_arr=str_split($value);
+            $key="";
+            foreach($val_arr as $val)
+            {
+                $key.=array_search($val,$days);
+            }
+            //$key_arr=str_split($key);
+            return $key;
+        }
+}
 function MonthFormatter($value,$pattern='1')
 {
     

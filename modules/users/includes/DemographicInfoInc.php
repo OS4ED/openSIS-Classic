@@ -61,7 +61,6 @@ echo DateInputAY($staff['BIRTHDATE'] != "" && $staff['BIRTHDATE'] != "0000-00-00
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
 
-
 $options = array('Dr.' => 'Dr.', 'Mr.' => 'Mr.', 'Ms.' => 'Ms.', 'Rev.' => 'Rev.', 'Miss.' => 'Miss.');
 $ETHNICITY_RET = DBGet(DBQuery("SELECT ETHNICITY_ID,ETHNICITY_NAME FROM ethnicity ORDER BY SORT_ORDER"));
 foreach ($ETHNICITY_RET as $ethnicity_array) {
@@ -128,10 +127,9 @@ include('modules/users/includes/OtherInfoInc.php');
 
 echo '</div>'; //.col-md-10
 echo '<div class="col-md-2">';
-
-if ($_REQUEST['staff_id'] != 'new' && $UserPicturesPath && (($file = @fopen($picture_path = $UserPicturesPath . '/' . UserStaffID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $UserPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
-    fclose($file);
-    echo '<div width=150 align="center"><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150 class=pic>';
+if($_REQUEST['staff_id'] != 'new' && $staff['IMG_NAME'] != '')
+{
+    echo '<div width=150 align="center"><IMG SRC="data:image/jpeg;base64,' . base64_encode($staff['IMG_CONTENT']) . '"  width=150 class=pic>';
     if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
         echo '<br><a href=Modules.php?modname=users/UploadUserPhoto.php?modfunc=edit  style="text-decoration:none"><b>Update Staff\'s Photo</b></a></div>';
     else
@@ -140,11 +138,11 @@ if ($_REQUEST['staff_id'] != 'new' && $UserPicturesPath && (($file = @fopen($pic
 else {
 
     if ($_REQUEST['staff_id'] != 'new') {
-        echo '<div align="center"><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
+        echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
-            echo '<div align=center>Upload Staff\'s Photo: '
+            echo '<div align=center>'
             //. '<div class="fileUpload btn btn-primary btn-sm">'
-            . '<label class="fileUpload btn btn-primary btn-xs mt-15">'
+            . '<label class="fileUpload btn btn-primary btn-xs btn-block mt-15">'
             . '<span>Upload</span>'
             . '<input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this.value)" />'
 //                    . '</div>'
@@ -154,9 +152,9 @@ else {
         }
     } else {
 
-        echo '<div align="center"><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
+        echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-            echo '<div align=center>Upload Staff\'s Photo: <label class="fileUpload btn btn-primary btn-sm">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this.value)" /></label></div>';
+            echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this.value)" /></label></div>';
         echo '<div id="uploadFile"></div>';
     }
 }

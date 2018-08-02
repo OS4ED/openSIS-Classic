@@ -60,19 +60,48 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
 
             if (!$_REQUEST['marking_period_id']) {
 
-                $sql_periods = 'SELECT cp.SHORT_NAME,(SELECT TITLE FROM school_periods WHERE period_id=cpv.period_id) AS PERIOD,r.TITLE as ROOM,cpv.DAYS,(SELECT CONCAT(LAST_NAME,\' \',FIRST_NAME,\' \') from staff where staff_id=cp.TEACHER_ID) as TEACHER from course_periods cp,course_period_var cpv,rooms r where cp.course_id=' . $s_id['COURSE_ID'] . ' and cp.syear=\'' . UserSyear() . '\' and cp.course_period_id=cpv.course_period_id and cpv.room_id=r.room_id and cp.school_id=\'' . UserSchool() . '\'';
+                $sql_periods = 'SELECT cp.SHORT_NAME,(SELECT TITLE FROM school_periods WHERE period_id=cpv.period_id) AS PERIOD,r.TITLE as ROOM,SCHEDULE_TYPE, DAYOFWEEK(COURSE_PERIOD_DATE) AS CP_DAYS,cpv.DAYS,(SELECT CONCAT(LAST_NAME,\' \',FIRST_NAME,\' \') from staff where staff_id=cp.TEACHER_ID) as TEACHER from course_periods cp,course_period_var cpv,rooms r where cp.course_id=' . $s_id['COURSE_ID'] . ' and cp.syear=\'' . UserSyear() . '\' and cp.course_period_id=cpv.course_period_id and cpv.room_id=r.room_id and cp.school_id=\'' . UserSchool() . '\'';
             } else {
 
-                $sql_periods = 'SELECT distinct cp.SHORT_NAME,(select CONCAT(START_TIME,\' - \',END_TIME,\' \') from school_periods where period_id=cpv.period_id) as PERIOD,r.TITLE as ROOM,cpv.DAYS,(select CONCAT(LAST_NAME,\' \',FIRST_NAME,\' \') from staff where staff_id=cp.TEACHER_ID) as TEACHER from course_periods cp,course_period_var cpv,rooms r where cp.course_id=' . $s_id['COURSE_ID'] . ' and cp.syear=\'' . UserSyear() . '\' and cp.course_period_id=cpv.course_period_id and cpv.room_id=r.room_id and cp.school_id=\'' . UserSchool() . '\' and cp.marking_period_id=\'' . $_REQUEST['marking_period_id'] . '\'';
+                $sql_periods = 'SELECT distinct cp.SHORT_NAME,(select CONCAT(START_TIME,\' - \',END_TIME,\' \') from school_periods where period_id=cpv.period_id) as PERIOD,r.TITLE as ROOM,SCHEDULE_TYPE, DAYOFWEEK(COURSE_PERIOD_DATE) AS CP_DAYS,cpv.DAYS,(select CONCAT(LAST_NAME,\' \',FIRST_NAME,\' \') from staff where staff_id=cp.TEACHER_ID) as TEACHER from course_periods cp,course_period_var cpv,rooms r where cp.course_id=' . $s_id['COURSE_ID'] . ' and cp.syear=\'' . UserSyear() . '\' and cp.course_period_id=cpv.course_period_id and cpv.room_id=r.room_id and cp.school_id=\'' . UserSchool() . '\' and cp.marking_period_id=\'' . $_REQUEST['marking_period_id'] . '\'';
             }
 
 
 
             $period_list = DBGet(DBQuery($sql_periods));
-
+            //print_r($period_list);
+            foreach ($period_list as $key => $val) {
+                $cal_days = '';
+                if ($val['CP_DAYS'] != '' && $val['SCHEDULE_TYPE'] == 'BLOCKED') {
+                    switch ($val['CP_DAYS']) {
+                        case 1:
+                            $cal_days = 'U';
+                            break;
+                        case 2:
+                            $cal_days = 'M';
+                            break;
+                        case 3:
+                            $cal_days = 'T';
+                            break;
+                        case 4:
+                            $cal_days = 'W';
+                            break;
+                        case 5:
+                            $cal_days = 'H';
+                            break;
+                        case 6:
+                            $cal_days = 'F';
+                            break;
+                        case 7:
+                            $cal_days = 'S';
+                            break;
+                    }
+                    $period_list[$key]['DAYS'] = $cal_days;
+                }
+            }
 ##############################################List Output Generation##################################################
 
-            $columns = array('SHORT_NAME' => 'Course', 'PERIOD' => 'Time', 'DAYS' => 'Days', 'ROOM' => 'Location', 'TEACHER' => 'Teacher');
+            $columns = array('SHORT_NAME' => 'Course Period', 'PERIOD' => 'Time', 'DAYS' => 'Days', 'ROOM' => 'Location', 'TEACHER' => 'Teacher');
 
             echo '<tr><td colspan="2" valign="top" align="right">';
             PrintCatalog($period_list, $columns, 'Course', 'Courses', '', '', array('search' => false));

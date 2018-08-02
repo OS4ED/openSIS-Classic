@@ -461,10 +461,9 @@ function toggle_div_visibility(param, val, json_field)
     field_ids = JSON.parse(field_ids);
 
 
-    if (val.checked == true)
-        document.getElementById(param).style.display = "block";
-    else
-    {
+    if (val.checked == true) {
+        $('#'+param).css({'display':'inline-block'});
+    } else {
         for (var i = 0; i < field_ids.length; i++)
             document.getElementById(field_ids[i]).checked = false;
         document.getElementById(param).style.display = "none";
@@ -513,4 +512,47 @@ function toggle_course_weight(param, cp_id)
         document.getElementById("course_breakoff_id").checked = false;
         document.getElementById("course_breakoff_id").disabled = true;
     }
-} 
+}
+function ListOutputJS()
+{
+    var location = document.getElementById("search_path").value;
+    var lo_search = document.getElementById("LO_search").value;
+    document.location.href = location + '&LO_search=' + encodeURIComponent(lo_search).replace(/%20/g, '+');
+}
+function cleanModal(id)
+{
+    
+    var obj = document.getElementById(id);
+    obj.innerHTML = '';
+}
+function cpPasteField(title,course_period_id)
+{ 
+   
+    var obj = document.getElementById('course_div');
+    var field = title+'<INPUT type=hidden name=w_course_period_id value='+course_period_id+'>';
+//    var obj_hidden = document.getElementById('hidden_tag_cp_id');
+    obj.innerHTML =field ;
+   $('#modal_default').modal('hide');
+   $('.modal-backdrop').remove();
+}
+function requestPasteField(title,course_id)
+{ 
+   
+    var obj = document.getElementById('request_div');
+    var field = title+'<INPUT type=hidden name=request_course_id value='+course_id+'>';
+//    var obj_hidden = document.getElementById('hidden_tag_cp_id');
+    obj.innerHTML =field ;
+   $('#modal_default_request').modal('hide');
+   $('.modal-backdrop').remove();
+}
+function checkChecked(id1,id2)
+{
+    if(document.getElementById(id2).checked==false)
+        document.getElementById(id1).checked=false;
+}
+function turnCheckOff(id1,id2)
+{
+    if(document.getElementById(id2).checked==false)
+        document.getElementById(id1).checked=false;
+}
+

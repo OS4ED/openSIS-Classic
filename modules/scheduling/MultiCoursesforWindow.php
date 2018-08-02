@@ -79,6 +79,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
         echo '<center><div id="calculating" style=display:none><img src="assets/ajax-loader.gif" width="15px" ><br />Checking schedule Please Wait...</div></center>';
         if($clash)
                                     echo "<center><b>There is a conflict. You cannot add this course period </b></center>".ErrorMessage($clash,'note')."";
+       
         echo '<FORM name="courses" method="post">';
         echo '<center><div id="resp_div">';
         echo '<TABLE id="resp_table">';

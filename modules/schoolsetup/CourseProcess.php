@@ -137,7 +137,7 @@ switch ($task) {
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
             $header .= '<label class="control-label">&nbsp;</label>';
-            $header .= CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $course_period_id . '][DOES_ATTENDANCE]', 'Takes attendance', $checked, $new, '', true, ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success');
+            $header .= CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $course_period_id . '][DOES_ATTENDANCE]', 'Takes attendance', $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success');
             $header .= '</div>'; //.col-md-3
             $header .= '</div>'; //.clearfix
             

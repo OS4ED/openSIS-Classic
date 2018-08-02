@@ -106,28 +106,28 @@ if ($_REQUEST['modfunc'] == 'save') {
                                                         WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID
                                                         AND s.COURSE_ID = cp.COURSE_ID AND ga.assignment_id = g.assignment_id AND ga.marking_period_id in (' . GetAllMP($MP_TYPE, UserMP()) . ')  and  g.STUDENT_ID=\'' . $student[STUDENT_ID] . '\' and s.syear=\'' . UserSyear() . '\' group by cp.COURSE_PERIOD_ID'));
             if (!empty($courselist_ret[1])) {
-            foreach ($courselist_ret as $courselist => $course) {
-                unset($student_points);
-                unset($total_points);
-                unset($percent_weights);
-                unset($total_stpoints);
-                unset($total_asgnpoints);
+                foreach ($courselist_ret as $courselist => $course) {
+                    unset($student_points);
+                    unset($total_points);
+                    unset($percent_weights);
+                    unset($total_stpoints);
+                    unset($total_asgnpoints);
                     unset($tot_weighted_percent);
                     unset($assignment_type_count);
 
-                $course_title = $course['COURSE'];
-                $course_id = $course['COURSE_ID'];
-                $course_period_id = $course['COURSE_PERIOD_ID'];
+                    $course_title = $course['COURSE'];
+                    $course_id = $course['COURSE_ID'];
+                    $course_period_id = $course['COURSE_PERIOD_ID'];
                     $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . $course['TEACHER_ID'] . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . $course_period_id . '\''), array(), array('TITLE'));
-                if (count($config_RET))
-                    foreach ($config_RET as $title => $value)
+                    if (count($config_RET))
+                        foreach ($config_RET as $title => $value)
                             $program_config[$course['TEACHER_ID']][$course_period_id][$title] = rtrim($value[1]['VALUE'], '_' . $course_period_id);
-                else
+                    else
                         $program_config[$course['TEACHER_ID']][$course_period_id] = true;
-                $course_period_title = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\' '));
-                echo '<table border=0 style=\"font-size:12px;\">';
-                echo "<tr><td>Course:</td><td>" . $course_title . "</td></tr>";
-                echo "<tr><td>Course Period:</td><td>" . $course_period_title[1]['TITLE'] . "</td></tr>";
+                    $course_period_title = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\' '));
+                    echo '<table border=0 style=\"font-size:12px;\">';
+                    echo "<tr><td>Course:</td><td>" . $course_title . "</td></tr>";
+                    echo "<tr><td>Course Period:</td><td>" . $course_period_title[1]['TITLE'] . "</td></tr>";
 
                     if ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y') {
                         $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id=' . $course_period_id));
@@ -149,7 +149,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $fy_mp_id = $school_years[1]['MARKING_PERIOD_ID'];
 
                             $sql = 'SELECT ' . $course_period_id . ' as COURSE_PERIOD_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as ASSIGN_TYP_WG,\'N/A\' as WEIGHT_GRADE,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,' . $course['TEACHER_ID'] . ' AS CP_TEACHER_ID,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM    gradebook_assignment_types t,gradebook_assignments a
-                                        LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND g.STUDENT_ID=\'' . $student['STUDENT_ID'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\') 
+                                        LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND g.STUDENT_ID=\'' . $student['STUDENT_ID'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\')
                                              WHERE     a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND   (a.COURSE_PERIOD_ID=\'' . $course_period_id . '\' OR a.COURSE_ID=\'' . $course_id . '\')  AND t.COURSE_ID=\'' . $course_id . '\' AND (a.MARKING_PERIOD_ID=\'' . UserMP() . '\' OR a.MARKING_PERIOD_ID=\'' . $fy_mp_id . '\')';
                         } else {
                             $sql = 'SELECT ' . $course_period_id . ' as COURSE_PERIOD_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as ASSIGN_TYP_WG,\'N/A\' as WEIGHT_GRADE,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,' . $course['TEACHER_ID'] . ' AS CP_TEACHER_ID,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM    gradebook_assignment_types t,gradebook_assignments a
@@ -157,22 +157,22 @@ if ($_REQUEST['modfunc'] == 'save') {
                                              WHERE       a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND  (a.COURSE_PERIOD_ID=\'' . $course_period_id . '\' OR a.COURSE_ID=\'' . $course_id . '\')  AND t.COURSE_ID=\'' . $course_id . '\' AND a.MARKING_PERIOD_ID=\'' . UserMP() . '\'';
                         }
                     }
-                if ($_REQUEST['exclude_notdue'] == 'Y')
-                    $sql .= ' AND ((a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=DUE_DATE) OR g.POINTS IS NOT NULL)';
-                if ($_REQUEST['exclude_ec'] == 'Y')
-                    $sql .= ' AND (a.POINTS!=\'0\' OR g.POINTS IS NOT NULL AND g.POINTS!=\'-1\')';
+                    if ($_REQUEST['exclude_notdue'] == 'Y')
+                        $sql .= ' AND ((a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=DUE_DATE) OR g.POINTS IS NOT NULL)';
+                    if ($_REQUEST['exclude_ec'] == 'Y')
+                        $sql .= ' AND (a.POINTS!=\'0\' OR g.POINTS IS NOT NULL AND g.POINTS!=\'-1\')';
                     $sql .= ' AND a.DUE_DATE>=\'' . $student['START_DATE'] . '\' ORDER BY a.ASSIGNMENT_ID';
                     $grades_RET = DBGet(DBQuery($sql), array('ASSIGNED_DATE' => '_removeSpaces', 'ASSIGN_TYP_WG' => '_makeAssnWG', 'DUE_DATE' => '_removeSpaces', 'TITLE' => '_removeSpaces', 'POINTS' => '_makeExtra', 'LETTER_GRADE' => '_makeExtra', 'WEIGHT_GRADE' => '_makeWtg'));
 
 //			$sum_points = $sum_percent = 0;
-                if (count($percent_weights)) {
+                    if (count($percent_weights)) {
 
-                    foreach ($percent_weights as $assignment_type_id => $percent) {
+                        foreach ($percent_weights as $assignment_type_id => $percent) {
 //				$sum_points += $student_points[$assignment_type_id] * $percent_weights[$assignment_type_id] / $total_points[$assignment_type_id];
 //				$sum_percent += $percent;
-                        $total_stpoints += $student_points[$assignment_type_id];
-                        $total_asgnpoints += $total_points[$assignment_type_id];
-                    }
+                            $total_stpoints += $student_points[$assignment_type_id];
+                            $total_asgnpoints += $total_points[$assignment_type_id];
+                        }
 //			if($sum_percent>0)
 //				$sum_points /= $sum_percent;
                     }
@@ -212,24 +212,24 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
 //                            $link['add']['html'] = array('TITLE'=>'<B>Total</B>','LETTER_GRADE'=>'( '.$total_stpoints.' / '.$total_asgnpoints.' ) '._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID'],"%").'%&nbsp;'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID']),'WEIGHT_GRADE'=>$programconfig[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",$course['TEACHER_ID'],'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,$course_period_id,$course['TEACHER_ID']):'N/A');
-                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>Total</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($programconfig[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
+                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>Total</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
 
 
 
 //			$link['add']['html']['ASSIGNED_DATE'] = $link['add']['html']['DUE_DATE'] = $link['add']['html']['POINTS'] = $link['add']['html']['COMMENT'] = ' &nbsp; ';
                     $link['add']['html']['ASSIGNED_DATE'] = $link['add']['html']['DUE_DATE'] = $link['add']['html']['COMMENT'] = ' &nbsp; ';
-                echo '</table>';
+                    echo '</table>';
 
-                if ($_REQUEST['list_type'] == 'total') {
-                    echo '<table border=0  style=\"font-size:12px;\" >';
+                    if ($_REQUEST['list_type'] == 'total') {
+                        echo '<table border=0  style=\"font-size:12px;\" >';
                         echo '<tr><td> Total:</td><td>' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</td> </tr>';
                         echo '<tr><td> Total Weighted Grade:</td><td>' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</td> </tr>';
-                    echo '<tr><td></td></tr>';
-                    echo '</table>';
-                } else
-                    ListOutputPrint($grades_RET, $columns, 'Assignment', 'Assignments', $link, array(), array('center' => false, 'add' => true));
-                unset($percent_weights);
-            }
+                        echo '<tr><td></td></tr>';
+                        echo '</table>';
+                    } else
+                        ListOutputPrint($grades_RET, $columns, 'Assignment', 'Assignments', $link, array(), array('center' => false, 'add' => true));
+                    unset($percent_weights);
+                }
             }
             else {
                 echo "<p style='color:red'><b>No Grades Were Found</b></p>";

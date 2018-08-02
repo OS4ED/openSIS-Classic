@@ -176,10 +176,12 @@ else {
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]";
         $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID', 'mp_name' => 'SHORT_NAME');
         $link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
-
+//        if ($_REQUEST['print'] != 'list')
+//            echo '<div class="col-md-4">'.CreateSelect($mp_RET, 'marking_period_id', 'All', 'Select Marking Period: ', 'Modules.php?modname=' . $_REQUEST['modname'] . '&marking_period_id=').'</div>';
+        //echo '</TD>';
 
         if ($_REQUEST['marking_period_id'] && $_REQUEST['marking_period_id'] != '') {
-            $sql = 'SELECT subject_id,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TITLE';
+            $sql = 'SELECT subject_id,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' and syear=\'' . UserSyear() . '\' ORDER BY TITLE';
             $QI = DBQuery($sql);
             $subjects_RET = DBGet($QI);
 

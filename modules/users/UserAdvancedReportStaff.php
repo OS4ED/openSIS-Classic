@@ -78,7 +78,7 @@ if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
         
         if ($_SESSION['count_stf'] != '0') {
             unset($_SESSION['count_stf']);
-            echo '<INPUT type=submit value=\'Create Report for Selected users\' class="btn btn-primary">';
+            echo '<div class="text-center"><INPUT type=submit value=\'Create Report for Selected users\' class="btn btn-primary"></div>';
         }
         
         echo "</FORM>";

@@ -26,15 +26,13 @@
 #
 #***************************************************************************************
 include("functions/ParamLibFnc.php");
-include("functions/UrlFnc.php");
+//include("functions/UrlFnc.php");
 include('RedirectRootInc.php');
-
-//print_r($_GET);
-$url=validateQueryString(curPageURL());
-if($url===FALSE)
- {
- header('Location: index.php');
- }
+//$url=validateQueryString(curPageURL());
+//if($url===FALSE)
+// {
+// header('Location: index.php');
+// }
 error_reporting(E_ERROR);
 $start_time = time();
 include 'Warehouse.php';
@@ -53,7 +51,7 @@ if(!isset($_REQUEST['_openSIS_PDF']))
 }
 if(optional_param('modname','',PARAM_NOTAGS))
 {
-	Warehouse('header');
+	//Warehouse('header');
 	if($_REQUEST['_openSIS_PDF']=='true')
 		ob_start();
 	
@@ -152,7 +150,7 @@ if(optional_param('modname','',PARAM_NOTAGS))
 		unset($_SESSION['unset_student']);
 		unset($_SESSION['staff_id']);
 	}
-	Warehouse('footer');
+	//Warehouse('footer');
 }
 
 

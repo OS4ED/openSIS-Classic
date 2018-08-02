@@ -27,9 +27,15 @@
 #***************************************************************************************
 include('../../RedirectRootInc.php');
 include('../../Warehouse.php');
+DBQuery("CREATE TABLE IF NOT EXISTS temp_schedule AS SELECT * FROM schedule WHERE 0");
 $course_period_id=$_REQUEST['cp_id'];
 $insert=$_REQUEST['insert'];
-$date=  DBDate();
+$student_start_date=DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE student_id='.UserStudentID().' AND SCHOOL_ID='.  UserSchool().' AND SYEAR='.UserSyear()));
+$student_start_date=$student_start_date[1]['START_DATE'];
+$get_cp_date=DBGet(DBQuery('SELECT BEGIN_DATE FROM course_periods WHERE course_period_id='.$course_period_id));
+if(strtotime($date)<strtotime($get_cp_date[1]['BEGIN_DATE']))
+$date=(strtotime($get_cp_date[1]['BEGIN_DATE'])<strtotime($student_start_date)?$student_start_date:$get_cp_date[1]['BEGIN_DATE']);
+//$date=  DBDate();
 if($insert=='true')
 {
     $course_RET=DBGet(DBQuery("SELECT *,cp.title AS CP_TITLE FROM course_periods cp,course_period_var cpv,school_periods sp WHERE cp.course_period_id=cpv.course_period_id AND cpv.period_id=sp.period_id AND cp.course_period_id=$course_period_id"));
@@ -71,7 +77,8 @@ if($insert=='true')
      $mark_end_date=date('d-M-Y',strtotime($mark_end_qry[1]['END_DATE' ]));
        }
         DBQuery("INSERT INTO temp_schedule(SYEAR,SCHOOL_ID,STUDENT_ID,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID) values('".UserSyear()."','".UserSchool()."','".UserStudentID()."','".$date."','".$mark_end_date."','".User('STAFF_ID')."','$course[COURSE_ID]','".$course_period_id."','$course[MP]','$course[MARKING_PERIOD_ID]')");
-        $html = 'resp';
+      $html=$course_period_id."||".$course['CP_TITLE'].'||resp';
+       // $html = 'resp';
         $html .= '<tr id="selected_course_tr_'.$course["COURSE_PERIOD_ID"].'"><td align=left><INPUT type="checkbox" id="selected_course_'.$course["COURSE_PERIOD_ID"].'" name="selected_course_periods[]" checked="checked" value="'.$course["COURSE_PERIOD_ID"].'"></td><td><b> '.$course["CP_TITLE"].'</b></td></tr>';
         $_SESSION['course_periods'][$course_period_id]=$course['CP_TITLE'];
     }

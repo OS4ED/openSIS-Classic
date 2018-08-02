@@ -67,74 +67,64 @@ session_start();
             <div class="login-wrapper">
                 <div class="panel">
                     <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-8 text-left">
-                                <div class="logo">
-                                    <img src="assets/images/opensis_logo.png" alt="openSIS">
-                                </div>
-                                <h3>Step 3 of 5</h3>
-                            </div>
-                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
-                                Installation Progress
-                                <div class="progress no-margin">
-                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="logo">
+                            <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>
+                        <h3>openSIS Installation - Site Admin Account Setup</h3>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
+                            <div class="installation-instructions">
+                                <ul class="installation-steps-label">
+                                    <li>Choose Package</li>
+                                    <li>System Requirements</li>
+                                    <li>Database Connection</li>
+                                    <li>Database Creation</li>
+                                    <li class="active">School Information</li>
+                                    <li>Site Admin Account Setup</li>
+                                    <li>Ready to go!</li>
+                                </ul>
+                                <!--<h4 class="no-margin">Installation Instructions</h4>
+                                <p>Installer has successfully created the database for openSIS application.</p>
+                                <p>Once you enter the school name, begin and end dates, it will create a default school in the system.</p>
+                                <p>If you install it with sample data, then a sample school will be installed with data. You can learn from the setup and operation of the sample school to configure your own school.</p>-->
+                            </div>
                             <div class="installation-steps">
-                                <h2 class="text-center no-margin">Database Created</h2>
-                                <h5 class="text-center" style="padding: 0 20px;">Please enter your School Name, Beginning and Ending dates of the school year.</h5>
+                                <h4 class="m-t-0 m-b-5">Enter your School Name, Beginning and Ending Dates of the school year</h4>
                                 <div id="calculating" class="loading clearfix"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Configuring database. Please wait...</div>
                                 <div id="step_container">
-                                    <form name='step3' class="form-horizontal" id='step3' method="post" action="Ins3.php">
+                                    <form name='step3' id='step3' method="post" action="Ins3.php">
                                         <div id="error" class="text-center">&nbsp;</div>
-                                        <table border="0" cellspacing="2" cellpadding="0" align="center">
-                                            <tr align="left">
-                                                <td align="center" valign="top">
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-4">School Name</label>
-                                                        <div class="col-md-8">
-                                                            <input type="text" name="sname" id="sname" size="30" value="" class="form-control" />
-                                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label">School Name</label>
+                                            <input type="text" name="sname" id="sname" size="30" value="" class="form-control" />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Beginning Date (mm/dd/yyyy)</label>
+                                                    <div class="input-group date">
+                                                        <input name="beg_date" id="beg_date" type="text" class="form-control">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-4">Begining Date (mm/dd/yyyy)</label>
-                                                        <div class="col-md-8">
-                                                            <div class="input-group date">
-                                                                <input name="beg_date" id="beg_date" type="text" class="form-control">
-                                                                <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
-                                                            </div>
-                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Ending Date (mm/dd/yyyy)</label>
+                                                    <div class="input-group date">
+                                                        <input name="end_date" id="end_date" type="text" class="form-control">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
                                                     </div>
-
-<!--                                                                    <input maxlength="25" size="10" type="Text" readonly class="form-control" />
-                                                                    <a href="javascript:NewCal('beg_date','mmddyyyy')"><img src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" /></a>-->
-
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-4">Ending Date (mm/dd/yyyy)</label>
-                                                        <div class="col-md-8">
-                                                            <div class="input-group date">
-                                                                <input name="end_date" id="end_date" type="text" class="form-control">
-                                                                <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="checkbox-inline"><input type="checkbox" name="sample_data" id="sample_data" value="insert" id="sample_data"/> Install with sample school data</label>
-                                                    </div>
-                                                    <div class="text-center"><input type="submit" value="Save & Next" class="btn btn-primary" name="btnsyear" onclick="return check();" /></div>
-
-                                                                    <!--</td><td> : </td><td> <input name="end_date" id="end_date" maxlength="25" size="10" type="Text" readonly />
-                                                                    <a href="javascript:NewCal('end_date','mmddyyyy')"><img src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" /></a>-->
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="checkbox-inline"><input type="checkbox" name="sample_data" id="sample_data" value="insert" id="sample_data"/> Install with sample school data</label>
+                                        </div>
+                                        <hr/>
+                                        <div class="text-right"><input type="submit" value="Save & Next" class="btn btn-success" name="btnsyear" onclick="return check();" /></div>
 
 
                                         <script language="JavaScript" type="text/javascript">
@@ -258,6 +248,15 @@ session_start();
                                                             return false;
                                                         }
                                                     }
+                                                    if(end_date.value != '')
+                                                    { 
+                                                        if((Date.parse(beg_date.value) >= Date.parse(end_date.value)))
+                                                        {
+                                                            document.getElementById("error").innerHTML = '<font style="color:red"><b>End date should be greater than Start date. </b></font>';
+                                                            end_date.focus();
+                                                            return false;
+                                                        }
+                                                    }
                                                 }
                                                 if (sample_data.checked == false && sname.value == '')
                                                 {
@@ -347,17 +346,11 @@ session_start();
                                     </form>
                                 </div>
                             </div>
-                            <div class="installation-instructions">
-                                <h4 class="no-margin">Installation Instructions</h4>
-                                <p>Installer has successfully created the database for openSIS application.</p>
-                                <p>Once you enter the school name, begin and end dates, it will create a default school in the system.</p>
-                                <p>If you install it with sample data, then a sample school will be installed with data. You can learn from the setup and operation of the sample school to configure your own school.</p>
-                            </div>
                         </div>
                     </div>
                 </div>
                 <footer>
-                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>).
                 </footer>
             </div>
         </section>

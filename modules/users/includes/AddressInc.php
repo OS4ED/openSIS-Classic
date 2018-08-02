@@ -229,16 +229,16 @@ if (!$_REQUEST['modfunc']) {
                 $size = false;
 
 
-            echo '<h5 class="text-primary">Home Address</h5>';
-            
-            echo '<div class="row">';
-            echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS1_PRIMARY]', 'Street Address 1', 'class=cell_medium') . '</div>';
             if ($_REQUEST['address_id'] != 'new' && $_REQUEST['address_id'] != '0') {
                 $display_address = urlencode($this_address['STAFF_ADDRESS1_PRIMARY'] . ', ' . ($this_address['STAFF_CITY_PRIMARY'] ? ' ' . $this_address['STAFF_CITY_PRIMARY'] . ', ' : '') . $this_address['STAFF_STATE_PRIMARY'] . ($this_address['STAFF_ZIP_PRIMARY'] ? ' ' . $this_address['STAFF_ZIP_PRIMARY'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
-                echo '&nbsp;<A class=red HREF=# onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'>Map it</A>';
+                echo '<div class="pull-right"><A class="btn bg-teal-400 btn-xs btn-labeled" HREF=# onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</A></div>';
             }
+            echo '<h5 class="text-primary">Home Address</h5>';
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS1_PRIMARY]', 'Street Address 1', 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
@@ -269,10 +269,9 @@ if (!$_REQUEST['modfunc']) {
                 $this_address['MAILING'] = 'Y';
             }
 
-            echo '<h5 class="text-primary">Mailing Address</h5>';
             
             if ($_REQUEST['address_id'] == 'new')
-                echo '<div><label class="radio-inline"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>Same as Home Address</label><label class="radio-inline"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">Add New Address</label></div><br/>';
+                echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>Same as Home Address</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">Add New Address</label></div>';
             if ($_REQUEST['address_id'] == 'new')
                 echo '<div id="hideShow" style="display:none">';
             else

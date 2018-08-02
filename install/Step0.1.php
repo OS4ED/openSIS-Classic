@@ -54,28 +54,31 @@ if(page && page!="index.php"){
             <div class="login-wrapper">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h3>openSIS Installer</h3>
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
-                        </div>                        
+                        </div>   
+                        <h3>openSIS Installation</h3> 
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
                             <div class="installation-steps">
                                 <div class="row">
-                                    <div class="col-sm-10 col-sm-offset-1">
-                                        <table style="height:270px; width: 80%;" border="0" cellspacing="12" cellpadding="12" align="center">
+                                    <div class="col-sm-12">
+                                        <table style="height:270px; width: 80%; margin: 30px auto;" border="0" cellspacing="12" cellpadding="12" align="center">
                                             <tr>
                                                 <td align="center" valign="middle">
                                                     <div class="text-center">
                                                         <img src="assets/images/warning.svg" width="50" />
-                                                    </div><br/><br/>
-                                                    <p>Please be advised that only openSIS-CE version 4.7 and above can be upgraded to the latest version using this installer.</p>
-                                                    <p>If you are running version 4.7 or above, click Continue to upgrade, otherwise click Go Back and try the New Installation.</p>
+                                                    </div><br/>
+                                                    <p>Please be advised that only openSIS-CE version 6.3 and above can be upgraded to the latest version using this installer. If you are running version 6.3 or above, click Continue to upgrade, otherwise click Go Back and try the New Installation.</p>
+                                                    
+                                                    <p class="text-danger"><b>Please Note:</b> Remember to backup your current database and keep it in a safe place
+                                                        before attempting an upgrade. OS4ED will not be responsible for data
+                                                        corruption or data loss if the upgrade is unsuccessful for any reason.</p>
                                                     <br/>
                                                     <div class="text-center">
                                                         <?php
-                                                        echo '<a href="Step0.php" class="btn btn-default">Go Back</a> &nbsp; <a href="Step1.php?mod=upgrade" class="btn btn-primary">Continue</a>';
+                                                        echo '<a href="Step0.php" class="btn btn-default">Go Back</a> &nbsp; <a href="SystemCheck.php?mod=upgrade" class="btn btn-success">Continue</a>';
                                                         ?>
                                                     </div>
                                                 </td>
@@ -83,12 +86,6 @@ if(page && page!="index.php"){
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="installation-instructions">
-                                <h4 class="no-margin">Please Note</h4>
-                                <p class="text-danger">Remember to backup your current database and keep it in a safe place
-                                    before attempting an upgrade. OS4ED will not be responsible for data
-                                    corruption or data loss if the upgrade is unsuccessful for any reason.</p>
                             </div>
                         </div>
                     </div>

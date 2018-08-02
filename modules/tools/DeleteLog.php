@@ -34,10 +34,9 @@ if (isset($_REQUEST['del'])) {
     if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
 
         $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
-        //$start_date = ProperDateMAvr($start_date);
+        $start_date = ProperDateMAvr($start_date);
 
-        //$org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
-        $org_start_date = $start_date;
+        $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
 
         $conv_st_date = con_date($org_start_date);
     }
@@ -45,9 +44,8 @@ if (isset($_REQUEST['del'])) {
     if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 
         $end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
-        //$end_date = ProperDateMAvr($end_date);
-        //$org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
-        $org_end_date = $end_date;
+        $end_date = ProperDateMAvr($end_date);
+        $org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
 
         $conv_end_date = con_date_end($org_end_date);
     }
@@ -75,13 +73,15 @@ if (isset($_REQUEST['del'])) {
     # ------------------------------------------------------------------------------------- #
 }
 
-echo "<br><FORM class=\"form-horizontal\" name=del id=del action=Modules.php?modname=$_REQUEST[modname] method=POST>";
+echo '<div class="row">';
+echo '<div class="col-md-8 col-md-offset-2">';
+echo "<FORM class=\"form-horizontal\" name=del id=del action=Modules.php?modname=$_REQUEST[modname] method=POST>";
 PopTable('header', 'Delete Log');
 
 echo '<h5 class="text-center">Please Select Date Range</h5>';
 
 echo '<div class="row">';
-echo '<div class="col-lg-3 col-lg-offset-3">';
+echo '<div class="col-lg-6 col-lg-offset-3">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-2 control-label text-right">From</label><div class="col-md-10">';
@@ -90,7 +90,9 @@ echo '</div>'; //.col-md-8
 echo '</div>'; //.form-group
 
 echo '</div>'; //.col-lg-4
-echo '<div class="col-lg-3">';
+echo '</div>'; //.row
+echo '<div class="row">';
+echo '<div class="col-lg-6 col-lg-offset-3">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-2 control-label text-right">To </label><div class="col-md-10">';
@@ -101,13 +103,15 @@ echo '</div>'; //.form-group
 echo '</div>'; //.col-lg-4
 echo '</div>'; //.row
 
-echo '<div class="text-center"><input type="submit" class="btn btn-primary" value="Delete" name="del"></div>';
+$btn = '<div class="text-center"><input type="submit" class="btn btn-primary" value="Delete" name="del"></div>';
 
-PopTable('footer');
+PopTable('footer', $btn);
 echo '</FORM>';
+echo '</div>';
+echo '</div>'; //.row
 
 function con_date($date) {
-   /* $mother_date = $date;
+    $mother_date = $date;
     $year = substr($mother_date, 7);
     $temp_month = substr($mother_date, 3, 3);
 
@@ -139,14 +143,10 @@ function con_date($date) {
     $day = substr($mother_date, 0, 2);
 
     $select_date = $year . '-' . $month . '-' . $day . ' ' . '00:00:00';
-    * 
-    */
-    $select_date = $date . ' ' . '00:00:00';
     return $select_date;
 }
 
 function con_date_end($date) {
-    /*
     $mother_date = $date;
     $year = substr($mother_date, 7);
     $temp_month = substr($mother_date, 3, 3);
@@ -179,9 +179,6 @@ function con_date_end($date) {
     $day = substr($mother_date, 0, 2);
 
     $select_date = $year . '-' . $month . '-' . $day . ' ' . '23:59:59';
-     * 
-     */
-    $select_date = $date . ' ' . '23:59:59';
     return $select_date;
 }
 

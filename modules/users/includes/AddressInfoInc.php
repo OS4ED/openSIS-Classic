@@ -36,35 +36,35 @@ $addr = $addr[1];
 echo '<div class="row">';
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-lg-4">Address <span class="text-danger">*</span></label>';
-echo '<div class="col-lg-8"'.TextInput($addr['ADDRESS'], 'student_addres[STREET_ADDRESS_1]', '', 'placehodler="Address" size=25 maxlength=100 id=email').'</div>';
+echo '<label class="control-label col-lg-4 text-right">Address <span class="text-danger">*</span></label>';
+echo '<div class="col-lg-8">'.TextInput($addr['ADDRESS'], 'student_addres[STREET_ADDRESS_1]', '', 'placeholder=Address size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6
 
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-lg-4">Street</label>';
+echo '<label class="control-label col-lg-4 text-right">Street</label>';
 echo '<div class="col-lg-8">'.TextInput($addr['STREET'], 'student_addres[STREET_ADDRESS_2]', '', 'size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6
 
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-lg-4">City <span class=text-danger>*</span></label>';
+echo '<label class="control-label col-lg-4 text-right">City <span class=text-danger>*</span></label>';
 echo '<div class="col-lg-8">'.TextInput($addr['CITY'], 'student_addres[CITY]', '', 'size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6
 
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-lg-4">State <span class=text-danger>*</span></label>';
+echo '<label class="control-label col-lg-4 text-right">State <span class=text-danger>*</span></label>';
 echo '<div class="col-lg-8">'.TextInput($addr['STATE'], 'student_addres[STATE]', '', 'size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6
 
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-lg-4">Zip Code <span class=text-danger>*</span></label>';
+echo '<label class="control-label col-lg-4 text-right">Zip Code <span class=text-danger>*</span></label>';
 echo '<div class="col-lg-8">'.TextInput($addr['ZIPCODE'], 'student_addres[ZIPCODE]', '', 'size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6

@@ -55,20 +55,36 @@ if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file'][
             $upload->deleteOldImage($stu_img_info[1]['ID']);
 //	$upload->destination_path=$destination_path;
 	$upload->name=$_FILES["file"]["name"];
+        $upload->fileSize=$fileSize;
 	$upload->setFileExtension();
 	$upload->fileExtension;
 	$upload->validateImage();
+        $upload->validateImageSize();
+        if($upload->wrongSize==1){
+	$_FILES["file"]["error"]=1;
+	}
 	if($upload->wrongFormat==1){
 	$_FILES["file"]["error"]=1;
 	}
 	
-	if ($_FILES["file"]["error"] > 0)
+	if ($_FILES["file"]["error"] > 0 && $upload->wrongFormat==1)
     {
     $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
     echo '
 	'.$msg.'
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><br /><br>
+echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+<input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+</form>';
+PopTable ('footer');
+    }
+    else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize==1)
+    {
+    $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+    echo '
+	'.$msg.'
+	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
+echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
 PopTable ('footer');
@@ -102,7 +118,7 @@ else
 echo '
 '.$msg.'
 <form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><br /><br>
+echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
 PopTable ('footer');

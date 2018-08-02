@@ -149,12 +149,12 @@ a.badge,
  * ---------------------------------------------------------------------------- */
 .sidebar {
   color: #fff;
-  position: relative;
+  /*position: relative;
   width: 100%;
-  display: none;
+  display: none;*/
 }
 .sidebar .sidebar-content {
-  background-color: #0991e8;
+  background-color: #5090C1;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
@@ -193,7 +193,7 @@ a.badge,
 .sidebar-content {
   position: relative;
   border-radius: 3px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .sidebar-all-hidden .sidebar-main,
 .sidebar-all-hidden .sidebar-secondary,
@@ -265,7 +265,7 @@ a.badge,
   background-size: cover;
 }
 .sidebar-user-material .navigation-wrapper {
-  background-color: #055fb3;
+  background-color: #356d99;
   /*border-bottom: 1px solid rgba(255, 255, 255, 0.1);*/
 }
 .sidebar-default .sidebar-user-material .navigation-wrapper {
@@ -287,13 +287,13 @@ a.badge,
   padding: 10px 20px;
   display: block;
   color: #fff;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(36, 73, 102, 0.7);
   /*text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);*/
 }
 .category-content:hover .sidebar-user-material-menu > a,
 .sidebar-user-material-menu > a:focus,
 .sidebar-user-material-menu > a[aria-expanded="true"] {
-  background-color: #004e96;
+  background-color: rgba(24, 58, 84, 0.7);
 }
 .sidebar-user-material-menu > a > i {
   float: right;
@@ -372,7 +372,7 @@ a.badge,
   margin-top: 10px;
 }
 .navigation li a {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 1);
   display: block;
   -webkit-transition: background 0.15s linear, color 0.15s linear;
   -o-transition: background 0.15s linear, color 0.15s linear;
@@ -451,7 +451,7 @@ a.badge,
 .navigation > li.active > a,
 .navigation > li.active > a:hover,
 .navigation > li.active > a:focus {
-  background-color: #006cb1;
+  background-color: rgba(0,0,0,0.4);
   color: #fff;
 }
 .navigation > li.active > a > [class*=text-] {
@@ -2771,6 +2771,7 @@ label.checkbox-switch.checkbox-inline {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: right;
 }
 .select2-selection--single .select2-selection__rendered > i {
   margin-right: 16px;
@@ -19629,12 +19630,19 @@ thead .htCollapseButton:after {
     padding-top: 0;
   }
   .panel-heading .visible-elements {
-    margin: 15px -20px 0 -20px;
+    margin: 0 -20px 0 -20px;
     background-color: #fcfcfc;
+    padding-top: 15px;
+  }
+  .panel-heading .visible-elements .form-group {
+      margin-bottom: 0;
   }
   .panel-flat .panel-heading .visible-elements {
     margin-top: 20px;
     border-bottom: 1px solid #ddd;
+  }
+  .panel-heading.has-visible-elements .panel-title {
+      margin-bottom: 20px;
   }
   .panel-footer .visible-elements {
     margin-top: 8px;

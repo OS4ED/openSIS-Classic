@@ -28,8 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
-    $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
-    //$date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
+    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
 } else {
     $_REQUEST['day_date'] = date('d');
     $_REQUEST['month_date'] = strtoupper(date('m'));

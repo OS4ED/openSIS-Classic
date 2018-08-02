@@ -72,28 +72,33 @@ if ($_SESSION['mod'] == 'upgrade') {
             <body class="outer-body">
                 <section class="login">
                     <div class="login-wrapper">
-                        <div class="panel" style="width: 50%;">
+                        <div class="panel">
                         <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-8 text-left">
-                                    <div class="logo">
-                                        <img src="assets/images/opensis_logo.png" alt="openSIS">
-                                    </div>
-                                </div>
-                                <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
-                                    <div class="progress no-margin">
-                                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                        </div>
-                                    </div>
-                                    openSIS Installation : Step 5 of 5
-                                </div>
+                            <div class="logo">
+                                <img src="assets/images/opensis_logo.png" alt="openSIS">
                             </div>
+                            <h3>openSIS Installation - Complete</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="padding-20 class="text-center"">
-                                <h2 class="text-center">Congratulations! You have successfully installed openSIS</h2>
-                                <p class="text-center">' . $display_text . '</p>
-                                <div class="text-center"><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-primary btn-lg" target="_parent">Login</a></div>
+                            <div class="installation-steps-wrapper">
+                                <div class="installation-instructions">
+                                    <ul class="installation-steps-label">
+                                        <li>Choose Package</li>
+                                        <li>System Requirements</li>
+                                        <li>Database Connection</li>
+                                        <li>Database Creation</li>
+                                        <li>School Information</li>
+                                        <li>Site Admin Account Setup</li>
+                                        <li class="active">Ready to go!</li>
+                                    </ul>
+                                </div>
+                                <div class="installation-steps">
+                                    <div class="padding-20 class="text-center"">
+                                        <h2 class="text-center">Congratulations! You have successfully installed openSIS</h2>
+                                        <p class="text-center">' . $display_text . '</p>
+                                        <div class="text-center"><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-primary btn-lg" target="_parent">Login</a></div>
+                                    </div>
+                                </div>
                             </div>
                         </div><!-- /.panel-body -->
                         </div><!-- /.panel -->
@@ -155,40 +160,44 @@ You need to follow the instructions in the administrator manual for setting up t
             <body class="outer-body">
                 <section class="login">
                     <div class="login-wrapper">
-                        <div class="panel"" style="width: 60%;">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-8 text-left">
-                                    <div class="logo">
-                                        <img src="assets/images/opensis_logo.png" alt="openSIS">
-                                    </div>
-                                    <h3>Step 5 of 5</h3>
-                                </div>
-                                <div class="col-xs-4 text-center" style="padding: 20px 20px 0;">
-                                    Installation Progress
-                                    <div class="progress no-margin">
-                                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="panel"">
+                        <div class="panel-heading">                            
+                            <div class="logo">
+                                <img src="assets/images/opensis_logo.png" alt="openSIS">
                             </div>
+                            <h3>openSIS Installation - Complete</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="padding-20 class="text-center"">
-                                <div class="text-center"><img src="assets/images/check-clipart-animated.gif" width="80" /><h3 class="text-success">Congratulations! You have successfully installed openSIS</h3></div>
-                                <div class="row" style="padding: 10px 0 0;">
-                                    <div class="col-md-12 text-center">
-                                        <p style="padding: 0 30px 10px;">' . $display_text . '</p>
-                                        <p style="padding: 0 30px;"><b>You can also visit the support portal and read the quick setup: <br/><a href="https://support.os4ed.com/hc/en-us/articles/200976357-Quick-Set-Up" target="_blank">https://support.os4ed.com/hc/en-us/articles/200976357-Quick-Set-Up</a></b></p>
+                            <div class="installation-steps-wrapper">
+                                <div class="installation-instructions">
+                                    <ul class="installation-steps-label">
+                                        <li>Choose Package</li>
+                                        <li>System Requirements</li>
+                                        <li>Database Connection</li>
+                                        <li>Database Creation</li>
+                                        <li>School Information</li>
+                                        <li>Site Admin Account Setup</li>
+                                        <li class="active">Ready to go!</li>
+                                    </ul>
+                                </div>
+                                <div class="installation-steps">
+                                    <div class="padding-20 class="text-center"">
+                                        <div class="text-center"><img src="assets/images/check-clipart-animated.gif" width="80" /><h3 class="text-success">Congratulations! You have successfully installed openSIS</h3></div>
+                                        <div class="row" style="padding: 10px 0 0;">
+                                            <div class="col-md-12 text-center">
+                                                <!--<p style="padding: 0 30px 10px;">' . $display_text . '</p>
+                                                <p style="padding: 0 30px;"><b>You can also visit the support portal and read the quick setup: <br/><a href="https://support.os4ed.com/hc/en-us/articles/200976357-Quick-Set-Up" target="_blank">https://support.os4ed.com/hc/en-us/articles/200976357-Quick-Set-Up</a></b></p>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center" style="padding: 10px 0;"><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-success btn-lg" target="_parent">Proceed to openSIS Login</a></div>
                                     </div>
                                 </div>
-                                
-                                <div class="text-center" style="padding: 10px 0;"><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-primary btn-lg" target="_parent">Proceed to openSIS Login</a></div>
                             </div>
                         </div><!-- /.panel-body -->
                         </div><!-- /.panel -->
                         <footer>
-                            Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                            Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>).
                         </footer>
                     </div><!-- /.login-wrapper -->
                 </section><!-- /.login -->

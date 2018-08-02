@@ -97,7 +97,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                                 $flag = 0;
                             }
                             if (isset($break) && $break != '') {
-                                $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND GRADE_SCALE_ID=' . $_REQUEST['tab_id'] . ' AND break_off=\'' . $break . '\''));
+                                $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND GRADE_SCALE_ID=' . $_REQUEST['tab_id'] . ' AND break_off=\'' . $break . '\' AND ID!=' . $id));
 
                                 $v_break = $validate_break[1]['NO'];
                             }
@@ -110,8 +110,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                                 $flag = 0;
                             }
 
-                            $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' AND break_off=\'' . $break . '\''));
-
+                            $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' AND break_off=\'' . $break . '\' AND ID!=' . $id));
                             $v_break = $validate_break[1]['NO'];
                         }
                         if ($validate_title[1]['TITLE_EX'] != 0 && $flag != 0) {
@@ -191,12 +190,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                                     echo "<div class=\"alert bg-danger alert-styled-left\">Unable to save data, because title already exists.</div>";
                                     break;
                                 }
-                                if ($v_break > 0) {
-                                    echo "<div class=\"alert bg-danger alert-styled-left\">Unable to save data, because break of already exists.</div>";
-                                    break;
-                                } else {
+                                
                                     DBQuery($sql); //insert query
-                                }
+                                
                             }
                         }
                     }
@@ -261,7 +257,7 @@ if (!$_REQUEST['modfunc']) {
         $grade_scales_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grade_scales WHERE ID=\'' . $course_period_RET[1]['GRADE_SCALE_ID'] . '\''), array(), array('ID'));
         if ($course_period_RET[1]['DOES_BREAKOFF'] == 'Y') {
             $teacher_id = $course_period_RET[1]['TEACHER_ID'];
-            $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . $teacher_id . '\' AND PROGRAM=\'Gradebook\''), array(), array('TITLE'));
+            $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . $teacher_id . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\''), array(), array('TITLE'));
         }
         $_REQUEST['tab_id'] = key($grade_scales_RET);
     }
@@ -364,18 +360,24 @@ function makeGradesInput($value, $name) {
         else
             $extra = ' size=5 maxlength=5 onkeydown=\"return numberOnlyMod(event,this);\"';
     }
-    elseif ($name == 'BREAK_OFF' && $teacher_id && $config_RET[UserCoursePeriod() . '-' . $THIS_RET['ID']][1]['VALUE'] != '')
-        return '<FONT color=blue>' . $config_RET[UserCoursePeriod() . '-' . $THIS_RET['ID']][1]['VALUE'] . '</FONT>';
+    elseif ($name == 'BREAK_OFF' && $teacher_id && rtrim($config_RET[UserCoursePeriod() . '-' . $THIS_RET['ID']][1]['VALUE'], '_' . UserCoursePeriod()) != '') {
+        $break_off = $config_RET[UserCoursePeriod() . '-' . $THIS_RET['ID']][1]['VALUE'];
+        $break_off = explode('_', $break_off);
+        if (count($break_off) > 1)
+            return '<FONT color=blue>' . $break_off[0] . '</FONT>';
+        else
+            return '<FONT color=blue>' . $break_off . '</FONT>';
+    }
     else {
         if ($name == 'TITLE') {
             $extra = "size=15 maxlength=15";
             if ($id == 'new')
-                $extra .=' id=sc_title';
+                $extra .= ' id=sc_title';
         }
         elseif ($name == 'BREAK_OFF') {
             $extra = "size=15 maxlength=15";
             if ($id == 'new')
-                $extra .=' id=break_off  onkeydown="return numberOnly(event);"';
+                $extra .= ' id=break_off  onkeydown="return numberOnly(event);"';
             else
                 $extra = ' onkeydown=\"return numberOnly(event);\"';
         }

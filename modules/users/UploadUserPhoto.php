@@ -47,29 +47,52 @@ if($profile[1]['PROFILE']!='parent')
 {
 if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file']['name'])
 {
-	$target_path=$UserPicturesPath.'/'.UserStaffID().'.JPG';
-	$destination_path = $UserPicturesPath;	
+    
+        $fileName=$_FILES['file']['name'];
+        $tmpName  = $_FILES['file']['tmp_name'];
+        $fileSize = $_FILES['file']['size'];
+        $fileType = $_FILES['file']['type'];
+//	$target_path=$UserPicturesPath.'/'.UserStaffID().'.JPG';
+//	$destination_path = $UserPicturesPath;	
         $upload= new upload();
         
-	$upload->target_path=$target_path;
-	$upload->deleteOldImage();
-	$upload->destination_path=$destination_path;
+//	$upload->target_path=$target_path;
+        if($profile[1]['IMG_NAME']!='')
+            $upload->deleteOldImage(UserStaffID());
+//	$upload->destination_path=$destination_path;
 	$upload->name=$_FILES["file"]["name"];
+        $upload->fileSize=$fileSize;
 	$upload->setFileExtension();
 	$upload->fileExtension;
 	$upload->validateImage();
+        $upload->validateImageSize();
+        if($upload->wrongSize==1){
+	$_FILES["file"]["error"]=1;
+	}
 	if($upload->wrongFormat==1){
 	$_FILES["file"]["error"]=1;
 	}
 	
-	if ($_FILES["file"]["error"] > 0)
+	if ($_FILES["file"]["error"] > 0  && $upload->wrongFormat==1)
         {
            
         $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
         echo '
             '.$msg.'
             <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
-    echo '<div align=center>Select image file: <input name="file" type="file" /><br /><br>
+    echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+    <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+    </form>';
+    PopTable ('footer');
+        }
+        else if ($_FILES["file"]["error"] > 0  && $upload->wrongSize==1)
+        {
+           
+        $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+        echo '
+            '.$msg.'
+            <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
+    echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
     <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
     </form>';
     PopTable ('footer');
@@ -77,12 +100,22 @@ if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file'][
   	else
     {
             
-	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
-	  @fopen($upload->target_path,'r');
-	  echo '<div align=center><IMG SRC="'.$upload->target_path.'?id='.rand(6,100000).'" width=150 class=pic></div><div class=break></div>';
-	  fclose($upload->target_path);
-      echo "<b>Copied file to " .$upload->destination_path."</b><p>";
-      $filename =  $upload->target_path;
+	  $fp = fopen($tmpName, 'r');
+            $content = fread($fp, filesize($tmpName));
+            $content = addslashes($content);
+            fclose($fp);
+
+            if(!get_magic_quotes_gpc())
+            {
+                $fileName = addslashes($fileName);
+            }
+
+            DBQuery('UPDATE staff SET IMG_NAME=\''.$fileName.'\',IMG_CONTENT=\''.$content.'\' WHERE STAFF_ID='.UserStaffID());
+	  $stf_photo=DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=\''.UserStaffID().'\' '));
+            echo '<div align=center><IMG SRC="data:image/jpeg;base64,'.base64_encode($stf_photo[1]['IMG_CONTENT']).'" width=150 class=pic></div><div class=break></div>';
+//	  fclose($upload->target_path);
+      echo "<b>Staff Photo Uploaded Successfully.</b><p>";
+//      $filename =  $upload->target_path;
 	  PopTable ('footer');
     }    
 }
@@ -91,7 +124,7 @@ else
 echo '
 '.$msg.'
 <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><br /><br>
+echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
 </form>';
 PopTable ('footer');
@@ -117,9 +150,13 @@ var $name;
 var $fileExtension;
 var $allowExtension=array("jpg","jpeg","png","gif","bmp");
 var $wrongFormat=0;
-function deleteOldImage(){
-if(file_exists($this->target_path))
-	unlink($this->target_path);
+function deleteOldImage($id=''){
+//if(file_exists($this->target_path))
+//	unlink($this->target_path);
+    if($id!='')
+    {
+        DBQuery('UPDATE staff SET IMG_NAME=NULL,IMG_CONTENT=NULL WHERE STAFF_ID='.$id);
+}
 }
 
 function setFileExtension(){

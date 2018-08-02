@@ -101,16 +101,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $extra['FROM'].=' ,login_authentication la';
                 $extra['WHERE'].=' AND la.user_id=s.student_id AND la.profile_id=3';
             }
-            $extra['SELECT'] .= ',ssm.NEXT_SCHOOL,ssm.CALENDAR_ID,ssm.SYEAR,s.*';
+            $extra['SELECT'] .= ',ssm.NEXT_SCHOOL,ssm.CALENDAR_ID,ssm.SYEAR,ssm.SECTION_ID,s.*';
             if ($_REQUEST['fields']['FIRST_INIT'])
                 $extra['SELECT'] .= ',substr(s.FIRST_NAME,1,1) AS FIRST_INIT';
 
             if (!$extra['functions'])
-                $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate');
+                $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSection');
 
             if ($_REQUEST['search_modfunc'] == 'list') {
                 if (!$fields_list) {
-                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GENDER' => 'Gender', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
                     if ($extra['field_names'])
                         $fields_list += $extra['field_names'];
 
@@ -231,10 +231,21 @@ if ($_REQUEST['modfunc'] == 'save') {
                     if ($extra['array_function'] && function_exists($extra['array_function']))
                         $extra['array_function']($RET);
 
-                    if (count($RET) > 0)
-                    $table = ListOutputPrintReportMod($RET, $columns);
+                    if (count($_REQUEST['cp_arr']) > 0)
+                        $cr_pr_id = implode(",", $_REQUEST['cp_arr']);
+                    else {
+                        $cr_pr_id = 0;
+                    }
+                    $date = DBDate();
+
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
+
+                    if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
+                        $table = ListOutputPrintReportMod($RET, $columns);
                     else
                         $table = '<br><br><b><font style="color:red">No students found.</font></b>';
+                    unset($cr_pr_id);
+                    unset($date);
                 }
             }
 
@@ -317,6 +328,42 @@ if (!$_REQUEST['modfunc']) {
         echo '</FORM>';
     }
 }
+
+    echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h5 class="modal-title">Choose course</h5>
+    </div>
+
+    <div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+    foreach($subjects_RET as $val)
+    {
+    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    }
+    echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 
 function mySearch($extra) {
 
@@ -402,6 +449,15 @@ function _make_no_student($value) {
 
     $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
     return $stu_schedule_qr[1]['TOT'];
+}
+
+function _makeSection($value) {
+    if ($value != '') {
+        $section = DBGet(DBQuery('SELECT * FROM school_gradelevel_sections WHERE ID=' . $value));
+        $section = $section[1]['NAME'];
+    } else
+        $section = '';
+    return $section;
 }
 
 ?>

@@ -44,7 +44,7 @@ function TextAreaInputOrg($value, $name, $title = '', $options = '', $div = true
         if ($value == '' || $div == false)
             return "<TEXTAREA name=$name $options>$value</TEXTAREA>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
         else
-            return "<DIV id='div$name'><div style='width:500px;' onclick='javascript:addHTML(\"<TEXTAREA id=textarea$name name=$name $options>" . ereg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'><TABLE class=LO_field height=100%><TR><TD>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV style="overflow:auto; height:' . (15 * $rows) . 'px; width:' . ($cols * 10) . '; padding-right: 16px;">' . nl2br($value) . '</DIV>' : '<DIV style="overflow:auto; width:' . $divwidth . '; padding-right: 16px;">' . nl2br($value) . '</DIV>') . '</TD></TR></TABLE>' . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . '</div></DIV>';
+            return "<DIV id='div$name'><div style='width:500px;' onclick='javascript:addHTML(\"<TEXTAREA id=textarea$name name=$name $options>" . par_rep("/[\n\r]/", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'><TABLE class=LO_field height=100%><TR><TD>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV style="overflow:auto; height:' . (15 * $rows) . 'px; width:' . ($cols * 10) . '; padding-right: 16px;">' . nl2br($value) . '</DIV>' : '<DIV style="overflow:auto; width:' . $divwidth . '; padding-right: 16px;">' . nl2br($value) . '</DIV>') . '</TD></TR></TABLE>' . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . '</div></DIV>';
     } else
         return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
@@ -83,8 +83,7 @@ function for_error() {
 			<table width=\"100%\" border=\"0\">
   <tr>
     <td align='center' class='copyright'>
-       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4Ed</a>).
-                and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL License</a>.
+       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
                 </center></td>
   </tr>
 </table>
@@ -170,10 +169,10 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
 
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
 
+        echo '<FORM class="form-horizontal" name=roll_over id=roll_over action=' . $PHP_tmp_SELF . '&delete_ok=1 METHOD=POST>';
         PopTable('header', $title);
 
         echo '<h4 class="text-center">' . $question . '</h4>';
-        echo '<FORM class="form-horizontal" name=roll_over id=roll_over action=' . $PHP_tmp_SELF . '&delete_ok=1 METHOD=POST>';
         echo '<p class="text-center"><span class="text-danger"><i class="icon-alert"></i> Caution : </span> Rollover is an irreversible process.  If you are sure you want to proceed, type in the <BR>effective  roll over date below. You can use the next school year’s attendance start date.</p>';
         echo '<hr/>';
         echo '<div class="row">';
@@ -347,9 +346,9 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         
         echo $message;
 
-        echo "<INPUT type=submit class='btn btn-danger' value=Rollover onclick=\"return formcheck_rollover();\">&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'>";
+        $btn = "<div class='text-center'><INPUT type=submit class='btn btn-danger' value=Rollover onclick=\"return formcheck_rollover();\">&nbsp;<INPUT type=button class='btn btn-default' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'></div>";
+        PopTable('footer', $btn);
         echo '</FORM>';
-        PopTable('footer');
         return false;
     } else
         return true;
@@ -417,7 +416,8 @@ function PrepareDateSchedule($date = '', $title = '', $allow_na = true, $options
 
     if ($options['C']) {
 
-        $return .= DateInputAY($date, $title, $counter);
+		$return .= DateInputAY($date, $title, $counter);
+        //$return .= DateInputAY($date, $title, $counter);
         //$return .= DateInputAY($date!="" ? date("d-M-Y", strtotime($date)) : "", $title, $counter);
         $counter++;
     }
@@ -647,7 +647,7 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y')
                     $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
             }
@@ -680,7 +680,7 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y') {
                     $sql .= ',' . db_case(array('(ssm.START_DATE IS NOT NULL AND  (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE';
                     $sql .= ',' . db_case(array('(\'' . $extra['DATE'] . '\'>=ss.START_DATE AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE_SCHEDULE';
@@ -689,7 +689,7 @@ function GetStuListAttn(& $extra) {
 
             $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
             if ($extra['cpvdate'] != '')
-                $sql.=$extra['cpvdate'];
+                $sql .= $extra['cpvdate'];
             if ($_REQUEST['include_inactive'] == 'Y') {
                 $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
                 $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
@@ -714,7 +714,7 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
 					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
@@ -756,17 +756,16 @@ function scheduleAssociation($cp_id) {
         return true;
 }
 
-function gradeAssociation($cp_id) {
-    $asso = DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM student_report_card_grades WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\' LIMIT 0,1'));
+function attendanceAssociation($cp_id) {
+    $asso = DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM attendance_period WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\' LIMIT 0,1'));
+
     if ($asso[1]['COURSE_PERIOD_ID'] != '')
         return true;
 }
 
-function attendanceAssociation($cp_id)
-{
-    $asso=DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM attendance_period WHERE COURSE_PERIOD_ID=\''.$cp_id.'\' LIMIT 0,1'));
-
-    if($asso[1]['COURSE_PERIOD_ID']!='')
+function gradeAssociation($cp_id) {
+    $asso = DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM student_report_card_grades WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\' LIMIT 0,1'));
+    if ($asso[1]['COURSE_PERIOD_ID'] != '')
         return true;
 }
 

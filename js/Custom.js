@@ -13,3 +13,8 @@ var styledCheckboxRadioInit = function () {
         radioClass: 'choice'
     });
 }
+
+function divToggle(divId){
+    $(divId).hide();
+    $(divId+'_element').show();
+}

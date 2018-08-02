@@ -1333,6 +1333,21 @@ CREATE TABLE IF NOT EXISTS `msg_outbox` (
 --
 --
 
+CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `keyval` varchar(100) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+CREATE TABLE `device_info` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `device_token` longtext CHARACTER SET utf8 NOT NULL,
+  `device_id` longtext CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 ALTER TABLE school_calendars AUTO_INCREMENT=1;
 
 
@@ -2029,3 +2044,6 @@ CREATE TABLE IF NOT EXISTS `user_file_upload` (
   `file_info` longtext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;
+ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;

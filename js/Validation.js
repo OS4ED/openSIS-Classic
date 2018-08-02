@@ -16,10 +16,10 @@ function formcheck_school_setup_school()
     frmvalidator.addValidation("values[STATE]", "req", "Please enter state name");
     frmvalidator.addValidation("values[STATE]", "maxlen=100", "Max length for state is 100 characters");
 
-    frmvalidator.addValidation("values[ZIPCODE]", "req", "Please enter zipcode ");
-    frmvalidator.addValidation("values[ZIPCODE]", "numeric", "Zip allows only numeric value");
+    frmvalidator.addValidation("values[ZIPCODE]", "req", "Please enter zipcode");
+//    frmvalidator.addValidation("values[ZIPCODE]", "numeric", "Zip allows only numeric value");
 
-    frmvalidator.addValidation("values[PHONE]", "req", "Please enter phone name");
+    frmvalidator.addValidation("values[PHONE]", "req", "Please enter phone Number");
 //    frmvalidator.addValidation("values[PHONE]", "numeric", "Phone number allows number only");
 
     frmvalidator.addValidation("values[PRINCIPAL]", "req", "Please enter principal name");
@@ -48,7 +48,7 @@ function formcheck_school_setup_school()
         frmvalidator.addValidation("inputvalues[STATE]", "maxlen=100", "Max length for state is 100 characters");
 
         frmvalidator.addValidation("inputvalues[ZIPCODE]", "req", "Please enter zipcode ");
-        frmvalidator.addValidation("inputvalues[ZIPCODE]", "numeric", "Zip allows only numeric value");
+//        frmvalidator.addValidation("inputvalues[ZIPCODE]", "numeric", "Zip allows only numeric value");
 
         frmvalidator.addValidation("inputvalues[PHONE]", "req", "Please enter phone number");
         //frmvalidator.addValidation("inputvalues[PHONE]", "numeric", "Phone number allows number only");
@@ -907,17 +907,17 @@ function formcheck_school_setup_grade_levels()
 
 function formcheck_student_student()
 {
-    if (document.getElementById('email_1') && document.getElementById('email_1').innerHTML == 'Email already taken')
-    {
-        document.getElementsByName('values[people][PRIMARY][EMAIL]')[0].value = '';
-    }
-    if (document.getElementById('email_2') && document.getElementById('email_2').innerHTML == 'Email already taken')
-    {
-        if (document.getElementsByName('values[people][SECONDARY][EMAIL]')[0])
-            document.getElementsByName('values[people][SECONDARY][EMAIL]')[0].value = '';
-        if (document.getElementsByName('values[people][OTHER][EMAIL]')[0])
-            document.getElementsByName('values[people][OTHER][EMAIL]')[0].value = '';
-    }
+//    if (document.getElementById('email_1') && document.getElementById('email_1').innerHTML == 'Email already taken')
+//    {
+//        document.getElementsByName('values[people][PRIMARY][EMAIL]')[0].value = '';
+//    }
+//    if (document.getElementById('email_2') && document.getElementById('email_2').innerHTML == 'Email already taken')
+//    {
+//        if (document.getElementsByName('values[people][SECONDARY][EMAIL]')[0])
+//            document.getElementsByName('values[people][SECONDARY][EMAIL]')[0].value = '';
+//        if (document.getElementsByName('values[people][OTHER][EMAIL]')[0])
+//            document.getElementsByName('values[people][OTHER][EMAIL]')[0].value = '';
+//    }
     var frmvalidator = new Validator("student");
 
 
@@ -928,13 +928,13 @@ function formcheck_student_student()
     frmvalidator.addValidation("values[people][PRIMARY][RELATIONSHIP]", "req", "Please select a primary relationship to student ");
     frmvalidator.addValidation("values[people][PRIMARY][FIRST_NAME]", "req", "Please enter primary emergency contact frist name ");
     frmvalidator.addValidation("values[people][PRIMARY][LAST_NAME]", "req", "Please enter primary emergency contact last name");
-    frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "req", "Please enter a primary emergency email");
+    //frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "req", "Please enter a primary emergency email");
     frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "email", "Please enter a valid primary emergency email");
 
     frmvalidator.addValidation("values[people][OTHER][RELATIONSHIP]", "req", "Please select a additional relationship to student ");
     frmvalidator.addValidation("values[people][OTHER][FIRST_NAME]", "req", "Please select a additional emergency contact to first name ");
     frmvalidator.addValidation("values[people][OTHER][LAST_NAME]", "req", "Please enter additional emergency contact last name");
-    frmvalidator.addValidation("values[people][OTHER][EMAIL]", "req", "Please enter a additional emergency email");
+    //frmvalidator.addValidation("values[people][OTHER][EMAIL]", "req", "Please enter a additional emergency email");
     frmvalidator.addValidation("values[people][OTHER][EMAIL]", "email", "Please enter a valid additional emergency email");
     frmvalidator.addValidation("students[FIRST_NAME]", "req", "Please enter the first name");
     frmvalidator.addValidation("students[FIRST_NAME]", "maxlen=100", "Max length for school name is 100 characters");
@@ -981,7 +981,7 @@ function formcheck_student_student()
             frmvalidator.addValidation("values[people][SECONDARY][RELATIONSHIP]", "req", "Please select a secondary relationship to student ");
             frmvalidator.addValidation("values[people][SECONDARY][FIRST_NAME]", "req", "Please enter secondary emergency contact frist name ");
             frmvalidator.addValidation("values[people][SECONDARY][LAST_NAME]", "req", "Please enter secondary emergency contact last name");
-            frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "req", "Please enter a secondary email");
+            //frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "req", "Please enter a secondary email");
             frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "email", "Please enter a valid secondary email");
         }
     }
@@ -1832,7 +1832,7 @@ function formcheck_grade_grade()
     {
         frmvalidator.addValidation("values[new][GP_SCALE]", "req", "Scale value cannot be blank");
 
-        frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter numeric/decimal value");
+        frmvalidator.addValidation("values[new][GP_SCALE]", "num", "Please enter numeric value");
     }
 
     if (document.getElementById('values[new][TITLE]') && document.getElementById('values[new][TITLE]').value != '')
@@ -1849,7 +1849,8 @@ function formcheck_grade_grade()
         {
             frmvalidator.addValidation("values[new][GP_SCALE]", "req", "Scale value cannot be blank");
 
-            frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter numeric/decimal value");
+//            frmvalidator.addValidation("values[new][GP_SCALE]", "num", "Please enter numeric value");
+frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter decimal value");
         }
     }
     var grade_id = document.getElementById("h1").value;
@@ -2691,6 +2692,8 @@ function formcheck_add_staff(staff_school_chkbox_id)
         {
             frmvalidator.addValidation("USERNAME", "req", "Please provide username");
             frmvalidator.addValidation("PASSWORD", "req", "Please provide password");
+            frmvalidator.addValidation("PASSWORD", "password=8", "Password should be minimum 8 characters with atleast one special character and one number");
+             frmvalidator.addValidation("PASSWORD", "maxlen=20", "Max length for password is 20 characters");
         }
     }
     if (document.getElementById('no_date_fields'))
@@ -2813,7 +2816,8 @@ function validate_group_schedule()
         return false;
     } else
     {
-        formload_ajax("sav");
+//        formload_ajax("sav");
+    return true;
     }
 }
 

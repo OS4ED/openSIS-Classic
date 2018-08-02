@@ -245,6 +245,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 //                        }
 
                 foreach ($_REQUEST['staff'] as $column_name => $value) {
+                    if ($column_name == 'BIRTHDATE')
+                        $value = date("Y-m-d", strtotime($value));
                     if ($column_name == 'SCHOOLS')
                         continue;
                     if (strpos($column_name, "CUSTOM") == 0) {
@@ -327,13 +329,46 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
 
                     if ($_FILES['file']['name']) {
-                        $UserPicturesPath = 'assets/userphotos/';
-                        $target_path = $UserPicturesPath . '/' . $_REQUEST[staff_id] . '.JPG';
-                        $destination_path = $UserPicturesPath;
+//     $UserPicturesPath='assets/userphotos/';
+//        $target_path=$UserPicturesPath.'/'.$_REQUEST[staff_id].'.JPG';
+//	$destination_path = $UserPicturesPath;	   
+//	$upload= new upload();
+//	$upload->target_path=$target_path;
+//	$upload->deleteOldImage();
+//	$upload->destination_path=$destination_path;
+//	$upload->name=$_FILES["file"]["name"];
+//	$upload->setFileExtension();
+//	$upload->fileExtension;
+//	$upload->validateImage();
+//	if($upload->wrongFormat==1){
+//	$_FILES["file"]["error"]=1;
+//	}
+//
+//	if ($_FILES["file"]["error"] > 0)
+//    {
+//            echo "cannot upload file";
+//    }
+//    	else
+//    {
+//	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
+//	  @fopen($upload->target_path,'r');
+//	  fclose($upload->target_path);
+//      $filename =  $upload->target_path;
+//	  PopTable ('footer');
+//    }   
+                        
+                        $stf_img_info = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . $_REQUEST[staff_id] . ' AND IMG_NAME IS NOT NULL'));
+                        $fileName = $_FILES['file']['name'];
+                        $tmpName = $_FILES['file']['tmp_name'];
+                        $fileSize = $_FILES['file']['size'];
+                        $fileType = $_FILES['file']['type'];
+//                                        $target_path=$StudentPicturesPath.'/'.$last_student_id.'.JPG';
+//	$destination_path = $StudentPicturesPath;	
                         $upload = new upload();
-                        $upload->target_path = $target_path;
-                        $upload->deleteOldImage();
-                        $upload->destination_path = $destination_path;
+//	$upload->target_path=$target_path;
+                        if (count($stf_img_info) > 0)
+                            $upload->deleteOldImage($stf_img_info[1]['STAFF_ID']);
+//	$upload->destination_path=$destination_path;
                         $upload->name = $_FILES["file"]["name"];
                         $upload->setFileExtension();
                         $upload->fileExtension;
@@ -345,12 +380,22 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                         if ($_FILES["file"]["error"] > 0) {
                             echo "cannot upload file";
                         } else {
-                            move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
-                            @fopen($upload->target_path, 'r');
-                            fclose($upload->target_path);
-                            $filename = $upload->target_path;
-//	  PopTable ('footer');
-                        }
+//	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
+//	  @fopen($upload->target_path,'r');
+//	  fclose($upload->target_path);
+//          $filename =  $upload->target_path;
+                            $fp = fopen($tmpName, 'r');
+                            $content = fread($fp, filesize($tmpName));
+                            $content = addslashes($content);
+                            fclose($fp);
+
+                            if (!get_magic_quotes_gpc()) {
+                                $fileName = addslashes($fileName);
+                            }
+                        
+                            DBQuery('UPDATE staff SET IMG_NAME=\'' . $fileName . '\',IMG_CONTENT=\'' . $content . '\' WHERE STAFF_ID=' . $_REQUEST['staff_id']);
+                            //PopTable ('footer');
+                    }
                     }
 
 
@@ -390,6 +435,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             unset($_REQUEST['month_staff']);
             unset($_REQUEST['year_staff']);
             foreach ($_REQUEST['staff'] as $column => $value) {
+                if ($column_name == 'BIRTHDATE')
+                    $value = date("Y-m-d", strtotime($value));
                 if ($column_name == 'SCHOOLS')
                     continue;
                 if (strpos($column, "CUSTOM") == 0) {
@@ -450,13 +497,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                 // possible modification end
 
                 if ($_FILES['file']['name']) {
-                    $UserPicturesPath = 'assets/userphotos/';
-                    $target_path = $UserPicturesPath . '/' . $staff_id . '.JPG';
-                    $destination_path = $UserPicturesPath;
+//       $UserPicturesPath='assets/userphotos/';
+//        $target_path=$UserPicturesPath.'/'.$staff_id.'.JPG';
+//	$destination_path = $UserPicturesPath;	 
+                    $fileName = $_FILES['file']['name'];
+                    $tmpName = $_FILES['file']['tmp_name'];
+                    $fileSize = $_FILES['file']['size'];
+                    $fileType = $_FILES['file']['type'];
                     $upload = new upload();
-                    $upload->target_path = $target_path;
-                    $upload->deleteOldImage();
-                    $upload->destination_path = $destination_path;
+//	$upload->target_path=$target_path;
+//	$upload->deleteOldImage();
+//	$upload->destination_path=$destination_path;
                     $upload->name = $_FILES["file"]["name"];
                     $upload->setFileExtension();
                     $upload->fileExtension;
@@ -468,11 +519,16 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     if ($_FILES["file"]["error"] > 0) {
                         echo "cannot upload file";
                     } else {
-                        move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
-                        @fopen($upload->target_path, 'r');
-                        fclose($upload->target_path);
-                        $filename = $upload->target_path;
-//	  PopTable ('footer');
+                        $fp = fopen($tmpName, 'r');
+                        $content = fread($fp, filesize($tmpName));
+                        $content = addslashes($content);
+                        fclose($fp);
+
+                        if (!get_magic_quotes_gpc()) {
+                            $fileName = addslashes($fileName);
+                        }
+                        DBQuery('UPDATE staff SET IMG_NAME=\'' . $fileName . '\',IMG_CONTENT=\'' . $content . '\' WHERE STAFF_ID=' . $staff_id);
+                        //PopTable('footer');
                     }
                 }
 
@@ -716,6 +772,10 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
                 }
                 if ($_REQUEST['category_id'] != 1) {
+                    $btn_flag=1;
+                    if(User('PROFILE')=='admin' && $_REQUEST['modname']=='users/Staff.php' && isset($_REQUEST['include']) && $_REQUEST['include']=='ScheduleInc')
+                    $btn_flag=0;
+                    if($btn_flag==1)
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
                 }
             } else {
@@ -759,9 +819,12 @@ class upload {
     var $allowExtension = array("jpg", "jpeg", "png", "gif", "bmp");
     var $wrongFormat = 0;
 
-    function deleteOldImage() {
-        if (file_exists($this->target_path))
-            unlink($this->target_path);
+    function deleteOldImage($id = '') {
+//if(file_exists($this->target_path))
+//	unlink($this->target_path);
+        if ($id != '') {
+            DBQuery('UPDATE staff SET IMG_NAME=NULL,IMG_CONTENT=NULL WHERE STAFF_ID=' . $id);
+        }
     }
 
     function setFileExtension() {

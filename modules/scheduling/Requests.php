@@ -28,7 +28,6 @@
 #***************************************************************************************
 include('../../RedirectModules.php');
 DrawBC("Scheduling -> " . ProgramTitle());
-
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 Widgets('request');
@@ -194,7 +193,8 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
     $_openSIS['allow_edit'] = false;
 }
 
-echo '</div>';
+
+
 
 function _makeCourse($value, $column) {
     global $THIS_RET;

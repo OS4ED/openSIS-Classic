@@ -1080,34 +1080,23 @@ $has_assigned_RET=DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM course_d
 	
 }
 
+if(!$_REQUEST['modfunc'])
+{
+	if($_REQUEST['marking_period_id']!='new')
+		$delete_button = "<INPUT type=button class=\"btn btn-danger\" value=Delete onClick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&mp_term=$_REQUEST[mp_term]&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]&quarter_id=$_REQUEST[quarter_id]&marking_period_id=$_REQUEST[marking_period_id]\")'>";
 
-if (!$_REQUEST['modfunc']) {
-    if ($_REQUEST['marking_period_id'] != 'new')
-        $delete_button = "<INPUT type=button class=\"btn btn-default btn-xs\" value=Delete onClick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&mp_term=$_REQUEST[mp_term]&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]&quarter_id=$_REQUEST[quarter_id]&marking_period_id=$_REQUEST[marking_period_id]\")'>";
-
-    // ADDING & EDITING FORM
-    if ($_REQUEST['marking_period_id'] && $_REQUEST['marking_period_id'] != 'new') {
-      /*  $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,
-						DATE_FORMAT(START_DATE,"%d-%b-%Y") AS START_DATE,
-                                                DATE_FORMAT(END_DATE,"%d-%b-%Y") AS END_DATE,
-                                                DATE_FORMAT(POST_START_DATE,"%d-%b-%Y") AS  POST_START_DATE,
-                                                DATE_FORMAT(POST_END_DATE,"%d-%b-%Y") AS  POST_END_DATE
-				FROM ' . $table . '
-				WHERE MARKING_PERIOD_ID=\'' . paramlib_validation($column = MARKING_PERIOD_ID, $_REQUEST[marking_period_id]) . '\'';
-       * */
-        $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,
-						START_DATE,
-                                                END_DATE,
-                                                POST_START_DATE,
-                                                POST_END_DATE
-				FROM ' . $table . '
-				WHERE MARKING_PERIOD_ID=\'' . paramlib_validation($column = MARKING_PERIOD_ID, $_REQUEST[marking_period_id]) . '\'';
-        
-        $QI = DBQuery($sql);
-        $RET = DBGet($QI);
-        $RET = $RET[1];
-        $title = $RET['TITLE'];
-    }
+	// ADDING & EDITING FORM
+	if($_REQUEST['marking_period_id'] && $_REQUEST['marking_period_id']!='new')
+	{
+		$sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,
+						START_DATE,END_DATE,POST_START_DATE,POST_END_DATE
+				FROM '.$table.'
+				WHERE MARKING_PERIOD_ID=\''.paramlib_validation($column=MARKING_PERIOD_ID,$_REQUEST[marking_period_id]).'\'';
+		$QI = DBQuery($sql);
+		$RET = DBGet($QI);
+		$RET = $RET[1];
+		$title = $RET['TITLE'];
+	}
 
     if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM)) {
         $f = 0;
@@ -1183,11 +1172,11 @@ if (!$_REQUEST['modfunc']) {
         
         echo '<div>';
         if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM) == 'new'){
-           echo AllowEdit() ? '<hr/><INPUT type=submit value=Save class="btn bg-primary btn-xs" onclick="formcheck_school_setup_marking();">' : '';
+           echo AllowEdit() ? '<hr/><INPUT type=submit value=Save class="btn btn-primary" onclick="formcheck_school_setup_marking();">' : '';
         }elseif ($_REQUEST['mp_term'] != 'FY'){
-            echo AllowEdit() ? '<hr/>'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value=Save class="btn bg-primary btn-xs">' : '';
+            echo AllowEdit() ? '<hr/>'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary">' : '';
         }else{
-            echo AllowEdit() ? '<hr/><INPUT type=submit name=btn_save id=btn_save value=Save class="btn bg-primary btn-xs" >' : '';
+            echo AllowEdit() ? '<hr/><INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary" >' : '';
         }
         echo '</div>';
         

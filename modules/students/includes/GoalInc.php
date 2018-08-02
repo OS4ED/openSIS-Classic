@@ -133,7 +133,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     if ($_REQUEST['tables'][$id]['START_DATE'] != '') {
 
                         if ($table_name == 'student_goal_progress') {
-                            echo 'SELECT START_DATE,END_DATE from student_goal WHERE goal_id = ' . clean_param($_REQUEST['goal_id'], PARAM_INT);
+                            //echo 'SELECT START_DATE,END_DATE from student_goal WHERE goal_id = ' . clean_param($_REQUEST['goal_id'], PARAM_INT);
                             $chk_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE from student_goal WHERE goal_id = ' . clean_param($_REQUEST['goal_id'], PARAM_INT)));
 
 

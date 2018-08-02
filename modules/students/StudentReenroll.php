@@ -123,7 +123,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0) {
-            echo "<div class=\"text-left\">" . SubmitButton('Re Enroll Selected Students', '', 'class="btn btn-primary" onclick=\'return reenroll();\'') . "</div>";
+            echo "<div class=\"text-center\">" . SubmitButton('Re Enroll Selected Students', '', 'class="btn btn-primary" onclick=\'return reenroll();\'') . "</div>";
         }
     }
     if ($_REQUEST['search_modfunc'] == 'list') {

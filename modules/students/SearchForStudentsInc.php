@@ -55,7 +55,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 unset($_SESSION['s']);
                 unset($_SESSION['_search_all']);
             }
-            
+
             $_SESSION['Search_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
             echo '<script language=JavaScript>parent.help.location.reload();</script>';
             if (isset($_SESSION['stu_search']['sql']) && $search_from_grade != 'true') {
@@ -63,13 +63,13 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             } else if ($search_from_grade == 'true') {
                 $_SESSION['stu_search']['search_from_grade'] = 'true';
             }
-            
+
             echo '<div class="row">';
             echo '<div class="col-md-12">';
             PopTable('header', 'Find a Student');
             unset($_SESSION['students_order']);
-           // echo 'test';
-         // echo  encode_url("Modules.php?="); 
+            // echo 'test';
+            // echo  encode_url("Modules.php?="); 
             if ($extra['pdf'] != true)
                 echo "<FORM name=search class=form-horizontal id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
@@ -86,7 +86,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             # ---   Advanced Search Start ---------------------------------------------------------- #
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
-            
+
 
             echo '<div id="searchdiv" style="display:none;" class="well">';
             echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div();"><i class="icon-cancel-square"></i> Close Advance Search</a></div>';
@@ -199,7 +199,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'>&nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
             else
                 echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'>&nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
-            
+
             echo '<a id="addiv" href="javascript:void(0);" class="text-pink" onclick="show_search_div();"><i class="icon-cog"></i> Advanced Search</a>';
             echo '</div>';
 
@@ -304,6 +304,57 @@ else {
 
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
 
+        echo '<div class="panel">';
+        echo '<div class="panel-heading p-0 clearfix">';
+        echo '<div class="pull-left"><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a>Filter Student</a></li></ul></div>';
+        //echo '<h6 class="panel-title">Filter Student</h6>';
+        echo '<div class="heading-elements"><ul class="icons-list"><li><a data-action="collapse" class=""></a></li></ul></div>';
+        echo '</div>';
+        echo '<div class="table-responsive">';
+        echo '<table class="table table-striped table-bordered table-xxs">';
+        echo '<tbody>';
+        echo '<tr>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleLastName\');">Last Name</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleFirstName\');">First Name</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleStudentId\');">Student ID</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAltId\');">Alt ID</th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAddress\');">Address</th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrade\');">Grade</th>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleGrade\');" id="toggleGrade">Any</div><div style="display:none;" id="toggleGrade_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Grade" /></div></td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllSchool\');">Search All Schools</a></th>';
+        echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td><div onclick="divToggle(\'#toggleSection\');" id="toggleSection">Any</div><div style="display:none;" id="toggleSection_element" class="hide-element"><select class="form-control p-t-0 p-b-0 input-xs"><option>-- Select --</option><option>A</option><option>B</option></select></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleSearchAllSchool\');" id="toggleSearchAllSchool">No</div><div style="display:none;" id="toggleSearchAllSchool_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
+        echo '<td colspan="3"><div onclick="divToggle(\'#toggleIncludeInactive\');" id="toggleIncludeInactive">No</div><div style="display:none;" id="toggleIncludeInactive_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
+        echo '</tr>';
+        echo '</tbody>';
+        echo '</table>';
+        echo '</div>'; //.table-responsive
+        echo '<div class="panel-footer">';
+        echo '<div class="heading-elements p-r-15">';
+        echo '<input type="submit" class="btn btn-primary m-l-15" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET"> &nbsp; <a id="addiv" href="javascript:void(0);" class="text-pink"><i class="icon-cog"></i> Advanced Search</a>';
+        echo '<form class="heading-form pull-right m-b-0" action="">';
+        echo '<input type="button" value="Save Filter" class="btn btn-primary display-inline-block">';
+        echo '<div class="form-group no-pull m-l-10 display-inline-block"><select class="form-control form-control-bordered width-auto"><option>-- Select Filter --</option></select></div>';
+        echo '</form>';
+        echo '</div>'; //.heading-elements
+        echo '</div>'; //.panel-footer
+        echo '</div>'; //.panel
+
         echo '<div class="panel panel-default">';
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);
@@ -328,7 +379,7 @@ else {
 
 
         echo "<div id='students' class=\"table-responsive\">";
-               
+
         ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
         echo "</div>"; //.table-responsive
         echo "</div>"; //.panel.panel-default
@@ -370,8 +421,7 @@ function _make_sections($value) {
     if ($value != '') {
         $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
         return $get[1]['NAME'];
-    }
-    else
+    } else
         return '';
 }
 

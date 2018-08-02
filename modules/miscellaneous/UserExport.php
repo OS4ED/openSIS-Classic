@@ -66,7 +66,7 @@ if($_REQUEST['search_modfunc']=='list')
     
 	if(!$fields_list)
 	{
-		$fields_list = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+		$fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
 		if($extra['field_names'])
 			$fields_list += $extra['field_names'];
 
@@ -151,7 +151,7 @@ else
 	if(!$fields_list)
 	{
 		if(AllowUse('users/User.php&category_id=1'))
-			$fields_list['General'] = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+			$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
 
 		if($extra['field_names'])
 			$fields_list['General'] += $extra['field_names'];

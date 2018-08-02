@@ -41,7 +41,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
 			{
 				foreach($columns as $column=>$value)
 				{
-                                    $value = strtoupper($value);
+					
 					
 					if($value == 'JAN')
 						$value = '01';
@@ -164,7 +164,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                                              $sql[$table] .= $up_values;
                                              if($column == 'END_DATE' && $table=='student_enrollment' )
                                              {
-                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserSchool().'\'  AND SYEAR=\''.UserSyear().'\''));
+                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserSchool().'\'  AND SYEAR=\''.UserSyear().'\'  AND (END_DATE IS NULL OR \''.$value.'\' < END_DATE )'));
 
                                                 foreach($sc_qr as $v)
                                                                  {

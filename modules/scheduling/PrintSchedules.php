@@ -29,6 +29,11 @@
 include('../../RedirectModulesInc.php');
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['st_arr'])) {
+
+        if ($_REQUEST['_search_all_schools'] == 'Y') {
+
+            $_REQUEST['_search_all_schools'] = 'Y';
+        }
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
         $extra['WHERE'] = " AND s.STUDENT_ID IN ($st_list)";
 
@@ -46,42 +51,58 @@ if ($_REQUEST['modfunc'] == 'save') {
             $new_date = DBDate();
         }
 
-        $columns = array('PERIOD_TITLE' => 'Period - Teacher', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'DURATION' => 'Time', 'ROOM' => 'Room', 'COURSE_TITLE' => 'Course');
+        $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room');
 
-        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,\'\' AS DAYS, \'\' AS DURATION,\'\' AS ROOM';
-        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv ';
+        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
+        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,school_periods sp,rooms r ';
 
-        if ($_REQUEST['include_inactive'] != 'Y') {
-            if (isset($_REQUEST['date1']) && $_REQUEST['date1'] != '') {
-                $extra['WHERE'].=' AND (p_cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id'], 'TABLE')), $_REQUEST['mp_id']) . ') OR (p_cp.MARKING_PERIOD_ID IS NULL AND p_cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' AND p_cp.END_DATE>=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\')) ';
-            } else {
-                $extra['WHERE'].=' AND (p_cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id'], 'TABLE')), $_REQUEST['mp_id']) . ') OR (p_cp.MARKING_PERIOD_ID IS NULL AND p_cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\' AND p_cp.END_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\')) ';
-            }
-        }
+//        if($_REQUEST['include_inactive']!='Y')
+//        {
+//            if(isset($_REQUEST['date1']) && $_REQUEST['date1']!='')
+//            {
+//                $extra['WHERE'].=' AND (p_cp.MARKING_PERIOD_ID IN ('.GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id'],'TABLE')),$_REQUEST['mp_id']).') OR (p_cp.MARKING_PERIOD_ID IS NULL AND p_cp.BEGIN_DATE<=\''.date('Y-m-d',strtotime($_REQUEST['date1'])).'\' AND p_cp.END_DATE>=\''.date('Y-m-d',strtotime($_REQUEST['date1'])).'\')) ' ;   
+//            }
+//            else
+//            {
+//                $extra['WHERE'].=' AND (p_cp.MARKING_PERIOD_ID IN ('.GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id'],'TABLE')),$_REQUEST['mp_id']).') OR (p_cp.MARKING_PERIOD_ID IS NULL AND p_cp.BEGIN_DATE<=\''.date('Y-m-d',strtotime($date)).'\' AND p_cp.END_DATE>=\''.date('Y-m-d',strtotime($date)).'\')) ' ;   
+//            }
+//        }
+
         if ((isset($_REQUEST['date1']) && $_REQUEST['date1'] != '')) {
             $extra['WHERE'] .= ' AND POSITION(\'' . get_db_day(date('l', strtotime($_REQUEST['date1']))) . '\' IN cpv.days)>0 AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL)';
         }
-        $extra['WHERE'] .= '  AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID ';
+        $extra['WHERE'] .= '  AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
 
-        if ($_REQUEST['include_inactive'] != 'Y') {
-            if ((isset($_REQUEST['date1']) && $_REQUEST['date1'] != '')) {
-                $extra['WHERE'] .= '   AND (\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' BETWEEN sr.START_DATE AND sr.END_DATE  OR (sr.END_DATE IS NULL AND sr.START_DATE<=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\')) ';
-            } else {
-                $extra['WHERE'] .= ' AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN sr.START_DATE AND sr.END_DATE OR (sr.END_DATE IS NULL AND sr.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\')) ';
-        }
-        }
-
-
+//        if($_REQUEST['include_inactive']!='Y')
+//        {
+//                if((isset($_REQUEST['date1']) && $_REQUEST['date1']!=''))
+//                {                
+//                $extra['WHERE'] .= '   AND (\''.date('Y-m-d',strtotime($_REQUEST['date1'])).'\' BETWEEN sr.START_DATE AND sr.END_DATE  OR (sr.END_DATE IS NULL AND sr.START_DATE<=\''.date('Y-m-d',strtotime($_REQUEST['date1'])).'\')) ';
+//                }
+//                else
+//                {
+//                $extra['WHERE'] .= ' AND (\''.date('Y-m-d',strtotime($date)).'\' BETWEEN sr.START_DATE AND sr.END_DATE OR (sr.END_DATE IS NULL AND sr.START_DATE<=\''.date('Y-m-d',strtotime($date)).'\')) ';
+//                }
+//        }
 //                  if($_REQUEST['mp_id'] && (User('PROFILE_ID')!=0 && User('PROFILE_ID')!=3 && User('PROFILE_ID')!=4) ){
 //                      $extra['WHERE'] .= ' AND sr.MARKING_PERIOD_ID='.$_REQUEST['mp_id'].'';
 //                          }
 //                  else
 //                  {
-            $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id'], 'TABLE')), $_REQUEST['mp_id']) . ') or sr.MARKING_PERIOD_ID is NULL)';
-//                  }
-        $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP', 'DAYS' => '_makeDays');
+        if ($_REQUEST['_search_all_schools'] == 'Y') {
+            $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR='. UserSyear().') or sr.MARKING_PERIOD_ID is NULL)';
+        }
+        else
+        $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') or sr.MARKING_PERIOD_ID is NULL)';
+       if ($_REQUEST['_search_all_schools'] == 'Y')
+        $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMPAllSchool');
+        else
+            $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP');
         $extra['group'] = array('STUDENT_ID');
+//        $extra['order']=array('SORT_ORDER','MARKING_PERIOD_ID');
+        $extra['ORDER'] .= ',p_cp.COURSE_PERIOD_ID,cpv.days';
         $RET = GetStuList($extra);
+
         foreach ($RET as $ri => $rd) {
             foreach ($rd as $rdi => $rdd) {
 
@@ -94,29 +115,63 @@ if ($_REQUEST['modfunc'] == 'save') {
                     unset($time);
                     $RET[$ri][$rdi]['DURATION'] = $get_det[1]['DURATION'];
                     $RET[$ri][$rdi]['ROOM'] = $get_det[1]['ROOM'];
-                } else {
-                    $temp_days = array();
-                    $temp_duration = array();
-                    $temp_room = array();
-
-                    foreach ($get_det as $gi => $gd) {
-                        if ($rdd['SCHEDULE_TYPE'] == 'VARIABLE')
-                            $temp_days[$gd['DAYS']] = $gd['DAYS'];
-                        elseif ($rdd['SCHEDULE_TYPE'] == 'BLOCKED')
-                            $temp_days[$gd['DAYS']] = DaySname(date('l', $gd['COURSE_PERIOD_DATE']));
-
-                        $time = explode(' to ', $gd['DURATION']);
-                        $gd['DURATION'] = date("g:i A", strtotime($time[0])) . ' to ' . date("g:i A", strtotime($time[1]));
-                        unset($time);
-                        $temp_duration[$gd['DURATION']] = $gd['DURATION'];
-                        $temp_room[$gd['ROOM']] = $gd['ROOM'];
-                    }
-                    $RET[$ri][$rdi]['DAYS'] = _makeDays(implode('', $temp_days));
-                    $RET[$ri][$rdi]['DURATION'] = implode(',', $temp_duration);
-                    $RET[$ri][$rdi]['ROOM'] = implode(',', $temp_room);
                 }
+//                else
+//                {  
+//                    $temp_days=array();
+//                    $temp_duration=array();
+//                    $temp_room=array();
+//               
+//                    foreach($get_det as $gi=>$gd)
+//                    {
+//                       if($rdd['SCHEDULE_TYPE']=='VARIABLE')
+//                       $temp_days[$gd['DAYS']]=$gd['DAYS'];
+//                       elseif($rdd['SCHEDULE_TYPE']=='BLOCKED')
+//                       $temp_days[$gd['DAYS']]=DaySname(date('l',$gd['COURSE_PERIOD_DATE']));
+//                       
+//                       $time=explode(' to ',$gd['DURATION']);
+//                       $gd['DURATION']=date("g:i A", strtotime($time[0])).' to '.date("g:i A", strtotime($time[1]));
+//                       unset($time);
+//                       $temp_duration[$gd['DURATION']]=$gd['DURATION'];
+//                       $temp_room[$gd['ROOM']]=$gd['ROOM'];
+//                        
+//                    }
+//                    $RET[$ri][$rdi]['DAYS']=_makeDays(implode('',$temp_days));
+//                    $RET[$ri][$rdi]['DURATION']=implode(',',$temp_duration);
+//                    $RET[$ri][$rdi]['ROOM']=implode(',',$temp_room);
+//                }
             }
         }
+//      
+//        foreach($RET as $student_id =>$RET1)
+//        {
+//            $ex_cp_arr=array();
+//            foreach($RET1 as $key => $val)
+//            {
+//                if(!in_array($val['COURSE_PERIOD_ID'],$ex_cp_arr))
+//                {
+//                    $ex_cp_arr[]=$val['COURSE_PERIOD_ID'];
+//                }
+// else {
+//
+//     unset($RET[$student_id][$key]);
+// }
+//            }
+//        }
+//        $RET_new=array();
+//        foreach($RET as $student_id =>$RET1)
+//        {
+//            $k=1;
+//            $ex_cp_arr=array();
+//            foreach($RET1 as $key => $val)
+//            {
+//               $RET_new[$student_id][$k]=$val;
+//               $k++;
+//
+//            }
+//        }
+        // $RET=$RET_new;
+
         if (count($RET)) {
             $handle = PDFStart();
 
@@ -141,16 +196,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                 }
                 echo '</table>';
 
-
-                ListOutputPrint($courses, $columns, 'Course', 'Courses', array(), array(), array('center' => false, 'print' => false));
+//			 print_r($courses);
+                ListOutputPrint_sch($courses, $columns, 'Course', 'Courses', array(), array(), array('center' => false, 'print' => false));
                 echo '<div style="page-break-before: always;">&nbsp;</div><!-- NEW PAGE -->';
             }
             PDFStop($handle);
-        } 
-        else
+        } else
             BackPrompt('No Students were found.');
-    } 
-    else
+    } else
         BackPrompt('You must choose at least one student.');
 }
 

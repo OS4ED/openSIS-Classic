@@ -87,8 +87,10 @@ if (!$_REQUEST['modfunc']) {
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&modfunc=delete&table=student_medical_notes&title=" . urlencode('Medical Note');
     $link['remove']['variables'] = array('id' => 'ID');
     if (!isset($_REQUEST['dwnl']) || $_REQUEST['dwnl'] == 'notes'){
+        echo '<div class="panel panel-default">';
         echo '<div class="table-responsive">';
         ListOutput_Medical($med_RET, $columns, 'Medical Note', 'Medical Notes', $link, 'notes', array(), array('search' => false));
+        echo '</div>';
         echo '</div>';
     }
 
@@ -107,7 +109,7 @@ if (!$_REQUEST['modfunc']) {
         $med_RET[$mi]['MEDICAL_DATE'] = _makeDate($md['MEDICAL_DATE'], 'MEDICAL_DATE', $counter_for_date, array('ID' => $md['ID'], 'TABLE' => 'student_immunization'));
     }
     $counter_for_date = $counter_for_date + 1;
-    $link['add']['html'] = array('TYPE' => _makeType('', ''), 'MEDICAL_DATE' => _makeDate('', 'MEDICAL_DATE', $counter_for_date), 'COMMENTS' => _makeAlertComments('', 'COMMENTS'));
+    $link['add']['html'] = array('TYPE' => _makeType('', 'TYPE'), 'MEDICAL_DATE' => _makeDate('', 'MEDICAL_DATE', $counter_for_date), 'COMMENTS' => _makeAlertComments('', 'COMMENTS'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&modfunc=delete&table=student_immunization&title=" . urlencode('immunization or physical');
     $link['remove']['variables'] = array('id' => 'ID');
 
@@ -117,11 +119,12 @@ if (!$_REQUEST['modfunc']) {
         $plural = 'Immunizations and Physicals';
 
     
-    echo '<br><br><h5>Immunization/Physical Record</h5>';
+    echo '<div class="panel panel-default"><div class="panel-heading"><h5 class="panel-title">Immunization/Physical Record</h5></div>';
         
     if (!isset($_REQUEST['dwnl']) || $_REQUEST['dwnl'] == 'immunizations'){
         echo '<div class="table-responsive">';
         ListOutput_Medical($med_RET, $columns, 'Immunization or Physical', $plural, $link, 'immunizations', array(), array('search' => false));
+        echo '</div>';
         echo '</div>';
     }
     
@@ -142,10 +145,11 @@ if (!$_REQUEST['modfunc']) {
     /*
      * Medical Alerts
      */
-    echo '<br><br><h5>Medical Alert</h5>';
+    echo '<div class="panel panel-default"><div class="panel-heading"><h5 class="panel-title">Medical Alert</h5></div>';
     if (!isset($_REQUEST['dwnl']) || $_REQUEST['dwnl'] == 'medical'){
         echo '<div class="table-responsive">';
         ListOutput_Medical($med_RET, $columns, 'Medical Alert', 'Medical Alerts', $link, 'medical', array(), array('search' => false));
+        echo '</div>';
         echo '</div>';
     }
 
@@ -167,10 +171,11 @@ if (!$_REQUEST['modfunc']) {
     /*
      * Nurse Visit Records
      */
-    echo '<br><br><h5>Nurse Visit Record</h5>';
+    echo '<div class="panel panel-default m-b-0"><div class="panel-heading"><h4 class="panel-title">Nurse Visit Record</h4></div>';
     if (!isset($_REQUEST['dwnl']) || $_REQUEST['dwnl'] == 'nurse'){
         echo '<div class="table-responsive">';
         ListOutput_Medical($med_RET, $columns, 'Nurse Visit', 'Nurse Visits', $link, 'nurse', array(), array('search' => false));
+        echo '</div>';
         echo '</div>';
     }
 

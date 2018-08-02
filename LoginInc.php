@@ -29,11 +29,11 @@ error_reporting(0);
 include('RedirectRootInc.php');
 include("Data.php");
 include("Warehouse.php");
-db_start();
+$cont = db_start();
 //$connection=mysql_connect($DatabaseServer,$DatabaseUsername,$DatabasePassword);
 //mysql_select_db($DatabaseName,$connection);
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
-
+$maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_preference_misc where system_maintenance_switch=\'Y\''));
 Warehouse('header');
 echo '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
@@ -98,7 +98,7 @@ echo "<script type='text/javascript'>
                             ?>
                             <form name=loginform method='post' class="text-left" action='index.php'>
                                 <?php
-                                if ($_REQUEST['maintain'] == 'Y') {
+                                if($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH']=='Y'){
                                     ?>
                                     <div class="form-group">
                                         <label><b>openSIS is under maintenance and login privileges have been turned off. Please log in when it is available again.</b></label>
@@ -115,22 +115,24 @@ echo "<script type='text/javascript'>
                                     </div>
                                     <?php
                                 }
+                                 if($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH']!='Y')
+                                {
                                 ?>
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_name']))
-                                        $name = $_COOKIE['remember_me_name'];
-                                    if (isset($_SESSION['fill_username'])) {
-                                        $name = $_SESSION['fill_username'];
-                                        unset($_SESSION['fill_username']);
-                                    }
+								        $name = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_name'])));
+								    if (isset($_SESSION['fill_username'])) {
+								        $name = $_SESSION['fill_username'];
+								        unset($_SESSION['fill_username']);
+								    }
                                     ?>
                                     <input type="text" class="form-control username" id="username" placeholder="Enter Username" name='USERNAME' value="<?php echo $name; ?>" >
                                 </div>
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_pwd']))
-                                        $pwd = $_COOKIE['remember_me_pwd'];
+        $pwd = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_pwd'])));
                                     ?>
                                     <input type="password" class="form-control password" placeholder="Enter Password" id="password" name='PASSWORD' AUTOCOMPLETE = 'off' value="<?php echo $pwd; ?>">
                                 </div>
@@ -151,9 +153,10 @@ echo "<script type='text/javascript'>
                                 </div>
                                 <br/>
                                 <p>
-                                    <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
+                                    <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
                                 </p>
-                                <p class="text-center"><a href="ForgotPass.php">Forgot Password ?</a></p>
+                                <p class="text-center"><a href="ForgotPass.php">Forgot Username / Password?</a></p>
+                <?php } ?>
                             </form>
                         </div>
                     </div>
@@ -169,7 +172,7 @@ echo "<script type='text/javascript'>
                 </div>-->
             </div>
             <footer>
-                Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+               openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
             </footer>
 
         </div>

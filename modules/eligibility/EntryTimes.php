@@ -88,20 +88,29 @@ if ($arr['END_HOUR'] > 12) {
 }
 else
     $END_M = 'AM';
-PopTable('header', 'Allow Extracurricular Posting');
-echo "<FORM name=F1 id=F1 class=form-horizontal action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
+
 echo '<div class="row">';
+echo '<div class="col-md-6 col-md-offset-3">';
+echo "<FORM name=F1 id=F1 class=form-horizontal action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
+PopTable('header', 'Allow Extracurricular Posting');
+echo '<div>';
 if (count($start_end_RET)) {
     $start_value = $days[$arr['START_DAY']] . ', ' . $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
     $end_value = $days[$arr['END_DAY']] . ', ' . $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
-    echo '<TR><TD><STRONG>From</STRONG></TD><TD><DIV id=start_time><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($START_HOUR, 'values[START_HOUR]', '', $hour_options, false, '', false)) . ' :</TD><TD>' . str_replace('"', '\"', SelectInput($arr['START_MINUTE'], 'values[START_MINUTE]', '', $minute_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($START_M, 'values[START_M]', '', $m_options, false, '', false)) . '</TD></TR></TABLE>","start_time",true);\'>' . $start_value . '</div></DIV></TD></TR>';
-    echo '<TR><TD><STRONG>To</STRONG></TD><TD><DIV id=end_time><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($END_HOUR, 'values[END_HOUR]', '', $hour_options, false, '', false)) . ' :</TD><TD>' . str_replace('"', '\"', SelectInput($arr['END_MINUTE'], 'values[END_MINUTE]', '', $minute_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($END_M, 'values[END_M]', '', $m_options, false, '', false)) . '</TD></TR></TABLE>","end_time",true);\'>' . $end_value . '</div></DIV></TD></TR>';
+    echo '<div class="form-group"><label class="control-label col-md-2 text-right">From :</label>';
+    echo '<DIV id="start_time" class="col-md-10"><div class="form-control" readonly onclick=\'addHTML("<div class=form-inline><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($START_HOUR, 'values[START_HOUR]', '', $hour_options, false, '', false)) . '</div><div class=form-group>:</div><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['START_MINUTE'], 'values[START_MINUTE]', '', $minute_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($START_M, 'values[START_M]', '', $m_options, false, '', false)) . '</div></div>","start_time",true);\'>' . $start_value . '</div></DIV>';
+    echo '</div>'; //form-group
+    echo '<div class="form-group"><label class="control-label col-md-2 text-right">To :</label>';
+    echo '<DIV id="end_time" class="col-md-10"><div class="form-control" readonly onclick=\'addHTML("<div class=form-inline><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($END_HOUR, 'values[END_HOUR]', '', $hour_options, false, '', false)) . '</div><div class=form-group>:</div><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['END_MINUTE'], 'values[END_MINUTE]', '', $minute_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($END_M, 'values[END_M]', '', $m_options, false, '', false)) . '</div></div>","end_time",true);\'>' . $end_value . '</div></DIV>';
+    echo '</div>';
 } else {
     echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . SelectInput($START_HOUR, 'values[START_HOUR]', '', $hour_options, false, '', false) . ' : ' . SelectInput($START_MINUTE, 'values[START_MINUTE]', '', $minute_options, false, '', false) . ' &nbsp; ' . SelectInput($START_M, 'values[START_M]', '', $m_options, false, '', false) . '</div></div>';
     echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . SelectInput($END_HOUR, 'values[END_HOUR]', '', $hour_options, false, '', false) . ' : ' . SelectInput($END_MINUTE, 'values[END_MINUTE]', '', $minute_options, false, '', false) . ' &nbsp; ' . SelectInput($END_M, 'values[END_M]', '', $m_options, false, '', false) . '</div></div>';
 }
-echo '<div class="col-md-2">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"') . '</div>';
-echo '</row>';
+$btn = '<div class="text-center">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"') . '</div>';
+echo '</div>';
+PopTable('footer',$btn);
 echo '</FORM>';
-PopTable('footer');
+echo '</div>';
+echo '</div>';
 ?>

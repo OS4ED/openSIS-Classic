@@ -427,16 +427,16 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
         $header .= '<div class="form-group">';
-        $header .= '<div class="col-md-4">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], 'Title') : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title')) . '</div>';
+        $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], 'Title') : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title')) . '</div>';
 
         if ($_REQUEST['category_id'] == 'new' || $RET['SORT_ORDER'] == '')
-            $header .= '<div class="col-md-4">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown="return numberOnly(event);"')) . '</div>';
+            $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown="return numberOnly(event);"')) . '</div>';
         else
-            $header .= '<div class="col-md-4">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown=\"return numberOnly(event);\"')) . '</div>';
+            $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown=\"return numberOnly(event);\"')) . '</div>';
 
         $new = ($_REQUEST['category_id'] == 'new');
         if ($_REQUEST['category_id'] > 7 || $new)
-            $header .= '<div class="col-md-4">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', 'Include (should be left blank for most categories)') . '</div>';
+            $header .= '<div class="col-md-6">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', 'Include (should be left blank for most categories)') . '</div>';
 
         $header .= '</div>'; //.form-group
     } else

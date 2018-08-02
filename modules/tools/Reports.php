@@ -56,16 +56,63 @@ if ($_REQUEST['func'] == 'Basic') {
     else
         $num_parent = $num_parent[1]['TOTAL_PARENTS'];
     echo '<div class="panel panel-default">';
-    echo '<div class="panel-body">';
-    echo '<div id="d"><TABLE align=center cellpadding=5 cellspacing=5>';
-    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_schools . ' &nbsp </td></tr>';
-    echo '<tr><td><b>Number of Students</b></td><td>:</td><td>&nbsp ' . $num_students . ' &nbsp </td><td> &nbsp Male : ' . $male . ' &nbsp| &nbspFemale : ' . $female . '</td></tr>';
-    echo '<tr><td><b>Number of Teachers</b></td><td>:</td><td colspan=2>&nbsp ' . $num_teacher . '</td></tr>';
-    echo '<tr><td><b>Number of Staff</b></td><td>:</td><td colspan=2>&nbsp ' . $num_staff . '</td></tr>';
-    echo '<tr><td><b>Number of Parents</b></td><td>:</td><td colspan=2>&nbsp ' . $num_parent . '</td></tr>';
-    echo '</TABLE></div>';
+    echo '<div class="tabbable">';
+    echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">At a Glance</a></li></ul>';
+    echo '<div class="panel-body institute-report">';
+    echo '<div class="row">';
+    echo '<div class="col-md-4">';
+    echo ' <div class="well">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-school"></i></span></div>';
+    echo '<div class="media-left">';
+    echo '<h6 class="text-semibold no-margin">Institutions<span class="display-block no-margin text-success">'.$num_schools.'</span></h6>';
     echo '</div>';
+    echo '</div>'; //.well
+    echo '</div>'; //.col-md-4
+    echo '<div class="col-md-4">';
+    echo ' <div class="well">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-student"></i></span></div>';
+    echo '<div class="media-left">';
+    echo '<h6 class="text-semibold no-margin">Students<span class="display-block no-margin text-success">'.$num_students.'</span><small class="display-block no-margin">Male : '.$male.'  &nbsp; | &nbsp;  Female : '.$female.'</small></h6>';
     echo '</div>';
+    echo '</div>'; //.well
+    echo '</div>'; //.col-md-4
+    echo '<div class="col-md-4">';
+    echo ' <div class="well">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-teacher"></i></span></div>';
+    echo '<div class="media-left">';
+    echo '<h6 class="text-semibold no-margin">Teachers<span class="display-block no-margin text-success">'.$num_teacher.'</span></h6>';
+    echo '</div>';
+    echo '</div>'; //.well
+    echo '</div>'; //.col-md-4
+    echo '</div>';
+    echo '<div class="row">';
+    echo '<div class="col-md-4">';
+    echo ' <div class="well">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-staff"></i></span></div>';
+    echo '<div class="media-left">';
+    echo '<h6 class="text-semibold no-margin">Staff<span class="display-block no-margin text-success">'.$num_staff.'</span></h6>';
+    echo '</div>';
+    echo '</div>'; //.well
+    echo '</div>'; //.col-md-4
+    echo '<div class="col-md-4">';
+    echo ' <div class="well">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-parent"></i></span></div>';
+    echo '<div class="media-left">';
+    echo '<h6 class="text-semibold no-margin">Parents<span class="display-block no-margin text-success">'.$num_parent.'</span></h6>';
+    echo '</div>';
+    echo '</div>'; //.well
+    echo '</div>'; //.col-md-4
+    echo '</div>'; //.row
+//    echo '<div id="d"><TABLE align=center cellpadding=5 cellspacing=5>';
+//    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_schools . ' &nbsp </td></tr>';
+//    echo '<tr><td><b>Number of Students</b></td><td>:</td><td>&nbsp ' . $num_students . ' &nbsp </td><td> &nbsp Male : ' . $male . ' &nbsp| &nbspFemale : ' . $female . '</td></tr>';
+//    echo '<tr><td><b>Number of Teachers</b></td><td>:</td><td colspan=2>&nbsp ' . $num_teacher . '</td></tr>';
+//    echo '<tr><td><b>Number of Staff</b></td><td>:</td><td colspan=2>&nbsp ' . $num_staff . '</td></tr>';
+//    echo '<tr><td><b>Number of Parents</b></td><td>:</td><td colspan=2>&nbsp ' . $num_parent . '</td></tr>';
+//    echo '</TABLE></div>';
+    echo '</div>';
+    echo '</div>';//.tabbable
+    echo '</div>';//.panel
 }
 
 if ($_REQUEST['func'] == 'Ins_r') {
@@ -105,6 +152,8 @@ if ($_REQUEST['func'] == 'Ins_r') {
                     $arr[$m] = 'Website';
                 else {
                     $col = explode('_', $m);
+                    if ($col[0] == 'CUSTOM' && $col[1] != '')
+                        $get_field_name = DBGet(DBQuery('SELECT TITLE FROM school_custom_fields WHERE ID=' . $col[1]));
                     foreach ($col as $col_i => $col_d) {
 
                         $f_c = substr($col_d, 0, 1);
@@ -119,12 +168,17 @@ if ($_REQUEST['func'] == 'Ins_r') {
                     unset($col_i);
                     unset($col_d);
                     $col = implode(' ', $col);
-                    $arr[$m] = $col;
+
+                    if ($get_field_name[1]['TITLE'] != '')
+                        $arr[$m] = $get_field_name[1]['TITLE'];
+                    else
+                        $arr[$m] = $col;
+                    unset($get_field_name);
                 }
             }
             echo '<br>';
 
-            $get_school_info = DBGet(DBQuery('SELECT ' . $columns . ' FROM schools'));
+            $get_school_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM schools'));
 
             echo '<br>';
             foreach ($get_school_info as $key => $value) {
@@ -132,7 +186,24 @@ if ($_REQUEST['func'] == 'Ins_r') {
                 foreach ($value as $i => $j) {
 
 
+                    $column_check = explode('_', $i);
+                    if ($column_check[0] == 'CUSTOM') {
+                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND SCHOOL_ID=' . $get_school_info[$key]['ID']));
+                        if ($check_validity[1]['REC_EX'] == 0)
+                            $j = 'NOT_AVAILABLE_FOR';
+                    }
                     $get_school_info[$key][$i] = trim($j);
+                }
+            }
+            $show_legend = 'no';
+            foreach ($get_school_info as $key => $value) {
+
+                foreach ($value as $i => $j) {
+
+                    if ($j == 'NOT_AVAILABLE_FOR') {
+                        $show_legend = 'yes';
+                        $get_school_info[$key][$i] = '<img src="assets/not_available.png" />';
+                    }
                 }
             }
 
@@ -147,7 +218,13 @@ if ($_REQUEST['func'] == 'Ins_r') {
         echo '<br/>';
 
         $fields_list['Available School Fields'] = array('TITLE' => 'School Name', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode', 'PHONE' => 'Telephone', 'PRINCIPAL' => 'Principal', 'REPORTING_GP_SCALE' => 'Base Grading Scale', 'E_MAIL' => 'Email', 'WWW_ADDRESS' => 'Website');
-        echo '<div class="row">';
+        $get_schools_cf = DBGet(DBQuery('SELECT * FROM school_custom_fields'));
+        if (count($get_schools_cf) > 0) {
+            foreach ($get_schools_cf as $gsc) {
+                $fields_list['Available School Fields']['CUSTOM_' . $gsc[ID]] = $gsc['TITLE'];
+            }
+        }        
+	echo '<div class="row">';
         echo '<div class="col-md-8">';
         PopTable('header','<i class=\"glyphicon glyphicon-tasks\"></i> &nbsp;Select Fields To Generate Report');
 

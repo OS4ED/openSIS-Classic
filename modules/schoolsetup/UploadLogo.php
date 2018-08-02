@@ -88,6 +88,7 @@ if (UserSchool()) {
         $fileType = $_FILES['file']['type'];
 	$upload= new upload();
         $upload->name=$_FILES["file"]["name"];
+        $upload->fileSize=$fileSize;
 //        $target_path=$SchoolLogoPath.'/'.substr($_FILES["file"]["name"],0,strrpos($_FILES["file"]["name"],".")).UserSchool().'.'.$upload->get_file_extension($upload->name);
 
 //	$destination_path = $SchoolLogoPath;	   
@@ -98,19 +99,33 @@ if (UserSchool()) {
         if(count($sch_img_info)>0)
             $upload->deleteOldImage($sch_img_info[1]['ID']);
 	$upload->setFileExtension();
-
+        
 	$upload->validateImage();
 	if($upload->wrongFormat==1){
 	$_FILES["file"]["error"]=1;
 	}
-
-	if ($_FILES["file"]["error"] > 0)
+        $upload->validateImageSize();
+        if($upload->wrongSize==1){
+	$_FILES["file"]["error"]=1;
+	}
+	if ($_FILES["file"]["error"] > 0 && $upload->wrongFormat==1)
     {
     $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
     echo '
 	'.$msg.'
 	<form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
-echo '<div align=center>Select Logo: <input name="file" type="file" /><br /><br>
+echo '<div align=center>Select Logo: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+<input type="submit" value="Upload" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value=Cancel onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
+</form>';
+PopTable ('footer');
+    }
+    else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize==1)
+    {
+    $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+    echo '
+	'.$msg.'
+	<form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
+echo '<div align=center>Select Logo: <input name="file" type="file" /> <b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value=Cancel onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
 </form>';
 PopTable ('footer');
@@ -162,7 +177,7 @@ PopTable ('footer');
         echo '
 ' . $msg . '
 <form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
-        echo '<div align=center>Select Logo: <input name="file" type="file" /><br /><br>
+        echo '<div align=center>Select Logo: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" name="Submit"  value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link(Modules.php?modname=schoolsetup/Schools.php);\'></div>
 </form>';
         PopTable('footer');

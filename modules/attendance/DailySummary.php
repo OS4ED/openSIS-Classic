@@ -31,13 +31,13 @@ DrawBC("Attendance > " . ProgramTitle());
 //////////////////////////////For new date picker///////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
     $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
-    //$start_date = ProperDateMAvr($start_date);
+    $start_date = ProperDateMAvr($start_date);
 } else {
     $start_date = date('Y-m') . '-01';
 }
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
     $end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
-    //$end_date = ProperDateMAvr($end_date);
+    $end_date = ProperDateMAvr($end_date);
 } else {
     $end_date = ProperDateMAvr();
 }
@@ -105,7 +105,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     echo "<div class=\"panel panel-default\">";
     echo "<div class=\"panel-body\">";
 
-    echo '<div class="form-inline clearfix"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) .' &nbsp; &nbsp; - ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; &nbsp;' . $period_select . ' <INPUT type=submit class="btn btn-primary" value=Go>' . (($_REQUEST['period_id']) ? $myclasses : '').'</div></div>';
+    echo '<div class="form-inline clearfix"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) .'<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . DateInputAY($end_date, 'end', 2) . '<div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '').'</div></div>';
 }
     echo '</div>';
     echo '</div>';
@@ -132,14 +132,14 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     if ($_REQUEST['period_id']) {
         $sql = 'SELECT cp.TITLE as COURSE_PERIOD,sp.TITLE as PERIOD,cpv.PERIOD_ID, cp.COURSE_PERIOD_ID
                  FROM schedule s,courses c,course_periods cp,course_period_var cpv,school_periods sp
-            WHERE
+                 WHERE
                 s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID = sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\'
                 AND s.SYEAR = c.SYEAR AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP($MP_TYPE, UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL)
                 AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND s.SYEAR=\'' . UserSyear() . '\'
                 ' . (($_REQUEST['myclasses'] != '') ? 'AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? "(cp.TEACHER_ID='" . User('STAFF_ID') . "' OR cp.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "')" : "cp.COURSE_PERIOD_ID='" . UserCoursePeriod() . "'") : '') . '
                 AND (\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN s.START_DATE AND s.END_DATE OR s.END_DATE IS NULL)
-            ORDER BY sp.SORT_ORDER
+             group by cp.course_period_id,sp.period_id ORDER BY sp.SORT_ORDER
             ';
 
         $schedule_RET = DBGet(DBQuery($sql));
@@ -242,6 +242,42 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     Search('student_id', $extra);
 
     echo '</FORM>';
+    
+    echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 }
 
 function _makeColor($value, $column) {

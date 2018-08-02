@@ -89,7 +89,7 @@ if(!$_REQUEST['modfunc'])
 	Search('student_id',$extra);
 	if($_REQUEST['search_modfunc']=='list')
 	{
-		echo '<BR><CENTER><INPUT type=submit class=btn_xxlarge value=\'Print Contact Info for Selected Students\'></CENTER>';
+		echo '<CENTER><INPUT type=submit class="btn btn-primary" value=\'Print Contact Info for Selected Students\'></CENTER>';
 		echo "</FORM>";
 	}
 }

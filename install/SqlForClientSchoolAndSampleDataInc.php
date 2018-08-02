@@ -54,7 +54,7 @@ SET time_zone = '+00:00';
 --
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '6.4 Responsive Design RC1'),
+('version', '7.0'),
 ('date', 'March 27, 2018'),
 ('build', '20180327001'),
 ('update', '0'),

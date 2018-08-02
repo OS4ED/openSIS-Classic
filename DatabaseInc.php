@@ -112,7 +112,7 @@ function DBQuery($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
                                                     $connection->query("ROLLBACK");
-                                                    die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+                                                    die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -123,7 +123,7 @@ function DBQuery($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 {
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                 }
                                 
 			}
@@ -175,7 +175,7 @@ function DBQuery_assignment($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
 							$connection->query("ROLLBACK");
-							die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+							die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -186,7 +186,7 @@ function DBQuery_assignment($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 { 
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                 }
 				
 			}
@@ -235,7 +235,7 @@ function DBQueryMod($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
 							$connection->query("ROLLBACK");
-							die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+							die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -246,7 +246,7 @@ function DBQueryMod($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 { 
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
                                 }
 				
 			}

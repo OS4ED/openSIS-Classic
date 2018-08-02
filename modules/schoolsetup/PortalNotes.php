@@ -248,7 +248,7 @@ $portal_id=implode(',',$portal_id_arr);
 
 	$columns = array('TITLE'=>'Title','CONTENT'=>'Note','SORT_ORDER'=>'Sort Order','START_DATE'=>'Publishing Options');
 	
-	$link['add']['html'] = array('TITLE'=>_makeTextInput('','TITLE'),'CONTENT'=>_makeContentInput('','CONTENT'),'SHORT_NAME'=>_makeTextInput('','SHORT_NAME'),'SORT_ORDER'=>_makeTextInput('','SORT_ORDER'),'START_DATE'=>_makePublishing('','START_DATE'));
+	$link['add']['html'] = array('TITLE'=>_makeTextInput('','TITLE','placeholder="Title"'),'CONTENT'=>_makeContentInput('','CONTENT','placeholder="Note"'),'SHORT_NAME'=>_makeTextInput('','SHORT_NAME'),'SORT_ORDER'=>_makeTextInput('','SORT_ORDER','placeholder="Sort Order"'),'START_DATE'=>_makePublishing('','START_DATE'));
 	$link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 	$link['remove']['variables'] = array('id'=>'ID');
 
@@ -263,7 +263,7 @@ $portal_id=implode(',',$portal_id_arr);
 	echo '</div></FORM>';
 }
 
-function _makeTextInput($value,$name)
+function _makeTextInput($value,$name, $options = '')
 {
         global $THIS_RET;
         if($THIS_RET['ID'])
@@ -272,24 +272,25 @@ function _makeTextInput($value,$name)
             $id = 'new';
 
         if($name!='TITLE')
-            $extra = 'size=5 maxlength=10 class=form-control';
+            $extra = 'size=5 maxlength=10 class=form-control ';
         else 
 
-            $extra = 'class=form-control maxlength=20';
+            $extra = 'class=form-control ';
         if($name=='SORT_ORDER')
         {
             if($name=='SORT_ORDER')
             {
                 if($id == 'new' || $THIS_RET['SORT_ORDER']=='')
-                    $extra .= ' onkeydown="return numberOnly(event);"';
+                    $extra .= ' onkeydown="return numberOnly(event);" ';
                 else
-                    $extra .= ' onkeydown=\"return numberOnly(event);\"';
+                    $extra .= ' onkeydown="return numberOnly(event);" ';
             }
         }
+        $extra .= ' '.$options;        
         return TextInput($name=='TITLE' && $THIS_RET['EXPIRED']?array($value,'<FONT class=red>'.$value.'</FONT>'):$value,"values[$id][$name]",'',$extra);
 }
 
-function _makeContentInput($value,$name)
+function _makeContentInput($value,$name, $options = '')
 {	global $THIS_RET;
 
 	if($THIS_RET['ID'])
@@ -297,7 +298,7 @@ function _makeContentInput($value,$name)
 	else
 		$id = 'new';
 
-	return TextareaInput($value,"values[$id][$name]",'','rows=16 cols=55');
+	return TextareaInput($value,"values[$id][$name]",'','rows=16 cols=55 '.$options);
 }
 
 function _makePublishing($value,$name)
@@ -308,44 +309,40 @@ function _makePublishing($value,$name)
 	else
 		$id = 'new';
 
-	$return = '<TABLE width=216><TR><TD class=LO_field align="center"><b>Visible Between:</b></TD></tr><tr><TD align="center">';
+	$return = '<TABLE border=0 cellspacing=0 cellpadding=0 width=200 class=LO_field><tr></td><h4>Visible Between:</h4>';
      
         if($id!='new')
         {
-        //$return .= DateInputAY($value!="" ? date("d-M-Y", strtotime($value)) : "","values[$id][$name]",$id+rand()).'</TD></tr><tr><TD class=LO_field align="center"><b>&</b></TD></tr><tr><TD align="center">';
-        $return .= DateInputAY($value!="" ? $value : "","values[$id][$name]",$id+rand()).'</TD></tr><tr><TD class=LO_field align="center"><b>&</b></TD></tr><tr><TD align="center">';    
-        //$return .= DateInputAY($THIS_RET['END_DATE']!="" ? date("d-M-Y", strtotime($THIS_RET['END_DATE'])) : "","values[$id][END_DATE]",$id+1+rand()).'</TD></TR>';
-        $return .= DateInputAY($THIS_RET['END_DATE']!="" ? $THIS_RET['END_DATE'] : "","values[$id][END_DATE]",$id+1+rand()).'</TD></TR>';
+        $return .= DateInputAY($value,"values[$id][$name]",$id+rand()).'<p class="text-center p-t-10 text-bold">&</p>';
+        $return .= DateInputAY($THIS_RET['END_DATE'],"values[$id][END_DATE]",$id+1+rand());
         }
         else 
         {
-            //$return .= DateInputAY($value!="" ? date("d-M-Y", strtotime($value)) : "","values[$id][$name]",0).'</TD></tr><tr><TD class=LO_field align="center"><b>&</b></TD></tr><tr><TD align="center">';
-            $return .= DateInputAY($value!="" ? $value : "","values[$id][$name]",0).'</TD></tr><tr><TD class=LO_field align="center"><b>&</b></TD></tr><tr><TD align="center">';
-            //$return .= DateInputAY($THIS_RET['END_DATE']!="" ? date("d-M-Y", strtotime($THIS_RET['END_DATE']))  : "","values[$id][END_DATE]",-1).'</TD></TR>';
-            $return .= DateInputAY($THIS_RET['END_DATE']!="" ? $THIS_RET['END_DATE'] : "","values[$id][END_DATE]",-1).'</TD></TR>';
+            $return .= DateInputAY($value,"values[$id][$name]",0).'<p class="text-center p-t-10 text-bold">&</p>';
+            $return .= DateInputAY($THIS_RET['END_DATE'],"values[$id][END_DATE]",-1);
         
         }
-	$return .= '<TR><TD colspan=4 class=break></TD></TR><TR><TD colspan=4>';
+	$return .= '';
 
 	if(!$profiles_RET)
 		$profiles_RET = DBGet(DBQuery("SELECT ID,TITLE FROM user_profiles ORDER BY ID"));
 
-	$return .= '<TABLE border=0 cellspacing=0 cellpadding=0 width=96% class=LO_field><TR><TD colspan=4><b>Visible To: </b></TD></TR>';
+	$return .= '<h4 class="p-t-15">Visible To: </h4>';
 	foreach(array('all'=>'All School','admin'=>'Administrator w/Custom','teacher'=>'Teacher w/Custom','parent'=>'Parent w/Custom') as $profile_id=>$profile)
-		$return .= "<tr><TD colspan=4><INPUT type=checkbox name=profiles[$id][$profile_id] value=Y".(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile_id,")!==false?' CHECKED':'')."> $profile</TD></tr>";
+		$return .= "<div class=\"checkbox checkbox-switch switch-success switch-xs \"><label><INPUT type=checkbox name=profiles[$id][$profile_id] value=Y".(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile_id,")!==false?' CHECKED':'')."><span></span>$profile</label></div>";
 	$i = 3;
 	foreach($profiles_RET as $profile)
 	{
 		$i++;
-		$return .= '<tr><TD colspan=4><INPUT type=checkbox name=profiles['.$id.']['.$profile['ID'].'] value=Y'.(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile[ID],")!==false?' CHECKED':'')."> $profile[TITLE]</TD></tr>";
-		if($i%4==0 && $i!=count($profile))
-			$return .= '<TR>';
+		$return .= '<div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=profiles['.$id.']['.$profile['ID'].'] value=Y'.(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile[ID],")!==false?' CHECKED':'')."><span></span>$profile[TITLE]</label></div>";
+//		if($i%4==0 && $i!=count($profile))
+//			$return .= '<TR>';
 	}
-	for(;$i%4!=0;$i++)
-		$return .= '<TD></TD>';
-	$return .= '</TR>';
+//	for(;$i%4!=0;$i++)
+//		$return .= '<TD></TD>';
+//	$return .= '</TR>';
 
-	$return .= '</TABLE>';
+//	$return .= '</TABLE>';
 	$return .= '</TD></TR></TABLE>';
 	return $return;
 }

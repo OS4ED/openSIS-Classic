@@ -108,9 +108,17 @@ else {
     if ($_REQUEST['address_group']) {
         $extra['SELECT'] .= ',sam.ID AS ADDRESS_ID';
         if (!($_REQUEST['expanded_view'] == 'true' || $_REQUEST['addr'] || $extra['addr']))
-            $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\')\'' . $extra['FROM'] . '\'';
+            $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\')' . $extra['FROM'];
         $extra['group'] = array('ADDRESS_ID');
     }
+    $extra['SELECT'] .= ' ,ssm.SECTION_ID';
+    if (count($extra['functions']) > 0)
+        $extra['functions'] += array('SECTION_ID' => '_make_sections');
+    else
+        $extra['functions'] = array('SECTION_ID' => '_make_sections');
+
+    if ($_REQUEST['section'] != '')
+        $extra['WHERE'] .= ' AND ssm.SECTION_ID=' . $_REQUEST['section'];
     $students_RET = GetStuList($extra);
     if ($_REQUEST['address_group']) {
         // if address_group specified but only one address returned then convert to ungrouped
@@ -120,6 +128,7 @@ else {
         } else
             $extra['LO_group'] = array('ADDRESS_ID');
     }
+
     if ($extra['array_function'] && function_exists($extra['array_function']))
         if ($_REQUEST['address_group'])
             foreach ($students_RET as $id => $student_RET)
@@ -127,7 +136,7 @@ else {
         else
             $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade');
+    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_REQUEST['_search_all_schools'])

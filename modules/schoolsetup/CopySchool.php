@@ -27,15 +27,24 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+
+echo '<div class="row">';
+
 echo '<div class="col-md-6 col-md-offset-3">';
 
-$tables = array('school_periods' => 'School Periods', 'school_years' => 'Marking Periods', 'report_card_grades' => 'Report Card Grade Codes', 'report_card_comments' => 'Report Card Comment Codes', 'eligibility_activities' => 'Eligibility Activity Codes', 'attendance_codes' => 'Attendance Codes', 'school_gradelevels' => 'Grade Levels');
+$tables = array('school_periods' => 'School Periods', 'school_years' => 'Marking Periods', 'report_card_grades' => 'Report Card Grade Codes', 'report_card_comments' => 'Report Card Comment Codes', 'eligibility_activities' => 'Eligibility Activity Codes', 'attendance_codes' => 'Attendance Codes', 'school_gradelevels' => 'Grade Levels', 'rooms' => 'Rooms', 'school_gradelevel_sections' => 'Sections', 'course_subjects' => 'Subjects', 'school_calendars' => 'Calendar','courses' => 'Course',);
 
 $table_list = '<br/><div class="form-group"><label class="control-label text-uppercase" for="schoolTitle"><b>New School\'s Title</b></label><INPUT type=text name=title placeholder="Title" value="New School" id="schoolTitle" onKeyUp="checkDuplicateName(1,this,0);" onBlur="checkDuplicateName(1,this,0);" class="form-control"></div>';
 
 $table_list .= '<div class="row">';
 foreach ($tables as $table => $name) {
     $table_list .= '<div class="col-md-6">';
+    if($table=='courses')
+    $table_list .= '<div class="checkbox checkbox-switch switch-success"><label><INPUT type="checkbox" id="course" value="Y" name="tables[' . $table . ']" checked="checked" onClick="checkChecked(\'course\',\'subject\');"><span></span> ' . $name . '</label></div>';
+    elseif($table=='course_subjects')
+    $table_list .= '<div class="checkbox checkbox-switch switch-success"><label><INPUT type="checkbox" id="subject"  value="Y" name="tables[' . $table . ']" checked="checked"  onClick="turnCheckOff(\'course\',\'subject\');"><span></span> ' . $name . '</label></div>';
+    else
     $table_list .= '<div class="checkbox checkbox-switch switch-success"><label><INPUT type="checkbox" value="Y" name="tables[' . $table . ']" checked="checked"><span></span> ' . $name . '</label></div>';
 
     $table_list .= '</div>'; //.col-md-6
@@ -73,7 +82,19 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
         echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
 
-        DrawHeaderHome('<i class="icon-checkbox-checked"></i> &nbsp;The data have been copied to a new school called "' . paramlib_validation($col = TITLE, $_REQUEST['title']) . '".To finish the operation, click OK button.', '<INPUT  type=submit value=OK class="btn btn-primary">');
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-body text-center">';
+        echo '<div class="new-school-created  p-30">';
+        echo '<div class="icon-school">';
+        echo '<span></span>';
+        echo '</div>';
+        echo '<h5 class="p-20">The data have been copied to a new school called <b class="text-success">'.paramlib_validation($col = TITLE, $_REQUEST['title']).'</b>. To finish the operation, click the button below.</h5>';
+        echo '<div class="text-center"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
+        echo '</div>'; //.new-school-created
+        echo '</div>'; //.panel-body
+        echo '</div>'; //.panel
+        
+        //DrawHeaderHome('<i class="icon-checkbox-checked"></i> &nbsp;The data have been copied to a new school called "' . paramlib_validation($col = TITLE, $_REQUEST['title']) . '".To finish the operation, click OK button.', '<INPUT  type=submit value=OK class="btn btn-primary">');
         echo '<input type="hidden" name="copy" value="done"/>';
         echo '</FORM>';
         unset($_SESSION['_REQUEST_vars']['tables']);
@@ -152,8 +173,112 @@ function _rollover($table) {
             }
             DBQuery('INSERT INTO ' . $table . ' (SYEAR,SCHOOL_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'');
             break;
+            
+        case 'rooms':
+           $table_properties = db_properties($table);
+           $columns = '';
+           foreach ($table_properties as $column => $values) {
+               if ($column != 'ROOM_ID' && $column != 'SCHOOL_ID')
+                   $columns .= ',' . $column;
+           }
+           DBQuery('INSERT INTO ' . $table . ' (SCHOOL_ID' . $columns . ') SELECT \'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SCHOOL_ID=\'' . UserSchool() . '\'');
+           break;   
+            
+        case 'school_gradelevel_sections':
+            $table_properties = db_properties($table);
+            $columns = '';
+            foreach ($table_properties as $column => $values) {
+                if ($column != 'ID' && $column != 'SCHOOL_ID')
+                    $columns .= ',' . $column;
+            }
+            DBQuery('INSERT INTO ' . $table . ' (SCHOOL_ID' . $columns . ') SELECT \'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE  SCHOOL_ID=\'' . UserSchool() . '\'');
+            break;    
+        
+        case 'course_subjects':
+            $table_properties = db_properties($table);
+            $columns = '';
+            foreach ($table_properties as $column => $values) {
+                if ($column != 'SUBJECT_ID' && $column != 'SYEAR' && $column != 'SCHOOL_ID')
+                    $columns .= ',' . $column;
+            }
+            DBQuery('INSERT INTO ' . $table . ' (SYEAR,SCHOOL_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'');
+            break;  
+            
+            
+         
+        case 'school_calendars':
+           $get_all=DBGet(DBQuery('SELECT * FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'')); 
+           foreach($get_all as $ga)
+           {
+           $query_values=$id.','."'".$ga['TITLE']."'".','.$ga['SYEAR'];
+           $query_build='INSERT INTO school_calendars (SCHOOL_ID,TITLE,SYEAR';
+           if($ga['DEFAULT_CALENDAR']!='')
+           {
+               $query_build.=',DEFAULT_CALENDAR';
+               $query_values.=','."'".$ga['DEFAULT_CALENDAR']."'";
+           }
+           if($ga['DAYS']!='')
+           {
+               $query_build.=',DAYS';
+               $query_values.=','."'".$ga['DAYS']."'";
+           }
+           $query_build.=') VALUES ('.$query_values.')';
+           DBQuery($query_build);
+           unset($query_values);
+           unset($query_build);
+           $calendar_id=DBGet(DBQuery('SELECT MAX(CALENDAR_ID) as CALENDAR_ID FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id.'\''));
+           
+           $table_properties = db_properties('attendance_calendar');
+            $columns = '';
+            foreach ($table_properties as $column => $values) {
+                if ($column != 'SCHOOL_ID' && $column != 'CALENDAR_ID')
+                    $columns .= ',' . $column;
+            }
+            DBQuery('INSERT INTO attendance_calendar (CALENDAR_ID,SCHOOL_ID' . $columns . ') SELECT \''.$calendar_id[1]['CALENDAR_ID'].'\' as CALENDAR_ID,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM attendance_calendar WHERE CALENDAR_ID=\''.$ga['CALENDAR_ID'].'\' ');
+           }
+           break;
+           
+           
+           case 'courses':
+           $get_ts_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\''.$id.'\' '));
+           $get_cs_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE  SCHOOL_ID=\''.UserSchool().'\' '));
+           $get_ts_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id. '\''));     
+           $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'')); 
+           foreach($get_cs_subjects as $gcsi=>$gcsd)
+           {
+               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+               foreach($get_course as $gc)
+               {
+                   $sql_columns=array('SUBJECT_ID','SCHOOL_ID');
+                   $sql_values=array($get_ts_subjects[$gcsi]['SUBJECT_ID'],$id);
+                   foreach($gc as $gcc=>$gcd)
+                   {
+                       if($gcd!='' && $gcc!='GRADE_LEVEL')
+                       {
+                       $sql_columns[]=$gcc;
+                       $sql_values[]="'".$gcd."'";
+                       }
+                       if($gcd!='' && $gcc=='GRADE_LEVEL')
+                       {
+                           foreach($get_cs_grade as $gcsgi=>$gcsgd)
+                           {
+                            if($gcd==$gcsd['ID']) 
+                            {
+                            
+                            $sql_columns[]='GRADE_LEVEL';
+                            $sql_values[]="'".$get_ts_grade[$gcsgi]['ID']."'";
+                            
+                            }
+                           }
+                       }
+                   }
+                   DBQuery('INSERT INTO courses ('.implode(',',$sql_columns).') VALUES ('.(implode(',',$sql_values)).')');
+               }
+           }
+           break;
     }
 }
 
 echo '</div>';
+echo '</div>'; //.row
 ?>

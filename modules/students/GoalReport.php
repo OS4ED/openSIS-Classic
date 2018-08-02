@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-//print_r($_REQUEST);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////New Datepicker/////////////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
@@ -43,154 +43,174 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 if ($_REQUEST['chk_pro']) {
     $progress = $_REQUEST['chk_pro'];
 }
-if ($_REQUEST['modfunc'] == 'save') {
-    if (count($_REQUEST['st_arr'])) {
-        $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+if($_REQUEST['modfunc']=='save')
+{
+	if(count($_REQUEST['st_arr']))
+	{
+	$st_list = '\''.implode('\',\'',$_REQUEST['st_arr']).'\'';
+	$extra['WHERE'] = ' AND s.STUDENT_ID IN ('.$st_list.')';
+
+	
+	if($_REQUEST['mailing_labels']=='Y')
+		Widgets('mailing_labels');
+
+	$RET = GetStuList($extra);
+
+	if(count($RET))
+	{
+		include('modules/students/includes/FunctionsInc.php');
+		//------------Comment Heading -----------------------------------------------------
+		
+		$people_categories_RET = DBGet(DBQuery('SELECT c.ID AS CATEGORY_ID,c.TITLE AS CATEGORY_TITLE,f.ID,f.TITLE,f.TYPE,f.SELECT_OPTIONS,f.DEFAULT_SELECTION,f.REQUIRED FROM people_field_categories c,people_fields f WHERE f.CATEGORY_ID=c.ID ORDER BY c.SORT_ORDER,c.TITLE,f.SORT_ORDER,f.TITLE'),array(),array('CATEGORY_ID'));
+
+		explodeCustom($people_categories_RET, $people_custom, 'p');
+
+		unset($_REQUEST['modfunc']);
+		$handle = PDFStart();
+		$error='Y';		
+		foreach($RET as $student)
+		{
+			$_SESSION['student_id'] = $student['STUDENT_ID'];
 
 
-        if ($_REQUEST['mailing_labels'] == 'Y')
-            Widgets('mailing_labels');
 
-        $RET = GetStuList($extra);
+$sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language AS LANG, birthdate AS BDATE  FROM students WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\''),array('BDATE'=>'ProperDate'));
 
-        if (count($RET)) {
-            include('modules/students/includes/FunctionsInc.php');
-            //------------Comment Heading -----------------------------------------------------
+$sql_student = $sql_student[1];
 
-            $people_categories_RET = DBGet(DBQuery('SELECT c.ID AS CATEGORY_ID,c.TITLE AS CATEGORY_TITLE,f.ID,f.TITLE,f.TYPE,f.SELECT_OPTIONS,f.DEFAULT_SELECTION,f.REQUIRED FROM people_field_categories c,people_fields f WHERE f.CATEGORY_ID=c.ID ORDER BY c.SORT_ORDER,c.TITLE,f.SORT_ORDER,f.TITLE'), array(), array('CATEGORY_ID'));
-            
-            explodeCustom($people_categories_RET, $people_custom, 'p');
+$bir_dt = $sql_student['BDATE'];
+unset($_openSIS['DrawHeader']);
 
-            unset($_REQUEST['modfunc']);
-            $handle = PDFStart();
+if(!isset($st_dt) && !isset($end_dt))
+{
+	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' '.($_REQUEST['_search_all_schools']!='Y'?'AND  SCHOOL_ID='.UserSchool():'').' ORDER BY GOAL_TITLE';
+//        $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID='.UserSchool().' ORDER BY GOAL_TITLE';
+}
+if(isset($st_dt) && !isset($end_dt))
+{
+//	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' AND START_DATE>=\''.$st_dt.'\' ORDER BY GOAL_TITLE';
+        $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' '.($_REQUEST['_search_all_schools']!='Y'?'AND  SCHOOL_ID='.UserSchool():'').' AND START_DATE>=\''.$st_dt.'\' ORDER BY GOAL_TITLE';
+}
+if(!isset($st_dt) && isset($end_dt))
+{
+	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' '.($_REQUEST['_search_all_schools']!='Y'?'AND  SCHOOL_ID='.UserSchool():'').' AND START_DATE<=\''.$end_dt.'\' ORDER BY GOAL_TITLE';
+}
+if(isset($st_dt) && isset($end_dt))
+{
+	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' '.($_REQUEST['_search_all_schools']!='Y'?'AND  SCHOOL_ID='.UserSchool():'').' AND START_DATE>=\''.$st_dt.'\' AND START_DATE<=\''.$end_dt.'\' ORDER BY GOAL_TITLE';
+}
 
-            foreach ($RET as $student) {
-                $_SESSION['student_id'] = $student['STUDENT_ID'];
+$res_goal = DBGet(DBQuery($sql_goal),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate'));
 
-
-
-                $sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language AS LANG, birthdate AS BDATE  FROM students WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('BDATE' => 'ProperDate'));
-
-                $sql_student = $sql_student[1];
-
-                $bir_dt = $sql_student['BDATE'];
-                unset($_openSIS['DrawHeader']);
-
-                echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "</font></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
-                    echo "<table width=100% cellspacing=0 style=\"border-collapse:collapse\">";
-
-
-                    echo "<tr><td width=15%>Student Name:</td>";
-                    echo "<td>" . $student['FULL_NAME'] . "</td></tr>";
-
-                    echo "<tr><td>Grade:</td>";
-                    echo "<td>" . $student['GRADE_ID'] . " </td></tr>";
-                    echo "<tr><td>Gender:</td>";
-                    echo "<td>" . $sql_student['GENDER'] . "</td></tr>";
-                    echo "<tr><td>Ethnicity:</td>";
-                    echo "<td>" . $sql_student['ETHNICITY'] . "</td></tr>";
-                    if ($sql_student['COM_NAME'] != '') {
-                        echo "<tr><td>Common Name:</td>";
-                        echo "<td>" . $sql_student['COM_NAME'] . "</td></tr>";
-                    }
-                    if ($sql_student['SOCIAL_SEC'] != '') {
-                        echo "<tr><td>Social Security:</td>";
-                        echo "<td>" . $sql_student['SOCIAL_SEC'] . "</td></tr>";
-                    }
-                    echo "<tr><td>Date of Birth:</td>";
-                    echo "<td>" . $bir_dt . "</td></tr>";
-                    if ($sql_student['LANG'] != '') {
-                        echo "<tr><td>Language Spoken:</td>";
-                        echo "<td>" . $sql_student['LANG'] . "</td></tr>";
-                        echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-                    }
-
-                echo '<tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>';
+	
+	
+			//----------------------------------------------
                 
-                
-                if (!isset($st_dt) && !isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY GOAL_TITLE';
-                }
-                if (isset($st_dt) && !isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND START_DATE>=\'' . $st_dt . '\' ORDER BY GOAL_TITLE';
-                }
-                if (!isset($st_dt) && isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
-                }
-                if (isset($st_dt) && isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND START_DATE>=\'' . $st_dt . '\' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
-                }
+		if(count($res_goal) != 0)
+		{
+		$error='N';
+			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+			echo "<tr><td width=105>".DrawLogoParam($student['SCHOOL_ID'])."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool($student['SCHOOL_ID'])."</font></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+			echo "<table width=100% cellspacing=0 style=\"border-collapse:collapse\">";
+		
+		
+			echo "<tr><td width=15%>Student Name:</td>";
+			echo "<td>" .$student['FULL_NAME']. "</td></tr>";
+			
+			echo "<tr><td>Grade:</td>";
+			echo "<td>". $student['GRADE_ID'] ." </td></tr>";
+			echo "<tr><td>Gender:</td>";
+			echo "<td>".$sql_student['GENDER'] ."</td></tr>";
+			echo "<tr><td>Ethnicity:</td>";
+			echo "<td>".$sql_student['ETHNICITY'] ."</td></tr>";
+			if($sql_student['COM_NAME'] !='')
+			{
+			echo "<tr><td>Common Name:</td>";
+			echo "<td>".$sql_student['COM_NAME'] ."</td></tr>";
+			}
+			if($sql_student['SOCIAL_SEC'] !='')
+			{
+			echo "<tr><td>Social Security:</td>";
+			echo "<td>".$sql_student['SOCIAL_SEC'] ."</td></tr>";
+			}
+			echo "<tr><td>Date of Birth:</td>";
+			echo "<td>".$bir_dt."</td></tr>";
+			if($sql_student['LANG'] !='')
+			{
+			echo "<tr><td>Language Spoken:</td>";
+			echo "<td>".$sql_student['LANG'] ."</td></tr>";
+			echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+			}
+			
+			echo '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
+			echo '<tr><td><b><u>Goal Details</u></b></td><td>&nbsp;</td></tr>';
+			echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+			foreach($res_goal as $row_goal)
+			{               
+				echo '<tr><td><b>Goal Title: </b></td><td>'.$row_goal['GOAL_TITLE'].'</td></tr>';
+				echo '<tr><td><b>Begin Date: </b></td><td>'.$row_goal['START_DATE'].'</td></tr>';
+				echo '<tr><td><b>End Date: </b></td><td>'.$row_goal['END_DATE'].'</td></tr>';
+				echo '<tr><td valign=top><b>Goal Description: </b></td><td>'.$row_goal['GOAL_DESCRIPTION'].'</td></tr>';
+				echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+				
+				if($progress == 'Y')
+				{               $goal_id=$row_goal['GOAL_ID'];
+					$res_pro = DBGet(DBQuery("SELECT START_DATE,PROGRESS_NAME ,PROFICIENCY,PROGRESS_DESCRIPTION,(SELECT TITLE FROM course_periods cp WHERE cp.COURSE_PERIOD_ID=student_goal_progress.COURSE_PERIOD_ID) AS CP_TITLE FROM student_goal_progress WHERE STUDENT_ID='".$_SESSION['student_id']."' AND GOAL_ID='".$goal_id."' ORDER BY PROGRESS_NAME"),array('START_DATE'=>'ProperDate'));
+					echo '<tr><td><b><u>Progress Details</u></b></td><td>&nbsp;</td></tr>';
+					echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+					foreach($res_pro as $row_pro)
+					{
+						echo '<tr><td><b>Date of Entry: </b></td><td>'.$row_pro['START_DATE'].'</td></tr>';
+					# ----------------------------- CP ------------------------------------------------- #	
+						echo '<tr><td><b>Course Period: </b></td><td>'.$row_pro['CP_TITLE'].'</td></tr>';
+					# ----------------------------- CP ------------------------------------------------- #		
+						echo '<tr><td><b>Progress Period Name: </b></td><td>'.$row_pro['PROGRESS_NAME'].'</td></tr>';
+						echo '<tr><td><b>Proficiency: </b></td><td>'.$row_pro['PROFICIENCY'].'</td></tr>';
+						echo '<tr><td><b>Progress Assessment: </b></td><td>'.$row_pro['PROGRESS_DESCRIPTION'].'</td></tr>';
+						echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+					}
+				}
+				
+				echo "<tr><td colspan=2 style=\"height:18px; border-top:1px solid #333;\"></td></tr>";
+			}
+			
+			
+			echo '</td><td></td><td></td></tr></table></TABLE><div style="page-break-before: always;">&nbsp;</div>';
+			foreach($categories_RET as $id=>$category)
+			{
+				if($id!='1' && $id!='3' && $id!='2' && $id!='4' && $_REQUEST['category'][$id])
+				{
+					$_REQUEST['category_id'] = $id;
+					
+					$separator = '';
+					if(!$category[1]['INCLUDE'])
+						include('modules/students/includes/OtherInfoInc.php');
+					elseif(!strpos($category[1]['INCLUDE'],'/'))
+						include('modules/students/includes/'.$category[1]['INCLUDE'].'.php');
+					else
+					{
+						include('modules/'.$category[1]['INCLUDE'].'.php');
+						$separator = '<HR>';
+						
+					}
 
-                $res_goal = DBGet(DBQuery($sql_goal), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
-
-
-
-                //----------------------------------------------
-
-                if (count($res_goal) != 0) {
-                    
-                    
-                    echo '<table><tr><td><b><u>Goal Details</u></b></td><td>&nbsp;</td></tr>';
-                    echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-                    foreach ($res_goal as $row_goal) {
-                        echo '<tr><td><b>Goal Title: </b></td><td>' . $row_goal['GOAL_TITLE'] . '</td></tr>';
-                        echo '<tr><td><b>Begin Date: </b></td><td>' . $row_goal['START_DATE'] . '</td></tr>';
-                        echo '<tr><td><b>End Date: </b></td><td>' . $row_goal['END_DATE'] . '</td></tr>';
-                        echo '<tr><td valign=top><b>Goal Description: </b></td><td>' . $row_goal['GOAL_DESCRIPTION'] . '</td></tr>';
-                        echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-
-                        if ($progress == 'Y') {
-                            $goal_id = $row_goal['GOAL_ID'];
-                            $res_pro = DBGet(DBQuery("SELECT START_DATE,PROGRESS_NAME ,PROFICIENCY,PROGRESS_DESCRIPTION,(SELECT TITLE FROM course_periods cp WHERE cp.COURSE_PERIOD_ID=student_goal_progress.COURSE_PERIOD_ID) AS CP_TITLE FROM student_goal_progress WHERE STUDENT_ID='" . $_SESSION['student_id'] . "' AND GOAL_ID='" . $goal_id . "' ORDER BY PROGRESS_NAME"), array('START_DATE' => 'ProperDate'));
-                            echo '<tr><td><b><u>Progress Details</u></b></td><td>&nbsp;</td></tr>';
-                            echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-                            foreach ($res_pro as $row_pro) {
-                                echo '<tr><td><b>Date of Entry: </b></td><td>' . $row_pro['START_DATE'] . '</td></tr>';
-                                # ----------------------------- CP ------------------------------------------------- #	
-                                echo '<tr><td><b>Course Period: </b></td><td>' . $row_pro['CP_TITLE'] . '</td></tr>';
-                                # ----------------------------- CP ------------------------------------------------- #		
-                                echo '<tr><td><b>Progress Period Name: </b></td><td>' . $row_pro['PROGRESS_NAME'] . '</td></tr>';
-                                echo '<tr><td><b>Proficiency: </b></td><td>' . $row_pro['PROFICIENCY'] . '</td></tr>';
-                                echo '<tr><td><b>Progress Assessment: </b></td><td>' . $row_pro['PROGRESS_DESCRIPTION'] . '</td></tr>';
-                                echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-                            }
-                        }
-
-                        echo "<tr><td colspan=2 style=\"height:18px; border-top:1px solid #333;\"></td></tr>";
-                    }
-
-
-                    echo '</td><td></td><td></td></tr></table></TABLE><div style="page-break-before: always;">&nbsp;</div>';
-                    foreach ($categories_RET as $id => $category) {
-                        if ($id != '1' && $id != '3' && $id != '2' && $id != '4' && $_REQUEST['category'][$id]) {
-                            $_REQUEST['category_id'] = $id;
-
-                            $separator = '';
-                            if (!$category[1]['INCLUDE'])
-                                include('modules/students/includes/OtherInfoInc.php');
-                            elseif (!strpos($category[1]['INCLUDE'], '/'))
-                                include('modules/students/includes/' . $category[1]['INCLUDE'] . '.php');
-                            else {
-                                include('modules/' . $category[1]['INCLUDE'] . '.php');
-                                $separator = '<HR>';
-                            }
-                        }
-                    }
-                }
-                else 
-                {
-                    echo 'No data found.<br><br>';
-                }
-            }
-            PDFStop($handle);
-        } else
-            BackPrompt('No Students were found.');
-    } else
-        BackPrompt('You must choose at least one student.');
-    unset($_SESSION['student_id']);
-    $_REQUEST['modfunc'] = true;
+				}
+			}
+			
+		}
+		}
+		PDFStop($handle);
+	}
+	else
+		BackPrompt('No Students were found.');
+	}
+	else
+		BackPrompt('You must choose at least one student.');
+        
+        if($error=='Y')
+                BackPrompt('No goals and progress were found.');
+	unset($_SESSION['student_id']);
+	$_REQUEST['modfunc']=true;
 }
 
 if (!$_REQUEST['modfunc']) {
@@ -198,17 +218,25 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
-
-        echo '<TABLE border=0 width=100% align=center><tr><td style=padding-top:25px;>Please select the date range :</td><TD valign=middle style=padding-top:25px;>';
-
+        echo '<div class="panel panel-default">';
+        if ($_REQUEST['_search_all_schools'] == 'Y')
+            echo '<input type="hidden" name="_search_all_schools" value="Y" />';
+        echo '<div class="panel-body form-inline">';
+        echo '<div class="form-group">';
+        echo '<label>Please select the date range :</label>';
+        echo '<div class="input-group">';
         $date = '';
-        echo 'From : </TD><TD valign=middle>';
+        echo '<span class="input-group-addon">From : </span>';
         DrawHeader(DateInputAY($start_date, 'start', 1));
-        echo '</TD><TD valign=middle style=padding-top:25px;>To : </TD><TD valign=middle>';
-
+        echo '<span class="input-group-addon">To :</span>';
         DrawHeader(DateInputAY($end_date, 'end', 2));
-        echo '</TD><TD valign=middle style=padding-top:22px;><input type="checkbox" name="chk_pro" id="chk_pro" value="Y" /> With Progress';
-        echo '</TD></TR></TABLE>';
+        echo '</div>';
+        echo '</div>'; //.form-group
+        echo '<div class="form-group">';
+        echo '<label class="checkbox-inline checkbox-switch switch-success"><input type="checkbox" name="chk_pro" id="chk_pro" value="Y" /><span></span>With Progress</label>';
+        echo '</div>';
+        echo '</div>'; //.panel-body
+        echo '</div>'; //.panel
     }
 
     $extra['link'] = array('FULL_NAME' => false);
@@ -257,9 +285,80 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<BR><CENTER><INPUT type=submit class=btn_xxlarge value=\'Print Info for Selected Students\'></CENTER>';
+        echo '<CENTER><INPUT type=submit class="btn btn-primary" value=\'Print Info for Selected Students\'></CENTER>';
         echo "</FORM>";
     }
+    
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal">×</button>
+<h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
+
+echo '<div id="modal_default_request" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal_request"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 }
 
 // GetStuList by default translates the grade_id to the grade title which we don't want here.

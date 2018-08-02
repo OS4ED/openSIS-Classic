@@ -48,7 +48,7 @@ if (count($start_end_RET)) {
         if ($value['TITLE'] == 'END_M')
             $END_M = $value['VALUE'];
 //		$$value['TITLE'] = $value['VALUE'];
-}
+    }
 }
 switch (date('D')) {
     case 'Mon':
@@ -83,10 +83,10 @@ $end_date = strtoupper(date('d-M-y', mktime() + ($END_DAY - $today) * 60 * 60 * 
 $current_RET = DBGet(DBQuery('SELECT ELIGIBILITY_CODE,STUDENT_ID FROM eligibility WHERE SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''), array(), array('STUDENT_ID'));
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
 
-    $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\''), array(), array('TITLE'));
+    $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\''), array(), array('TITLE'));
     if (count($config_RET))
         foreach ($config_RET as $title => $value)
-            $programconfig[User('STAFF_ID')][$title] = $value[1]['VALUE'];
+            $programconfig[User('STAFF_ID')][$title] = rtrim($value[1]['VALUE'], '_' . UserCoursePeriod());
     else
         $programconfig[User('STAFF_ID')] = true;
     include_once 'functions/MakeLetterGradeFnc.php';
@@ -124,12 +124,12 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
                     $code = 'PASSING';
             }
             else {
-            if ($grade['GPA_VALUE'] == '0' || !$grade['GPA_VALUE'])
-                $code = 'FAILING';
-            elseif (strpos($grade['TITLE'], 'D') !== false || $grade['GPA_VALUE'] < 2)
-                $code = 'BORDERLINE';
-            else
-                $code = 'PASSING';
+                if ($grade['GPA_VALUE'] == '0' || !$grade['GPA_VALUE'])
+                    $code = 'FAILING';
+                elseif (strpos($grade['TITLE'], 'D') !== false || $grade['GPA_VALUE'] < 2)
+                    $code = 'BORDERLINE';
+                else
+                    $code = 'PASSING';
             }
 
             if ($current_RET[$student_id])
@@ -171,29 +171,34 @@ $columns = array('PASSING' => 'Passing', 'BORDERLINE' => 'Borderline', 'FAILING'
 $stu_RET = GetStuList($extra);
 
 echo "<FORM ACTION=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
-DrawHeaderHome(ProgramTitle());
+
 echo'<input type=hidden name=cpv_id value="' . CpvId() . '">';
 if ($today > $END_DAY || $today < $START_DAY || ($today == $START_DAY && date('Gi') < ($START_HOUR . $START_MINUTE)) || ($today == $END_DAY && date('Gi') > ($END_HOUR . $END_MINUTE))) {
+    //echo '<h4 class="m-t-0 text-primary">'.ProgramTitle().'</h4>';
     if ($START_HOUR > 12) {
         $START_HOUR-=12;
         $START_M = 'PM';
-    }
-    else
+    } else
         $START_M = 'AM';
 
     if ($END_HOUR > 12) {
         $END_HOUR-=12;
         $END_M = 'PM';
-    }
-    else
+    } else
         $END_M = 'AM';
 
-    echo '<div class="alert alert-primary alert-styled-left">You can only enter eligibility from ' . $days[$START_DAY] . ' ' . $START_HOUR . ':' . $START_MINUTE . ' ' . $START_M . ' to ' . $days[$END_DAY] . ' ' . $END_HOUR . ':' . $END_MINUTE . ' ' . $END_M.'</div>';
+    echo '<div class="alert alert-primary alert-styled-left">You can only enter eligibility from ' . $days[$START_DAY] . ' ' . $START_HOUR . ':' . $START_MINUTE . ' ' . $START_M . ' to ' . $days[$END_DAY] . ' ' . $END_HOUR . ':' . $END_MINUTE . ' ' . $END_M . '</div>';
 }
 else {
-    if (count($stu_RET) != 0)
-        DrawHeader("<A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=gradebook>Use Gradebook grades</A>", '<INPUT type=submit class="btn btn-primary" value=Save>');
-
+    if (count($stu_RET) != 0) {
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
+        echo '<h5 class="m-t-5">' . ProgramTitle() . '</h5>';
+        echo '</div>';
+        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">Use Gradebook Grades</A> &nbsp; <INPUT type=submit class="btn btn-primary" value=Save></div>';
+        echo '</div>';
+        echo '<hr class="m-t-15 m-b-0" />';
+    }
 
     $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
     ListOutput($stu_RET, $LO_columns, 'Student', 'Students');
@@ -202,6 +207,7 @@ else {
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body
+
 function makeRadio($value, $title) {
 
     $colors = array('PASSING' => '#00FF00', 'BORDERLINE' => '#FF0000', 'FAILING' => '#FFCC00', 'INCOMPLETE' => '#0000FF');

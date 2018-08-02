@@ -34,13 +34,11 @@ if ($_REQUEST['codes'])
 else
     $_SESSION['code'] = 'A';
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
-    //$date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
-    $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
+    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
 } else {
     $date = DBDate('mysql');
     $_REQUEST['day_date'] = date('d');
-    //$_REQUEST['month_date'] = strtoupper(date('M'));
-    $_REQUEST['month_date'] = date('m');
+    $_REQUEST['month_date'] = strtoupper(date('M'));
     $_REQUEST['year_date'] = date('y');
 }
 if (!$_REQUEST['table'])
@@ -66,10 +64,10 @@ if (!$current_mp) {
     $current_mp = GetCurrentMP('FY', $date);
     $MP_TYPE = 'FY';
 }
+
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit()) {
 
     foreach ($_REQUEST['attendance'] as $student_id => $values) {
-
         foreach ($values as $period => $columns) {
             $p_ids = explode('_', $period);
 
@@ -89,11 +87,11 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
                     DBQuery($sql);
             }
             else {
-                $period_id = $p_ids[0];
+                $period_id = $p_ids[1];
                 $sql = 'INSERT INTO ' . $table . ' ';
 
                 $fields = 'STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ADMIN,';
-                $values = '\'' . $student_id . '\',\'' . $date . '\',\'' . $p_ids[0] . '\',\'' . $current_mp . '\',\'' . $period_id . '\',\'Y\',';
+                $values = '\'' . $student_id . '\',\'' . $date . '\',\'' . $p_ids[1] . '\',\'' . $current_mp . '\',\'' . $p_ids[0] . '\',\'Y\',';
                 if ($table == 'lunch_period') {
                     $fields .= 'TABLE_NAME,';
                     $values .= '\'' . $_REQUEST['table'] . '\',';
@@ -102,6 +100,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
                 $go = 0;
                 foreach ($columns as $column => $value) {
                     if ($value) {
+
                         $fields .= $column . ',';
                         $values .= '\'' . str_replace("\'", "''", $value) . '\',';
                         $go = true;
@@ -110,6 +109,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
                 if ($go) {
+
                     if (isset($_REQUEST['admin_update']) && $_REQUEST['admin_update'] == 'UPDATE')
                         DBQuery($sql);
                 }
@@ -120,7 +120,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
         UpdateAttendanceDaily($student_id, $date, ($val ? $val : false));
         unset($_REQUEST['attendance_day'][$student_id]);
     }
-    echo $_REQUEST['attendance_day'][$student_id]['COMMENT'];
+    $_REQUEST['attendance_day'][$student_id]['COMMENT'];
     $current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,STUDENT_ID,ADMIN,COURSE_PERIOD_ID,PERIOD_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\'' . $extra_sql), array(), array('STUDENT_ID', 'COURSE_PERIOD_ID'));
     unset($_REQUEST['attendance']);
     unset($_SESSION['_REQUEST_vars']['attendance']);
@@ -185,6 +185,17 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     echo '</FORM>';
 } else {
 
+    if (!isset($_REQUEST['codes'])) {
+        $sql = DBGet(DBQuery('select * from attendance_codes where school_id=\'' . UserSchool() . '\' and syear=\'' . UserSyear() . '\' and state_code =\'A\' and title=\'Absent\''));
+        $present_id = $sql[1]['ID'];
+        $arr[0] = $present_id;
+        $_REQUEST['codes'] = $arr;
+    }
+    if ($_REQUEST['expanded_view'] != 'true')
+        $extra['WHERE'] = $extra2['WHERE'] = ' AND EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql);
+    else
+        $extra['WHERE'] = ' AND EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql);
+
     echo '<div class="panel panel-default">';
 
     if (count($_REQUEST['codes'])) {
@@ -194,41 +205,9 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
                 unset($REQ_codes[$key]);
             elseif ($value == 'A')
                 $abs = true;
-            else
-                $others = true;
         }
     } else
         $abs = true;
-
-
-    if (!$abs && $others) {
-        if ($_REQUEST['expanded_view'] != 'true')
-            $extra['WHERE'] = $extra2['WHERE'] = ' AND EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql);
-        else
-            $extra['WHERE'] = ' AND EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql);
-    }
-    elseif ($abs && !$others) {
-        if ($_REQUEST['expanded_view'] != 'true')
-            $extra['WHERE'] = $extra2['WHERE'] = ' AND EXISTS (SELECT \'\' FROM course_period_var cpv,schedule s WHERE (\'' . $date . '\'=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(\'' . $date . '\',\'%a\'),1,1)))) IN cpv.DAYS)>0 AND cpv.DOES_ATTENDANCE=\'Y\' AND s.STUDENT_ID=ssm.STUDENT_ID AND s.SCHOOL_ID=ssm.SCHOOL_ID AND s.SYEAR=ssm.SYEAR AND ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\' AND STUDENT_ID=ssm.STUDENT_ID))';
-        else
-            $extra['WHERE'] = ' AND EXISTS (SELECT \'\' FROM course_period_var cpv,schedule s WHERE (\'' . $date . '\'=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(\'' . $date . '\',\'%a\'),1,1)))) IN cpv.DAYS)>0 AND cpv.DOES_ATTENDANCE=\'Y\' AND s.STUDENT_ID=ssm.STUDENT_ID AND s.SCHOOL_ID=ssm.SCHOOL_ID AND s.SYEAR=ssm.SYEAR AND ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\' AND STUDENT_ID=ssm.STUDENT_ID))';
-    }
-    else {
-        if ($_REQUEST['expanded_view'] != 'true')
-            $extra['WHERE'] = $extra2['WHERE'] = ' AND (EXISTS (SELECT \'\' FROM course_period_var cpv,schedule s WHERE (\'' . $date . '\'=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(\'' . $date . '\',\'%a\'),1,1)))) IN cpv.DAYS)>0 AND cpv.DOES_ATTENDANCE=\'Y\' AND s.STUDENT_ID=ssm.STUDENT_ID AND s.SCHOOL_ID=ssm.SCHOOL_ID AND s.SYEAR=ssm.SYEAR AND ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\' AND STUDENT_ID=ssm.STUDENT_ID)) OR EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql) . ' ';
-        else
-            $extra['WHERE'] = ' AND (EXISTS (SELECT \'\' FROM course_period_var cpv,schedule s WHERE (\'' . $date . '\'=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(\'' . $date . '\',\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(\'' . $date . '\',\'%a\'),1,1)))) IN cpv.DAYS)>0 AND cpv.DOES_ATTENDANCE=\'Y\' AND s.STUDENT_ID=ssm.STUDENT_ID AND s.SCHOOL_ID=ssm.SCHOOL_ID AND s.SYEAR=ssm.SYEAR AND ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\' AND STUDENT_ID=ssm.STUDENT_ID)) OR EXISTS (SELECT \'\' FROM ' . $table . ' ap,attendance_codes ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.ATTENDANCE_CODE=ac.ID AND ac.SCHOOL_ID=ssm.SCHOOL_ID AND ac.SYEAR=ssm.SYEAR ' . str_replace('TABLE_NAME', 'ac.TABLE_NAME', $extra_sql) . '';
-
-
-        $extra['WHERE'] .= 'AND ac.ID IN (';
-        foreach ($REQ_codes as $code)
-            $extra['WHERE'] .= '\'' . $code . '\',';
-        if ($_REQUEST['expanded_view'] != 'true')
-            $extra2['WHERE'] = $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')))';
-        else
-            $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')))';
-    }
-
     if (count($REQ_codes) && !$abs) {
         $extra['WHERE'] .= 'AND ac.ID IN (';
         foreach ($REQ_codes as $code)
@@ -237,6 +216,19 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
             $extra2['WHERE'] = $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')';
         else
             $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')';
+    }
+    elseif ($abs) {
+        $RET = DBGet(DBQuery('SELECT ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (DEFAULT_CODE!=\'' . 'Y' . '\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'' . $_REQUEST[table] . '\''));
+        if (count($RET)) {
+            $extra['WHERE'] .= 'AND ac.ID IN (';
+            foreach ($RET as $code)
+                $extra['WHERE'] .= '\'' . $code['ID'] . '\',';
+
+            if ($_REQUEST['expanded_view'] != 'true')
+                $extra2['WHERE'] = $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')';
+            else
+                $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')';
+        }
     }
     $extra['WHERE'] .= ')';
 
@@ -278,6 +270,10 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
         $code_pulldowns = _makeCodeSearch('A');
     } else {
         $code_pulldowns = _makeCodeSearch();
+    }
+
+    if (UserStudentID()) {
+        
     }
 
     //----------------------------- Date Edit Start ------------------------------------------//		
@@ -411,7 +407,8 @@ function _makeCodePulldown($value, $title) {
             $current_mp = GetCurrentMP('FY', $date);
         }
         $all_mp = GetAllMP(GetMPTable(GetMP($current_mp, 'TABLE')), $current_mp);
-        $current_schedule_RET[$THIS_RET['STUDENT_ID']] = DBGet(DBQuery('SELECT cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,cp.HALF_DAY FROM schedule s,course_periods cp,course_period_var cpv WHERE s.STUDENT_ID=\'' . $THIS_RET['STUDENT_ID'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.SYEAR=\'' . UserSyear() . '\' AND s.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.COURSE_PERIOD_ID = s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND (\'' . $date . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND \'' . $date . '\'>=s.START_DATE)) AND (s.MARKING_PERIOD_ID IN (' . $all_mp . ') or s.MARKING_PERIOD_ID IS NULL) ORDER BY s.START_DATE ASC'), array(), array('PERIOD_ID'));
+        $day_like = date('l', strtotime($date));
+        $current_schedule_RET[$THIS_RET['STUDENT_ID']] = DBGet(DBQuery('SELECT cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,cp.HALF_DAY FROM schedule s,course_periods cp,course_period_var cpv WHERE s.STUDENT_ID=\'' . $THIS_RET['STUDENT_ID'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.SYEAR=\'' . UserSyear() . '\' AND s.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.COURSE_PERIOD_ID = s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' and cpv.days like"%' . DaySname($day_like) . '%" AND (\'' . $date . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND \'' . $date . '\'>=s.START_DATE)) AND (s.MARKING_PERIOD_ID IN (' . $all_mp . ') or s.MARKING_PERIOD_ID IS NULL) ORDER BY s.START_DATE ASC'), array(), array('PERIOD_ID'));
         if (!$current_schedule_RET[$THIS_RET['STUDENT_ID']])
             $current_schedule_RET[$THIS_RET['STUDENT_ID']] = array();
     }
@@ -431,10 +428,17 @@ function _makeCodePulldown($value, $title) {
             if ($current_schedule_RET[$THIS_RET['STUDENT_ID']][$period_id][1]['HALF_DAY'] != 'Y' || $code['STATE_CODE'] != 'H') // prune half day codes for half day courses
                 $options[$code['ID']] = $code[$code_title];
         $crp_id = $current_schedule_RET[$THIS_RET['STUDENT_ID']][$period_id][1]['COURSE_PERIOD_ID'];
+//		 $val = $current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['ATTENDANCE_CODE'];
+        foreach ($current_RET[$THIS_RET['STUDENT_ID']][$crp_id] as $curRet) {
+            if ($curRet['COURSE_PERIOD_ID'] == $crp_id && $curRet['PERIOD_ID'] == $period_id) {
+                $val = $curRet['ATTENDANCE_CODE'];
+                break;
+            }
+        }
 
-        $val = $current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['ATTENDANCE_CODE'];
+//                 $val = (($current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['PERIOD_ID']==$period_id)?$current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['ATTENDANCE_CODE']:'');
 
-        return SelectInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $crp_id . '][ATTENDANCE_CODE]', '', $options);
+        return SelectInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $crp_id . '_' . $period_id . '][ATTENDANCE_CODE]', '', $options);
     } else
         return false;
 }
@@ -453,7 +457,7 @@ function _makeReasonInput($value, $title) {
 
     $val = $current_RET[$THIS_RET['STUDENT_ID']][$THIS_RET['COURSE_PERIOD_ID']][1]['ATTENDANCE_REASON'];
 
-    return TextInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $THIS_RET['COURSE_PERIOD_ID'] . '][ATTENDANCE_REASON]', '', $options);
+    return TextInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $THIS_RET['COURSE_PERIOD_ID'] . '_' . $THIS_RET['PERIOD_ID'] . '][ATTENDANCE_REASON]', '', $options);
 }
 
 function _makeCodeSearch($value = '') {

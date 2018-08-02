@@ -176,7 +176,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     $grades_RET[$i]['MARKING_PERIOD_ID'] = key($mps);
 
                     $grades_RET[$i]['COURSE_TITLE'] = $mps[key($mps)][1]['COURSE_TITLE'];
-                    $grades_RET[$i]['TEACHER'] = $mps[$last_mp][1]['TEACHER'];
+                    if ($mps[$last_mp][1]['TEACHER'] == '' && $course_period_id != '') {
+                        $get_teacher = DBGet(DBQuery('SELECT s.FIRST_NAME,s.LAST_NAME FROM staff s,course_periods cp WHERE cp.COURSE_PERIOD_ID=' . $course_period_id . ' AND s.STAFF_ID=cp.TEACHER_ID'));
+                        $grades_RET[$i]['TEACHER'] = $get_teacher[1]['FIRST_NAME'] . ' ' . $get_teacher[1]['LAST_NAME'];
+                    } else
+                        $grades_RET[$i]['TEACHER'] = $mps[$last_mp][1]['TEACHER'];
 
 
                     foreach ($_REQUEST['mp_arr'] as $mp) {
@@ -235,6 +239,41 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         for_error();
     }
 }
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 
 if (!$_REQUEST['modfunc']) {
     DrawBC("Gradebook > " . ProgramTitle());
@@ -296,7 +335,6 @@ if (!$_REQUEST['modfunc']) {
                     $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $sem . '>' . GetMP($sem, 'SHORT_NAME') . ' Exam</label></div>';
             if (GetMP($sem, 'DOES_GRADES') == 'Y' && $sem != $quarters[1]['MARKING_PERIOD_ID'])
                 $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $sem . '>' . GetMP($sem, 'SHORT_NAME') . '</label></div>';
-            
         }
         if ($sem) {
             $fy = GetParentMP('FY', $sem);
@@ -342,7 +380,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     Search('student_id', $extra, 'true');
-    
+
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0) {
             unset($_SESSION['count_stu']);

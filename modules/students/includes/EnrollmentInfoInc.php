@@ -177,8 +177,8 @@ if (count($RET)) {
 }
 $date_counter = 1;
 
-if ($not_add == false)
-    $link['add']['html'] = array('START_DATE' => _makeEnrollmentDates('START_DATE', $date_counter), 'ENROLLMENT_CODE' => _makeStartInputCode('', 'ENROLLMENT_CODE'), 'SCHOOL_ID' => _makeSchoolInput('', 'SCHOOL_ID'));
+//if($not_add==false)
+//	$link['add']['html'] = array('START_DATE'=>_makeEnrollmentDates('START_DATE',$date_counter,''),'ENROLLMENT_CODE'=>_makeStartInputCode('','ENROLLMENT_CODE'),'SCHOOL_ID'=>_makeSchoolInput('','SCHOOL_ID'));
 
 
 unset($THIS_RET);
@@ -193,18 +193,17 @@ if (count($RET)) {
         if ($RET[$in]['DC'] != '') {
             $get_SEC = DBGet(DBQuery('SELECT TYPE FROM student_enrollment_codes WHERE ID=' . $RET[$in]['DC']));
             $get_SEC = $get_SEC[1]['TYPE'];
-        } 
-        else
+        } else
             $get_SEC = '';
-        //$RET[$in]['START_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['START_DATE'])) : _makeEnrollmentDates('START_DATE', $date_counter, $value));
-        $RET[$in]['START_DATE'] = ($get_SEC == 'TrnD' ? $RET[$in]['START_DATE'] : _makeEnrollmentDates('START_DATE', $date_counter, $value));
+        $RET[$in]['START_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['START_DATE'])) : _makeEnrollmentDates('START_DATE', $date_counter, $value));
         $date_counter = $date_counter + 1;
 //                        if($RET[$in]['END_DATE']!='')
+
         $RET[$in]['END_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['END_DATE'])) : _makeEnrollmentDates('END_DATE', $date_counter, $value));
 //                  else {
 //                  $RET[$in]['END_DATE']=='0000-00-00';    
 //                  }
-        $date_counter = $date_counter + 1;
+//                      $date_counter=$date_counter+1;
     }
 }
 
@@ -307,4 +306,19 @@ else {
 }
 //echo '<div class="panel-body">'; // .panel-body start to end in footer
 //echo '<div class="tab-content">'; // .panel-content start to end in footer
+
+echo '<div id="modal_default_transferred_out" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">';
+            echo '<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h5 class="modal-title"></h5>
+            </div>';
+            echo '<div class="modal-body">';
+                echo'<div id="modal-res">';
+                echo '</div>';
+            echo '</div>';
+        echo '</div>';
+    echo '</div>';
+echo '</div>';
 ?>

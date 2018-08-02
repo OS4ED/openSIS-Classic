@@ -30,9 +30,8 @@ include('../../RedirectModulesInc.php');
 if (!$_REQUEST['modfunc'] && $_REQUEST['search_modfunc'] != 'list')
     unset($_SESSION['MassDrops.php']);
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
-    //$END_DATE = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
-    $END_DATE = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['day']; 
-     $END_DATE = $end_date_mod = date('Y-m-d', strtotime($END_DATE));   
+    $END_DATE = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
+    $end_date_mod = date('Y-m-d', strtotime($END_DATE));
     if (!VerifyDate($END_DATE)) {
         DrawHeader('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> The date you entered is not valid.</p>');
         for_error_sch();
@@ -55,8 +54,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             $inactive_schedule_found = 1;
                         }
                     } else {
-                        //DBQuery('UPDATE schedule SET END_DATE=\'' . $END_DATE . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
-                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('UPDATE schedule SET END_DATE=\'' . $END_DATE . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
                         DBQuery('CALL SEAT_COUNT()');
                         $note = "Selected students have been dropped from the course period.";
                     }
@@ -96,7 +94,8 @@ if (!$_REQUEST['modfunc']) {
         $course = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_ID FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
         $_openSIS['SearchTerms'] .= '<b>Course Period : </b>' . $course[1]['COURSE_TITLE'] . ' : ' . $course[1]['TITLE'];
     }
-    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose Course Period</A>";
+//    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose Course Period</A>";
+    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\">Choose Course Period</A>";
 
     if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
 
@@ -172,7 +171,41 @@ if (!$_REQUEST['modfunc']) {
         }
     }
 }
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h5 class="modal-title">Choose course</h5>
+    </div>
 
+    <div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+    foreach($subjects_RET as $val)
+    {
+    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    }
+    echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
     if (!clean_param($_REQUEST['course_period_id'], PARAM_INT))
         include 'modules/scheduling/CoursesforWindow.php';
@@ -184,7 +217,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 
         $course_title = DBGet(DBQuery('SELECT TITLE FROM courses WHERE COURSE_ID=\'' . $_SESSION['MassDrops.php']['course_id'] . '\''));
         $course_title = $course_title[1]['TITLE'];
+
+
         $cp_RET = DBGet(DBQuery('SELECT cp.TITLE,(SELECT TITLE FROM school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID) AS PERIOD_TITLE,cp.MARKING_PERIOD_ID,(SELECT CONCAT(FIRST_NAME,\'' . ' ' . '\',LAST_NAME) FROM staff st WHERE st.STAFF_ID=cp.TEACHER_ID) AS TEACHER,r.TITLE AS ROOM,cp.TOTAL_SEATS-cp.FILLED_SEATS AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID'));
+
+        $get_type = DBGEt(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $_SESSION['MassDrops.php']['course_period_id']));
+        if ($get_type[1]['SCHEDULE_TYPE'] == 'BLOCKED') {
+            if (count($cp_RET) == 0) {
+                echo "<script language=javascript>opener.document.getElementById(\"divErr\").innerHTML = \"<font style='color:red;'><b>Cannot select course period as no period has been assigned.</b></font>\";window.close();</script>";
+            }
+        }
+
         $cp_title = $cp_RET[1]['TITLE'];
         $cp_teacher = $cp_RET[1]['TEACHER'];
         $period_title = $cp_RET[1]['PERIOD_TITLE'];

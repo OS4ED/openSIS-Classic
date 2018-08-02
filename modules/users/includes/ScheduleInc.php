@@ -35,13 +35,13 @@ if (GetTeacher(UserStaffID(), '', 'PROFILE', false) == 'teacher') {
 
     echo '<div class="form-group"><label class="control-label col-md-2">Marking Periods :</label><div class="col-md-3">' . $print_mp . '</div></div>';
     if (!$_REQUEST['marking_period_id']) {
-        $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,\'\' as ROOM,c.TITLE AS COURSE,\'\' as PERIOD,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID, \'\' as DAYS,\'\' AS DURATION from
-course_periods cp , courses c  WHERE cp.course_id=c.COURSE_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\')  AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=' . UserSchool()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
+        $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,c.TITLE AS COURSE,cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID from
+course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r  WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\')  AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=' . UserSchool()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
     } else if ($_REQUEST['marking_period_id']) {
         $sel_mp_info = DBGet(DBQuery('SELECT * FROM marking_periods WHERE MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id']));
         $sel_mp_info = $sel_mp_info[1];
-        $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,\'\' as ROOM,\'\' as PERIOD,c.TITLE AS COURSE,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID, \'\' as DAYS,\'\' AS DURATION from
-course_periods cp , courses c WHERE cp.course_id=c.COURSE_ID   AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE')), $_REQUEST['marking_period_id']) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND (cp.BEGIN_DATE BETWEEN \'' . $sel_mp_info['START_DATE'] . '\' AND \'' . $sel_mp_info['END_DATE'] . '\'))) AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.SYEAR=' . UserSyear()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
+        $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD,c.TITLE AS COURSE,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID from
+course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE')), $_REQUEST['marking_period_id']) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND (cp.BEGIN_DATE BETWEEN \'' . $sel_mp_info['START_DATE'] . '\' AND \'' . $sel_mp_info['END_DATE'] . '\'))) AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.SYEAR=' . UserSyear()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
     }
 
     foreach ($schedule_RET as $rdi => $rdd) {
@@ -56,37 +56,43 @@ course_periods cp , courses c WHERE cp.course_id=c.COURSE_ID   AND (cp.MARKING_P
                 $schedule_RET[$rdi]['MARKING_PERIOD_ID'] = date('M/d/Y', strtotime($cp_info[1]['BEGIN_DATE'])) . ' to ' . date('M/d/Y', strtotime($cp_info[1]['END_DATE']));
             }
         } else {
-            $temp_days = array();
-            $temp_duration = array();
-            $temp_room = array();
-            $temp_period = array();
-
-            foreach ($get_det as $gi => $gd) {
-                if ($rdd['SCHEDULE_TYPE'] == 'VARIABLE')
-                    $temp_days[$gd['DAYS']] = $gd['DAYS'];
-                elseif ($rdd['SCHEDULE_TYPE'] == 'BLOCKED')
-                    $temp_days[$gd['DAYS']] = DaySname(date('l', $gd['COURSE_PERIOD_DATE']));
-
-                $temp_period[$gd['PERIOD']] = $gd['PERIOD'];
-                $temp_duration[$gd['DURATION']] = $gd['DURATION'];
-                $temp_room[$gd['ROOM']] = $gd['ROOM'];
-            }
-            $schedule_RET[$rdi]['DAYS'] = _makeDays(implode('', $temp_days));
-            $schedule_RET[$rdi]['DURATION'] = implode(',', $temp_duration);
-            $schedule_RET[$rdi]['ROOM'] = implode(',', $temp_room);
-            $schedule_RET[$rdi]['PERIOD'] = implode(',', $temp_period);
+//                $temp_days=array();
+//                $temp_duration=array();
+//                $temp_room=array();
+//                $temp_period=array();
+//
+//                foreach($get_det as $gi=>$gd)
+//                {
+//                   if($rdd['SCHEDULE_TYPE']=='VARIABLE')
+//                   $temp_days[$gd['DAYS']]=$gd['DAYS'];
+//                   elseif($rdd['SCHEDULE_TYPE']=='BLOCKED')
+//                   $temp_days[$gd['DAYS']]=DaySname(date('l',$gd['COURSE_PERIOD_DATE']));
+//
+//                   $temp_period[$gd['PERIOD']]=$gd['PERIOD'];
+//                   $temp_duration[$gd['DURATION']]=$gd['DURATION'];
+//                   $temp_room[$gd['ROOM']]=$gd['ROOM'];
+//
+//                }
+//                $schedule_RET[$rdi]['DAYS']=_makeDays(implode('',$temp_days));
+//                $schedule_RET[$rdi]['DURATION']=implode(',',$temp_duration);
+//                $schedule_RET[$rdi]['ROOM']=implode(',',$temp_room);
+//                $schedule_RET[$rdi]['PERIOD']=implode(',',$temp_period);
             if ($schedule_RET[$rdi]['MARKING_PERIOD_ID'] == 'Custom') {
                 $schedule_RET[$rdi]['MARKING_PERIOD_ID'] = date('M/d/Y', strtotime($cp_info[1]['BEGIN_DATE'])) . ' to ' . date('M/d/Y', strtotime($cp_info[1]['END_DATE']));
             }
         }
     }
 
-
+ if (count($schedule_RET) > 0) {	
     echo '<div class="panel">';
     ListOutput($schedule_RET, array('COURSE' => 'Course', 'PERIOD' => 'Period', 'DAYS' => 'Days', 'DURATION' => 'Time', 'ROOM' => 'Room', 'MARKING_PERIOD_ID' => 'Marking Period'), 'Course', 'Courses');
     echo '</div>';
+}else
+        echo '<br><div class="alert alert-danger no-border">This staff is not scheduled to any course period and therefore no schedule data is available.</div>';
 }
-
+else {
+    echo '<div class="alert alert-danger no-border"><i class="icon-alert"></i> This staff is not scheduled to any course period and therefore no schedule data is available.</div>';
+}
 $_REQUEST['category_id'] = 2;
 include('modules/users/includes/OtherInfoInc.inc.php');
 

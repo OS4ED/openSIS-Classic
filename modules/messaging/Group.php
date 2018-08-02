@@ -472,19 +472,26 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
         }
         $userlist = DBGet(DBQueryMod($user));
         if ($_REQUEST['_search_all_schools'] != 'Y') {
-            $final_arr = array();
+            $final_arr = $_arr = $exist_username_arr = array();
+
             foreach ($userlist as $key => $value) {
+
                 if ($userlist[$key]['PROFILE_ID'] == 3) {
                     $select = "SELECT  se.*,up.* FROM student_enrollment se,user_profiles up WHERE up.ID=" . $userlist[$key]['PROFILE_ID'] . " and se.school_id=" . UserSchool() . " AND se.student_id='" . $userlist[$key]['USER_ID'] . "' group by student_id";
                     $profile = DBGet(DBQuery($select));
                     foreach ($profile as $k => $v) {
-                        $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
-                        $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
-                        $_arr['USER_ID'] = $profile[$k]['STUDENT_ID'];
-                        $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
-                        $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
-                        $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
-                        array_push($final_arr, $_arr);
+                        // print_r($final_arr);
+                        if (!in_array($userlist[$key]['USERNAME'], $exist_username_arr)) {
+
+                            $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
+                            $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
+                            $_arr['USER_ID'] = $profile[$k]['STUDENT_ID'];
+                            $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
+                            $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
+                            $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
+                            array_push($final_arr, $_arr);
+                            $exist_username_arr[] = $userlist[$key]['USERNAME'];
+                        }
                     }
                 } else if ($userlist[$key]['PROFILE_ID'] == 4) {
                     if (User('PROFILE') == 'student')
@@ -492,36 +499,46 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
                     if (User('PROFILE') == 'teacher')
                         $select = "SELECT se.*,up.* FROM student_enrollment se,user_profiles up WHERE up.ID=" . $userlist[$key]['PROFILE_ID'] . " and se.school_id=" . UserSchool() . " AND se.student_id in (select schedule.student_id from  schedule,course_periods,students_join_people where course_periods.course_period_id=schedule.course_period_id  and  schedule.student_id=students_join_people.student_id and students_join_people.person_id=" . $userlist[$key]['USER_ID'] . " and teacher_id=" . UserID() . ")";
                     else
-                        $select = "SELECT se.*,up.* FROM student_enrollment se,user_profiles up WHERE up.ID=" . $userlist[$key]['PROFILE_ID'] . " and se.school_id=" . UserSchool() . " AND se.student_id in (select student_id from  students_join_people where person_id=" . $userlist[$key]['USER_ID'] . ")";
+                        $select = "SELECT se.*,up.* FROM student_enrollment se,user_profiles up WHERE up.ID=" . $userlist[$key]['PROFILE_ID'] . " and se.school_id=" . UserSchool() . " AND se.student_id in (select student_id from  students_join_people where person_id=" . $userlist[$key]['USER_ID'] . ") ";
                     $profile = DBGet(DBQuery($select));
 
 
                     foreach ($profile as $k => $v) {
-                        $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
-                        $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
-                        $_arr['USER_ID'] = $userlist[$key]['USER_ID'];
-                        $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
-                        $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
-                        $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
-                        array_push($final_arr, $_arr);
+                        if (!in_array($userlist[$key]['USERNAME'], $exist_username_arr)) {
+
+                            $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
+                            $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
+                            $_arr['USER_ID'] = $userlist[$key]['USER_ID'];
+                            $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
+                            $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
+                            $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
+                            array_push($final_arr, $_arr);
+                            $exist_username_arr[] = $userlist[$key]['USERNAME'];
+                        }
                     }
                 } else {
                     $select = "SELECT se.*,up.* FROM staff_school_relationship se,user_profiles up WHERE up.ID=" . $userlist[$key]['PROFILE_ID'] . " and se.school_id=" . UserSchool() . " AND se.staff_id='" . $userlist[$key]['USER_ID'] . "' group  by staff_id";
                     $profile = DBGet(DBQuery($select));
                     foreach ($profile as $k => $v) {
-                        $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
-                        $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
-                        $_arr['USER_ID'] = $profile[$k]['STAFF_ID'];
-                        $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
-                        $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
-                        $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
-                        array_push($final_arr, $_arr);
+                        if (!in_array($userlist[$key]['USERNAME'], $exist_username_arr)) {
+
+                            $_arr['USERNAME'] = $userlist[$key]['USERNAME'];
+                            $_arr['LAST_NAME'] = $userlist[$key]['LAST_NAME'];
+                            $_arr['USER_ID'] = $profile[$k]['STAFF_ID'];
+                            $_arr['FIRST_NAME'] = $userlist[$key]['LAST_NAME'] . ' ' . $userlist[$key]['FIRST_NAME'];
+                            $_arr['PROFILE_ID'] = $profile[$k]['PROFILE'];
+                            $_arr['IS_DISABLE'] = $userlist[$key]['IS_DISABLE'];
+                            array_push($final_arr, $_arr);
+                            $exist_username_arr[] = $userlist[$key]['USERNAME'];
+                        }
                     }
                 }
             }
 
-            array_unshift($final_arr, "");
-            unset($final_arr[0]);
+//            array_unshift($final_arr, "");
+//            unset($final_arr[0]);
+//            echo'<br><br>final array-----------------------------<br><br>';
+//            print_r($final_arr);
             $userlist = $final_arr;
         } else {
 
@@ -532,6 +549,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
                 $userlist[$key]['PROFILE_ID'] = $profile[1]['PROFILE'];
             }
         }
+
         if ($_REQUEST['_dis_user'] == 'Y')
             $columns = array('FIRST_NAME' => 'Member', 'USERNAME' => 'User Name1', 'PROFILE_ID' => 'Profile', 'STATUS' => 'Status');
         else

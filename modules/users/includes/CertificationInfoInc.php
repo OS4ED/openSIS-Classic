@@ -188,15 +188,15 @@ function _makeTextInput($value, $name) {
         $id = 'new';
 
     if ($name != 'TITLE')
-        $extra = 'size=32 class=cell_floating';
+        $extra = 'size=32';
     else
-        $extra = 'size=32 class=cell_floating';
+        $extra = 'size=32';
 
-    return TextInput($name == 'TITLE' && $THIS_RET['EXPIRED'] ? array($value, '<FONT class=red>' . $value . '</FONT>') : $value, "values[$id][$name]", '', $extra);
+    return TextInput($name == 'TITLE' && $THIS_RET['EXPIRED'] ? array($value, '<span class=text-danger>' . $value . '</FONT>') : $value, "values[$id][$name]", '', $extra);
 }
 
 function _makeDate($value, $column = 'STAFF_CERTIFICATION_DATE', $counter = 0, $id = 'new') {
-    return DateInputAY($value!="" ? $value : "", 'values[' . $id . '][' . $column . ']', $counter);
+    return DateInputAY($value != "" ? $value : "", 'values[' . $id . '][' . $column . ']', $counter);
 }
 
 function _makeContentInput($value, $name) {

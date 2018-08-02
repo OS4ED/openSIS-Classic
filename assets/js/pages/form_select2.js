@@ -19,6 +19,8 @@ $(function() {
     $('.select').select2({
         minimumResultsForSearch: Infinity
     });
+    
+    $('.select-school').select2();
 
 
     // Select with search

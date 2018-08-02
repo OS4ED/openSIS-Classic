@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
 include('RedirectRootInc.php');
 include("functions/ParamLibFnc.php");
 $url = validateQueryString(curPageURL());
@@ -114,7 +115,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<link href="assets/js/plugins/pickers/bootstrap-datepicker/css/bootstrap-datepicker.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/components.css?v=1.1" rel="stylesheet" type="text/css">';
-    echo '<link href="assets/css/colors.css?v=1.0" rel="stylesheet" type="text/css">';
+    echo '<link href="assets/css/colors.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/custom.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/extras/css-checkbox-switch.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
 
@@ -133,20 +134,31 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/switchery.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/moment/moment.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/extensions/jquery.cookie.js"></script>';
 
-    echo '<script type="text/javascript" src="assets/js/core/app.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/ripple.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_select2.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
-    echo '<script type="text/javascript" src="assets/js/pages/editor_ckeditor.js"></script>';
+    //echo '<script type="text/javascript" src="assets/js/pages/editor_ckeditor.js"></script>';
+    echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
+    ?>
+    <script type="text/javascript">
+        $(function () {
+            $('body').on('click', 'div.sidebar-overlay', function () {
+                $('body').toggleClass('sidebar-mobile-main');
+            });
+        });
+    </script>
+    <?php
 
     if (strpos($_REQUEST['modname'], 'miscellaneous/') === false)
         echo '<script language="JavaScript">if(window == top  && (!window.opener || window.opener.location.href.substring(0,(window.opener.location.href.indexOf("&")!=-1?window.opener.location.href.indexOf("&"):window.opener.location.href.replace("#","").length))!=window.location.href.substring(0,(window.location.href.indexOf("&")!=-1?window.location.href.indexOf("&"):window.location.href.replace("#","").length)))) window.location.href = "index.php";</script>';
 
-    echo "<BODY onload='newLoad()'>";
+    echo "<BODY>";
 }
 echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i></div>';
 echo '<div class="navbar navbar-inverse bg-white">
@@ -171,9 +183,9 @@ echo '<div class="navbar navbar-inverse bg-white">
 if (User('PROFILE') == 'teacher') {
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=school method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=\'' . UserSyear() . '\' AND st.staff_id=\'' . $_SESSION[STAFF_ID] . '\' AND (ssr.END_DATE>=curdate() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)'));
-    echo "<SELECT class=\"select\" name=school onChange='this.form.submit();'>";
+    echo "<SELECT class=\"select-search\" name=school onChange='this.form.submit();'>";
     foreach ($RET as $school) {
-        echo "<OPTION style='padding-right:8px;' value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
+        echo "<OPTION value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
     }
     echo "</SELECT>";
 
@@ -238,7 +250,7 @@ if (User('PROFILE') != 'teacher') {
 
     if (User('PROFILE') == 'admin') {
         $RET = DBGet(DBQuery("SELECT DISTINCT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND st.staff_id=$_SESSION[STAFF_ID] ORDER BY s.TITLE asc"));
-        echo "<SELECT class=\"select\" name=school onChange='this.form.submit();'>";
+        echo "<SELECT class=\"select-search\" name=school onChange='this.form.submit();'>";
         foreach ($RET as $school)
             echo "<OPTION  style='padding-right:8px;' value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
         echo "</SELECT>";
@@ -401,7 +413,7 @@ echo '</ul>
         </div>
         <!-- /main navbar -->
 
-
+        <div class="sidebar-overlay"></div>
         <!-- Page header -->
         <div class="page-header">
             <div class="breadcrumb-line">
@@ -409,6 +421,18 @@ echo '</ul>
                     <li id="header"></li>
                 </ul>';
 
+
+echo '<div class="navbar-text pull-right">';
+if (User('PROFILE') == 'teacher') {
+    echo '<a href="https://support.os4ed.com/hc/en-us" class="text-white" target="_blank" data-popup="tooltip" data-placement="left" data-container="body" data-original-title="Support"><i class="fa fa-life-ring fa-lg"></i></a>';
+} elseif (User('PROFILE') == 'student') {
+    echo '<a href="https://support.os4ed.com/hc/en-us" class="text-white" target="_blank" data-popup="tooltip" data-placement="left" data-container="body" data-original-title="Support"><i class="fa fa-life-ring fa-lg"></i></a>';
+} elseif (User('PROFILE') == 'parent') {
+    echo '<a href="https://support.os4ed.com/hc/en-us" class="text-white" target="_blank" data-popup="tooltip" data-placement="left" data-container="body" data-original-title="Support"><i class="fa fa-life-ring fa-lg"></i></a>';
+} else {
+    echo '<a href="https://support.os4ed.com/hc/en-us" class="text-white" target="_blank" data-popup="tooltip" data-placement="left" data-container="body" data-original-title="Support"><i class="fa fa-life-ring fa-lg"></i></a>';
+}
+echo '</div>';
 if (User('PROFILE') == 'teacher') {
     echo "<ul class=\"breadcrumb-elements\"><li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=subject method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
 
@@ -527,7 +551,7 @@ echo '</div>
 
                 <!-- Main sidebar -->
                 <div class="sidebar sidebar-main">
-                    <div>
+                    <div class="sidebar-fixed">
                         <div class="sidebar-content">
 
                             <!-- Main navigation -->
@@ -547,8 +571,9 @@ echo '</div>
 
                                     <div class="navigation-wrapper collapse" id="user-nav">
                                         <ul class="navigation">
-                                            <li><a href="javascript:void(0)"><i class="icon-comment-discussion"></i> <span>Messages</span></a></li>
-                                            <li><a href="javascript:void(0)"><i class="icon-equalizer"></i> <span>Preferences</span></a></li>
+                                
+                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=messaging/Inbox.php\');"><i class="icon-comment-discussion"></i> <span>Messages</span></a></li>
+                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=users/Preferences.php\');"><i class="icon-equalizer"></i> <span>Preferences</span></a></li>
                                             <li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
                                         </ul>
                                     </div>
@@ -726,13 +751,15 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
 /*
  * Primary Navigation End
  */
+$get_app_details = DBGet(DBQuery('SELECT * FROM app'));
 echo '</ul>
                                 </div>
                             </div>
                             <!-- /main navigation -->
-
+                            
                         </div>
                     </div>
+                    <div class="text-center version-info">Version <b>' . $get_app_details[1][VALUE] . '</b></div>
                 </div>
                 <!-- /main sidebar -->
 
@@ -929,6 +956,8 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
     }
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php')
         $allowed = true;
+    if (optional_param('modname', '', PARAM_NOTAGS) == 'ParentLookup.php')
+        $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'schoolsetup/UploadLogo.php' && User('PROFILE') == 'admin')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/UploadUserPhoto.php')
@@ -938,6 +967,8 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
     if (optional_param('modname', '', PARAM_NOTAGS) == 'students/Upload.php')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'students/Upload.php?modfunc=edit')
+        $allowed = true;
+    if (optional_param('modname', '', PARAM_NOTAGS) == 'scheduling/Schedule.php?modfunc=cp_insert')
         $allowed = true;
     if (substr(optional_param('modname', '', PARAM_NOTAGS), 0, 14) == 'miscellaneous/' || substr(optional_param('modname', '', PARAM_NOTAGS), 0, 7) == 'grades/')
         $allowed = true;
@@ -989,7 +1020,7 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
 /*
  * Demo Chart
  */
-$get_app_details = DBGet(DBQuery('SELECT * FROM app'));
+
 if (!isset($_REQUEST['_openSIS_PDF'])) {
     //echo '</TD></TR></TABLE>';
     for ($i = 1; $i <= $_openSIS['PrepareDate']; $i++) {
@@ -1013,6 +1044,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
 }
 
 echo '</div>
+    </div>
                 <!-- /main content -->
                 
             </div>
@@ -1020,7 +1052,7 @@ echo '</div>
 
         </div>
         <!-- /page container -->
-
+        
 
         <!-- Footer -->
         <div class="navbar navbar-fixed-bottom footer">
@@ -1030,26 +1062,10 @@ echo '</div>
 
             <div class="navbar-collapse collapse" id="footer">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="navbar-text">
-                            openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4Ed</a>). and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL License</a>.
+                            openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="navbar-text pull-right">
-                            Version <b>' . $get_app_details[1][VALUE] . '</b>
-                        </div>
-                        <div class="navbar-text pull-right">';
-if (User('PROFILE') == 'teacher') {
-    echo '<a href="http://www.opensis.com/opensis-support/opensis-ce-teacher" target="_blank"><i class="fa fa-life-ring"></i> Support</a>';
-} elseif (User('PROFILE') == 'student') {
-    echo '<a href="http://www.opensis.com/opensis-support/opensis-ce-student" target="_blank"><i class="fa fa-life-ring"></i> Support</a>';
-} elseif (User('PROFILE') == 'parent') {
-    echo '<a href="http://www.opensis.com/opensis-support/opensis-ce-parent" target="_blank"><i class="fa fa-life-ring"></i> Support</a>';
-} else {
-    echo '<a href="http://www.opensis.com/opensis-support/opensis-ce-administrator" target="_blank"><i class="fa fa-life-ring"></i> Support</a>';
-}
-echo '</div>
                     </div>
                 </div>
             </div>

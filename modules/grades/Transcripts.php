@@ -101,7 +101,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                           </table></td></tr></table>';
 
 
-                    $tquery = "select * from transcript_grades where student_id = $student_id order by sort_order ";
+            $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
 
             $TRET = DBGet(DBQuery($tquery));
             $course_html = array(0 => '', 1 => '', 2 => '');
@@ -129,50 +129,62 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $last_mp_name = $rec['MP_NAME'];
             }
             array_push($tsecs, $trecs);
-            $temp_TRET = array();
-            $sort_oc = DBGet(DBQuery('SELECT DISTINCT SORT_ORDER FROM marking_periods WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
-            $sort_oc = count($sort_oc);
-            $mp_oc = DBGet(DBQuery('SELECT DISTINCT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
-            $mp_oc = count($mp_oc);
-            if ($mp_oc != $sort_oc) {
-                $max_sort_order = DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
-                $max_sort_order = $max_sort_order[1]['SORT_ORDER'];
-                foreach ($tsecs as $tret_index => $tret_val) {
-                    if ($temp_TRET[strtotime($tret_val[0]['POSTED']) + $tret_val[0]['MP_ID']] != '')
-                        $counter = $tret_val[0]['MP_ID'] + 1;
-                    else
-                        $counter = $tret_val[0]['MP_ID'];
-                    $counter = strtotime($tret_val[0]['POSTED']) + $counter;
-                    $temp_TRET[$counter] = $tret_val[0]['MP_ID'];
-                }
-            }
-            else {
-                $max_sort_order = DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
-                $max_sort_order = $max_sort_order[1]['SORT_ORDER'];
-                foreach ($tsecs as $tret_index => $tret_val) {
-
-                    if ($tret_val[0]['MP_SOURCE'] == 'openSIS') {
-                        $counter = DBGet(DBQuery('SELECT SORT_ORDER FROM marking_periods WHERE MARKING_PERIOD_ID=' . $tret_val[0]['MP_ID']));
-                        $counter = $counter[1]['SORT_ORDER'];
-                    } else
-                        $counter = $max_sort_order + $tret_val[0]['MP_ID'];
-                    $temp_TRET[$counter] = $tret_val[0]['MP_ID'];
-                }
-            }
-            sort($temp_TRET);
-            $temp_tsecs = array();
-            foreach ($tsecs as $tret_index => $tret_val) {
-                foreach ($temp_TRET as $tcheck_i => $tcheck_v) {
-                    if ($tcheck_v == $tret_val[0]['MP_ID'] && $temp_tsecs[$tcheck_i] == '') {
-                        $temp_tsecs[$tcheck_i] = $tret_val;
-                        break;
-                    }
-                }
-            }
-            $tsecs = array();
-            for ($i = 0; $i < count($temp_TRET); $i++)
-                $tsecs[$i] = $temp_tsecs[$i];
-
+//        $temp_TRET=array();
+//        $sort_oc=DBGet(DBQuery('SELECT DISTINCT SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
+//        $sort_oc=count($sort_oc);
+//        $mp_oc=DBGet(DBQuery('SELECT DISTINCT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
+//        $mp_oc=count($mp_oc);
+//        if($mp_oc!=$sort_oc)
+//        {
+//            $max_sort_order=DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
+//            $max_sort_order=$max_sort_order[1]['SORT_ORDER'];
+//            foreach($tsecs as $tret_index=>$tret_val)
+//            {
+//                if($temp_TRET[strtotime($tret_val[0]['POSTED'])+$tret_val[0]['MP_ID']]!='')
+//                $counter=$tret_val[0]['MP_ID']+1;
+//                else
+//                $counter=$tret_val[0]['MP_ID'];
+//                $counter=strtotime($tret_val[0]['POSTED'])+$counter;
+//                $temp_TRET[$counter]=$tret_val[0]['MP_ID'];
+//            }
+//        }
+//        else
+//        {
+//            $max_sort_order=DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
+//            $max_sort_order=$max_sort_order[1]['SORT_ORDER'];
+//            foreach($tsecs as $tret_index=>$tret_val)
+//            {
+//
+//                if($tret_val[0]['MP_SOURCE']=='openSIS')
+//                {
+//                    $counter=DBGet(DBQuery('SELECT SORT_ORDER FROM marking_periods WHERE MARKING_PERIOD_ID='.$tret_val[0]['MP_ID']));
+//                    $counter=$counter[1]['SORT_ORDER'];
+//                }
+//                else
+//                    $counter=$max_sort_order+$tret_val[0]['MP_ID'];   
+//                $temp_TRET[$counter]=$tret_val[0]['MP_ID'];
+//
+//
+//            }
+//        }
+//        sort($temp_TRET);
+//        $temp_tsecs=array();
+//        foreach($tsecs as $tret_index=>$tret_val)
+//        {
+//            foreach($temp_TRET as $tcheck_i=>$tcheck_v)
+//            {
+//                if($tcheck_v==$tret_val[0]['MP_ID'] && $temp_tsecs[$tcheck_i]=='')
+//                {
+//                $temp_tsecs[$tcheck_i]=$tret_val;   
+//                break;
+//                }
+//            }
+//            
+//        }
+//        $tsecs = array();
+//        for($i=0;$i<count($temp_TRET);$i++)
+//        $tsecs[$i]=$temp_tsecs[$i];
+//        
 
             if ($_REQUEST['template'] == 'two')
                 $totallines = 45;
@@ -499,6 +511,43 @@ if (!$_REQUEST['modfunc']) {
             echo '<div><INPUT type=submit class="btn btn-primary" value=\'Create Transcripts for Selected Students\'></div>';
         echo "</FORM>";
     }
+    
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
+
 }
 
 function _makeChooseCheckbox($value, $title) {

@@ -57,96 +57,88 @@ error_reporting(0);
             <div class="login-wrapper">
                 <div class="panel">
                     <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-8 text-left">
-                                <div class="logo">
-                                    <img src="assets/images/opensis_logo.png" alt="openSIS">
-                                </div>
-                                <h3>Step 4 of 5</h3>
-                            </div>
-                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
-                                Installation Progress
-                                <div class="progress no-margin">
-                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="logo">
+                            <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>
+                        <h3>openSIS Installation - Site Admin Account Setup</h3>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
+                            <div class="installation-instructions">
+                                <ul class="installation-steps-label">
+                                    <li>Choose Package</li>
+                                    <li>System Requirements</li>
+                                    <li>Database Connection</li>
+                                    <li>Database Creation</li>
+                                    <li>School Information</li>
+                                    <li class="active">Site Admin Account Setup</li>
+                                    <li>Ready to go!</li>
+                                </ul>
+                                <!--<h4 class="no-margin">Installation Instructions</h4>
+                                <p>Installer has successfully created your school.</p>
+                                <p>The username and password you enter here will become the login credentials for the super administrator of the system.</p>
+                                <p>Please make sure you give a strong alphanumeric password to prevent unauthorized access to the system.</p>-->
+                            </div>
                             <div class="installation-steps">
-                                <h2 class="text-center no-margin">Your School has been Created</h2>
-                                <h5 class="text-center">Please create Admin Username and Password</h5>
+                                <h4 class="m-t-0 m-b-5">Setup a Site Administrator Account</h4>
+
                                 <div id="error" class="text-center">&nbsp;</div>
                                 <form name='step4' id='step4' method="post" action="Ins4.php">
                                     <input type="hidden" id="auname_flag" value="2"/>
                                     <div class="row">
-                                        <div class="col-sm-10 col-sm-offset-1">
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">First Name</label>
-                                                        <input type="text" name="fname" id="fname" size="20" tabindex="1" class="form-control" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Username</label>
-                                                        <input type="text" name="auname" id="auname" size="20" tabindex="4" onblur="check_username_install(this.value);" class="form-control"/>
-                                                        <div id="ucheck" style="font-weight:bold;"></div>
-                                                    </div>
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">First Name</label>
+                                                <input type="text" name="fname" id="fname" size="20" tabindex="1" class="form-control" />
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Last Name</label>
-                                                        <input type="text" name="lname" id="lname" size="20" tabindex="2" class="form-control" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Password</label>
-                                                        <input type="password" id="apassword" name="apassword" size="20" tabindex="5" autocomplete="off" onkeyup="passwordStrength(this.value);" class="form-control" />
-                                                        <div>Password Strength: <span id="passwordStrength" style="font-weight:bold;"></span></div>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Middle Name</label>
+                                                <input type="text" id="mname" name="mname" size="20" tabindex="3" class="form-control" />
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Middle Name</label>
-                                                        <input type="text" id="mname" name="mname" size="20" tabindex="3" class="form-control" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Confirm Password</label>
-                                                        <input type="password" id="capassword" name="capassword" size="20" tabindex="6" class="form-control" />
-                                                    </div>
-                                                </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Last Name</label>
+                                                <input type="text" name="lname" id="lname" size="20" tabindex="2" class="form-control" />
                                             </div>
-                                            <div class="text-center">
-                                                <input type="submit" value="Save & Next"  class="btn btn-primary" name="btninsert" onclick="return pass_check();" />
-                                            </div>
-
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Username</label>
+                                                <input type="text" name="auname" id="auname" size="20" tabindex="4" onblur="check_username_install(this.value);" class="form-control"/>
+                                                <div id="ucheck" style="font-weight:bold;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Password</label>
+                                                <input type="password" id="apassword" name="apassword" size="20" tabindex="5" autocomplete="off" onkeyup="passwordStrength(this.value);" class="form-control" />
+                                                <div class="help-block" style="font-size: 12px; height: 5px;"><span id="passwordStrengthWrap" style="display: none">Password Strength:</span> <span id="passwordStrength" style="font-weight:bold;"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Confirm Password</label>
+                                                <input type="password" id="capassword" name="capassword" size="20" tabindex="6" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr/>
+                                    <div class="text-right">
+                                        <input type="submit" value="Save & Next"  class="btn btn-success" name="btninsert" onclick="return pass_check();" />
+                                    </div>
                                 </form>
-                            </div>
-                            <div class="installation-instructions">
-                                <h4 class="no-margin">Installation Instructions</h4>
-                                <p>Installer has successfully created your school.</p>
-                                <p>The username and password you enter here will become the login credentials for the super administrator of the system.</p>
-                                <p>Please make sure you give a strong alphanumeric password to prevent unauthorized access to the system.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <footer>
-                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>).
                 </footer>
             </div>
         </section>
@@ -168,46 +160,39 @@ error_reporting(0);
                 }
             }
 
-
-
-
-
             function passwordStrength(password)
             {
-                document.getElementById("passwordStrength").style.display = "none";
+                document.getElementById("passwordStrength").style.display = "none";                
+                document.getElementById("passwordStrengthWrap").style.display = "none";
 
                 var desc = new Array();
-
                 desc[0] = "Very Weak";
-
                 desc[1] = "Weak";
-
                 desc[2] = "Good";
-
                 desc[3] = "Strong";
-
                 desc[4] = "Strongest";
 
-
                 //if password bigger than 7 give 1 point
-
                 if (password.length > 0)
                 {
-                    $("#passwordStrength").css({'display':'inline-block', 'color':'#ff0000'});
+                    $("#passwordStrengthWrap").show();
+                    $("#passwordStrength").css({'display': 'inline-block', 'color': '#ff0000'});
                     $("#passwordStrength").html(desc[0]);
                 }
 
                 //if password has at least one number give 1 point
                 if (password.match(/\d+/) && password.length > 5)
                 {
-                    $("#passwordStrength").css({'display':'inline-block','color':'#ff0000'});
+                    $("#passwordStrengthWrap").show();
+                    $("#passwordStrength").css({'display': 'inline-block', 'color': '#ff0000'});
                     $("#passwordStrength").html(desc[1]);
                 }
 
                 //if password has at least one special caracther give 1 point
                 if (password.match(/\d+/) && password.length > 7 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))
                 {
-                    $("#passwordStrength").css({'display':'inline-block','color':'#8ed087'});
+                    $("#passwordStrengthWrap").show();
+                    $("#passwordStrength").css({'display': 'inline-block', 'color': '#8ed087'});
                     $("#passwordStrength").html(desc[2]);
                 }
 
@@ -216,7 +201,8 @@ error_reporting(0);
 
                 if (password.match(/\d+/) && password.length > 10 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[A-Z]/)))
                 {
-                    $("#passwordStrength").css({'display':'inline-block','color':'#84b756'});
+                    $("#passwordStrengthWrap").show();
+                    $("#passwordStrength").css({'display': 'inline-block', 'color': '#84b756'});
                     $("#passwordStrength").html(desc[3]);
                 }
 
@@ -225,7 +211,8 @@ error_reporting(0);
 
                 if (password.match(/\d+/) && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[a-z]/)) && (password.match(/[A-Z]/)) && password.length > 12)
                 {
-                    $("#passwordStrength").css({'display':'inline-block','color':'#43820b'});
+                    $("#passwordStrengthWrap").show();
+                    $("#passwordStrength").css({'display': 'inline-block', 'color': '#43820b'});
                     $("#passwordStrength").html(desc[4]);
                 }
 

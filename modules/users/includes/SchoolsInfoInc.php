@@ -78,9 +78,10 @@ if ($_REQUEST['teacher_view'] != 'y') {
                     $error = 'end_date';
                 }
 
-                if ($check_start_date != '' && strtotime($check_start_date) < strtotime($schools_start_date)) {
-                    $error = 'start_date_school_year';
-                }
+//       if($check_start_date!='' && strtotime($check_start_date)<strtotime($schools_start_date))
+//       {
+//           $error='start_date_school_year';
+//       }
                 if (!empty($schools_each_staff) && $start != '') {
                     $update = 'false';
                     unset($sql_up);
@@ -117,8 +118,7 @@ if ($_REQUEST['teacher_view'] != 'y') {
                                 } else {
                                     $error = 'cp_association';
                                 }
-                            } 
-                            else
+                            } else
                                 $error = 'end_date';
                         }
                         elseif (isset($_REQUEST['day_values']['START_DATE'][$school['SCHOOL_ID']]) && isset($_REQUEST['day_values']['END_DATE'][$school['SCHOOL_ID']]) && $_REQUEST['day_values']['START_DATE'][$school['SCHOOL_ID']] == '' && $_REQUEST['day_values']['END_DATE'][$school['SCHOOL_ID']] == '') {
@@ -189,11 +189,13 @@ if ($_REQUEST['teacher_view'] != 'y') {
 
         unset($error);
     }
-    if ($error == 'start_date_school_year') {
-        unset($error);
-        echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=SchoolsInfoInc&category_id=3&s_err=y'</script>";
-//    echo 'Start date can not be before school\'s start date';
-    }
+//if($error=='start_date_school_year')
+//{
+//unset($error);
+//echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=SchoolsInfoInc&category_id=3&s_err=y'</script>";
+////    echo 'Start date can not be before school\'s start date';
+//
+//}
     if ($error == 'cp_association') {
         echo '<script type=text/javascript>document.getElementById(\'sh_err\').innerHTML=\'<b><font color=red>Can not change the staff start date because it has association</font></b>\';</script>';
 
@@ -439,8 +441,7 @@ if ($select == '') {
                             echo '<script type=text/javascript>document.getElementById(\'cat_err\').innerHTML=\'<font color=red><b>Cannot change the category as this staff has one or more course periods.</b></font>\';</script>';
                     }
                 }
-            } 
-            else
+            } else
                 $sql .= "$column='" . singleQuoteReplace('', '', $value) . "',";
         }
         $sql = substr($sql, 0, -1) . " WHERE STAFF_ID='" . UserStaffID() . "'";
@@ -546,7 +547,7 @@ if (!$_REQUEST['modfunc']) {
     $this_school_mod = $this_school_RET_mod[1];
 
 
-    if (User('PROFILE_ID') == 1)
+    if (User('PROFILE') == 'admin')
         $profiles_options = DBGet(DBQuery("SELECT PROFILE ,TITLE, ID FROM user_profiles WHERE ID <> 3 AND PROFILE <> 'parent' AND ID<>0 ORDER BY ID"));
 
     $prof_check = DBGet(DBQuery('SELECT PROFILE_ID FROM staff WHERE STAFF_ID=' . UserStaffID()));
@@ -589,9 +590,9 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="row">';
             echo '<div class="col-md-6">';
             if (User('PROFILE_ID') == 0 && $prof_check[1]['PROFILE_ID'] == 0 && User('STAFF_ID') == UserStaffID())
-                echo '<div class="form-group"><label class="control-label col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_school['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Super Administrator' => 'Super Administrator', 'Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
+                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_school['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Super Administrator' => 'Super Administrator', 'Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
             else
-                echo '<div class="form-group"><label class="control-label col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_school['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
+                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_school['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group">' . TextInput($this_school['JOB_TITLE'], 'values[SCHOOL][JOB_TITLE]', 'Job Title', 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
@@ -599,35 +600,35 @@ if (!$_REQUEST['modfunc']) {
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Joining Date <span class=text-danger>*</span></label><div class="col-lg-8">' . DateInputAY(isset($this_school['JOINING_DATE']) && $this_school['JOINING_DATE']!="" ? $this_school['JOINING_DATE'] : "", 'values[JOINING_DATE]', 1, 'class=cell_medium') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Joining Date <span class=text-danger>*</span></label><div class="col-lg-8">' . DateInputAY(isset($this_school['JOINING_DATE']) && $this_school['JOINING_DATE']!="" ? $this_school['JOINING_DATE'] : "", 'values[JOINING_DATE]', 1, 'class=cell_medium') . '</div></div>';
             echo '<input type=hidden id=end_date_school value="' . $get_end_date . '" >';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">End Date</label><div class="col-lg-8">' . DateInputAY($this_school['END_DATE']!="" ? $this_school['END_DATE'] : "", 'values[ENDING_DATE]', 2, '') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">End Date</label><div class="col-lg-8">' . DateInputAY($this_school['END_DATE']!="" ? $this_school['END_DATE'] : "", 'values[ENDING_DATE]', 2, '') . '</div></div>';
             echo "<INPUT type=hidden name=values[SCHOOL][HOME_SCHOOL] value=" . UserSchool() . ">";
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             
-            echo '<h5 class="text-primary">openSIS Access Information</h5>';
+            echo '';
             
             if ($this_school_mod['USERNAME'] && (!$this_school['OPENSIS_ACCESS'] == 'Y')) {
                 echo '<div class="row">';
-                echo '<div class="col-md-6">';
-                echo '<div class="radio"><label class="radio-inline"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
+                echo '<div class="col-md-12">';
+                echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15">';
             } elseif ($this_school_mod['USERNAME'] && $this_school_mod['PASSWORD'] && $this_school['OPENSIS_ACCESS']) {
                 if ($this_school['OPENSIS_ACCESS'] == 'N'){
                     echo '<div class="row">';
-                    echo '<div class="col-md-6">';
-                    echo '<div class="radio"><label class="radio-inline"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
+                    echo '<div class="col-md-12">';
+                    echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }elseif ($this_school['OPENSIS_ACCESS'] == 'Y'){
                     echo '<div class="row">';
-                    echo '<div class="col-md-6">';
-                    echo '<div class="radio"><label class="radio-inline"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
+                    echo '<div class="col-md-12">';
+                    echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }
@@ -635,8 +636,8 @@ if (!$_REQUEST['modfunc']) {
             }
             elseif (!$this_school_mod['USERNAME'] || $this_school['OPENSIS_ACCESS'] == 'N') {
                 echo '<div class="row">';
-                echo '<div class="col-md-6">';
-                echo '<div class="radio"><label class="radio-inline"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
+                echo '<div class="col-md-12">';
+                echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15" style="display:none">';
@@ -646,13 +647,13 @@ if (!$_REQUEST['modfunc']) {
             $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_school['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_school['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
             echo '</div>'; //.col-lg-6            
             echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Username <span class=text-danger>*</span></label><div class="col-lg-8">';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Username <span class=text-danger>*</span></label><div class="col-lg-8">';
             if (!$this_school_mod['USERNAME']) {
                 echo TextInput('', 'USERNAME', '', 'size=20 maxlength=50 onblur="usercheck_init_staff(this)"');
                 echo '<span id="ajax_output_st"></span><input type=hidden id=usr_err_check value=0></div></div>';
@@ -661,7 +662,7 @@ if (!$_REQUEST['modfunc']) {
             }
             echo '</div>'; //.col-lg-6
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Password <span class=text-danger>*</span></label><div class="col-lg-8">';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Password <span class=text-danger>*</span></label><div class="col-lg-8">';
             if (!$this_school_mod['PASSWORD']) {
                 echo TextInput('', 'PASSWORD', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onblur=passwordStrength(this.value);validate_password_staff(this.value);');
 
@@ -676,7 +677,7 @@ if (!$_REQUEST['modfunc']) {
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Disable User</label><div class="col-lg-8">';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Disable User</label><div class="col-lg-8">';
             if ($this_school_mod['IS_DISABLE'] == 'Y')
                 $dis_val = 'Y';
             else
@@ -731,8 +732,7 @@ function CheckboxInput_No($value, $name, $title = '', $checked = '', $new = fals
         } else {
             return "<DIV id='div$name' class=\"form-control\" readonly=\"readonly\"><div onclick='javascript:addHTML(\"<INPUT type=hidden name=$name value=\\\"N\\\"><INPUT type=checkbox name=$name " . (($value == 'Y') ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . ">" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . (($value != 'N') ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>";
         }
-    }
-    else
+    } else
         return (($value != 'N') ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
@@ -778,34 +778,49 @@ function _makeEndInputDate($value, $column) {
         else
             $date_value = $user_exist_school[1]['END_DATE'];
     }
-
-    return '<TABLE class=LO_field><TR>' . '<TD nowrap="nowrap">' . DateInputAY($date_value!="" ? $date_value : "", 'values[END_DATE][' . $THIS_RET['ID'] . ']', '2' . $THIS_RET['ID']) . '</TD></TR></TABLE>';
+    if (SelectedUserProfile('PROFILE_ID') == 0)
+        return '<TABLE class=LO_field><TR>' . '<TD nowrap="nowrap">' . ProperDateAY($date_value) . '</TD></TR></TABLE>';
+    else
+        return '<TABLE class=LO_field><TR>' . '<TD nowrap="nowrap">' . DateInputAY($date_value, 'values[END_DATE][' . $THIS_RET['ID'] . ']', '2' . $THIS_RET['ID']) . '</TD></TR></TABLE>';
 }
 
 function _makeCheckBoxInput_gen($value, $column) {
     global $THIS_RET;
 
-    $_SESSION[staff_school_chkbox_id]++;
+    $_SESSION[staff_school_chkbox_id] ++;
     $staff_school_chkbox_id = $_SESSION[staff_school_chkbox_id];
     if ($_REQUEST['staff_id'] == 'new') {
         return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
     } else {
-
+        $sql = '';
+        $staff_infor_qr = DBGet(DBQuery('select school_access from staff_school_info where STAFF_ID=\'' . $_SESSION['staff_selected'] . '\''));
+        $sch_li = explode(',', trim($staff_infor_qr[1]['SCHOOL_ACCESS']));
         $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
-        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00') {
+        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         }
-        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00') {
+        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\')';
         }
-        if ($dates[1]['START_DATE'] != '0000-00-00') {
+        if ($dates[1]['START_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.START_DATE>=ssr.END_DATE OR ssr.START_DATE=\'0000-00-00\' OR ssr.END_DATE>=CURDATE() OR ssr.END_DATE IS NULL)';
         }
-        $user_exist_school = DBGet(DBQuery($sql));
-        if (!empty($user_exist_school))
-            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        if ($sql != '')
+            $user_exist_school = DBGet(DBQuery($sql));
         else
-            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+            $user_exist_school = array();
+        if (!empty($user_exist_school)) {
+            if (SelectedUserProfile('PROFILE_ID') == 0)
+                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+            else
+                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        }
+        else {
+            if (SelectedUserProfile('PROFILE_ID') == 0)
+                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+            else
+                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        }
     }
 }
 

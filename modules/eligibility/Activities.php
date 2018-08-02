@@ -30,13 +30,14 @@ include('../../RedirectModulesInc.php');
 if ($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) {
     foreach ($_REQUEST['month_values'] as $id => $columns) {
         foreach ($columns as $column => $value) {
-            $_REQUEST['values'][$id][$column] = $_REQUEST['year_values'][$id][$column] . '-' . $value . '-' . $_REQUEST['day_values'][$id][$column];
+            $_REQUEST['values'][$id][$column] = $_REQUEST['day_values'][$id][$column] . '-' . $value . '-' . $_REQUEST['year_values'][$id][$column];
             if ($_REQUEST['values'][$id][$column] == '--')
                 $_REQUEST['values'][$id][$column] = '';
         }
     }
     $_POST['values'] = $_REQUEST['values'];
 }
+
 $err = '';
 if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
     foreach ($_REQUEST['values'] as $id => $columns) {
@@ -70,11 +71,18 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     }
                 }
                 if ($column == 'START_DATE') {
+                     $value1=explode('-',$value);
+                    
+                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
                     $s_date1 = strtotime($value);
                 }
                 if ($column == 'END_DATE') {
+                     $value1=explode('-',$value);
+                    
+                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
                     $e_date1 = strtotime($value);
                 } else {
+         
                     $value = clean_param($value, PARAM_SPCL);
                 }
                 $sql .= $column . '=\'' . str_replace("\'", "''", trim($value)) . '\',';
@@ -114,12 +122,26 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     $title = strtoupper(str_replace("'", "\'", clean_param($value, PARAM_SPCL)));
                 }
                 if ($column == 'START_DATE') {
+//                    echo $value;
+//                    $value1=explode('/',$value);
+//                   echo $value=$value1[2].'-'.$value1[0].'-'.$value1[1];
                     $s_date = strtotime($value);
                 }
                 if ($column == 'END_DATE') {
+//                     echo $value;
+//                    $value1=explode('/',$value);
+//                   echo $value=$value1[2].'-'.$value1[0].'-'.$value1[1];
                     $e_date = strtotime($value);
                 }
                 if (trim($value)) {
+            if($column == 'END_DATE' || $column == 'START_DATE')
+            {
+              
+                    $value1=explode('-',$value);
+                    
+                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
+                   
+            }
                     $fields .= $column . ',';
                     $values .= '\'' . str_replace("\'", "''", trim($value)) . '\',';
                     $go = true;
@@ -145,6 +167,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 
                 if ($cnt == 0) {
                     if ($check_rec[1]['REC_EX'] == 0) {
+                        
                         DBQuery($sql);
                     } else
                         $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with same title.</div>';

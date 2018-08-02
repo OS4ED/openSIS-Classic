@@ -33,10 +33,14 @@ function _makePercentGrade($grade_id,$course_period_id=0,$staff_id=0)
 		$staff_id = User('STAFF_ID');
 	if(!$programconfig[$staff_id])
 	{
-		$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.$staff_id.'\' AND PROGRAM=\'Gradebook\''),array(),array('TITLE'));
+		$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.$staff_id.'\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_'.$course_period_id.'\''),array(),array('TITLE'));
 		if(count($config_RET))
 			foreach($config_RET as $title=>$value)
-				$programconfig[$staff_id][$title] = $value[1]['VALUE'];
+                        {
+                                $unused_var=explode('_',$value[1]['VALUE']);
+                                $programconfig[$staff_id][$title] =$unused_var[0];
+//				$programconfig[$staff_id][$title] = rtrim($value[1]['VALUE'],'_'.$course_period_id);
+                        }
 		else
 			$programconfig[$staff_id] = true;
 	}

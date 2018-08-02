@@ -88,13 +88,22 @@ body {
     width: 450px;
     margin: 0 auto;
     border-radius: 4px;
-    margin-top: 5vh;
+    margin-top: 10vh;
     box-shadow: 0 0 40px rgba(0,0,0,0.3);
     border: 0;
 }
 
 .login .panel {
-    width: 400px;
+    width: 450px;
+}
+
+.login-info {
+    padding: 15px;
+    font-size: 12px;
+}
+.login-info p,
+.login-info b {
+    font-size: 12px;
 }
 
 .panel .panel-heading {
@@ -211,6 +220,8 @@ footer {
     color: #fff;
     font-size: 12px;
     padding: 10px 0 25px;
+    width: 450px;
+    margin: 0 auto;
 }
 footer a {
     text-decoration: none;
@@ -467,7 +478,10 @@ footer a:hove {
 @media screen and (max-width:768px){
     .login .panel,
     .panel {
-        width: 90vw;
+        width: 60vw;
+    }
+    .login-info {
+        padding: 15px;
     }
 }
 @media screen and (max-width:500px){
@@ -477,9 +491,9 @@ footer a:hove {
     .login .login-wrapper {
         display: block;
     }
-
+    .login .panel,
     .panel {
-        width: 90%;
+        width: 90vw;
     }
 
 

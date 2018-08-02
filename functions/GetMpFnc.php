@@ -25,7 +25,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-function GetMP($mp,$column='TITLE')
+function GetMP($mp='',$column='TITLE')
 {	global $_openSIS;
 	// mab - need to translate marking_period_id to title to be useful as a function call from dbget
 	// also, it doesn't make sense to ask for same thing you give
@@ -34,12 +34,14 @@ function GetMP($mp,$column='TITLE')
 
 	if(!$_openSIS['GetMP'])
 	{
-		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_quarters\'        AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_quarters         WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_semesters\'       AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_semesters        WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_years\'           AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_years            WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_progress_periods\' AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_progress_periods WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''),array(),array('MARKING_PERIOD_ID'));
+           
+		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_quarters\' AS `TABLE`,\'SEMESTER_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_quarters         WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_semesters\' AS `TABLE`,\'YEAR_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_semesters        WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_years\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_years            WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_progress_periods\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_progress_periods WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''),array(),array('MARKING_PERIOD_ID'));
 
         }
+        
 	if(substr($mp,0,1)=='E')
 	{
 		if($column=='TITLE' || $column=='SHORT_NAME')
@@ -51,12 +53,44 @@ if($mp=='')
     return 'Custom';
 }
  else {
+   
   if($mp==0 && $column=='TITLE')
+      
 		return 'Full Year'.$suffix;
 	else
+        {
 		return $_openSIS['GetMP'][$mp][1][$column].$suffix;  
+        }
 }
 	
+}
+
+function GetMPAllSchool($mp,$column='TITLE')
+{	global $_openSIS;
+
+	// mab - need to translate marking_period_id to title to be useful as a function call from dbget
+	// also, it doesn't make sense to ask for same thing you give
+	if($column=='MARKING_PERIOD_ID')
+		$column='TITLE';
+
+	if(!$_openSIS['GetMP'])
+	{
+		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_quarters\'        AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_quarters         WHERE SYEAR=\''.UserSyear().'\' 
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_semesters\'       AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_semesters        WHERE SYEAR=\''.UserSyear().'\' 
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_years\'           AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_years            WHERE SYEAR=\''.UserSyear().'\' 
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_progress_periods\' AS `TABLE`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_progress_periods WHERE SYEAR=\''.UserSyear().'\''),array(),array('MARKING_PERIOD_ID'));
+	}
+	if(substr($mp,0,1)=='E')
+	{
+		if($column=='TITLE' || $column=='SHORT_NAME')
+			$suffix = ' Exam';
+		$mp = substr($mp,1);
+	}
+        
+	if($mp==0 && $column=='TITLE')
+		return 'Full Year'.$suffix;
+	else
+		return $_openSIS['GetMP'][$mp][1][$column].$suffix;
 }
 function GetMP_teacherschedule($mp,$column='TITLE')
 {	global $_openSIS;
@@ -172,5 +206,18 @@ function GetMPId($mp)
             return $get_mp_id[1]['MARKING_PERIOD_ID'];
         else
            return UserMP ();
+}
+
+function check_exam($mp)
+{
+    $qr=  DBGet(DBQuery('select * from marking_periods where marking_period_id=\''.$mp.'\''));
+
+    return $qr[1]['DOES_EXAM'];
+}
+function ParentMP($mp)
+{
+     $qr=  DBGet(DBQuery('select * from marking_periods where marking_period_id=\''.$mp.'\''));
+
+    return $qr[1]['PARENT_ID'];
 }
 ?>

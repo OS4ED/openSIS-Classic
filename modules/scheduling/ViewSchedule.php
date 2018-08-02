@@ -59,10 +59,8 @@ if (isset($_REQUEST['student_id'])) {
 }
 if ($_REQUEST['month__date'] && $_REQUEST['day__date'] && $_REQUEST['year__date']) {
     $month_names = array('JAN' => '01', 'FEB' => '02', 'MAR' => '03', 'APR' => '04', 'MAY' => '05', 'JUN' => '06', 'JUL' => '07', 'AUG' => '08', 'SEP' => '09', 'OCT' => '10', 'NOV' => '11', 'DEC' => '12');
-    //if (array_key_exists($_REQUEST['month__date'], $month_names))
-        //$date = $_REQUEST['year__date'] . '-' . $month_names[$_REQUEST['month__date']] . '-' . $_REQUEST['day__date'];
-    if (array_key_exists(strtoupper($_REQUEST['month__date']), $month_names))
-        $date = $_REQUEST['year__date'] . '-' . $month_names[strtoupper($_REQUEST['month__date'])] . '-' . $_REQUEST['day__date'];
+    if (array_key_exists($_REQUEST['month__date'], $month_names))
+        $date = $_REQUEST['year__date'] . '-' . $month_names[$_REQUEST['month__date']] . '-' . $_REQUEST['day__date'];
     elseif (in_array($_REQUEST['month__date'], $month_names))
         $date = $_REQUEST['year__date'] . '-' . $_REQUEST['month__date'] . '-' . $_REQUEST['day__date'];
     else
@@ -159,7 +157,7 @@ if (UserStudentID()) {
             for ($i = 1; $i <= count($mp_data); $i++) {
                 $mp_ids_arr[] = $mp_data[$i]['MARKING_PERIOD_ID'];
             }
-          $sql = 'SELECT
+            $sql = 'SELECT
         s.COURSE_ID,
         s.COURSE_PERIOD_ID,
         s.MARKING_PERIOD_ID,
@@ -190,7 +188,7 @@ if (UserStudentID()) {
         AND s.SYEAR = c.SYEAR 
         AND sp.PERIOD_ID = cpv.PERIOD_ID
         AND (cp.MARKING_PERIOD_ID IN (' . implode(',', $mp_ids_arr) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.END_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\'))
-       AND (POSITION(\''.$day.'\' IN cpv.days)>0 or cpv.days IS NULL)
+        AND POSITION(\'' . $day . '\' IN cpv.days)>0
         AND s.STUDENT_ID=\'' . UserStudentID() . '\'
         AND s.SYEAR=\'' . UserSyear() . '\' 
         AND s.SCHOOL_ID = \'' . UserSchool() . '\' 
@@ -209,9 +207,7 @@ GROUP BY cp.COURSE_PERIOD_ID
                 unset($columns['DAYS']);
             if ($_REQUEST['_openSIS_PDF'])
                 unset($columns['SCHEDULER_LOCK']);
-            
-            
-            break;            
+            break;
 
         case 'week_view':
             $cal_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
@@ -230,7 +226,7 @@ GROUP BY cp.COURSE_PERIOD_ID
             $QI = ($sql);
             $wk_schedule_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,sp.TITLE FROM school_periods sp WHERE sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID = \'' . UserSchool() . '\' ORDER BY sp.SORT_ORDER'), array('TIME_PERIOD' => '_makeTimePeriod'));
 
-$week_RET = DBGet(DBQuery('SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID
+            $week_RET = DBGet(DBQuery('SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID
 				FROM attendance_calendar acc
 				INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID
 				AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE
@@ -256,11 +252,11 @@ $week_RET = DBGet(DBQuery('SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,c
                         if (in_array(date('Y-m-d', $j), $week_RET[date('Y-m-d', $j)][$course['PERIOD_ID']][1])) {
                             $day = date('l', strtotime($week_RET[date('Y-m-d', $j)][$course['PERIOD_ID']][1]['SCHOOL_DATE']));
                             $day_RET = DBGet(DBQuery('SELECT DISTINCT cp.COURSE_PERIOD_ID,cp.TITLE,cpv.DAYS,r.TITLE AS ROOM FROM course_periods cp,course_period_var cpv,rooms r,marking_periods mp,schedule sch WHERE cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID and sch.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id1, 'TABLE')), $mp_id1) . ') AND cp.COURSE_PERIOD_ID=sch.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND
-                            (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND sch.START_DATE<=  \'' . date('Y-m-d', $j) . '\' AND (sch.END_DATE>=\'' . date('Y-m-d', $j) . '\' OR sch.END_DATE IS NULL) AND \'' . date('Y-m-d', $j) . '\' BETWEEN mp.START_DATE AND mp.END_DATE AND  cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND sch.STUDENT_ID=\'' . UserStudentID() . '\' AND (POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0 or cpv.days IS NULL)'));
+                            (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND sch.START_DATE<=  \'' . date('Y-m-d', $j) . '\' AND (sch.END_DATE>=\'' . date('Y-m-d', $j) . '\' OR sch.END_DATE IS NULL) AND \'' . date('Y-m-d', $j) . '\' BETWEEN mp.START_DATE AND mp.END_DATE AND  cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND sch.STUDENT_ID=\'' . UserStudentID() . '\' AND POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0'));
                             if (!$day_RET) {
                                 if (count($custom_schedule) > 0 && count($custom_schedule_cpid) > 0)
                                     $day_RET_custom = DBGet(DBQuery('SELECT DISTINCT cp.COURSE_PERIOD_ID,cp.TITLE,cpv.DAYS,r.TITLE AS ROOM FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND
-                                (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND (POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0 or cpv.days IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $custom_schedule_cpid . ')'));
+                                (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0 AND cp.COURSE_PERIOD_ID IN (' . $custom_schedule_cpid . ')'));
 
                                 if (count($day_RET_custom) > 0)
                                     $schedule_RET[$i][date('y-m-d', $j)] = (count($day_RET) > 1 ? '<font title="Conflict schedule (' . count($day_RET_custom) . ')" color="red">' . $day_RET_custom[1]['TITLE'] . '<br />Room :' . $day_RET_custom[1]['ROOM'] . '</font>' : '<spna title=' . date("l", $j) . '>' . $day_RET_custom[1]['TITLE'] . '<br />Room :' . $day_RET_custom[1]['ROOM'] . '</span>');
@@ -313,7 +309,7 @@ $week_RET = DBGet(DBQuery('SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,c
                 //------------------------------------------------------------------------------------------------------------------------------------------------------------
                 $full_day = date('l', strtotime($date));
                 $day = get_db_day($full_day);
-              $sql = 'SELECT
+                $sql = 'SELECT
 				s.COURSE_ID,s.COURSE_PERIOD_ID,
 				s.MARKING_PERIOD_ID,s.START_DATE,s.END_DATE,
 				UNIX_TIMESTAMP(s.START_DATE) AS START_EPOCH,UNIX_TIMESTAMP(s.END_DATE) AS END_EPOCH,sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,sp.START_TIME,
@@ -327,7 +323,7 @@ $week_RET = DBGet(DBQuery('SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,c
                                 AND r.ROOM_ID=cpv.ROOM_ID
 				AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
 				AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
-                                                                        AND (POSITION(\'' . $day . '\' IN cpv.days)>0 or cpv.days IS NULL)
+                                                                        AND POSITION(\'' . $day . '\' IN cpv.days)>0
 				AND s.STUDENT_ID=\'' . UserStudentID() . '\'
 				AND s.SYEAR=\'' . UserSyear() . '\' AND s.SCHOOL_ID = \'' . UserSchool() . '\' AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) 
                                                                         AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND s.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\'))
@@ -515,6 +511,8 @@ function CreateSelect($val, $name, $link = '', $mpid) {
                 $html .= "<option value=" . $value[strtoupper($name)] . ">" . $value['TITLE'] . "</option>";
         }
     }
+
+
 
     $html .= "</select>";
     return $html;

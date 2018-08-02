@@ -28,95 +28,138 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
-$q_total = array();
-$s_total = array();
-$f_total = 0;
-foreach ($_REQUEST['values'] as $key => $val) {
-    $k = explode('-', $key);
-    if ($k[0] == 'Q') {
+$q_total=array();
+$s_total=array();
+$f_total=0;
 
-        $q_total[$k[1]] = $q_total[$k[1]] + $val;
+foreach($_REQUEST['teacher_grade'] as $ktitle=>$data)
+{
+    $cp_id=explode('-',$ktitle);
+    $_REQUEST['values'][$ktitle]=($data==''?'':$data);
     }
-    if ($k[0] == 'SEM') {
-        if (substr($k[1], 0, 1) != 'E')
-            $s_total[] = $k[1];
+foreach($_REQUEST['values'] as $key => $val)
+{
+    $k=explode('-',$key);
+  if($k[0]=='Q')
+  {
+      
+      $q_total[$k[1]]=$q_total[$k[1]]+$val;
     }
-    if ($k[0] == 'FY') {
-        $f_total = $f_total + $val;
+  if($k[0]=='SEM')
+  {
+      if(substr($k[1],0,1)!='E')
+      $s_total[]=$k[1];
     }
+   if($k[0]=='FY')
+  {
+      $f_total=$f_total+$val;
+}
 }
 
-if (!empty($s_total)) {
-    $sem_id = implode(',', $s_total);
-    $sql = "select marking_period_id from marking_periods where marking_period_id in($sem_id) and mp_type='semester'";
-    $qr_sem = DBGet(DBQuery($sql));
-    foreach ($qr_sem as $ks => $vs) {
-        $marking_sem_id[] = $vs['MARKING_PERIOD_ID'];
+if(!empty($s_total))
+{
+$sem_id=implode(',',$s_total);
+$sql="select marking_period_id from marking_periods where marking_period_id in($sem_id) and mp_type='semester'";
+$qr_sem= DBGet(DBQuery($sql));
+foreach($qr_sem as $ks => $vs)
+{
+    $marking_sem_id[]=$vs['MARKING_PERIOD_ID'];
     }
-    foreach ($_REQUEST['values'] as $key => $val) {
-        $k = explode('-', $key);
-        if ($k[0] == 'SEM') {
-            if (in_array($k[1], $marking_sem_id))
-                $marking_sem_val[$k[1]] = $marking_sem_val[$k[1]] + $val;
+foreach($_REQUEST['values'] as $key => $val)
+{
+    $k=explode('-',$key);
+    if($k[0]=='SEM')
+  {
+      if(in_array($k[1],$marking_sem_id))
+      $marking_sem_val[$k[1]]=$marking_sem_val[$k[1]]+$val;
             else {
 
-                if (substr($k[1], 0, 1) != 'E') {
-                    $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='$k[1]'"));
-                    $parent_mp_id = $pr_qr[1]['PARENT_ID'];
-                    $marking_sem_val[$parent_mp_id] = $marking_sem_val[$parent_mp_id] + $val;
+      if(substr($k[1],0,1)!='E')
+      {
+          $pr_qr=  DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='$k[1]'"));
+       $parent_mp_id=$pr_qr[1]['PARENT_ID'];
+       $marking_sem_val[$parent_mp_id]=$marking_sem_val[$parent_mp_id]+$val;
+          
                 }
-                if (substr($k[1], 0, 1) == 'E' && in_array(substr($k[1], 1), $marking_sem_id)) {
+      if(substr($k[1],0,1)=='E' && in_array(substr($k[1],1),$marking_sem_id))
+      {
 
-                    $marking_sem_val[substr($k[1], 1)] = $marking_sem_val[substr($k[1], 1)] + $val;
+        $marking_sem_val[substr($k[1],1)]=$marking_sem_val[substr($k[1],1)]+$val;  
                 }
-                if (substr($k[1], 0, 1) == 'E' && !in_array(substr($k[1], 1), $marking_sem_id)) {
-                    $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='" . substr($k[1], 1) . "'"));
-                    $parent_mp_id = $pr_qr[1]['PARENT_ID'];
-                    $marking_sem_val[$parent_mp_id] = $marking_sem_val[$parent_mp_id] + $val;
+      if(substr($k[1],0,1)=='E' && !in_array(substr($k[1],1),$marking_sem_id))
+      {
+          $pr_qr=  DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='".substr($k[1],1)."'"));
+       $parent_mp_id=$pr_qr[1]['PARENT_ID'];
+       $marking_sem_val[$parent_mp_id]=$marking_sem_val[$parent_mp_id]+$val;
                 }
             }
         }
     }
 }
-$quarter1 = array();
-foreach ($q_total as $k1 => $v1) {
+$quarter1=array();
+foreach($q_total as $k1 => $v1)
+{
 
-    if (substr($k1, 0, 1) == 'E') {
-        $quarter1[substr($k1, 1)] = $quarter1[substr($k1, 1)] + $v1;
-    } else {
-        $quarter1[$k1] = $quarter1[$k1] + $v1;
+    if(substr($k1,0,1)=='E')
+    {
+ $quarter1[substr($k1,1)]=$quarter1[substr($k1,1)]+$v1;
+}
+    else {
+       $quarter1[$k1]= $quarter1[$k1]+$v1;
     }
 }
-$flag_quarter = 0;
-$flag_sem = 0;
-$sem_total = 0;
-foreach ($marking_sem_val as $sem_key => $sem_val) {
+$flag_quarter=0;
+$flag_sem=0;
+$sem_total=0;
+foreach($marking_sem_val as $sem_key =>$sem_val)
+{
     $sem_total+=$sem_val;
 }
-if ($sem_total % 100 != 0)
-    $flag_sem = 1;
-foreach ($quarter1 as $q_key => $q_val) {
+if($sem_total%100!=0)
+    $flag_sem=1;
+foreach($quarter1 as $q_key =>$q_val)
+{
 
-    if ($q_val > 100) {
-        $flag_quarter = 1;
+    if($q_val>100)
+    {
+      $flag_quarter=1;
         break;
     }
 }
-if ($_REQUEST['values']) {
-    if ($flag_sem == 0 && $flag_quarter == 0 && ($f_total == 100 || $f_total == 0)) {
-        DBQuery('DELETE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND school_id=\'' . UserSchool() . '\' AND PROGRAM=\'Gradebook\'');
-        foreach ($_REQUEST['values'] as $title => $value)
-            DBQuery('INSERT INTO program_user_config (USER_ID,SCHOOL_ID,PROGRAM,TITLE,VALUE) values(\'' . User('STAFF_ID') . '\',\'' . UserSchool() . '\',\'Gradebook\',\'' . $title . '\',\'' . str_replace("\'", "''", str_replace('%', '', $value)) . '\')');
+if($_REQUEST['values'])
+{
+    if($flag_sem==0 && $flag_quarter==0 && ($f_total==100 || $f_total==0))
+    {
+	DBQuery('DELETE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND school_id=\''.UserSchool().'\' AND value like "%_'.UserCoursePeriod().'%" AND PROGRAM=\'Gradebook\'');
+	foreach($_REQUEST['values'] as $title=>$value)
+        {
+            if($value!='')
+                $value=$value."_".UserCoursePeriod();
+		DBQuery('INSERT INTO program_user_config (USER_ID,SCHOOL_ID,PROGRAM,TITLE,VALUE) values(\''.User('STAFF_ID').'\',\''.UserSchool().'\',\'Gradebook\',\''.$title.'\',\''.str_replace("\'","''",str_replace('%','',$value)).'\')');
+        }
         unset($_REQUEST['values']);
         unset($_SESSION['_REQUEST_vars']['values']);
-    } else {
+    }
+    else {
         echo'<FONT color=red>Total must be 100%!</FONT>';
     }
 }
-$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND school_id=\'' . UserSchool() . '\' AND PROGRAM=\'Gradebook\''), array(), array('TITLE'));
-if (count($config_RET)) {
-    foreach ($config_RET as $title => $value)
+$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND school_id=\''.UserSchool().'\' AND PROGRAM=\'Gradebook\' AND value like "%_'.UserCoursePeriod().'%"'),array(),array('TITLE'));
+if(count($config_RET))
+{
+	foreach($config_RET as $title=>$value)
+		 if(substr($title,0,3)=='SEM' || substr($title,0,2)=='FY' || substr($title,0,1)=='Q')
+            {
+                $value1= explode("_",$value[1]['VALUE']);
+                $programconfig[$title] = $value1[0];
+            }
+ else {
+     $value1= explode("_",$value[1]['VALUE']);
+     if(count($value1)>1)
+      $programconfig[$title] = $value1[0];
+     else
         $programconfig[$title] = $value[1]['VALUE'];
+}
 }
 
 $grades = DBGet(DBQuery('SELECT cp.TITLE AS CP_TITLE,c.TITLE AS COURSE_TITLE,cp.COURSE_PERIOD_ID,rcg.TITLE,rcg.ID FROM report_card_grades rcg,course_periods cp,course_period_var cpv,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND cp.SCHOOL_ID=rcg.SCHOOL_ID AND cp.SYEAR=rcg.SYEAR AND cp.SYEAR=\'' . UserSyear() . '\' AND rcg.GRADE_SCALE_ID=cp.GRADE_SCALE_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND DOES_BREAKOFF=\'Y\' GROUP BY cp.COURSE_PERIOD_ID,rcg.ID ORDER BY rcg.BREAK_OFF IS NOT NULL DESC,rcg.BREAK_OFF DESC,rcg.SORT_ORDER '), array(), array('COURSE_PERIOD_ID'));

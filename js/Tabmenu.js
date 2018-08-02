@@ -32,6 +32,32 @@
 	       ( (secure) ? ';secure' : ''); 
 	    document.cookie = cookieString; 
 	}	
+        function set_ck()
+        {
+            if (document.getElementById('remember').checked === true) {
+                        // save username and password
+                        localStorage.usrname = document.getElementById('USERNAME').value;
+                        localStorage.pass = document.getElementById('PASSWORD').value;
+                        localStorage.chkbx = document.getElementById('remember').value;
+                    } else {
+                        localStorage.usrname = '';
+                        localStorage.pass = '';
+                        localStorage.chkbx = '';
+                    }
+        }
+	
+        function get_ck()
+        {
+            if (localStorage.chkbx && localStorage.chkbx != '') {
+                    document.getElementById('remember').checked = true;
+                    document.getElementById('USERNAME').value = localStorage.usrname;
+                    document.getElementById('PASSWORD').value = localStorage.pass;
+                } else {
+                    document.getElementById('remember').checked = false;
+                    document.getElementById('USERNAME').value = '';
+                    document.getElementById('PASSWORD').value = '';
+                }
+        }
 	
 	function dissub(tab)
 	{

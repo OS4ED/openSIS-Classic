@@ -40,8 +40,25 @@ $to = $_SESSION['to_date'];
 # ------------------------ Old Query It's Also Working Start ---------------------------------- #
 # ------------------------ Old Query It's Also Working End ---------------------------------- #
 
+$stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
+
+foreach ($stu_missing_atten as $k => $f) {
+
+    $pr_id = $f['PERIOD_ID'];
+    $sch_date = $f['SCHOOL_DATE'];
+    $staff_id = $f['TEACHER_ID'];
+    $c_id = $f['COURSE_PERIOD_ID'];
+    $sch_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
+    $att_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM attendance_period  where SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
+
+    if (count($sch_qr) == count($att_qr)) {
+
+        DBQuery('DELETE FROM missing_attendance WHERE  TEACHER_ID=' . $staff_id . ' AND SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id);
+    }
+}
+
 if ($From && $to) {
-    $RET = DBGET(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,cpv.ID AS CPV_ID,mi.SCHOOL_DATE,cp.TITLE, mi.COURSE_PERIOD_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\'' . UserSchool() . '\' AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND mi.SCHOOL_DATE>=\'' . $From . '\' AND mi.SCHOOL_DATE<\'' . $to . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) ORDER BY cp.TITLE,mi.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate'));
+    $RET = DBGET(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,cpv.ID AS CPV_ID,mi.SCHOOL_DATE,cp.TITLE, mi.COURSE_PERIOD_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\'' . UserSchool() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND mi.SCHOOL_DATE>=\'' . $From . '\' AND mi.SCHOOL_DATE<\'' . $to . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) ORDER BY cp.TITLE,mi.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate'));
 } else {
     unset($RET);
 }
@@ -52,7 +69,7 @@ if ((!UserStudentID() || substr($_REQUEST['modname'], 0, 5) == 'users')) {
 }
 
 if (count($RET)) {
-    echo '<div class="alert bg-danger alert-styled-left"><b>Warning!!</b> - Teachers have missing attendance data.</div>';
+    echo '<div class="panel-body p-b-0"><div class="alert alert-warning alert-styled-left m-b-0"><b>Warning!!</b> - Teachers have missing attendance data.</div></div>';
 
     $modname = "users/TeacherPrograms.php?include=attendance/TakeAttendance.php&miss_attn=1&From=$From&to=$to";
     $link['remove']['link'] = "Modules.php?modname=$modname&modfunc=attn&username=admin";

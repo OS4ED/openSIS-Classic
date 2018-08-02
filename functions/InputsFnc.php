@@ -111,6 +111,19 @@ function DateInput_for_EndInput($value, $name, $title = '', $div = true, $allow_
         return (($value != '') ? ProperDate($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
+function DateInput_for_EndInputModal($value, $name, $title = '', $div = true, $allow_na = true) {
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    if (!$_REQUEST['_openSIS_PDF']) {
+        if ($value == '' || $div == false)
+            return PrepareDate_for_EndInput($value, "_$name", $allow_na) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+        else
+            return "<DIV id='div$name'><div onclick='javascript:addHTML(\"" . str_replace('"', '\"', PrepareDate_for_EndInput($value, "_$name", true, array('Y' => 1, 'M' => 1, 'D' => 1))) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . "\",\"div$name\",true)'>" . (($value != '') ? ProperDate($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div></DIV>';
+    } else
+        return (($value != '') ? ProperDate($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+}
+
 function TextInput($value, $name, $title = '', $options = '', $div = true) {
     $original_title = $title;
     $title = str_replace('*', '', $original_title);
@@ -132,10 +145,10 @@ function TextInput($value, $name, $title = '', $options = '', $div = true) {
             $div = false;
         if ((trim($value) == '' || $div == false))
 //            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\"  type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" placeholder=\"" . strip_tags($title) . "\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
         else {
 
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text class=form-control placeholder=".strip_tags($title)." id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();'><input type=\"text\" readonly=\"readonly\" class=\"form-control\" value=\"" . $value . '" /></div></DIV>' . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
         }
     } else {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
@@ -256,9 +269,9 @@ function TextAreaInput($value, $name, $title = '', $options = '', $div = true) {
         $cols = substr($options, strpos($options, 'cols') + 5, 2) * 1;
 
         if ($value == '' || $div == false)
-            return (($title != '') ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<TEXTAREA placeholder=\"" . $title . "\" class=form-control id=$name name=$name $options>$value</TEXTAREA>" . (($title != '') ? "</div>" : "");
+            return (($title != '') ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<TEXTAREA class=form-control id=$name name=$name $options>$value</TEXTAREA>" . (($title != '') ? "</div>" : "");
         else
-            return ($title != '' ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div class='form-control' readonly='readonly' onclick='javascript:addHTML(\"<TEXTAREA class=form-control placeholder=$title id=textarea$name name=$name $options>" . str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value)) . "</TEXTAREA>" . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
+            return ($title != '' ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div class='form-control' readonly='readonly' onclick='javascript:addHTML(\"<TEXTAREA class=form-control id=textarea$name name=$name $options>" . str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value)) . "</TEXTAREA>" . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
 //            return ($title != '' ? '<label class="control-label col-lg-4" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA class=form-control placeholder=$title id=textarea$name name=$name $options>" . ereg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
     } else
         return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
@@ -343,7 +356,7 @@ function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = f
         } else {
             return '<INPUT type=hidden name="' . $name . '"  value="">'
                     . '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '">'
-                    . '<label class="' . $textcolor . '">'
+                    . '<label>'
                     . '<INPUT type=checkbox name="' . $name . '" ' . (($value) ? 'checked="checked"' : '') . ' value=Y ><span></span>' . $title . '</label>'
                     . '</div>';
         }
@@ -352,7 +365,8 @@ function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = f
           else
           return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=hidden name=$name  value=\\\"\\\"><div class=checkbox-inline><INPUT type=checkbox name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div>" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . ($value ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>"; */
     } else
-        return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . $title . '</small>' : '');
+        //return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . $title . '</small>' : '');
+        return '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '"><label><INPUT type=checkbox disabled="disabled" '.($value ? 'checked=checked':'').'><span></span>'.$title.'</label></div>';
 }
 
 function CheckboxInput_grade($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
@@ -649,11 +663,11 @@ function SelectInput_for_EndInput($value, $name, $title = '', $options, $type_id
             $extra = str_replace('"', '\"', $extra);
         }
 
-        $onchange = str_replace('"', '\"', "onchange=javascript:if(this.value==\"$type_id\")window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&student_id=" . UserStudentID() . "&drop_code=$type_id\",\"blank\",\"width=500,height=300\");");
+        $onchange = str_replace('"', '\"', "onchange=javascript:if(this.value==\"$type_id\")TransferredOutModal(\"detail\"," . UserStudentID() . ",$type_id);");
         if ($value != '' && $div)
             $return .= "<SELECT class=form-control name=$name $extra  $onchange>";
         else
-            $return .= "<SELECT class=form-control name=$name $extra  onchange=javascript:if(this.value==\"$type_id\")window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&student_id=" . UserStudentID() . "&drop_code=$type_id\",\"blank\",\"width=500,height=300\");>";
+            $return .= "<SELECT class=form-control name=$name $extra  onchange=javascript:if(this.value==\"$type_id\")TransferredOutModal(\"detail\"," . UserStudentID() . ",$type_id);>";
         if ($allow_na !== false) {
             if ($value != '' && $div)
                 $return .= '<OPTION value=\"\">' . $allow_na;
@@ -908,6 +922,176 @@ function DateInputAY_red($value, $name, $counter = 1, $cp_id) {
             return '<table cellspacing="0" cellpadding="0"><tr><td><input type=text id="date_' . $counter . '" ' . $show . '  readonly></td><td>&nbsp; </td><td><a onClick="init(' . $counter . ',1);"><img src="assets/calendar.gif"  /></a><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" ></td></tr></table>';
     } else
         return ProperDateAY($value);
+}
+function TextInputModal($value, $name, $title = '', $options = '', $div = true) {
+    $original_title = $title;
+    $title = str_replace('*', '', $original_title);
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    // mab - support array style $option values
+    if ( !$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        $value1 = is_array($value) ? $value[1] : $value;
+        $value = is_array($value) ? $value[0] : $value;
+
+        if (strpos($options, 'size') === false && $value != '')
+            $options .= ' size=' . strlen($value);
+        elseif (strpos($options, 'size') === false)
+            $options .= ' size=10';
+
+        if (strstr($value, '\\') != '')
+            $div = false;
+        if ((trim($value) == '' || $div == false))
+//            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\"  type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
+        else {
+
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+        }
+    } else {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        return ($title != '' ? '<label class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . '<div class="form-control" disabled=disabled>' . (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . '</div>' . ($title != '' ? '</div>' : '');
+    }
+}
+function TextInputCusIdModal($value, $name, $title = '', $options = '', $div = true, $ex_id = '') {
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    // mab - support array style $option values
+    if ( !$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        $value1 = is_array($value) ? $value[1] : $value;
+        $value = is_array($value) ? $value[0] : $value;
+
+        if (strpos($options, 'size') === false && $value != '')
+            $options .= ' size=' . strlen($value);
+        elseif (strpos($options, 'size') === false)
+            $options .= ' size=10';
+
+        if ((trim($value) == '' || $div == false))
+            return "<label class=\"control-label text-right col-lg-4\">" . ($title != '' ? $title : '') . "</label><div class=\"col-lg-8\"><INPUT class=control-label type=text name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options></div>";
+        else {
+            if ($ex_id == '')
+                return "<label class=\"control-label text-right col-lg-4\">$title</label><div class=\"col-lg-8\"><div id='div$name'><div onclick='javascript:addHTML(\"<INPUT class=form-control type=text id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>" . "\",\"div$name\",true); document.getElementById(\"input$name\").focus();'><input type=\"text\" readonly=\"readonly\" class=\"form-control\" value=\"" . (($value != '') ? str_replace('"', '&rdquo;', $value1) : '-') . ($title != '' ? $title : '') . '" /></div></div></div>';
+            else
+                return "<label class=\"control-label text-right col-lg-4\">$title</label><div class=\"col-lg-8\"><div id='div$name'><div onclick='javascript:addHTML(\"<INPUT class=form-control partha type=text id=$ex_id name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>" . "\",\"div$name\",true); document.getElementById(\"$ex_id\").focus();'><input type=\"text\" readonly=\"readonly\" class=\"form-control\" value=\"" . (($value != '') ? str_replace('"', '&rdquo;', $value1) : '-') . ($title != '' ? $title : '') . '" /></div></div></div>';
+        }
+    } else
+        return (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+}
+function TextAreaInputModal($value, $name, $title = '', $options = '', $div = true) {
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    if (!$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+
+        if (strpos($options, 'cols') === false)
+            $options .= ' cols=30';
+        if (strpos($options, 'rows') === false)
+            $options .= ' rows=4';
+        $rows = substr($options, strpos($options, 'rows') + 5, 2) * 1;
+        $cols = substr($options, strpos($options, 'cols') + 5, 2) * 1;
+
+        if ($value == '' || $div == false)
+            return (($title != '') ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<TEXTAREA class=form-control id=$name name=$name $options>$value</TEXTAREA>" . (($title != '') ? "</div>" : "");
+        else
+            return ($title != '' ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div class='form-control' readonly='readonly' onclick='javascript:addHTML(\"<TEXTAREA class=form-control id=textarea$name name=$name $options>" . str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value)) . "</TEXTAREA>" . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
+//            return ($title != '' ? '<label class="control-label col-lg-4" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA class=form-control placeholder=$title id=textarea$name name=$name $options>" . ereg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
+    } else
+        return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+}
+function CheckboxInputSwitchModal($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
+
+    // $checked has been deprecated -- it remains only as a placeholder
+    if (Preferences('HIDDEN') != 'Y') {
+        $div = false;
+    }
+
+    if ($switchery_color == '') {
+        $switchery_color = 'switch-primary';
+    }
+
+    if ($div == false || $new == true) {
+        if ($value && $value != 'N') {
+            $checked = 'CHECKED';
+        } else {
+            $checked = '';
+        }
+    }
+
+    if (!$_REQUEST['_openSIS_PDF']) {
+
+        if ($new || $div == false) {
+            return '<INPUT type=hidden name="' . $name . '"  value=""><div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '">'
+                    . '<label>'
+                    . '<input type="checkbox" value=Y name="' . $name . '" ' . $checked . ' ' . $extra . '><span></span>' . $title . '</label>'
+                    . '</div>';
+        } else {
+            return '<INPUT type=hidden name="' . $name . '"  value="">'
+                    . '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '">'
+                    . '<label>'
+                    . '<INPUT type=checkbox name="' . $name . '" ' . (($value) ? 'checked="checked"' : '') . ' value=Y ><span></span>' . $title . '</label>'
+                    . '</div>';
+        }
+        /* if ($new || $div == false)
+          return "<div class=\"checkbox-inline\"><INPUT type=checkbox name=$name  value=Y $checked $extra>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
+          else
+          return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=hidden name=$name  value=\\\"\\\"><div class=checkbox-inline><INPUT type=checkbox name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div>" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . ($value ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>"; */
+    } else
+        //return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . $title . '</small>' : '');
+        return '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '"><label><INPUT type=checkbox disabled="disabled" '.($value ? 'checked=checked':'').'><span></span>'.$title.'</label></div>';
+}
+function SelectInputModal($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true) {
+
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    // mab - support array style $option values
+    // mab - append current val to select list if not in list
+
+    if ($value != '' && !$options[$value])
+        $options[$value] = array($value, '<FONT color=red>' . $value . '</FONT>');
+
+    if ( !$_REQUEST['_openSIS_PDF']) {
+//        $return = (($title != '') ? '<label class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '');
+        $return = (($title != '') ? '<label class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '');
+        if ($value != '' && $div) {
+            $return .= "<DIV id='div$name'><div onclick='javascript:addHTML(\"";
+            $extra = str_replace('"', '\"', $extra);
+        }
+
+        //$return .= "<SELECT name=$name id=$name $extra class=form-control>";
+        $return .= "<SELECT name=$name $extra class=form-control>";
+        if ($allow_na !== false) {
+            if ($value != '' && $div)
+                $return .= '<OPTION value=\"\">' . $allow_na;
+            else
+                $return .= '<OPTION value="">' . $allow_na;
+        }
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+
+                settype($key, 'string');
+                if ($value != '' && $div)
+                    $return .= "<OPTION value=\\\"" . str_replace("'", '&#39;', $key) . "\\\" " . (($value == $key && (!($value == false && ($value !== $key)) || ($value === '0' && $key === 0))) ? 'SELECTED' : '') . ">" . str_replace("'", '&#39;', (is_array($val) ? $val[0] : $val));
+                else
+                    $return .= "<OPTION value=\"$key\" " . (($value == $key && !($value == false && $value !== $key)) ? 'SELECTED' : '') . ">" . (is_array($val) ? $val[0] : $val);
+            }
+        }
+        $return .= "</SELECT>";
+
+
+        if ($value != '' && $div) {
+            $return .= "\",\"div$name\",true)' class=form-control readonly=readonly>" . (is_array($options[$value]) ? $options[$value][1] : $options[$value]) . '</div></DIV>';
+        }
+
+        $return .= (($title != '') ? '</div>' : '');
+    } else
+        $return = '<div class="form-control" disabled="disabled">' . (((is_array($options[$value]) ? $options[$value][1] : $options[$value]) != '') ? (is_array($options[$value]) ? $options[$value][1] : $options[$value]) : ($allow_na !== false ? ($allow_na ? $allow_na : '-') : '-')) . '</div>' . ($title != '' ? '<p class="help-block">' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</p>' : '');
+
+    return $return;
 }
 
 ?>

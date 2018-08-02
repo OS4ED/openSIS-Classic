@@ -65,7 +65,7 @@ if (UserStudentID()) {
 
             // ------------------------ Start -------------------------- //
             $res = DBQuery('SELECT * FROM student_gpa_calculated WHERE student_id=' . $student_id . ' AND marking_period_id=' . $_REQUEST['new_sms']);
-            $rows = mysql_num_rows($res);
+            $rows = $res->num_rows;
 
             if ($rows == 0) {
                 DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');

@@ -34,12 +34,10 @@ if (Prompt_Home('Confirm', 'When do you want to recalculate the daily attendance
     $extra = array();
     $students_RET = GetStuList($extra);
 //            print_r($current_RET);
-    //$begin = mktime(0, 0, 0, MonthNWSwitch($_REQUEST['month_min'], 'to_num'), $_REQUEST['day_min'] * 1, $_REQUEST['year_min']) + 43200;
-    $begin = mktime(0, 0, 0, $_REQUEST['month_min'], $_REQUEST['day_min'] * 1, $_REQUEST['year_min']) + 43200;
-    //$end = mktime(0, 0, 0, MonthNWSwitch($_REQUEST['month_max'], 'to_num'), $_REQUEST['day_max'] * 1, $_REQUEST['year_max']) + 43200;
-    $end = mktime(0, 0, 0, $_REQUEST['month_max'], $_REQUEST['day_max'] * 1, $_REQUEST['year_max']) + 43200;
+    $begin = mktime(0, 0, 0, MonthNWSwitch($_REQUEST['month_min'], 'to_num'), $_REQUEST['day_min'] * 1, $_REQUEST['year_min']) + 43200;
+    $end = mktime(0, 0, 0, MonthNWSwitch($_REQUEST['month_max'], 'to_num'), $_REQUEST['day_max'] * 1, $_REQUEST['year_max']) + 43200;
 
-    for ($i = $begin; $i <= $end; $i+=86400) {
+    for ($i = $begin; $i <= $end; $i += 86400) {
         if ($current_RET[date('d-m-Y', $i)]) {
             foreach ($students_RET as $student) {
                 UpdateAttendanceDaily($student['STUDENT_ID'], date('Y-m-d', $i));

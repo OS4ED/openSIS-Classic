@@ -40,14 +40,14 @@ if ($_REQUEST['fields']['PARENTS']) {
         $extra['students_join_address'] .= ' AND EXISTS (SELECT \'\' FROM students_join_people sjp WHERE sjp.STUDENT_ID=sa.STUDENT_ID AND LOWER(sjp.RELATIONSHIP) LIKE \'' . strtolower($_REQUEST['relation']) . '%\') ';
     }
 }
-$extra['SELECT'] .= ',ssm.NEXT_SCHOOL,ssm.CALENDAR_ID,ssm.SYEAR,s.*';
+$extra['SELECT'] .= ',ssm.NEXT_SCHOOL,ssm.CALENDAR_ID,ssm.SECTION_ID,ssm.SYEAR,s.*';
 if ($_REQUEST['fields']['FIRST_INIT'])
     $extra['SELECT'] .= ',substr(s.FIRST_NAME,1,1) AS FIRST_INIT';
 if (!$extra['functions'])
-    $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate');
+    $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSectionVal');
 if ($_REQUEST['search_modfunc'] == 'list') {
     if (!$fields_list) {
-        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'GENDER'=>'Gender','STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade','SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
         if ($extra['field_names'])
             $fields_list += $extra['field_names'];
 
@@ -153,7 +153,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
 
             foreach ($RET as $stu_key => $stu_val) {
 
-                $add_reslt = "SELECT sa.STREET_ADDRESS_1,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
+               $add_reslt = "SELECT CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2)  as ADDRESS ,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
 
                             MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STATE) AS MAIL_STATE,
 
@@ -171,7 +171,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
                
             }
         } echo "<br><br>";
-         
+
         if ($extra['array_function'] && function_exists($extra['array_function']))
             $extra['array_function']($RET);
         echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
@@ -184,7 +184,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
 else {
     if (!$fields_list) {
         if (AllowUse('students/Student.php&category_id=1'))
-            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'PHONE' => 'Phone');
+            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix','GENDER' => 'Gender', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'PHONE' => 'Phone');
         if (AllowUse('students/Student.php&category_id=3')) {
             $fields_list['Address'] = array('ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode');
         }
@@ -273,5 +273,16 @@ else {
 
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
+}
+function _makeSectionVal($value)
+{
+  if($value!='')
+  {
+  $section=DBGet(DBQuery('SELECT * FROM school_gradelevel_sections WHERE ID='.$value));
+  $section=$section[1]['NAME'];
+  }
+  else
+      $section='';
+    return $section;
 }
 ?>

@@ -113,5 +113,5 @@ else
 	$div = false;
 }
 echo '<CENTER><TABLE><TR><TD>'.SelectInput($calendar,"values[student_enrollment][$id][CALENDAR_ID]",(!$calendar||!$div?'<FONT color=red>':'').'Calendar'.(!$calendar||!$div?'</FONT>':''),$calendar_options,false,'',$div).'</TD><TD width=30></TD><TD>'.SelectInput($next_school,"values[student_enrollment][$id][NEXT_SCHOOL]",(!$next_school||!$div?'<FONT color=red>':'').'Rolling / Retention Options'.(!$next_school||!$div?'</FONT>':''),$next_school_options,false,'',$div).'</TD></TR></TABLE></CENTER>';
-
+ 
 ?>

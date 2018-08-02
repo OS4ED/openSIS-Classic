@@ -37,11 +37,13 @@ $max_allowed = Preferences('ANOMALOUS_MAX', 'Gradebook') / 100;
 if (!isset($_openSIS['allow_edit']))
     $_openSIS['allow_edit'] = true;
 
-$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\''), array(), array('TITLE'));
+$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\''), array(), array('TITLE'));
 if (count($config_RET))
-    foreach ($config_RET as $title => $value)
-        $programconfig[User('STAFF_ID')][$title] = $value[1]['VALUE'];
-else
+    foreach ($config_RET as $title => $value) {
+        $unused_var = explode('_', $value[1]['VALUE']);
+        $programconfig[User('STAFF_ID')][$title] = $unused_var[0];
+//		$programconfig[User('STAFF_ID')][$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
+    } else
     $programconfig[User('STAFF_ID')] = true;
 $course_period_id = UserCoursePeriod();
 $course_id = DBGet(DBQuery('SELECT COURSE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\''));
@@ -194,7 +196,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $sql = "UPDATE gradebook_grades SET ";
                 foreach ($columns as $column => $value) {
                     if ($column == 'COMMENT')
-                        $value = str_replace("'", "\'", $value);
+                        $value = singleQuoteReplace("", "", $value);
                     if ($value != '-1') {
                         $value = paramlib_validation($column, $value);
                     }
@@ -207,11 +209,14 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                 $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'";
             } elseif ($columns['POINTS'] != '' || $columns['COMMENT']) {
-                $columns['COMMENT'] = str_replace("'", "\'", $columns['COMMENT']);
+                $columns['COMMENT'] = singleQuoteReplace("", "", $columns['COMMENT']);
                 $sql = 'INSERT INTO gradebook_grades (STUDENT_ID,PERIOD_ID,COURSE_PERIOD_ID,ASSIGNMENT_ID,POINTS,COMMENT) values(\'' . clean_param($student_id, PARAM_INT) . '\',\'' . clean_param(UserPeriod(), PARAM_INT) . '\',\'' . clean_param($course_period_id, PARAM_INT) . '\',\'' . clean_param($assignment_id, PARAM_INT) . '\',\'' . $columns['POINTS'] . '\',\'' . clean_param($columns['COMMENT'], PARAM_NOTAGS) . '\')';
             }
             if ($sql) {
                 DBQuery($sql);
+                
+                if(isset($columns['POINTS']) && $columns['POINTS']=='')
+                DBQuery("UPDATE gradebook_grades SET points=null WHERE STUDENT_ID='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'");
 
                 DBQuery('UPDATE gradebook_assignments SET UNGRADED=2 WHERE ASSIGNMENT_ID IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NULL OR POINTS=\'\') OR ASSIGNMENT_ID NOT IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NOT NULL OR POINTS!=\'\')');
             }
@@ -242,10 +247,10 @@ $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
 if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
-    echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox-inline"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '>Include Inactive Students</label></div></div>';
+    echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label></div></div>';
 else {
     if (!$_REQUEST['student_id']) {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox-inline"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
+        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     } else {
         echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     }

@@ -134,7 +134,6 @@ function DeletePrompt_sys_maintain($title,$action='delete')
 
 
 
-
 function DeletePromptModRequest($title,$action='delete',$close='n')
 {
 	$tmp_REQUEST = $_REQUEST;
@@ -211,7 +210,7 @@ function DeleteMail($title,$action='delete',$location,$isTrash=0)
 }
 
 //TODO:Use this instead of previous
-function DeletePromptMod($title,$queryString,$action='delete')
+function DeletePromptMod($title,$queryString='',$action='delete')
 {
    $tmp_REQUEST = $_REQUEST;
 
@@ -283,7 +282,7 @@ function DeletePromptAssignment($title,$pid=0,$action='delete')
 		{
 			echo '<BR>';
 			PopTable('header',$title);
-			echo "<CENTER><h4>All the grades with respect to this assignment will be deleted. Do you still wish to delete the assignment?</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=grades/Assignments.php\"'></FORM></CENTER>";
+			echo "<CENTER><h4>All the grades with respect to this Assignment will be deleted. Do you still wish to delete the assignment?</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=grades/Assignments.php\"'></FORM></CENTER>";
 			PopTable('footer');
 			return false;
 		}
@@ -291,7 +290,7 @@ function DeletePromptAssignment($title,$pid=0,$action='delete')
 		{
 			echo '<BR>';
 			PopTable('header',$title);
-			echo "<CENTER><h4>All the grades with respect to this assignment will be deleted. Do you still wish to delete the assignment?</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=grades/Assignments.php&assignment_type_id=$pid\"'></FORM></CENTER>";
+			echo "<CENTER><h4>All the grades with respect to this Assignment will be deleted. Do you still wish to delete the assignment?</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=grades/Assignments.php&assignment_type_id=$pid\"'></FORM></CENTER>";
 			PopTable('footer');
 			return false;
 		}
@@ -471,6 +470,24 @@ function DeletePromptBigString($title='',$queryString='')
 		echo '<BR>'.$queryString;
 		PopTable('header','Confirm Delete');		
                 echo "<CENTER><h4>Are you sure you want to $action that ".(strpos($title,' ')===false? ucwords($title):$title)."?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&$queryString\");'></FORM></CENTER>";
+		PopTable('footer');
+		return false;
+	}
+	else
+		return true;
+}
+function DeletePromptFilesEncoded($title,$queryString,$action='delete')
+{
+   $tmp_REQUEST = $_REQUEST;
+
+     unset($tmp_REQUEST['delete_ok']);
+
+	$PHP_tmp_SELF = PreparePHP_SELF($tmp_REQUEST);
+	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
+	{
+		echo '<BR>';
+		PopTable('header','Confirm '.(strpos($action,' ')===false? ucwords($action):$action));
+		echo "<CENTER><h4>Are you sure you want to $action ".(strpos($title,' ')===false? ucwords(base64_decode($title)):$title)."?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&$queryString\");'></FORM></CENTER>";
 		PopTable('footer');
 		return false;
 	}

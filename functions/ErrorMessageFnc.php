@@ -74,8 +74,7 @@ function ErrorMessage($errors, $code = 'error') {
                 $return .= "<table width=\"100%\" border=\"0\">
 								<tr>
     <td align='center' class='copyright'>
-       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4Ed</a>).
-                and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL License</a>.
+       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
                 </center></td>
   </tr>
 								</table>
@@ -121,8 +120,7 @@ function ErrorMessage1($errors, $code = 'error') {
             $return .= "<table width=\"100%\" border=\"0\">
 							<tr>
 								<td align='center' class='copyright'>
-								   <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4Ed</a>).
-											and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL License</a>.
+								   <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
 											</center></td>
 							  </tr>
 							</table>

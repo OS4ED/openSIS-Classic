@@ -209,52 +209,59 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $end_time[$i] = strtotime($periods[$i]['END_TIME']);
                 }
                 if (in_array(strtoupper(str_replace(' ', '', $columns['TITLE'])), $p_title) || in_array(strtoupper(str_replace(' ', '', $columns['SHORT_NAME'])), $shortname)) {
-                    $err_msg = " Already a period is created with same title or shortname.";
+                    $err = " Already a period is created with same title or shortname.";
                     break;
-                } else {
-
-                    $sql = 'INSERT INTO school_periods ';
-                    $fields = 'SCHOOL_ID,SYEAR,';
-                    $values = '\'' . UserSchool() . '\',\'' . UserSyear() . '\',';
-                    $go = 0;
-                    if ($columns['START_TIME'] == $columns['END_TIME']) {
-                        $err_msg = " Start time and end time can not be same.";
+                } elseif ($columns['START_TIME']) {
+                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
+                    $sql_end_ex_count = DBGET(DBQuery($sql_end_ex));
+                    if (count($sql_end_ex_count) > 0) {
+                        $err = " End time of a period cannot be same with another period start time.";
                         break;
-                    }
-                    foreach ($columns as $column => $value) {
-                        if (trim($value)) {
-                            $value = trim(paramlib_validation($column, $value));
-                            $fields .= $column . ',';
-                            $values .= '\'' . str_replace("'", "''", str_replace("\'", "'", $value)) . '\',';
-                            $go = true;
+                    } else {
+
+                        $sql = 'INSERT INTO school_periods ';
+                        $fields = 'SCHOOL_ID,SYEAR,';
+                        $values = '\'' . UserSchool() . '\',\'' . UserSyear() . '\',';
+                        $go = 0;
+                        if ($columns['START_TIME'] == $columns['END_TIME']) {
+                            $err_msg = " Start time and end time can not be same.";
+                            break;
                         }
+                        foreach ($columns as $column => $value) {
+                            if (trim($value)) {
+                                $value = trim(paramlib_validation($column, $value));
+                                $fields .= $column . ',';
+                                $values .= '\'' . str_replace("'", "''", str_replace("\'", "'", $value)) . '\',';
+                                $go = true;
+                            }
+                        }
+                        $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+
+                        if ($go) {
+                            DBQuery($sql);
+                        }
+
+                        # ----------------------------- Length Calculate start --------------------- #
+
+                        $p_id = DBGet(DBQuery('SELECT max(PERIOD_ID) AS period_id FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+                        $period_id = $p_id[1]['PERIOD_ID'];
+
+                        $time_chk = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM school_periods WHERE PERIOD_ID=\'' . $period_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+                        $start_tm_chk = $time_chk[1]['START_TIME'];
+                        $end_tm_chk = $time_chk[1]['END_TIME'];
+
+                        $start_time = strtotime(date('m/d/Y') . ' ' . $start_tm_chk);
+                        $end_time = strtotime(date('m/d/Y') . ' ' . $end_tm_chk);
+                        if ($start_time > $end_time)
+                            $end_time = strtotime(date('m/d/Y') . ' ' . $end_tm_chk) + 86400;
+
+                        $length = ($end_time - $start_time) / 60;
+
+                        $sql_up = 'update school_periods set length = ' . $length . ' where period_id=\'' . $period_id . '\' and syear=\'' . UserSyear() . '\' and school_id=\'' . UserSchool() . '\'';
+                        $res_up = DBQuery($sql_up);
+
+                        # -------------------------------------------------------------------------- #
                     }
-                    $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
-
-                    if ($go) {
-                        DBQuery($sql);
-                    }
-
-                    # ----------------------------- Length Calculate start --------------------- #
-
-                    $p_id = DBGet(DBQuery('SELECT max(PERIOD_ID) AS period_id FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-                    $period_id = $p_id[1]['PERIOD_ID'];
-
-                    $time_chk = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM school_periods WHERE PERIOD_ID=\'' . $period_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-                    $start_tm_chk = $time_chk[1]['START_TIME'];
-                    $end_tm_chk = $time_chk[1]['END_TIME'];
-
-                    $start_time = strtotime(date('m/d/Y') . ' ' . $start_tm_chk);
-                    $end_time = strtotime(date('m/d/Y') . ' ' . $end_tm_chk);
-                    if ($start_time > $end_time)
-                        $end_time = strtotime(date('m/d/Y') . ' ' . $end_tm_chk) + 86400;
-
-                    $length = ($end_time - $start_time) / 60;
-
-                    $sql_up = 'update school_periods set length = ' . $length . ' where period_id=\'' . $period_id . '\' and syear=\'' . UserSyear() . '\' and school_id=\'' . UserSchool() . '\'';
-                    $res_up = DBQuery($sql_up);
-
-                    # -------------------------------------------------------------------------- #
                 }
             }
         }
@@ -326,7 +333,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         echo "<input type=hidden id=count name=count value=$maxPeriodId />";
     } else
         echo "<input type=hidden id=count name=count value=$count />";
-    echo '<hr class="no-margin"/><div class="panel-body">' . SubmitButton('Save', '', 'class="btn bg-primary btn-xs" onclick="formcheck_school_setup_periods();"') . '</div>';
+    echo '<hr class="no-margin"/><div class="panel-body">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_school_setup_periods();"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

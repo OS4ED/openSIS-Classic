@@ -32,7 +32,7 @@ if ($_REQUEST['modfunc'] == 'delete' && (User('PROFILE') == 'admin' || User('PRO
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '</FORM>';
     }
-    if (DeletePromptMod($_REQUEST['title'], '&include=FilesInc&category_id=7')) {
+    if (DeletePromptFilesEncoded($_REQUEST['title'], '&include=FilesInc&category_id=7')) {
 //        unlink($_REQUEST['file']);
         DBQuery('DELETE FROM user_file_upload WHERE ID='.$_REQUEST['del']);
         unset($_REQUEST['modfunc']);

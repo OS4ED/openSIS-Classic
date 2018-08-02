@@ -1192,6 +1192,26 @@ CREATE TABLE `staff_school_relationship` (
 --
 --
 
+
+CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `keyval` varchar(100) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE `device_info` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `device_token` longtext CHARACTER SET utf8 NOT NULL,
+  `device_id` longtext CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 ALTER TABLE attendance_calendars AUTO_INCREMENT=1;
 
 
@@ -1869,6 +1889,8 @@ CREATE TABLE IF NOT EXISTS `user_file_upload` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;
+ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;
 
 CREATE VIEW student_contacts AS
    SELECT DISTINCT sta.student_id AS student_id,st.alt_id,CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Primary' AS contact_type,

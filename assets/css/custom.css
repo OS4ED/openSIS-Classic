@@ -32,6 +32,8 @@ li.list-group-item:hover {
     cursor: default;
 }
 
+
+
 #loading-image {
     position: fixed;
     top: 54px;
@@ -43,6 +45,9 @@ li.list-group-item:hover {
     padding: 11px 15px 11px 11px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+}
+.sidebar-main .version-info {
+    color: #333333;
 }
 
 .sidebar-control {
@@ -92,7 +97,7 @@ label.radio {
     -moz-box-shadow: none;
 }
 .breadcrumb-line:not([class*="bg-"]) {
-    background-color: #0991e8;
+    background-color: #5090c1;
     color: #fff;
 }
 
@@ -160,11 +165,11 @@ label.radio {
     z-index: 10;
 }
 
-div.form-control {
+/*div.form-control {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-}
+}*/
 
 #LOx_layer {
     display: none !important;
@@ -220,5 +225,49 @@ div.form-control {
     #navbar-mobile .nav.navbar-nav .form-group .select2-container {
         padding-left: 20px !important;
         padding-right: 12px !important;
+    }
+
+    .sidebar-main {
+        position: fixed;
+        height: 100%;
+        width: 80%;
+        top: 0;
+        left: -100%;
+        transition: all 0.3s ease;
+        background: #5090C1;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    .sidebar .sidebar-content {
+        box-shadow: none;
+    }
+    .sidebar-mobile-main .sidebar-main {
+        left: 0;
+    }
+    .sidebar-main .version-info {
+        color: #fff;
+        padding: 0 0 20px 0;
+    }
+    .overflow-container {
+        width: 100%;
+        position: fixed;
+        height: 100%;
+        top: 0;
+        left: 0;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sidebar-overlay {
+        background: rgba(0,0,0,0.4);
+        position: fixed;
+        z-index: 998;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+    .sidebar-mobile-main .sidebar-overlay {
+        display: block;
     }
 }

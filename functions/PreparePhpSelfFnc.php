@@ -75,9 +75,7 @@ function PreparePHP_SELF($tmp_REQUEST='')
 		}
 	}
 	
-        $PHP_tmp_SELF = str_replace(' ','+',$PHP_tmp_SELF);
-        return $PHP_tmp_SELF;
-	
+	return str_replace(' ','+',$PHP_tmp_SELF);
 }
 
 function PreparePHP_SELF1($tmp_REQUEST='')

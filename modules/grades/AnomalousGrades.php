@@ -63,6 +63,19 @@ function _makePoints($value,$column)
 		return '<FONT class=red>Negative!</FONT>';
 	elseif($THIS_RET['TOTAL_POINTS']==0)
 		return '<FONT color=#0000ff>Extra Credit</FONT>';
-	return Percent($value/$THIS_RET['TOTAL_POINTS'],0);
+	
+        $rounding=DBGet(DBQuery('SELECT VALUE AS ROUNDING FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_'.UserCoursePeriod().'\''));
+                        $points_r=($value/$THIS_RET['TOTAL_POINTS'])*100;
+                        if(rtrim($rounding[1]['ROUNDING'],'_'.UserCoursePeriod())=='UP')
+                                $points_r = ceil($points_r);
+                        elseif(rtrim($rounding[1]['ROUNDING'],'_'.UserCoursePeriod())=='DOWN')
+                                $points_r = floor($points_r);
+                        elseif(rtrim($rounding[1]['ROUNDING'],'_'.UserCoursePeriod())=='NORMAL')
+                        {
+                                $points_r = round($points_r,0);
+}
+                        else 
+                              $points_r=round($points_r,2);
+                        return $points_r;
 }
 ?>

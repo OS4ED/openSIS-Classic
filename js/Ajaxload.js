@@ -167,6 +167,32 @@ function grab_GradeLevel(school_id)
 
     ajax_call('GrabGradeLevel.php?id=' + school_id, grab_GradeLevel_callback, grab_GradeLevel_error);
 }
+
+
+function grab_coursePeriod(id,table,column_name)
+{
+
+    ajax_call('ChooseCP.php?id=' + id+'&table_name='+table+'&column_name='+column_name, grab_coursePeriod_callback, grab_GradeLevel_error);
+}
+
+function grab_coursePeriod_callback(data)
+{ 
+var tdata=data.split('||');
+
+//if(tdata[0].trim()==1)
+//{
+    
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+//    }
+    
+//    if(tdata[0].trim()=='2')
+//{
+//   
+//    var obj = document.getElementById('course_modal');
+//    obj.innerHTML = tdata[1];
+//    }
+}
 function grab_GradeLevel_callback(data)
 {
 
@@ -175,7 +201,7 @@ function grab_GradeLevel_callback(data)
 }
 function grab_GradeLevel_error()
 {
-
+alert('Not working');
 }
 // ------------------------------------------------------ USER ---------------------------------------------------------------------------------- //
 function usercheck_init_staff(i) {
@@ -1438,18 +1464,14 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
                         go_dai = 'n';
                 }
             }
-//            if (go_dai == 'y')
-//            {
-//                var child = document.getElementById("divtables[course_periods][" + cp_id + "][HALF_DAY]").children[0];
-//                var clickEvent = new MouseEvent("click");
-//                child.dispatchEvent(clickEvent);
-//                alert('dispatch');
-//                if(document.getElementById('half_day'))
-//                {
-//                document.getElementById('half_day').disabled = true;
-//                document.getElementById('half_day').checked = false;
-//            }
-//            }
+            if (go_dai == 'y')
+            {
+                var child = document.getElementById("divtables[course_periods][" + cp_id + "][HALF_DAY]").children[0];
+                var clickEvent = new MouseEvent("click");
+                child.dispatchEvent(clickEvent);
+                document.getElementById('half_day').disabled = true;
+                document.getElementById('half_day').checked = false;
+            }
 
         }
 
@@ -1490,29 +1512,45 @@ function period_time_error()
 
 function verify_schedule(thisform)
 {
+ 
     if (thisform.checked == false)
     {
-        if (document.getElementById('selected_course_' + thisform.value))
-        {
-            document.getElementById('selected_course_' + thisform.value).checked = false;
-            var row = document.getElementById('selected_course_tr_' + thisform.value);
+        
+        // document.getElementById('selected_' + thisform.id).innerHTML='';
+//        if (document.getElementById('selected_course_' + thisform.value))
+//        {
+//            document.getElementById('selected_course_' + thisform.value).checked = false;
+            var row = document.getElementById('selected_' + thisform.id);
+            
             row.parentNode.removeChild(row);
-
-        }
+//
+//        }
     }
     ajax_call_modified('modules/scheduling/ScheduleProcess.php?cp_id=' + thisform.value + '&insert=' + thisform.checked, verify_schedule_callback, verify_schedule_error);
 }
 
 function verify_schedule_callback(data)
 {
+    if(data.indexOf("||")>0)
+    {
+    var tdata=data.split("||");
+    data=tdata[2];
+    cp_id=tdata[0].trim();
+    }
     data = data.trim();
     var stat = data.substr(0, 4);
     data = data.substr(4);
+   
     document.getElementById("calculating").style.display = 'none';
     if (stat == 'resp')
     {
+//         document.getElementById('selected_course1').innerHTML= 'aaa';
+ document.getElementById('selected_course1').innerHTML= document.getElementById('selected_course1').innerHTML+'<tr id="selected_course_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" value='+cp_id+' ></td><td><b>'+tdata[1]+'</b></td></tr>';
         document.getElementById('conf_div').innerHTML = '';
-        document.getElementById('resp_table').innerHTML += data;
+         document.getElementById('course_' + cp_id).checked= true;
+//          document.getElementById('selected_course').innerHTML= '<tr id="selected_course_tr_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" ></td><td><b> aaaa</b></td></tr>';
+       
+ // document.getElementById('resp_table').innerHTML += data;
     }
     else if (stat == 'conf')
     {
@@ -2151,4 +2189,209 @@ function checkVersion(data)
 {
 
     alert(data);
+}
+function chooseCpModal(id,table)
+{
+
+    ajax_call('ChooseCPModal.php?id=' + id+'&table_name='+table, chooseCpModalCallback, chooseCpModalError);
+}
+
+function chooseCpModalCallback(data)
+{ 
+    var tdata=data.split('||');
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+}
+function chooseCpModalError(err)
+{ 
+    alert("Error: " + err);
+}
+
+function parentLookup(address_id)
+{
+   
+    var USERINFO_FIRST_NAME=document.getElementById('USERINFO_FIRST_NAME').value;
+   
+       var USERINFO_LAST_NAME=document.getElementById('USERINFO_LAST_NAME').value;
+        
+       var USERINFO_EMAIL=document.getElementById('USERINFO_EMAIL').value;
+      var USERINFO_MOBILE=document.getElementById('USERINFO_MOBILE').value;
+      var USERINFO_SADD=document.getElementById('USERINFO_SADD').value;
+       var USERINFO_CITY=document.getElementById('USERINFO_CITY').value;
+        var USERINFO_STATE=document.getElementById('USERINFO_STATE').value;
+        var USERINFO_ZIP=document.getElementById('USERINFO_ZIP').value;
+        var p_type=document.getElementById('p_type').value;
+  ajax_call('ParentLookup.php?USERINFO_FIRST_NAME='+USERINFO_FIRST_NAME+'&USERINFO_LAST_NAME='+USERINFO_LAST_NAME+'&USERINFO_EMAIL='+USERINFO_EMAIL+'&USERINFO_MOBILE='+USERINFO_MOBILE+'&USERINFO_SADD='+USERINFO_SADD+'&USERINFO_CITY='+USERINFO_CITY+'&USERINFO_STATE='+USERINFO_STATE+'&USERINFO_ZIP='+USERINFO_ZIP+'&address_id='+address_id+'&p_type='+p_type, parentLookupCallback, chooseCpModalError);  
+}
+function modal_parenttype(type)
+{
+     $('#modal_default_lookup').modal('show');
+     $("#p_type").val(type);
+}
+function parentLookupCallback(data)
+{ 
+  
+//    var tdata=data.split('||');
+//    var obj = document.getElementById(tdata[0].trim());
+//    obj.innerHTML = tdata[1];
+    
+document.getElementById("parent_res").innerHTML=data;
+}
+
+function SelectedParent(address_id,type)
+{
+   var selected_staff=document.querySelector('input[name="staff"]:checked').value;
+     //ajax_call('modules/students/.php?id=' + id+'&table_name='+table, SelectedParentCallback, chooseCpModalError);
+     
+     
+     $("#modal_default_lookup").hide();
+    window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type='+type+'&nfunc=status&ajax=true&button=Select&add_id=&address_id='+address_id+'&staff='+selected_staff ;
+
+
+}
+function cpActionModal(title,subject_id,course_id,course_period_id)
+{
+     ajax_call('CpSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, cpActionModalCallback);  
+}
+
+function cpActionModalCallback(data)
+{
+    document.getElementById('course_div').innerHTML =data;   
+    $('#modal_default').modal('hide');
+    $('.modal-backdrop').remove();
+}
+
+function chooseCpModalSearch(id,table)
+{
+    ajax_call('ChooseCpSearch.php?id=' + id+'&table_name='+table, chooseCpModalSearchCallback, chooseCpModalSearchError);
+}
+
+function chooseCpModalSearchCallback(data)
+{ 
+    var tdata=data.split('||');
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+}
+function chooseCpModalSearchError(err)
+{ 
+    alert("Error: " + err);
+}
+
+function chooseCpModalSearchRequest(id,table)
+{
+    ajax_call('ChooseRequestSearch.php?id=' + id+'&table_name='+table, chooseCpModalSearchRequestCallback, chooseCpModalSearchRequestError);
+}
+
+function chooseCpModalSearchRequestCallback(data)
+{ 
+   
+    var tdata=data.split('||');
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+}
+function chooseCpModalSearchRequestError(err)
+{ 
+    alert("Error: " + err);
+}
+
+function MassDropModal(id,table)
+{
+    ajax_call('MassDropModal.php?id=' + id+'&table_name='+table, MassDropModalCallback, MassDropModalError);
+}
+
+function MassDropModalCallback(data)
+{ 
+    var tdata=data.split('||');
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+}
+function MassDropModalError(err)
+{ 
+    alert("Error: " + err);
+}
+
+function MassDropSessionSet(title,subject_id,course_id,course_period_id)
+{
+     ajax_call('MassDropSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, MassDropSessionSetCallback);  
+}
+
+function MassDropSessionSetCallback(data)
+{
+    document.getElementById('course_div').innerHTML =data;   
+    $('#modal_default').modal('hide');
+    $('.modal-backdrop').remove();
+}
+
+function CalendarModal(event_id,cal_id,date,year,month,tochar)
+{
+    
+     $('#modal_default_calendar').modal('show');
+    ajax_call('CalendarModal.php?event_id='+event_id+'&calendar_id='+cal_id+'&school_date='+date+'&month='+month+'&year='+year+'&tochar=tochar',CalendarModalCallback, chooseCpModalError);  
+
+}
+
+
+function CalendarModalCallback(data)
+{ 
+  
+//    var tdata=data.split('||');
+//    var obj = document.getElementById(tdata[0].trim());
+//    obj.innerHTML = tdata[1];
+    
+document.getElementById("modal-res").innerHTML=data;
+}
+
+
+function CalendarModalAssignment(assignment_id)
+{
+    
+    $('#modal_default_calendar').modal('show');
+     ajax_call('CalendarModal.php?assignment_id='+assignment_id,CalendarModalCallback, chooseCpModalError);  
+}
+
+
+function BlockModalPeriod(subject_id,course_id,course_period_id,calendar_id,date,mode,id,add1)
+{
+      $('#modal_default_block_cp').modal('show');
+       ajax_call('CoursePeriodModal.php?subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id+'&calendar_id='+calendar_id+'&meet_date='+date+'&mode='+mode+'&id='+id+'&add='+add1,CalendarModalCallback, chooseCpModalError);  
+
+    
+}
+
+function MassScheduleModal(id,table)
+{
+    ajax_call('MassScheduleModal.php?id=' + id+'&table_name='+table, MassScheduleModalCallback, MassScheduleModalError);
+}
+
+function MassScheduleModalCallback(data)
+{ 
+    var tdata=data.split('||');
+    var obj = document.getElementById(tdata[0].trim());
+    obj.innerHTML = tdata[1];
+}
+function MassScheduleModalError(err)
+{ 
+    alert("Error: " + err);
+}
+
+function MassScheduleSessionSet(title,subject_id,course_id,course_period_id)
+{
+     ajax_call('MassScheduleSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, MassScheduleSessionSetCallback);  
+}
+
+function MassScheduleSessionSetCallback(data)
+{
+    document.getElementById('course_div').innerHTML =data;   
+    $('#modal_default').modal('hide');
+    $('.modal-backdrop').remove();
+}
+
+function TransferredOutModal(modfunc, student_id, drop_code)
+{
+     ajax_call('TransferredOutModal.php?modfunc='+modfunc+'&student_id='+student_id+'&drop_code='+drop_code, TransferredOutModalCallback,MassScheduleModalError);  
+}
+
+function TransferredOutModalCallback(data){
+    $('#modal_default_transferred_out').modal('show');
+    $("#modal-res").html(data);
 }

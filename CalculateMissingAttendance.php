@@ -58,5 +58,6 @@ $RET=DBGet(DBQuery("SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SEC
      echo '<span style="display:none">NEW_MI_YES</span>';
  }
 if(count($RET))
-echo '<br/><table><tr><td width="38"><img src="assets/icon_ok.png" /></td><td valign="middle"><span style="font-size:14px;">Missing attendance data list created.</span></td></tr></table>';
+echo '<div class="alert alert-success alert-styled-left alert-arrow-left alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Missing attendance data list created.</div>';
+
 ?>

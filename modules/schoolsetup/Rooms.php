@@ -205,7 +205,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     }
     echo "<input type=hidden id=count_room value=$count_room />";
     ListOutputPeriod($rooms_RET, $columns, 'Room', 'Rooms', $link);
-    echo '<hr class="no-margin"/><div class="panel-body">' . SubmitButton('Save', '', 'class="btn bg-primary btn-xs" onclick="return formcheck_rooms();"') . '</div>';
+    echo '<hr class="no-margin"/><div class="panel-body">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="return formcheck_rooms();"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

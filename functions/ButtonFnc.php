@@ -53,7 +53,7 @@ function button($type, $text = '', $link = '', $width = '', $extra='') {
         $button .= '</TD></TR></TABLE>';
     } else {
         if ($link)
-            $button .= "<a HREF=" . $link . " class=\"btn btn-primary btn-icon btn-xs\" onclick='grabA(this); return false;' ".$extra.">";
+            $button .= "<a HREF=" . $link . " class=\"btn btn-primary btn-icon btn-xs \" onclick='grabA(this); return false;' ".$width." ".$extra.">";
             $button .= $button_icons[$type];
         if ($link)
             $button .= '</a>';

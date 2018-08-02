@@ -71,37 +71,65 @@ if(page && page!="index.php" ){
                 <div class="panel">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-8 text-left">
+                            <div class="col-xs-12">
                                 <div class="logo">
                                     <img src="assets/images/opensis_logo.png" alt="openSIS">
                                 </div>
                                 <?php if ($_REQUEST['mod'] != 'upgrade') { ?>
-                                    <h3>Step 1 of 5</h3>
+                                    <h3>openSIS Installation - Database Connection</h3>
                                 <?php } else { ?>
                                     <h3>Step 1 of 4</h3>
                                 <?php } ?>
                             </div>
-                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
-                                <?php
-                                if ($_SESSION['mod'] != 'upgrade') {
-                                    echo 'Installation progress';
-                                    echo '<div class="progress no-margin">';
-                                    echo '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">';
-                                    echo '</div>';
-                                    echo '</div>';
-                                } else {
-                                    echo 'Installation progress';
-                                    echo '<div class="progress no-margin">';
-                                    echo '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">';
-                                    echo '</div>';
-                                    echo '</div>';
-                                }
-                                ?>
-                            </div>
+                            <!--                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
+                            <?php
+//                                if ($_SESSION['mod'] != 'upgrade') {
+//                                    echo 'Installation progress';
+//                                    echo '<div class="progress no-margin">';
+//                                    echo '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">';
+//                                    echo '</div>';
+//                                    echo '</div>';
+//                                } else {
+//                                    echo 'Installation progress';
+//                                    echo '<div class="progress no-margin">';
+//                                    echo '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">';
+//                                    echo '</div>';
+//                                    echo '</div>';
+//                                }
+                            ?>
+                                                        </div>-->
                         </div>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
+                            <div class="installation-instructions">
+                                <ul class="installation-steps-label">
+                                    <li>Choose Package</li>
+                                    <li>System Requirements</li>
+                                    <li class="active">Database Connection</li>
+                                    <li>Database Creation</li>
+                                    <li>School Information</li>
+                                    <li>Site Admin Account Setup</li>
+                                    <li>Ready to go!</li>
+                                </ul>
+                                <?php
+//                                if ($_REQUEST['mod'] == 'upgrade') {
+//                                    echo '<h4 class = "no-margin">You have chosen upgrade</h4>';
+//                                    $_SESSION['mod'] = 'upgrade';
+//                                } else {
+//                                    echo '<h4 class = "no-margin">Beginning new openSIS installation</h4>';
+//                                }
+//
+//                                if ($ver_comp == 'true') {
+//                                    echo '<p class="text-success"><i class="fa fa-check-circle"></i> Your php version is ' . $version . '. You can install this system</p>';
+//                                    echo '<p>Provide MySQL server connection information. </p>';
+//                                    echo '<p>You must also have the MySQL administrative username and password to continue.</p>';
+//                                } else {
+//                                    echo '<p class="text-danger"><i class="fa fa-exclamation-circle"></i> Your php version is ' . $version . '. But your system must have php version ' . $version_allow . ' to install this system</p>';
+//                                }
+                                ?>
+
+                            </div>
                             <div class="installation-steps">
                                 <?php
                                 error_reporting(0);
@@ -169,45 +197,45 @@ if(page && page!="index.php" ){
                                 // hide Connection information fields
                                     echo '<div id="divConnInfo" style="display:none;">';
                                 ?>
-                                <form name='step1' class="form-horizontal" id='step1' method="post" <?php if ($ver_comp == 'true') { ?>action="Ins1.php<?php
+                                <form name='step1' id='step1' method="post" <?php if ($ver_comp == 'true') { ?>action="Ins1.php<?php
                                     echo ($_REQUEST['mod'] == 'upgrade') ? '?mod=upgrade' :
                                             '';
                                 }
                                 ?> ">
 
-
+                                    <h4 class="m-t-0 m-b-25">Please Enter MySQL Connection Information</h4>
                                     <div class="row">
-                                        <div class="col-xs-8 col-xs-offset-2">
-                                            <h5>Please Enter MySQL Connection Information</h5>
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label col-sm-4">Server</label>
-                                                <div class="col-sm-8
-                                                     ">
-                                                    <input type="text" name="server" size="20" value="localhost" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-sm-4">Port</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" name="port" size="20" value="3306" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-sm-4">Admin Username</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" name="addusername" size="20" value="root" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-sm-4">Admin Password</label>
-                                                <div class="col-sm-8">
-                                                    <input type="password" name="addpassword" size="20" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group text-center">
-                                                <input type="submit" value="Save & Next" class="btn btn-primary" name="DB_Conn" />
+                                                <label class="control-label">Server</label>
+                                                <input type="text" name="server" size="20" value="localhost" class="form-control" />
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Port</label>
+                                                <input type="text" name="port" size="20" value="3306" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Admin Username</label>
+                                                <input type="text" name="addusername" size="20" value="root" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Admin Password</label>
+                                                <input type="password" name="addpassword" size="20" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr/>
+                                    <div class="text-right">
+                                        <input type="submit" value="Save & Next" class="btn btn-success" name="DB_Conn" />
                                     </div>
 
                                     <script
@@ -226,30 +254,12 @@ if(page && page!="index.php" ){
                                 </form>
                                 <?php echo ($fh1 && $fh2 && fh3) ? '</div>' : '</div>'; ?>
                             </div>
-                            <div class="installation-instructions">
-                                <?php
-                                if ($_REQUEST['mod'] == 'upgrade') {
-                                    echo '<h4 class = "no-margin">You have chosen upgrade</h4>';
-                                    $_SESSION['mod'] = 'upgrade';
-                                } else {
-                                    echo '<h4 class = "no-margin">Beginning new openSIS installation</h4>';
-                                }
 
-                                if ($ver_comp == 'true') {
-                                    echo '<p class="text-success"><i class="fa fa-check-circle"></i> Your php version is ' . $version . '. You can install this system</p>';
-                                    echo '<p>Provide MySQL server connection information. </p>';
-                                    echo '<p>You must also have the MySQL administrative username and password to continue.</p>';
-                                } else {
-                                    echo '<p class="text-danger"><i class="fa fa-exclamation-circle"></i> Your php version is ' . $version . '. But your system must have php version ' . $version_allow . ' to install this system</p>';
-                                }
-                                ?>
-
-                            </div>
                         </div>
                     </div>
                 </div>
                 <footer>
-                    Copyright © Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                    Copyright © Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>).
                 </footer>
             </div>
         </section>

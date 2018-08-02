@@ -34,16 +34,16 @@ function _makeTextInputSchl($column, $name, $size, $request = 'values') {
     if ($_REQUEST['id'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
-        //$req = $field['REQUIRED']=='Y' ? array('<FONT color=red>','</FONT>') : array('','');
+        $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
     } else {
         $div = true;
-        //$req = $field['REQUIRED']=='Y' && $value[$column]=='' ? array('<FONT color=red>','</FONT>') : array('','');
+        $req = $field['REQUIRED'] == 'Y' && $value[$column] == '' ? array('<FONT color=red>', '</FONT>') : array('', '');
     }
 
     if ($field['TYPE'] == 'numeric')
         $value[$column] = str_replace('.00', '', $value[$column]);
 
-    return TextInput($value[$column], $request . '[' . $column . ']', $name, $size, $div);
+    return TextInput($value[$column], $request . '[' . $column . ']', (($name!='')?$req[0] . $name . $req[1]:'') , $size, $div);
 }
 
 function _makeDateInputSchl($column, $name, $request = 'values') {

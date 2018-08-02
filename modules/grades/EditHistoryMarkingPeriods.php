@@ -84,7 +84,7 @@ if (!$_REQUEST['modfunc']) {
     echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
     DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary"'));
     echo '<hr class="no-margin"/>';
-    
+
     $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY POST_END_DATE';
 
     $functions = array('MP_TYPE' => 'makeSelectInput',
@@ -108,11 +108,11 @@ if (!$_REQUEST['modfunc']) {
     $link['remove']['variables'] = array('id' => 'MARKING_PERIOD_ID');
     $link['add']['html']['remove'] = button('add');
     $LO_ret = DBGet(DBQuery($sql), $functions);
-    
+
     echo '<div class="panel-body no-padding">';
     ListOutput($LO_ret, $LO_columns, 'History Marking Period', 'History Marking Periods', $link, array(), array('count' => true, 'download' => false, 'search' => false));
     echo '</div>';
-    echo '<div class="panel-body">'.SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+    echo '<div class="panel-body">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
     echo '</FORM>';
 }
 

@@ -12,13 +12,12 @@
 
 // Allow CSS transitions when page is loaded
 $(window).on('load', function () {
-
-
     $('body').removeClass('no-transitions');
 });
 
 
-$(function () {
+$(function () {    
+    
 
     // Disable CSS transitions on page load
     $('body').addClass('no-transitions');
@@ -54,8 +53,8 @@ $(function () {
          var total_height = sidebar_height + page_header_height + nav_height;
          $('.content-wrapper, .page-container').css({'min-height':total_height});*/
 
-        var winHeight = $(window).height() + 100;
-        $('.content-wrapper, .page-container').css({'min-height': winHeight});
+        //var winHeight = $(window).height() + 100;
+        //$('.content-wrapper, .page-container').css({'min-height': winHeight});
     }
 
     // Initialize

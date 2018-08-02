@@ -49,4 +49,19 @@ function DrawLogo()
 
 	return $image;
 }
+function DrawLogoParam($param='')
+{	                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\''.($param==''?UserSchool():$param).'\' AND program=\'SchoolLogo\''));    
+                        if($logo_ret && file_exists($logo_ret[1]['VALUE'])){
+                            $logo=$logo_ret[1]['VALUE'];
+                            $size = getimagesize($logo);
+                            $width=$size[0];
+                            $height=$size[1];
+                            $image='<img src="'.$logo.'" '.($width>100 && $height>100?($width>$height?($height>100 || $width>100?' width=100':''):($height>100 || $width>100?' height=100':'')):'').' alt="Logo" />';
+                        }
+                         else {
+                             $image= '<img src="assets/logo.png" alt="Logo" />';
+                        }
+
+	return $image;
+}
 ?>

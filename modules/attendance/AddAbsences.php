@@ -68,35 +68,36 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
                 $all_mp = GetAllMP(GetMPTable(GetMP($current_mp, 'TABLE')), $current_mp);
 
-                
+
                 $course_periods_RET = DBGet(DBQuery('SELECT s.COURSE_PERIOD_ID,cpv.PERIOD_ID,cpv.id as cpv_id FROM schedule s,course_periods cp,course_period_var cpv,attendance_calendar ac,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND ac.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.CALENDAR_ID=cp.CALENDAR_ID AND (ac.BLOCK=sp.BLOCK OR sp.BLOCK IS NULL) AND s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND s.STUDENT_ID=' . $student_id . ' AND cpv.PERIOD_ID IN ' . $periods_list . ' AND cpv.DOES_ATTENDANCE=\'Y\' AND (ac.SCHOOL_DATE BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND ac.SCHOOL_DATE>=s.START_DATE)) AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(ac.SCHOOL_DATE)  FOR 1) IN cpv.DAYS)>0 AND (cp.MARKING_PERIOD_ID IN (' . $all_mp . ') OR cp.MARKING_PERIOD_ID IS NULL) AND (s.MARKING_PERIOD_ID IN (' . $all_mp . ') OR s.MARKING_PERIOD_ID IS NULL) AND NOT (cp.HALF_DAY=\'Y\' AND (SELECT STATE_CODE FROM attendance_codes WHERE ID=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\')=\'H\')'), array());
-                 
-                
+
+
                 $c = 0;
                 foreach ($course_periods_RET as $course_periods_RET) {
 //                                    	
-                foreach ($_REQUEST['period'] as $period_id => $yes) {
+                    foreach ($_REQUEST['period'] as $period_id => $yes) {
                         $course_period_id = $course_periods_RET['COURSE_PERIOD_ID'];
 //                               
                         $cp_arr[$course_periods_RET['CPV_ID']] = $course_period_id;
                         if (!$current_RET[$student_id][$date][$period_id][$course_period_id]) {
 
-                        if ($course_period_id) {
-                            $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',\'Y\')';
+                            if ($course_period_id) {
+                                $att_dup = DBQuery('delete from attendance_period where student_id=' . $student_id . ' and school_date=' . $date . ' and period_id=' . $period_id . '');
+                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',\'Y\')';
 
+                                DBQuery($sql);
+                                $taken_arr[$student_id] = $student_id;
+                            } else {
+                                $not_taken_arr[$student_id] = $student_id;
+                            }
+                        } else {
+
+                            $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',ADMIN=\'Y\'
+								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';
                             DBQuery($sql);
                             $taken_arr[$student_id] = $student_id;
-                        } else {
-                            $not_taken_arr[$student_id] = $student_id;
                         }
-                    } else {
-
-                        $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',ADMIN=\'Y\'
-								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';
-                        DBQuery($sql);
-                        $taken_arr[$student_id] = $student_id;
                     }
-                }
                     $c++;
                 }
 
@@ -109,24 +110,24 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
         foreach ($cp_arr as $cpv_id => $cp_id) {
             $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE course_period_id=' . $cp_id . ' AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST[year] . '\''), array(), array('SCHOOL_DATE', 'PERIOD_ID'));
-        foreach ($_REQUEST['dates'] as $date => $yes) {
+            foreach ($_REQUEST['dates'] as $date => $yes) {
 
                 $course_periods_RET = DBGet(DBQuery('SELECT s.COURSE_PERIOD_ID,cpv.PERIOD_ID,cp.TEACHER_ID FROM schedule s,course_periods cp,course_period_var cpv,attendance_calendar ac,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND ac.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.CALENDAR_ID=cp.CALENDAR_ID AND (ac.BLOCK=sp.BLOCK OR sp.BLOCK IS NULL) AND s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=' . $cp_id . ' AND cpv.DOES_ATTENDANCE=\'Y\' AND (ac.SCHOOL_DATE BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND ac.SCHOOL_DATE>=s.START_DATE)) AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(ac.SCHOOL_DATE)  FOR 1) IN cpv.DAYS)>0 AND cp.MARKING_PERIOD_ID IN (' . $all_mp . ') AND s.MARKING_PERIOD_ID IN (' . $all_mp . ') AND NOT (cp.HALF_DAY=\'Y\' AND (SELECT STATE_CODE FROM attendance_codes WHERE ID=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\')=\'H\')'), array(), array('PERIOD_ID'));
 
-            foreach ($_REQUEST['period'] as $period_id => $yes) {
+                foreach ($_REQUEST['period'] as $period_id => $yes) {
 
-                $attn_taken = count($current_RET[$date][$period_id]);
-                $attn_possible = count($course_periods_RET[$period_id]);
+                    $attn_taken = count($current_RET[$date][$period_id]);
+                    $attn_possible = count($course_periods_RET[$period_id]);
 
-                if ($attn_possible == $attn_taken) {
-                    if ($attn_possible > 0) {
-                        $RET = DBGet(DBQuery('SELECT \'' . 'completed' . '\' AS COMPLETED FROM attendance_completed WHERE STAFF_ID=\'' . $course_periods_RET[$period_id][1]['TEACHER_ID'] . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\''));
-                        if (!count($RET))
+                    if ($attn_possible == $attn_taken) {
+                        if ($attn_possible > 0) {
+                            $RET = DBGet(DBQuery('SELECT \'' . 'completed' . '\' AS COMPLETED FROM attendance_completed WHERE STAFF_ID=\'' . $course_periods_RET[$period_id][1]['TEACHER_ID'] . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\''));
+                            if (!count($RET))
                                 DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID) values(\'' . $course_periods_RET[$period_id][1]['TEACHER_ID'] . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $cp_id . '\',\'' . $cpv_id . '\')');
+                        }
                     }
                 }
             }
-        }
         }
         //---------------------------------------------------------------
         unset($_REQUEST['modfunc']);
@@ -139,7 +140,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
             $error_note = '&nbsp;Unable to add absence records for <br/>';
             foreach ($array_diff as $st_id) {
                 $get_stu_names = DBGet(DBQuery('SELECT CONCAT(LAST_NAME,\', \',FIRST_NAME) AS FULL_NAME FROM students WHERE STUDENT_ID=' . $st_id));
-                $error_note.=$get_stu_names[1]['FULL_NAME'] . '<br/>';
+                $error_note .= $get_stu_names[1]['FULL_NAME'] . '<br/>';
             }
         }
         if (count($array_diff) > 0 && count($taken_arr) > 0) {
@@ -147,7 +148,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
             $error_note = '&nbsp;Unable to add absence records for <br/>';
             foreach ($array_diff as $st_id) {
                 $get_stu_names = DBGet(DBQuery('SELECT CONCAT(LAST_NAME,\', \',FIRST_NAME) AS FULL_NAME FROM students WHERE STUDENT_ID=' . $st_id));
-                $error_note.=$get_stu_names[1]['FULL_NAME'] . '<br/>';
+                $error_note .= $get_stu_names[1]['FULL_NAME'] . '<br/>';
             }
         }
     } else {
@@ -284,6 +285,42 @@ if (!$_REQUEST['modfunc']) {
 
     if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
         echo SubmitButton(Save, '', 'class="btn btn-primary" onclick="formload_ajax(\'addAbsences\');"') . "</FORM>";
+    
+echo '<div id="modal_default" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h5 class="modal-title">Choose course</h5>
+</div>
+
+<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+echo'<table id="resp_table"><tr><td valign="top">';
+echo '<div>';
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+if(count($subjects_RET)>0)
+{
+echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+foreach($subjects_RET as $val)
+{
+echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+}
+echo '</table>';
+}
+echo '</div></td>';
+echo '<td valign="top"><div id="course_modal"></div></td>';
+echo '<td valign="top"><div id="cp_modal"></div></td>';
+echo '</tr></table>';
+//         echo '<div id="coursem"><div id="cpem"></div></div>';
+echo' </div>
+</div>
+</div>
+</div>';
 }
 
 function _makeChooseCheckbox($value, $title) {

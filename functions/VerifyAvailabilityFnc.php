@@ -28,9 +28,19 @@
 //================course varification=============================
 function VerifyFixedSchedule($columns,$columns_var,$update=false)
 {
-    $teacher=$columns['TEACHER_ID'];
-    $secteacher=$columns['SECONDARY_TEACHER_ID'];
+   
+    $qr_teachers=  DBGet(DBQuery('select TEACHER_ID,SECONDARY_TEACHER_ID from course_periods where course_period_id=\''.$_REQUEST['course_period_id'].'\''));
+    $teacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']:$qr_teachers[1]['TEACHER_ID']);
+    $secteacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']:$qr_teachers[1]['SECONDARY_TEACHER_ID']);
+//    $secteacher=$qr_teachers[1]['SECONDARY_TEACHER_ID'];
+    
+    if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
      $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    elseif($secteacher!='')
+        $all_teacher=($secteacher!=''?$secteacher:'');
+    else
+        $all_teacher=$teacher;
+//    $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
     $mp_id=$columns['MARKING_PERIOD_ID'];
     $start_date=$columns['BEGIN_DATE'];
     $end_date=$columns['END_DATE'];
@@ -90,7 +100,7 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     else
     {
         $room_RET=  DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.course_period_id=cpv.course_period_id{$mp_append_sql}{$period_append_sql}{$days_room_append_sql}{$cp_id}"));
-        if($room_RET)
+        if($room_RET && $_REQUEST['tables']['course_period_var'][$_REQUEST['course_period_id']]['ROOM_ID']!='')
         {
             return 'Room Not Available';
         }
@@ -100,9 +110,27 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
 
 function VerifyVariableSchedule($columns)
 {
-    $teacher=$columns['TEACHER_ID'];
-    $secteacher=$columns['SECONDARY_TEACHER_ID'];
+//    $teacher=$columns['TEACHER_ID'];
+//    $secteacher=$columns['SECONDARY_TEACHER_ID'];
+//     if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
+//     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+//    else
+//        $all_teacher=($secteacher!=''?$secteacher:'');
+    
+    
+    $teacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']:$columns['TEACHER_ID']);
+    $secteacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']:$columns['SECONDARY_TEACHER_ID']);
+    //    $secteacher=$qr_teachers[1]['SECONDARY_TEACHER_ID'];
+
+    if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    elseif($secteacher!='')
+       $all_teacher=($secteacher!=''?$secteacher:'');
+    else
+       $all_teacher=$teacher;
+    
+    
+//    $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
     $mp_id=$columns['MARKING_PERIOD_ID'];
     $start_date=$columns['BEGIN_DATE'];
     $end_date=$columns['END_DATE'];
@@ -166,9 +194,32 @@ function VerifyVariableSchedule($columns)
 
 function VerifyVariableSchedule_Update($columns)
 {
-    $teacher=$columns['TEACHER_ID'];
-    $secteacher=$columns['SECONDARY_TEACHER_ID'];
+
+
+//    $teacher=$columns['TEACHER_ID'];
+//    $secteacher=$columns['SECONDARY_TEACHER_ID'];
+//     if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
+//     {
+//     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+//     }
+//    else
+//        //$all_teacher=($secteacher!=''?$secteacher:'');
+//    $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    
+    
+    
+    $teacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']:$columns['TEACHER_ID']);
+    $secteacher=($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']!=''?$_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SECONDARY_TEACHER_ID']:$columns['SECONDARY_TEACHER_ID']);
+    //    $secteacher=$qr_teachers[1]['SECONDARY_TEACHER_ID'];
+
+    if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    elseif($secteacher!='')
+       $all_teacher=($secteacher!=''?$secteacher:'');
+    else
+       $all_teacher=$teacher;
+    
+    
     $mp_id=$columns['MARKING_PERIOD_ID'];
     $start_date=$columns['BEGIN_DATE'];
     $end_date=$columns['END_DATE'];
@@ -266,11 +317,27 @@ function VerifyVariableSchedule_Update($columns)
 }
 function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
 {
+    if($course_period_id!='new')
+    {
     $cp_det_RET=  DBGet(DBQuery("SELECT * FROM course_periods WHERE course_period_id=$course_period_id"));
+
         $cp_det_RET=$cp_det_RET[1];
         $teacher=$cp_det_RET['TEACHER_ID'];
         $secteacher=$cp_det_RET['SECONDARY_TEACHER_ID'];
-        $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+         $all_teacher=$teacher.($secteacher!=''?$secteacher:'');
+    }
+ else {
+        
+              if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
+     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    else
+        $all_teacher=($secteacher!=''?$secteacher:'');
+    
+     
+    }
+
+
+//        $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
         $mp_id=$cp_det_RET['MARKING_PERIOD_ID'];
         $start_date=$cp_det_RET['BEGIN_DATE'];
         $end_date=$cp_det_RET['END_DATE'];
@@ -327,7 +394,11 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
         $cp_dates=DBGet(DBQuery("SELECT COURSE_PERIOD_DATE,START_TIME,END_TIME,ROOM_ID FROM course_period_var WHERE COURSE_PERIOD_ID='$course_period_id'"));
         $teacher=$columns['TEACHER_ID'];
         $secteacher=$columns['SECONDARY_TEACHER_ID'];
-        $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+         if($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TEACHER_ID']!='')
+     $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
+    else
+        $all_teacher=($secteacher!=''?$secteacher:'');
+//        $all_teacher=$teacher.($secteacher!=''?','.$secteacher:'');
         $start_date=$columns['BEGIN_DATE'];
         if($columns['MARKING_PERIOD_ID'])
             $mp_id=$columns['MARKING_PERIOD_ID'];
