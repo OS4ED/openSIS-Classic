@@ -57,9 +57,9 @@ $(function() {
 	        horizrailenabled: false,
 	        preservenativescrolling: false,
 	        railpadding: {
-                    right: 0.5,
-                    top: 1.5,
-                    bottom: 1.5
+	        	right: 0.5,
+	        	top: 1.5,
+	        	bottom: 1.5
 	        }
 	    });
 	}
@@ -81,16 +81,16 @@ $(function() {
 
 	// Resize detached sidebar vertically when bottom reached
     function resizeDetached() {
-        $(window).on('scroll', function() {
-            if ($(window).scrollTop() > $(document).height() - $(window).height() - 70) {
-              $('.sidebar-fixed').addClass('fixed-sidebar-space');
-              resizeScroll();
-            }
-            else {
-              $('.sidebar-fixed').removeClass('fixed-sidebar-space');
-              resizeScroll();
-            }
-        });
+		$(window).on('scroll', function() {
+		  if ($(window).scrollTop() > $(document).height() - $(window).height() - 70) {
+		    $('.sidebar-fixed').addClass('fixed-sidebar-space');
+		    resizeScroll();
+		  }
+		  else {
+		    $('.sidebar-fixed').removeClass('fixed-sidebar-space');
+		    resizeScroll();
+		  }
+		});
     }
 
 
@@ -99,9 +99,9 @@ $(function() {
 
     // Init nicescroll when sidebar affixed
 	$('.sidebar-fixed').on('affix.bs.affix', function() {
-            initScroll();
-            resizeDetached();
-            miniSidebar();
+		initScroll();
+		resizeDetached();
+		miniSidebar();
 	});
 
     // Init mini sidebar functionality for main sidebar
@@ -111,28 +111,17 @@ $(function() {
 
     // When effixed top, remove scrollbar and its data
     $('.sidebar-fixed').on('affix-top.bs.affix', function() {
-	removeScroll();
+		removeScroll();
 
         $(".sidebar-fixed .sidebar-content").removeAttr('style').removeAttr('tabindex');
     });
-    
 
-    if($('#content').height() < ($(window).height() - $('.page-header').height())){
-        // Remove nicescroll on mobiles
-        removeScroll();
-
-        // Remove affix on mobile
-        $(window).off('.affix');
-        $('.sidebar-fixed').removeData('affix').removeClass('affix affix-top affix-bottom');
-    }else{
-        //alert($(window).height() - $('.page-header').height());
 	// Attach BS affix component to the sidebar
 	$('.sidebar-fixed').affix({
 		offset: {
 			top: $('.sidebar-fixed').offset().top - 20 // top offset - computed line height
 		}
 	});
-    }
 
 
     // Remove affix and scrollbar on mobile

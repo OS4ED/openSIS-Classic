@@ -211,7 +211,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                         foreach ($RET as $stu_key => $stu_val) {
 
-                            $add_reslt = "SELECT sa.STREET_ADDRESS_1,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
+                            $add_reslt = "SELECT sa.STREET_ADDRESS_1 AS ADDRESS,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
 
                                         MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL'),sa.STATE) AS MAIL_STATE,
 
@@ -284,7 +284,7 @@ if (!$_REQUEST['modfunc']) {
         PopTable('header', 'Search');
 
         $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(Trim(s.LAST_NAME),\', \',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND FIND_IN_SET(\'' . UserSchool() . '\', ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
-        
+
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Teacher</label><div class="col-lg-8">';
@@ -329,41 +329,51 @@ if (!$_REQUEST['modfunc']) {
     }
 }
 
-    echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+/*
+ * Modal Start
+ */
+$modal_flag=1;
+if($_REQUEST['modname']=='scheduling/PrintClassLists.php' && $_REQUEST['modfunc']=='save')
+$modal_flag=0;
+if($modal_flag==1)
+{
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>'; //.modal-header
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
+    echo '</tbody>';
     echo '</table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+}
 
 function mySearch($extra) {
 
@@ -405,7 +415,7 @@ function mySearch($extra) {
     $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
 
     if ($stu_schedule_qr[1]['TOT'] > 0) {
-        echo '<div class="alert bg-success alert-styled-left">'.($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.").'</div>';
+        echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.") . '</div>';
     } else {
         echo '<div class="alert bg-danger alert-styled-left">No student found.</div>';
     }
@@ -415,7 +425,7 @@ function mySearch($extra) {
     echo '<INPUT type=hidden name=relation>';
 
     echo '<div class="panel panel-default">';
-    ListOutput($course_periods_RET, $LO_columns, 'Course Period', 'Course Periods');
+    ListOutput($course_periods_RET, $LO_columns, 'Course Period', 'Course Periods', array(), array(), array('save' => true, 'count' => false, 'search' => true));
     echo '</div>';
 
     if (count($course_periods_RET) != 0)

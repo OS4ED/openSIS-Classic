@@ -303,7 +303,8 @@ else {
         $columns = $LO_columns;
 
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
-
+        echo "<FORM name=search class=form-horizontal id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        echo '<input type=hidden name=filter_form value=Y />';
         echo '<div class="panel">';
         echo '<div class="panel-heading p-0 clearfix">';
         echo '<div class="pull-left"><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a>Filter Student</a></li></ul></div>';
@@ -322,24 +323,94 @@ else {
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrade\');">Grade</th>';
         echo '</tr>';
         echo '<tr>';
-        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" /></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleGrade\');" id="toggleGrade">Any</div><div style="display:none;" id="toggleGrade_element" class="hide-element"><input type="text" class="form-control p-t-0 p-b-0 input-xs" placeholder="Grade" /></div></td>';
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['last']!='')
+        echo '<td><div  id="toggleLastName_element"><input type="text" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" value="'.$_REQUEST['last'].'"/></div></td>';
+        else
+        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['first']!='')
+        echo '<td><div id="toggleFirstName_element"><input type="text" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" value="'.$_REQUEST['first'].'"/></div></td>';
+        else
+        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
+        
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['stuid']!='')
+        echo '<td><div id="toggleStudentId_element"><input type="text" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" value="'.$_REQUEST['stuid'].'"/></div></td>';
+        else
+        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" /></div></td>';
+       
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['altid']!='')
+        echo '<td><div id="toggleAltId_element"><input type="text" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" value="'.$_REQUEST['altid'].'"/></div></td>';
+        else
+        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
+        
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['addr']!='')
+        echo '<td><div id="toggleAddress_element" class="hide-element"><input type="text" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" value="'.$_REQUEST['addr'].'"/></div></td>';    
+        else
+        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
+       
+        
+        $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['grade']!='')
+        {
+        echo '<td><div id="toggleGrade_element"><select name=grade class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        foreach ($list as $value)
+        echo '<option value="'. $value['TITLE'].'" '.($value['TITLE']==$_REQUEST['grade']?'selected':'').'>'.$value['TITLE'].'</option>';
+        echo '</select></div></td>';
+        echo '</tr>';  
+        }
+        else
+        {
+        echo '<td><div onclick="divToggle(\'#toggleGrade\');" id="toggleGrade">Any</div><div style="display:none;" id="toggleGrade_element" class="hide-element"><select name=grade class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        foreach ($list as $value)
+        echo '<option value="'. $value['TITLE'].'">'.$value['TITLE'].'</option>';
+        echo '</select></div></td>';
         echo '</tr>';
+        }
         echo '<tr>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllSchool\');">Search All Schools</a></th>';
         echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
         echo '</tr>';
+        
+        
+        $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM school_gradelevel_sections WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
         echo '<tr>';
-        echo '<td><div onclick="divToggle(\'#toggleSection\');" id="toggleSection">Any</div><div style="display:none;" id="toggleSection_element" class="hide-element"><select class="form-control p-t-0 p-b-0 input-xs"><option>-- Select --</option><option>A</option><option>B</option></select></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
-        echo '<td><div onclick="divToggle(\'#toggleSearchAllSchool\');" id="toggleSearchAllSchool">No</div><div style="display:none;" id="toggleSearchAllSchool_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
-        echo '<td colspan="3"><div onclick="divToggle(\'#toggleIncludeInactive\');" id="toggleIncludeInactive">No</div><div style="display:none;" id="toggleIncludeInactive_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" /></label></div></div></td>';
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['section']!='')
+        {
+        echo '<td><div id="toggleSection_element">';
+        echo '<select name=section class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        foreach ($list as $value)
+        echo '<option value="'.$value['ID'].'" '.($value['ID']==$_REQUEST['section']?'selected':'').'>'.$value['NAME'].'</option>';
+        echo '</select></div></td>';
+        }
+        else
+        {
+        echo '<td><div onclick="divToggle(\'#toggleSection\');" id="toggleSection">Any</div><div style="display:none;" id="toggleSection_element" class="hide-element">';
+        echo '<select name=section class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        foreach ($list as $value)
+        echo '<option value='.$value['ID'].'>'.$value['NAME'].'</option>';
+        echo '</select></div></td>';
+        }
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['address_group']!='')
+        echo '<td><div id="toggleGrpByFamily_element"><div class="checkbox m-b-0"><label><input type="checkbox" name="address_group" value="Y" checked/></label></div></div></td>';
+        else
+        echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" name="address_group" value="Y"/></label></div></div></td>';
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['_search_all_schools']!='')
+        echo '<td><div id="toggleSearchAllSchool_element"><div class="checkbox m-b-0"><label><input type="checkbox" name="_search_all_schools" value="Y" checked/></label></div></div></td>';
+        else    
+        echo '<td><div onclick="divToggle(\'#toggleSearchAllSchool\');" id="toggleSearchAllSchool">No</div><div style="display:none;" id="toggleSearchAllSchool_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" name="_search_all_schools" value="Y"/></label></div></div></td>';
+        
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['include_inactive']!='')
+        echo '<td colspan="3"><div id="toggleIncludeInactive_element"><div class="checkbox m-b-0"><label><input type="checkbox" name="include_inactive" value="Y" checked/></label></div></div></td>';
+        else
+        echo '<td colspan="3"><div onclick="divToggle(\'#toggleIncludeInactive\');" id="toggleIncludeInactive">No</div><div style="display:none;" id="toggleIncludeInactive_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" name="include_inactive" value="Y"/></label></div></div></td>';
         echo '</tr>';
         echo '</tbody>';
         echo '</table>';
@@ -347,14 +418,16 @@ else {
         echo '<div class="panel-footer">';
         echo '<div class="heading-elements p-r-15">';
         echo '<input type="submit" class="btn btn-primary m-l-15" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET"> &nbsp; <a id="addiv" href="javascript:void(0);" class="text-pink"><i class="icon-cog"></i> Advanced Search</a>';
-        echo '<form class="heading-form pull-right m-b-0" action="">';
+//        echo '<form class="heading-form pull-right m-b-0" action="">';
+        echo '<div  class="pull-right m-b-0">';
         echo '<input type="button" value="Save Filter" class="btn btn-primary display-inline-block">';
         echo '<div class="form-group no-pull m-l-10 display-inline-block"><select class="form-control form-control-bordered width-auto"><option>-- Select Filter --</option></select></div>';
-        echo '</form>';
+//        echo '</form>';
+         echo '</div>';
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer
         echo '</div>'; //.panel
-
+        echo '</form>';
         echo '<div class="panel panel-default">';
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);

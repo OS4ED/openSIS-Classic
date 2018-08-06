@@ -119,10 +119,15 @@ if (($_REQUEST['month_values'] || $_REQUEST['day_values'] || $_REQUEST['year_val
 }
 
 
-
 if ($_REQUEST['modfunc'] == 'remove' && !$_REQUEST['delete_ok']) {
+//if ($_REQUEST['modfunc'] == 'remove' ) {
 
-    $a = DeletePromptStaffCert('Certificate');
+    $a = DeletePromptStaffCert('Certificate',$_REQUEST['id']);
+//    if(DeletePromptStaffCert('Certificate'))
+//    {
+//    DBQuery("DELETE FROM staff_certification WHERE STAFF_CERTIFICATION_ID=" . $_REQUEST['certification_id']);
+//    unset($_REQUEST['modfunc']);
+//    }
 }
 if ($_REQUEST['delete_ok'] == '1') {
     DBQuery("DELETE FROM staff_certification WHERE STAFF_CERTIFICATION_ID=" . $_REQUEST['certification_id']);
@@ -171,7 +176,8 @@ if (!$_REQUEST['modfunc']) {
         'STAFF_CERTIFICATION_EXPIRY_DATE' => _makeDate('', 'STAFF_CERTIFICATION_EXPIRY_DATE', $counter_for_date + 2),
         'STAFF_CERTIFICATION_DESCRIPTION' => _makeContentInput('', 'STAFF_CERTIFICATION_DESCRIPTION'));
 
-
+    //$link['remove']['title'] = 'Remove Certificate';
+    $link['remove']['buttontype'] = 'btn-danger';
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&modfunc=remove";
     $link['remove']['variables'] = array('id' => 'ID');
 

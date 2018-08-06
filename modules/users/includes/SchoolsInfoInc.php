@@ -704,7 +704,7 @@ if (!$_REQUEST['modfunc']) {
                 $school_admin = DBGet(DBQuery($sql), $functions);
                 $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'values[SCHOOLS]\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
 
-                ListOutputStaffPrint($school_admin, $columns, 'School Record', 'School Records', array(), array(), array('search' => false));
+                ListOutputStaffPrintSchoolInfo($school_admin, $columns, 'School Record', 'School Records', array(), array(), array('search' => false));
                 
             }
         }
@@ -730,6 +730,9 @@ function CheckboxInput_No($value, $name, $title = '', $checked = '', $new = fals
         if ($new || $div == false) {
             return "<INPUT type=checkbox name=$name value=Y  $extra>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
         } else {
+            if($value=='' || $value=='N')
+            return "<DIV id='div$name' class=\"form-control\" readonly=\"readonly\"><INPUT type=checkbox name=$name " . (($value == 'Y') ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></DIV>";
+            else
             return "<DIV id='div$name' class=\"form-control\" readonly=\"readonly\"><div onclick='javascript:addHTML(\"<INPUT type=hidden name=$name value=\\\"N\\\"><INPUT type=checkbox name=$name " . (($value == 'Y') ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . ">" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . (($value != 'N') ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>";
         }
     } else

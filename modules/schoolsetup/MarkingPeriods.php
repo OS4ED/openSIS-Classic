@@ -1127,7 +1127,7 @@ if(!$_REQUEST['modfunc'])
         
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Comments</label><div class="col-md-8">' . CheckboxInput($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Comments</label><div class="col-md-8">' . CheckboxInput_comments($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
         $header .= '</div><div class="col-md-6">';
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Graded</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div("tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]","' . $_REQUEST['marking_period_id'] . '");') . '</div></div>';
         $header .= '</div>';

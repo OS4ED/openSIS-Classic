@@ -377,6 +377,7 @@ a.badge,
   -webkit-transition: background 0.15s linear, color 0.15s linear;
   -o-transition: background 0.15s linear, color 0.15s linear;
   transition: background 0.15s linear, color 0.15s linear;
+  z-index: 2;
 }
 .navigation li a:hover,
 .navigation li a:focus {
@@ -408,6 +409,7 @@ a.badge,
 .navigation li > .has-ul {
   position: relative;
   padding-right: 36px;
+  z-index: 2;
 }
 .navigation li > .has-ul:after {
   content: "\e9c7";
@@ -792,7 +794,7 @@ a.badge,
     position: absolute;
     top: 0;
     right: -260px;
-    background-color: #0670B4;
+    background-color: #35668C;
     padding: 12px 20px;
     width: 260px;
     text-align: left;
@@ -854,6 +856,7 @@ a.badge,
     border-radius: 0 0 3px 0;
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    z-index: 2;
   }
   .sidebar-xs .sidebar-main .navigation > li > ul > li > a {
     padding-left: 20px;

@@ -814,7 +814,7 @@ if (!$_REQUEST['modfunc']) {
             if ($h_addr[1]['ADDRESS_ID'] != '0') {
                 $display_address = urlencode($h_addr[1]['ADDRESS'] . ', ' . ($h_addr[1]['CITY'] ? ' ' . $h_addr[1]['CITY'] . ', ' : '') . $h_addr[1]['STATE'] . ($h_addr[1]['ZIPCODE'] ? ' ' . $h_addr[1]['ZIPCODE'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
-                echo '<A class="btn btn-danger btn-xs pull-right" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><i class="icon-location4"></i> Map it</A>';
+                echo '<A class="btn bg-primary btn-xs btn-labeled pull-right" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</A>';
             }
             echo '</h5>';
             echo '<hr/>';
@@ -1077,7 +1077,7 @@ if (!$_REQUEST['modfunc']) {
             if ($p_addr[1]['ADDRESS_ID'] != 0) {
                 $display_address = urlencode($p_addr[1]['ADDRESS'] . ', ' . ($p_addr[1]['CITY'] ? ' ' . $p_addr[1]['CITY'] . ', ' : '') . $p_addr[1]['STATE'] . ($p_addr[1]['ZIPCODE'] ? ' ' . $p_addr[1]['ZIPCODE'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
-                echo '<A class="btn btn-danger" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><i class="icon-location4"></i> Map it</A>';
+                echo '<A class="btn bg-primary btn-xs btn-labeled" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</A>';
             }
             echo '</span></div>';
             echo '</div></div></div>';
@@ -1213,7 +1213,7 @@ if (!$_REQUEST['modfunc']) {
                 $display_address = urlencode($s_addr[1]['ADDRESS'] . ', ' . ($s_addr[1]['CITY'] ? ' ' . $s_addr[1]['CITY'] . ', ' : '') . $s_addr[1]['STATE'] . ($s_addr[1]['ZIPCODE'] ? ' ' . $s_addr[1]['ZIPCODE'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
                 echo '<span class="input-group-btn">';
-                echo '<a class="btn btn-danger" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><i class="icon-location4"></i> Map it</a>';
+                echo '<a class="btn bg-primary btn-xs btn-labeled" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</a>';
                 echo '</span>';
             }
             echo '</div>'; //.input-group

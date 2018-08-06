@@ -767,7 +767,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         $uploaded_file_count = count($_FILES['f']['name']);
         for ($i = 0; $i < $uploaded_file_count; $i++) {
             
-            
+            if($_FILES['f']['name'][$i]!=''){
             
 //            $name = $_FILES['f']['name'][$i];
 //            if ($name) {
@@ -799,6 +799,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
                     $file_id= DBGet(DBQuery('SELECT MAX(ID) AS ID FROM user_file_upload WHERE FILE_INFO =\'intmsg\''));
                     if(count($file_id)>0)
                     $attachment.=$file_id[1]['ID'].',';
+        }
             
         }
 

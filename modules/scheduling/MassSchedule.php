@@ -114,8 +114,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'seatso') {
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
     if ($_SESSION['MassSchedule.php']) {
-  $month_names=array('JAN'=>'01','FEB'=>'02','MAR'=>'03','APR'=>'04','MAY'=>'05','JUN'=>'06','JUL'=>'07','AUG'=>'08','SEP'=>'09','OCT'=>'10','NOV'=>'11','DEC'=>'12');
-      $start_date = $_REQUEST['day'] . '-' . array_search($_REQUEST['month'],$month_names) . '-' . $_REQUEST['year'];
+        $month_names = array('JAN' => '01', 'FEB' => '02', 'MAR' => '03', 'APR' => '04', 'MAY' => '05', 'JUN' => '06', 'JUL' => '07', 'AUG' => '08', 'SEP' => '09', 'OCT' => '10', 'NOV' => '11', 'DEC' => '12');
+        $start_date = $_REQUEST['day'] . '-' . array_search($_REQUEST['month'], $month_names) . '-' . $_REQUEST['year'];
         //$start_date = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['day'];
         $_SESSION['SCH']['START_DATE'] = $start_date;
         if (!VerifyDate($start_date))
@@ -211,45 +211,44 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 //            return $select_date;
 //        }
 
-        
-        function con_date($date)
-		{
-            
+
+        function con_date($date) {
+
             $mother_date = $date;
             $year = substr($mother_date, 7, 4);
             $temp_month = substr($mother_date, 3, 3);
 
-				if($temp_month == 'JAN')
+            if ($temp_month == 'JAN')
                 $month = '-01-';
-				elseif($temp_month == 'FEB')
+            elseif ($temp_month == 'FEB')
                 $month = '-02-';
-				elseif($temp_month == 'MAR')
+            elseif ($temp_month == 'MAR')
                 $month = '-03-';
-				elseif($temp_month == 'APR')
+            elseif ($temp_month == 'APR')
                 $month = '-04-';
-				elseif($temp_month == 'MAY')
+            elseif ($temp_month == 'MAY')
                 $month = '-05-';
-				elseif($temp_month == 'JUN')
+            elseif ($temp_month == 'JUN')
                 $month = '-06-';
-				elseif($temp_month == 'JUL')
+            elseif ($temp_month == 'JUL')
                 $month = '-07-';
-				elseif($temp_month == 'AUG')
+            elseif ($temp_month == 'AUG')
                 $month = '-08-';
-				elseif($temp_month == 'SEP')
+            elseif ($temp_month == 'SEP')
                 $month = '-09-';
-				elseif($temp_month == 'OCT')
+            elseif ($temp_month == 'OCT')
                 $month = '-10-';
-				elseif($temp_month == 'NOV')
+            elseif ($temp_month == 'NOV')
                 $month = '-11-';
-				elseif($temp_month == 'DEC')
+            elseif ($temp_month == 'DEC')
                 $month = '-12-';
 
             $day = substr($mother_date, 0, 2);
 
-				$select_date = $year.$month.$day;
+            $select_date = $year . $month . $day;
             return $select_date;
-			
         }
+
         $convdate = con_date($start_date);
         $course_per_id = $_SESSION['MassSchedule.php']['course_period_id'];
         ////Start Date Check///////////////////
@@ -371,11 +370,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                                     if (strpos($existing['DAYS'], $i) !== false) {
                                         if ($val['PERIOD_ID'] == $existing['PERIOD_ID']) {
 
-                                        $days_conflict = true;
-                                        break 3;
+                                            $days_conflict = true;
+                                            break 3;
+                                        }
                                     }
                         }
-                    }
                     }
                 if (count($count_entry) >= 1)
                     $days_conflict = true;
@@ -428,7 +427,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 //					
                         # ---------------------------- Days conflict ------------------------------------ #
                         if ($j != 0) {
-                            
+
 //                                               if(((9:45 AM <=7:00 AM) && (10:29 AM >=7:00 AM) && 9:45 AM!='') || ((9:45 AM <= 7:44 AM) && (10:29 AM >= 7:44 AM) &&10:29 AM!='') || ((9:45 AM >= 7:00 AM) && (10:29 AM <= 7:44 AM) && 7:00 AM!=''))
 //                                                   echo "hello";
 //                                             echo" if(((".$min_sel_start_time." <=". $min_start_time.") && (".$min_sel_end_time." >=". $min_start_time.") &&". $min_sel_start_time."!='') || ((".$min_sel_start_time ."<=". $min_end_time.") && (".$min_sel_end_time." >=". $min_end_time.") &&". $min_sel_end_time."!='') || ((".$min_sel_start_time." >=". $min_start_time.") && (".$min_sel_end_time."<=". $min_end_time.") &&". $min_start_time."!=''))";
@@ -436,7 +435,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 //                                                 exit;
                             $time_clash_found = 0;
                             if ((($min_sel_start_time <= $min_start_time) && ($min_sel_end_time >= $min_start_time) && $min_sel_start_time != '') || (($min_sel_start_time <= $min_end_time) && ($min_sel_end_time >= $min_end_time) && $min_sel_end_time != '') || (($min_sel_start_time >= $min_start_time) && ($min_sel_end_time <= $min_end_time) && $min_start_time != '')) {
-                                
+
 
                                 $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));
                                 $select_stu = $select_stu[1]['FIRST_NAME'] . "&nbsp;" . $select_stu[1]['LAST_NAME'];
@@ -577,8 +576,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         }
 
         DBQuery('DELETE FROM missing_attendance WHERE COURSE_PERIOD_ID =' . $_SESSION['MassSchedule.php']['course_period_id'] . '');
-        
-        
+
+
 
         $cps = $_SESSION['MassSchedule.php']['course_period_id'];
         //$schedule_type_check1 = DBGet(DBQuery("SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID='" . $cps . "'"));
@@ -827,7 +826,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    
+
     Search_GroupSchedule('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
@@ -886,77 +885,88 @@ if ($_REQUEST['modfunc'] == 'seats') {
     echo '</div>';
 }
 
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+/*
+ * Course Period Modal
+ */
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>'; //.modal-header
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<tbody>';
+    foreach ($subjects_RET as $val) {
         //MassScheduleModal
-    echo '<tr><td><a href=javascript:void(0); onclick="MassScheduleModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+        echo '<tr><td><a href=javascript:void(0); onclick="MassScheduleModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
+    echo '</tbody>';
     echo '</table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
 
-echo '<div id="modal_default_request" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+
+
+
+/*
+ * Course Modal
+ */
+echo '<div id="modal_default_request" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-6">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
+    echo '</tbody>';
     echo '</table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal_request"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-6"><div id="course_modal_request"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;

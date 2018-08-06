@@ -134,7 +134,7 @@ function Prompt_Calender($title = 'Confirm', $question = '', $message = '', $pdf
         echo '<BR>';
         PopTable('header', $title);
          $req_mod_name = strip_tags(trim($_REQUEST[modname]));
-        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\" /><div class=\"p-t-15\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender();'>&nbsp;<INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
+        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\" /><div class=\"p-t-15\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender();'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else

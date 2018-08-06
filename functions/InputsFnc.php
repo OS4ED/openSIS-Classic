@@ -327,6 +327,39 @@ function CheckboxInput($value, $name, $title = '', $checked = '', $new = false, 
         return ($title != '' ? '<label class="control-label">' . $title . '</label>' : '') . '<p class="form-control" readonly="readonly">' . ($value ? $yes : $no) . '</p>';
 }
 
+function CheckboxInput_comments($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+
+    if ($checked) {
+        if (strpos($name, 'STANDARD_GRADE_SCALE'))
+            return '<i class="icon-checkbox-checked"></i>';
+    }
+    // $checked has been deprecated -- it remains only as a placeholder
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    if ($div == false || $new == true) {
+        if ($value && $value != 'N')
+            $checked = 'CHECKED';
+        else
+            $checked = '';
+    }
+
+    if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
+        if ($new && $div == false)
+            return "<label class=checkbox-inline><INPUT type=checkbox name=$name  value=Y $checked $extra>" . ($title != '' ? ' ' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') : '') . '</label>';
+        elseif ($new && $div == true)
+            return "<div class=\"checkbox\"><label><INPUT type=checkbox name=$name  value=Y $checked $extra>" . ($title != '' ? $title : '') . '</label></div>';
+        else
+        {
+            if($value=='' || $value=='N')
+            return "<DIV id='div$name'><div class=checkbox><label><INPUT type=checkbox name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "> " . $title . "</label></div></DIV>";
+            else
+            return "<DIV id='div$name'><div " . (($title == '') ? 'class=form-control readonly=readonly' : '') . " onclick='javascript:addHTML(\"<INPUT type=hidden name=$name  value=\\\"\\\"><div class=checkbox><label><INPUT type=checkbox name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "> " . $title . "</label></div>\",\"div$name\",true)'> " . (($yes == 'Yes' || $no == 'No') ? ($value ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') : '') . ' &nbsp; &nbsp' . ($value ? $yes : $no) . ' ' . $title . "</div></DIV>";
+        }
+    } else
+        return ($title != '' ? '<label class="control-label">' . $title . '</label>' : '') . '<p class="form-control" readonly="readonly">' . ($value ? $yes : $no) . '</p>';
+}
+
 function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
 
     // $checked has been deprecated -- it remains only as a placeholder
@@ -390,7 +423,12 @@ function CheckboxInput_grade($value, $name, $title = '', $checked = '', $new = f
         if ($new || $div == false)
             return "<div class=\"checkbox-inline\"><INPUT type=checkbox name=$name id=$name value=Y $checked $extra>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
         else
+        {
+            if($value=='' || $value=='N')
+            return "<DIV id='div$name'><div class=checkbox-inline><INPUT type=checkbox   id=$name  name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div></DIV>";
+            else
             return "<DIV id='div$name'><div " . (($title == '') ? 'class=form-control readonly=readonly' : '') . " onclick='javascript:addHTML(\"<INPUT type=hidden name=$name  value=\\\"\\\"><div class=checkbox-inline><INPUT type=checkbox   id=$name  name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div>" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . ($value ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>";
+        }
     } else
         return '<div class="form-control" disabled=disabled>' . ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
 }
@@ -416,7 +454,12 @@ function CheckboxInput_exam($value, $name, $title = '', $checked = '', $new = fa
         if ($new || $div == false)
             return "<div class=\"checkbox-inline\"><INPUT type=checkbox name=$name id=$name value=Y $checked  $extra>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
         else
+        {
+            if($value=='' || $value=='N')
+            return "<DIV id='div$name'><div class=checkbox-inline><INPUT type=checkbox id=$name  name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div></DIV>";
+            else
             return "<DIV id='div$name'><div class=form-control readonly=readonly onclick='javascript:addHTML(\"<INPUT type=hidden name=$name  value=\\\"\\\"><div class=checkbox-inline><INPUT type=checkbox id=$name  name=$name " . (($value) ? 'checked' : '') . " value=Y " . str_replace('"', '\"', $extra) . "></div>" . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . "\",\"div$name\",true)'>" . ($value ? $yes : $no) . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "</div></DIV>";
+        }
     } else
         return '<div class="form-control" disabled=disabled>' . ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
 }

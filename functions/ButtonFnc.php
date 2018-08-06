@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 
-function button($type, $text = '', $link = '', $width = '', $extra='') {
+function button($type, $text = '', $link = '', $width = '', $extra='', $buttonType='btn-primary') {
     
     $button_icons = array(
         "add" => "<i class=\"icon-plus3 ".$extra."\"></i>",
@@ -46,24 +46,20 @@ function button($type, $text = '', $link = '', $width = '', $extra='') {
         "warning" => "<i class=\"fa fa-warning ".$extra."\"></i>",
         "white_add" => "<i class=\"icon-plus3 text-pink ".$extra."\"></i>"
     );
-    
+    $button = '';
     if ($type == 'dot') {
         $button = '<TABLE border=0 cellpadding=0 cellspacing=0 height=' . $width . ' width=' . $width . ' bgcolor=#' . $text . '><TR><TD>';
         $button .= '<IMG SRC=assets/dot.gif height=' . $width . ' width=' . $width . ' border=0 vspace=0 hspace=0>';
         $button .= '</TD></TR></TABLE>';
     } else {
-        if ($link)
-            $button .= "<a HREF=" . $link . " class=\"btn btn-primary btn-icon btn-xs \" onclick='grabA(this); return false;' ".$width." ".$extra.">";
+        $button .= "<a HREF=" . $link . " class=\"btn ".$buttonType." btn-icon btn-xs \" onclick='grabA(this); return false;' ".$width." ".$extra.">";
+        if ($link){
             $button .= $button_icons[$type];
-        if ($link)
-            $button .= '</a>';
-        if ($text) {
-            if ($link)
-                $button .= " &nbsp; <a class=\"text-primary\" HREF=" . $link . " onclick='grabA(this); return false;' ".$extra.">";
-            $button .= $text;
-            if ($link)
-                $button .= '</a>';
         }
+        if ($text) {
+            $button .= ' &nbsp;'.$text;
+        }
+        $button .= '</a>';
     }
 
  

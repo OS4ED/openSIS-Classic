@@ -521,7 +521,6 @@ function ListOutputJS()
 }
 function cleanModal(id)
 {
-    
     var obj = document.getElementById(id);
     obj.innerHTML = '';
 }

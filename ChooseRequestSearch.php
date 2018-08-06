@@ -1,4 +1,5 @@
 <?php
+
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -30,25 +31,24 @@ include'ConfigInc.php';
 include 'Warehouse.php';
 
 
-if( $_REQUEST['table_name']!='' && $_REQUEST['table_name']=='courses')
-{
+if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
 
-    $sql="SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.title,sg.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
+    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.title,sg.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
-    $html='course_modal_request||';
-    $html.=count($courses_RET). ((count($courses_RET)==1)?' Course was':' Courses were').' found.';
-    if(count($courses_RET)>0)
-    {
-    $html.='<table  class="table table-bordered"><tr class="bg-grey-200"><th>Course</th></tr>';
-    foreach($courses_RET as $val)
-    {
+    $html = 'course_modal_request||';
+    $html.= '<h6>'.count($courses_RET) . ((count($courses_RET) == 1) ? ' Course was' : ' Courses were') . ' found.</h6>';
+    if (count($courses_RET) > 0) {
+        $html.='<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Course</th></tr></thead>';
+        $html.='<tbody>';
+        foreach ($courses_RET as $val) {
 
-    $html.= '<tr><td><a href=javascript:void(0); onclick="requestPasteField(\''.$val['TITLE'].'\',\''.$val['COURSE_ID'].'\');">'.$val['TITLE'].'</a></td></tr>';
-    }
-    $html.='</table>';
+            $html.= '<tr><td><a href=javascript:void(0); onclick="requestPasteField(\'' . $val['TITLE'] . '\',\'' . $val['COURSE_ID'] . '\');">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        $html.='</tbody>';
+        $html.='</table>';
     }
 }
-                
+
 echo $html;
 ?>

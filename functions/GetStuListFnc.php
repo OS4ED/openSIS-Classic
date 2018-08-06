@@ -248,9 +248,10 @@ switch (User('PROFILE')) {
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
                 $sql .=',schedule sr ';
+            if($_REQUEST['modname'] !='scheduling/PrintSchedules.php')
             $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID  ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-            $sql.=$extra['FROM'] . ' AND sr.STUDENT_ID=ssm.STUDENT_ID ';
+            $sql.=$extra['FROM'] . ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID ';
             if ($_REQUEST['modname'] != 'students/StudentReenroll.php') {
                 if ($_REQUEST['include_inactive'] == 'Y' || $_REQUEST['_search_all_schools'] == 'Y')
                 {
@@ -393,7 +394,7 @@ if($_REQUEST['modname']=='grades/GPARankList.php')
 					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';
 else
     $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm2.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');
@@ -444,7 +445,7 @@ else
 
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
-//echo $sql.'<br/><br/>';
+
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
     if ($_REQUEST['modname'] == 'students/Student.php' && $_REQUEST['search_modfunc'] == 'list')

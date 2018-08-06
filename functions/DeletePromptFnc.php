@@ -47,7 +47,7 @@ function DeletePromptCommon($title,$action='delete')
 		return true;
         }
 }
-function DeletePromptStaffCert($title,$queryString,$action='delete')
+function DeletePromptStaffCert($title,$certificate_id,$action='delete')
 {
    $tmp_REQUEST = $_REQUEST;
 
@@ -58,7 +58,7 @@ function DeletePromptStaffCert($title,$queryString,$action='delete')
 	{
 		echo '<BR>';
 		PopTable('header','Confirm '.(strpos($action,' ')===false? ucwords($action):$action));
-		echo "<CENTER><h4>Are you sure you want to $action that ".(strpos($title,' ')===false? ucwords($title):$title)."?</h4><br><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&include=CertificationInfoInc&custom=staff&category_id=4&delete_ok=1\");'>&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&include=CertificationInfoInc&custom=staff&category_id=4\");'></CENTER>";
+		echo "<CENTER><h4>Are you sure you want to $action that ".(strpos($title,' ')===false? ucwords($title):$title)."?</h4><br><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&include=CertificationInfoInc&custom=staff&category_id=4&delete_ok=1&certification_id=$certificate_id\");'>&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&include=CertificationInfoInc&custom=staff&category_id=4\");'></CENTER>";
 		PopTable('footer');
 		return false;
 	}

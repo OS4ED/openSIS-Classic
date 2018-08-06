@@ -26,6 +26,13 @@ li.list-group-item:hover {
 .navbar-inverse #navbar-mobile.navbar-collapse {
     border-color: #ced2d7;
 }
+
+.form-inline .form-group {
+    margin-right: 10px !important;
+}
+.modal-dialog.modal-xl {
+    width: 85%;
+}
 /* Bootstrap Overwrite End */
 
 .sidebar-user-material-content > a {
@@ -41,7 +48,7 @@ li.list-group-item:hover {
     z-index: 999;
     display: none;
     color: #fff;
-    background: #0991e8;
+    background: #5090c1;
     padding: 11px 15px 11px 11px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
@@ -186,11 +193,22 @@ label.radio {
 }
 
 .calendar-holiday {
-    background: #fff3f5;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#fff3f5+19,ffdde3+100 */
+    background: rgb(255,243,245); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(255,243,245,1) 19%, rgba(255,221,227,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(255,243,245,1) 19%,rgba(255,221,227,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(255,243,245,1) 19%,rgba(255,221,227,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff3f5', endColorstr='#ffdde3',GradientType=0 ); /* IE6-9 */
+
 }
 
 .calendar-active {
-    background: #e7ecef;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f9f9f9+0,e7ecef+12,ccdbe5+95,c9d5dd+100 */
+    background: rgb(249,249,249); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(249,249,249,1) 0%, rgba(231,236,239,1) 12%, rgba(204,219,229,1) 95%, rgba(201,213,221,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(249,249,249,1) 0%,rgba(231,236,239,1) 12%,rgba(204,219,229,1) 95%,rgba(201,213,221,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(249,249,249,1) 0%,rgba(231,236,239,1) 12%,rgba(204,219,229,1) 95%,rgba(201,213,221,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#c9d5dd',GradientType=0 ); /* IE6-9 */
 }
 .table-bordered.table-calendar > thead > tr > th,
 .table-bordered.table-calendar > tbody > tr > th,
@@ -204,6 +222,20 @@ label.radio {
     width: 14.28%;
 }
 
+
+/* Nav Pills */
+.nav-pills.nav-pills-primary {
+    
+}
+.nav-pills.nav-pills-primary li a {
+    text-transform: none;
+}
+.nav-pills.nav-pills-primary li.active a {
+    background: #5090c1;
+}
+.panel-body > .nav-pills li a {
+    border-radius: 0
+}
 
 /* Footer Styles */
 .footer {

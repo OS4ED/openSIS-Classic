@@ -53,15 +53,14 @@ if (User('PROFILE') != 'student')
     DrawBC("School Setup > " . ProgramTitle());
 else
     DrawBC("School Info > " . ProgramTitle());
-$cal_found_qr=DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+$cal_found_qr = DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
 //if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || !$_REQUEST['calendar_id']) && $_REQUEST['modfunc']!='detail' && USER('PROFILE')=='admin') 
-   if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create'  || $cal_found_qr[1]['TOT']==0) && User('PROFILE') == 'admin')     
-        {
+if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found_qr[1]['TOT'] == 0) && User('PROFILE') == 'admin') {
     $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
     $fy_RET = $fy_RET[1];
 
     echo '<div class="alert alert-danger no-border">No Calendars were found.</div>';
-    
+
     $message = '<div class="row">';
     $message .= '<div class="col-md-12">';
     $message .= '<div class="row">';
@@ -71,7 +70,7 @@ $cal_found_qr=DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHERE 
     $message .= '<label class="col-md-2 control-label text-right">Title</label>';
     $message .= '<div class="col-md-10">';
     $message .= '<INPUT type=text name=title class=form-control id=title>';
-    $message .= '<div class="checkbox"><label><INPUT type=checkbox name=default value=Y> Default Calendar for this School</label></div>';
+    $message .= '<div class="checkbox checkbox-switch switch-success"><label><INPUT type=checkbox name=default value=Y><span></span>Default Calendar for this School</label></div>';
     $message .= '</div>';
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-4
@@ -100,7 +99,7 @@ $cal_found_qr=DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHERE 
     $message .= '<div class="col-md-4">';
     $message .= '<div class="form-group">';
     $message .= '<label class="col-md-4 control-label text-right">Weekdays</label>';
-    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[0]>Sunday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[1] CHECKED>Monday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[2] CHECKED>Tuesday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[3] CHECKED>Wednesday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[4] CHECKED>Thursday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[5] CHECKED>Friday</label></div> <div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[6]>Saturday</label></div></div>';
+    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[0]>Sunday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[1] CHECKED>Monday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[2] CHECKED>Tuesday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[3] CHECKED>Wednesday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[4] CHECKED>Thursday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[5] CHECKED>Friday</label></div> <div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[6]>Saturday</label></div></div>';
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-4
     $message .= '<div class="col-md-4">';
@@ -171,7 +170,7 @@ $cal_found_qr=DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHERE 
 }
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete_calendar') {
-  
+
     $colmn = Calender_Id;
     $cal_title = paramlib_validation($colmn, $_REQUEST[calendar_id]);
     $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE CALENDAR_ID=' . $cal_title . ''));
@@ -206,7 +205,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete_calendar') {
 }
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
-    
+
     $colmn = Calender_Id;
     $cal_id = paramlib_validation($colmn, $_REQUEST['calendar_id']);
     $acs_RET = DBGet(DBQuery('SELECT TITLE, DEFAULT_CALENDAR FROM school_calendars WHERE CALENDAR_ID=\'' . $cal_id . '\''));
@@ -237,7 +236,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-8
     $message .= '</div>'; //.row    
-    
+
     $message .= '<div class="row">';
     $message .= '<div class="col-md-4">';
     $message .= '<div class="form-group">';
@@ -252,19 +251,18 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-4
     $message .= '</div>'; //.row 
-    
+
     $message .= '<div class="row">';
     $message .= '<div class="col-md-4">';
     $message .= '<div class="form-group">';
     $message .= '<label class="col-md-4 control-label text-right">Weekdays</label>';
-    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[0] ' . ((in_array('Sunday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Sunday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[1] ' . ((in_array('Monday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Monday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[2] ' . ((in_array('Tuesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Tuesday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[3] ' . ((in_array('Wednesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Wednesday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[4] ' . ((in_array('Thursday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Thursday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[5] ' . ((in_array('Friday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Friday</label></div><div class="checkbox"><label><INPUT type=checkbox value=Y name=weekdays[6] ' . ((in_array('Saturday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Saturday</label></div></div>';
+    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[0] ' . ((in_array('Sunday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Sunday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[1] ' . ((in_array('Monday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Monday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[2] ' . ((in_array('Tuesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Tuesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[3] ' . ((in_array('Wednesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Wednesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[4] ' . ((in_array('Thursday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Thursday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[5] ' . ((in_array('Friday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Friday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[6] ' . ((in_array('Saturday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Saturday</label></div></div>';
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-4
     $message .= '<div class="col-md-4">';
     $message .= calendarEventsVisibility();
     $message .= '</div>'; //.col-md-4
     $message .= '</div>'; //.row
-
     //$message .= '</div>'; //.col-md-12
     //$message .= '</div>'; //.row
 
@@ -413,29 +411,27 @@ if ($_REQUEST['modfunc'] == 'detail') {
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
-                if ($go)
-                {
-                    
+                if ($go) {
+
                     DBQuery($sql);
                 }
             }
 
             echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&calendar_id=' . $_REQUEST['calendar_id'] . '&year=' . $_REQUEST['year'] . '&month=' . MonthNWSwitch($_REQUEST['month'], 'tochar') . '"; window.close();</script>';
-            
+
             unset($_REQUEST['values']);
             unset($_SESSION['_REQUEST_vars']['values']);
         }
 
         echo '<SCRIPT language=javascript> window.close();</script>';
-    }
-    elseif (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Delete') {
+    } elseif (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Delete') {
         if (DeletePrompt('event', 'delete', 'y')) {
-            
+
             DBQuery("DELETE FROM calendar_events WHERE ID='" . paramlib_validation($column = EVENT_ID, $_REQUEST[event_id]) . "'");
 
-           // echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=' . $_REQUEST['modname'] . '&calendar_id=' . $_REQUEST['calendar_id'] . '&year=' . $_REQUEST['year'] . '&month=' . MonthNWSwitch($_REQUEST['month'], 'tochar') . '"; window.close();</script>';
+            // echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=' . $_REQUEST['modname'] . '&calendar_id=' . $_REQUEST['calendar_id'] . '&year=' . $_REQUEST['year'] . '&month=' . MonthNWSwitch($_REQUEST['month'], 'tochar') . '"; window.close();</script>';
             echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&calendar_id=' . $_REQUEST['calendar_id'] . '&year=' . $_REQUEST['year'] . '&month=' . MonthNWSwitch($_REQUEST['month'], 'tochar') . '"; window.close();</script>';
-            
+
             unset($_REQUEST['values']);
             unset($_SESSION['_REQUEST_vars']['values']);
 //			
@@ -446,9 +442,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
 //            unset($_SESSION['_REQUEST_vars']['button']);
 //            echo '<SCRIPT language=javascript>window.close();</script>';
         }
-    } 
-    
-    else {
+    } else {
         if ($_REQUEST['event_id']) {
             if ($_REQUEST['event_id'] != 'new') {
                 $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,SCHOOL_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));
@@ -481,16 +475,16 @@ if ($_REQUEST['modfunc'] == 'detail') {
         if ($RET[1]['STAFF_ID']) {
             echo '<div class="form-group"><label class="control-label text-right col-md-4">Teacher</label><div class="col-md-8">' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['STAFF_ID'], 'values[STAFF_ID]') : $RET[1]['STAFF_ID']) . '</div></div>';
         }
-        
+
         if ($RET[1]['ASSIGNED_DATE']) {
             echo '<div class="form-group"><label class="control-label text-right col-md-4">Assigned Date</label><div class="col-md-8">' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['ASSIGNED_DATE'], 'values[ASSIGNED_DATE]') : $RET[1]['ASSIGNED_DATE']) . '</div></div>';
         }
-        
+
         if ($RET[1]['DUE_DATE']) {
             echo '<div class="form-group"><label class="control-label text-right col-md-4">Due Date</label><div class="col-md-8">' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['DUE_DATE'], 'values[DUE_DATE]') : $RET[1]['DUE_DATE']) . '</div></div>';
         }
-        echo '<div class="form-group">' . (User('PROFILE') == 'admin' ? TextAreaInput(html_entity_decode($RET[1]['DESCRIPTION']), 'values[DESCRIPTION]', 'Notes', 'style=height:200px;'): html_entity_decode($RET[1]['DESCRIPTION'])) . '</div>';
-        
+        echo '<div class="form-group">' . (User('PROFILE') == 'admin' ? TextAreaInput(html_entity_decode($RET[1]['DESCRIPTION']), 'values[DESCRIPTION]', 'Notes', 'style=height:200px;') : html_entity_decode($RET[1]['DESCRIPTION'])) . '</div>';
+
         if (AllowEdit()) {
             if (User('PROFILE') == 'admin')
                 echo '<div class="form-group"><div class="col-xs-12">' . CheckboxInputSwitch($RET[1]['CALENDAR_ID'], $_REQUEST['event_id'], 'Show Events System Wide') . '</div></div>';
@@ -502,12 +496,11 @@ if ($_REQUEST['modfunc'] == 'detail') {
             echo '&nbsp;';
             if ($_REQUEST['event_id'] != 'new' && User('PROFILE') == 'admin')
                 echo '<INPUT type=submit name=button class="btn btn-white" value=Delete onclick="formload_ajax(\'popform\');">';
-
         }
         else {
             echo '<div class="form-group"><label class="control-label text-right col-md-4">Show Events System Wide</label><div class="col-md-8">' . ($RET[1]['CALENDAR_ID'] == '' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
         }
-        
+
         PopTable('footer');
         echo '</FORM>';
 
@@ -523,7 +516,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
 
     if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
         while (!VerifyDate($start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start']))
-            $_REQUEST['day_start']--;
+            $_REQUEST['day_start'] --;
     } else {
         $min_date = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
         if ($min_date[1]['MIN_DATE'])
@@ -564,7 +557,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
     }
     if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
         while (!VerifyDate($end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end']))
-            $_REQUEST['day_end']--;
+            $_REQUEST['day_end'] --;
     } else {
         $max_date = DBGet(DBQuery('SELECT max(SCHOOL_DATE) AS MAX_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
         if ($max_date[1]['MAX_DATE'])
@@ -609,8 +602,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
     else
         DrawBC("School Info > " . ProgramTitle());
     echo '<FORM action=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=' . $_REQUEST['modfunc'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' METHOD=POST>';
-    
-       if ($end_date <= $start_date) {
+
+    if ($end_date <= $start_date) {
         $min_date = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
         if ($min_date[1]['MIN_DATE'])
             $start_date = $min_date[1]['MIN_DATE'];
@@ -624,8 +617,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
             $end_date = strtoupper(date('Y-m-d'));
 
 
-
-        echo '<font style="color:red"><b>End date can not be before start date.</b></font>';
+        echo '<div class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Alert!!</span> - End date can not be before start date.</span></div>';
+        echo '<font style="color:red"><b></b></font>';
     }
     echo '<div class="panel panel-default">';
     echo '<div class="panel-heading">';
@@ -641,7 +634,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
     $_SESSION['events_RET'] = $events_RET;
 
 
-    echo '<div id="students" calss="panel panel-white">';
+    echo '<div id="students" class="panel panel-default">';
     ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description'), 'Event', 'Events');
     echo '</div></FORM>';
 }
@@ -815,13 +808,12 @@ if (!$_REQUEST['modfunc']) {
         echo "<TD width=100 class=" . ($calendar_RET[$date][1]['MINUTES'] ? $calendar_RET[$date][1]['MINUTES'] == '999' ? 'calendar-active' : 'calendar-extra' : 'calendar-holiday') . " valign=top><table width='100%'><tr><td width=5 valign=top>$i</td><td align=right>";
         if (AllowEdit()) {
             if (User('PROFILE') == 'admin') {
-                if ($calendar_RET[$date][1]['MINUTES'] == '999'){
+                if ($calendar_RET[$date][1]['MINUTES'] == '999') {
                     echo '<TABLE cellpadding=0 cellspacing=0 >';
                     echo '<TR><TD>' . CheckboxInput_Calendar($calendar_RET[$date], "all_day[$date]", '', '', false, '<i class="icon-checkbox-checked"></i> ', '', true, 'id=all_day_' . $i . ' onclick="return system_wide(' . $i . ');"') . '</TD></TR>';
                     //echo '<TR><TD><div id=syswide_holi_' . $i . ' style=display:none><span>System Wide </span><INPUT type=checkbox name=show_all[' . $date . '] value=Y></div></TD></TR>';
                     echo '</TABLE>';
-                }
-                else {
+                } else {
                     echo "<TABLE cellpadding=0 cellspacing=0 >";
                     echo "<TR><TD><INPUT type=checkbox name=all_day[$date] value=Y id=all_day_$i onclick='return system_wide($i);'></TD></TR>";
                     //echo "<div id=syswide_holi_$i style=display:none><span>System Wide </span><INPUT type=checkbox name=show_all[$date] value=Y></div>";
@@ -837,65 +829,59 @@ if (!$_REQUEST['modfunc']) {
             echo SelectInput($calendar_RET[$date][1]['BLOCK'], "blocks[$date]", '', $options);
         }
         echo "</td></tr>";
-        
+
         if (AllowEdit()) {
             if (User('PROFILE') == 'admin') {
-                if ($calendar_RET[$date][1]['MINUTES'] == '999'){
+                if ($calendar_RET[$date][1]['MINUTES'] == '999') {
                     echo '<tr><td colspan="2"><TABLE cellpadding=0 cellspacing=0 >';
                     echo '<TR><TD><div id=syswide_holi_' . $i . ' style="display:none; padding-top: 10px;"><label class="checkbox-inline"><INPUT type=checkbox name=show_all[' . $date . '] value=Y> System Wide</label></div></TD></TR>';
                     echo '</TABLE></td></tr>';
-                }
-                else {
+                } else {
                     echo "<tr><td colspan='2'><TABLE cellpadding=0 cellspacing=0 >";
                     echo "<div id=syswide_holi_$i style='display:none; padding-top: 10px;'><label class='checkbox-inline'><INPUT type=checkbox name=show_all[$date] value=Y> System Wide</label></div>";
                     echo "</TABLE></td></tr>";
                 }
             }
         }
-        
+
         echo "<tr><TD colspan=2 height=50 valign=top>";
 
         if (count($events_RET[$date])) {
             echo '<TABLE cellpadding=2 cellspacing=2 border=0>';
             foreach ($events_RET[$date] as $event) {
-               
+
                 if (strlen($event['TITLE']) < 8)
                     $e_title = $event['TITLE'];
                 else
                     $e_title = substr($event['TITLE'], 0, 8) . '....';
 
                 //echo "<TR><TD>" . button('dot', '0000FF', '', '6') . "</TD><TD> <A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'><b>" . ($event['TITLE'] ? $e_title : '***') . "1</b></A></TD></TR>";
-      //  echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
-               echo '<TR><TD>' . button("dot", "0000FF", "", "6") . '</TD><TD> <A class=\"event\" HREF=# onclick="CalendarModal(\''.$event[ID].'\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\')"; return false;>' . ($event['TITLE'] ? $e_title : '***') . '</b></A></TD></TR>'; 
-                }
+                //  echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
+                echo '<TR><TD>' . button("dot", "0000FF", "", "6") . '</TD><TD> <A class=\"event\" HREF=# onclick="CalendarModal(\'' . $event[ID] . '\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\')"; return false;>' . ($event['TITLE'] ? $e_title : '***') . '</b></A></TD></TR>';
+            }
             if (count($assignments_RET[$date])) {
                 foreach ($assignments_RET[$date] as $event)
-                   // echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "</A></TD></TR>";
-           echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
-                    }
+                // echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "</A></TD></TR>";
+                    echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
+            }
             echo '</TABLE>';
         } elseif (count($assignments_RET[$date])) {
             echo '<TABLE cellpadding=0 cellspacing=0 border=0>';
-            foreach ($assignments_RET[$date] as $event)
-            {
-                
+            foreach ($assignments_RET[$date] as $event) {
+
                 //echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=#  onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "3</A></TD></TR>";
-          echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
-            
-                }
-                echo '</TABLE>';
+                echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
+            }
+            echo '</TABLE>';
         }
 
         echo "</td></tr>";
         if (AllowEdit()) {
             if (User('PROFILE') == 'admin') {
-               // echo "<tr><td valign=bottom align=left>" . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=new&calendar_id=$_REQUEST[calendar_id]&school_date=$date&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
-          
-              // echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal" data-event_id=new data-target="#modal_default_lookup" name=lookup  onclick=(\'modal_default_lookup\'));></i></td></tr>';   
-                
-               //echo '<tr><td valign=bottom align=left><i class=icon-plus3><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
-                echo '<tr><td valign=bottom align=left><button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"><i class=icon-plus3 ></i></button></td></tr>';   
-                  
+                // echo "<tr><td valign=bottom align=left>" . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=new&calendar_id=$_REQUEST[calendar_id]&school_date=$date&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
+                // echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal" data-event_id=new data-target="#modal_default_lookup" name=lookup  onclick=(\'modal_default_lookup\'));></i></td></tr>';   
+                //echo '<tr><td valign=bottom align=left><i class=icon-plus3><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
+                echo '<tr><td valign=bottom align=left><button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\');"><i class=icon-plus3 ></i></button></td></tr>';
             }
         }
         echo "</table></TD>";
@@ -913,26 +899,20 @@ if (!$_REQUEST['modfunc']) {
     echo '</FORM>';
 }
 
- echo '<div id="modal_default_calendar" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">';
-echo '<div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                            <h5 class="modal-title">Lookup</h5>
-                        </div>';
-            
-                        echo '<div class="modal-body">';
-              
-                        echo'<div id="modal-res">';
-                        
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-                        
+echo '<div id="modal_default_calendar" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Lookup</h5>';
+echo '</div>';
 
-                      //----------------------- modal for event end---------------------//   
+echo'<div id="modal-res"></div>';
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+//----------------------- modal for event end---------------------//   
 function calendarEventsVisibility() {
     $id = $_REQUEST['calendar_id'];
     $profiles_RET = DBGet(DBQuery('SELECT ID,TITLE FROM user_profiles ORDER BY ID'));
@@ -946,11 +926,11 @@ function calendarEventsVisibility() {
     $return .= '<div class="form-group"><label class="col-md-4 control-label text-right">Events Visible To</label>';
     $return .= '<div class="col-md-8">';
     foreach (array('admin' => 'Administrator w/Custom', 'teacher' => 'Teacher w/Custom', 'parent' => 'Parent w/Custom') as $profile_id => $profile)
-        $return .= "<div class=\"checkbox\"><label><INPUT type=checkbox name=profiles[$profile_id] value=Y" . (in_array($profile_id, $visible_profile) ? ' CHECKED' : '') . "> $profile</label></div>";
+        $return .= "<div class=\"checkbox\"><label><INPUT class=\"styled\" type=checkbox name=profiles[$profile_id] value=Y" . (in_array($profile_id, $visible_profile) ? ' CHECKED' : '') . "> $profile</label></div>";
     $i = 3;
     foreach ($profiles_RET as $profile) {
         $i++;
-        $return .= '<div class="checkbox"><label><INPUT type=checkbox name=profiles[' . $profile['ID'] . '] value=Y' . (in_array($profile[ID], $visible_profile) ? ' CHECKED' : '') . "> $profile[TITLE]</label></div>";
+        $return .= '<div class="checkbox"><label><INPUT class="styled" type=checkbox name=profiles[' . $profile['ID'] . '] value=Y' . (in_array($profile[ID], $visible_profile) ? ' CHECKED' : '') . "> $profile[TITLE]</label></div>";
         //if ($i % 4 == 0 && $i != count($profile))
         //$return .= '<TR>';
     }

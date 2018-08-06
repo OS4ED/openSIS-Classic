@@ -130,6 +130,15 @@ body {
     text-align: center;
     padding: 20px 0 0;
 }
+.panel .panel-heading .logo img {
+    /*width: 170px;*/
+}
+.panel .panel-heading .logo .site-slogan {
+    font-size: 10px;
+}
+.panel .panel-heading .logo .site-slogan sup {
+    font-size: 7px;
+}
 
 .panel .panel-body {
     padding: 20px 45px;

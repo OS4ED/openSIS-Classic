@@ -153,7 +153,10 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
         echo '<div class="form-group"><label class="control-label col-md-4 text-right">Student Name</label><div class="col-md-8"><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Common' . ((Preferences('NAME') == 'Common') ? ' CHECKED' : '') . '> Common Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Given' . ((Preferences('NAME') == 'Given') ? ' CHECKED' : '') . '> Given Name</label></div></div>';
-        echo '</div><div class="col-md-6">';
+        echo '</div>';
+        echo '</div>'; //.row
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
         echo '<div class="form-group"><label class="control-label col-md-4 text-right">Student Sorting</label><div class="col-md-8"><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Name' . ((Preferences('SORT') == 'Name') ? ' CHECKED' : '') . '> Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Grade' . ((Preferences('SORT') == 'Grade') ? ' CHECKED' : '') . '> Grade, Name</label></div></div>';
         echo '</div>';
         echo '</div>'; //.row

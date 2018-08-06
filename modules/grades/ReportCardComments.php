@@ -196,7 +196,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<input type="hidden" name="comment_ids" id="comment_ids" value="' . $report_card_comments . '">';
     echo '<hr class="no-margin"/>';
 
-    echo '<div class="tabbable"><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom">' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id]") . '</ul></div>';
+    echo '<div class="tabbable">' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id]") . '</div>';
 
     echo '<div class="panel-body">';
     echo '<div id="div_margin" class="tab-content">';

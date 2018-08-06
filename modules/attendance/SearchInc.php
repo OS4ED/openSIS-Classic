@@ -67,7 +67,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 echo "<FORM class='form-horizontal' name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
                 echo "<FORM class='form-horizontal' name=search id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
-            echo '<TABLE border=0>';
+
             Search_absence_summary('general_info');
             if ($extra['search'])
                 echo $extra['search'];
@@ -76,7 +76,6 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
             echo '<div id="addiv" class="pt-20">';
-            echo '<div><a href="javascript:void(0);" onclick="show_search_div();" class="text-pink"><i class="icon-paragraph-left3"></i> Advanced Search</a></div>';
             echo '</div>';
 
             echo '<div id="searchdiv" class="pt-20 mt-20 well" style="display:none;">';
@@ -188,9 +187,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             else
                 echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
-
-            echo '</TD></TR>';
-            echo '</TABLE>';
+            echo '<a href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-l-10"><i class="icon-cog"></i> Advanced Search</a>';
             echo '</FORM>';
             // set focus to last name text box
             echo '<script type="text/javascript"><!--

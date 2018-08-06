@@ -170,7 +170,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="row">';
         echo '<div class="col-lg-12">';
-        
+
         echo '<div class="form-group">';
         echo '<label class="control-label col-lg-2">Add absence to periods</label>';
         echo '<div class="col-lg-10">';
@@ -180,7 +180,7 @@ if (!$_REQUEST['modfunc']) {
             echo '<label class="checkbox-inline"><INPUT type=CHECKBOX value=Y name=period[' . $period['PERIOD_ID'] . ']>' . $period['SHORT_NAME'] . '</label>';
         echo '</div>'; //.col-lg-8
         echo '</div>'; //.form-group
-        
+
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
@@ -194,7 +194,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.col-lg-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-lg-6
-        
+
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
         echo '<label class="control-label col-lg-3">Absence reason</label>';
@@ -204,7 +204,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.form-group
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
-        
+
         echo '</div>'; //.col-lg-12
         echo '<div class="col-lg-12">';
 
@@ -244,7 +244,7 @@ if (!$_REQUEST['modfunc']) {
         }
         $k = $j - 1;
         if ($k < 7) {
-            for ($i = 1; $i <= (7-$k); $i++) {
+            for ($i = 1; $i <= (7 - $k); $i++) {
                 echo '<t class="alpha-grey"></TD>';
             }
         }
@@ -285,42 +285,42 @@ if (!$_REQUEST['modfunc']) {
 
     if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
         echo SubmitButton(Save, '', 'class="btn btn-primary" onclick="formload_ajax(\'addAbsences\');"') . "</FORM>";
-    
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
+    /*
+     * Course Selection Modal Start
+     */
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '</div>';
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+    echo '<div class="modal-body">';
+    echo '<div id="conf_div" class="text-center"></div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
+
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</table>';
+    }
+    echo '</div>';
+    echo '<div class="col-md-4" id="course_modal"></div>';
+    echo '<div class="col-md-4" id="cp_modal"></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
 }
 
 function _makeChooseCheckbox($value, $title) {

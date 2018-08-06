@@ -58,9 +58,8 @@ if (strtotime($start_date_mod) < strtotime($get_min_start_date[1]['START_DATE'])
 }
 
 if ($_REQUEST['modfunc'] == 'search') {
-    echo '<BR>';
+    echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . "&day_start=" . strip_tags(trim($_REQUEST[day_start])) . "&day_end=" . strip_tags(trim($_REQUEST[day_end])) . "&month_start=" . strip_tags(trim($_REQUEST[month_start])) . "&month_end=" . strip_tags(trim($_REQUEST[month_end])) . "&year_start=" . strip_tags(trim($_REQUEST[year_start])) . "&year_end=" . strip_tags(trim($_REQUEST[year_end])) . " method=POST>";
     PopTable('header', 'Advanced');
-    echo "<FORM name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . "&day_start=" . strip_tags(trim($_REQUEST[day_start])) . "&day_end=" . strip_tags(trim($_REQUEST[day_end])) . "&month_start=" . strip_tags(trim($_REQUEST[month_start])) . "&month_end=" . strip_tags(trim($_REQUEST[month_end])) . "&year_start=" . strip_tags(trim($_REQUEST[year_start])) . "&year_end=" . strip_tags(trim($_REQUEST[year_end])) . " method=POST>";
     echo '<TABLE>';
 
     Search('general_info', $extra['grades']);
@@ -71,11 +70,11 @@ if ($_REQUEST['modfunc'] == 'search') {
         echo $extra['search'];
     Search('student_fields', is_array($extra['student_fields']) ? $extra['student_fields'] : array());
     if (User('PROFILE') == 'admin')
-        echo '<CENTER><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><font color=black>Search All Schools</font></CENTER><BR>';
-    echo '<CENTER>' . Buttons('Submit') . '</CENTER>';
+        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div></div>';
+    $btn = '<div class="p-l-20">' . Buttons('Submit') . '</div>';
 
+    PopTable('footer', $btn);
     echo '</FORM>';
-    PopTable('footer');
 }
 
 if (!$_REQUEST['modfunc']) {
@@ -89,9 +88,9 @@ if (!$_REQUEST['modfunc']) {
     $extra['WHERE'] .= CustomFields('where');
 
     echo '<div class="panel panel-default">';
-    echo '<div class="panel-body">';
+    echo '<div class="panel-heading clearfix">';
     echo "<FORM  name=ada_from id=ada_from onSubmit='return formcheck_ada_dates();' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
-    $advanced_link = " <A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"fa fa-align-left\"></i> Advanced</A>";
+    $advanced_link = " <A class=\"text-pink\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> Advanced</A>";
 
     echo '<div class="form-inline"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) . ' &nbsp; &nbsp; - ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; <INPUT type=submit value=Go  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';
     echo '</FORM>';
@@ -427,8 +426,8 @@ if (!$_REQUEST['modfunc']) {
 //                $link['add']['html'] = array('GRADE_ID'=>'<b>'.'Total'.'</b>','STUDENTS'=>$last_sum['STUDENTS'],'DAYS_POSSIBLE'=>$last_sum['DAYS_POSSIBLE'],'ATTENDANCE_POSSIBLE'=>$last_sum['ATTENDANCE_POSSIBLE'],'PRESENT'=>$last_sum['PRESENT'],'ADA'=>$last_sum['ADA'],'ABSENT'=>$last_sum['ABSENT'],'OTHERS'=>$last_sum['OTHERS'],'NOT_TAKEN'=>$last_sum['NOT_TAKEN'],'AVERAGE_ATTENDANCE'=>$last_sum['AVERAGE_ATTENDANCE'],'AVERAGE_ABSENT'=>$last_sum['AVERAGE_ABSENT']);
         ListOutput($ada, $columns, 'Grade level', 'Grade levels', $link);
     }
-    
-    
+
+
     echo '</div>'; //.panel.panel-default
 }
 

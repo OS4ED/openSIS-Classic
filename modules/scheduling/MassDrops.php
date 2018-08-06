@@ -95,7 +95,7 @@ if (!$_REQUEST['modfunc']) {
         $_openSIS['SearchTerms'] .= '<b>Course Period : </b>' . $course[1]['COURSE_TITLE'] . ' : ' . $course[1]['TITLE'];
     }
 //    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose Course Period</A>";
-    $extra['search'] .= "<label class=\"control-label\">Course Period</label><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\">Choose Course Period</A>";
+    $extra['search'] .= "<label class=\"control-label\">Course Period</label><div><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=\"icon-menu6 m-t-10 pull-right\"></i><DIV id=course_div class=form-control readonly=readonly><span class=text-grey>Click to Select</span></DIV></A></div>";
 
     if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
 
@@ -103,21 +103,19 @@ if (!$_REQUEST['modfunc']) {
         
         echo '<div class="row">';
         echo '<div class="col-md-6 col-md-offset-3">';
-        PopTable('header', 'Find Students to Drop');
         echo "<FORM class=no-margin-bottom name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        PopTable('header', 'Find Students to Drop');
 
         echo '<div class="form-group">';
         echo $extra['search'];
         echo '</div>';
-        echo '<div class="form-group"><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y /> Include advance schedule</label></div></div>';
+        echo '<div class="checkbox checkbox-switch switch-success"><label><INPUT type=checkbox name=include_inactive value=Y /><span></span>Include advance schedule</label></div>';
         echo '<DIV id=cp_detail></DIV>';
-        echo '<div class="panel-footer">';
-        echo "<INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop();formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' >";
-        echo '</div>';
-
-        
+        //echo '<div class="panel-footer">';
+        $btn = "<div class=\"m-l-20\"><INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop();formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' ></div>";
+        //echo '</div>';     
+        PopTable('footer',$btn);   
         echo '</FORM>';
-        PopTable('footer');
         echo '</div>';
         echo '</div>'; //.row
     } else {
@@ -171,41 +169,48 @@ if (!$_REQUEST['modfunc']) {
         }
     }
 }
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
+/*
+ * Modal Start
+ */
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
        $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+echo '<h6>'.count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.</h6>';
 if(count($subjects_RET)>0)
 {
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>'; 
     foreach($subjects_RET as $val)
     {
     echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
     }
-    echo '</table>';
+    echo '</tbody></table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+
+
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
     if (!clean_param($_REQUEST['course_period_id'], PARAM_INT))
         include 'modules/scheduling/CoursesforWindow.php';

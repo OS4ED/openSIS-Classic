@@ -45,8 +45,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
                     if ($_REQUEST['school_id'])
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
-                }
-                else
+                } else
                     unset($_SESSION['student_id']);
                 if (!$_REQUEST['_openSIS_PDF'])
                     echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -73,8 +72,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
                     if ($_REQUEST['school_id'])
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
-                }
-                else
+                } else
                     unset($_SESSION['student_id']);
                 if (!$_REQUEST['_openSIS_PDF'])
                     echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -97,8 +95,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
                     if ($_REQUEST['school_id'])
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
-                }
-                else
+                } else
                     unset($_SESSION['staff_id']);
                 if (!$_REQUEST['_openSIS_PDF'])
                     echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -126,8 +123,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
                     if ($_REQUEST['school_id'])
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
-                }
-                else
+                } else
                     unset($_SESSION['staff_id']);
                 if (!$_REQUEST['_openSIS_PDF'])
                     echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -167,33 +163,34 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             echo '</div><div class="col-md-6">';
             $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
-            
+
             foreach ($list as $value)
                 echo '<OPTION value="' . $value['TITLE'] . '">' . $value[TITLE] . '</OPTION>';
             echo '</SELECT></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
-            
-            
+
+
             echo '<div class="row">';
             echo '<div class="col-md-6">';
             $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM school_gradelevel_sections WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
 //            echo '<div class="form-group"><label class="control-label col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
 //            echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
-            
+
             foreach ($list as $value)
                 echo '<OPTION value="' . $value['ID'] . '">' . $value[NAME] . '</OPTION>';
             echo '</SELECT></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
-            
+
             break;
 
         case 'student_fields':
             $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearch' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"), array(), array('TYPE'));
-            if (!$search_fields_RET)
+            if (!$search_fields_RET) {
                 $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM custom_fields cf WHERE cf.ID IN ('200000000','200000001')"), array(), array('TYPE'));
+            }
             // edit needed
             if (count($search_fields_RET['text'])) {
                 foreach ($search_fields_RET['text'] as $column)
@@ -629,18 +626,18 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
 
         case 'general_info':
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">Last Name</label><div class="col-lg-8"><input type=text name="last" placeholder="Last Name" size=30 class="form-control"></div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">First Name</label><div class="col-lg-8"><input type=text name="first" placeholder="First Name" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Last Name</label><div class="col-lg-8"><input type=text name="last" placeholder="Last Name" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">First Name</label><div class="col-lg-8"><input type=text name="first" placeholder="First Name" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">Student ID</label><div class="col-lg-8"><input type=text name="stuid" placeholder="Student ID" size=30 class="form-control"></div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">Alt ID</label><div class="col-lg-8"><input type=text name="altid" placeholder="Alt ID" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Student ID</label><div class="col-lg-8"><input type=text name="stuid" placeholder="Student ID" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Alt ID</label><div class="col-lg-8"><input type=text name="altid" placeholder="Alt ID" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">Address</label><div class="col-lg-8"><input type=text name="addr" placeholder="Address" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Address</label><div class="col-lg-8"><input type=text name="addr" placeholder="Address" size=30 class="form-control"></div></div></div>';
 
             $list = DBGet(DBQuery('SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
             echo '</SELECT></div></div></div>';
@@ -648,33 +645,35 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
             break;
 
         case 'student_fields':
+            echo '<div class="row">';
             $search_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'CUSTOM_\',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM=\'StudentFieldsSearch\' AND puc.USER_ID=\'' . User('STAFF_ID') . '\' AND puc.VALUE=\'Y\' ORDER BY cf.SORT_ORDER,cf.TITLE'), array(), array('TYPE'));
             if (!$search_fields_RET)
                 $search_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'CUSTOM_\',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM custom_fields cf WHERE cf.ID IN (\'200000000\',\'200000001\')'), array(), array('TYPE'));
             // edit needed
             if (count($search_fields_RET['text'])) {
                 foreach ($search_fields_RET['text'] as $column)
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD><INPUT type=text name=cust[{$column[COLUMN_NAME]}] size=30 class=\"cell_floating\"></TD></TR>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-lg-8\"><INPUT type=text name=cust[{$column[COLUMN_NAME]}] size=30 class=\"form-control\"></div></div></div>";
             }
             if (count($search_fields_RET['numeric'])) {
                 foreach ($search_fields_RET['numeric'] as $column)
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD>Between <INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"cell_floating\"> &amp; <INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"cell_small\"></TD></TR>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-sm-8\"><div class=\"input-group\"><span class=\"input-group-addon\">Between</span><INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] maxlength=11 class=\"form-control\"><span class=\"input-group-addon\"> &amp; </span><INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div></div></div></div>";
             }
-            echo '</TABLE><TABLE>';
+            echo '</div>';
+            echo '<div class="row">';
             if (count($search_fields_RET['codeds'])) {
                 foreach ($search_fields_RET['codeds'] as $column) {
                     $column['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $column['SELECT_OPTIONS']));
                     $options = explode("\r", $column['SELECT_OPTIONS']);
 
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-md-8\">";
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     foreach ($options as $option) {
                         $option = explode('|', $option);
                         if ($option[0] != '' && $option[1] != '')
                             echo "<OPTION value=\"$option[0]\">$option[1]</OPTION>";
                     }
                     echo '</SELECT>';
-                    echo "</TD></TR>";
+                    echo "</div></div></div>";
                 }
             }
             if (count($search_fields_RET['select'])) {
@@ -682,12 +681,12 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                     $column['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $column['SELECT_OPTIONS']));
                     $options = explode("\r", $column['SELECT_OPTIONS']);
 
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-md-8\">";
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     foreach ($options as $option)
                         echo "<OPTION value=\"$option\">$option</OPTION>";
                     echo '</SELECT>';
-                    echo "</TD></TR>";
+                    echo "</div></div></div>";
                 }
             }
             if (count($search_fields_RET['autos'])) {
@@ -698,8 +697,8 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                     } else
                         $options_RET = array();
 
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-md-8\">";
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     $options = array();
                     foreach ($options_RET as $option) {
                         echo "<OPTION value=\"$option\">$option</OPTION>";
@@ -715,7 +714,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                             $options[$option[$column['COLUMN_NAME']]] = true;
                         }
                     echo '</SELECT>';
-                    echo "</TD></TR>";
+                    echo "</div></div></div>";
                 }
             }
             if (count($search_fields_RET['edits'])) {
@@ -726,31 +725,31 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                     } else
                         $options_RET = array();
 
-                    echo "<TR><TD align=right width=120>$column[TITLE]</TD><TD>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]</label><div class=\"col-md-8\">";
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     $options = array();
                     foreach ($options_RET as $option)
                         echo "<OPTION value=\"$option\">$option</OPTION>";
                     echo "<OPTION value=\"---\">---</OPTION>";
                     echo "<OPTION value=\"~\">Other Value</OPTION>";
                     echo '</SELECT>';
-                    echo "</TD></TR>";
+                    echo "</div></div></div>";
                 }
             }
-            echo '</TABLE><TABLE>';
+            echo '</div>';
+            echo '<div class="row">';
             if (count($search_fields_RET['date'])) {
 
                 $data_counter = 1;
                 foreach ($search_fields_RET['date'] as $column) {
-                    echo "<TR><TD colspan=2>$column[TITLE]<BR> &nbsp; &nbsp; Between " . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . ' & ';
+                    echo "<div class=\"col-md-6\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">$column[TITLE]<label><div class=\"col-lg-8\"><div class=\"input-group\"><span class=\"input-group-addon\">Between</span>" . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . '<span class="input-group-addon"> & </span>';
                     $data_counter++;
-                    echo DateInputAY('', '_cust_end[' . $column['COLUMN_NAME'] . ']', $data_counter) . "</TD></TR>";
+                    echo DateInputAY('', '_cust_end[' . $column['COLUMN_NAME'] . ']', $data_counter) . "</div></div></div></div>";
                     $data_counter++;
                 }
             }
             if (count($search_fields_RET['radio'])) {
-                echo '<TR><TD colspan=2><BR></TD></TR>';
-                echo "<TR><TD colspan=2><TABLE>";
+                echo "<TABLE>";
 
                 echo "<TR><TD></TD><TD><table border=0 cellpadding=0 cellspacing=0><tr><td width=25><b>All</b></td><td width=30><b>Yes</b></td><td width=25><b>No</b></td></tr></table></TD><TD></TD><TD></TD><TD>";
                 if (count($search_fields_RET['radio']) > 1)
@@ -774,9 +773,9 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                         echo '</TR>';
                     $side++;
                 }
-                echo "</TABLE></TD></TR>";
+                echo "</TABLE>";
             }
-            echo '</TABLE>';
+            echo '</div>';
             break;
     }
 }

@@ -192,14 +192,14 @@ if (!$_REQUEST['modfunc']) {
             echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&w_course_period_id=" . strip_tags(trim($_REQUEST[w_course_period_id])) . "&_openSIS_PDF=true method=POST target=_blank>";
         else
             echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&_openSIS_PDF=true method=POST target=_blank>";
-        $extra['header_right'] = SubmitButton('Create Honor Roll for Selected Students', '', 'class=btn_xlarge');
+        $extra['header_right'] = SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"');
 
-        $extra['extra_header_left'] = '<TABLE>';
+        $extra['extra_header_left'] = '<div>';
 
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=list value="" checked>Certificates</TD></TR>';
-        $extra['extra_header_left'] .= '<TR><TD><INPUT type=radio name=list value=list>List</TD></TR>';
+        $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio name=list value="" checked>Certificates</label>';
+        $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio name=list value=list>List</label>';
 
-        $extra['extra_header_left'] .= '</TABLE>';
+        $extra['extra_header_left'] .= '</div>';
     }
     if (!isset($_REQUEST['_openSIS_PDF'])) {
         $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
@@ -228,46 +228,46 @@ if (!$_REQUEST['modfunc']) {
 
 
         if ($_SESSION['count_stu'] != 0) {
-            echo '<BR><CENTER>' . SubmitButton('Create Honor Roll for Selected Students', '', 'class=btn_xlarge') . '</CENTER>';
+            echo '<div class="text-center">' . SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
         echo "</FORM>";
     }
-    
-    echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
+    /*
+     * Course Selection Modal Start
+     */
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '</div>';
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+    echo '<div class="modal-body">';
+    echo '<div id="conf_div" class="text-center"></div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
+
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</table>';
+    }
+    echo '</div>';
+    echo '<div class="col-md-4" id="course_modal"></div>';
+    echo '<div class="col-md-4" id="cp_modal"></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
 }
 
 function _makeChooseCheckbox($value, $title) {
@@ -385,7 +385,7 @@ function MyWidgets($item, $mp) {
             foreach ($option as $option_value) {
                 $options[$option_value['VALUE']] = $option_value['TITLE'];
             }
-            $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4">Honor Roll</label><div class="col-lg-8">' . SelectInput("", 'honor_roll', '', $options, false, '') . '</div></div>';
+            $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Honor Roll</label><div class="col-lg-8">' . SelectInput("", 'honor_roll', '', $options, false, '') . '</div></div>';
             break;
     }
 }

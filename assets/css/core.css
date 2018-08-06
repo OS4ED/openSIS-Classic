@@ -307,7 +307,7 @@ svg {
 }
 a.bg-primary:hover,
 a.bg-primary:focus {
-  background-color: #2196F3;
+  background-color: #407dad;
 }
 .bg-success {
   color: #fff;
@@ -1181,6 +1181,7 @@ fieldset[disabled] .form-control {
   color: #333333;
   -webkit-box-shadow: none;
   box-shadow: none;
+  text-align: left;
 }
 .form-control-unstyled {
   padding: 0;
@@ -1276,9 +1277,9 @@ textarea {
 .radio-inline,
 .checkbox-inline {
   position: relative;
-  padding-left: 28px;
+  padding-left: 22px;
   margin-bottom: 5px;
-  margin-right: 15px;
+  margin-right: 20px;
 }
 .radio-right.radio-inline,
 .radio-right label,
@@ -1525,6 +1526,10 @@ select[multiple].input-xs {
 .form-horizontal .form-group > div[class*="col-"] + .help-inline {
   margin-left: 10px;
   margin-right: 10px;
+}
+.form-horizontal .control-label[class*=col-md-] {
+    overflow-wrap: break-word;
+    font-size: 14px;
 }
 @media (min-width: 1025px) {
   .help-inline {
@@ -2788,6 +2793,7 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
 }
 .nav-tabs > li {
   float: none;
+  vertical-align: bottom;
 }
 .nav-tabs > li > a {
   margin-right: 0;

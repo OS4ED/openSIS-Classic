@@ -327,7 +327,7 @@ if (!$_REQUEST['modfunc']) {
 
     //PopTable_wo_header('header');
     echo '<div class="panel panel-default">';
-    echo '<div class="tabbable"><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom">' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&tab_id=$_REQUEST[tab_id]") . '</ul></div>';
+    echo '<div class="tabbable">' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&tab_id=$_REQUEST[tab_id]") . '</div>';
     echo '<div id="div_margin" class="panel-body">';
     echo '<div id="students" class="tab-content">';
     echo '<div class="table-responsive">';

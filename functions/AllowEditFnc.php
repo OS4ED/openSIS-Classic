@@ -191,10 +191,10 @@ function ProgramLink($modname,$title='',$options='')
 	return $link;
 }
 
-function ProgramLinkforExport($modname,$title='',$options='')
+function ProgramLinkforExport($modname,$title='',$options='',$extra='')
 {
 	if(AllowUse($modname))
-		$link = '<A HREF=ForExport.php?modname='.$modname.$options.'>';
+		$link = '<A HREF=ForExport.php?modname='.$modname.$options.' '.$extra.'>';
 	if($title)
 		$link .= $title;
 	if(AllowUse($modname))

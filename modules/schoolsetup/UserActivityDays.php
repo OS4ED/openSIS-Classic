@@ -51,9 +51,9 @@ $activity = $activity_RET[1];
 echo "<FORM name=activity class=no-margin id=activity action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=INACTIVITY method=POST>";
 
 echo '<div class="form-group"><label class="control-label text-uppercase"><b>Maximum inactive days allowed before account is disabled</b></label>' . TextInput($activity['ACTIVITY_DAYS'], 'activity[ACTIVITY_DAYS]', '', 'class=cell_floating') . '</div>';
-if ($_REQUEST['page_display']) {
-    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
-}
+//if ($_REQUEST['page_display']) {
+//    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
+//}
 echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
 
 echo '</FORM>';

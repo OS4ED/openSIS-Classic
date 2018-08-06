@@ -47,7 +47,7 @@ $period_select .= "</SELECT>";
 echo "<FORM class='form-horizontal' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 echo "<div class=\"panel panel-default\">";
 echo "<div class=\"panel-body\">";
-DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($date, 'date', false, array('submit' => true)) . '<div class="form-group">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>');
+DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($date, 'date', false, array('submit' => true)) . '<div class="form-group m-l-15">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>');
 echo '</div>'; //.panel-body
 echo '</div>'; //.panel.panel-default
 echo '</FORM>';

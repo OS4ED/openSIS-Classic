@@ -1,5 +1,4 @@
 <?php
-
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -144,6 +143,7 @@ if($_REQUEST['values'])
         echo'<FONT color=red>Total must be 100%!</FONT>';
     }
 }
+
 $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND school_id=\''.UserSchool().'\' AND PROGRAM=\'Gradebook\' AND value like "%_'.UserCoursePeriod().'%"'),array(),array('TITLE'));
 if(count($config_RET))
 {
@@ -154,15 +154,15 @@ if(count($config_RET))
                 $programconfig[$title] = $value1[0];
             }
  else {
-     $value1= explode("_",$value[1]['VALUE']);
+     $value1= explode("_".UserCoursePeriod(),$value[1]['VALUE']);
      if(count($value1)>1)
       $programconfig[$title] = $value1[0];
      else
         $programconfig[$title] = $value[1]['VALUE'];
 }
 }
-
-$grades = DBGet(DBQuery('SELECT cp.TITLE AS CP_TITLE,c.TITLE AS COURSE_TITLE,cp.COURSE_PERIOD_ID,rcg.TITLE,rcg.ID FROM report_card_grades rcg,course_periods cp,course_period_var cpv,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND cp.SCHOOL_ID=rcg.SCHOOL_ID AND cp.SYEAR=rcg.SYEAR AND cp.SYEAR=\'' . UserSyear() . '\' AND rcg.GRADE_SCALE_ID=cp.GRADE_SCALE_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND DOES_BREAKOFF=\'Y\' GROUP BY cp.COURSE_PERIOD_ID,rcg.ID ORDER BY rcg.BREAK_OFF IS NOT NULL DESC,rcg.BREAK_OFF DESC,rcg.SORT_ORDER '), array(), array('COURSE_PERIOD_ID'));
+if(UserCoursePeriod()!='')
+$grades = DBGet(DBQuery('SELECT cp.TITLE AS CP_TITLE,c.TITLE AS COURSE_TITLE,cp.COURSE_PERIOD_ID,rcg.TITLE,rcg.ID FROM report_card_grades rcg,course_periods cp,course_period_var cpv,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND cp.TEACHER_ID=\''.User('STAFF_ID').'\' AND cp.SCHOOL_ID=rcg.SCHOOL_ID AND cp.COURSE_PERIOD_ID='.UserCoursePeriod().' AND cp.SYEAR=rcg.SYEAR AND cp.SYEAR=\''.UserSyear().'\' AND rcg.GRADE_SCALE_ID=cp.GRADE_SCALE_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND DOES_BREAKOFF=\'Y\' GROUP BY cp.COURSE_PERIOD_ID,rcg.ID ORDER BY rcg.BREAK_OFF IS NOT NULL DESC,rcg.BREAK_OFF DESC,rcg.SORT_ORDER '),array(),array('COURSE_PERIOD_ID'));
 echo "<FORM class=form-horizontal action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 PopTable('header', 'Configuration');
 
@@ -246,7 +246,7 @@ if (count($grades) > 0) {
     echo '</fieldset></TD>';
 }
 
-
+$quarters_dt = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,SEMESTER_ID,DOES_GRADES,DOES_EXAM FROM school_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER'));
 $quarters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,SEMESTER_ID,DOES_GRADES,DOES_EXAM FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
 if ($quarters)
     $semesters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,DOES_GRADES,DOES_EXAM FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
@@ -260,6 +260,55 @@ else
 echo '<fieldset>';
 echo '<h5 class="text-primary">Final Grading Percentages</h5>';
 echo '<div class="table-responsive">';
+
+
+
+if($quarters_dt)
+{
+    
+  foreach($quarters_dt as $qtrs)
+{
+      
+  if($qtrs['DOES_GRADES']=='Y')
+	{    
+ 
+      $table = '<TABLE width=100% class="table table-bordered table-striped">';
+		$table .= '<TR><TD rowspan=2 valign=middle>'.$qtrs['TITLE'].'</TD>';
+                $table .= '<TD>'.$qtrs['TITLE'].'</TD>';
+      
+      if($qtrs['DOES_EXAM']=='Y')
+                {
+			$table .= '<TD>'.$qtrs['TITLE'].' Exam</TD>';
+                }
+		$table .= '</TR><TR>';
+		$total = 0;
+                
+                $table .= '<TD><INPUT class="form-control" type=text name=values[Q-'.$qtrs['MARKING_PERIOD_ID'].'] value="'.$programconfig['Q-'.$qtrs['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+			$total += $programconfig['Q-'.$qtrs['MARKING_PERIOD_ID']];
+      
+                   if($qtrs['DOES_EXAM']=='Y')
+		{
+			$table .= '<TD><INPUT class="form-control" type=text name=values[Q-E'.$qtrs['MARKING_PERIOD_ID'].'] value="'.$programconfig['Q-E'.$qtrs['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+			$total += $programconfig['Q-E'.$qtrs['MARKING_PERIOD_ID']];
+		}     
+                if($total !=100)
+			$table .= '<TD><FONT color=red>Total not 100%!</TD>';
+		$table .= '</TR>';
+            $table .= '</tbody></TABLE>';
+            echo $table;
+                        
+                        }
+      
+       
+      
+    }  
+
+
+
+
+
+}
+
 
 if ($quarters) {
     foreach ($semesters as $sem)

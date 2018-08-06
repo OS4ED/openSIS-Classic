@@ -74,8 +74,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             }
 
             Search('general_info');
-            if ($extra['search'])
+            if ($extra['search']){
                 echo $extra['search'];
+            }
             Search('student_fields');
 
 
@@ -84,7 +85,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             # ---   Advanced Search Start ---------------------------------------------------------- #
 
             echo '<input type=hidden name=sql_save_session value=true />';
-            
+
 
             echo '<div id="searchdiv" class="pt-20 mt-20 well" style="display:none;">';
             echo '<div><a href="javascript:void(0);" onclick="hide_search_div();" class="text-pink"><i class="icon-square-left"></i> Back to Basic Search</a></div>';
@@ -235,25 +236,25 @@ else {
 
         if (!($_REQUEST['expanded_view'] == 'true' || $_REQUEST['addr'] || $extra['addr'])) {
 
-          //  if($_REQUEST['modname']=='students/AdvancedReport.php')
-            if($_REQUEST['w_course_period_id']!='')
-            $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) INNER JOIN schedule w_ss ON (w_ss.STUDENT_ID=ssm.STUDENT_ID) ';
+            //  if($_REQUEST['modname']=='students/AdvancedReport.php')
+            if ($_REQUEST['w_course_period_id'] != '')
+                $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) INNER JOIN schedule w_ss ON (w_ss.STUDENT_ID=ssm.STUDENT_ID) ';
             else
-            $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) ';
+                $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) ';
 
 
- if ($_REQUEST['request_course_id']) {
-                        $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
-                        if (!$_REQUEST['not_request_course']) {
-                            $extra['FROM'] .= ',schedule_requests sr';
-                            $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+            if ($_REQUEST['request_course_id']) {
+                $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
+                if (!$_REQUEST['not_request_course']) {
+                    $extra['FROM'] .= ',schedule_requests sr';
+                    $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
-                            $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
-                        } else {
-                            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sr WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
-                            $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
-                        }
-                    }
+                    $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
+                } else {
+                    $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sr WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
+                    $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
+                }
+            }
             $extra['ORDER_BY'] = 'FULL_NAME';
             $extra['DISTINCT'] = 'DISTINCT';
         }
@@ -359,10 +360,16 @@ else {
             unset($sd);
         }
         echo '<div class="panel-body">';
-        echo "<div id='students' class=\"table-responsive\">";
-        if ($_REQUEST['_search_all_schools'] == 'Y' && $_REQUEST['modname']=='scheduling/PrintSchedules.php') 
+        echo "<div id='students'>";
+        if ($_REQUEST['_search_all_schools'] == 'Y' && $_REQUEST['modname'] == 'scheduling/PrintSchedules.php')
             echo '<INPUT type=hidden name="_search_all_schools" value="Y">';
+        if(count($students_RET)>0){
+            echo '<div class="table-responsive">';
+        }
         ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+        if(count($students_RET)>0){
+            echo '</div>';
+        }
         echo "</div>";
         echo "</div>"; //.panel-body
         echo "</div>"; //.panel
@@ -398,18 +405,52 @@ else {
     } else
         BackPrompt('No Students were found.');
 }
-echo '<div id="modal_default_request" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+echo '<div id="modal_default_request" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
 
-    <div class="modal-body">';
+echo '<div class="modal-body">';
 echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
+
+echo'<div class="row" id="resp_table">';
+echo '<div class="col-md-6">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><tr class="alpha-grey"><th>Subject</th></tr>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    }
+    echo '</table>';
+}
+echo '</div>';
+echo '<div class="col-md-6"><div id="course_modal_request"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
        $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
@@ -420,66 +461,65 @@ if(count($subjects_RET)>0)
     echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
     foreach($subjects_RET as $val)
     {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
     }
     echo '</table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal_request"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
-        /* New Modal Design Starts */
-        echo '<div id="modal_default_cp" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                            <h5 class="modal-title">Choose course</h5>
-                        </div>
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
 
-                        <div class="modal-body">';
-         echo '<center><div id="conf_div"></div></center>';
-        
-        echo '<center><div id="calculating" style=display:none><img src="assets/ajax-loader.gif" width="15px" ><br />Checking schedule Please Wait...</div></center>';
-        if($clash)
-                                    echo "<center><b>There is a conflict. You cannot add this course period </b></center>".ErrorMessage($clash,'note')."";
-       
-        echo'<table id="resp_table"><tr><td valign="top">';
-        echo '<div>';
-                           $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-	$QI = DBQuery($sql);
-	$subjects_RET = DBGet($QI);
-       
-                 echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-                           echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-                  
-        foreach($subjects_RET as $val)
-        {
-            echo '<tr><td><a href=javascript:void(0); onclick="grab_coursePeriod('.$val['SUBJECT_ID'].',\'courses\',\'subject_id\')">'.$val['TITLE'].'</a></td></tr>    ';
-        }
-        echo '</table>';
-        echo '</div></td>';
-        echo '<td valign="top"><div id="course_modal_cp"></div></td>';
-        echo '<td valign="top"><div id="cp_modal_cp"></div></td>';
-         echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-         
-         
-         
-                       echo' </div>
-                     </div>
-                </div>
-        </div>';
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+/* New Modal Design Starts */
+echo '<div id="modal_default_cp_calc" class="modal fade">';
+echo '<div class="modal-dialog modal-xl">';
+echo '<div class="modal-content">';
+
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>'; //.modal-header
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div id="calculating" class="text-center" style="display:none;"><i class="fa fa-refresh fa-spin fa-fw"></i> Checking schedule Please Wait...</div>';
+if ($clash){
+    echo '<div class="text-center"><b>There is a conflict. You cannot add this course period </b>' . ErrorMessage($clash, 'note') . '</div>';
+}
+echo'<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+echo '<tbody>';
+foreach ($subjects_RET as $val) {
+    echo '<tr><td><a href=javascript:void(0); onclick="grab_coursePeriod(' . $val['SUBJECT_ID'] . ',\'courses\',\'subject_id\')">' . $val['TITLE'] . '</a></td></tr>    ';
+}
+echo '</tbody>';
+echo '</table>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal_cp"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal_cp"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
 function _make_sections($value) {
     if ($value != '') {
         $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
         return $get[1]['NAME'];
-    }
-    else
+    } else
         return '';
 }
 

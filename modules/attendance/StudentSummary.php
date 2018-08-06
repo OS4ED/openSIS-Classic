@@ -30,12 +30,12 @@ include('../../RedirectModulesInc.php');
 DrawBC("Attendance > " . ProgramTitle());
 $month_names = array('JAN' => '01', 'FEB' => '02', 'MAR' => '03', 'APR' => '04', 'MAY' => '05', 'JUN' => '06', 'JUL' => '07', 'AUG' => '08', 'SEP' => '09', 'OCT' => '10', 'NOV' => '11', 'DEC' => '12');
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'])
-    $start_date = $_REQUEST['year_start'] . '-' . $month_names[$_REQUEST['month_start']] . '-' . $_REQUEST['day_start'];
+    $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
 else
     $start_date = date('Y-m') . '-01';
 
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end'])
-    $end_date = $_REQUEST['year_end'] . '-' . $month_names[$_REQUEST['month_end']] . '-' . $_REQUEST['day_end'];
+    $end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
 else
     $end_date = DBDate('mysql');
 ####################
@@ -75,7 +75,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
     echo "<div class=\"panel panel-default\">";
     echo "<div class=\"panel-body\">";
-    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($start_date, 'start') .'<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . PrepareDateSchedule($end_date, 'end') . '<div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
+    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($start_date, 'start') . '<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . PrepareDateSchedule($end_date, 'end') . '<div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
     echo '</div>';
     echo '</div>';
     echo '</FORM>';
@@ -152,41 +152,41 @@ if (!$_SESSION['student_id'])
     Search_absence_summary('student_id', $extra);
 
 
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
+/*
+ * Course Selection Modal Start
+ */
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h4 class="modal-title">Choose course</h4>';
+echo '</div>';
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    }
+    echo '</table>';
 }
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4" id="course_modal"></div>';
+echo '<div class="col-md-4" id="cp_modal"></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
 
 if (UserStudentID()) {
     $name_RET = DBGet(DBQuery('SELECT concat(FIRST_NAME, \' \', COALESCE(concat(MIDDLE_NAME,\' \'),\' \'), LAST_NAME) AS FULL_NAME FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));

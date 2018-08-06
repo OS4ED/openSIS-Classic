@@ -120,4 +120,9 @@ function Preferences($item,$program='Preferences')
         else
 	return $_openSIS['Preferences'][$program][$item][1]['VALUE'];
 }
+function StaffCategory($staff_id)
+{
+    $category=DBGet(DBquery('SELECT CATEGORY FROM staff_school_info WHERE STAFF_ID='.$staff_id));
+    return ($category[1]['CATEGORY']==''?'N/A':$category[1]['CATEGORY']);
+}
 ?>

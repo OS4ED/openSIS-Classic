@@ -59,9 +59,9 @@ foreach ($values as $symbol)
 echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=currenc&page_display=CURRENCY method=POST>";
 
 echo '<div class="form-group"><label class="control-label text-uppercase"><b>Currency</b></label>' . SelectInput($val, 'values[CURRENCY]', '', $symbols, 'N/A') . '</div>';
-if ($_REQUEST['page_display']) {
-    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
-}
+//if ($_REQUEST['page_display']) {
+//    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
+//}
 echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
 
 echo '</FORM>';

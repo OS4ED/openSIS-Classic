@@ -16,8 +16,15 @@ $(window).on('load', function () {
 });
 
 
-$(function () {    
-    
+$(function () {
+
+    var cookieValue = $.cookie("miniSidebar");
+
+    if (cookieValue == 1) {
+        $('body').addClass('sidebar-xs');
+    } else {
+        $('body').removeClass('sidebar-xs');
+    }
 
     // Disable CSS transitions on page load
     $('body').addClass('no-transitions');
@@ -391,6 +398,11 @@ $(function () {
 
         // Toggle min sidebar class
         $('body').toggleClass('sidebar-xs');
+        if ($('body').hasClass('sidebar-xs')) {
+            $.cookie("miniSidebar", 1, { expires : 99 });
+        } else {
+            $.cookie("miniSidebar", 0);
+        }
     });
 
 

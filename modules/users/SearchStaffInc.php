@@ -130,14 +130,16 @@ if (User('PROFILE') == 'admin') {
             DrawHeader('Please select a Staff');
         if ($_REQUEST['_search_all_schools'] == 'Y')
             $extra['GROUP'] = ' s.STAFF_ID ';
+        $extra['SELECT']=',s.STAFF_ID as CATEGORY';
+        $extra['functions']=array('CATEGORY'=>StaffCategory);
         $staff_RET = GetUserStaffList($extra);
-        $last_log_sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
+        $last_log_sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,s.STAFF_ID as CATEGORY,
                                 s.PROFILE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID,\' \' as LAST_LOGIN FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE
 					((s.PROFILE_ID!=4 AND s.PROFILE_ID!=3) OR s.PROFILE_ID IS NULL) AND ' . ($_REQUEST['first'] ? ' UPPER(s.FIRST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtoupper($_REQUEST['first'])) . '%\' AND ' : '') . ($_REQUEST['last'] ? ' UPPER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtoupper($_REQUEST['last'])) . '%\' AND ' : '') . ' ssr.SYEAR=\'' . UserSyear() . '\'  AND s.STAFF_ID NOT IN (SELECT USER_ID FROM login_authentication WHERE PROFILE_ID NOT IN (3,4)) ' . ($_REQUEST['username'] ? ' AND s.STAFF_ID IN (SELECT USER_ID FROM login_authentication WHERE UPPER(USERNAME) LIKE \'' . singleQuoteReplace("'", "\'", strtoupper($_REQUEST['username'])) . '%\' AND PROFILE_ID NOT IN (3,4)) ' : '');
 //                $last_log=DBGet(DBQuery('SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
 //					s.PROFILE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID,\' \' as LAST_LOGIN FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE
 //					((s.PROFILE_ID!=4 AND s.PROFILE_ID!=3) OR s.PROFILE_ID IS NULL) AND ssr.SYEAR=\''.UserSyear().'\'  AND s.STAFF_ID NOT IN (SELECT USER_ID FROM login_authentication WHERE PROFILE_ID NOT IN (3,4))'));
-        $last_log = DBGet(DBQuery($last_log_sql));
+        $last_log = DBGet(DBQuery($last_log_sql),array('CATEGORY'=>StaffCategory));
         foreach ($last_log as $li => $ld) {
             $staff_RET[] = $ld;
         }
@@ -160,9 +162,9 @@ if (User('PROFILE') == 'admin') {
             $singular = 'Staff';
             $plural = 'Staffs';
             if ($_REQUEST['_dis_user'])
-                $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
+                $columns = array('FULL_NAME' => 'Staff Member', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
             else
-                $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
         }
         if (is_array($extra['columns_before']))
             $columns = $extra['columns_before'] + $columns;

@@ -49,9 +49,9 @@ $failure = $failure_RET[1];
 echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=FAILURE method=POST>";
 
 echo '<div class="form-group"><label class="control-label text-uppercase"><b>No. of login failures allowed before account is disabled</b></label>' . TextInput($failure['FAIL_COUNT'], 'failure[FAIL_COUNT]', '', 'class=form-control') . '</div>';
-if ($_REQUEST['page_display']) {
-    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
-}
+//if ($_REQUEST['page_display']) {
+//    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
+//}
 echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_failure_count();"');
 
 echo '</FORM>';

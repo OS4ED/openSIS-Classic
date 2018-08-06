@@ -53,7 +53,7 @@ function Widgets($item, $allow_widget = false) {
 //                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
 //                    echo '</DIV>' . "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default' onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' >Choose a Course</A></div></div></div>";
 //                    $extra['search'] .='<div id="hidden_tag_cp_id"></div>';
-                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
+                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class='icon-menu6 pull-right m-t-10'></i><DIV id=course_div class='form-control m-b-5' readonly><span class='text-grey'>Click to Select</span></DIV></A></div></div>";
 //                    $extra['search'] .= '<div id="modal_default" class="modal fade">
 //                    <div class="modal-dialog">
 //                    <div class="modal-content">
@@ -99,18 +99,18 @@ function Widgets($item, $allow_widget = false) {
                     if ($_REQUEST['request_course_id']) {
                         $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
                         if (!$_REQUEST['not_request_course']) {
-                            $extra['FROM'] .= ',schedule_requests sr';
-                            $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+                            $extra['FROM'] .= ',schedule_requests scr';
+                            $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND scr.SCHOOL_ID=ssm.SCHOOL_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                         } else {
-                            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sr WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
+                            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests scr WHERE scr.STUDENT_ID=ssm.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                         }
                     }
 //                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
 //                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseRequest.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
-                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
+                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class='icon-menu6 m-t-10 pull-right'></i><DIV id=request_div class='form-control m-b-5' readonly><span class='text-grey'>Click to Select</span></DIV></A></div></div>";
                 }
                 break;
 

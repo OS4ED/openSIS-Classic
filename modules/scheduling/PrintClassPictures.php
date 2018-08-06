@@ -34,7 +34,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $course_periods_RET = DBGet(DBQuery('SELECT cp.COURSE_PERIOD_ID,cp.TITLE,TEACHER_ID FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID IN (' . $cp_list . ') AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM school_periods WHERE PERIOD_ID=cpv.PERIOD_ID)'));
 
         if ($_REQUEST['include_teacher'] == 'Y')
-            $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME FROM staff WHERE STAFF_ID IN (SELECT TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID IN (' . $cp_list . '))'), array(), array('STAFF_ID'));
+            $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,IMG_CONTENT FROM staff WHERE STAFF_ID IN (SELECT TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID IN (' . $cp_list . '))'), array(), array('STAFF_ID'));
         $handle = PDFStart();
         $PCP_UserCoursePeriod = $_SESSION['UserCoursePeriod']; // save/restore for teachers
 
@@ -56,13 +56,18 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $i = 0;
                     if ($_REQUEST['include_teacher'] == 'Y') {
                         $teacher = $teachers_RET[$teacher_id][1];
-
+                        
+                        if($teacher['IMG_CONTENT'])
+                            
                         echo '<TR><TD valign=bottom><TABLE>';
-                        if ($UserPicturesPath && (($size = getimagesize($picture_path = $UserPicturesPath . '/' . $teacher_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && $staff['ROLLOVER_ID'] && ($size = getimagesize($picture_path = $UserPicturesPath . (UserSyear() - 1) . '/' . $staff['ROLLOVER_ID'] . '.JPG'))))
-                            if ($size[1] / $size[0] > 172 / 130)
-                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
-                            else
-                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
+//                        if ($UserPicturesPath && (($size = getimagesize($picture_path = $UserPicturesPath . '/' . $teacher_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && $staff['ROLLOVER_ID'] && ($size = getimagesize($picture_path = $UserPicturesPath . (UserSyear() - 1) . '/' . $staff['ROLLOVER_ID'] . '.JPG'))))
+//                            if ($size[1] / $size[0] > 172 / 130)
+//                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
+//                            else
+//                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
+                            
+                            if($teacher['IMG_CONTENT'])
+                                echo '<TR><TD><IMG SRC="data:image/jpeg;base64,' . base64_encode($teacher['IMG_CONTENT']) . '"  width=150 class=pic></TD></TR>';
                         else
                             echo '<TR><TD><img src="assets/noimage.jpg" width=144></TD></TR>';
                         echo '<TR><TD><FONT size=-1><B>' . $teacher['LAST_NAME'] . '</B><BR>' . $teacher['FIRST_NAME'] . '</FONT></TD></TR>';
@@ -77,11 +82,31 @@ if ($_REQUEST['modfunc'] == 'save') {
                             echo '<TR>';
 
                         echo '<TD valign=bottom><TABLE>';
-                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG'))))
-                            if ($size[1] / $size[0] > 144 / 144)
-                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
-                            else
-                                echo '<TR><TD><IMG SRC="' . $picture_path . '" width=144></TD></TR>';
+                        
+                        if($student_id)
+                        {
+                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND SCHOOL_ID='. UserSchool().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
+                        $StudentPicturesPath=1;
+                        }   
+                        else
+                         $StudentPicturesPath=0;   
+//                        echo $StudentPicturesPath.'<br><br>';
+//                        if(count($stu_img_info)>0)
+//                        {
+//                        //	fclose($file);
+//                                echo '<div width=150 align="center"><IMG src="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=150 class=pic>';
+//                                if(User('PROFILE')=='admin' && User('PROFILE')!='student' && User('PROFILE')!='parent')
+//                                echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit style="text-decoration:none"><b>Update Student\'s Photo</b></a></div>';
+//                                else
+//                                echo '';
+//                        }
+                        
+//                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG'))))
+//                            if ($size[1] / $size[0] > 144 / 144)
+//                                echo '<TR><TD><IMG SRC="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=144></TD></TR>';
+//                            else
+                         if($StudentPicturesPath!=0)
+                                echo '<TR><TD><IMG src="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=150 class=pic></TD></TR>';
                         else
                             echo '<TR><TD><img src="assets/noimage.jpg" width=144></TD></TR>';
                         echo '<TR><TD><FONT size=-1><B>' . $student['LAST_NAME'] . '</B><BR>' . $student['FIRST_NAME'] . '</FONT></TD></TR>';
@@ -104,41 +129,48 @@ if ($_REQUEST['modfunc'] == 'save') {
 }
 
 
-    echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+/*
+ * Modal Start
+ */
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>'; //.modal-header
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
+    echo '</tbody>';
     echo '</table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+
+
 if (!$_REQUEST['modfunc']) {
     DrawBC("Scheduling > " . ProgramTitle());
 
@@ -162,7 +194,7 @@ if (!$_REQUEST['modfunc']) {
 
         if ($_SESSION['count_course_periods'] != 0)
             echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top"><INPUT type=submit class="btn btn-primary" value=\'Create Class Pictures for Selected Course Periods\'></span></div></div>';
-        
+
         echo '</div>';
         echo '</FORM>';
     }
@@ -172,9 +204,9 @@ function mySearch($type, $extra = '') {
     global $extra;
 
     if (($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])) {
-        
+
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST[next_modname])) . " method=POST>";
-        
+
         PopTable('header', 'Search');
 
         $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserSchool() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
@@ -206,19 +238,19 @@ function mySearch($type, $extra = '') {
             echo "<OPTION value=$period[PERIOD_ID]>$period[TITLE]</OPTION>";
         echo '</SELECT></div></div>';
         echo '</div>'; //.col-lg-6
-        
+
         echo '<div class="col-lg-6">';
         Widgets('course');
         echo $extra['search'];
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
-        
+
 
         echo '<div>';
         echo Buttons('Submit', 'Reset');
         echo '</div>';
         PopTable('footer');
-        
+
         echo '</FORM>';
     } else {
         DrawHeader('', $extra['header_right']);
