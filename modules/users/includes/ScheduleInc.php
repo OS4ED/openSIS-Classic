@@ -45,11 +45,12 @@ course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WH
     }
 
     foreach ($schedule_RET as $rdi => $rdd) {
-        $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD FROM course_period_var cpv,school_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
+        $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.START_TIME as START_TIME,sp.END_TIME as END_TIME,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD FROM course_period_var cpv,school_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
         $cp_info = DBGet(DBQuery('SELECT * FROM course_periods WHERE COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
         if ($rdd['SCHEDULE_TYPE'] == 'FIXED') {
             $schedule_RET[$rdi]['DAYS'] = _makeDays($get_det[1]['DAYS']);
-            $schedule_RET[$rdi]['DURATION'] = $get_det[1]['DURATION'];
+//            $schedule_RET[$rdi]['DURATION'] = $get_det[1]['DURATION'];
+           $schedule_RET[$rdi]['DURATION'] = date("g:i A", strtotime($get_det[1]['START_TIME'])).' to '. date("g:i A", strtotime($get_det[1]['END_TIME']));
             $schedule_RET[$rdi]['ROOM'] = $get_det[1]['ROOM'];
             $schedule_RET[$rdi]['PERIOD'] = $get_det[1]['PERIOD'];
             if ($schedule_RET[$rdi]['MARKING_PERIOD_ID'] == 'Custom') {
@@ -77,6 +78,7 @@ course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WH
 //                $schedule_RET[$rdi]['DURATION']=implode(',',$temp_duration);
 //                $schedule_RET[$rdi]['ROOM']=implode(',',$temp_room);
 //                $schedule_RET[$rdi]['PERIOD']=implode(',',$temp_period);
+            $schedule_RET[$rdi]['DURATION'] = date("g:i A", strtotime($get_det[1]['START_TIME'])).' to '. date("g:i A", strtotime($get_det[1]['END_TIME']));
             if ($schedule_RET[$rdi]['MARKING_PERIOD_ID'] == 'Custom') {
                 $schedule_RET[$rdi]['MARKING_PERIOD_ID'] = date('M/d/Y', strtotime($cp_info[1]['BEGIN_DATE'])) . ' to ' . date('M/d/Y', strtotime($cp_info[1]['END_DATE']));
             }
