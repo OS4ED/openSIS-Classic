@@ -64,30 +64,17 @@ if (count($filelist) > 3) {
     }
 }
 echo "<noscript><META http-equiv=REFRESH content='0;url=EnableJavascript.php' /></noscript>";
-echo "<script type='text/javascript'>
-	function changeColors(){ 
-        
-        var aTags = document.getElementsByTagName(\"a\"); 
-		
-		
-        for(i=0;i<aTags.length;i++){ 
-        	if(document.getElementsByTagName('a')[i].id=='hm')
-                document.getElementsByTagName('a')[i].className = 'submenuitem'; 
-        } 
-	} 
-        function init(param,param2) {
-        
-        calendar.set('date_'+param);
-        if(param2==2)
-        {
-        document.getElementById('date_'+param).style.display ='block';
-        document.getElementById('date_div_'+param).style.display ='none';
-        }
-        document.getElementById('date_'+param).click();
-        }
-		
+echo "<script type='text/javascript'>	
+        function init(param,param2) {        
+            calendar.set('date_'+param);
+            if(param2==2)
+            {
+                document.getElementById('date_'+param).style.display ='block';
+                document.getElementById('date_div_'+param).style.display ='none';
+            }
+            document.getElementById('date_'+param).click();
+        }		
 </script>";
-
 
 error_reporting(1);
 
@@ -96,17 +83,18 @@ include 'Warehouse.php';
 $old_school = UserSchool();
 $old_syear = UserSyear();
 
-
 if ((!$_SESSION['UserMP'] || (optional_param('school', '', PARAM_SPCL) && optional_param('school', '', PARAM_SPCL) != $old_school) || (optional_param('syear', 0, PARAM_SPCL) && optional_param('syear', 0, PARAM_SPCL) != $old_syear)) && User('PROFILE') != 'parent')
     $_SESSION['UserMP'] = GetCurrentMP('QTR', DBDate());
 
 array_rwalk($_REQUEST, 'strip_tags');
-//print_r($_REQUEST);
+
 if (!isset($_REQUEST['_openSIS_PDF'])) {
     Warehouse('header');
     $css = trim(getCSS());
-    //echo "<link rel='stylesheet' type='text/css' href='themes/" . trim(strtolower($css)) . "/" . trim(ucwords($css)) . ".css'>";
 
+    /*
+     * Include Stylesheets
+     */
     echo '<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">';
@@ -119,12 +107,12 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<link href="assets/css/custom.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/extras/css-checkbox-switch.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
 
-    //echo "<link rel='stylesheet' type='text/css' href='styles/Help.css'>";
-    /* echo "<link rel='stylesheet' type='text/css' href='styles/CalendarMod.css'>"; */
-
-    //echo '<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>';
+    /*
+     * Include Javascript Core Files
+     */
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/editors/ckeditor/ckeditor.js"></script>';
@@ -134,26 +122,25 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/switchery.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/moment/moment.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
-    echo '<script type="text/javascript" src="assets/js/plugins/extensions/jquery.cookie.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/extensions/cookie.js"></script>';
 
+    /* JS Initializers */
     echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';
+    echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/ripple.min.js"></script>';
-    echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_select2.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
-    //echo '<script type="text/javascript" src="assets/js/pages/editor_ckeditor.js"></script>';
     echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
-    ?>
-    <script type="text/javascript">
+    echo '<script type="text/javascript">
         $(function () {
-            $('body').on('click', 'div.sidebar-overlay', function () {
-                $('body').toggleClass('sidebar-mobile-main');
+            $("body").on("click", "div.sidebar-overlay", function () {
+                $("body").toggleClass("sidebar-mobile-main");
             });
         });
-    </script>
-    <?php
+    </script>';
+    
 
     if (strpos($_REQUEST['modname'], 'miscellaneous/') === false)
         echo '<script language="JavaScript">if(window == top  && (!window.opener || window.opener.location.href.substring(0,(window.opener.location.href.indexOf("&")!=-1?window.opener.location.href.indexOf("&"):window.opener.location.href.replace("#","").length))!=window.location.href.substring(0,(window.location.href.indexOf("&")!=-1?window.location.href.indexOf("&"):window.location.href.replace("#","").length)))) window.location.href = "index.php";</script>';
@@ -188,23 +175,22 @@ if (User('PROFILE') == 'teacher') {
         echo "<OPTION value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
     }
     echo "</SELECT>";
+    echo "</div></FORM></li>";
 
     //===================================================================================================
-    echo "</div></FORM></li>";
+    
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=syear method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $school_years_RET = DBGet(DBQuery("SELECT YEAR(sy.START_DATE)AS START_DATE,YEAR(sy.END_DATE)AS END_DATE FROM school_years sy,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE ssr.SYEAR=sy.SYEAR AND sy.school_id=ssr.school_id AND sy.school_id=" . UserSchool() . " AND st.staff_id=$_SESSION[STAFF_ID]"));
-
     echo "<SELECT class=\"select\" name=syear onChange='this.form.submit();' style='width:80;'>";
-
     foreach ($school_years_RET as $school_years) {
         echo "<OPTION value=$school_years[START_DATE]" . ((UserSyear() == $school_years['START_DATE']) ? ' SELECTED' : '') . ">$school_years[START_DATE]" . ($school_years[END_DATE] != $school_years[START_DATE] ? "-" . $school_years['END_DATE'] : '') . '</OPTION>';
     }
-
     echo '</SELECT>';
     echo "</div></FORM></li>";
 
+    //===================================================================================================
+    
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=mp method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
-
     $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_quarters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
     if (!isset($_SESSION['UserMP'])) {
         $_SESSION['UserMP'] = GetCurrentMP('QTR', DBDate());
@@ -217,7 +203,6 @@ if (User('PROFILE') == 'teacher') {
             $allMP = 'SEM';
         }
     }
-
     if (!$RET) {
         $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_years WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (!isset($_SESSION['UserMP'])) {
@@ -225,8 +210,6 @@ if (User('PROFILE') == 'teacher') {
             $allMP = 'FY';
         }
     }
-
-
     echo "<SELECT class=\"select\" name=mp onChange='this.form.submit();'>";
     if (count($RET)) {
         if (!UserMP())
@@ -237,8 +220,6 @@ if (User('PROFILE') == 'teacher') {
         }
     }
     echo "</SELECT>";
-    //Marking Period
-
     echo '</div></FORM></li>';
 }  ##################Only for Teacher End##################
 
@@ -270,6 +251,8 @@ if (User('PROFILE') != 'teacher') {
         }
     }
     echo '</FORM></div></li>';
+
+    //===================================================================================================
 
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>
                         <INPUT type=hidden name=modcat value='' id=modcat_input>";
@@ -331,6 +314,8 @@ if (User('PROFILE') != 'teacher') {
     echo '</SELECT>';
     echo '</FORM></div></li>';
 
+    //===================================================================================================
+
     if (User('PROFILE') == 'parent') {
         echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>";
         echo "<INPUT type=hidden name=modcat value='' id=modcat_input>";
@@ -354,7 +339,7 @@ if (User('PROFILE') != 'teacher') {
         echo '</FORM></li>';
     }
 
-
+    //===================================================================================================
 
     //For Marking Period
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>
@@ -397,17 +382,6 @@ if (UserStaffID() && User('PROFILE') == 'admin') {
         $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
 }
 
-/* echo '<li class="dropdown dropdown-user">
-  <a class="dropdown-toggle" data-toggle="dropdown">
-  <span>' . User('NAME') . '</span>
-  <i class="caret"></i>
-  </a>
-
-  <ul class="dropdown-menu dropdown-menu-right">
-  <li><a href="#"><i class="icon-comment-discussion"></i> Messages</a></li>
-  <li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> Logout</a></li>
-  </ul>
-  </li>'; */
 echo '</ul>
             </div>
         </div>
@@ -597,12 +571,13 @@ $menu_icons = array(
     "schoolsetup" => "icon-library2",
     "students" => "icon-man-woman",
     "users" => "icon-users",
-    "scheduling" => "icon-calendar2",
+    "scheduling" => "icon-calendar3",
     "grades" => "icon-chart",
     "attendance" => "icon-alarm-check",
     "eligibility" => "icon-checkmark3",
     "messaging" => "icon-envelop5",
-    "tools" => "icon-hammer-wrench"
+    "tools" => "icon-hammer-wrench",
+    "billing" => "icon-calculator2"
 );
 
 //echo "<li><a href='javascript:void(0)' onmouseup='check_content(\"Ajax.php?modname=miscellaneous/Portal.php\");' onmousedown='document.getElementById(\"header\").innerHTML = \"Home\";document.getElementById(\"cframe\").src = \"Bottom.php?modcat=home\"'><i class=\"icon-home4\"></i><span>" . "Home" . "</span></a></li>";
@@ -759,26 +734,12 @@ echo '</ul>
                             
                         </div>
                     </div>
-                    <div class="text-center version-info">Version <b>' . $get_app_details[1][VALUE] . '</b></div>
                 </div>
                 <!-- /main sidebar -->
 
 
                 <!-- Main content -->
                 <div class="content-wrapper">';
-
-/*
- * openSIS Help Section
- */
-/* echo '<div id="showhelp" style="padding-top:33px;"><a href="javascript:void(0);" onclick="inter=setInterval(\'ShowBox(helpdiv, 380, 499, 499, 211, showhelp)\',1);return false;"><b>Help</b></a></div>';
-  echo '<div class="help_div">
-  <table width=100% border=0 cellspacing=0 cellpadding=0><tr><td align=right style=" height:25px;  padding-right:5px;"><a href="javascript:void(0);" onclick="inter=setInterval(\'HideBox(helpdiv, showhelp)\',1);return false;"><b>Hide Help</b></a></td></tr></table>
-  </div>
-  <div style="background-image:url(themes/black/help_top.gif); width:495px; height:17px;"></div>
-  <iframe id="cframe" src="Bottom.php?modname=' . $_REQUEST['modname'] . $append . '" width="493" height=194px frameborder="0" scrolling="no" style="background-image:url(themes/black/help_bg.gif); width:495px; background-repeat:repeat-y; background-color:transparent; text-align:left " >
-  </iframe>
-  <div style="background-image:url(themes/black/help_bottom.gif); background-repeat:no-repeat; width:495px; height:10px;"></div>'; */
-
 
 
 $append = '';
@@ -790,7 +751,6 @@ if ($_REQUEST['include'] && $_REQUEST['modname'] == 'students/Student.php')
 
 
 echo "<div id='content' name='content' class='clearfix'>";
-//echo '<h1 class="text-center">Welcome to openSIS Student Information System</h1>';
 
 if (User('PROFILE') == 'admin') {
 
@@ -1022,7 +982,7 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
  */
 
 if (!isset($_REQUEST['_openSIS_PDF'])) {
-    //echo '</TD></TR></TABLE>';
+
     for ($i = 1; $i <= $_openSIS['PrepareDate']; $i++) {
         echo '<script type="text/javascript">
     Calendar.setup({
@@ -1055,16 +1015,17 @@ echo '</div>
         
 
         <!-- Footer -->
-        <div class="navbar navbar-fixed-bottom footer">
-            <ul class="nav navbar-nav visible-xs-block">
-                <li><a class="text-center collapsed" data-toggle="collapse" data-target="#footer"><i class="icon-circle-up2"></i></a></li>
-            </ul>
-
-            <div class="navbar-collapse collapse" id="footer">
+        <div class="navbar footer">
+            <div class="navbar-collapse" id="footer">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-9">
                         <div class="navbar-text">
                             openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="version-info">
+                            Version <b>' . $get_app_details[1][VALUE] . '</b>
                         </div>
                     </div>
                 </div>

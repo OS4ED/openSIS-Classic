@@ -2031,19 +2031,19 @@ CREATE TABLE IF NOT EXISTS `school_gradelevel_sections` (
   KEY `school_gradelevels_ind1` (`school_id`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `user_file_upload` (
-  `id` int(50) NOT NULL AUTO_INCREMENT,
-  `user_id` int(50) DEFAULT NULL,
-  `profile_id` int(50) DEFAULT NULL,
-  `school_id` int(50) DEFAULT NULL,
-  `syear` int(50) DEFAULT NULL,
+CREATE TABLE `user_file_upload` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `syear` int(11) NOT NULL,
   `name` longtext,
   `size` longtext,
-  `type` varchar(255) DEFAULT NULL,
-  `content` longtext,
+  `type` varchar(255) NOT NULL,
+  `content` longblob NOT NULL,
   `file_info` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;
 ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;

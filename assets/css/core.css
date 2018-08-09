@@ -3597,8 +3597,6 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
 }
 .navbar-collapse {
   text-align: center;
-  padding-left: 0;
-  padding-right: 0;
 }
 .navbar-collapse.collapsing {
   -webkit-transition-duration: 0.00000001s;
@@ -3611,6 +3609,7 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
   .navbar-collapse {
     text-align: left;
     margin-left: -20px;
+    width: calc(100% + 40px);
   }
 }
 .navbar-fixed-bottom,
@@ -4000,7 +3999,7 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
 }
 .navbar-text {
   margin: 0;
-  padding: 15px 20px;
+  padding: 15px 0;
 }
 .navbar-text:last-child {
   border-bottom: 0;

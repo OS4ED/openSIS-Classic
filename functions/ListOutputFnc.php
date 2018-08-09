@@ -3097,6 +3097,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 }
 
 function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -3264,7 +3265,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (strpos($val, $term) !== FALSE)
+                            if (ereg($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -3352,16 +3353,16 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                 $output .='</table>';
             }
 
-//            foreach ($result as $item) {
-//                foreach ($column_names as $key => $value) {
-//                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-//                        $item[$key] = str_replace(',', ';', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-//                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-//                }
-//                $output .= "\n";
-//            }
+            foreach ($result as $item) {
+                foreach ($column_names as $key => $value) {
+                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                        $item[$key] = str_replace(',', ';', $item[$key]);
+                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                }
+                $output .= "\n";
+            }
 
             header("Cache-Control: public");
             header("Pragma: ");
@@ -3469,8 +3470,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         echo $where_message;
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                    echo " &nbsp; <A HREF=" .str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true" . " ><i class=\"icon-file-excel\"></i></a>";
-//                    echo " &nbsp; <A HREF=" . encode_url(str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true") . " ><i class=\"icon-file-excel\"></i></a>";
+                    echo " &nbsp; <A HREF=" . encode_url(str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true") . " ><i class=\"icon-file-excel\"></i></a>";
 
                 echo '</h6>';
                 $colspan = 1;

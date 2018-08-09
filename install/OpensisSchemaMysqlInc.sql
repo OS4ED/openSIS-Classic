@@ -2076,9 +2076,10 @@ CREATE TABLE `user_file_upload` (
   `profile_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `size` int(11) NOT NULL,
+  `name` longtext,
+  `size` longtext,
   `type` varchar(255) NOT NULL,
   `content` longblob NOT NULL,
-  `file_info` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `file_info` longtext,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

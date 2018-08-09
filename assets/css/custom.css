@@ -53,8 +53,10 @@ li.list-group-item:hover {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.sidebar-main .version-info {
+.version-info {
     color: #333333;
+    padding: 15px 0;
+    text-align: right;
 }
 
 .sidebar-control {
@@ -276,9 +278,9 @@ label.radio {
     .sidebar-mobile-main .sidebar-main {
         left: 0;
     }
-    .sidebar-main .version-info {
-        color: #fff;
-        padding: 0 0 20px 0;
+    .version-info {
+        text-align: center;
+        padding-top: 0;
     }
     .overflow-container {
         width: 100%;

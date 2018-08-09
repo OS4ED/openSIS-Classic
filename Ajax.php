@@ -29,30 +29,31 @@
 
 include("functions/ParamLibFnc.php");
 
-/*echo '<script src="assets/js/core/libraries/jquery.min.js"></script>';
-echo '<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/ui/moment/moment.min.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/pickers/daterangepicker.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/switchery.min.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/editors/ckeditor/ckeditor.js?v=' . rand(0000, 9999) . '"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>';*/
 echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
 echo '<script>';
 echo '$(document).ready(function() {
+    
         // Animate loader off screen
         $("#loading-image").hide();
+        
         $("body").removeClass("sidebar-mobile-main");
+        
+        // Scroll page to top after ajax call
         //$("html, body").animate({ scrollTop: 0 }, "200");
+        
         $(\'body\').on(\'click\', \'div.sidebar-overlay\', function () {
             $(\'body\').toggleClass(\'sidebar-mobile-main\');
         });
+        
         $(\'body\').removeClass(\'sidebar-mobile-main\');
+        
+        // Initializing Tooltips & Popovers after ajax call
         $(\'[data-toggle="tooltip"]\').tooltip();
+        $(\'[data-popup="popover"]\').popover();
+        
       });';
 echo '</script>';
 
