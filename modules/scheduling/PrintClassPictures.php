@@ -128,7 +128,8 @@ if ($_REQUEST['modfunc'] == 'save') {
         BackPrompt('You must choose at least one course period.');
 }
 
-
+if($_REQUEST['modfunc'] != 'save')
+{
 /*
  * Modal Start
  */
@@ -168,7 +169,7 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
-
+}
 
 
 if (!$_REQUEST['modfunc']) {

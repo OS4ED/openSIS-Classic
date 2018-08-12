@@ -325,8 +325,13 @@ echo '<div class="form-group">' . TextInput($student['USERNAME'], 'students[USER
 echo '<span id="ajax_output_st" class="text-danger"></span>';
 echo '</div>'; //.form-group
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group">'.TextInput(str_repeat('*', strlen($student['PASSWORD'])), 'students[PASSWORD]', 'Password', 'onkeyup=passwordStrength(this.value)', 'AUTOCOMPLETE = off').'</div>';
-echo '<div id="passwordStrength" style=display:none></div>';
+echo '<div class="form-group">';
+echo '<label class="control-label text-right col-lg-4">Password</label>';
+echo '<div class="col-lg-8">';
+echo TextInput(str_repeat('*', strlen($student['PASSWORD'])), 'students[PASSWORD]', '', 'onkeyup=passwordStrength(this.value)', 'AUTOCOMPLETE = off');
+echo '<p id="passwordStrength" class="help-block"></p>';
+echo '</div>';
+echo '</div>';
 echo '</div>'; //.col-md-6
 echo '</div>'; //.row
 

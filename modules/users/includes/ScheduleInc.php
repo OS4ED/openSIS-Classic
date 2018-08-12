@@ -50,7 +50,7 @@ course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WH
         if ($rdd['SCHEDULE_TYPE'] == 'FIXED') {
             $schedule_RET[$rdi]['DAYS'] = _makeDays($get_det[1]['DAYS']);
 //            $schedule_RET[$rdi]['DURATION'] = $get_det[1]['DURATION'];
-           $schedule_RET[$rdi]['DURATION'] = date("g:i A", strtotime($get_det[1]['START_TIME'])).' to '. date("g:i A", strtotime($get_det[1]['END_TIME']));
+            $schedule_RET[$rdi]['DURATION'] = date("g:i A", strtotime($get_det[1]['START_TIME'])).' to '. date("g:i A", strtotime($get_det[1]['END_TIME']));
             $schedule_RET[$rdi]['ROOM'] = $get_det[1]['ROOM'];
             $schedule_RET[$rdi]['PERIOD'] = $get_det[1]['PERIOD'];
             if ($schedule_RET[$rdi]['MARKING_PERIOD_ID'] == 'Custom') {

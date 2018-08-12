@@ -339,32 +339,81 @@ if ($quarters) {
 if ($year[1]['DOES_GRADES'] == 'Y') {
     $table = '<TABLE class="table table-bordered table-striped">';
     $table .= '<TR><TD rowspan=2 valign=middle style="white-space:nowrap">' . $year[1]['TITLE'] . '</TD>';
-    foreach ($semesters as $sem) {
-        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
-            $table .= '<TD style="white-space:nowrap">' . $qtr['TITLE'] . '</TD>';
-        if ($sem['DOES_GRADES'] == 'Y')
-            $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . '</TD>';
-        if ($sem['DOES_EXAM'] == 'Y')
-            $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . ' Exam</TD>';
-    }
-    if ($year[1]['DOES_EXAM'] == 'Y')
-        $table .= '<TD>' . $year[1]['TITLE'] . ' Exam</TD>';
-    $table .= '</TR><TR>';
-    $total = 0;
-    foreach ($semesters as $sem) {
-        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
-            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-            $total += $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']];
+//    foreach ($semesters as $sem) {
+//        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
+////            $table .= '<TD style="white-space:nowrap">' . $qtr['TITLE'] . '</TD>';
+//        if ($sem['DOES_GRADES'] == 'Y')
+//            $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . '</TD>';
+////        if ($sem['DOES_EXAM'] == 'Y')
+////            $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . ' Exam</TD>';
+//    }
+    if(!empty($semesters))
+        {
+        foreach($semesters as $sem)
+	{
+//		foreach($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
+//			$table .= '<TD style="white-space:nowrap">'.$qtr['TITLE'].'</TD>';
+		 if ($sem['DOES_GRADES'] == 'Y')
+                 $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . '</TD>';
+//		if($sem['DOES_EXAM']=='Y')
+//			$table .= '<TD style="white-space:nowrap">'.$sem['TITLE'].' Exam</TD>';
+	}
         }
-        if ($sem['DOES_GRADES'] == 'Y') {
-            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-            $total += $programconfig['FY-' . $sem['MARKING_PERIOD_ID']];
+        else
+        {
+           $table .= '<TD style="white-space:nowrap">'.$year[1]['TITLE'].'</TD>'; 
+            
         }
-        if ($sem['DOES_EXAM'] == 'Y') {
-            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-E' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-            $total += $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']];
+   if($year[1]['DOES_EXAM']=='Y')
+		$table .= '<TD>'.$year[1]['TITLE'].' Exam</TD>';
+	$table .= '</TR><TR>';
+	$total = 0;
+//    foreach ($semesters as $sem) {
+//        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
+//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+//            $total += $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']];
+//        }
+//        if ($sem['DOES_GRADES'] == 'Y') {
+//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+//            $total += $programconfig['FY-' . $sem['MARKING_PERIOD_ID']];
+//        }
+//        if ($sem['DOES_EXAM'] == 'Y') {
+//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-E' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+//            $total += $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']];
+//        }
+//    }
+        
+        if(!empty($semesters))
+        {
+        foreach($semesters as $sem)
+        {
+        //		foreach($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
+        //		{
+        //			$table .= '<TD><INPUT type=text name=values[FY-'.$qtr['MARKING_PERIOD_ID'].'] value="'.$programconfig['FY-'.$qtr['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+        //			$total += $programconfig['FY-'.$qtr['MARKING_PERIOD_ID']];
+        //		}
+                if($sem['DOES_GRADES']=='Y')
+                {
+                        $table .= '<TD><INPUT type=text class="form-control" name=values[FY-'.$sem['MARKING_PERIOD_ID'].'] value="'.$programconfig['FY-'.$sem['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+                        $total += $programconfig['FY-'.$sem['MARKING_PERIOD_ID']];
+                }
+        //		if($sem['DOES_EXAM']=='Y')
+        //		{
+        //			$table .= '<TD><INPUT type=text name=values[FY-E'.$sem['MARKING_PERIOD_ID'].'] value="'.$programconfig['FY-E'.$sem['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+        //			$total += $programconfig['FY-E'.$sem['MARKING_PERIOD_ID']];
+        //		}
         }
-    }
+        }
+
+        else {
+        $table .= '<TD><INPUT type=text class="form-control"  name=values[FY-'.$year[1]['MARKING_PERIOD_ID'].'] value="'.$programconfig['FY-'.$year[1]['MARKING_PERIOD_ID']].'" class= "mp_per" size=3 maxlength=3 onkeydown="return numberOnly(event);"></TD>';
+                        $total += $programconfig['FY-'.$year[1]['MARKING_PERIOD_ID']];
+
+        }
+        
+        
+        
+        
     if ($year[1]['DOES_EXAM'] == 'Y') {
         $table .= '<TD><INPUT type=text name=values[FY-E' . $year[1]['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $year[1]['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
         $total += $programconfig['FY-E' . $year[1]['MARKING_PERIOD_ID']];

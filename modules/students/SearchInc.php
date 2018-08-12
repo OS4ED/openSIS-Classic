@@ -246,12 +246,12 @@ else {
             if ($_REQUEST['request_course_id']) {
                 $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
                 if (!$_REQUEST['not_request_course']) {
-                    $extra['FROM'] .= ',schedule_requests sr';
-                    $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+                    $extra['FROM'] .= ',schedule_requests sch_r';
+                    $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.SCHOOL_ID=ssm.SCHOOL_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
                     $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                 } else {
-                    $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sr WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
+                    $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sch_r WHERE sch_r.STUDENT_ID=ssm.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
                     $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                 }
             }
@@ -309,6 +309,7 @@ else {
         $columns = $LO_columns;
 
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+        if($_REQUEST['modname']!='attendance/Administration.php')
         echo '<div class="panel panel-default">';
 
         $tmp_REQUEST = $_REQUEST;
@@ -366,12 +367,17 @@ else {
         if(count($students_RET)>0){
             echo '<div class="table-responsive">';
         }
+        
+        if($_REQUEST['modname']=='scheduling/Schedule.php' && $extra['singular']=='Request')
+        ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+        else
         ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
         if(count($students_RET)>0){
             echo '</div>';
         }
         echo "</div>";
         echo "</div>"; //.panel-body
+        if($_REQUEST['modname']!='attendance/Administration.php')
         echo "</div>"; //.panel
     } elseif (count($students_RET) == 1) {
         if (count($link['FULL_NAME']['variables'])) {

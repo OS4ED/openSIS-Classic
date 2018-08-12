@@ -247,11 +247,11 @@ switch (User('PROFILE')) {
             if(stripos($extra['FROM'], "student_enrollment ssm") === false)
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-                $sql .=',schedule sr ';
-            if($_REQUEST['modname'] !='scheduling/PrintSchedules.php')
+                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';          
+            else
             $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID  ';
-            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-            $sql.=$extra['FROM'] . ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID ';
+//            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
+//            $sql.=$extra['FROM'] . ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID ';
             if ($_REQUEST['modname'] != 'students/StudentReenroll.php') {
                 if ($_REQUEST['include_inactive'] == 'Y' || $_REQUEST['_search_all_schools'] == 'Y')
                 {
@@ -388,7 +388,7 @@ switch (User('PROFILE')) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
                 $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
-if($_REQUEST['modname']=='grades/GPARankList.php')
+if($_REQUEST['modname']=='grades/GPARankList.php' || $_REQUEST['modname']=='grades/FinalGrades.php' || $_REQUEST['modname']=='grades/ReportCards.php' || $_REQUEST['modname']=='grades/Transcripts.php' || $_REQUEST['modname']=='eligibility/StudentList.php' || $_REQUEST['modname']=='grades/ParentProgressReports.php')
 
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
 					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';

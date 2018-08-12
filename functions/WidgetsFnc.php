@@ -100,7 +100,7 @@ function Widgets($item, $allow_widget = false) {
                         $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
                         if (!$_REQUEST['not_request_course']) {
                             $extra['FROM'] .= ',schedule_requests scr';
-                            $extra['WHERE'] .= ' AND sr.STUDENT_ID=s.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND scr.SCHOOL_ID=ssm.SCHOOL_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+                            $extra['WHERE'] .= ' AND scr.STUDENT_ID=s.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND scr.SCHOOL_ID=ssm.SCHOOL_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                         } else {

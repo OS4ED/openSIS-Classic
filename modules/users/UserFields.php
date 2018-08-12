@@ -346,7 +346,7 @@ if (!$_REQUEST['modfunc']) {
         $header .= '</div>'; //.row
     } elseif ($_REQUEST['category_id']) {
 
-        echo "<FORM name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=people_field_categories";
+        echo "<FORM class=\"form-horizontal\" name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=people_field_categories";
         if ($_REQUEST['category_id'] != 'new')
             echo "&category_id=$_REQUEST[category_id]";
         echo " method=POST>";
@@ -357,34 +357,32 @@ if (!$_REQUEST['modfunc']) {
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
 
         $header .= '<div class="row">';
-        $header .= '<div class="col-md-4">';
+        $header .= '<div class="col-md-6">';
         $header .= '<div class="form-group">' . (($RET['ID'] > 2 || $RET['ID'] == '') ? TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title') : NoInput($RET['TITLE'], 'Title')) . '</div>';
-        $header .= '</div>'; //.col-md-4
+        $header .= '</div>'; //.col-md-6
         
         $header .= '<div class="col-md-4">';
         $header .= '<div class="form-group">' . (($RET['SORT_ORDER'] > 2 || $RET['SORT_ORDER'] == '') ? TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order') : NoInput($RET['SORT_ORDER'], 'Sort Order')) . '</div>';
         $header .= '</div>'; //.col-md-4
         $new = ($_REQUEST['category_id'] == 'new');
         if ($_REQUEST['category_id'] > 2 || $new) {
-            $header .= '<div class="col-md-4">';
+            $header .= '<div class="col-md-6">';
             $header .= '<div class="form-group">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', 'Include (should be left blank for most categories)') . '</div>';
-            $header .= '</div>'; //.col-md-4
+            $header .= '</div>'; //.col-md-6
         }
         $header .= '</div>'; //.row
 
-        $header .= '<div class="row">';
-        $header .= '<div class="col-md-12">';
         $header .= '<div class="form-group">';
-        $header .= '<label class="control-label">Profiles</label>';
-        $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '<div class="checkbox">' : '<p>';
+        $header .= '<label class="control-label col-md-2 text-right">Profiles</label>';
+        $header .= '<div class="col-md-10">';
+        $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '<div class="checkbox">' : '<p class="p-t-10">';
         $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['ADMIN'], 'tables[' . $_REQUEST['category_id'] . '][ADMIN]', ($_REQUEST['category_id'] == '1' && !$RET['ADMIN'] ? '<FONT color=red>' : '') . 'Administrator' . ($_REQUEST['category_id'] == '1' && !$RET['ADMIN'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['ADMIN'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Administrator</span> &nbsp; &nbsp; ');
         $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['TEACHER'], 'tables[' . $_REQUEST['category_id'] . '][TEACHER]', ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '<FONT color=red>' : '') . 'Teacher' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['TEACHER'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Teacher</span> &nbsp; &nbsp; ');
         $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['PARENT'], 'tables[' . $_REQUEST['category_id'] . '][PARENT]', ($_REQUEST['category_id'] == '1' && !$RET['PARENT'] ? '<FONT color=red>' : '') . 'Parent' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['PARENT'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Parent</span> &nbsp; &nbsp; ');
         $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['NONE'], 'tables[' . $_REQUEST['category_id'] . '][NONE]', ($_REQUEST['category_id'] == '1' && !$RET['NONE'] ? '<FONT color=red>' : '') . 'No Access' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['NONE'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; No Access</span>');
         $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '</div>' : '</p>'; //.checkbox
+        $header .= '</div>'; //.col-md-10
         $header .= '</div>'; //.form-group
-        $header .= '</div>'; //.col-md-12
-        $header .= '</div>'; //.row
     } else
         $header = false;
 

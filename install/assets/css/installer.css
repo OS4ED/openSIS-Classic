@@ -234,6 +234,16 @@ body.outer-body {
 }
 
 .loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 6;
+    display: none;
+}
+.loading > div {
     position: absolute;
     z-index: 1;
     left: 50%;
@@ -241,8 +251,9 @@ body.outer-body {
     background: #eee;
     border: 1px solid #d7d7d7;
     padding: 15px;
-    display: none;
+    top: 45%;
 }
+
 .form-control:focus:before,
 .form-control:valid:before { display: none }
 

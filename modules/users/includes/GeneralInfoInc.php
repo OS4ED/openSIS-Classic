@@ -158,20 +158,23 @@ if ($_REQUEST['profile'] != 'none') {
     echo TextInput($staff['USERNAME'], 'login_authentication[USERNAME]', 'Username', 'size=25 maxlength=100 class=form-control onkeyup="usercheck_init(this)"');
     echo '<div id="ajax_output"></div>';
     echo '</div>'; //.form-group
-    echo '</div>'; //.col-md-4
+    echo '</div>'; //.col-md-6
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
+    echo '<label class="control-label text-right col-lg-4">Passworddd</label>';
+    echo '<div class="col-lg-8">';
     if (!isset($staff['STAFF_ID'])) {
         //for adding new user
-        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', 'Password', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);");
+        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);");
     } else {
         //for existing users while updating
-        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', 'Password', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value,$staff[STAFF_ID]);");
+        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value,$staff[STAFF_ID]);");
     }
-    echo "<div id='passwordStrength'></div>";
+    echo '<p id="passwordStrength" class="help-block"></p>';
+    echo '</div>'; //.col-lg-8
     echo '</div>'; //.form-group
-    echo '</div>'; //.col-md-4
+    echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 } else {
     echo '<div class="col-md-4">';

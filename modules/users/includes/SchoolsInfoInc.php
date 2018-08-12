@@ -664,12 +664,12 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Password <span class=text-danger>*</span></label><div class="col-lg-8">';
             if (!$this_school_mod['PASSWORD']) {
-                echo TextInput('', 'PASSWORD', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onblur=passwordStrength(this.value);validate_password_staff(this.value);');
+                echo TextInputModHidden('', 'PASSWORD', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onblur=passwordStrength(this.value);validate_password_staff(this.value);');
 
                 echo '<span id="ajax_output_st"></span>';
             } else {
 
-                echo TextInput(array($this_school_mod['PASSWORD'], str_repeat('*', strlen($this_school_mod['PASSWORD']))), 'staff_school[PASSWORD]', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);');
+                echo TextInputModHidden(array($this_school_mod['PASSWORD'], str_repeat('*', strlen($this_school_mod['PASSWORD']))), 'staff_school[PASSWORD]', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);');
             }
             echo "<span id='passwordStrength'></span></div></div>";
             echo '</div>'; //.col-lg-4

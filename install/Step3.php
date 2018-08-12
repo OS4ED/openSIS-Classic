@@ -36,7 +36,7 @@ session_start();
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>openSIS Installer</title>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
-        <link href="../styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="assets/bootstrap-datepicker/css/bootstrap-datepicker3.css">
         <link rel="stylesheet" href="assets/css/installer.css?v=<?php echo rand(000, 999); ?>" type="text/css" />
@@ -90,9 +90,9 @@ session_start();
                                 <p>If you install it with sample data, then a sample school will be installed with data. You can learn from the setup and operation of the sample school to configure your own school.</p>-->
                             </div>
                             <div class="installation-steps">
-                                <h4 class="m-t-0 m-b-5">Enter your School Name, Beginning and Ending Dates of the school year</h4>
-                                <div id="calculating" class="loading clearfix"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Configuring database. Please wait...</div>
+                                <div id="calculating" class="loading clearfix"><div><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Configuring database. Please wait...</div></div>
                                 <div id="step_container">
+                                    <h4 class="m-t-0 m-b-5">Enter your School Name, Beginning and Ending Dates of the school year</h4>
                                     <form name='step3' id='step3' method="post" action="Ins3.php">
                                         <div id="error" class="text-center">&nbsp;</div>
 

@@ -42,7 +42,7 @@ if(page && page!="index.php"){
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>openSIS Installer</title>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
-        <link href="../styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="assets/sweetalert2/css/sweetalert2.css">
         <link rel="stylesheet" href="assets/css/installer.css?v=<?php echo rand(000, 999); ?>" type="text/css" />
@@ -81,7 +81,7 @@ if(page && page!="index.php"){
                             <div class="installation-steps">
                                 <h4 class="m-t-0 m-b-5">System needs to create a new database</h4>
                                 <p class=" m-b-25 text-muted">(This could take up to a minute or two to complete)</p>
-                                <div id="calculating" class="loading clearfix"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Creating Database. Please wait...</div>
+                                <div id="calculating" class="loading clearfix"><div><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Creating Database. Please wait...</div></div>
                                 <?php if ($_REQUEST['err']) { ?>
                                     <script type='text/javascript'>
                                         swal({

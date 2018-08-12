@@ -31,10 +31,13 @@ unset($_SESSION['_REQUEST_vars']['subject_id']);
 unset($_SESSION['_REQUEST_vars']['course_id']);
 unset($_SESSION['_REQUEST_vars']['course_period_id']);
 foreach ($_REQUEST['tables']['courses'][$_REQUEST['course_id']] as $in => $dt) {
-    $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("'", "\'", $dt);
+   $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("\'", "'", $dt);
+    
+//    $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("'", "\'", $dt);
 }
 foreach ($_REQUEST['tables']['course_periods'][$_REQUEST['cp_id']] as $in => $dt) {
-    $_REQUEST['tables']['course_periods'][$_REQUEST['cp_id']][$in] = str_replace("'", "\'", $dt);
+    $_REQUEST['tables']['course_periods'][$_REQUEST['cp_id']][$in] = str_replace("\'", "'", $dt);
+//    $_REQUEST['tables']['course_periods'][$_REQUEST['cp_id']][$in] = str_replace("'", "\'", $dt);
 }
 if (isset($_SESSION['seat_error'])) {
     echo $_SESSION['seat_error'];
@@ -2023,7 +2026,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
         $header .= '<div class="clearfix">';
         $header .= '<div class="col-sm-12 col-lg-12"><div class="form-inline">';
-        echo $RET['DOES_BREAKOFF'];
+//        echo $RET['DOES_BREAKOFF'];
         $header .= CheckboxInputSwitch($RET['DOES_BREAKOFF'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_BREAKOFF]', 'Allow Teacher Gradescale', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.'id="course_breakoff_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
         $header .= CheckboxInputSwitch($RET['COURSE_WEIGHT'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][COURSE_WEIGHT]', 'Course is Weighted', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.'id="course_weight_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
         $header .= CheckboxInputSwitch($RET['DOES_HONOR_ROLL'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_HONOR_ROLL]', 'Affects Honor Roll', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div, ' switch-success');

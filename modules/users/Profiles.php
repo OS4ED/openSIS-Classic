@@ -136,7 +136,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
     echo '<div class="row"><div class="col-md-3">';
     
     if (AllowEdit()) {
-        echo '<a  href="javascript:void(0);" class="btn btn-success btn-block m-b-15" onclick=\'document.getElementById("selected_tr").onmouseover="this.style.backgroundColor=\"' . Preferences('HIGHLIGHT') . '\"; this.style.color=\"white\";"; document.getElementById("selected_tr").onmouseout="this.style.cssText=\"background-color:transparent; color:black;\";"; document.getElementById("selected_tr").style.cssText="background-color:transparent; color:black;"; changeHTML({"new_id_div":"new_id_content"},["main_div"]);document.getElementById("new_tr").onmouseover="";document.getElementById("new_tr").onmouseout="";this.onclick="";\'><i class="icon-plus3"></i> Add a User Profile</a>';
+        echo '<a  href="javascript:void(0);" class="btn btn-success btn-block m-b-15" onclick="$(\'#new_id_content\').toggle();"><i class="icon-plus3"></i> Add a User Profile</a>';
     }
     echo '<table class="table bg-primary">';
     $style = '';
@@ -153,23 +153,23 @@ if ($_REQUEST['modfunc'] != 'delete') {
              echo '<TR id=selected_tr class="bg-primary-800"\'><TD width=20 class="p-10" align=right'.$style.'>'.(AllowEdit()&&$id>4&&$id!=0?'<a href="Modules.php?modname=$_REQUEST[modname]&modfunc=delete&profile_id=$id" class="btn  btn-default btn-xs p-5"><i class="icon-cross2"></i></a>':'').'</TD><TD '.$style.' onclick="document.location.href=\'Modules.php?modname='.$_REQUEST['modname'].'&profile_id='.$id.'\';">';
 		
             else
-                echo '<TR onmouseover=\'this.style.backgroundColor="' . Preferences('HIGHLIGHT') . '"; this.style.color="white";\' onmouseout=\'this.style.cssText="background-color:transparent; color:black;";\'><TD width=20 align=right class="p-10">' . (AllowEdit() && $id > 4 && $id != 0 ? '<a href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=delete&profile_id='.$id.'" class="btn btn-default btn-xs p-5"><i class="icon-cross2"></i></a>' : '') . '</TD><TD onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&profile_id=' . $id . '\';">';
-            echo '<b><a href="javascript:void(0);" class="text-white">' . ($id > 4 ? '' : '<b>') . $profile[1]['TITLE'] . ($id > 4 ? '' : '</b>') . '</a></b> &nbsp;';
+                echo '<TR><TD width=20 align=right class="p-10">' . (AllowEdit() && $id > 4 && $id != 0 ? '<a href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=delete&profile_id='.$id.'" class="btn btn-default btn-xs p-5"><i class="icon-cross2"></i></a>' : '') . '</TD><TD onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&profile_id=' . $id . '\';">';
+            echo '<a href="javascript:void(0);" class="text-white">' . ($id > 4 ? '' : '<b>') . $profile[1]['TITLE'] . ($id > 4 ? '' : '</b>') . '</a>';
             echo '</TD>';
             echo '<TD><A href="javascript:void(0);" class="text-white"><i class="fa fa-caret-right"></i></A></TD>';
             echo '</TR>';
         }
     }
-	if ($_REQUEST['profile_id'] == '')
-		echo '<TR id=selected_tr><TD height=0></TD></TR>';
+	//if ($_REQUEST['profile_id'] == '')
+		//echo '<TR id=selected_tr><TD height=0></TD></TR>';
 
-	    if (AllowEdit()) {
-		echo '<TR id=new_tr><TD colspan=3' . $style1 . '>';
-		echo '<a style="cursor: pointer;" onclick=\'document.getElementById("selected_tr").onmouseover="this.style.backgroundColor=\"' . Preferences('HIGHLIGHT') . '\"; this.style.color=\"white\";"; document.getElementById("selected_tr").onmouseout="this.style.cssText=\"background-color:transparent; color:black;\";"; document.getElementById("selected_tr").style.cssText="background-color:transparent; color:black;"; changeHTML({"new_id_div":"new_id_content"},["main_div"]);document.getElementById("new_tr").onmouseover="";document.getElementById("new_tr").onmouseout="";this.onclick="";\'><b> Add a User Profile<BR></a><br><DIV id=new_id_div></DIV> </b>';
-		echo '</TD>';
-
-		echo '</TR>';
-	    }	
+//	    if (AllowEdit()) {
+//		echo '<TR id=new_tr><TD colspan=3' . $style1 . '>';
+//		echo '<a href="javascript:void(0)" onclick="document.getElementById(\'selected_tr\').onmouseover=\'this.style.backgroundColor=' . Preferences('HIGHLIGHT') . '; this.style.color=\'white\'; document.getElementById(\'selected_tr\').onmouseout=this.style.cssText=\'background-color:transparent; color:black;\'; document.getElementById(\'selected_tr\').style.cssText=\'background-color:transparent; color:black;\'; changeHTML({\'new_id_div\':\'new_id_content\'},[\'main_div\']);document.getElementById(\'new_tr\').onmouseover=\'\';document.getElementById(\'new_tr\').onmouseout=\'\';this.onclick=\'\';">Add a User Profile</a>';
+//		echo '</TD>';
+//
+//		echo '</TR>';
+//	    }	
 	    echo '</tbody>';
 	    echo '</table>';
 	    //if ($_REQUEST['profile_id'] == '')
@@ -182,7 +182,28 @@ if ($_REQUEST['modfunc'] != 'delete') {
 
     echo '</div>'; //.col-md-3
     echo '<div class="col-md-9">';
-    echo '<DIV id=new_id_div></DIV>';
+    
+    echo '<DIV id=new_id_content style="display:none;"><div class="row"><div class="col-md-8 col-md-offset-2">';
+    echo '<div class="panel panel-default">';
+    echo '<div class="panel-heading"><h4 class="panel-title">Add a User Profile</h4></div>';
+    echo '<div class="panel-body">';
+    echo '<div class="form-group">';
+    echo '<label class="control-label col-md-3 text-right">Title </label>';
+    echo '<div class="col-md-9">';
+    echo '<INPUT type=text name=new_profile_title maxlength=20 class="form-control">';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="form-group">';
+    echo '<label class="control-label col-md-3 text-right">Type </label>';
+    echo '<div class="col-md-9">';
+    echo '<SELECT name=new_profile_type class=form-control><OPTION value=admin>Administrator<OPTION value=teacher>Teacher<OPTION value=parent>Parent</SELECT>';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="text-center "><input type=submit value=save class="btn btn-primary"></div>';
+    echo '</div>'; //.panel-body
+    echo '</div>'; //.panel
+    echo '</div></div></DIV>';
+    
     echo '<DIV id=main_div>';
     if ($_REQUEST['profile_id'] != '') {
 
@@ -335,25 +356,6 @@ if ($_REQUEST['modfunc'] != 'delete') {
     echo '</FORM>';
     PopTable('footer');
     
-    echo '<DIV id=new_id_content style="position:absolute;display:none;"><div class="row"><div class="col-md-8">';
-    echo '<div class="panel panel-default">';
-    echo '<div class="panel-heading"><h4 class="panel-title">Add a User Profile</h4></div>';
-    echo '<div class="panel-body">';
-    echo '<div class="form-group">';
-    echo '<label class="control-label col-md-3 text-right">Title </label>';
-    echo '<div class="col-md-9">';
-    echo '<INPUT type=text name=new_profile_title maxlength=20 class="form-control">';
-    echo '</div>';
-    echo '</div>';
-    echo '<div class="form-group">';
-    echo '<label class="control-label col-md-3 text-right">Type </label>';
-    echo '<div class="col-md-9">';
-    echo '<SELECT name=new_profile_type class=form-control><OPTION value=admin>Administrator<OPTION value=teacher>Teacher<OPTION value=parent>Parent</SELECT>';
-    echo '</div>';
-    echo '</div>';
-    echo '<div class="text-center "><input type=submit value=save class="btn btn-primary"></div>';
-    echo '</div>'; //.panel-body
-    echo '</div>'; //.panel
-    echo '</div></div></DIV>';
+    
 }
 ?>

@@ -28,13 +28,15 @@
 #***************************************************************************************
 
 include('../../RedirectModulesInc.php');
+//print_r($_REQUEST);
 DrawBC("Attendance > " . ProgramTitle());
 if ($_REQUEST['codes'])
     $_SESSION['code'] = $_REQUEST['codes'];
 else
     $_SESSION['code'] = 'A';
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
-    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
+//    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
+    $date =$_REQUEST['year_date'] . '-' .$_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
 } else {
     $date = DBDate('mysql');
     $_REQUEST['day_date'] = date('d');
@@ -165,7 +167,6 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     $tmp_req = $_REQUEST;
     $action = PreparePHP_SELF($tmp_req);
     echo "<FORM class=\"form-horizontal\" action=$action&modfunc=student method=POST>";
-
 
     if (isset($_REQUEST['student_id'])) {
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
@@ -317,7 +318,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 
     //--------- if end --------------//
     //------------------------------ Date Edit End -------------------------------------------//		  
-    DrawHeader((count($codes_RET) > 0 ? "<div class='form-inline'> <a href=# onclick=toggle_attendance_code() class='btn btn-primary pull-left btn-lg mr-15 mt-2'><i class='fa fa-plus text-white'></i></a><a id=click_plus href=# onclick='javascript:addHTML(\"" . str_replace('"', '\"', _makeCodeSearch()) . "\",\"code_pulldowns\");'></a>" : '') . '<DIV id=code_pulldowns>' . $code_pulldowns . '</DIV>', '<div class="input-group">' . DateInputAY($date, 'date', 1) . '<span class="input-group-btn">' . SubmitButton('Go', '', 'class="btn btn-primary"') . '</span></div>');
+    DrawHeader('<div class="form-inline">'.(count($codes_RET) > 0 ? "<a href=# onclick=toggle_attendance_code() class='btn btn-primary pull-left btn-lg mr-15 mt-2'><i class='fa fa-plus text-white'></i></a><a id=click_plus href=# onclick='javascript:addHTML(\"" . str_replace('"', '\"', _makeCodeSearch()) . "\",\"code_pulldowns\");'></a>" : '') . '<DIV id=code_pulldowns>' . $code_pulldowns . '</DIV></div>', '<div class="input-group">' . DateInputAY($date, 'date', 1) . '<span class="input-group-btn">' . SubmitButton('Go', '', 'class="btn btn-primary"') . '</span></div>');
     echo"<input type='hidden' name='p_c' value='" . (isset($_REQUEST['p_c']) ? $_REQUEST['p_c'] : 0) . "' id='p_c'>";
     echo"<input type='hidden' value='" . count($codes_RET) . "' id='base'>";
     $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -325,7 +326,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     unset($tmp_REQUEST['table']);
     unset($tmp_REQUEST['codes']);
 
-    echo '</div>';
+    //echo '</div>';
 
     $tmp_PHP_SELF = PreparePHP_SELF($tmp_REQUEST);
     if (count($categories_RET)) {
@@ -438,7 +439,7 @@ function _makeCodePulldown($value, $title) {
 
 //                 $val = (($current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['PERIOD_ID']==$period_id)?$current_RET[$THIS_RET['STUDENT_ID']][$crp_id][1]['ATTENDANCE_CODE']:'');
 
-        return SelectInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $crp_id . '_' . $period_id . '][ATTENDANCE_CODE]', '', $options);
+        return SelectInput($val, 'attendance[' . $THIS_RET['STUDENT_ID'] . '][' . $crp_id . '_' . $period_id . '][ATTENDANCE_CODE]', '', $options,'N/A');
     } else
         return false;
 }

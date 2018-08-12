@@ -56,7 +56,6 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
         $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,COURSE_PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST[year] . '\' AND PERIOD_ID IN ' . $periods_list . ' AND STUDENT_ID IN ' . $students_list . ''), array(), array('STUDENT_ID', 'SCHOOL_DATE', 'PERIOD_ID', 'COURSE_PERIOD_ID'));
 
-//                print_r($current_RET);    
         $cp_arr = array();
         foreach ($_REQUEST['student'] as $student_id => $yes) {
             foreach ($_REQUEST['dates'] as $date => $yes) {
@@ -83,9 +82,18 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
                             if ($course_period_id) {
                                 $att_dup = DBQuery('delete from attendance_period where student_id=' . $student_id . ' and school_date=' . $date . ' and period_id=' . $period_id . '');
-                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',\'Y\')';
-
-                                DBQuery($sql);
+                                
+                                $check_dup_continues=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period WHERE STUDENT_ID='.$student_id.' AND SCHOOL_DATE=\''.$date.'\' AND PERIOD_ID=\''.$period_id.'\' AND MARKING_PERIOD_ID=\''.$current_mp.'\''));
+                                if($check_dup_continues[1]['REC_EX']==0)
+                                {
+                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',\'Y\')';                               
+                                }
+                                else
+                                {
+                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',ADMIN=\'Y\'
+								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';   
+                                }
+                                 DBQuery($sql);
                                 $taken_arr[$student_id] = $student_id;
                             } else {
                                 $not_taken_arr[$student_id] = $student_id;
