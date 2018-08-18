@@ -1,4 +1,5 @@
 <?php
+
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -26,14 +27,13 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-if(User('PROFILE')=='teacher')
-	$_REQUEST['modname'] = 'eligibility/EnterEligibility.php';
+if (User('PROFILE') == 'teacher')
+    $_REQUEST['modname'] = 'eligibility/EnterEligibility.php';
 else
-	$_REQUEST['modname'] = 'eligibility/Student.php';
+    $_REQUEST['modname'] = 'eligibility/Student.php';
 $modcat = 'eligibility';
-if(AllowUse($_REQUEST['modname']))
-{
-	echo "<SCRIPT language=javascript>parent.help.location=\"Bottom.php?modcat=$modcat&modname=$_REQUEST[modname]\";</SCRIPT>";
-	include("modules/$_REQUEST[modname]");
+if (AllowUse($_REQUEST['modname'])) {
+    //echo "<SCRIPT language=javascript>parent.help.location=\"Bottom.php?modcat=$modcat&modname=$_REQUEST[modname]\";</SCRIPT>";
+    include("modules/$_REQUEST[modname]");
 }
 ?>

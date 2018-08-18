@@ -72,7 +72,7 @@ error_reporting(0);
                                     <li>Database Creation</li>
                                     <li>School Information</li>
                                     <li class="active">Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
                                 <p>Installer has successfully created your school.</p>

@@ -77,7 +77,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
 if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     if ($_REQUEST['student_id'] != $_SESSION['student_id']) {
         $_SESSION['student_id'] = $_REQUEST['student_id'];
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     $_REQUEST['stuid'] = $_REQUEST['student_id'];
     $LO_columns = array('TYPE_TITLE' => 'Category', 'TITLE' => 'Assignment', 'POINTS' => 'Points', 'LETTER_GRADE' => 'Grade', 'COMMENT' => 'Comment');
@@ -110,7 +110,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_SESSION['student_id']) {
         unset($_SESSION['student_id']);
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     if (clean_param($_REQUEST['assignment_id'], PARAM_ALPHA) == 'all') {
 

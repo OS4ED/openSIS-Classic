@@ -42,7 +42,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
         case 'teacher':
             echo '<BR>';
             $_SESSION['Search_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-            echo '<script language=JavaScript>parent.help.location.reload();</script>';
+            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
             if (isset($_SESSION['stu_search']['sql'])) {
                 unset($_SESSION['stu_search']);
             }
@@ -169,7 +169,7 @@ else {
         DrawHeader(str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)));
         if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
             $_SESSION['List_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-            echo '<script language=JavaScript>parent.help.location.reload();</script>';
+            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
         }
         if (!$extra['singular'] || !$extra['plural'])
             if ($_REQUEST['address_group']) {
@@ -192,7 +192,7 @@ else {
         if (!is_array($students_RET[1]['STUDENT_ID'])) {
             $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
             $_SESSION['UserSchool'] = $students_RET[1]['LIST_SCHOOL_ID'];
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             unset($_REQUEST['search_modfunc']);
         }
         if ($_REQUEST['modname'] != $_REQUEST['next_modname']) {

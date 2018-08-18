@@ -394,7 +394,7 @@ if($_REQUEST['modname']=='grades/GPARankList.php' || $_REQUEST['modname']=='grad
 					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';
 else
     $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm2.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');

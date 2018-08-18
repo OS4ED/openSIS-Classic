@@ -80,7 +80,7 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             DBQuery("UPDATE school_years SET ROLLOVER_ID = NULL WHERE SCHOOL_ID='$id'");
         }
         echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
 
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body text-center">';

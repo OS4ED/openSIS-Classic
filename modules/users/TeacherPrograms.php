@@ -56,7 +56,7 @@ if ($_REQUEST['include'] != 'attendance/MissingAttendance.php') {
         $profile = DBGet(DBQuery('SELECT PROFILE FROM staff WHERE STAFF_ID=\'' . UserStaffID() . '\''));
         if ($profile[1]['PROFILE'] != 'teacher') {
             unset($_SESSION['staff_id']);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             Search('teacher_id', 'teachers_option_all');
         }
     }

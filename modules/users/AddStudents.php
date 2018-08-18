@@ -81,7 +81,7 @@ if($_REQUEST['modfunc']!='delete')
 		if($profile[1]['PROFILE']!='parent')
 		{
 			unset($_SESSION['staff_id']);
-			echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';			
+//			echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';			
 			Search('staff_id','parent');
 		}
 	}

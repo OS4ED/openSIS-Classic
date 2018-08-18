@@ -38,7 +38,7 @@
          switch ($_GET['validate'])
         {
             case 'pass':
-                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".$_GET['stfid']."' AND profile_id!=0");
+                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".$_GET['stfid']."' AND profile_id=0");
                         $num_pass = $res_pass_chk->num_rows;
                         if($num_pass==0)
                         {
@@ -48,7 +48,7 @@
                 break;
             
             case 'pass_o':
-                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."'");
+                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."'  AND profile_id=0");
                         $num_pass = $res_pass_chk->num_rows;
                         if($num_pass==0)
                         {

@@ -78,7 +78,7 @@ if(page && page!="index.php" ){
                                 <?php if ($_REQUEST['mod'] != 'upgrade') { ?>
                                     <h3>openSIS Installation - Database Connection</h3>
                                 <?php } else { ?>
-                                    <h3>Step 1 of 4</h3>
+                                    <h3>openSIS Installation - Database Connection</h3>
                                 <?php } ?>
                             </div>
                             <!--                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
@@ -103,16 +103,28 @@ if(page && page!="index.php" ){
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
                             <div class="installation-instructions">
-                                <ul class="installation-steps-label">
-                                    <li>Choose Package</li>
-                                    <li>System Requirements</li>
-                                    <li class="active">Database Connection</li>
-                                    <li>Database Creation</li>
-                                    <li>School Information</li>
-                                    <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
-                                </ul>
-                                <?php
+
+                                <?php if ($_REQUEST['mod'] != 'upgrade') { ?>
+                                    <ul class="installation-steps-label">
+                                        <li>Choose Package</li>
+                                        <li>System Requirements</li>
+                                        <li class="active">Database Connection</li>
+                                        <li>Database Creation</li>
+                                        <li>School Information</li>
+                                        <li>Site Admin Account Setup</li>
+                                        <li>Ready to Go!</li>
+                                    </ul>
+                                <?php } else { ?>
+                                    <ul class="installation-steps-label">
+                                        <li>Choose Package</li>
+                                        <li class="active">Database Connection</li>
+                                        <li>Database Selection</li>
+                                        <li>School Information</li>
+                                        <li>Site Admin Account Setup</li>
+                                        <li>Ready to Go!</li>
+                                    </ul>
+                                    <?php
+                                }
 //                                if ($_REQUEST['mod'] == 'upgrade') {
 //                                    echo '<h4 class = "no-margin">You have chosen upgrade</h4>';
 //                                    $_SESSION['mod'] = 'upgrade';

@@ -99,7 +99,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
 
-        echo '<script language=JavaScript>parent.help.location.reload();</script>';
+        //echo '<script language=JavaScript>parent.help.location.reload();</script>';
         
         echo '<div class="row">';
         echo '<div class="col-md-6 col-md-offset-3">';
@@ -150,7 +150,7 @@ if (!$_REQUEST['modfunc']) {
             DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
             if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
                 $_SESSION['List_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-                echo '<script language=JavaScript>parent.help.location.reload();</script>';
+                //echo '<script language=JavaScript>parent.help.location.reload();</script>';
             }
             if (!$extra['singular'] || !$extra['plural'])
                 $extra['singular'] = 'Student';

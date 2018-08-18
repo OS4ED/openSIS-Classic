@@ -64,17 +64,17 @@ if (count($filelist) > 3) {
     }
 }
 echo "<noscript><META http-equiv=REFRESH content='0;url=EnableJavascript.php' /></noscript>";
-echo "<script type='text/javascript'>	
-        function init(param,param2) {        
-            calendar.set('date_'+param);
-            if(param2==2)
-            {
-                document.getElementById('date_'+param).style.display ='block';
-                document.getElementById('date_div_'+param).style.display ='none';
-            }
-            document.getElementById('date_'+param).click();
-        }		
-</script>";
+//echo "<script type='text/javascript'>	
+//        function init(param,param2) {        
+//            calendar.set('date_'+param);
+//            if(param2==2)
+//            {
+//                document.getElementById('date_'+param).style.display ='block';
+//                document.getElementById('date_div_'+param).style.display ='none';
+//            }
+//            document.getElementById('date_'+param).click();
+//        }		
+//</script>";
 
 error_reporting(1);
 
@@ -102,6 +102,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<link href="assets/css/core.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/bootstrap-datepicker/css/bootstrap-datepicker.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">';
+    echo '<link href="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/components.css?v=1.1" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/colors.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/custom.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
@@ -115,6 +116,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/media/cropper.min.js"></script>';    
     echo '<script type="text/javascript" src="assets/js/plugins/editors/ckeditor/ckeditor.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/nicescroll.min.js"></script>';
@@ -122,6 +124,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/switchery.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/moment/moment.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/extensions/cookie.js"></script>';
 
     /* JS Initializers */
@@ -130,7 +133,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/ui/ripple.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_select2.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
-    echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
+    //echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
     echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript">
@@ -138,6 +141,15 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
             $("body").on("click", "div.sidebar-overlay", function () {
                 $("body").toggleClass("sidebar-mobile-main");
             });
+            
+            if($(".clockpicker").length>0){
+                $(".clockpicker").clockpicker({ 
+                    twelvehour: true,
+                    donetext: \'Done\'
+                }).find("input").change(function () {
+                   //alert(this.value);
+                });
+            }
         });
     </script>';
     
@@ -429,7 +441,19 @@ if (User('PROFILE') == 'teacher') {
     echo "</FORM></div></li>";
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=course method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $course = DBQuery("SELECT DISTINCT cd.COURSE_TITLE, cd.COURSE_ID,cd.SUBJECT_ID,cd.SCHOOL_ID FROM course_details cd WHERE (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cd.SYEAR='" . UserSyear() . "' AND cd.SCHOOL_ID='" . UserSchool() . "' AND cd.SUBJECT_ID='" . UserSubject() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");					
-    $RET = DBGet($course);
+    $RET_temp= DBGet($course);
+    $ret_increment=1;
+    $RET=array();
+    foreach($RET_temp as $ret_courses)
+    {
+        $get_cps=DBGet(DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_ID='" . $ret_courses['COURSE_ID'] . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)"));
+        if(count($get_cps)>0)
+        {
+            $RET[$ret_increment]=$ret_courses;
+            $ret_increment++;
+        }
+    }
+//    print_r($RET);
     if (!UserCourse()) {
         $_SESSION['UserCourse'] = $RET[1]['COURSE_ID'];
     }
@@ -639,23 +663,23 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
                     echo "<li><A HREF=$file target=_blank>$title</A>";
                 elseif (!is_numeric($file))
                     if (User('PROFILE') == 'student' && $title == "Student Info") {
-                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Info</A>";
+                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Info</A>";
                     } elseif (User('PROFILE') == 'student' && $title == "Schedule") {
-                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Schedule</A>";
+                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Schedule</A>";
                     } elseif (User('PROFILE') == 'student' && $title == "Student Requests") {
-                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Requests</A>";
+                        echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">My Requests</A>";
                     } else {
 
                         if ($modcat == 'eligibility')
-                            echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"Extracurricular <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
+                            echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"Extracurricular <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                         else {
                             if (User('PROFILE_ID') != 0 && User('PROFILE') == 'admin') {
                                 if ($modcat == 'tools' && $title != 'Backup Database')
-                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
+                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                                 if ($modcat != 'tools')
-                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
+                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                             } else
-                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"changeColors(); this.className='submenu_link'; document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
+                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='$(\"#header\").html(\"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=icon-arrow-right5></i> " . $title."\");' onmouseup=\"$('#cframe').attr('src','Bottom.php?modname=" . str_replace('&', '?', $file) . "');\">$title</A>";
                         }
                     }
                 elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
@@ -1005,6 +1029,8 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
 
 echo '</div>
     </div>
+        </div>
+        </div>
                 <!-- /main content -->
                 
             </div>

@@ -82,7 +82,7 @@ session_start();
                                     <li>Database Creation</li>
                                     <li class="active">School Information</li>
                                     <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
                                 <p>Installer has successfully created the database for openSIS application.</p>

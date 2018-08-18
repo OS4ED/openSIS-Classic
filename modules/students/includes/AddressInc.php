@@ -31,6 +31,66 @@
 include('../../../RedirectIncludes.php');
 include 'modules/students/ConfigInc.php';
 
+            echo '<div id="modal_default_lookup" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">';
+            echo ' <input type=hidden id=p_type >';
+              echo ' <input type=hidden id=other_p_erson_id >';
+            if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
+                if ($_REQUEST['button'] == 'Find' || $_REQUEST['nfunc'] == 'status') {
+                    if ($_REQUEST['add_id'] == 'new')
+                        echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
+                    else
+                        echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $_REQUEST['add_id'] . '&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
+                }
+            }else {
+                if ($_REQUEST['add_id'] == 'new')
+                    echo "<FORM class=\"form-horizontal\" name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=lookup&type=" . $_REQUEST['type'] . "&func=search&ajax=" . $_REQUEST['ajax'] . "&add_id=new&address_id=" . $_REQUEST['address_id'] . " METHOD=POST>";
+                else
+                    echo "<FORM class=\"form-horizontal\" name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=lookup&type=" . $_REQUEST['type'] . "&func=search&ajax=" . $_REQUEST['ajax'] . "&add_id=" . $_REQUEST['add_id'] . "&address_id=" . $_REQUEST['address_id'] . " METHOD=POST>";
+            }
+
+
+            echo '<div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                            <h5 class="modal-title">Lookup</h5>
+                        </div>';
+
+            echo '<div class="modal-body">';
+            echo'<div id="modal-res">';
+
+
+
+            $x = 'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=primary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\'';
+//            echo '<script>cleanModal(\'parent_res\');</script>';
+            echo '<div id=parent_res>';
+            echo '<h4 class="text-center">Search for an existing portal user (parent/guardian) <br/> to associate with this student.</h4>';
+            echo '<p class="text-danger text-center">Fill out one or more fields to look up an individual.</p>';
+
+            //echo '<div class=>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">First Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_FIRST_NAME', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">Last Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_LAST_NAME', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">Email</label><div class="col-xs-8">' . TextInput('', 'USERINFO_EMAIL', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">Mobile Phone</label><div class="col-xs-8">' . TextInput('', 'USERINFO_MOBILE', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">Street Address</label><div class="col-xs-8">' . TextInput('', 'USERINFO_SADD', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">City</label><div class="col-xs-8">' . TextInput('', 'USERINFO_CITY', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">State</label><div class="col-xs-8">' . TextInput('', 'USERINFO_STATE', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-xs-4">Zip</label><div class="col-xs-8">' . TextInput('', 'USERINFO_ZIP', '', 'class=form-control', true) . '</div></div>';
+            echo '<div class="modal-footer" id="parent-modal-footer"><INPUT  class="btn btn-primary" javascript:void(0); name=button value=Find onclick="parentLookup(\'' . $_REQUEST['address_id'] . '\')">&nbsp; &nbsp;<INPUT type=submit class="btn btn-default" name=button value=Cancel></div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+
+//        }
+            ;
+            //.modal-body
+
+
+
+            echo '</form>';
+            echo '</div>
+                </div>
+        </div>';
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
 
     if ($_REQUEST['r7'] == 'Y') {
@@ -745,6 +805,8 @@ if (!$_REQUEST['modfunc']) {
         echo "<INPUT type=hidden name=address_id value=$_REQUEST[address_id]>";
 
         if ($_REQUEST['address_id'] != '0' && $_REQUEST['address_id'] !== 'old') {
+            
+            
             $profiles_options = DBGet(DBQuery('SELECT PROFILE ,TITLE, ID FROM user_profiles WHERE profile = \'parent\' ORDER BY ID'));
             $i = 1;
             foreach ($profiles_options as $options) {
@@ -889,65 +951,6 @@ if (!$_REQUEST['modfunc']) {
 
             echo '<br/>';
 
-            echo '<div id="modal_default_lookup" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">';
-            echo ' <input type=hidden id=p_type>';
-            if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
-                if ($_REQUEST['button'] == 'Find' || $_REQUEST['nfunc'] == 'status') {
-                    if ($_REQUEST['add_id'] == 'new')
-                        echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
-                    else
-                        echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $_REQUEST['add_id'] . '&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
-                }
-            }else {
-                if ($_REQUEST['add_id'] == 'new')
-                    echo "<FORM class=\"form-horizontal\" name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=lookup&type=" . $_REQUEST['type'] . "&func=search&ajax=" . $_REQUEST['ajax'] . "&add_id=new&address_id=" . $_REQUEST['address_id'] . " METHOD=POST>";
-                else
-                    echo "<FORM class=\"form-horizontal\" name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=lookup&type=" . $_REQUEST['type'] . "&func=search&ajax=" . $_REQUEST['ajax'] . "&add_id=" . $_REQUEST['add_id'] . "&address_id=" . $_REQUEST['address_id'] . " METHOD=POST>";
-            }
-
-
-            echo '<div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                            <h5 class="modal-title">Lookup</h5>
-                        </div>';
-
-            echo '<div class="modal-body">';
-            echo'<div id="modal-res">';
-
-
-
-            $x = 'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=primary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\'';
-            echo '<script>cleanModal(\'parent_res\');</script>';
-            echo '<div id=parent_res>';
-            echo '<h4 class="text-center">Search for an existing portal user (parent/guardian) <br/> to associate with this student.</h4>';
-            echo '<p class="text-danger text-center">Fill out one or more fields to look up an individual.</p>';
-
-            //echo '<div class=>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">First Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_FIRST_NAME', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">Last Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_LAST_NAME', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">Email</label><div class="col-xs-8">' . TextInput('', 'USERINFO_EMAIL', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">Mobile Phone</label><div class="col-xs-8">' . TextInput('', 'USERINFO_MOBILE', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">Street Address</label><div class="col-xs-8">' . TextInput('', 'USERINFO_SADD', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">City</label><div class="col-xs-8">' . TextInput('', 'USERINFO_CITY', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">State</label><div class="col-xs-8">' . TextInput('', 'USERINFO_STATE', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="form-group"><label class="control-label col-xs-4">Zip</label><div class="col-xs-8">' . TextInput('', 'USERINFO_ZIP', '', 'class=form-control', true) . '</div></div>';
-            echo '<div class="modal-footer" id="parent-modal-footer"><INPUT  class="btn btn-primary" javascript:void(0); name=button value=Find onclick="parentLookup(\'' . $_REQUEST['address_id'] . '\')">&nbsp; &nbsp;<INPUT type=submit class="btn btn-default" name=button value=Cancel></div>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-
-//        }
-            ;
-            //.modal-body
-
-
-
-            echo '</form>';
-            echo '</div>
-                </div>
-        </div>';
             echo '<FIELDSET><h5 class="text-primary">Primary Emergency Contact</h5>';
             echo '<hr/>';
             if (count($qr_ot_stu_asso) > 1)
@@ -1234,6 +1237,7 @@ if (!$_REQUEST['modfunc']) {
 
             echo'</TD></TR>';
             echo '</TABLE>';  // close 3d
+            //
 ############################################################################################			
         }
     } else
@@ -1310,10 +1314,10 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
 
             echo '<hr/>';
 
-            echo '<div class="row">';
-            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $o_addr[1]['PERSON_ID'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
-            echo '</div>'; //.row
-
+//            echo '<div class="row">';
+//            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $o_addr[1]['PERSON_ID'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
+//            echo '</div>'; //.row
+  echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'other\',\''.$o_addr[1][PERSON_ID].'\');></span></div></div></div></div>';
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger>*</span></label><div class="col-md-8"><DIV id=person_f_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', '')) . '","person_f_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['FIRST_NAME'] . '</div></DIV></div></div></div>';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger>*</span></label><div class="col-md-8"><DIV id=person_l_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', '')) . '","person_l_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['LAST_NAME'] . '</div></DIV></div></div></div>';
@@ -1418,9 +1422,10 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '</div>'; //.row
 
             if (User('PROFILE') != 'teacher') {
-                echo '<div class="row">';
-                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
-                echo '</div>'; //.row
+//                echo '<div class="row">';
+//                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
+//                echo '</div>'; //.row
+                  echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type=button  data-toggle="modal" class=btn btn-primary  name=lookup  value=Lookup onclick=modal_parenttype(\'other\',\'new\');></span></div></div></div></div>';
             }
 
             echo '<div class="row">';
@@ -1452,6 +1457,7 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
                 $portal_check = 'checked="checked"';
                 $style = '';
             }
+             echo'<input type=hidden id=hidden_other name=hidden_other>';
             echo '<input type="hidden" id=oth_val_pass value="Y">';
             echo '<input type="hidden" id=oth_val_user value="Y">';
             echo '<input type="hidden" id=val_email_2 name=val_email_2 value="Y">';
@@ -1630,9 +1636,9 @@ if ($_REQUEST['nfunc'] == 'status') {
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_1\').checked=false;document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\';document.getElementById(\'portal_div_1\').style.display=\'none\';</script>';
                 else {
 
-                    echo '<SCRIPT language=javascript>alert(\'ok1\');</script>';
+                    echo '<SCRIPT language=javascript></script>';
 
-                    echo '<SCRIPT language=javascript>alert(\'ok\');';
+                    echo '<SCRIPT language=javascript>';
 
                     echo 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
                     . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
@@ -1720,7 +1726,7 @@ if ($_REQUEST['nfunc'] == 'status') {
             if ($people_loginfo['USERNAME'] != '') {
 
                 if ($_REQUEST['add_id'] == 'new')
-                    echo '<SCRIPT language=javascript>document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'hidden_other\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=document.getElementById(\'values[people][OTHER][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';document.getElementById(\'addn_hideShow\').style.display =\'block\';document.getElementById(\'ron\').checked=true;document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'other_username\').value=\'' . $people_loginfo['USERNAME'] . '\';document.getElementById(\'other_password\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';window.close();</script>';
+                    echo '<SCRIPT language=javascript>document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'hidden_other\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=document.getElementById(\'values[people][OTHER][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';document.getElementById(\'addn_hideShow\').style.display =\'block\';document.getElementById(\'ron\').checked=true;document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'other_username\').value=\'' . $people_loginfo['USERNAME'] . '\';document.getElementById(\'other_password\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';window.close();</script>';
                 else {
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT> \';'

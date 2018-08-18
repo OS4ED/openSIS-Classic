@@ -81,17 +81,24 @@ $err = 0;
                                     <li>Database Connection</li>
                                     <li>Database Creation</li>
                                     <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Prerequisite</h4>
                                 <p>Before you install openSIS, you need to have Apache web server, MySQL database server and php scripting language setup in your machine.</p>
                                 <p>You can download an all-inclusive package from: <a href="https://www.apachefriends.org/download.html">https://www.apachefriends.org/download.html</a></p>
                                 <p>Select the download package for the operating system you are using on your machine. Install that first and then start the openSIS installer.</p>-->
                             </div>
-                            <div class="installation-steps valign-top">                                
+                            <div class="installation-steps valign-top">
                                 <h4 class="m-t-0 m-b-25">Let’s check your system configuration:</h4>
                                 <div class="row">
-                                    <div class="col-xs-8">PHP Version 5.4 or greater</div>
+                                    <div class="col-xs-8">
+                                        PHP Version 5.4 or greater
+                                        <?php
+                                        if (phpversion() <= 5.4) {
+                                            echo '<p class="text-danger">Upgrade PHP version from here <A href="http://php.net/downloads.php.">http://php.net/downloads.php.</a></p>';
+                                        }
+                                        ?>
+                                    </div>
                                     <div class="col-xs-4 text-right">
                                         <?php
                                         if (phpversion() > 5.4) {
@@ -104,7 +111,14 @@ $err = 0;
                                     </div>
                                 </div><br/>
                                 <div class="row">
-                                    <div class="col-xs-8">cURL</div>
+                                    <div class="col-xs-8">
+                                        cURL
+                                        <?php
+                                        if (_isCurl() != 1) {
+                                            echo '<p class="text-danger">Upgrade cURL from here <a href="https://curl.haxx.se/download.html">https://curl.haxx.se/download.html</a></p>';
+                                        }
+                                        ?>
+                                    </div>
                                     <div class="col-xs-4 text-right">
                                         <?php
                                         if (_isCurl() == 1) {
@@ -117,7 +131,14 @@ $err = 0;
                                     </div>
                                 </div><br/>
                                 <div class="row">
-                                    <div class="col-xs-8">Apache Version 2.4 or greater</div>
+                                    <div class="col-xs-8">
+                                        Apache Version 2.4 or greater
+                                        <?php
+                                        if (apacheVer() < 2.4) {
+                                            echo '<p class="text-danger">Upgrade Apache from here <A href="https://httpd.apache.org/download.cgi">https://httpd.apache.org/download.cgi</a></p>';
+                                        }
+                                        ?>
+                                    </div>
                                     <div class="col-xs-4 text-right">
                                         <?php
                                         if (apacheVer() >= 2.4) {

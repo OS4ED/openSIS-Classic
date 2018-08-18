@@ -33,6 +33,11 @@ li.list-group-item:hover {
 .modal-dialog.modal-xl {
     width: 85%;
 }
+div.form-control {
+    height: auto;
+    min-height: 38px;
+    word-wrap: break-word;
+}
 /* Bootstrap Overwrite End */
 
 .sidebar-user-material-content > a {

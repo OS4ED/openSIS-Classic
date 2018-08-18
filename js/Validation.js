@@ -2336,7 +2336,14 @@ function passwordStrength(password)
 
 {
     document.getElementById("passwordStrength").style.display = "none";
-
+    if(document.getElementById('students[USERNAME]'))
+    {
+        if(document.getElementById('students[USERNAME]').value=='')
+        {
+            document.getElementById('students[PASSWORD]').value='';
+            document.getElementById('students[PASSWORD]').focus;
+        }
+    }
     var desc = new Array();
 
     desc[0] = "Very Weak";
@@ -2420,9 +2427,13 @@ function forgotpasswordStrength(password)
 
     if (password.length > 0)
     {
-        document.getElementById("passwordStrength").style.display = "block";
-        document.getElementById("passwordStrength").style.backgroundColor = "#cccccc";
-        document.getElementById("passwordStrength").innerHTML = desc[0];
+//        document.getElementById("passwordStrength").style.display = "block";
+//        document.getElementById("passwordStrength").style.backgroundColor = "#cccccc";
+//        document.getElementById("passwordStrength").innerHTML = desc[0];
+        
+        $('#passwordStrength').show();
+        $('#passwordStrength').css({color: '#676767'}).html('<i class="icon-notification2"></i> ' + desc[0]);
+
 
 
     }
@@ -2432,9 +2443,12 @@ function forgotpasswordStrength(password)
 
     if (password.match(/\d+/) && password.length > 5)
     {
-        document.getElementById("passwordStrength").style.display = "block";
-        document.getElementById("passwordStrength").style.backgroundColor = "#ff0000";
-        document.getElementById("passwordStrength").innerHTML = desc[1];
+//        document.getElementById("passwordStrength").style.display = "block";
+//        document.getElementById("passwordStrength").style.backgroundColor = "#ff0000";
+//        document.getElementById("passwordStrength").innerHTML = desc[1];
+        
+        $('#passwordStrength').show();
+        $('#passwordStrength').css({color: '#f44336'}).html('<i class="icon-notification2"></i> ' + desc[1]);
     }
 
 
@@ -2443,9 +2457,12 @@ function forgotpasswordStrength(password)
 
     if (password.match(/\d+/) && password.length > 7 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[A-Z]/)))
     {
-        document.getElementById("passwordStrength").style.display = "block";
-        document.getElementById("passwordStrength").style.backgroundColor = "#ff5f5f";
-        document.getElementById("passwordStrength").innerHTML = desc[2];
+//        document.getElementById("passwordStrength").style.display = "block";
+//        document.getElementById("passwordStrength").style.backgroundColor = "#ff5f5f";
+//        document.getElementById("passwordStrength").innerHTML = desc[2];
+        
+        $('#passwordStrength').show();
+        $('#passwordStrength').css({color: '#ff5722'}).html('<i class="icon-checkmark-circle"></i> ' + desc[2]);
     }
 
 
@@ -2453,9 +2470,12 @@ function forgotpasswordStrength(password)
 
     if (password.match(/\d+/) && password.length > 10 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[A-Z]/)))
     {
-        document.getElementById("passwordStrength").style.display = "block";
-        document.getElementById("passwordStrength").style.backgroundColor = "#56e500";
-        document.getElementById("passwordStrength").innerHTML = desc[3];
+//        document.getElementById("passwordStrength").style.display = "block";
+//        document.getElementById("passwordStrength").style.backgroundColor = "#56e500";
+//        document.getElementById("passwordStrength").innerHTML = desc[3];
+//        
+        $('#passwordStrength').show();
+        $('#passwordStrength').css({color: '#4caf50'}).html('<i class="icon-checkmark-circle"></i> ' + desc[3]);
     }
 
 
@@ -2463,9 +2483,12 @@ function forgotpasswordStrength(password)
 
     if (password.match(/\d+/) && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[a-z]/)) && (password.match(/[A-Z]/)) && password.length > 12)
     {
-        document.getElementById("passwordStrength").style.display = "block";
-        document.getElementById("passwordStrength").style.backgroundColor = "#4dcd00";
-        document.getElementById("passwordStrength").innerHTML = desc[4];
+//        document.getElementById("passwordStrength").style.display = "block";
+//        document.getElementById("passwordStrength").style.backgroundColor = "#4dcd00";
+//        document.getElementById("passwordStrength").innerHTML = desc[4];
+        
+        $('#passwordStrength').show();
+        $('#passwordStrength').css({color: '#2e8931'}).html('<i class="icon-checkmark-circle"></i> ' + desc[4]);
     }
 
 }
@@ -2492,10 +2515,13 @@ function passwordStrengthMod(password, opt)
 
     if (password.length > 0)
     {
-        document.getElementById("passwordStrength" + opt).style.display = "block";
-        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#cccccc";
-        document.getElementById("passwordStrength" + opt).innerHTML = desc[0];
-
+//        document.getElementById("passwordStrength" + opt).style.display = "block";
+//        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#cccccc";
+//        document.getElementById("passwordStrength" + opt).innerHTML = desc[0];
+        
+        
+        $('#passwordStrength'+ opt).show();
+        $('#passwordStrength'+ opt).css({color: '#676767'}).html('<i class="icon-notification2"></i> ' + desc[0]);
 
     }
 
@@ -2504,9 +2530,12 @@ function passwordStrengthMod(password, opt)
 
     if (password.match(/\d+/) && password.length > 5)
     {
-        document.getElementById("passwordStrength" + opt).style.display = "block";
-        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#ff0000";
-        document.getElementById("passwordStrength" + opt).innerHTML = desc[1];
+//        document.getElementById("passwordStrength" + opt).style.display = "block";
+//        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#ff0000";
+//        document.getElementById("passwordStrength" + opt).innerHTML = desc[1];
+        
+        $('#passwordStrength'+ opt).show();
+        $('#passwordStrength'+ opt).css({color: '#f44336'}).html('<i class="icon-notification2"></i> ' + desc[1]);
     }
 
 
@@ -2515,9 +2544,12 @@ function passwordStrengthMod(password, opt)
 
     if (password.match(/\d+/) && password.length > 7 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))
     {
-        document.getElementById("passwordStrength" + opt).style.display = "block";
-        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#ff5f5f";
-        document.getElementById("passwordStrength" + opt).innerHTML = desc[2];
+//        document.getElementById("passwordStrength" + opt).style.display = "block";
+//        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#ff5f5f";
+//        document.getElementById("passwordStrength" + opt).innerHTML = desc[2];
+        
+        $('#passwordStrength'+ opt).show();
+        $('#passwordStrength'+ opt).css({color: '#ff5722'}).html('<i class="icon-checkmark-circle"></i> ' + desc[2]);
     }
 
 
@@ -2525,9 +2557,13 @@ function passwordStrengthMod(password, opt)
 
     if (password.match(/\d+/) && password.length > 10 && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[A-Z]/)))
     {
-        document.getElementById("passwordStrength" + opt).style.display = "block";
-        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#56e500";
-        document.getElementById("passwordStrength" + opt).innerHTML = desc[3];
+//        document.getElementById("passwordStrength" + opt).style.display = "block";
+//        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#56e500";
+//        document.getElementById("passwordStrength" + opt).innerHTML = desc[3];
+        
+        
+        $('#passwordStrength'+ opt).show();
+        $('#passwordStrength'+ opt).css({color: '#4caf50'}).html('<i class="icon-checkmark-circle"></i> ' + desc[3]);
     }
 
 
@@ -2535,9 +2571,13 @@ function passwordStrengthMod(password, opt)
 
     if (password.match(/\d+/) && password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[a-z]/)) && (password.match(/[A-Z]/)) && password.length > 12)
     {
-        document.getElementById("passwordStrength" + opt).style.display = "block";
-        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#4dcd00";
-        document.getElementById("passwordStrength" + opt).innerHTML = desc[4];
+//        document.getElementById("passwordStrength" + opt).style.display = "block";
+//        document.getElementById("passwordStrength" + opt).style.backgroundColor = "#4dcd00";
+//        document.getElementById("passwordStrength" + opt).innerHTML = desc[4];
+        
+        
+        $('#passwordStrength'+ opt).show();
+        $('#passwordStrength'+ opt).css({color: '#2e8931'}).html('<i class="icon-checkmark-circle"></i> ' + desc[4]);
     }
 
 }
@@ -3257,4 +3297,43 @@ function toggleDisableStu(event)
     if (event.checked == true && document.getElementById('student_enable').value == 'N')
         document.getElementById('student_enable').value = '';
 
+}
+function setFilterValues()
+{
+    
+    var ids = ["last", "first", "stuid","altid","addr","grade","section"];
+    
+    
+     for (var i = 0; i < ids.length; i++) {
+          if (document.getElementById(ids[i]))
+          {
+               document.getElementById(ids[i]+'_hidden').value='';
+               if(document.getElementById(ids[i]).value!='')
+                   document.getElementById(ids[i]+'_hidden').value = document.getElementById(ids[i]).value;
+          }
+     }
+     
+     
+     var ids1 = ["address_group","_search_all_schools","include_inactive"];
+    
+    
+     for (var j = 0; j < ids1.length; j++) {
+          if (document.getElementById(ids1[j]))
+          {
+              document.getElementById(ids1[j]+'_hidden').innerHTML ='';
+               if(document.getElementById(ids1[j]).checked===true)
+                   document.getElementById(ids1[j]+'_hidden').innerHTML ='<input type="hidden" name="'+ids1[j]+'" value="Y"/>';
+          }
+     }
+
+}
+function validate_filter()
+{
+    if(document.getElementById('filter_name').value =='')
+    {
+        document.getElementById('error_modal_filter').innerHTML ='<font style="color:red">Please enter a valid filter name.</font>';
+        return false;
+    }
+    else
+        return true;
 }

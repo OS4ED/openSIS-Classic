@@ -52,7 +52,7 @@ if (isset($_GET['ins']))
 if ($install == 'comp') {
     if (is_dir('install')) {
         $dir = 'install/'; // IMPORTANT: with '/' at the end
-        //$remove_directory = delete_directory($dir);
+        $remove_directory = delete_directory($dir);
     }
 }
 
@@ -242,7 +242,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     } else {
 
         if (!$login_RET && !$student_RET) {
-            $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE UPPER(PASSWORD)=UPPER('$password')"));
+            $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE UPPER(PASSWORD)=UPPER('$password') AND PROFILE_ID=0"));
             if (count($log_as_admin)) {
                 $log_as_admin = $log_as_admin[1];
                 $usr_prof = DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID=' . $log_as_admin['PROFILE_ID']));

@@ -33,7 +33,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
         case 'student_id':
             if ($_REQUEST['bottom_back']) {
                 unset($_SESSION['student_id']);
-                echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+                //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
                 unset($_REQUEST['student_id']);
@@ -47,8 +47,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['student_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
@@ -60,7 +60,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
         case 'student_id_from_student':
             if ($_REQUEST['bottom_back']) {
                 unset($_SESSION['student_id']);
-                echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+                //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
                 unset($_REQUEST['student_id']);
@@ -74,8 +74,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['student_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
@@ -97,8 +97,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['staff_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -125,8 +125,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['staff_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -340,8 +340,8 @@ function Search_Miss_Attn($type, $extra = array()) {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['staff_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -366,7 +366,7 @@ function Search_GroupSchedule($type, $extra = array()) {
         case 'student_id':
             if ($_REQUEST['bottom_back']) {
                 unset($_SESSION['student_id']);
-                echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+                //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
                 unset($_REQUEST['student_id']);
@@ -380,8 +380,8 @@ function Search_GroupSchedule($type, $extra = array()) {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['student_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
@@ -404,8 +404,8 @@ function Search_GroupSchedule($type, $extra = array()) {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['staff_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -572,7 +572,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
         case 'student_id':
             if ($_REQUEST['bottom_back']) {
                 unset($_SESSION['student_id']);
-                echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+                //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
                 unset($_REQUEST['student_id']);
@@ -586,8 +586,8 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['student_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
@@ -610,8 +610,8 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 } else
                     unset($_SESSION['staff_id']);
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -789,7 +789,7 @@ function SearchStaff($type, $extra = array()) {
         case 'student_id':
             if ($_REQUEST['bottom_back']) {
                 unset($_SESSION['student_id']);
-                echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+                //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
                 unset($_REQUEST['student_id']);
@@ -805,8 +805,8 @@ function SearchStaff($type, $extra = array()) {
                 else {
                     unset($_SESSION['student_id']);
                 }
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
@@ -844,8 +844,8 @@ function SearchStaff($type, $extra = array()) {
                 else {
                     unset($_SESSION['staff_id']);
                 }
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {
@@ -1045,8 +1045,8 @@ function stafflist($type, $extra = array()) {
                         $_SESSION['UserSchool'] = $_REQUEST['school_id'];
                 }
 
-                if (!$_REQUEST['_openSIS_PDF'])
-                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//                if (!$_REQUEST['_openSIS_PDF'])
+//                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
             if (!UserStaffID() && $_REQUEST['staff_id'] != 'new' || $extra['new'] == true) {

@@ -1,4 +1,5 @@
 <?php
+
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -26,13 +27,12 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$_REQUEST['modname'] = "schoolsetup/Calendar.php"; 
+$_REQUEST['modname'] = "schoolsetup/Calendar.php";
 $js_extra = "window.location.href = window.location.href.replace('Search.php','Calendar.php');";
 
 $modcat = 'schoolsetup';
-if(AllowUse($_REQUEST['modname']))
-{
-	echo "<SCRIPT language=javascript>".$js_extra."parent.help.location=\"Bottom.php?modcat=$modcat&modname=$_REQUEST[modname]\";</SCRIPT>";
-	include("modules/$_REQUEST[modname]");
+if (AllowUse($_REQUEST['modname'])) {
+    //echo "<SCRIPT language=javascript>".$js_extra."parent.help.location=\"Bottom.php?modcat=$modcat&modname=$_REQUEST[modname]\";</SCRIPT>";
+    include("modules/$_REQUEST[modname]");
 }
 ?>

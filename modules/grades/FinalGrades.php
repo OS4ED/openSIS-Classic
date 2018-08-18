@@ -310,6 +310,7 @@ if (!$_REQUEST['modfunc']) {
 
 
         $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
+        
         $MP_TYPE = 'QTR';
         if (!$mps_RET) {
             $MP_TYPE = 'SEM';
@@ -328,6 +329,7 @@ if (!$_REQUEST['modfunc']) {
                 $pro = GetChildrenMP('PRO', $qtr['MARKING_PERIOD_ID']);
                 if ($pro) {
                     $pros = explode(',', str_replace("'", '', $pro));
+                    
                     foreach ($pros as $pro)
                         if (GetMP($pro, 'DOES_GRADES') == 'Y')
                             $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . '>' . GetMP($pro, 'SHORT_NAME') . '</label></div>';

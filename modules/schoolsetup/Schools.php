@@ -97,7 +97,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
            
             if ($error != 1)
                 DBQuery($sql);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             $note[] = 'This school has been modified.';
             $_REQUEST['modfunc'] = '';
         }
@@ -118,23 +118,28 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
                 $id = $id[1]['AUTO_INCREMENT'];
 
-                $sql = 'INSERT INTO schools (SYEAR' . $fields . ') values(' . UserSyear() . '' . $values . ')';
+                
+                $start_date=$_REQUEST['year__min'].'-'.$_REQUEST['month__min'].'-'.$_REQUEST['day__min'];
+                $end_date=$_REQUEST['year__max'].'-'.$_REQUEST['month__max'].'-'.$_REQUEST['day__max'];
+                $syear=$_REQUEST['year__min'];
+                $sql = 'INSERT INTO schools (SYEAR' . $fields . ') values(' . $syear . '' . $values . ')';
 
                 DBQuery($sql);
-                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . UserID() . ',' . $id . ',' . UserSyear() . ')');
+                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . UserID() . ',' . $id . ',' . $syear. ')');
                 if (User('PROFILE_ID') != 0) {
                     $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ')');
+                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ')');
                 }
-                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
+//                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
+                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO system_preference(school_id, full_day_minute, half_day_minute) VALUES (' . $id . ', NULL, NULL)');
 
-                DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . UserSyear() . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+                DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear. '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
                 $_SESSION['UserSchool'] = $id;
                 unset($_REQUEST['new_school']);
             }
 echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).' method=POST>';
-	echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+	//echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';
 	
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body text-center">';
@@ -176,7 +181,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
             DBQuery('UPDATE staff SET SCHOOLS=replace(SCHOOLS,\',' . UserSchool() . ',\',\',\')');
 
             unset($_SESSION['UserSchool']);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             unset($_REQUEST);
             $_REQUEST['modname'] = "schoolsetup/Schools.php?new_school=true";
             $_REQUEST['new_school'] = true;
@@ -292,6 +297,21 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
 
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row  
+
+        if($_REQUEST['new_school']=='true')
+        {
+        $get_this_school_date=DBGet(DBQuery('SELECT * FROM school_years where SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));  
+        
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Start Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
+        echo '</div>'; //.col-md-6
+        
+        echo '<div class="row">';
+        echo '<div class="col-md-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">End Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
+        echo '</div>'; //.col-md-6
+        }
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {

@@ -384,10 +384,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 //	  @fopen($upload->target_path,'r');
 //	  fclose($upload->target_path);
 //          $filename =  $upload->target_path;
-                            $fp = fopen($tmpName, 'r');
-                            $content = fread($fp, filesize($tmpName));
+//                            $fp = fopen($tmpName, 'r');
+//                            $content = fread($fp, filesize($tmpName));
+                            $content = base64_decode($_REQUEST['imgblob']);
                             $content = addslashes($content);
-                            fclose($fp);
+                            //fclose($fp);
 
                             if (!get_magic_quotes_gpc()) {
                                 $fileName = addslashes($fileName);
@@ -434,10 +435,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             unset($_REQUEST['day_staff']);
             unset($_REQUEST['month_staff']);
             unset($_REQUEST['year_staff']);
+            
             foreach ($_REQUEST['staff'] as $column => $value) {
-                if ($column_name == 'BIRTHDATE')
+                if ($column == 'BIRTHDATE')
+                {
                     $value = date("Y-m-d", strtotime($value));
-                if ($column_name == 'SCHOOLS')
+                   
+                }
+                if ($column == 'SCHOOLS')
                     continue;
                 if (strpos($column, "CUSTOM") == 0) {
                     $custom = DBGet(DBQuery("SHOW COLUMNS FROM staff WHERE FIELD='" . $column . "'"));
@@ -487,7 +492,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     }
                 }
             }
-            $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
             if ($error != true) {
                 DBQuery($sql);
@@ -519,10 +524,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     if ($_FILES["file"]["error"] > 0) {
                         echo "cannot upload file";
                     } else {
-                        $fp = fopen($tmpName, 'r');
-                        $content = fread($fp, filesize($tmpName));
+//                        $fp = fopen($tmpName, 'r');
+//                        $content = fread($fp, filesize($tmpName));
+                        $content = base64_decode($_REQUEST['imgblob']);
                         $content = addslashes($content);
-                        fclose($fp);
+                       // fclose($fp);
 
                         if (!get_magic_quotes_gpc()) {
                             $fileName = addslashes($fileName);
@@ -604,7 +610,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
     if (User('STAFF_ID') == $_REQUEST['staff_id']) {
         unset($_openSIS['User']);
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 }
 
@@ -818,7 +824,7 @@ class upload {
     var $fileExtension;
     var $allowExtension = array("jpg", "jpeg", "png", "gif", "bmp");
     var $wrongFormat = 0;
-
+    var $wrongSize=0;
     function deleteOldImage($id = '') {
 //if(file_exists($this->target_path))
 //	unlink($this->target_path);
@@ -836,6 +842,11 @@ class upload {
             $this->wrongFormat = 1;
         }
     }
+    function validateImageSize(){
+if($this->fileSize > 10485760){
+$this->wrongSize=1;
+}
+}
 
     function get_file_extension($file_name) {
         return end(explode('.', $file_name));

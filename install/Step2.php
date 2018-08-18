@@ -71,7 +71,7 @@ if(page && page!="index.php"){
                                     <li class="active">Database Creation</li>
                                     <li>School Information</li>
                                     <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
                                 <p>Installer has successfully connected to MySQL.</p>

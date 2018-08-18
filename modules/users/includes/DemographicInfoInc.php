@@ -144,7 +144,7 @@ else {
             //. '<div class="fileUpload btn btn-primary btn-sm">'
             . '<label class="fileUpload btn btn-primary btn-xs btn-block mt-15">'
             . '<span>Upload</span>'
-            . '<input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this.value)" />'
+            . '<input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" />'
 //                    . '</div>'
             . '</label>'
             . '</div>';
@@ -154,11 +154,33 @@ else {
 
         echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-            echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this.value)" /></label></div>';
+            echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this)" /></label></div>';
         echo '<div id="uploadFile"></div>';
     }
 }
 
 echo '</div>'; //.col-md-2
 echo '</div>'; //.row
+
+//////////////Modal For Filter Save////////////////////
+echo '<div id="modal_crop_image" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Upload Photo</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div class="image-cropper-container content-group" id=div_img style="height: 400px;">
+          <img src="" alt="" class="cropper" id="demo-cropper-image">
+          
+      </div>';
+echo '<input type=hidden name=imgblob id=imgblob value=>';
+echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
 ?>

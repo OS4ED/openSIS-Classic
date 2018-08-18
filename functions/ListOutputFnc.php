@@ -1041,20 +1041,20 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
                         if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
                             $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             if ($options['save_delimiter'] == 'xml') {
@@ -1184,7 +1184,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                             echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
                         elseif ($display_count == 1)
                             echo "<span class=\"heading-text\">1 $singular was found.</span>";
-                    }else{
+                    }else {
                         echo '&nbsp;';
                     }
                     if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
@@ -1431,15 +1431,17 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
                     //echo '</TD ></TR></TABLE>';
 
-
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
                     $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -1808,25 +1810,24 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
-                        {
-                            if($key == 'ATTENDANCE')
+                        if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING') {
+                            if ($key == 'ATTENDANCE')
                                 $item[$key] = ($item['UA'] == 'Y' ? 'Yes' : 'No');
-                            if($key == 'IGNORE_SCHEDULING')
+                            if ($key == 'IGNORE_SCHEDULING')
                                 $item[$key] = ($item['IGS'] == 'Y' ? 'Yes' : 'No');
                         }
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             if ($options['save_delimiter'] == 'xml') {
@@ -2205,14 +2206,18 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -2598,7 +2603,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
             foreach ($result as $item) {
 
                 $end = $item['END_DATE'];
-                $output.='<tr><td>' . strip_tags($item['TITLE']) . '</td><td>' . $item['PERIOD_PULLDOWN'] . '</td><td>' . $item['ROOM'] . '</td><td>' . $item['COURSE_MARKING_PERIOD_ID'] . '</td><td>' . $item['START_DATE'] . '</td><td>' . ($item['END_DATE'] == '' ? '' : $item['END_DATE']) . '</td></tr>';
+                $output .= '<tr><td>' . strip_tags($item['TITLE']) . '</td><td>' . $item['PERIOD_PULLDOWN'] . '</td><td>' . $item['ROOM'] . '</td><td>' . $item['COURSE_MARKING_PERIOD_ID'] . '</td><td>' . $item['START_DATE'] . '</td><td>' . ($item['END_DATE'] == '' ? '' : $item['END_DATE']) . '</td></tr>';
             }
             $output .= "</table>";
             header("Cache-Control: public");
@@ -2980,14 +2985,18 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -3338,18 +3347,18 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
             if ($options['save_delimiter'] != 'xml') {
 
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
 //            foreach ($result as $item) {
@@ -3469,7 +3478,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         echo $where_message;
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                    echo " &nbsp; <A HREF=" .str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true" . " ><i class=\"icon-file-excel\"></i></a>";
+                    echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true" . " ><i class=\"icon-file-excel\"></i></a>";
 //                    echo " &nbsp; <A HREF=" . encode_url(str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true") . " ><i class=\"icon-file-excel\"></i></a>";
 
                 echo '</h6>';
@@ -3596,7 +3605,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                     //echo "<TABLE cellpadding=6 cellspacing=1 width=96% class=hseparator><TR>";
                     echo '<div class="well m-b-20">';
                     echo '<div class="clearfix">';
-                    echo '<div class="pull-right">'.button('remove', $button_title, $button_link, '', '', $button_type).'</div>';
+                    echo '<div class="pull-right">' . button('remove', $button_title, $button_link, '', '', $button_type) . '</div>';
                     echo '</div>';
                     echo '<div class="row"><div class="col-md-6">';
 
@@ -3727,24 +3736,24 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                             echo '</div><div class="col-md-6">';
 
                         //if ($i < 3) {
-                            echo '<div class="form-group">';
-                            //Here to change the ListOutput Header Colour
-                            echo '<label class="control-label col-md-4 text-right">' . $value . '</label>';
-                            echo '<div class="col-md-8">' . $link['add']['html'][$key] . '</div>';
-                            echo '</div>';
-                            $i++;
-                            if($i == 2){
-                                echo '</div></div><div class="row"><div class="col-md-6">';
-                                $i = 0;
-                            }
+                        echo '<div class="form-group">';
+                        //Here to change the ListOutput Header Colour
+                        echo '<label class="control-label col-md-4 text-right">' . $value . '</label>';
+                        echo '<div class="col-md-8">' . $link['add']['html'][$key] . '</div>';
+                        echo '</div>';
+                        $i++;
+                        if ($i == 2) {
+                            echo '</div></div><div class="row"><div class="col-md-6">';
+                            $i = 0;
+                        }
 //                        } else {
 //                            echo '<div class="form-group">';
 //                            echo '<label class="control-label col-md-4 text-right">' . $value . '</label>';
 //                            echo '<div class="col-md-8">' . $link['add']['html'][$key] . '</div>';
 //                            echo '</div>';
-                            $j++;
-                            if ($j > 5)
-                                break;
+                        $j++;
+                        if ($j > 5)
+                            break;
 //                        }
                     }
                     echo '</div>';
@@ -4145,18 +4154,18 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
             }
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -4474,13 +4483,18 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                 echo "</TABLE>";
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
-                    echo "<script language='javascript' type='text/javascript'>\n";
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
             }
 
@@ -4816,18 +4830,18 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
 
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -5507,18 +5521,18 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
             }
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -6199,20 +6213,20 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
             }
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                 //$output .= '<td>' . str_replace('&nbsp;', ' ', eregi_replace('<BR>', ' ', ereg_replace('<!--.*-->', '', $value))) . '</td>';
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
                         //$output .='<td>' . ereg_replace('<[^>]+>', '', ereg_replace("<div onclick='[^']+'>", '', ereg_replace(' +', ' ', ereg_replace('&[^;]+;', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -6895,18 +6909,18 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
             }
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -7599,20 +7613,20 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
                         if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
                             $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             if ($options['save_delimiter'] == 'xml') {
@@ -7991,14 +8005,18 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -8341,18 +8359,18 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -8706,13 +8724,18 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
                     echo '</TD ></TR></TABLE>';
-                    echo "<script language='javascript' type='text/javascript'>\n";
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
                 echo "</div>";
 
@@ -9201,18 +9224,18 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -9576,14 +9599,18 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                     echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
                 echo "</TD ></TR>";
                 echo "</TABLE>";
@@ -9952,18 +9979,18 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -10327,14 +10354,18 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                   
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
                 echo "</TD ></TR>";
                 echo "</TABLE>";
@@ -10681,18 +10712,18 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
             }
             ob_end_clean();
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
             foreach ($result as $item) {
                 foreach ($column_names as $key => $value) {
@@ -11401,18 +11432,18 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                 $column_names_mod[$ci] = strip_tags($cd);
             }
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -11776,14 +11807,18 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                     echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                   
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
                 echo "</TD ></TR>";
                 echo "</TABLE>";
@@ -12545,7 +12580,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 //
 //                    echo "<script language='javascript' type='text/javascript'>\n";
 //
-//                    $number_rec = 100;
+//                    
 //                    echo "var pager = new Pager('results',$number_rec);\n";
 //                    echo "pager.init();\n";
 //                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -12934,16 +12969,16 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                 foreach ($column_names_mod as $key => $value)
                     if ($key != 'CHECKBOX')
                         $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names_mod as $key => $value) {
                         if ($key != 'CHECKBOX')
-                            $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                            $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
 //            foreach ($result as $item) {
@@ -13104,7 +13139,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
             echo '<THEAD>';
             //if(!isset($_REQUEST['_openSIS_PDF']))
-            
+
 
             $i = 1;
 //            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
@@ -13313,22 +13348,26 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
                     echo '';
             }
-            
-                    echo '</TBODY>';
-                echo "</TABLE>";
+
+            echo '</TBODY>';
+            echo "</TABLE>";
 
             // END PRINT THE LIST ---
         }
@@ -13690,18 +13729,18 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -14070,14 +14109,18 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -14444,18 +14487,18 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             foreach ($result as $item) {
@@ -14815,14 +14858,18 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -14929,23 +14976,23 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
 
 function ListOutputPrintReportMod($result, $column_names) {
     $table = '<table   cellpadding="6" width="100%" cellspacing="1" border="1 " style="border-collapse:collapse;white-space:nowrap;" align="center">';
-    $table.='<tbody>';
-    $table.='<tr>';
+    $table .= '<tbody>';
+    $table .= '<tr>';
     foreach ($column_names as $key => $value) {
-        $table.='<td bgcolor="#d3d3d3">' . $value . '</td>';
+        $table .= '<td bgcolor="#d3d3d3">' . $value . '</td>';
     }
-    $table.='</tr>';
+    $table .= '</tr>';
     foreach ($result as $res_key => $res_val) {
-        $table.='<tr>';
+        $table .= '<tr>';
         foreach ($column_names as $key => $value) {
 
             $bg_color = ($res_key % 2 == 0 ? '#d3d3d3' : '#f5f5f5');
 
-            $table.='<td bgcolor="' . $bg_color . '">' . $res_val[$key] . '</td>';
+            $table .= '<td bgcolor="' . $bg_color . '">' . $res_val[$key] . '</td>';
         }
-        $table.='</tr>';
+        $table .= '</tr>';
     }
-    $table.='</tbody></table';
+    $table .= '</tbody></table';
     return $table;
 }
 
@@ -15207,20 +15254,20 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .='<table><tr>';
+                $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
                         if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
                             $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
-                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
             if ($options['save_delimiter'] == 'xml') {
@@ -15610,14 +15657,18 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
@@ -15723,7 +15774,6 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
         }
     }
 }
-
 
 function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
     if (!isset($options['save']))
@@ -15999,7 +16049,6 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 //                }
 //                $output .='</table>';
 //            }
-            
 //            foreach ($result as $item) {
 //                foreach ($column_names_mod as $key => $value) {
 //                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
@@ -16010,18 +16059,17 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 //                }
 //                $output .= "\n";
 //            }
-            $output='<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
-            foreach($result as $item)
-            {
-                $output.='<tr>';
-                $output.='<td>'.$item['TITLE'].'</td>';
-                $output.='<td>'.$item['PROFILE'].'</td>';
-                $output.='<td>'.$item['START_DATE'].'</td>';
-                $output.='<td>'.$item['END_DATE'].'</td>';
-                $output.='<td>'.$item['ID'].'</td>';
-                $output.='</tr>';
+            $output = '<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
+            foreach ($result as $item) {
+                $output .= '<tr>';
+                $output .= '<td>' . $item['TITLE'] . '</td>';
+                $output .= '<td>' . $item['PROFILE'] . '</td>';
+                $output .= '<td>' . $item['START_DATE'] . '</td>';
+                $output .= '<td>' . $item['END_DATE'] . '</td>';
+                $output .= '<td>' . $item['ID'] . '</td>';
+                $output .= '</tr>';
             }
-            $output.='</table>';
+            $output .= '</table>';
             header("Cache-Control: public");
             header("Pragma: ");
             header("Content-Type: application/$extension");
@@ -16372,14 +16420,18 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                     echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
                 echo "</TD ></TR>";
                 echo "</TABLE>";
@@ -16485,6 +16537,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
         }
     }
 }
+
 function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
     if (!isset($options['save']))
         $options['save'] = true;
@@ -16763,16 +16816,16 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                 foreach ($column_names_mod as $key => $value)
                     if ($key != 'CHECKBOX')
                         $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                $output .='</tr>';
+                $output .= '</tr>';
                 foreach ($result as $item) {
-                    $output .='<tr>';
+                    $output .= '<tr>';
                     foreach ($column_names_mod as $key => $value) {
                         if ($key != 'CHECKBOX')
-                            $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                            $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                     }
-                    $output .='</tr>';
+                    $output .= '</tr>';
                 }
-                $output .='</table>';
+                $output .= '</table>';
             }
 
 //            foreach ($result as $item) {
@@ -16933,7 +16986,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
             echo '<THEAD>';
             //if(!isset($_REQUEST['_openSIS_PDF']))
-            
+
 
             $i = 1;
 //            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
@@ -17142,22 +17195,26 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                     //echo '</TD ></TR></TABLE>';
 
 
-                    echo "<script language='javascript' type='text/javascript'>\n";
-
-                    $number_rec = 100;
-                    echo "var pager = new Pager('results',$number_rec);\n";
-                    echo "pager.init();\n";
-                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                    echo "pager.showPage(1);\n";
-                    echo "</script>\n";
+                    $number_rec = 100;                    
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo '$(function(){if($("#results").length>0){';
+                        
+                        echo "var pager = new Pager('results',$number_rec);\n";
+                        echo "pager.init();\n";
+                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
+                        echo "pager.showPage(1);\n";
+                        echo '}});';
+                        echo "</script>\n";
+                    }
                 }
 
                 if ($options['center'])
                     echo '';
             }
-            
-                    echo '</TBODY>';
-                echo "</TABLE>";
+
+            echo '</TBODY>';
+            echo "</TABLE>";
 
             // END PRINT THE LIST ---
         }
@@ -17256,6 +17313,5 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
         }
     }
 }
-
 
 ?>

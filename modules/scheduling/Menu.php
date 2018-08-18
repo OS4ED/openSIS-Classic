@@ -28,7 +28,7 @@
 include('../../RedirectModulesInc.php');
 $menu['scheduling']['admin'] = array(
 						'scheduling/Schedule.php'=>'Student Schedule',
-                                                'scheduling/ViewSchedule.php'=>'ViewSchedule',
+                                                'scheduling/ViewSchedule.php'=>'View Schedule',
 						'scheduling/Requests.php'=>'Student Requests',
 						'scheduling/MassSchedule.php'=>'Group Schedule',
 						'scheduling/MassRequests.php'=>'Group Requests',
@@ -50,7 +50,7 @@ $menu['scheduling']['admin'] = array(
 
 $menu['scheduling']['teacher'] = array(
 						'scheduling/Schedule.php'=>'Schedule',
-                                                'scheduling/ViewSchedule.php'=>'ViewSchedule',
+                                                'scheduling/ViewSchedule.php'=>'View Schedule',
 						1=>'Reports',
 						'scheduling/PrintSchedules.php'=>'Print Schedules',
 						'scheduling/PrintClassLists.php'=>'Print Class Lists',

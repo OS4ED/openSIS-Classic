@@ -1,5 +1,4 @@
 <?php
-
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -27,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include_once("modules/messaging/fckeditor/fckeditor.php") ;
+include_once("fckeditor/fckeditor.php") ;
 if(isset($_REQUEST['tables']['new']) && $_REQUEST['tables']['new']['TITLE']=='' && $_REQUEST['table']=='gradebook_assignment_types')
 {
     unset($_REQUEST);
@@ -43,11 +42,28 @@ unset($_SESSION['_REQUEST_vars']['assignment_type_id']);
 unset($_SESSION['_REQUEST_vars']['assignment_id']);
 
 $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND PROGRAM=\'Gradebook\'  AND SCHOOL_ID='.UserSchool().''),array(),array('TITLE'));
+//if(count($config_RET))
+//	foreach($config_RET as $title=>$value)
+//		$programconfig[$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
+//else
+//	$programconfig = true;
+
 if(count($config_RET))
+{
 	foreach($config_RET as $title=>$value)
-		$programconfig[$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
+		 if(substr($title,0,3)=='SEM' || substr($title,0,2)=='FY' || substr($title,0,1)=='Q')
+            {
+                $value1= explode("_",$value[1]['VALUE']);
+                $programconfig[$title] = $value1[0];
+            }
+ else {
+     $value1= explode("_".UserCoursePeriod(),$value[1]['VALUE']);
+     if(count($value1)>1)
+      $programconfig[$title] = $value1[0];
 else
-    $programconfig = true;
+    $programconfig[$title] = $value[1]['VALUE'];
+ }
+}
 if(clean_param($_REQUEST['day_tables'],PARAM_NOTAGS) && ($_POST['day_tables'] || $_REQUEST['ajax']))
 {
 	foreach($_REQUEST['day_tables'] as $id=>$values)
@@ -488,8 +504,8 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
          if($_REQUEST['assignment_type_id'] && !$_REQUEST['assignment_id'])
         {   
          $table ='assignment type';
-         $data=DBGet(DBQuery('select STUDENT_ID from gradebook_grades where assignment_id IN (select assignment_id from  gradebook_assignments where assignment_type_id='.$_REQUEST['assignment_type_id'].')'));
-         if($data[1]['STUDENT_ID']!='')
+         $data=DBGet(DBQuery('select id from student_report_card_grades where course_period_id=(select course_period_id from  gradebook_assignment_types where assignment_type_id='.$_REQUEST['assignment_type_id'].')'));
+         if(count($data)>0)
              UnableDeletePromptMod('Gradebook Assignment Type cannot be deleted because assignments are created in this assignment type.','','modfunc=&assignment_type_id='.$_REQUEST['assignment_type_id']);
         else
         {
@@ -512,8 +528,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
         $has_assigned=0;
        $mp_id=  UserMP().",'E".UserMP()."'";
 
-     //$stmt = DBGet(DBQuery("SELECT id  AS TOTAL_ASSIGNED from student_report_card_grades WHERE course_period_id=".UserCoursePeriod()." and marking_period_id in($mp_id)"));
-     $stmt = DBGet(DBQuery("SELECT COUNT(*)  AS TOTAL_ASSIGNED from gradebook_grades WHERE course_period_id=".UserCoursePeriod()." and assignment_id=".$_REQUEST['assignment_id']." AND points IS NOT NULL"));
+     $stmt = DBGet(DBQuery("SELECT id  AS TOTAL_ASSIGNED from student_report_card_grades WHERE course_period_id=".UserCoursePeriod()." and marking_period_id in($mp_id)"));
      $has_assigned=$stmt[1]['TOTAL_ASSIGNED'];
 		if($has_assigned>0){
                     UnableDeletePromptMod('Gradebook Assignment cannot be deleted because grade was given for this assignment.','','modfunc=&assignment_type_id='.$_REQUEST['assignment_type_id'].'&assignment_id='.$_REQUEST['assignment_id']);
@@ -551,7 +566,7 @@ if(!$_REQUEST['modfunc'] && $course_id)
     $types_RET = DBGet($QI);
 	if($_REQUEST['assignment_id']!='new' && $_REQUEST['assignment_type_id']!='new')
         {
-		$delete_button = "<INPUT type=button value=Delete onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&assignment_type_id=$_REQUEST[assignment_type_id]&assignment_id=$_REQUEST[assignment_id]\"'>";
+		$delete_button = "<INPUT type=button value=Delete class='btn btn-danger' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&assignment_type_id=$_REQUEST[assignment_type_id]&assignment_id=$_REQUEST[assignment_id]\"'> &nbsp;";
     }
 
     // ADDING & EDITING FORM
@@ -642,7 +657,7 @@ if(!$_REQUEST['modfunc'] && $course_id)
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['assignment_type_id'] . '][TITLE]', 'Title', 'size=36') . '</div></div>';
 
-        if ($programconfig['WEIGHT'] == 'Y') {
+        if(substr($programconfig['WEIGHT'],0,1)=='Y'){
 
             $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['FINAL_GRADE_PERCENT'], 'tables[' . $_REQUEST['assignment_type_id'] . '][FINAL_GRADE_PERCENT]', ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '<FONT color=red>') . 'Weight Percent' . ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '</FONT>')) . '</div></div>';
             $header .= '<div class="col-md-6"><div class="form-group">' . NoInput($RET['TOTAL_PERCENT'] == 1 ? '100%' : '<FONT COLOR=red>' . (100 * $RET['TOTAL_PERCENT']) . '%</FONT>', 'Percent Total') . '</div></div>';
@@ -658,13 +673,26 @@ if(!$_REQUEST['modfunc'] && $course_id)
             echo '<div class="col-md-12"><div class="form-group">';
             echo '<label class="control-label col-xs-2 text-right">Description</label>';
             echo '<div class="col-xs-10">';
-            $oFCKeditor = new FCKeditor('tables[' . $_REQUEST['assignment_id'] . '][DESCRIPTION]');
-            $oFCKeditor->BasePath = 'modules/messaging/fckeditor/';
-            $oFCKeditor->Value = html_entity_decode(html_entity_decode($RET['DESCRIPTION']));
-            $oFCKeditor->Height = '200';
-            $oFCKeditor->Width = '100%';
-            $oFCKeditor->ToolbarSet = 'Mytoolbar ';
-            echo $oFCKeditor->Create();
+                        
+//            $oFCKeditor = new FCKeditor('tables[' . $_REQUEST['assignment_id'] . '][DESCRIPTION]');
+//            $oFCKeditor->BasePath = 'modules/messaging/fckeditor/';
+//            $oFCKeditor->Value = html_entity_decode(html_entity_decode($RET['DESCRIPTION']));
+//            $oFCKeditor->Height = '200';
+//            $oFCKeditor->Width = '100%';
+//            $oFCKeditor->ToolbarSet = 'Mytoolbar ';
+//            echo $oFCKeditor->Create();
+            
+            
+            echo '<textarea name="tables[' . $_REQUEST['assignment_id'] . '][DESCRIPTION]" id="txtBody" rows="4" cols="100">'.html_entity_decode(html_entity_decode($RET['DESCRIPTION'])).'</textarea>';
+
+
+
+
+
+            echo '<script type="text/javascript">$(function(){ CKEDITOR.replace(\'txtBody\', { height: \'400px\', extraPlugins: \'forms\'}); });</script>';
+
+            
+            
             echo '</div>';
             echo '</div></div>';
             echo '</div>';

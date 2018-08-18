@@ -42,7 +42,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='edit')
 
 if(UserStaffID())
 {
-$profile=DBGet(DBQuery('SELECT PROFILE FROM staff WHERE STAFF_ID=\''.UserStaffID().'\' '));
+$profile=DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=\''.UserStaffID().'\' '));
 if($profile[1]['PROFILE']!='parent')
 {
 if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file']['name'])
@@ -99,17 +99,14 @@ if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file'][
         }
   	else
     {
-            
-	  $fp = fopen($tmpName, 'r');
-            $content = fread($fp, filesize($tmpName));
+	  $content = base64_decode($_REQUEST['imgblob']);
             $content = addslashes($content);
-            fclose($fp);
+            //fclose($fp);
 
             if(!get_magic_quotes_gpc())
             {
                 $fileName = addslashes($fileName);
             }
-
             DBQuery('UPDATE staff SET IMG_NAME=\''.$fileName.'\',IMG_CONTENT=\''.$content.'\' WHERE STAFF_ID='.UserStaffID());
 	  $stf_photo=DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=\''.UserStaffID().'\' '));
             echo '<div align=center><IMG SRC="data:image/jpeg;base64,'.base64_encode($stf_photo[1]['IMG_CONTENT']).'" width=150 class=pic></div><div class=break></div>';
@@ -124,8 +121,30 @@ else
 echo '
 '.$msg.'
 <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+echo '<div align=center>Select image file: <input name="file" type="file" onchange="selectFile(this)"/><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>';
+//////////////Modal For Filter Save////////////////////
+echo '<div id="modal_crop_image" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Upload Photo</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div class="image-cropper-container content-group" id=div_img style="height: 400px;">
+          <img src="" alt="" class="cropper" id="demo-cropper-image">
+          
+      </div>';
+echo '<input type=hidden name="imgblob" id="imgblob" value="">';
+echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+echo '<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
 </form>';
 PopTable ('footer');
 }
@@ -150,6 +169,7 @@ var $name;
 var $fileExtension;
 var $allowExtension=array("jpg","jpeg","png","gif","bmp");
 var $wrongFormat=0;
+var $wrongSize=0;
 function deleteOldImage($id=''){
 //if(file_exists($this->target_path))
 //	unlink($this->target_path);
@@ -166,6 +186,12 @@ $this->fileExtension=strtolower(substr($this->name,strrpos($this->name,".")+1));
 function validateImage(){
 if(!in_array($this->fileExtension, $this->allowExtension)){
 $this->wrongFormat=1;
+}
+}
+
+function validateImageSize(){
+if($this->fileSize > 10485760){
+$this->wrongSize=1;
 }
 }
 function get_file_extension($file_name) {

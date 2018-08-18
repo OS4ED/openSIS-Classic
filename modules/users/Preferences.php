@@ -80,10 +80,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         if ($_REQUEST['tab'] == 'display_options' && $_REQUEST['values']['Preferences']['HIDE_ALERTS'] != 'Y')
             $_REQUEST['values']['Preferences']['HIDE_ALERTS'] = 'N';
         if ($_REQUEST['tab'] == 'display_options' && $_REQUEST['values']['Preferences']['THEME'] != $current_RET['Preferences']['THEME'][1]['VALUE']) {
-            echo '<script language=JavaScript>';
-            echo 'parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;';
-            echo "parent.help.location='Bottom.php?modcat=users&modname=$_REQUEST[modname]';";
-            echo '</script>';
+//            echo '<script language=JavaScript>';
+//            echo 'parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;';
+//            echo "parent.help.location='Bottom.php?modcat=users&modname=$_REQUEST[modname]';";
+//            echo '</script>';
             $flag = 1;
         }
         if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'student_fields') {

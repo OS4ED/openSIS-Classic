@@ -289,7 +289,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
             unset($_SESSION['staff_id']);
             unset($_REQUEST['staff_id']);
             unset($_REQUEST['modfunc']);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             Search('staff_id', $extra);
         }
     }

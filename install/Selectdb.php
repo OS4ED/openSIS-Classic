@@ -46,26 +46,28 @@ $conn_string = $_SESSION['conn'];
         <section class="login">
             <div class="login-wrapper">
                 <div class="panel">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-8 text-left">
-                                <div class="logo">
-                                    <img src="assets/images/opensis_logo.png" alt="openSIS">
-                                </div>
-                                <h3>Step 2 of 4</h3>
-                            </div>
-                            <div class="col-xs-4 text-center" style="padding: 30px 20px 0;">
-                                Installation Progress
-                                <div class="progress no-margin">
-                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="panel-heading clearfix">
+                        <div class="logo">
+                            <img src="assets/images/opensis_logo.png" alt="openSIS">
+                        </div>   
+                        <h3>openSIS Installation - System Requirements</h3>                 
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
-                            <div class="installation-steps">
+                            <div class="installation-instructions">
+                                <ul class="installation-steps-label">
+                                    <li>Choose Package</li>
+                                    <li>Database Connection</li>
+                                    <li class="active">Database Selection</li>
+                                    <li>Site Admin Account Setup</li>
+                                    <li>Ready to Go!</li>
+                                </ul>
+                                <!--<h4 class="no-margin">Installation Prerequisite</h4>
+                                <p>Before you install openSIS, you need to have Apache web server, MySQL database server and php scripting language setup in your machine.</p>
+                                <p>You can download an all-inclusive package from: <a href="https://www.apachefriends.org/download.html">https://www.apachefriends.org/download.html</a></p>
+                                <p>Select the download package for the operating system you are using on your machine. Install that first and then start the openSIS installer.</p>-->
+                            </div>
+                            <div class="installation-steps valign-top">
                                 <h2 class="text-center">Thanks for providing MySQL Connection Information</h2><br/>
                                 <h5 class="text-center">Please select the Database from the list<br/>that you want to upgrade from.</h5><br/>
 
@@ -91,9 +93,6 @@ $conn_string = $_SESSION['conn'];
                                     </div>
                                     <br/>
                                 </form>
-                            </div>
-                            <div class="installation-instructions">
-                                <h4 class="no-margin">Installation Instructions</h4>
                             </div>
                         </div>
                     </div>

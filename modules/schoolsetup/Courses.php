@@ -412,7 +412,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
         else
             $columns['MARKING_PERIOD_ID'] = $values[1]['MARKING_PERIOD_ID'];
         $columns['CP_SECTION'] = 'cpv';
-        
+//        print_r($_REQUEST['course_period_variable']);
         foreach ($_REQUEST['course_period_variable'] as $cp_id => $days) {
             if ($cp_id != 'new') {
                 foreach ($days as $day => $period) {
@@ -519,8 +519,9 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             }
                         }
                     } else {
-                            if(isset($period['PERIOD_ID']) && !isset($period['START_TIME']) && !isset($period['END_TIME']))
+                            if(isset($period['PERIOD_ID']) && !isset($period['START_TIME']) && !isset($period['END_TIME']) && $period['PERIOD_ID']!='')
                             {
+                              
                               $period_data = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM school_periods WHERE PERIOD_ID=' . $period['PERIOD_ID'] . ''));
                                  if(!empty($period_data))
                                     {

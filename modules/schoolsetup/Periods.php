@@ -31,27 +31,15 @@ include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && AllowEdit()) {
     foreach ($_REQUEST['values'] as $id => $columns) {
         if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {
-            if ($columns['START_HOUR']) {
-                if (strlen($columns['START_MINUTE']) < 2) {
-                    $sm = '0' . $columns['START_MINUTE'];
-                    $columns['START_TIME'] = $columns['START_HOUR'] . ':' . $sm . ' ' . $columns['START_M'];
-                } else
-                    $columns['START_TIME'] = $columns['START_HOUR'] . ':' . $columns['START_MINUTE'] . ' ' . $columns['START_M'];
+            if ($columns['START_TIME']) {
+               
                 $columns['START_TIME'] = date("H:i", strtotime($columns['START_TIME']));
-                unset($columns['START_HOUR']);
-                unset($columns['START_MINUTE']);
-                unset($columns['START_M']);
+                
             }
-            if ($columns['END_HOUR']) {
-                if (strlen($columns['END_MINUTE']) < 2) {
-                    $em = '0' . $columns['END_MINUTE'];
-                    $columns['END_TIME'] = $columns['END_HOUR'] . ':' . $em . ' ' . $columns['END_M'];
-                } else
-                    $columns['END_TIME'] = $columns['END_HOUR'] . ':' . $columns['END_MINUTE'] . ' ' . $columns['END_M'];
+            if ($columns['END_TIME']) {
+               
                 $columns['END_TIME'] = date("H:i", strtotime($columns['END_TIME']));
-                unset($columns['END_HOUR']);
-                unset($columns['END_MINUTE']);
-                unset($columns['END_M']);
+                
             }
             ##############################################################################################################
 
@@ -395,6 +383,9 @@ function _makeCheckboxInput($value, $name) {
     return CheckboxInput($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
 }
 
+
+
+
 function _makeTimeInput($value, $name) {
     global $THIS_RET;
 
@@ -429,14 +420,18 @@ function _makeTimeInput($value, $name) {
             $fn_min_s = substr($f_min_s[1], 0, 1);
     }
 
-    if ($id != 'new' && $value) {
-
-
-        return '<DIV id=time' . $id . '><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($hour, 'values[' . $id . '][START_HOUR]', '', $hour_options, false, 'style="width: 60px;"', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($fn_min_s, 'values[' . $id . '][START_MINUTE]', '', $minute_options, false, 'style="width: 60px;"', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($f_ampm_s, 'values[' . $id . '][START_M]', '', array('AM' => 'AM', 'PM' => 'PM'), false, 'style="width: 60px;"', false)) . '</TD></TR></TABLE>","time' . $id . '",true);\'>' . $value . '</div></DIV>';
-    } 
+//    if ($id != 'new' && $value) {
+//
+//
+//        return '<DIV id=time' . $id . '><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($hour, 'values[' . $id . '][START_HOUR]', '', $hour_options, false, 'style="width: 60px;"', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($fn_min_s, 'values[' . $id . '][START_MINUTE]', '', $minute_options, false, 'style="width: 60px;"', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($f_ampm_s, 'values[' . $id . '][START_M]', '', array('AM' => 'AM', 'PM' => 'PM'), false, 'style="width: 60px;"', false)) . '</TD></TR></TABLE>","time' . $id . '",true);\'>' . $value . '</div></DIV>';
+//    } 
+//    else
+//        return '<TABLE cellspacing=0 cellpadding=0><TR><TD>' . SelectInput($hour, 'values[' . $id . '][START_HOUR]', '', $hour_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($fn_min_s, 'values[' . $id . '][START_MINUTE]', '', $minute_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($f_ampm_s, 'values[' . $id . '][START_M]', '', array('AM' => 'AM', 'PM' => 'PM'), 'N/A', '', false) . '</TD></TR></TABLE>';
+    if($id!='new')
+        return TextInput_time($hour.':'.$fn_min_s.' '.$f_ampm_s, 'values[' . $id . '][START_TIME]', '', $extra);
     else
-        return '<TABLE cellspacing=0 cellpadding=0><TR><TD>' . SelectInput($hour, 'values[' . $id . '][START_HOUR]', '', $hour_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($fn_min_s, 'values[' . $id . '][START_MINUTE]', '', $minute_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($f_ampm_s, 'values[' . $id . '][START_M]', '', array('AM' => 'AM', 'PM' => 'PM'), 'N/A', '', false) . '</TD></TR></TABLE>';
-}
+        return TextInput_time('', 'values[' . $id . '][START_TIME]', '', $extra);
+    }
 
 function _makeTimeInputEnd($value, $name) {
     global $THIS_RET;
@@ -473,10 +468,15 @@ function _makeTimeInputEnd($value, $name) {
     }
 
 
-    if ($id != 'new' && $value)
-        return '<DIV id=etime' . $id . '><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($hour, 'values[' . $id . '][END_HOUR]', '', $hour_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($fn_min, 'values[' . $id . '][END_MINUTE]', '', $minute_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($f_ampm, 'values[' . $id . '][END_M]', '', array('AM' => 'AM', 'PM' => 'PM'), false, '', false)) . '</TD></TR></TABLE>","etime' . $id . '",true);\'>' . $value . '</div></DIV>';
+//    if ($id != 'new' && $value)
+//        return '<DIV id=etime' . $id . '><div onclick=\'addHTML("<TABLE><TR><TD>' . str_replace('"', '\"', SelectInput($hour, 'values[' . $id . '][END_HOUR]', '', $hour_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($fn_min, 'values[' . $id . '][END_MINUTE]', '', $minute_options, false, '', false)) . '</TD><TD>' . str_replace('"', '\"', SelectInput($f_ampm, 'values[' . $id . '][END_M]', '', array('AM' => 'AM', 'PM' => 'PM'), false, '', false)) . '</TD></TR></TABLE>","etime' . $id . '",true);\'>' . $value . '</div></DIV>';
+//    else
+//        return '<TABLE cellspacing=0 cellpadding=0><TR><TD>' . SelectInput($hour, 'values[' . $id . '][END_HOUR]', '', $hour_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($fn_min, 'values[' . $id . '][END_MINUTE]', '', $minute_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($f_ampm, 'values[' . $id . '][END_M]', '', array('AM' => 'AM', 'PM' => 'PM'), 'N/A', '', false) . '</TD></TR></TABLE>';
+
+    if($id!='new')
+        return TextInput_time($hour.':'.$fn_min.' '.$f_ampm, 'values[' . $id . '][END_TIME]', '', $extra);
     else
-        return '<TABLE cellspacing=0 cellpadding=0><TR><TD>' . SelectInput($hour, 'values[' . $id . '][END_HOUR]', '', $hour_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($fn_min, 'values[' . $id . '][END_MINUTE]', '', $minute_options, 'N/A', '', false) . '</TD><TD>' . SelectInput($f_ampm, 'values[' . $id . '][END_M]', '', array('AM' => 'AM', 'PM' => 'PM'), 'N/A', '', false) . '</TD></TR></TABLE>';
-}
+        return TextInput_time('', 'values[' . $id . '][END_TIME]', '', $extra);
+    }
 
 ?>

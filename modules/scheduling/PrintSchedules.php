@@ -237,7 +237,7 @@ if (!$_REQUEST['modfunc']) {
 
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-lg-6">';
-    Widgets('request');
+    Widgets('request_mod');
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '<div class="col-lg-6">';
     Widgets('course');

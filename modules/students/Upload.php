@@ -93,10 +93,11 @@ PopTable ('footer');
     {
 //	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
 //	  @fopen($upload->target_path,'r');
-            $fp = fopen($tmpName, 'r');
-            $content = fread($fp, filesize($tmpName));
+//            $fp = fopen($tmpName, 'r');
+//            $content = fread($fp, filesize($tmpName));
+            $content = base64_decode($_REQUEST['imgblob']);
             $content = addslashes($content);
-            fclose($fp);
+            //fclose($fp);
 
             if(!get_magic_quotes_gpc())
             {
@@ -118,8 +119,29 @@ else
 echo '
 '.$msg.'
 <form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+echo '<div align=center>Select image file: <input name="file" type="file" onchange="selectFile(this)"/><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>';
+//////////////Modal For Filter Save////////////////////
+echo '<div id="modal_crop_image" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Upload Photo</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div class="image-cropper-container content-group" id=div_img style="height: 400px;">
+          <img src="" alt="" class="cropper" id="demo-cropper-image">
+          
+      </div>';
+echo '<input type=hidden name="imgblob" id="imgblob" value="">';
+echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+echo '<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
 PopTable ('footer');
 }

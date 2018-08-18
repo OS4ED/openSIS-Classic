@@ -69,7 +69,7 @@ if(page && page!="index.php"){
                                     <li>Database Creation</li>
                                     <li>School Information</li>
                                     <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Prerequisite</h4>
                                 <p>Before you install openSIS, you need to have Apache web server, MySQL database server and php scripting language setup in your machine.</p>

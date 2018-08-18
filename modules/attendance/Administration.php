@@ -145,7 +145,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     if (UserStudentID() != optional_param('student_id', '', PARAM_ALPHANUM)) {
 
         $_SESSION['student_id'] = optional_param('student_id', '', PARAM_ALPHANUM);
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 
     $functions = array('ATTENDANCE_CODE' => '_makeCodePulldown', 'ATTENDANCE_TEACHER_CODE' => '_makeCode', 'ATTENDANCE_REASON' => '_makeReasonInput');

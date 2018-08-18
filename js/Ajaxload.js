@@ -110,7 +110,7 @@ function usercheck_callback(data) {
     else
         obj.style.color = '#ff0000';
     if (data == 1)
-        obj.innerHTML = 'Username OK';
+        obj.innerHTML = 'Username Available';
     else
         obj.innerHTML = 'Username already taken';
 }
@@ -126,7 +126,7 @@ function usercheck_init_mod(i, opt) {
     if (i.value.match(/[^A-Za-z0-9_]/))
         err[err.length] = 'Username can only contain letters, numbers and underscores';
     if (i.value.length < 3)
-        err[err.length] = 'Username too short';
+        err[err.length] = 'Username Too Short';
     if (err != '') {
         obj.style.color = '#ff0000';
         obj.innerHTML = err.join('<br />');
@@ -147,7 +147,7 @@ function usercheck_callback_p(data) {
 
     var obj = document.getElementById('ajax_output_1');
     obj.style.color = (response) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response == 1) ? 'Username OK' : 'Username already taken';
+    obj.innerHTML = (response == 1) ? 'Username Available' : 'Username already taken';
 }
 
 function usercheck_callback_s(data) {
@@ -155,7 +155,7 @@ function usercheck_callback_s(data) {
 
     var obj = document.getElementById('ajax_output_2');
     obj.style.color = (response) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response == 1) ? 'Username OK' : 'Username already taken';
+    obj.innerHTML = (response == 1) ? 'Username Available' : 'Username already taken';
 }
 
 
@@ -216,7 +216,7 @@ function usercheck_init_staff(i) {
     if (i.value.match(/[^A-Za-z0-9_]/))
         err[err.length] = 'Username can only contain letters, numbers and underscores';
     if (i.value.length < 3)
-        err[err.length] = 'Username too short';
+        err[err.length] = 'Username Too Short';
     if (err != '') {
         obj.style.color = '#ff0000';
         obj.innerHTML = err.join('<br />');
@@ -233,7 +233,7 @@ function usercheck_callback_staff(data) {
         document.getElementById('usr_err_check').value = '1';
     var obj = document.getElementById('ajax_output_st');
     obj.style.color = (response == 1) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response == 1) ? 'Username OK' : 'Username already taken';
+    obj.innerHTML = (response == 1) ? 'Username Available' : 'Username already taken';
     if (response != 1)
         document.getElementById("USERNAME").value = '';
 }
@@ -250,7 +250,7 @@ function usercheck_init_student(i) {
     if (i.value.match(/[^A-Za-z0-9_]/))
         err[err.length] = 'Username can only contain letters, numbers and underscores';
     if (i.value.length < 3)
-        err[err.length] = 'Username too short';
+        err[err.length] = 'Username Too Short';
     if (err != '') {
         obj.style.color = '#ff0000';
         obj.innerHTML = err.join('<br />');
@@ -264,13 +264,31 @@ function usercheck_callback_student(data) {
 
     var obj = document.getElementById('ajax_output_st');
     obj.style.color = (response == 1) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response == 1) ? 'Username OK' : 'Username already taken';
+    obj.innerHTML = (response == 1) ? 'Username Available' : 'Username already taken';
 }
 
 function usercheck_error_student(err) {
     alert("Error: " + err);
 }
 
+
+function usercheck_init_student_Mod(i) {
+    ajax_call('Validator.php?u=' + i.value + 'stud', usercheck_callback_student_Mod, usercheck_error_student_Mod);
+}
+
+function usercheck_callback_student_Mod(data) {
+    var response = data;
+    document.getElementById('ajax_output_st').innerHTML='';
+    if(response != 1)
+    {
+        document.getElementById('students[USERNAME]').value='';
+        document.getElementById('students[PASSWORD]').value='';
+    }
+}
+
+function usercheck_error_student_Mod(err) {
+    alert("Error: " + err);
+}
 // ------------------------------------------------------ Student ------------------------------------------------------------------------------ //
 
 // ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
@@ -2120,7 +2138,7 @@ function usercheck_init_noacess(i) {
     if (i.value.match(/[^A-Za-z0-9_]/))
         err[err.length] = 'Username can only contain letters, numbers and underscores';
     if (i.value.length < 3)
-        err[err.length] = 'Username too short';
+        err[err.length] = 'Username Too Short';
     if (err != '') {
         obj.style.color = '#ff0000';
         obj.innerHTML = err.join('<br />');
@@ -2209,6 +2227,7 @@ function chooseCpModalError(err)
 
 function parentLookup(address_id)
 {
+    
    
     var USERINFO_FIRST_NAME=document.getElementById('USERINFO_FIRST_NAME').value;
    
@@ -2221,11 +2240,15 @@ function parentLookup(address_id)
         var USERINFO_STATE=document.getElementById('USERINFO_STATE').value;
         var USERINFO_ZIP=document.getElementById('USERINFO_ZIP').value;
         var p_type=document.getElementById('p_type').value;
-  ajax_call('ParentLookup.php?USERINFO_FIRST_NAME='+USERINFO_FIRST_NAME+'&USERINFO_LAST_NAME='+USERINFO_LAST_NAME+'&USERINFO_EMAIL='+USERINFO_EMAIL+'&USERINFO_MOBILE='+USERINFO_MOBILE+'&USERINFO_SADD='+USERINFO_SADD+'&USERINFO_CITY='+USERINFO_CITY+'&USERINFO_STATE='+USERINFO_STATE+'&USERINFO_ZIP='+USERINFO_ZIP+'&address_id='+address_id+'&p_type='+p_type, parentLookupCallback, chooseCpModalError);  
+         var other_p_erson_id=document.getElementById('other_p_erson_id').value;
+  ajax_call('ParentLookup.php?USERINFO_FIRST_NAME='+USERINFO_FIRST_NAME+'&USERINFO_LAST_NAME='+USERINFO_LAST_NAME+'&USERINFO_EMAIL='+USERINFO_EMAIL+'&USERINFO_MOBILE='+USERINFO_MOBILE+'&USERINFO_SADD='+USERINFO_SADD+'&USERINFO_CITY='+USERINFO_CITY+'&USERINFO_STATE='+USERINFO_STATE+'&USERINFO_ZIP='+USERINFO_ZIP+'&address_id='+address_id+'&p_type='+p_type+'&other_p_erson_id='+other_p_erson_id, parentLookupCallback, chooseCpModalError);  
 }
-function modal_parenttype(type)
+function modal_parenttype(type,other_p_erson_id='')
 {
+   
      $('#modal_default_lookup').modal('show');
+      $("#other_p_erson_id").val(other_p_erson_id);
+      
      $("#p_type").val(type);
 }
 function parentLookupCallback(data)
@@ -2238,13 +2261,18 @@ function parentLookupCallback(data)
 document.getElementById("parent_res").innerHTML=data;
 }
 
-function SelectedParent(address_id,type)
+function SelectedParent(address_id,type,other_p_erson_id='')
 {
+    
    var selected_staff=document.querySelector('input[name="staff"]:checked').value;
      //ajax_call('modules/students/.php?id=' + id+'&table_name='+table, SelectedParentCallback, chooseCpModalError);
      
-     
+    
+         
      $("#modal_default_lookup").hide();
+ if(type=='other')
+     window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type='+type+'&nfunc=status&ajax=true&button=Select&con_info=old&add_id='+other_p_erson_id+'&address_id='+address_id+'&staff='+selected_staff+'&person_id='+other_p_erson_id ;
+     else
     window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type='+type+'&nfunc=status&ajax=true&button=Select&add_id=&address_id='+address_id+'&staff='+selected_staff ;
 
 

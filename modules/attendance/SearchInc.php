@@ -39,7 +39,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     unset($_SESSION['newsql1']);
     if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
         unset($_SESSION['student_id']);
-        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     switch (User('PROFILE')) {
         case 'admin':
@@ -56,7 +56,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             }
             
             $_SESSION['Search_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-            echo '<script language=JavaScript>parent.help.location.reload();</script>';
+            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
             if (isset($_SESSION['stu_search']['sql']) && $search_from_grade != 'true') {
                 unset($_SESSION['stu_search']);
             } else if ($search_from_grade == 'true') {
@@ -273,7 +273,7 @@ else {
         DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
         if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
             $_SESSION['List_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-            echo '<script language=JavaScript>parent.help.location.reload();</script>';
+            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
         }
         if (!$extra['singular'] || !$extra['plural'])
             if ($_REQUEST['address_group']) {
@@ -302,7 +302,7 @@ else {
             if (User('PROFILE') == 'teacher')
                 $_SESSION['UserSchool'] = $students_RET[1]['SCHOOL_ID'];
 
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             unset($_REQUEST['search_modfunc']);
         }
         if ($_REQUEST['modname'] != $_REQUEST['next_modname']) {

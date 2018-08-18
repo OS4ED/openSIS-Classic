@@ -69,8 +69,11 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
     $current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,STUDENT_ID,ADMIN,COURSE_PERIOD_ID FROM attendance_period WHERE SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\''), array(), array('STUDENT_ID', 'COURSE_PERIOD_ID'));
     unset($_REQUEST['attendance']);
 }
+
+$PHP_tmp_SELF = PreparePHP_SELF();
+echo "<FORM action=$PHP_tmp_SELF method=POST>";
+echo "<div class=\"panel panel-default\">";
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
-    $PHP_tmp_SELF = PreparePHP_SELF();
     $extraM .= "";
     $period_select = "<SELECT name=period_id onchange='this.form.submit();' class='form-control'><OPTION value=\"\">Daily</OPTION>";
     if (!UserStudentID() && !$_REQUEST['student_id']) {
@@ -101,14 +104,10 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
         $myclasses .='<OPTION value="selected_class"' . ($_REQUEST['myclasses'] == 'selected_class' ? ' SELECTED' : '') . '>Selected course period</OPTION>';
         $myclasses .='</SELECT>';
     }
-    echo "<FORM action=$PHP_tmp_SELF method=POST>";
-    echo "<div class=\"panel panel-default\">";
-    echo "<div class=\"panel-body\">";
-
-    echo '<div class="form-inline clearfix"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) . '<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . DateInputAY($end_date, 'end', 2) . '<div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div>';
+    echo "<div class=\"panel-heading\">";
+    echo '<div class="form-inline clearfix"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) . '<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . DateInputAY($end_date, 'end', 2) . '<div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div></div>';
+    echo '</div>'; //.panel-body
 }
-echo '</div>';
-echo '</div>';
 
 $cal_RET = DBGet(DBQuery('SELECT DISTINCT SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ORDER BY SCHOOL_DATE'));
 
@@ -177,7 +176,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
             $columns[$value['SHORT_DATE']] = ShortDate($value['SCHOOL_DATE']);
     }
 
-    echo '<div class="panel panel-default">';
+    echo '<div class="panel-body p-0">';
     //echo '<div class="table-responsive">';
     ListOutput($student_RET, $columns, 'Course', 'Courses');
     //echo '</div>';
@@ -247,7 +246,6 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
 
     Search('student_id', $extra);
 
-    echo '</FORM>';
 
     /*
      * Course Selection Modal Start
@@ -276,7 +274,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
         }
         echo '</table>';
     }
-    echo '</div>';
+    echo '</div>'; //.col-md-4
     echo '<div class="col-md-4" id="course_modal"></div>';
     echo '<div class="col-md-4" id="cp_modal"></div>';
     echo '</div>'; //.row
@@ -285,6 +283,9 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '</div>'; //.modal-dialog
     echo '</div>'; //.modal
 }
+
+echo '</div>'; //.panel
+echo '</FORM>';
 
 function _makeColor($value, $column) {
     global $THIS_RET, $RET, $attendance_codes;

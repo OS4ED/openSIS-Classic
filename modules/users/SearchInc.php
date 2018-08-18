@@ -33,7 +33,7 @@ if (User('PROFILE') == 'admin') {
     if (($_REQUEST['modfunc'] == 'search_fnc' || !$_REQUEST['modfunc']) && !$_REQUEST['search_modfunc']) {
         if ($_SESSION['staff_id']) {
             unset($_SESSION['staff_id']);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
         }
 
         echo '<div>';

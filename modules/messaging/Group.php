@@ -625,7 +625,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group') {
 
         if ($_SESSION['staff_id']) {
             unset($_SESSION['staff_id']);
-            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
         }
     }
     if (isset($_REQUEST['search']) && $_REQUEST['search'] == 'true' && $_REQUEST['modfunc'] == 'add_group') {

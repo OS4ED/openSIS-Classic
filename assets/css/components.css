@@ -1126,7 +1126,7 @@ a.badge,
 .page-container {
   position: relative;
   padding: 20px 20px;
-  padding-bottom: 60px;
+  /*padding-bottom: 60px;*/
 }
 .navbar-bottom .page-container,
 .navbar-bottom-lg .page-container,
@@ -1248,14 +1248,14 @@ a.badge,
 *
 * ---------------------------------------------------------------------------- */
 .footer {
-  position: absolute;
+  /*position: absolute;*/
   left: 20px;
   right: 20px;
   bottom: 30px;
   font-size: 13px;
 }
 .footer:not(.navbar-fixed-bottom) {
-  z-index: 1000;
+  z-index: 2;
 }
 .footer.navbar {
   left: 0;

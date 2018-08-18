@@ -89,7 +89,7 @@ if ($_SESSION['mod'] == 'upgrade') {
                                         <li>Database Creation</li>
                                         <li>School Information</li>
                                         <li>Site Admin Account Setup</li>
-                                        <li class="active">Ready to go!</li>
+                                        <li class="active">Ready to Go!</li>
                                     </ul>
                                 </div>
                                 <div class="installation-steps">
@@ -177,7 +177,7 @@ You need to follow the instructions in the administrator manual for setting up t
                                         <li>Database Creation</li>
                                         <li>School Information</li>
                                         <li>Site Admin Account Setup</li>
-                                        <li class="active">Ready to go!</li>
+                                        <li class="active">Ready to Go!</li>
                                     </ul>
                                 </div>
                                 <div class="installation-steps">

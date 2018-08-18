@@ -74,7 +74,7 @@ $err .= '<!DOCTYPE html>
                                     <li class="active">Database Connection</li>
                                     <li>Database Creation</li>
                                     <li>Site Admin Account Setup</li>
-                                    <li>Ready to go!</li>
+                                    <li>Ready to Go!</li>
                                 </ul>
                             </div><!-- /.installation-instructions -->
                             <div class="installation-steps">

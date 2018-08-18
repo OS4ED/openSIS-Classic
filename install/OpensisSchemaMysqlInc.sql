@@ -1366,6 +1366,49 @@ CREATE TABLE `device_info` (
   `device_id` longtext CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `filters` (
+  `filter_id` int(11) NOT NULL,
+  `filter_name` varchar(255) DEFAULT NULL,
+  `school_id` int(11) DEFAULT '0',
+  `show_to` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `filter_fields` (
+  `filter_field_id` int(11) NOT NULL,
+  `filter_id` int(11) DEFAULT NULL,
+  `filter_column` varchar(255) DEFAULT NULL,
+  `filter_value` longtext
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+ALTER TABLE `filters`
+  ADD PRIMARY KEY (`filter_id`);
+
+--
+-- Indexes for table `filter_fields`
+--
+ALTER TABLE `filter_fields`
+  ADD PRIMARY KEY (`filter_field_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `filters`
+--
+ALTER TABLE `filters`
+  MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT for table `filter_fields`
+--
+ALTER TABLE `filter_fields`
+  MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+
+
 ALTER TABLE school_calendars AUTO_INCREMENT=1;
 
 

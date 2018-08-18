@@ -124,7 +124,7 @@ function DateInput_for_EndInputModal($value, $name, $title = '', $div = true, $a
         return (($value != '') ? ProperDate($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function TextInput($value, $name, $title = '', $options = '', $div = true) {
+function TextInput($value, $name, $title = '', $options = '', $div = true, $divOptions = '') {
     $original_title = $title;
     $title = str_replace('*', '', $original_title);
     if (Preferences('HIDDEN') != 'Y')
@@ -148,7 +148,39 @@ function TextInput($value, $name, $title = '', $options = '', $div = true) {
             return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
         else {
 
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div ".$divOptions." onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+        }
+    } else {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        return ($title != '' ? '<label class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . '<div class="form-control" disabled=disabled>' . (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . '</div>' . ($title != '' ? '</div>' : '');
+    }
+}
+
+function TextInput_time($value, $name, $title = '', $options = '', $div = true, $divOptions = '') {
+    $original_title = $title;
+    $title = str_replace('*', '', $original_title);
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    // mab - support array style $option values
+    if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        $value1 = is_array($value) ? $value[1] : $value;
+        $value = is_array($value) ? $value[0] : $value;
+
+        if (strpos($options, 'size') === false && $value != '')
+            $options .= ' size=' . strlen($value);
+        elseif (strpos($options, 'size') === false)
+            $options .= ' size=10';
+
+        if (strstr($value, '\\') != '')
+            $div = false;
+        if ((trim($value) == '' || $div == false))
+//            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\"  type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<div class=\"input-group clockpicker\"><INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options><span class=\"input-group-addon\"><span class=\"glyphicon glyphicon-time\"></span></span></div>" . (($title != '') ? '</div>' : '');
+        else {
+            $tempId = rand(0000,9999);
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div".$tempId."' onclick=\"$('#div".$tempId."').hide(); $('#div".$tempId."picker').show();\"><div ".$divOptions." document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . "</div></DIV><div class=\"input-group clockpicker\" id=\"div".$tempId."picker\" style=\"display:none;\"><INPUT type=text class=form-control id=\"input$name\" name=\"$name\" " . (($value || $value === '0') ? 'value="' . str_replace('"', '&rdquo;', $value) . '"' : '') . $options . "><span class=\"input-group-addon\"><span class=\"glyphicon glyphicon-time\"></span></span></div>" . (($title != '') ? "</div>" : "");
         }
     } else {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
