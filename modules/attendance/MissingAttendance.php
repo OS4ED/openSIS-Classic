@@ -80,7 +80,7 @@ if (count($RET)) {
     echo '</div>'; //.panel-body
 } else {
     echo '<div class="panel-body">';
-    echo '<div class="alert bg-danger alert-styled-left">attendance completed for this teacher.</div>';
+    echo '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Attendance completed for this teacher.</div>';
     echo '</div>'; //.panel-body
 }
 ?>

@@ -407,7 +407,12 @@ if ($profile_check == 'admin') {
 
         DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline">' . DateInputAY($date, 'date', 1) . $btnGo . $date_note . '</div>');
     } else {
-        DrawHeader('<div class="form-inline">' . DateInputAY($date, 'date', 2) . $btnGo . $date_note . '</div>');
+        echo '<div class="panel-body">';
+        echo '<div class="form-inline">';
+        echo '<div class="inline-block">' . DateInputAY($date, 'date', 2) . '</div>' . $btnGo . $date_note;
+        echo '</div>'; //.form-inline
+        echo '</div>';
+        //DrawHeader('<div class="form-inline"></div>');
     }
 } else {
 
@@ -418,10 +423,10 @@ if ($profile_check == 'admin') {
         DrawHeader('<div class="form-inline">' . DateInputAY($date, 'date', 4) . $btnGo . $date_note . '</div>');
     }
 }
-if (isset($_REQUEST['cp_id_miss_attn'])) {
-    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
-} else
-    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
+//if (isset($_REQUEST['cp_id_miss_attn'])) {
+//    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
+//} else
+//    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
 
 
 DrawHeader($note);
@@ -448,7 +453,7 @@ else {
     $plural = 'Students';
 }
 if (!$mp_id) {
-    echo "<table align=center><tr><td class=note></td><td class=note_msg>The selected date is not in a school quarter.</td></tr></table>";
+    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">The selected date is not in a school quarter.</div></div>';
 } else {
     if (count($course_RET) != 0) {
         $posted_date2 = ucfirst(strtolower($_REQUEST['month_date'])) . '-' . $_REQUEST['day_date'] . '-' . $_REQUEST['year_date'];
@@ -472,8 +477,9 @@ if (!$mp_id) {
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer
     } else {
-        if ($_REQUEST['period'])
-            echo "<table align=center><tr><td class=note></td><td class=note_msg>You cannot take attendance for this period on this day</td></tr></table>";
+        if ($_REQUEST['period']){
+            echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
+        }
     }
 }
 echo '</div>'; //.panel

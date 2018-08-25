@@ -70,20 +70,23 @@ if (!$_REQUEST['modfunc']) {
 
 
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
-    $start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . substr($_REQUEST['year_start'], 2, 4);
-    $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
+//    $start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . substr($_REQUEST['year_start'], 2, 4);
+//    $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
 
-    $conv_st_date = con_date($org_start_date);
+//    $conv_st_date = con_date($org_start_date);
+    $conv_st_date=$_REQUEST['year_start'].'-'.$_REQUEST['month_start'].'-'.$_REQUEST['day_start'];
 }
 
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
-    $end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . substr($_REQUEST['year_end'], 2, 4);
-    $org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
-
-    $conv_end_date = con_date_end($org_end_date);
+//    $end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . substr($_REQUEST['year_end'], 2, 4);
+//    $org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
+//
+//    $conv_end_date = con_date_end($org_end_date);
+//    
+    
+    $conv_end_date=$_REQUEST['year_end'].'-'.$_REQUEST['month_end'].'-'.$_REQUEST['day_end'];
 }
 if ($_REQUEST['modfunc'] == 'generate') {
-
 
 
     if (isset($conv_st_date) && isset($conv_end_date)) {

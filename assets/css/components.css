@@ -19250,7 +19250,7 @@ thead .htCollapseButton:after {
 @media (max-width: 768px) {
   .heading-elements:not(.not-collapsible) {
     position: static;
-    margin-top: 0;
+    margin-top: 15px;
     height: auto;
   }
 }
@@ -19613,7 +19613,10 @@ thead .htCollapseButton:after {
   }
 }
 @media (max-width: 768px) {
-  .panel-heading .heading-elements:not(.not-collapsible),
+    .heading-elements:not(.visible-elements) .heading-text {
+        margin-left: 0;
+    }
+  /*.panel-heading .heading-elements:not(.not-collapsible),*/
   .breadcrumb-elements:not(.not-collapsible) {
     display: none;
   }

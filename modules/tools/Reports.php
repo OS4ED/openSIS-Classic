@@ -61,24 +61,24 @@ if ($_REQUEST['func'] == 'Basic') {
     echo '<div class="panel-body institute-report">';
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo ' <div class="well">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-school"></i></span></div>';
+    echo ' <div class="well m-b-15">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-school"></span></div>';
     echo '<div class="media-left">';
     echo '<h6 class="text-semibold no-margin">Institutions<span class="display-block no-margin text-success">'.$num_schools.'</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
     echo '<div class="col-md-4">';
-    echo ' <div class="well">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-student"></i></span></div>';
+    echo ' <div class="well m-b-15">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-student"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">Students<span class="display-block no-margin text-success">'.$num_students.'</span><small class="display-block no-margin">Male : '.$male.'  &nbsp; | &nbsp;  Female : '.$female.'</small></h6>';
+    echo '<h6 class="text-semibold no-margin">Students<span class="display-block no-margin text-success">'.$num_students.' <small class="no-margin">(Male : '.$male.'  &nbsp; | &nbsp;  Female : '.$female.')</small></span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
     echo '<div class="col-md-4">';
-    echo ' <div class="well">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-teacher"></i></span></div>';
+    echo ' <div class="well m-b-15">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-teacher"></span></div>';
     echo '<div class="media-left">';
     echo '<h6 class="text-semibold no-margin">Teachers<span class="display-block no-margin text-success">'.$num_teacher.'</span></h6>';
     echo '</div>';
@@ -87,16 +87,16 @@ if ($_REQUEST['func'] == 'Basic') {
     echo '</div>';
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo ' <div class="well">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-staff"></i></span></div>';
+    echo ' <div class="well m-b-15">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-staff"></span></div>';
     echo '<div class="media-left">';
     echo '<h6 class="text-semibold no-margin">Staff<span class="display-block no-margin text-success">'.$num_staff.'</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
     echo '<div class="col-md-4">';
-    echo ' <div class="well">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon"><i class="icon-parent"></i></span></div>';
+    echo ' <div class="well m-b-15">';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-parent"></span></div>';
     echo '<div class="media-left">';
     echo '<h6 class="text-semibold no-margin">Parents<span class="display-block no-margin text-success">'.$num_parent.'</span></h6>';
     echo '</div>';

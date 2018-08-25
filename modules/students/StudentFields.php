@@ -351,7 +351,7 @@ if (!$_REQUEST['modfunc']) {
         if ($_REQUEST['id'] != 'new')
             echo "&id=$_REQUEST[id]";
         echo "&table=custom_fields method=POST>";
-        
+
         echo '<div class="panel panel-default">';
 
         DrawHeader($title, $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_studentField_F1();"')); //'<INPUT type=submit value=Save>');
@@ -371,7 +371,7 @@ if (!$_REQUEST['modfunc']) {
             $type_options = array('select' => 'Pull-Down', 'autos' => 'Auto Pull-down', 'edits' => 'Edit Pull-Down', 'text' => 'Text', 'radio' => 'Checkbox', 'codeds' => 'Coded Pull-Down', 'numeric' => 'Number', 'multiple' => 'Select Multiple from Options', 'date' => 'Date', 'textarea' => 'Long Text');
         }
 
-        $header .= '<div class="form-group"><label class="control-label col-lg-4">Data Type</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Data Type</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text') {
             $_openSIS['allow_edit'] = $allow_edit;
             $_openSIS['AllowEdit'][$modname] = $AllowEdit;
@@ -385,7 +385,7 @@ if (!$_REQUEST['modfunc']) {
 
         $header .= '<div class="row">';
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4">Student Field Category</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Student Field Category</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         $header .= '</div><div class="col-lg-6">';
         if ($_REQUEST['id'] == 'new' || $RET['SORT_ORDER'] == '')
             $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown="return numberOnly(event);"') . '</div>';
@@ -397,25 +397,26 @@ if (!$_REQUEST['modfunc']) {
         $colspan = 2;
 
         $header .= '<div class="row">';
-        
+
         if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
             $header .= '<div class="col-lg-6" id="show_textarea" style="display:block">';
-            $header .= '<label class="control-label">Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices<BR>* one per line</label>' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40');
+            $header .= '<label class="control-label col-md-4 text-right">Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40').'<p class="help-block">* one per line</p></div>';
             $colspan = 1;
             $header .= '</div>';
         }
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4">Default</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">* for dates: YYYY-MM-DD, for checkboxes: Y for long text it will be ignored</p></div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Default</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">* for dates: YYYY-MM-DD, for checkboxes: Y for long text it will be ignored</p></div></div>';
         $new = ($_REQUEST['id'] == 'new');
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">&nbsp;</label><div class="col-lg-8">';
         $header .= CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required', '', $new);
         $header .= CheckboxInputSwitch($RET['HIDE'], 'tables[' . $_REQUEST['id'] . '][HIDE]', 'Hide', '', $new);
+        $header .= '</div></div>';
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row
-        
     } elseif ($_REQUEST['category_id']) {
         if ($_REQUEST['err'] == true)
             echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Title already exists.</b></font>';</script>";
-        echo "<FORM name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=student_field_categories";
+        echo "<FORM class=\"form-horizontal m-b-0\" name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=student_field_categories";
         if ($_REQUEST['category_id'] != 'new')
             echo "&category_id=$_REQUEST[category_id]";
         echo " method=POST>";
@@ -426,17 +427,17 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
-        $header .= '<div class="form-group">';
-        $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], 'Title') : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title')) . '</div>';
+        $header .= '<div class="row">';
+        $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], 'Title') : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title', 'placeholder="Title"')) . '</div></div>';
 
         if ($_REQUEST['category_id'] == 'new' || $RET['SORT_ORDER'] == '')
-            $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown="return numberOnly(event);"')) . '</div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 placeholder="Sort Order" onkeydown="return numberOnly(event);"')) . '</div></div>';
         else
-            $header .= '<div class="col-md-6">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown=\"return numberOnly(event);\"')) . '</div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 placeholder="Sort Order" onkeydown=\"return numberOnly(event);\"')) . '</div></div>';
 
         $new = ($_REQUEST['category_id'] == 'new');
         if ($_REQUEST['category_id'] > 7 || $new)
-            $header .= '<div class="col-md-6">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', 'Include (should be left blank for most categories)') . '</div>';
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-md-4 text-right">Include</label><div class="col-md-8">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', '', 'placeholder="Include"') . '<p class="help-block">Should be left blank for most categories</p></div></div></div>';
 
         $header .= '</div>'; //.form-group
     } else

@@ -447,11 +447,30 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
 
     foreach ($mail_body_info as $k => $v) {
         $fromUser = $v['FROM_USER'];
-
+        if($fromUser!='')
+        $login_authentication=DBGet(DBQuery('SELECT * FROM login_authentication WHERE username=\''.$fromUser.'\' '));
+        $profile=DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID='.$login_authentication[1]['PROFILE_ID']));
+        if($profile[1]['PROFILE']!='parent')
+        {
+            if($profile[1]['PROFILE']=='student')
+            {
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $login_authentication[1]['USER_ID']. ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                           
+            }
+             else
+            {
+                $staff = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . $login_authentication[1]['USER_ID']));
+            }
+        }
         echo '<h3 class="no-margin-top"><a href="Modules.php?modname=messaging/Inbox.php" class="btn btn-icon"><i class="icon-square-left"></i></a> &nbsp; &nbsp;' . $v['MAIL_SUBJECT'] . '</h3>';
         echo '<hr class="no-margin-top"/>';
 
         echo '<div class="media">';
+        if($stu_img_info[1]['CONTENT']!='')
+        echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" alt="" /></div>';
+        elseif($staff[1]['IMG_NAME']!='')
+        echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($staff[1]['IMG_CONTENT']) . '" alt="" /></div>';
+        else
         echo '<div class="media-left"><img class="img-circle" src="assets/images/placeholder.jpg" alt="" /></div>';
         echo '<div class="media-body">';
         echo '<div class="pull-right"><div class="input-group-btn">';
@@ -485,7 +504,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
                echo "
                   Attachment: ";
 //          $attach=explode(',',$v['MAIL_ATTACHMENT']);
-               $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.$v['MAIL_ATTACHMENT'].')'));
+               $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.substr($v['MAIL_ATTACHMENT'],0,-1).')'));
           foreach($attach as $user=>$img)
           {
 //              $img_pos=strrpos($img,'/');
@@ -803,7 +822,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
             
         }
 
-        $attachment = implode(',', $arr);
+//        $attachment = implode(',', $arr);
 
         $multipleUser = implode(",", $to_av_user);
 

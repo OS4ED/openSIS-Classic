@@ -89,7 +89,7 @@ if ($start && $begin_year) {
 
 echo '<div class="panel-heading">';
 echo '<div class="row">';
-echo '<div class="col-md-4">';
+echo '<div class="col-md-12">';
 echo '<div class="form-inline"><SELECT name=start_date class=form-control>' . $date_select . '</SELECT> &nbsp; ' . $period_select, ' &nbsp; <INPUT type=submit class="btn btn-primary" value=Go onclick=\'formload_ajax("teach_comp");\'></div>';
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
@@ -132,9 +132,9 @@ if (!$_REQUEST['period']) {
         $columns[$period['PERIOD_ID']] = $period['TITLE'];
 }
 echo '<hr class="no-margin"/>';
-echo '<div class="table-responsive">';
+//echo '<div class="table-responsive">';
 ListOutput($staff_RET, $columns, 'Teacher who hasn\'t entered eligibility', 'Teachers who haven\'t entered eligibility');
-echo "</div>";
+//echo "</div>";
 
 echo '</div>'; //.panel.panel-default
 ?>

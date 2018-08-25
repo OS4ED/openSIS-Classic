@@ -837,7 +837,7 @@ CREATE TABLE schools (
     title character varying(100),
     address character varying(100),
     city character varying(100),
-    state character varying(10),
+    state character varying(100),
     zipcode character varying(255),
     area_code numeric(3,0),
     phone character varying(30),
@@ -2114,15 +2114,14 @@ CREATE TABLE IF NOT EXISTS `school_gradelevel_sections` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `user_file_upload` (
-  `id` int(11) NOT NULL,
+   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
-  `name` longtext,
-  `size` longtext,
+  `name` varchar(255) NOT NULL,
+  `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `content` longblob NOT NULL,
-  `file_info` longtext,
-   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `file_info` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

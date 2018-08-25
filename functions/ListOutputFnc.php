@@ -10100,39 +10100,45 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
             }
             // END MISC ---
             // WIDTH = 100%
-            echo '<TABLE width=100% border=0 cellspacing=0 cellpadding=0><TR>';
+            //echo '<TABLE width=100% border=0 cellspacing=0 cellpadding=0><TR>';
 
             // SEARCH BOX & MORE HEADERS
             if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-                echo '<TD align=center>';
-                echo '<TABLE class="table table-bordered table-striped">';
-                echo "<TR><TD align=left valign=middle>";
+                //echo '<TD align=center>';
+                //echo '<TABLE class="table table-bordered table-striped">';
+                echo '<div class="panel-heading">';
+                echo '<h6 class="panel-title">';
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">$display_count $plural were found.</span></h6>";
+                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
                     elseif ($display_count == 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">1 $singular was found.</span></h6>";
+                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                    echo "<A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
-
-                echo '</TD>';
+                    echo " &nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
+                echo '</h6>';
                 $colspan = 1;
                 if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
                     $_REQUEST['portal_search'] = 'true';
                     $tmp_REQUEST = $_REQUEST;
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
-                    echo '<TD height="50" align=right valign=middle style="white-space:nowrap;">&nbsp;&nbsp;';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo '<div class="heading-elements">';
+                    echo '<div class="form-group">';
+                    echo '<div class="input-group">';
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''). "' placeholder=\"Search\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo '</div>'; //.input-group
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.heading-elements
                     $colspan++;
                 }
-                echo "</TR>";
-                echo '<TR style="height:0;"><TD width=100% align=center colspan=' . $colspan . '><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV></TD></TR></TABLE>';
+                echo '</div>'; //.panel-heading
+                //echo "</TR>";
+                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
             } else
-                echo '<TD width=100% align=right><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
             // END SEARCH BOX ----
-            echo '</TD></TR><TR><TD>';
+            //echo '</TD></TR><TR><TD>';
 
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -10149,7 +10155,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
             $i = 1;
             if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
                 //THIS LINE IS FOR COLUMN HEADING
-                echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV></TD>";
+                echo "<TH class=subtabs><DIV id=LOx$i style='position: relative;'></DIV></TH>";
                 $i++;
             }
 
@@ -10160,7 +10166,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     else
                         $direction = 1;
                     //THIS LINE IS FOR COLUMN HEADING
-                    echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV>";
+                    echo "<TH class=subtabs><DIV id=LOx$i style='position: relative;'></DIV>";
                     echo "<A ";
                     if ($options['sort']) {
                         if ($ForWindow == 'ForWindow') {
@@ -10172,7 +10178,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo " class=column_heading><b>$value</b></A>";
                     if ($i == 1)
                         echo "<DIV id=LOy0 style='position: relative;'></DIV>";
-                    echo "</TD>";
+                    echo "</TH>";
                     $i++;
                 }
 
@@ -10351,7 +10357,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                 echo "</TABLE>";
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
-                    echo '</TD ></TR></TABLE>';
+//                    echo '</TD ></TR></TABLE>';
 
 
                     $number_rec = 100;                   
@@ -10367,8 +10373,8 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                         echo "</script>\n";
                     }
                 }
-                echo "</TD ></TR>";
-                echo "</TABLE>";
+//                echo "</TD ></TR>";
+//                echo "</TABLE>";
 
                 if ($options['center'])
                     echo '';

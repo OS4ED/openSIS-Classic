@@ -236,7 +236,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : Required Field";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -251,7 +251,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : Required Field";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
 
@@ -266,7 +266,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : " + cmdvalue + " characters maximum ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n[Current length = " + objValue.value.length + " ]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n[Current length = " + objValue.value.length + " ]" + '</div>');
                 return false;
             }
             break;
@@ -280,7 +280,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : " + cmdvalue + " characters minimum  ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n[Current length = " + objValue.value.length + " ]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n[Current length = " + objValue.value.length + " ]" + '</div>');
                 return false;
             }
             break;
@@ -295,7 +295,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only alpha-numeric characters allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '\n [Error character position ' + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '\n [Error character position ' + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -309,7 +309,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only alpha-numeric characters allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '\n [Error character position ' + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '\n [Error character position ' + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -324,7 +324,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only digits allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -339,7 +339,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only greater than 2 ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -354,7 +354,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only greater than 5 ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -369,7 +369,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only greater than 6 ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -384,7 +384,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only digits allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -399,7 +399,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only valid phone number allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -411,12 +411,12 @@ function V2validateData(strValidateStr, objValue, strError)
             {
                 if (isNaN(objValue.value))
                 {
-                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Please enter a valid phone number.</div>');
+                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter a valid phone number.</div>');
                     return false;
                 }
                 if (!isNaN(objValue.value) && objValue.value.length < 5)
                 {
-                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Please enter a valid phone number.</div>');
+                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter a valid phone number.</div>');
                     return false;
                 }
             }
@@ -432,7 +432,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only alphabetic characters allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -446,7 +446,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Only alphabetic characters allowed ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -460,7 +460,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": characters allowed are A-Z,a-z,0-9,- and _";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + "\n [Error character position " + eval(charpos + 1) + "]" + '</div>');
                 return false;
             }
             break;
@@ -473,7 +473,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = "Enter a valid Email address ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -488,7 +488,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = "Enter a valid URL ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -501,7 +501,7 @@ function V2validateData(strValidateStr, objValue, strError)
         {
             if (isNaN(objValue.value))
             {
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + objValue.name + ": Should be a number " + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + objValue.name + ": Should be a number " + '</div>');
                 return false;
             }
             if (eval(objValue.value) >= eval(cmdvalue))
@@ -510,7 +510,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : value should be less than " + cmdvalue;
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -520,7 +520,7 @@ function V2validateData(strValidateStr, objValue, strError)
         {
             if (isNaN(objValue.value))
             {
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + objValue.name + ": Should be a number " + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + objValue.name + ": Should be a number " + '</div>');
                 return false;
             }
             if (eval(objValue.value) <= eval(cmdvalue))
@@ -529,7 +529,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : value should be greater than " + cmdvalue;
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -544,7 +544,7 @@ function V2validateData(strValidateStr, objValue, strError)
                     {
                         strError = objValue.name + ": Invalid characters found ";
                     }
-                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                     return false;
                 }
             }
@@ -554,7 +554,7 @@ function V2validateData(strValidateStr, objValue, strError)
         {
             if (objValue.selectedIndex == null)
             {
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + "BUG: dontselect command for non-select Item" + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + "BUG: dontselect command for non-select Item" + '</div>');
                 return false;
             }
             if (objValue.selectedIndex == eval(cmdvalue))
@@ -563,7 +563,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + ": Please Select one option ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -576,7 +576,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : " + cmdvalue + " characters maximum ";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
             break;
@@ -591,7 +591,7 @@ function V2validateData(strValidateStr, objValue, strError)
                     {
                         strError = objValue.name + ":  Number and speacial char is allowed ";
                     }
-                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                     return false;
                 }
             }
@@ -607,7 +607,7 @@ function V2validateData(strValidateStr, objValue, strError)
                 {
                     strError = objValue.name + " : Required Field";
                 }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + strError + '</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
                 return false;
             }
 
@@ -631,8 +631,8 @@ function doDateCheck(from, to) {
         alertDiv = 'divErr';
     }
 
-    if (Date.parse(from) > Date.parse(to)) {
-        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + "End date must be after the Start date." + '</div>');
+    if (Date.parse(from+' 12:00:00') > Date.parse(to+' 12:00:00')) {
+        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + "End date must be after the Start date." + '</div>');
         return false;
     }
     else
@@ -646,11 +646,12 @@ function doDateCheck(from, to) {
 function isDate(fm, fd, fy)
 {
     var strdate;
-    strdate = Date.parse(fm.value + " " + fd.value + " " + ChangeYear(fy.value));
+    var newDate = fm.val() + "-" + fd.val() + "-" + ChangeYear(fy.val()) + " 12:00:00";
+
+    strdate = Date.parse(newDate);
 
     if (isNaN(strdate))
     {
-
         return false;
     }
     else
@@ -688,9 +689,8 @@ function CheckDate(fm, fd, fy, tm, td, ty)
     var from;
     var to;
 
-
-    from = fm.value + " " + fd.value + " " + ChangeYear(fy.value);
-    to = tm.value + " " + td.value + " " + ChangeYear(ty.value);
+    from = fm.val() + "-" + fd.val() + "-" + ChangeYear(fy.val());
+    to = tm.val() + "-" + td.val() + "-" + ChangeYear(ty.val());
     if (false == doDateCheck(from, to))
         return false;
     else
@@ -727,7 +727,7 @@ function CheckTime(fd, fh, fm, fp, td, th, tm, tp)
     {
         if (p1 > p2)
         {
-            $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Starting time must occur after the ending date.</div>');
+            $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Starting time must occur after the ending date.</div>');
             return false;
         }
 
@@ -735,7 +735,7 @@ function CheckTime(fd, fh, fm, fp, td, th, tm, tp)
         {
             if ((parseFloat(fh.value) > parseFloat(th.value)))
             {
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Starting time must occur after the ending date.</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Starting time must occur after the ending date.</div>');
                 return false;
             }
 
@@ -743,7 +743,7 @@ function CheckTime(fd, fh, fm, fp, td, th, tm, tp)
             {
                 if (parseFloat(fm.value) > parseFloat(tm.value))
                 {
-                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Starting time must occur after the ending date.</div>');
+                    $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Starting time must occur after the ending date.</div>');
                     return false;
                 }
             }
@@ -767,7 +767,7 @@ function doDateCheckMar(from, to) {
     }
 
     if (Date.parse(from) > Date.parse(to)) {
-        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Grade Posting Begins date can not occur before the Marking Period Begins date.</div>');
+        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Grade Posting Begins date can not occur before the Marking Period Begins date.</div>');
         return false;
     }
     else
@@ -805,7 +805,7 @@ function doDateCheckMarEnd(from, to) {
     }
 
     if (Date.parse(from) > Date.parse(to)) {
-        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Grade Posting End date can not be occur after the End date.</div>');
+        $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Grade Posting End date can not be occur after the End date.</div>');
         return false;
     }
     else
@@ -863,14 +863,14 @@ function CheckBirthDate(fm, fd, fy) {
 
         if (isNaN(strdate))
         {
-            $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Enter a valid Date of Birth</div>');
+            $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Enter a valid Date of Birth</div>');
             return false;
         }
         else
         {
             if (strdate > Date.parse(today))
             {
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Invalid Birth Date</div>');
+                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Invalid Birth Date</div>');
                 return false;
             }
             else

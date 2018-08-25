@@ -130,8 +130,8 @@ $columns = array('FULL_NAME' => 'Teacher');
 foreach ($period_RET as $period)
     $columns[$period['PERIOD_ID']] = $period['TITLE'];
 
-echo '<div class="table-responsive">';
+
 ListOutput($staff_RET, $columns, 'Teacher who hasn\'t entered grades', 'Teachers who haven\'t entered grades');
-echo "</div>";
+
 echo '</div>';
 ?>

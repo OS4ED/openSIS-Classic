@@ -1166,9 +1166,9 @@ input[type="file"]:focus {
 .form-control:focus {
   outline: 0;
   border-color: transparent;
-  border-bottom-color: #009688;
-  -webkit-box-shadow: 0 1px 0 #009688;
-  box-shadow: 0 1px 0 #009688;
+  border-bottom-color: #2196F3;
+  -webkit-box-shadow: 0 1px 0 #2196F3;
+  box-shadow: 0 1px 0 #2196F3;
 }
 .form-control[disabled],
 fieldset[disabled] .form-control {

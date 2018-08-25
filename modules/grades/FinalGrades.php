@@ -221,7 +221,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
                 $link['remove']['variables'] = array('student_id' => 'STUDENT_ID', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
             }
-            echo '<div style="width:800px; overflow:auto; overflow-y:hidden;">';
+            echo '<div class="panel panel-default">';
             ListOutputGrade($grades_RET, $columns, 'Course', 'Courses', $link);
             echo '</div>';
         } else {
@@ -244,6 +244,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 /*
  * Course Selection Modal Start
  */
+if (!$_REQUEST['modfunc']) {
 echo '<div id="modal_default" class="modal fade">';
 echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
@@ -280,7 +281,7 @@ echo '</div>'; //.modal
 
 
 
-if (!$_REQUEST['modfunc']) {
+
     DrawBC("Gradebook > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {

@@ -56,8 +56,9 @@ if (UserStudentID()) {
         if ($_REQUEST['new_sms']) {
 
             // ------------------------ Start -------------------------- //
-            $res = DBQuery('SELECT * FROM student_gpa_calculated WHERE student_id=' . $student_id . ' AND marking_period_id=' . $_REQUEST['new_sms']);
-            $rows = mysql_num_rows($res);
+            $res = DBGet(DBQuery('SELECT * FROM student_gpa_calculated WHERE student_id=' . $student_id . ' AND marking_period_id=' . $_REQUEST['new_sms']));
+//	    $rows = mysql_num_rows($res);
+            $rows=count($res);
 
             if ($rows == 0) {
                 DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');
@@ -77,6 +78,7 @@ if (UserStudentID()) {
             DBQuery($updatestats);
         }
         foreach ($_REQUEST['values'] as $id => $columns) {
+//            print_r($_REQUEST);
             if ($id != 'new') {
                 $sql = 'UPDATE student_report_card_grades SET ';
                 if ($columns['UNWEIGHTED_GP']) {
@@ -207,17 +209,21 @@ if (UserStudentID()) {
         DrawHeader('Edit Report Card Grades', '<div class="form-group">' . $mpselect . '</div>');
         
         echo '<div class="panel-body alpha-grey">';
-        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&mdofunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=".$mp_id." method=POST>";
+        echo "<FORM class=\"form-horizontal m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=".$mp_id." method=POST>";
         echo '<div class="media">';
         echo '<div class="media-left"><div class="profile-thumb"><img src="assets/images/placeholder.jpg" class="img-circle" alt=""></div></div>';
         echo '<div class="media-body">';
         echo '<h1 class="no-margin-top">' . $displayname . '</h1>';
         echo '<div class="row">';
         echo '<div class="col-md-4">';
+        echo '<div class="row">';
         echo '<label class="control-label col-md-6 text-right">Weighted GPA :</label><label class="control-label col-md-6 text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['weighted_gpa']) . '</label>';
+        echo '</div>'; //.row
         echo '</div>'; //.col-md-4
         echo '<div class="col-md-4">';
+        echo '<div class="row">';
         echo '<label class="control-label col-md-6 text-right">Unweighted GPA :</label><label class="control-label col-md-6 text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['unweighted_gpa']) . '</label>';
+        echo '</div>'; //.row
         echo '</div>'; //.col-md-4
 
         $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=15 maxlength=3 class=form-control');
@@ -242,16 +248,16 @@ if (UserStudentID()) {
                 echo '</div>'; //form-group
                 echo '</div>'; //.col-md-4
                 echo '</div>'; //.row
+                
                 echo '<div class="row">';
                 echo '<div class="col-md-6">';
                 echo '<div class="form-group">';
                 echo '<label class="control-label col-md-4 text-right">New Marking Period :</label>';
                 echo '<div class="col-md-8">';
                 echo SelectInput(null, 'new_sms', '', $mpoptions, false, null);
-                echo '</div>'; //.col-md-7
+                echo '</div>'; //.col-md-8
                 echo '</div>'; //form-group
-                echo '</div>'; //.col-md-4
-                echo '</div>'; //.row
+                echo '</div>'; //.col-md-6
                 //PopTable('footer');
             }
         } else {
@@ -263,11 +269,11 @@ if (UserStudentID()) {
             echo '</div>'; //.col-md-7
             echo '</div>'; //form-group
             echo '</div>'; //.col-md-4
-            echo '</div>'; //.row
         }
+        
+        echo '</div>'; //.row
         echo '</div>'; //.media-body
         echo '</div>'; //.media
-        echo '</div>'; //.panel-body
         echo '<hr class="no-margin" />';
 
 
@@ -336,7 +342,7 @@ if (UserStudentID()) {
 
         echo '<hr class="no-margin" />';
 
-        echo '<div class="panel-body">';
+        echo '<div class="panel-footer">';
         if (!$LO_ret) {
             echo SubmitButton('Remove Marking Period', 'removemp', 'class="btn btn-primary"');
             echo '&nbsp;';

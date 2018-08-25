@@ -323,8 +323,9 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
             $picturehtml = '';
             if ($_REQUEST['show_photo']) {
-                if (file_exists($StudentPicturesPath . '/' . $student_id . '.JPG')) {
-                    $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="' . $StudentPicturesPath . '/' . $student_id . '.JPG"></td>';
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' .$student_id. ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                if (count($stu_img_info) > 0) {
+                    $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
                 } else {
                     $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; border:1px solid #333333; background-color:#fff;" src="assets/noimage.jpg"></td>';
                 }

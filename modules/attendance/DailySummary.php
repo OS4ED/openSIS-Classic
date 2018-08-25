@@ -31,13 +31,13 @@ DrawBC("Attendance > " . ProgramTitle());
 //////////////////////////////For new date picker///////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
     $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
-    $start_date = ProperDateMAvr($start_date);
+//    $start_date = ProperDateMAvr($start_date);
 } else {
     $start_date = date('Y-m') . '-01';
 }
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
     $end_date = $_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'];
-    $end_date = ProperDateMAvr($end_date);
+//    $end_date = ProperDateMAvr($end_date);
 } else {
     $end_date = ProperDateMAvr();
 }
@@ -71,8 +71,10 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
 }
 
 $PHP_tmp_SELF = PreparePHP_SELF();
-echo "<FORM action=$PHP_tmp_SELF method=POST>";
-echo "<div class=\"panel panel-default\">";
+//echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
+echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc] method=POST>";
+//Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=
+//echo "<div class=\"panel panel-default\">";
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
     $extraM .= "";
     $period_select = "<SELECT name=period_id onchange='this.form.submit();' class='form-control'><OPTION value=\"\">Daily</OPTION>";
@@ -284,7 +286,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '</div>'; //.modal
 }
 
-echo '</div>'; //.panel
+//echo '</div>'; //.panel
 echo '</FORM>';
 
 function _makeColor($value, $column) {

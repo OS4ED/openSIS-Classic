@@ -126,6 +126,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/extensions/cookie.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/notifications/jgrowl.min.js"></script>';
 
     /* JS Initializers */
     echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';
@@ -138,6 +139,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript">
         $(function () {
+            $(\'#loading-image\').hide();
             $("body").on("click", "div.sidebar-overlay", function () {
                 $("body").toggleClass("sidebar-mobile-main");
             });
@@ -159,7 +161,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
 
     echo "<BODY>";
 }
-echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i></div>';
+echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Loading...</div>';
 echo '<div class="navbar navbar-inverse bg-white">
             <div class="navbar-header">
                 <a class="sidebar-control sidebar-main-toggle hidden-xs" data-popup="tooltip" data-placement="bottom" data-container="body" data-original-title="Collapse Menu"><i class="icon-paragraph-justify3"></i></a>
@@ -521,20 +523,37 @@ if (User('PROFILE') == 'teacher') {
 }
 $user_picture = '';
 if (User('PROFILE') != 'parent') {
-    if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
-        if (UserStudentID())
-            $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
-        if (UserID())
-            $picture_path = $UserPicturesPath . UserID() . '.JPG';
-        if (file_exists($picture_path)) {
-            $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
-        } else {
-            $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-        }
-    } else {
-        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+    
+    if(User('PROFILE')=='student')
+    {
+    $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID(). ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $img_info=$img_info[1]['CONTENT'];
     }
+    else
+    {
+    $img_info= DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' .UserID()));
+    $img_info=$img_info[1]['IMG_CONTENT'];
+    }
+    if($img_info!='')
+      $user_picture = '<a href="javascript:void(0)"><IMG src="data:image/jpeg;base64,'. base64_encode($img_info) . '" class="img-circle img-responsive"></a>';
+    else
+        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//    if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
+//        if (UserStudentID())
+//            $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
+//        if (UserID())
+//            $picture_path = $UserPicturesPath . UserID() . '.JPG';
+//        if (file_exists($picture_path)) {
+//            $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
+//        } else {
+//            $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//        }
+//    } else {
+//        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//    }
 }
+
+//$user_picture .= '<input type="file" name=""  />';
 
 echo '</div>
         </div>

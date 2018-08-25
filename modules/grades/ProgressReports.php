@@ -190,15 +190,15 @@ if (!$_REQUEST['modfunc']) {
         $_REQUEST['search_modfunc'] = 'list';
     }
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&_openSIS_PDF=true&head_html=Student+Progress+Report method=POST target=_blank>";
+        echo "<FORM class=\"form-inline\" action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&_openSIS_PDF=true&head_html=Student+Progress+Report method=POST target=_blank>";
         Widgets('mailing_labels');
-        $extra['extra_header_left'] = '<div class="form-group"><div class="checkbox">';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=assigned_date>Assigned Date</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_ec checked>Exclude Ungraded E/C Assignments</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=due_date checked>Due Date</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_notdue>Exclude Ungraded Assignments Not Due</label>';
-        $extra['extra_header_left'] .= '</div></div>';
+        $extra['extra_header_left'] = '<div class="form-group">';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=assigned_date><span></span>Assigned Date</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_ec checked><span></span>Exclude Ungraded E/C Assignments</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=due_date checked><span></span>Due Date</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_notdue><span></span>Exclude Ungraded Assignments Not Due</label>';
         $extra['extra_header_left'] .= $extra['search'];
+        $extra['extra_header_left'] .= '</div>';
         $extra['search'] = '';
     }
 

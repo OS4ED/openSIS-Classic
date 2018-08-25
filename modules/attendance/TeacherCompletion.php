@@ -28,7 +28,8 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
-    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
+//    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
+    $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
 } else {
     $_REQUEST['day_date'] = date('d');
     $_REQUEST['month_date'] = strtoupper(date('m'));
@@ -43,11 +44,10 @@ $period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>Al
 foreach ($periods_RET as $id => $period)
     $period_select .= "<OPTION value=$id" . (($_REQUEST['period'] == $id) ? ' SELECTED' : '') . ">" . $period[1]['TITLE'] . "</OPTION>";
 $period_select .= "</SELECT>";
-
 echo "<FORM class='form-horizontal' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 echo "<div class=\"panel panel-default\">";
 echo "<div class=\"panel-body\">";
-DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($date, 'date', false, array('submit' => true)) . '<div class="form-group m-l-15">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>');
+DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($date, 'date', false, array('submit' => true)) . '</div><div class="form-group m-l-15">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>');
 echo '</div>'; //.panel-body
 echo '</div>'; //.panel.panel-default
 echo '</FORM>';

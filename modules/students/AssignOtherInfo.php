@@ -44,8 +44,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             $next_school = $_REQUEST['values']['NEXT_SCHOOL'];
             unset($_REQUEST['values']['NEXT_SCHOOL']);
         }
-        if($_REQUEST['values']['SECTION_ID']!='')
-        {
+        if ($_REQUEST['values']['SECTION_ID'] != '') {
             $sec_id = $_REQUEST['values']['SECTION_ID'];
             unset($_REQUEST['values']['SECTION_ID']);
         }
@@ -53,10 +52,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             $calendar = clean_param($_REQUEST['values']['CALENDAR_ID'], PARAM_INT);
             unset($_REQUEST['values']['CALENDAR_ID']);
         }
-        if($_REQUEST['values']['GRADE_ID'])
-        {
-                $grade = clean_param($_REQUEST['values']['GRADE_ID'],PARAM_INT);
-                unset($_REQUEST['values']['GRADE_ID']);
+        if ($_REQUEST['values']['GRADE_ID']) {
+            $grade = clean_param($_REQUEST['values']['GRADE_ID'], PARAM_INT);
+            unset($_REQUEST['values']['GRADE_ID']);
         }
         foreach ($_REQUEST['student'] as $student_id => $yes) {
             if ($yes == 'Y') {
@@ -128,14 +126,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             $note = substr($note, 0, strpos($note, '. '));
         elseif ($next_school == '' && !$calendar)
             $note = '<div class="alert bg-danger alert-styled-left">No data was entered.</div>';
-        if($sec_id!='')
-            DBQuery('UPDATE student_enrollment SET SECTION_ID='.$sec_id.' WHERE SYEAR='.UserSyear().' AND STUDENT_ID IN ('.substr($students,1).') ');
+        if ($sec_id != '')
+            DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if ($next_school != '')
             DBQuery('UPDATE student_enrollment SET NEXT_SCHOOL=' . $next_school . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if ($calendar)
             DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $calendar . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
-        if($grade)
-            DBQuery('UPDATE student_enrollment SET GRADE_ID='.$grade.' WHERE SYEAR='.UserSyear().' AND STUDENT_ID IN ('.substr($students,1).') ');
+        if ($grade)
+            DBQuery('UPDATE student_enrollment SET GRADE_ID=' . $grade . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if (!$note)
             $note = '<div class="alert bg-success alert-styled-left">The specified information was applied to the selected students.</div>';
         unset($_REQUEST['modfunc']);
@@ -185,14 +183,14 @@ if (!$_REQUEST['modfunc']) {
 
             $arr_g = array('Ethnicity', 'Common Name', 'Gender', 'Language', 'Email', 'Phone');
             foreach ($arr_g as $v_g) {
-if ($v_g == 'Common Name') {
-$v_g='common_name';
-}
-		
+                if ($v_g == 'Common Name') {
+                    $v_g = 'common_name';
+                }
+
                 array_push($fields, '<div class=form-group>' . _makeTextInput($v_g) . '</div>');
             }
 
-        
+
 //        echo '<div class="col-md-12">';  
 //        echo '<span class="heading-text">Section</span><div class="btn-group">';
 //        
@@ -210,9 +208,9 @@ $v_g='common_name';
 //
 //        echo _makeSelectInput('SECTION_ID',$options);
 //        echo'</div>';  
-            
-            
-            
+
+
+
             $arr_m = array('Physician', 'Physician\'s Phone', 'Preferred Hospital');
 
             foreach ($arr_m as $v_m) {
@@ -233,9 +231,9 @@ $v_g='common_name';
             $arr = array('Ethnicity', 'Common Name', 'Gender', 'Language', 'Email', 'Phone');
 
             foreach ($arr as $v) {
-if ($v_g == 'Common Name') {
-$v_g='common_name';
-}
+                if ($v_g == 'Common Name') {
+                    $v_g = 'common_name';
+                }
                 array_push($fields, '<div class="form-group">' . _makeTextInput($v) . '</div>');
             }
         }
@@ -338,40 +336,35 @@ $v_g='common_name';
                     $options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
             }
             array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Calendar</label><div class="col-lg-8">' . _makeSelectInput('CALENDAR_ID', $options) . '</div></div>');
-            
         }
-        
-        if($_REQUEST['category_id']=='')
-        {
+
+        if ($_REQUEST['category_id'] == '') {
 //         echo '<div class="col-md-12">';  
 //        echo '<span class="heading-text">Section</span><div class="btn-group">';
 //        
-        
-        $school_id = UserSchool();
-        $sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\''.$school_id.'\' ORDER BY SORT_ORDER';
-        $QI = DBQuery($sql);
-        $sec_RET = DBGet($QI);
-        unset($options);
-        if(count($sec_RET))
-        {
-                foreach($sec_RET as $value)
-                        $options[$value['ID']] = $value['NAME'];
-        }
+
+            $school_id = UserSchool();
+            $sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\'' . $school_id . '\' ORDER BY SORT_ORDER';
+            $QI = DBQuery($sql);
+            $sec_RET = DBGet($QI);
+            unset($options);
+            if (count($sec_RET)) {
+                foreach ($sec_RET as $value)
+                    $options[$value['ID']] = $value['NAME'];
+            }
 
 //        echo _makeSelectInput('SECTION_ID',$options);
-        array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8">' . _makeSelectInput('SECTION_ID', $options) . '</div></div>');
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8">' . _makeSelectInput('SECTION_ID', $options) . '</div></div>');
 //        echo'</div>'; 
-        
-        
-         $grade_level_RET = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER ASC'));
-        $options = array();
-        if(count($grade_level_RET))
-        {
-                foreach($grade_level_RET as $grade)
-                        $options[$grade['ID']] = $grade['TITLE'];
-        }
-        array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">School Gradelevel</label><div class="col-lg-8">' . _makeSelectInput('GRADE_ID', $options) . '</div></div>');
-        
+
+
+            $grade_level_RET = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER ASC'));
+            $options = array();
+            if (count($grade_level_RET)) {
+                foreach ($grade_level_RET as $grade)
+                    $options[$grade['ID']] = $grade['TITLE'];
+            }
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">School Gradelevel</label><div class="col-lg-8">' . _makeSelectInput('GRADE_ID', $options) . '</div></div>');
         }
 
 
@@ -396,7 +389,7 @@ $v_g='common_name';
             if ($count == 1) {
                 echo '<div class="row">';
             }
-            
+
             if (strpos($field, '<h5') === false) {
                 echo '<div class="col-md-6">' . $field . '</div>';
             } else {
@@ -404,7 +397,7 @@ $v_g='common_name';
                 echo $field;
                 $count = 0;
             }
-            
+
             if ($count == 2) {
                 echo '</div>';
                 $count = 0;
@@ -414,7 +407,7 @@ $v_g='common_name';
         echo '</div>';
 
         PopTable('footer');
-        
+
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
     } elseif ($note)
@@ -427,7 +420,7 @@ $v_g='common_name';
     Widgets('course');
     $extra['search'] .= '</div>'; //.col-md-6
     $extra['search'] .= '</div>'; //.row
-    
+
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-md-6">';
     Widgets('absences');
@@ -439,48 +432,48 @@ $v_g='common_name';
     $extra['new'] = true;
 
     Search('student_id', $extra);
-    echo '<div id="modal_default" class="modal fade">
-    <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '</div>';
 
-    <div class="modal-body">';
+    echo '<div class="modal-body">';
     echo '<center><div id="conf_div"></div></center>';
-    echo'<table id="resp_table"><tr><td valign="top">';
-    echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-    if(count($subjects_RET)>0)
-    {
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody></table>';
     }
-    echo '</table>';
-    }
-    echo '</div></td>';
-    echo '<td valign="top"><div id="course_modal"></div></td>';
-    echo '<td valign="top"><div id="cp_modal"></div></td>';
-    echo '</tr></table>';
-    //         echo '<div id="coursem"><div id="cpem"></div></div>';
-    echo' </div>
-    </div>
-    </div>
-    </div>';
+    echo '</div>';
+    echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+    echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
+
+
+
     if ($_REQUEST['search_modfunc'] == 'list' && $_SESSION['count_stu'] != '0') {
         unset($_SESSION['count_stu']);
         echo "<div class=\"text-center m-b-20\">" . SubmitButton('Assign Info to Selected Students', '', 'class="btn btn-primary"') . "</div>";
     }
     echo '</FORM>';
-    
-    
 }
 
 function _makeChooseCheckbox($value, $title = '') {

@@ -60,7 +60,16 @@ function DateInput2($value, $name, $selectid, $title = '', $div = true, $allow_n
 function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_year) {
     $dt = '';
 
-    if ($allow_day == 'Y') {
+    $dt.= '<div class="input-group datepicker-group" id="original_date_'.$day.'" value="" style="">';
+    $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
+    $dt.= '<input id="date_'.$day.'" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '</div>';
+    
+    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
+    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+    $dt.= '<input value="" id="yearSelect_date_' . $day . '" name="' . $year . '" type="hidden">';
+    
+    /*if ($allow_day == 'Y') {
         $dt.='<div class="col-xs-3">';
         $dt.='<select class="form-control" name="' . $day . '" id="' . $day . '">';
         $dt.='<option value="">Day</option>';
@@ -93,7 +102,7 @@ function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_y
         }
         $dt.='</select>';
         $dt.='</div>';
-    }
+    }*/
 
     return $dt;
 }
@@ -920,7 +929,7 @@ function DateInputAY($value, $name, $counter = 1, $div_visibility = false) {
                  * init(' . $counter . ',2);
                  */
 
-                return '<div id="date_div_' . $counter . '" class="fake_datepicker" onClick="$(\'#original_date_' . $counter . '\').show(); $(\'#date_div_' . $counter . '\').hide();" style="display: inline" >' . (($title != '') ? '<label class="control-label col-md-4 text-right">' . $title . '</label><div class="col-md-8">' : '') . '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input type="text" readonly="readonly" data-calid="' . $counter . '" class="form-control" value="' . ProperDateAY($value) . '" /></div>' . (($title != '') ? '</div>' : '') . '</div>'
+                return '<div id="date_div_' . $counter . '" class="fake_datepicker" onClick="$(\'#original_date_' . $counter . '\').show(); $(\'#date_div_' . $counter . '\').hide();">' . (($title != '') ? '<label class="control-label col-md-4 text-right">' . $title . '</label><div class="col-md-8">' : '') . '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input type="text" readonly="readonly" data-calid="' . $counter . '" class="form-control" value="' . ProperDateAY($value) . '" /></div>' . (($title != '') ? '</div>' : '') . '</div>'
                         //. '<div id="date_div_' . $counter . '" class="fake_datepicker" onClick="$(\'#original_date_' . $counter . '\').show(); $(\'#date_div_' . $counter . '\').hide();" style="display: inline" >' . (($title != '') ? '<label class="control-label col-md-4 text-right">' . $title . '</label><div class="col-md-8">' : '') . '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input type="text" readonly="readonly" data-calid="'.$counter.'" class="form-control" value="' .$value. '" /></div>' . (($title != '') ? '</div>' : '') . '</div>'
                         . '<div class="input-group datepicker-group" id="original_date_' . $counter . '" ' . $show . '  style="display:none;">'
                         . '<span class="input-group-addon"><i class="icon-calendar22"></i></span>'

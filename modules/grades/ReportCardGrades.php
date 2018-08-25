@@ -142,7 +142,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                             if (!$columns['GPA_CAL'] && $_REQUEST['tab_id'] == 'new')
                                 $columns['GPA_CAL'] = 'N';
                             foreach ($columns as $column => $value) {
-//                                                     
                                 if (trim($value) != '' && $column != 'GPA_VALUE' && $column != 'UNWEIGHTED_GP') {
                                     $value = paramlib_validation($column, $value);
                                     $fields .= $column . ',';
@@ -161,13 +160,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                                     $fields .= $column . ',';
                                     $values .= '\'' . str_replace("'", "''", str_replace("\'", "''", 0)) . '\',';
                                     $go = true;
-//                                                        
                                 } elseif ($_REQUEST['tab_id'] != 'new' && (($value != '' && $column == 'GPA_VALUE') || ($column == 'UNWEIGHTED_GP' && $value != ''))) {
                                     $value = paramlib_validation($column, $value);
                                     $fields .= $column . ',';
                                     $values .= '\'' . str_replace("'", "''", str_replace("\'", "''", trim($value))) . '\',';
                                     $go = true;
-//                                                        
                                 }
                             }
 
@@ -292,10 +289,10 @@ if (!$_REQUEST['modfunc']) {
         $link['add']['html'] = array('TITLE' => makeGradesInput('', 'TITLE'), 'BREAK_OFF' => makeGradesInput('', 'BREAK_OFF'), 'GPA_VALUE' => makeGradesInput('', 'GPA_VALUE'), 'UNWEIGHTED_GP' => makeGradesInput('', 'UNWEIGHTED_GP'), 'SORT_ORDER' => makeGradesInput('', 'SORT_ORDER'), 'COMMENT' => makeGradesInput('', 'COMMENT'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&tab_id=$_REQUEST[tab_id]";
         $link['remove']['variables'] = array('id' => 'ID');
-        $link['add']['html']['remove'] = button('add');
+        $link['add']['html']['remove'] = button('add',' ','','','style="cursor: default;"','btn-success');
 
         if (User('PROFILE') == 'admin')
-            $tabs[] = array('title' => button('add'), 'link' => "Modules.php?modname=$_REQUEST[modname]&tab_id=new");
+            $tabs[] = array('title' => button('add',''), 'link' => "Modules.php?modname=$_REQUEST[modname]&tab_id=new");
     }
     else {
         //BJJ modifications to $functions array and $LO_columns array to handle scale value GP_SCALE
@@ -306,9 +303,9 @@ if (!$_REQUEST['modfunc']) {
         $link['add']['html'] = array('TITLE' => makeTextInput('', 'TITLE'), 'GP_SCALE' => makeTextInput('', 'GP_SCALE'), 'COMMENT' => makeTextInput('', 'COMMENT'), 'GPA_CAL' => makeCheckInput('', 'GPA_CAL'), 'SORT_ORDER' => makeTextInput('', 'SORT_ORDER'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&tab_id=new";
         $link['remove']['variables'] = array('id' => 'ID');
-        $link['add']['html']['remove'] = button('add');
+        $link['add']['html']['remove'] = button('add',' ','','','style="cursor: default;"','btn-success');
 
-        $tabs[] = array('title' => button('white_add'), 'link' => "Modules.php?modname=$_REQUEST[modname]&tab_id=new");
+        $tabs[] = array('title' => button('white_add','','','','','btn-white'), 'link' => "Modules.php?modname=$_REQUEST[modname]&tab_id=new");
     }
     $LO_ret = DBGet(DBQuery($sql), $functions);
     $LO = DBGet(DBQuery($sql));

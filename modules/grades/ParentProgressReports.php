@@ -276,7 +276,7 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
     
-    PopTable('footer','<INPUT type=submit value="Create Progress Reports"  class="btn btn-primary pull-right">');
+    PopTable('footer','<div class="text-center"><INPUT type=submit value="Create Progress Reports"  class="btn btn-primary"></div>');
 
     echo '</FORM>';
 }

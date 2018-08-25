@@ -388,8 +388,8 @@ switch (User('PROFILE')) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
                 $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
-if($_REQUEST['modname']=='grades/GPARankList.php' || $_REQUEST['modname']=='grades/FinalGrades.php' || $_REQUEST['modname']=='grades/ReportCards.php' || $_REQUEST['modname']=='grades/Transcripts.php' || $_REQUEST['modname']=='eligibility/StudentList.php' || $_REQUEST['modname']=='grades/ParentProgressReports.php')
-
+//if($_REQUEST['modname']=='grades/GPARankList.php' || $_REQUEST['modname']=='grades/FinalGrades.php' || $_REQUEST['modname']=='grades/ReportCards.php' || $_REQUEST['modname']=='grades/Transcripts.php' || $_REQUEST['modname']=='eligibility/StudentList.php' || $_REQUEST['modname']=='grades/ParentProgressReports.php')
+if($_REQUEST['modname']=='grades/GPARankList.php')
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
 					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';
 else

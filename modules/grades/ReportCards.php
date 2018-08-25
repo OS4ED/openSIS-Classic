@@ -292,13 +292,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 else
                                     echo '<tr><td><IMG src="assets/noimage.jpg" width=100 class=pic></td></tr>';
                             }
-                            echo '<tr><td>Student Name :</td>';
+                            echo '<tr><td><strong>Student Name :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['FULL_NAME'] . '</td></tr>';
-                            echo '<tr><td>Student ID :</td>';
+                            echo '<tr><td><strong>Student ID :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['STUDENT_ID'] . '</td></tr>';
-                            echo '<tr><td>Alternate ID :</td>';
+                            echo '<tr><td><strong>Alternate ID :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['ALT_ID'] . '</td></tr>';
-                            echo '<tr><td>Student Grade :</td>';
+                            echo '<tr><td><strong>Student Grade :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['GRADE_ID'] . '</td></tr>';
                             echo '</table>';
 
@@ -308,14 +308,17 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $count = 0;
                                 foreach ($attendance_day_RET[$student_id][$last_mp] as $abs)
                                     $count += 1 - $abs['STATE_VALUE'];
-                                $mp_absences = 'Daily Absences this ' . GetMP($last_mp, 'TITLE') . ': ' . $count;
+                                $mp_absences = '<strong>Daily Absences this ' . GetMP($last_mp, 'TITLE') . ' :</strong> ' . $count;
                             }
                             if ($_REQUEST['elements']['ytd_absences'] == 'Y') {
                                 $count = 0;
                                 foreach ($attendance_day_RET[$student_id] as $mp_abs)
                                     foreach ($mp_abs as $abs)
                                         $count += 1 - $abs['STATE_VALUE'];
-                                DrawHeader('Year-to-Date Daily Absences: ' . $count, $mp_absences);
+                                echo '<br/><table width="100%" border="0" cellspacing="0"><tr>';
+                                echo '<td><strong>Year-to-Date Daily Absences :</strong> ' . $count.'</td>';
+                                echo '<td align="right">'.$mp_absences.'</td>';
+                                echo '</tr></table><br/>';
                                 $count_lines++;
                             } elseif ($_REQUEST['elements']['mp_absences'] == 'Y') {
                                 DrawHeader($mp_absences);
@@ -491,13 +494,13 @@ if (!$_REQUEST['modfunc']) {
     Widgets('gpa');
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>'; //.well
-    $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
-    Widgets('class_rank');
-    $extra['search'] .= '</div>'; //.well
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '<div class="col-lg-6">';
     $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
     Widgets('letter_grade');
+    $extra['search'] .= '</div>'; //.well
+    $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
+    Widgets('class_rank');
     $extra['search'] .= '</div>'; //.well
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
@@ -505,7 +508,7 @@ if (!$_REQUEST['modfunc']) {
     Search('student_id', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div><INPUT type=submit class="btn btn-primary" value=\'Create Report Cards for Selected Students\'></div>';
+            echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value=\'Create Report Cards for Selected Students\'></div>';
         echo "</FORM>";
     }
 }
@@ -529,13 +532,13 @@ if ($modal_flag == 1) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
-        echo '</table>';
+        echo '</tbody></table>';
     }
     echo '</div>';
     echo '<div class="col-md-4" id="course_modal"></div>';

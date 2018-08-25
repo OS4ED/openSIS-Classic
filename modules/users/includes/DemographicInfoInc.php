@@ -98,7 +98,7 @@ if ($_REQUEST['staff_id'] == 'new') {
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group">' . TextInput($staff['EMAIL'], 'staff[EMAIL]', 'Email *', 'autocomplete=off id=email_id class=cell_medium onkeyup=check_email(this,' . $id_sent . ',2); onblur=check_email(this,' . $id_sent . ',2) ') . '<p id="email_error" class="help-block"></p></div>';
+echo '<div class="form-group"><label class="control-label text-right col-lg-4">Email <span class="text-danger">*</span></label><div class="col-lg-8">' . TextInput($staff['EMAIL'], 'staff[EMAIL]', '', 'autocomplete=off id=email_id class=cell_medium onkeyup=check_email(this,' . $id_sent . ',2); onblur=check_email(this,' . $id_sent . ',2) ') . '<p id="email_error" class="help-block"></p></div></div>';
 echo '</div>'; //.ocl-md-6
 echo '<div class="col-md-6">';
 echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Physical Disability</label><div class="col-lg-8">' . SelectInput($staff['PHYSICAL_DISABILITY'], 'staff[PHYSICAL_DISABILITY]', '', array('N' => 'No', 'Y' => 'Yes'), false, 'onchange=show_span("span_disability_desc",this.value)') . '</div></div>';

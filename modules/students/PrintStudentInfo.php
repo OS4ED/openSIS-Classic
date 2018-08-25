@@ -27,76 +27,78 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
 
-<div class="modal-body">';
+echo '<div class="modal-body">';
 echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
-
-echo '<div id="modal_default_request" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
-
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
-
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
-    echo '</table>';
+    echo '</tbody></table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal_request"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+
+
+echo '<div id="modal_default_request" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose course</h5>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<center><div id="conf_div"></div></center>';
+
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-6">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    }
+    echo '</tbody></table>';
+}
+echo '</div>';
+echo '<div class="col-md-6"><div id="course_modal_request"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+
 if ($_REQUEST['modfunc'] == 'save') {
 
 
@@ -130,13 +132,12 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 echo "<table cellspacing=0  border=\"0\" style=\"border-collapse:collapse\">";
                 echo "<tr><td colspan=3 style=\"height:18px\"></td></tr>";
-                $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student['STUDENT_ID'].' AND PROFILE_ID=3 AND SCHOOL_ID='. UserSchool().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
-               // if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
-                   // echo '<tr><td width=300><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150  style="padding:4px; background-color:#fff; border:1px solid #333" ></td><td width=12px></td>';
-             if(count($stu_img_info)>0)
-             {
-                echo '<tr><td width=300><IMG src="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=150 class=pic> </td><td width=12px></td>';
-                    } else {
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student['STUDENT_ID'] . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                // if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
+                // echo '<tr><td width=300><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150  style="padding:4px; background-color:#fff; border:1px solid #333" ></td><td width=12px></td>';
+                if (count($stu_img_info) > 0) {
+                    echo '<tr><td width=300><IMG src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=150 class=pic> </td><td width=12px></td>';
+                } else {
                     echo '<tr><td width=300><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144  style="padding:4px; background-color:#fff; border:1px solid #333"></td><td width=12px></td>';
                 }
 
@@ -903,7 +904,7 @@ if (!$_REQUEST['modfunc']) {
         }
         $categories_RET = DBGet(DBQuery("SELECT ID,TITLE,INCLUDE FROM student_field_categories ORDER BY SORT_ORDER,TITLE"));
         $extra['extra_header_left'] .= '';
-        foreach ($categories_RET as $category){
+        foreach ($categories_RET as $category) {
             if ($can_use_RET['students/Student.php&category_id=' . $category['ID']]) {
                 $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=category[' . $category['ID'] . '] value=Y checked><span></span>' . $category['TITLE'] . '</label>';
                 //$extra['extra_header_left'] .= '<td></TD></TR>';
@@ -918,7 +919,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
-    
+
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-md-6">';
     Widgets('course');
@@ -926,7 +927,7 @@ if (!$_REQUEST['modfunc']) {
     Widgets('mailing_labels');
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
-    
+
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-md-6">';
     Widgets('request');
@@ -934,7 +935,7 @@ if (!$_REQUEST['modfunc']) {
     Widgets('activity');
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
-    
+
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-md-6">';
     $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';

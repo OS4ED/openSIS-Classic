@@ -144,7 +144,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
             
 //            $attach = explode(',', $v['MAIL_ATTACHMENT']);
             
-            $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.$v['MAIL_ATTACHMENT'].')'));
+            $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.substr($v['MAIL_ATTACHMENT'],0,-1).')'));
             
             foreach ($attach as $user => $img) {
                 

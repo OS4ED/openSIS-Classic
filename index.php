@@ -467,6 +467,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
         $_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
         $_SESSION['UserSyear'] = $student_RET[1]['SYEAR'];
+        $_SESSION['PROFILE'] = 'student';
         $check_profile_id = ($profile_id != '' ? $profile_id : $student_RET[1]['PROFILE_ID']);
         $activity = DBGet(DBQuery("SELECT ACTIVITY_DAYS FROM system_preference_misc"));
         $activity = $activity[1]['ACTIVITY_DAYS'];

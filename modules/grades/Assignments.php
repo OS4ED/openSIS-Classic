@@ -512,10 +512,19 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
          if(DeletePromptAssignment(ucfirst($table), $_REQUEST['assignment_type_id']))
             {
 
+            if($_REQUEST['assignment_type_id']!=0 && $_REQUEST['assignment_type_id']!='')
+            {
+            $assignment_ids_to_del=DBGet(DBQuery('SELECT * FROM gradebook_assignments WHERE assignment_type_id='.$_REQUEST['assignment_type_id']));
+            foreach($assignment_ids_to_del as $ai_del)
+            {
+            DBQuery('DELETE FROM gradebook_grades WHERE assignment_id=\''.$ai_del['ASSIGNMENT_ID'].'\'');
+            }
+            } 
+             
+             
             DBQuery('DELETE FROM gradebook_assignment_types  WHERE assignment_type_id=\''.$_REQUEST['assignment_type_id'].'\'');
             DBQuery('DELETE FROM gradebook_assignments WHERE assignment_type_id=\''.$_REQUEST['assignment_type_id'].'\'');
 
-            DBQuery('DELETE FROM gradebook_grades WHERE assignment_id=\''.$data[1]['assignment_id'].'\'');
                     unset($_REQUEST['assignment_type_id']);
                     unset($_REQUEST['modfunc']);
                 }

@@ -1,4 +1,5 @@
 <?php
+
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -54,180 +55,172 @@ $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
 Widgets('letter_grade');
 $extra['search'] .= '</div>'; //.well
 $extra['search'] .= '</div><div class="col-md-6">';
+Widgets('eligibility');
 $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
 Widgets('class_rank');
 $extra['search'] .= '</div>'; //.well
 $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
 Widgets('absences');
 $extra['search'] .= '</div>'; //.well
-Widgets('eligibility');
-$extra['search'] .= '</div>';
+$extra['search'] .= '<div><label class="control-label">Letter Text</label><TEXTAREA name=letter_text rows=2 cols=40 class="form-control" placeholder="Letter Text"></TEXTAREA></div>';
+$extra['search'] .= '</div>'; //.col-md-6
 $extra['search'] .= '</div>';
 
 $extra['force_search'] = true;
 $extra['search'] .= '<div class="row">';
-$extra['search'] .= '<div class="col-md-12">';
-$extra['search'] .= '<div><label class="control-label">Letter Text</label><TEXTAREA name=letter_text rows=5 cols=40 class="form-control" placeholder="Letter Text"></TEXTAREA></div>';
+$extra['search'] .= '<div class="col-md-6">';
 $extra['search'] .= '</div>';
 $extra['search'] .= '</div>';
 
 
-$current_mp=GetCurrentMP('QTR',DBDate());
-if(!$current_mp)
-    $current_mp=GetCurrentMP('SEM',DBDate());
-if(!$current_mp)
-    $current_mp=GetCurrentMP('FY',DBDate());
-if(!$_REQUEST['search_modfunc'] || $_openSIS['modules_search'])
-{
-	DrawBC("Students -> ".ProgramTitle());
+$current_mp = GetCurrentMP('QTR', DBDate());
+if (!$current_mp)
+    $current_mp = GetCurrentMP('SEM', DBDate());
+if (!$current_mp)
+    $current_mp = GetCurrentMP('FY', DBDate());
+if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
+    DrawBC("Students -> " . ProgramTitle());
 
-	$extra['new'] = true;
-	$extra['pdf'] = 'true';
-	Search('student_id',$extra);
-        echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
+    $extra['new'] = true;
+    $extra['pdf'] = 'true';
+    Search('student_id', $extra);
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '</div>';
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
+    echo '<div class="modal-body">';
+    echo '<center><div id="conf_div"></div></center>';
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
 
-echo '<div id="modal_default_request" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
-
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
-
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody></table>';
     }
-    echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal_request"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
-}
-else
-{
-	$RET = GetStuList($extra);
-	
-	if(count($RET))
-	{
-		$_REQUEST['letter_text'] = nl2br(str_replace("\'","'",str_replace('  ',' &nbsp;',$_REQUEST['letter_text'])));
+    echo '</div>';
+    echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+    echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
 
-		$handle = PDFStart();
-			
-		foreach($RET as $student)
-		{
-			$student_points = $total_points = 0;
-			unset($_openSIS['DrawHeader']);
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
 
-			if($_REQUEST['mailing_labels']=='Y')
-			{
-			echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool())."<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";			echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
-			echo '<tr>';
-			echo '<td>'.$student['FULL_NAME'].', #'.$student['STUDENT_ID'].'</td></tr>';
-			echo '<tr>';
-			echo '<td>'.$student['GRADE_ID'].' Grade</td></tr>';
-			echo '<tr>';
-			echo '<td>Course: '.$course_title . "". GetMP($current_mp).'</td></tr>';
-			if($student['MAILING_LABEL'] !='')
-			{
-			echo '<tr>';
-			echo '<td >'.$student['MAILING_LABEL'].'</td></tr>';
-			}
-		
 
-			if($_REQUEST['mailing_labels']=='Y')
-			$letter_text = $_REQUEST['letter_text'];
-			foreach($student as $column=>$value)
-				$letter_text = str_replace('__'.$column.'__',$value,$letter_text);
-				echo "<tr><td style=\"height:18px\"></td></tr>";
-				echo '<tr><td>'.$letter_text.'</td></tr>';
-				echo "<tr><td colspan=2 style=\"height:18px;\">&nbsp;</td></tr>";
-				echo "</table>";
-				echo "<div style=\"page-break-before: always;\"></div>";
-		}
-		else
-		{
-		unset($_openSIS['DrawHeader']);
-		
-	        echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool())."<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
-			echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
-			echo '<tr>';
-			echo '<td>'.$student['FULL_NAME'].', #'.$student['STUDENT_ID'].'</td></tr>';
-			echo '<tr>';
-			echo '<td>'.$student['GRADE_ID'].' Grade</td></tr>';
-			echo '<tr>';
-			echo '<td>Course: '.$course_title . "". GetMP($current_mp).'</td></tr>';
-			echo '</table>';
-			echo '<br>';
-			$letter_text = $_REQUEST['letter_text'];
-			foreach($student as $column=>$value)
-				$letter_text = str_replace('__'.$column.'__',$value,$letter_text);
-				echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
-				echo '<tr><td>'.$letter_text.'</td></tr>';
-				echo "<tr><td colspan=2 style=\"height:18px;\">&nbsp;</td></tr>";
-				echo "</table>";
-				echo "<div style=\"page-break-before: always;\"></div>";
 
-		}
-		}
-		PDFStop($handle);
-	}
-	else
-		BackPrompt('No Students were found.');
+
+    echo '<div id="modal_default_request" class="modal fade">';
+    echo '<div class = "modal-dialog">';
+    echo '<div class = "modal-content">';
+    echo '<div class = "modal-header">';
+    echo '<button type = "button" class = "close" data-dismiss = "modal">×</button>';
+    echo '<h5 class = "modal-title">Choose course</h5>';
+    echo '</div>';
+
+    echo '<div class = "modal-body">';
+    echo '<center><div id = "conf_div"></div></center>';
+
+    echo '<div class = "row" id = "resp_table">';
+    echo '<div class = "col-md-6">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
+
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href = javascript:void(0); onclick = "chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody></table>';
+    }
+    echo '</div>';
+    echo '<div class="col-md-6"><div id="course_modal_request"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
+} else {
+    $RET = GetStuList($extra);
+
+    if (count($RET)) {
+        $_REQUEST['letter_text'] = nl2br(str_replace("\'", "'", str_replace('  ', ' &nbsp;', $_REQUEST['letter_text'])));
+
+        $handle = PDFStart();
+
+        foreach ($RET as $student) {
+            $student_points = $total_points = 0;
+            unset($_openSIS['DrawHeader']);
+
+            if ($_REQUEST['mailing_labels'] == 'Y') {
+                echo "<tr><td colspan = 2 style = \"height:18px\"></td></tr>";
+                echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
+                echo '<tr>';
+                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';
+                echo '<tr>';
+                echo '<td>' . $student['GRADE_ID'] . ' Grade</td></tr>';
+                echo '<tr>';
+                echo '<td>Course: ' . $course_title . "" . GetMP($current_mp) . '</td></tr>';
+                if ($student['MAILING_LABEL'] != '') {
+                    echo '<tr>';
+                    echo '<td >' . $student['MAILING_LABEL'] . '</td></tr>';
+                }
+
+
+                if ($_REQUEST['mailing_labels'] == 'Y')
+                    $letter_text = $_REQUEST['letter_text'];
+                foreach ($student as $column => $value)
+                    $letter_text = str_replace('__' . $column . '__', $value, $letter_text);
+                echo "<tr><td style=\"height:18px\"></td></tr>";
+                echo '<tr><td>' . $letter_text . '</td></tr>';
+                echo "<tr><td colspan=2 style=\"height:18px;\">&nbsp;</td></tr>";
+                echo "</table>";
+                echo "<div style=\"page-break-before: always;\"></div>";
+            }
+            else {
+                unset($_openSIS['DrawHeader']);
+
+                echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+                echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
+                echo '<tr>';
+                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';
+                echo '<tr>';
+                echo '<td>' . $student['GRADE_ID'] . ' Grade</td></tr>';
+                echo '<tr>';
+                echo '<td>Course: ' . $course_title . "" . GetMP($current_mp) . '</td></tr>';
+                echo '</table>';
+                echo '<br>';
+                $letter_text = $_REQUEST['letter_text'];
+                foreach ($student as $column => $value)
+                    $letter_text = str_replace('__' . $column . '__', $value, $letter_text);
+                echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
+                echo '<tr><td>' . $letter_text . '</td></tr>';
+                echo "<tr><td colspan=2 style=\"height:18px;\">&nbsp;</td></tr>";
+                echo "</table>";
+                echo "<div style=\"page-break-before: always;\"></div>";
+            }
+        }
+        PDFStop($handle);
+    } else
+        BackPrompt('No Students were found.');
 }
 ?>

@@ -166,7 +166,6 @@ else {
     }
     if ($_REQUEST['print'] != 'list') {
         echo '</div>';
-        
     }
     if (count($mp_RET)) {
 
@@ -237,8 +236,6 @@ else {
         echo '<div class="alert bg-danger alert-styled-left">No Class List Found.</div>';
     echo '</div>'; //.row
     echo '</div>'; //.panel-body
-
-
 //    if ($_REQUEST['print'] != 'list')
 //        echo '<div class="table-responsive">';
     echo CreateList($_REQUEST['degree_level_id'], $_REQUEST['program_level_id'], $_REQUEST['subject_id'], $_REQUEST['course_id'], $_REQUEST['marking_period_id'], $_REQUEST['mp_name']);
@@ -330,6 +327,11 @@ function CreateList($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_na
                 $final_days = array_unique($final_days);
                 $final_days = implode(' , ', $final_days);
                 $ret[$i]['DAYS'] = $final_days;
+
+                $ret[$i]['PERIOD_TIME'] = '<div style="white-space:nowrap;">' . str_replace(', ', '<br/>', $ret[$i]['PERIOD_TIME']) . '</div>';
+                $ret[$i]['PERIOD'] = '<div style="white-space:nowrap;">' . str_replace(', ', '<br/>', $ret[$i]['PERIOD']) . '</div>';
+                $ret[$i]['LOCATION'] = '<div style="white-space:nowrap;">' . str_replace(', ', '<br/>', $ret[$i]['LOCATION']) . '</div>';
+                $ret[$i]['DAYS'] = str_replace(' , ', '', $ret[$i]['DAYS']);
             }
         }
 
@@ -345,6 +347,7 @@ function CreateList($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_na
 
     $columns = array('SUBJECT' => 'Subject', 'COURSE' => 'Course', 'MP' => 'Marking Period', 'PERIOD_TIME' => 'Time', 'PERIOD' => 'Period', 'DAYS' => 'Days', 'LOCATION' => 'Location', 'TEACHER' => 'Teacher');
     if ($_REQUEST['print'] == 'list') {
+        echo '<link rel="stylesheet" type="text/css" href="assets/css/export_print.css" />';
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
         echo "<tr><td  style=\"font-size:15px; font-weight:bold;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Course Catalog</div></td><td align=right style=\"padding-top:5px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=2 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
     }
