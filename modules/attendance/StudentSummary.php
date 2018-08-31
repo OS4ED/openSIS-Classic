@@ -75,7 +75,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
     echo "<div class=\"panel panel-default\">";
     echo "<div class=\"panel-body\">";
-    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12">' . PrepareDateSchedule($start_date, 'start') . '<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . PrepareDateSchedule($end_date, 'end') . '<div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
+    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($start_date, 'start') . '</div><div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . PrepareDateSchedule($end_date, 'end') . '</div><div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
     echo '</div>';
     echo '</div>';
     echo '</FORM>';

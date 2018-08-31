@@ -92,14 +92,20 @@ if ($_REQUEST['modfunc'] == 'generate') {
     if (isset($conv_st_date) && isset($conv_end_date)) {
         $alllogs_RET = DBGet(DBQuery('SELECT DISTINCT FIRST_NAME,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC'));
 
-        foreach ($alllogs_RET as $k => $v) {
-            if ($v['PROFILE'] != 'Student' && $v['PROFILE'] != 'parent')
-                $profile = DBGet(DBQuery('SELECT PROFILE_ID FROM staff WHERE STAFF_ID=' . $v['STAFF_ID'] . ''));
+        foreach($alllogs_RET as $k => $v)
+        {
 
-            if ($profile[1]['PROFILE_ID'] == 0) {
+        if($v['PROFILE']!='Student' && $v['PROFILE']!='parent')
+        {
 
-                $alllogs_RET[$k]['PROFILE'] = 'Super Administrator';
+        $profile=  DBGet(DBQuery('SELECT PROFILE_ID FROM staff WHERE STAFF_ID='.$v['STAFF_ID'].''));
+        if($profile[1]['PROFILE_ID']==0)
+            {
+
+             $alllogs_RET[$k]['PROFILE']='Super Administrator';   
             }
+        }
+
         }
         if (count($alllogs_RET)) {
             echo '<div class="panel panel-default">';

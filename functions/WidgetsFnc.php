@@ -265,13 +265,13 @@ function Widgets($item, $allow_widget = false) {
                 $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM school_quarters where SCHOOL_ID=\'' . UserSchool() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
                     $extra['search'] .= "<h6 class=\"text-primary\">Letter Grade</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-8\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . GetParentMP('SEM', UserMP()) . "> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . UserMP() . ">" . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if ($qrtrs_query[1]['QUARTER'] <= 1) {
                     $extra['search'] .= "<h6 class=\"text-primary\">Letter Grade</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-8\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
-                    $extra['search'] .= "<div class=\"form-group\"><label class=\"control-label col-lg-4\">&nbsp;</label><div class=\"col-lg-8\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if (strlen($pros = GetChildrenMP('PRO', UserMP()))) {
                     $pros = explode(',', singleQuoteReplace("'", '', $pros));

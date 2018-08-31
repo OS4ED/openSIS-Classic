@@ -47,9 +47,9 @@ if (isset($_REQUEST['student_id'])) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
     }
 }
 ####################
@@ -74,7 +74,7 @@ $PHP_tmp_SELF = PreparePHP_SELF();
 //echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
 echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc] method=POST>";
 //Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=
-//echo "<div class=\"panel panel-default\">";
+echo "<div class=\"panel panel-default\">";
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
     $extraM .= "";
     $period_select = "<SELECT name=period_id onchange='this.form.submit();' class='form-control'><OPTION value=\"\">Daily</OPTION>";
@@ -106,8 +106,9 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
         $myclasses .='<OPTION value="selected_class"' . ($_REQUEST['myclasses'] == 'selected_class' ? ' SELECTED' : '') . '>Selected course period</OPTION>';
         $myclasses .='</SELECT>';
     }
-    echo "<div class=\"panel-heading\">";
-    echo '<div class="form-inline clearfix"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) . '<div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div>' . DateInputAY($end_date, 'end', 2) . '<div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div></div>';
+
+    echo '<div class="panel-heading">';
+    echo '<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div><div class="inline-block" style="margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div><div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div></div>';
     echo '</div>'; //.panel-body
 }
 
@@ -183,7 +184,9 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     ListOutput($student_RET, $columns, 'Course', 'Courses');
     //echo '</div>';
     echo '</div>';
+    echo '</div>'; //.panel
 } else {
+    echo '</div>'; //.panel
 
 
     if (!$_REQUEST['period_id']) {
@@ -286,7 +289,6 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '</div>'; //.modal
 }
 
-//echo '</div>'; //.panel
 echo '</FORM>';
 
 function _makeColor($value, $column) {

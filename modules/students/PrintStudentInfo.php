@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+if (!$_REQUEST['modfunc']) {
 echo '<div id="modal_default" class="modal fade">';
 echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
@@ -97,7 +98,7 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
-
+}
 
 if ($_REQUEST['modfunc'] == 'save') {
 

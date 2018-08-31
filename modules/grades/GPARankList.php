@@ -90,7 +90,6 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
-
 Widgets('letter_grade');
 $extra['search'] .= '</div>'; //.well
 $extra['search'] .= '</div>'; //.col-lg-6

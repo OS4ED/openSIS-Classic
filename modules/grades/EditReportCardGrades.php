@@ -31,14 +31,19 @@ include 'modules/grades/DeletePromptX.fnc.php';
 DrawBC("Gradebook > " . ProgramTitle());
 Search('student_id');
 echo '<style type="text/css">#div_margin { margin-top:-20px; _margin-top:-1px; }</style>';
+
 if (isset($_REQUEST['student_id'])) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
+        echo '<div class="panel panel-default">';
         DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+        echo '</div>';
     } else if ($count_student_RET[1]['NUM'] == 1) {
+        echo '<div class="panel panel-default">';
         DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        echo '</div>';
     }
 }
 ####################
@@ -46,7 +51,9 @@ if (UserStudentID()) {
     $student_id = UserStudentID();
     $mp_id = $_REQUEST['mp_id'];
     $tab_id = ($_REQUEST['tab_id'] ? $_REQUEST['tab_id'] : 'grades');
+
     if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['removemp'] && $mp_id && DeletePromptX('Marking Period')) {
+
         DBQuery('UPDATE student_gpa_calculated SET  cum_unweighted_factor=NULL WHERE student_id = ' . $student_id . ' and marking_period_id = ' . $mp_id . '');
         unset($mp_id);
     }
@@ -56,9 +63,10 @@ if (UserStudentID()) {
         if ($_REQUEST['new_sms']) {
 
             // ------------------------ Start -------------------------- //
+
             $res = DBGet(DBQuery('SELECT * FROM student_gpa_calculated WHERE student_id=' . $student_id . ' AND marking_period_id=' . $_REQUEST['new_sms']));
 //	    $rows = mysql_num_rows($res);
-            $rows=count($res);
+            $rows = count($res);
 
             if ($rows == 0) {
                 DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');
@@ -142,8 +150,11 @@ if (UserStudentID()) {
         }
         unset($_REQUEST['modfunc']);
     }
+
     if ($_REQUEST['modfunc'] == 'remove') {
+
         if (DeletePromptX('Student Grade')) {
+            //echo 'DELETE FROM student_report_card_grades WHERE ID=\'' . $_REQUEST['id'] . '\'';
             DBQuery('DELETE FROM student_report_card_grades WHERE ID=\'' . $_REQUEST['id'] . '\'');
         }
     }
@@ -158,7 +169,7 @@ if (UserStudentID()) {
        sgc.weighted_gpa, sgc.unweighted_gpa
        FROM marking_periods mp, student_gpa_calculated sgc, schools s
        WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.school_id and sgc.student_id = ' . $student_id . ' AND sgc.cum_unweighted_factor IS NOT NULL
+             s.id = mp.school_id and sgc.student_id = ' . $student_id . ' 
        AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
@@ -203,13 +214,14 @@ if (UserStudentID()) {
 
         $mpselect .= '</FORM>';
 
-        
+
 
         echo '<div class="panel panel-default">';
         DrawHeader('Edit Report Card Grades', '<div class="form-group">' . $mpselect . '</div>');
-        
+
+        echo "<FORM class=\"form-horizontal m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=" . $mp_id . " method=POST>";
+
         echo '<div class="panel-body alpha-grey">';
-        echo "<FORM class=\"form-horizontal m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=".$mp_id." method=POST>";
         echo '<div class="media">';
         echo '<div class="media-left"><div class="profile-thumb"><img src="assets/images/placeholder.jpg" class="img-circle" alt=""></div></div>';
         echo '<div class="media-body">';
@@ -238,9 +250,10 @@ if (UserStudentID()) {
                 foreach ($MPRET as $id => $mp) {
                     $mpoptions[$mp['MARKING_PERIOD_ID']] = formatSyear($mp['SYEAR']) . ' ' . $mp['TITLE'];
                 }
+
                 //PopTable_grade_header('header');
                 echo '<div class="col-md-4">';
-                echo '<div class="form-group">';
+                echo '<div class="row">';
                 echo '<label class="control-label col-md-5 text-right">Grade Level</label>';
                 echo '<div class="col-md-7">';
                 echo $sms_grade_level;
@@ -248,7 +261,7 @@ if (UserStudentID()) {
                 echo '</div>'; //form-group
                 echo '</div>'; //.col-md-4
                 echo '</div>'; //.row
-                
+
                 echo '<div class="row">';
                 echo '<div class="col-md-6">';
                 echo '<div class="form-group">';
@@ -270,10 +283,12 @@ if (UserStudentID()) {
             echo '</div>'; //form-group
             echo '</div>'; //.col-md-4
         }
-        
+
         echo '</div>'; //.row
         echo '</div>'; //.media-body
         echo '</div>'; //.media
+
+        echo '</div>'; //.panel-body.alpha-grey
         echo '<hr class="no-margin" />';
 
 
@@ -340,9 +355,8 @@ if (UserStudentID()) {
             //PopTable('footer');
         }
 
-        echo '<hr class="no-margin" />';
 
-        echo '<div class="panel-footer">';
+        echo '<div class="panel-footer text-center">';
         if (!$LO_ret) {
             echo SubmitButton('Remove Marking Period', 'removemp', 'class="btn btn-primary"');
             echo '&nbsp;';

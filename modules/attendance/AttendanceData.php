@@ -86,7 +86,7 @@ if(!$_REQUEST['modfunc'])
     ///////////////////////Old Date Picker///////////////////////////////
 
     ///////////////////////New Date Picker///////////////////////////////
-    echo '<div class="form-inline"><div class="col-md-12">'.DateInputAY($start_date, 'start', 1) .' &nbsp; &nbsp; - &nbsp; &nbsp; ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">'.DateInputAY($start_date, 'start', 1) .'</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
     echo '</FORM>';
     echo '</div>';
 

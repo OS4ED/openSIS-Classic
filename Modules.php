@@ -184,7 +184,7 @@ echo '<div class="navbar navbar-inverse bg-white">
 if (User('PROFILE') == 'teacher') {
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=school method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=\'' . UserSyear() . '\' AND st.staff_id=\'' . $_SESSION[STAFF_ID] . '\' AND (ssr.END_DATE>=curdate() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)'));
-    echo "<SELECT class=\"select-search\" name=school onChange='this.form.submit();'>";
+    echo "<SELECT class=\"select-search\" style=\"width: 200px;\" name=school onChange='this.form.submit();'>";
     foreach ($RET as $school) {
         echo "<OPTION value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
     }
@@ -488,7 +488,7 @@ if (User('PROFILE') == 'teacher') {
         $_SESSION['UserCoursePeriod'] = $RET[1]['COURSE_PERIOD_ID'];
     }
 
-    echo "<SELECT class=\"select\" name=period onChange='this.form.submit();' >";
+    echo "<SELECT class=\"select\" style=\"width: 200px;\" name=period onChange='this.form.submit();' >";
     if (count($RET) > 0) {
         $flag = 0;
         foreach ($RET as $period) {

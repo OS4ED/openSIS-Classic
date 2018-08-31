@@ -389,7 +389,13 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
         }
         $period_select .= "</SELECT>";
     }
-    DrawHeader('<div class="form-inline">' . $period_select . '</div>');
+    if ($_REQUEST['attn'] == 'miss') {
+        $backBtn = '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a>';
+        DrawHeader($backBtn,'<div class="form-inline">' . $period_select . '</div>');
+    } else {
+        DrawHeader('<div class="form-inline">' . $period_select . '</div>');
+    }
+    
 }
 $profile_check = DBGet(DBQuery("SELECT PROFILE FROM staff WHERE STAFF_ID=" . UserID()));
 $profile_check = $profile_check[1]['PROFILE'];
@@ -405,7 +411,7 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline">' . DateInputAY($date, 'date', 1) . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
         echo '<div class="panel-body">';
         echo '<div class="form-inline">';
@@ -418,9 +424,9 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline">' . DateInputAY($date, 'date', 3) . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
-        DrawHeader('<div class="form-inline">' . DateInputAY($date, 'date', 4) . $btnGo . $date_note . '</div>');
+        DrawHeader('<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 4) . '</div>' . $btnGo . $date_note . '</div>');
     }
 }
 //if (isset($_REQUEST['cp_id_miss_attn'])) {
@@ -462,10 +468,6 @@ if (!$mp_id) {
         } else {
             $cur_date = date('Y-m-d');
         }
-        if ($_REQUEST['attn'] == 'miss') {
-            echo '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default pull-right"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a></div>';
-//                DrawHeaderHome('<A HREF="Modules.php?modname=miscellaneous/Portal.php"> &lt;&lt; Back to Missing Attendance List</A>');
-        }
         if ($_REQUEST['period'] || ( $profile_check == 'admin' && $_SESSION['CpvId'] != '') || $_SESSION['CpvId'] != '')
             ListOutput($stu_RET, $LO_columns, $singular, $plural, array(), array(), $extra);
         //echo '</br>';
@@ -477,7 +479,7 @@ if (!$mp_id) {
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer
     } else {
-        if ($_REQUEST['period']){
+        if ($_REQUEST['period']) {
             echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
         }
     }

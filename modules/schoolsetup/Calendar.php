@@ -58,8 +58,8 @@ $cal_found_qr = DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHER
 if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found_qr[1]['TOT'] == 0) && User('PROFILE') == 'admin') {
     $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
     $fy_RET = $fy_RET[1];
-    if($_REQUEST['month__min']=='')
-    echo '<div class="alert alert-danger no-border">No Calendars were found.</div>';
+    if ($_REQUEST['month__min'] == '')
+        echo '<div class="alert alert-danger no-border">No Calendars were found.</div>';
 
     $message = '<div class="row">';
     $message .= '<div class="col-md-12">';
@@ -200,6 +200,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete_calendar') {
             unset($_REQUEST['modfunc']);
             unset($_SESSION['_REQUEST_vars']['modfunc']);
             unset($_REQUEST['calendar_id']);
+            echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '"; window.close();</script>';
         }
     }
 }
@@ -622,8 +623,15 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
     }
     echo '<div class="panel panel-default">';
     echo '<div class="panel-heading">';
+    echo '<div class="row">';
+    echo '<div class="col-md-4">';
     echo '<h6 class="panel-title"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="text-primary"><i class="icon-square-left"></i> Back to Calendar</A></h6>';
-    echo '<div class="heading-elements"><div class="form-inline">' . PrepareDateSchedule($start_date, 'start') . ' <label>&nbsp;&nbsp;-&nbsp;&nbsp</label> ' . PrepareDateSchedule($end_date, 'end') . ' <INPUT type=submit class="btn btn-primary" value=Go></div></div>';
+    echo '</div>'; //.col-md-6
+    echo '<div class="col-md-8 text-md-right text-lg-right">';
+    echo '<div class="form-inline inline-block"><div class="inline-block">' . PrepareDateSchedule($start_date, 'start') . '</div><label>&nbsp; &nbsp; - &nbsp; &nbsp;</label><div class="inline-block">' . PrepareDateSchedule($end_date, 'end') . '</div> &nbsp; &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div>';
+    echo '</div>'; //.col-md-6
+    echo '</div>';
+    
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel.panel-default
 
@@ -727,16 +735,16 @@ if (!$_REQUEST['modfunc']) {
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['calendar_id']);
 
-        $link .= '<div class="form-inline clearfix">';
-        if ($_REQUEST['calendar_id'])
+        if ($_REQUEST['calendar_id']) {
+            $link .= '<div class="form-inline clearfix">';
             $link .= '<div class="form-group pull-left">' . SelectInput($_REQUEST['calendar_id'], 'calendar_id', '', $options, false, " onchange='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . '&amp;calendar_id="+this.form.calendar_id.value;\' ', false) . '</div>';
-        if (User('PROFILE') == 'admin' && $_REQUEST['calendar_id'])
-            $link .="<div class=\"btn-group pull-right\"><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=create\");' class=\"btn btn-primary btn-icon btn-lg\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Create a New Calendar\"><i class=\"fa fa-plus\"></i></a>";
-        if ($_REQUEST['calendar_id'] && User('PROFILE') == 'admin')
-            $link .="<a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Delete this Calendar\"><i class=\"fa fa-times\"></i></a><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=edit_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Edit this Calendar\"><i class=\"fa fa-pencil\"></i></a></div>";
-        $link .= '</div>'; //.form-inline
-    }
-    else {
+            if (User('PROFILE') == 'admin') {
+                $link .="<div class=\"btn-group pull-right\"><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=create\");' class=\"btn btn-primary btn-icon btn-lg\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Create a New Calendar\"><i class=\"fa fa-plus\"></i></a>";
+                $link .="<a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Delete this Calendar\"><i class=\"fa fa-times\"></i></a><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=edit_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Edit this Calendar\"><i class=\"fa fa-pencil\"></i></a></div>";
+            }
+            $link .= '</div>'; //.form-inline
+        }
+    } else {
 
         if (User('PROFILE_ID') != '') {
             $get_perm = DBGet(DBQuery('SELECT COUNT(1) as ACC FROM profile_exceptions WHERE modname=\'schoolsetup/Calendar.php \' AND CAN_USE=\'Y\' AND PROFILE_ID=\'' . User('PROFILE_ID') . '\' '));
@@ -758,23 +766,16 @@ if (!$_REQUEST['modfunc']) {
         }
     }
 
-    echo '<div class="panel">';
+    if ($_REQUEST['calendar_id']) {
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-body">';
+        echo '<div class="form-inline">';
+        DrawHeaderHome('<div class="inline-block">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div>' . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"') : ''));
+        echo '</div>'; //.form-inline
+        echo '</div>'; //.panel-body
+        echo '</div>'; //.panel
+    }
 
-    echo '<div class="panel-body">';
-    echo '<div class="form-inline">';
-    if ($_REQUEST['calendar_id'])
-        DrawHeaderHome(PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"') : ''));
-    // <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&modfunc=list_events&month='.$_REQUEST['month'].'&year='.$_REQUEST['year'].'>List Events</A>
-    echo '</div>'; //.form-inline
-    echo '</div>'; //.panel-body
-
-    echo '</div>'; //.panel
-
-    echo "<div class=\"panel panel-white\">";
-
-    echo '<div class="panel-heading">';
-    DrawHeaderHome($link);
-    echo '</div>'; //.panel-heading
 
 
     if (count($error)) {
@@ -782,120 +783,128 @@ if (!$_REQUEST['modfunc']) {
             echo ErrorMessage($error, 'fatal');
         else
             echo ErrorMessage1($error, 'fatal');
-    }
+    } else {
+
+
+        echo "<div class=\"panel panel-default\">";
+        echo '<div class="panel-heading">';
+        DrawHeaderHome($link);
+        echo '</div>'; //.panel-heading
 //echo 'SELECT ce.ID,DATE_FORMAT(ce.SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,TITLE FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0';
-    $events_RET = DBGet(DBQuery('SELECT ce.ID,DATE_FORMAT(ce.SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,TITLE FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0'), array(), array('SCHOOL_DATE'));
+        $events_RET = DBGet(DBQuery('SELECT ce.ID,DATE_FORMAT(ce.SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,TITLE FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0'), array(), array('SCHOOL_DATE'));
 
-    if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
-        $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,\'Y\' AS ASSIGNED FROM gradebook_assignments a,schedule s WHERE (a.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID OR a.COURSE_ID=s.COURSE_ID) AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND s.DROPPED!=\'Y\' AND (CURRENT_DATE>=a.ASSIGNED_DATE OR CURRENT_DATE<=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE<=a.DUE_DATE) '), array(), array('SCHOOL_DATE'));
-    elseif (User('PROFILE') == 'teacher')
-        $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,CASE WHEN a.ASSIGNED_DATE<=CURRENT_DATE OR a.ASSIGNED_DATE IS NULL THEN \'Y\' ELSE NULL END AS ASSIGNED FROM gradebook_assignments a WHERE a.STAFF_ID=\'' . User('STAFF_ID') . '\' AND a.DUE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\''), array(), array('SCHOOL_DATE'));
+        if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
+            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,\'Y\' AS ASSIGNED FROM gradebook_assignments a,schedule s WHERE (a.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID OR a.COURSE_ID=s.COURSE_ID) AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND s.DROPPED!=\'Y\' AND (CURRENT_DATE>=a.ASSIGNED_DATE OR CURRENT_DATE<=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE<=a.DUE_DATE) '), array(), array('SCHOOL_DATE'));
+        elseif (User('PROFILE') == 'teacher')
+            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,CASE WHEN a.ASSIGNED_DATE<=CURRENT_DATE OR a.ASSIGNED_DATE IS NULL THEN \'Y\' ELSE NULL END AS ASSIGNED FROM gradebook_assignments a WHERE a.STAFF_ID=\'' . User('STAFF_ID') . '\' AND a.DUE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\''), array(), array('SCHOOL_DATE'));
 
-    $skip = date("w", $time);
-    echo '<div class="table-responsive">';
-    echo "<TABLE class=\"table table-bordered table-calendar\" border=0 cellpadding=3 cellspacing=1><thead><TR class=calendar_header align=center>";
-    echo "<th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th width=99>Saturday</th>";
-    echo "</TR></thead><TR>";
+        $skip = date("w", $time);
+        echo '<div class="table-responsive">';
+        echo "<TABLE class=\"table table-bordered table-calendar\" border=0 cellpadding=3 cellspacing=1><thead><TR class=calendar_header align=center>";
+        echo "<th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th width=99>Saturday</th>";
+        echo "</TR></thead><TR>";
 
-    if ($skip) {
-        echo "<td colspan=" . $skip . "></td>";
-        $return_counter = $skip;
-    }
-    $blocks_RET = DBGet(DBQuery('SELECT DISTINCT BLOCK FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND BLOCK IS NOT NULL ORDER BY BLOCK'));
-    for ($i = 1; $i <= $last; $i++) {
-        $day_time = mktime(0, 0, 0, $_REQUEST['month'], $i, $_REQUEST['year']);
-        $date = date('d-M-y', $day_time);
-        echo "<TD width=100 class=" . ($calendar_RET[$date][1]['MINUTES'] ? $calendar_RET[$date][1]['MINUTES'] == '999' ? 'calendar-active' : 'calendar-extra' : 'calendar-holiday') . " valign=top><table width='100%'><tr><td width=5 valign=top>$i</td>";
-        if (AllowEdit()) {
-            if (User('PROFILE') == 'admin') {
-                if ($calendar_RET[$date][1]['MINUTES'] == '999') {
-                    echo '<TD class="text-right">' . CheckboxInput_Calendar($calendar_RET[$date], "all_day[$date]", '', '', false, '<i class="icon-checkbox-checked"></i> ', '', true, 'id=all_day_' . $i . ' onclick="return system_wide(' . $i . ');"') . '</TD>';
-                    echo '</TR>';
-                } else {
-                    echo "<TD class=\"text-right\"><INPUT type=checkbox name=all_day[$date] value=Y id=all_day_$i onclick='return system_wide($i);'></TD>";
-                    echo '</TR>';
-                    echo '<tr><td colspan=2>';
-                    //echo "<div id=syswide_holi_$i style=display:none><span>System Wide </span><INPUT type=checkbox name=show_all[$date] value=Y></div>";
-                    echo TextInput($calendar_RET[$date][1]['MINUTES'], "minutes[$date]", '', 'size=3 class=cell_small onkeydown="return numberOnly(event);"');
-                    echo '</TD></TR>';
+        if ($skip) {
+            echo "<td colspan=" . $skip . "></td>";
+            $return_counter = $skip;
+        }
+        $blocks_RET = DBGet(DBQuery('SELECT DISTINCT BLOCK FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND BLOCK IS NOT NULL ORDER BY BLOCK'));
+        for ($i = 1; $i <= $last; $i++) {
+            $day_time = mktime(0, 0, 0, $_REQUEST['month'], $i, $_REQUEST['year']);
+            $date = date('d-M-y', $day_time);
+            echo "<TD width=100 class=" . ($calendar_RET[$date][1]['MINUTES'] ? $calendar_RET[$date][1]['MINUTES'] == '999' ? 'calendar-active' : 'calendar-extra' : 'calendar-holiday') . " valign=top><table width='100%'><tr><td width=5 valign=top>$i</td>";
+            if (AllowEdit()) {
+                if (User('PROFILE') == 'admin') {
+                    if ($calendar_RET[$date][1]['MINUTES'] == '999') {
+                        echo '<TD class="text-right">' . CheckboxInput_Calendar($calendar_RET[$date], "all_day[$date]", '', '', false, '<i class="icon-checkbox-checked"></i> ', '', true, 'id=all_day_' . $i . ' onclick="return system_wide(' . $i . ');"') . '</TD>';
+                        echo '</TR>';
+                    } else {
+                        echo "<TD class=\"text-right\"><INPUT type=checkbox name=all_day[$date] value=Y id=all_day_$i onclick='return system_wide($i);'></TD>";
+                        echo '</TR>';
+                        echo '<tr><td colspan=2>';
+                        //echo "<div id=syswide_holi_$i style=display:none><span>System Wide </span><INPUT type=checkbox name=show_all[$date] value=Y></div>";
+                        echo TextInput($calendar_RET[$date][1]['MINUTES'], "minutes[$date]", '', 'size=3 class=cell_small onkeydown="return numberOnly(event);"');
+                        echo '</TD></TR>';
+                    }
                 }
             }
-        }
-        if (count($blocks_RET) > 0) {
-            unset($options);
-            foreach ($blocks_RET as $block)
-                $options[$block['BLOCK']] = $block['BLOCK'];
+            if (count($blocks_RET) > 0) {
+                unset($options);
+                foreach ($blocks_RET as $block)
+                    $options[$block['BLOCK']] = $block['BLOCK'];
 
-            echo SelectInput($calendar_RET[$date][1]['BLOCK'], "blocks[$date]", '', $options);
-        }
-        echo "</td></tr>";
+                echo SelectInput($calendar_RET[$date][1]['BLOCK'], "blocks[$date]", '', $options);
+            }
+            echo "</td></tr>";
 
-        if (AllowEdit()) {
-            if (User('PROFILE') == 'admin') {
-                if ($calendar_RET[$date][1]['MINUTES'] == '999') {
-                    echo '<tr><td colspan="2"><TABLE cellpadding=0 cellspacing=0 >';
-                    echo '<TR><TD><div id=syswide_holi_' . $i . ' style="display:none; padding-top: 10px;"><label class="checkbox-inline"><INPUT type=checkbox name=show_all[' . $date . '] value=Y> System Wide</label></div></TD></TR>';
-                    echo '</TABLE></td></tr>';
-                } else {
-                    echo "<tr><td colspan='2'><TABLE cellpadding=0 cellspacing=0 >";
-                    echo "<div id=syswide_holi_$i style='display:none; padding-top: 10px;'><label class='checkbox-inline'><INPUT type=checkbox name=show_all[$date] value=Y> System Wide</label></div>";
-                    echo "</TABLE></td></tr>";
+            if (AllowEdit()) {
+                if (User('PROFILE') == 'admin') {
+                    if ($calendar_RET[$date][1]['MINUTES'] == '999') {
+                        echo '<tr><td colspan="2"><TABLE cellpadding=0 cellspacing=0 >';
+                        echo '<TR><TD><div id=syswide_holi_' . $i . ' style="display:none; padding-top: 10px;"><label class="checkbox-inline"><INPUT type=checkbox name=show_all[' . $date . '] value=Y> System Wide</label></div></TD></TR>';
+                        echo '</TABLE></td></tr>';
+                    } else {
+                        echo "<tr><td colspan='2'><TABLE cellpadding=0 cellspacing=0 >";
+                        echo "<div id=syswide_holi_$i style='display:none; padding-top: 10px;'><label class='checkbox-inline'><INPUT type=checkbox name=show_all[$date] value=Y> System Wide</label></div>";
+                        echo "</TABLE></td></tr>";
+                    }
                 }
             }
-        }
 
-        echo "<tr><TD colspan=2 height=50 valign=top>";
+            echo "<tr><TD colspan=2 height=50 valign=top>";
 
-        if (count($events_RET[$date])) {
-            echo '<TABLE cellpadding=2 cellspacing=2 border=0>';
-            foreach ($events_RET[$date] as $event) {
+            if (count($events_RET[$date])) {
+                echo '<TABLE cellpadding=2 cellspacing=2 border=0>';
+                foreach ($events_RET[$date] as $event) {
 
-                if (strlen($event['TITLE']) < 8)
-                    $e_title = $event['TITLE'];
-                else
-                    $e_title = substr($event['TITLE'], 0, 8) . '....';
+                    if (strlen($event['TITLE']) < 8)
+                        $e_title = $event['TITLE'];
+                    else
+                        $e_title = substr($event['TITLE'], 0, 8) . '....';
 
-                //echo "<TR><TD>" . button('dot', '0000FF', '', '6') . "</TD><TD> <A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'><b>" . ($event['TITLE'] ? $e_title : '***') . "1</b></A></TD></TR>";
-                //  echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
-                echo '<TR><TD>' . button("dot", "0000FF", "", "6") . '</TD><TD> <A class=\"event\" HREF=# onclick="CalendarModal(\'' . $event[ID] . '\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\')"; return false;>' . ($event['TITLE'] ? $e_title : '***') . '</b></A></TD></TR>';
-            }
-            if (count($assignments_RET[$date])) {
-                foreach ($assignments_RET[$date] as $event)
-                // echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "</A></TD></TR>";
+                    //echo "<TR><TD>" . button('dot', '0000FF', '', '6') . "</TD><TD> <A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'><b>" . ($event['TITLE'] ? $e_title : '***') . "1</b></A></TD></TR>";
+                    //  echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
+                    echo '<TR><TD>' . button("dot", "0000FF", "", "6") . '</TD><TD> <A class=\"event\" HREF=# onclick="CalendarModal(\'' . $event[ID] . '\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\')"; return false;>' . ($event['TITLE'] ? $e_title : '***') . '</b></A></TD></TR>';
+                }
+                if (count($assignments_RET[$date])) {
+                    foreach ($assignments_RET[$date] as $event)
+                    // echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A class=\"event\" HREF=# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "</A></TD></TR>";
+                        echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
+                }
+                echo '</TABLE>';
+            } elseif (count($assignments_RET[$date])) {
+                echo '<TABLE cellpadding=0 cellspacing=0 border=0>';
+                foreach ($assignments_RET[$date] as $event) {
+
+                    //echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=#  onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "3</A></TD></TR>";
                     echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
+                }
+                echo '</TABLE>';
             }
-            echo '</TABLE>';
-        } elseif (count($assignments_RET[$date])) {
-            echo '<TABLE cellpadding=0 cellspacing=0 border=0>';
-            foreach ($assignments_RET[$date] as $event) {
 
-                //echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=#  onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&assignment_id=$event[ID]&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'>" . $event['TITLE'] . "3</A></TD></TR>";
-                echo "<TR><TD>" . button('dot', $event['ASSIGNED'] == 'Y' ? '00FF00' : 'FF0000', '', 6) . "</TD><TD><A HREF=# data-toggle=modal  onclick='CalendarModalAssignment($event[ID])'>" . $event['TITLE'] . "</A></TD></TR>";
+            echo "</td></tr>";
+            if (AllowEdit()) {
+                if (User('PROFILE') == 'admin') {
+                    // echo "<tr><td valign=bottom align=left>" . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=new&calendar_id=$_REQUEST[calendar_id]&school_date=$date&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
+                    // echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal" data-event_id=new data-target="#modal_default_lookup" name=lookup  onclick=(\'modal_default_lookup\'));></i></td></tr>';   
+                    //echo '<tr><td valign=bottom align=left><i class=icon-plus3><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
+                    echo '<tr><td valign=bottom align=left><button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\');"><i class=icon-plus3 ></i></button></td></tr>';
+                }
             }
-            echo '</TABLE>';
+            echo "</table></TD>";
+            $return_counter++;
+
+            if ($return_counter % 7 == 0)
+                echo "</TR><TR>";
         }
+        echo "</TR></TABLE>";
+        echo "</div>"; //.table-responsive
 
-        echo "</td></tr>";
-        if (AllowEdit()) {
-            if (User('PROFILE') == 'admin') {
-                // echo "<tr><td valign=bottom align=left>" . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&event_id=new&calendar_id=$_REQUEST[calendar_id]&school_date=$date&year=$_REQUEST[year]&month=" . MonthNWSwitch($_REQUEST['month'], 'tochar') . "\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
-                // echo '<tr><td valign=bottom align=left><i class=fa fa-plus><input type=button data-toggle="modal" data-event_id=new data-target="#modal_default_lookup" name=lookup  onclick=(\'modal_default_lookup\'));></i></td></tr>';   
-                //echo '<tr><td valign=bottom align=left><i class=icon-plus3><input type=button data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\','.$_REQUEST[calendar_id].',\''.$date.'\',\''.$_REQUEST[year].'\',\''.MonthNWSwitch($_REQUEST[month]).'\',\'tochar\');"></i></td></tr>';   
-                echo '<tr><td valign=bottom align=left><button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal"  data-event-id=new onclick="CalendarModal(\'new\',' . $_REQUEST[calendar_id] . ',\'' . $date . '\',\'' . $_REQUEST[year] . '\',\'' . MonthNWSwitch($_REQUEST[month]) . '\',\'tochar\');"><i class=icon-plus3 ></i></button></td></tr>';
-            }
+        if (User('PROFILE') == 'admin') {
+            echo '<div class="panel-footer text-center">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
         }
-        echo "</table></TD>";
-        $return_counter++;
-
-        if ($return_counter % 7 == 0)
-            echo "</TR><TR>";
+        echo "</div>";
     }
-    echo "</TR></TABLE>";
-    echo "</div>";
-
-    if (User('PROFILE') == 'admin')
-        echo '<div class="panel-footer"><div class="p-15">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div></div>';
-    echo "</div>";
     echo '</FORM>';
 }
 
@@ -911,8 +920,8 @@ echo'<div id="modal-res"></div>';
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
-
 //----------------------- modal for event end---------------------//   
+
 function calendarEventsVisibility() {
     $id = $_REQUEST['calendar_id'];
     $profiles_RET = DBGet(DBQuery('SELECT ID,TITLE FROM user_profiles ORDER BY ID'));

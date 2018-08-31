@@ -120,7 +120,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 //    
 //            }
 //        else 
-        echo "<script>window.location.href='Modules.php?modname=users/Preferences.php'</script>";
+    echo "<script>window.location.href='Modules.php?modname=users/Preferences.php'</script>";
 //            header("Location:Modules.php?modname=users/Preferences.php");
 }
 
@@ -151,31 +151,22 @@ if (!$_REQUEST['modfunc']) {
 
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'student_listing') {
         echo '<div class="row">';
-        echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-md-4 text-right">Student Name</label><div class="col-md-8"><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Common' . ((Preferences('NAME') == 'Common') ? ' CHECKED' : '') . '> Common Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Given' . ((Preferences('NAME') == 'Given') ? ' CHECKED' : '') . '> Given Name</label></div></div>';
-        echo '</div>';
-        echo '</div>'; //.row
-        echo '<div class="row">';
-        echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-md-4 text-right">Student Sorting</label><div class="col-md-8"><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Name' . ((Preferences('SORT') == 'Name') ? ' CHECKED' : '') . '> Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Grade' . ((Preferences('SORT') == 'Grade') ? ' CHECKED' : '') . '> Grade, Name</label></div></div>';
-        echo '</div>';
-        echo '</div>'; //.row
-        echo '<div class="row">';
-        echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-md-4 text-right">File Export Type</label><div class="col-md-8"><label class="radio-inline"><INPUT type=radio name=values[Preferences][DELIMITER] value=Tab' . ((Preferences('DELIMITER') == 'Tab') ? ' CHECKED' : '') . '> Tab-Delimited (Excel)</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][DELIMITER] value=CSV' . ((Preferences('DELIMITER') == 'CSV') ? ' CHECKED' : '') . '>CSV (OpenOffice)</label></div></div>';
-        echo '</div>'; //.col-md-4
-        echo '</div>'; //.row
-
-        echo '<hr class="no-margin-top m-b-10" />';
-
-
-        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox onClick="toggle_div_visibility(\'show_other_options\',this,\'json_encoder\');" name=values[Preferences][SEARCH] value=Y' . ((Preferences('SEARCH') == 'Y') ? ' CHECKED' : '') . '><span></span> Display student search screen</label>';
+        echo '<div class="col-md-7">';
+        echo '<div class="form-group"><label class="control-label col-md-3 text-right">Student Name</label><div class="col-md-9"><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Common' . ((Preferences('NAME') == 'Common') ? ' CHECKED' : '') . '> Common Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][NAME] value=Given' . ((Preferences('NAME') == 'Given') ? ' CHECKED' : '') . '> Given Name</label></div></div>';
+        echo '<div class="form-group"><label class="control-label col-md-3 text-right">Student Sorting</label><div class="col-md-9"><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Name' . ((Preferences('SORT') == 'Name') ? ' CHECKED' : '') . '> Name</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][SORT] value=Grade' . ((Preferences('SORT') == 'Grade') ? ' CHECKED' : '') . '> Grade, Name</label></div></div>';
+        echo '<div class="form-group"><label class="control-label col-md-3 text-right">File Export Type</label><div class="col-md-9"><label class="radio-inline"><INPUT type=radio name=values[Preferences][DELIMITER] value=Tab' . ((Preferences('DELIMITER') == 'Tab') ? ' CHECKED' : '') . '> Tab-Delimited (Excel)</label><label class="radio-inline"><INPUT type=radio name=values[Preferences][DELIMITER] value=CSV' . ((Preferences('DELIMITER') == 'CSV') ? ' CHECKED' : '') . '>CSV (OpenOffice)</label></div></div>';
+        echo '</div>'; //.col-md-6
+        echo '<div class="col-md-5">';
+        echo '<div class="checkbox checkbox-switch switch-success switch-xs p-b-10"><label><INPUT type=checkbox onClick="toggle_div_visibility(\'show_other_options\',this,\'json_encoder\');" name=values[Preferences][SEARCH] value=Y' . ((Preferences('SEARCH') == 'Y') ? ' CHECKED' : '') . '><span></span> Display student search screen</label></div>';
         if (User('PROFILE') == 'admin') {
             echo '<div id="show_other_options" ' . ((Preferences('SEARCH') == 'Y') ? 'style="display:inline-block"' : 'style="display:none"') . '>';
-            echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox id="family" name=values[Preferences][DEFAULT_FAMILIES] value=Y' . ((Preferences('DEFAULT_FAMILIES') == 'Y') ? ' CHECKED' : '') . '><span></span> Group by family by default</label>';
-            echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox id="all_school" name=values[Preferences][DEFAULT_ALL_SCHOOLS] value=Y' . ((Preferences('DEFAULT_ALL_SCHOOLS') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all schools by default</label>';
+            echo '<div class="checkbox checkbox-switch switch-success switch-xs p-b-10"><label><INPUT type=checkbox id="family" name=values[Preferences][DEFAULT_FAMILIES] value=Y' . ((Preferences('DEFAULT_FAMILIES') == 'Y') ? ' CHECKED' : '') . '><span></span> Group by family by default</label></div>';
+            echo '<div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox id="all_school" name=values[Preferences][DEFAULT_ALL_SCHOOLS] value=Y' . ((Preferences('DEFAULT_ALL_SCHOOLS') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all schools by default</label></div>';
             echo '</div>';
         }
+        echo '</div>'; //.col-md-6
+        echo '</div>'; //.row
+
     }
 
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'display_options') {
@@ -193,7 +184,6 @@ if (!$_REQUEST['modfunc']) {
 //            closedir($handle);
 //        }
 //        echo '</div>'; //.col-md-4
-
 //        $colors = array('#85e1ff', '#96f3c8', '#e9f396', '#f3bb96', '#f396a7');
 //        echo '<div class="col-md-4">';
 //        echo '<label class="control-label">Highlight Color</label>';
@@ -226,10 +216,17 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.form-horizontal
         echo '</div>'; //.col-md-4
 
-        echo '</div>'; //.form-group
-        echo '<hr class="no-margin-top m-b-10"/>';
-        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDE_ALERTS] value=Y' . ((Preferences('HIDE_ALERTS') == 'Y') ? ' CHECKED' : '') . '><span></span>Disable login alerts</label>';
-        echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDDEN] value=Y' . ((Preferences('HIDDEN') == 'Y') ? ' CHECKED' : '') . '><span></span>Display data using hidden fields</label>';
+        echo '<div class="col-md-4">';
+        echo '<label class="control-label">Disable login alerts</label>';
+        echo '<div class="m-t-10"><label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDE_ALERTS] value=Y' . ((Preferences('HIDE_ALERTS') == 'Y') ? ' CHECKED' : '') . '><span></span> <p class="switch-fake-title"></p></label></div>';
+        echo '</div>'; //.col-md-4
+
+        echo '<div class="col-md-4">';
+        echo '<label class="control-label">Display data using hidden fields</label>';
+        echo '<div class="m-t-10"><label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=values[Preferences][HIDDEN] value=Y' . ((Preferences('HIDDEN') == 'Y') ? ' CHECKED' : '') . '><span></span> <p class="switch-fake-title"></p></label></div>';
+        echo '</div>'; //.col-md-4
+
+        echo '</div>'; //.form-group        
     }
 
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'password') {
@@ -275,7 +272,7 @@ if (!$_REQUEST['modfunc']) {
         $custom_fields_RET[0][] = array('CATEGORY' => '<B>Addresses</B>', 'ID' => 'ADDRESS', 'TITLE' => '<IMG SRC=assets/bus_button.gif> Bus Dropoff', 'DISPLAY' => _makeAddress('BUS_DROPOFF'));
 
         if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')
-            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'SEARCH' => 'Search', 'DISPLAY' => 'Expanded View');
+            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'SEARCH' => 'Search', 'DISPLAY' => '<div class="text-center">Expanded View</div>');
         else
             $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'DISPLAY' => 'Expanded View');
         ListOutputMod($custom_fields_RET, $columns, '', '', array(), array(array('CATEGORY')));
@@ -283,9 +280,9 @@ if (!$_REQUEST['modfunc']) {
 
 
     if ($_REQUEST['tab'] == 'display_options')
-        echo "<div class=\"panel-footer no-padding-bottom\"><div class=\"heading-elements\"><INPUT type=submit class=\"btn btn-primary\" value=Save ></div></div>";
+        echo "<div class=\"panel-footer p-b-0 text-center\"><INPUT type=submit class=\"btn btn-primary\" value=Save ></div></div>";
     else
-        echo "<div class=\"panel-footer no-padding-bottom\"><div class=\"heading-elements\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick='formload_ajax(\"perf_form\");return pass_check();'></div></div>";
+        echo "<div class=\"panel-footer p-b-0 text-center\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick='formload_ajax(\"perf_form\");return pass_check();'></div>";
     PopTable('footer');
     echo '</FORM>';
 }
@@ -297,13 +294,13 @@ function _make($value, $name) {
         case 'SEARCH':
             if ($current_RET['StudentFieldsSearch'][$THIS_RET['ID']])
                 $checked = ' checked';
-            return '<INPUT type=checkbox name=values[StudentFieldsSearch][' . $THIS_RET['ID'] . '] value=Y' . $checked . '>';
+            return '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox name=values[StudentFieldsSearch][' . $THIS_RET['ID'] . '] value=Y' . $checked . '><span></span></label>';
             break;
 
         case 'DISPLAY':
             if ($current_RET['StudentFieldsView'][$THIS_RET['ID']])
                 $checked = ' checked';
-            return '<INPUT type=checkbox name=values[StudentFieldsView][' . $THIS_RET['ID'] . '] value=Y' . $checked . '>';
+            return '<div class="text-center"><INPUT type=checkbox class="styled" name=values[StudentFieldsView][' . $THIS_RET['ID'] . '] value=Y' . $checked . '></div>';
             break;
     }
 }
@@ -313,7 +310,7 @@ function _makeAddress($value) {
 
     if ($current_RET['StudentFieldsView']['ADDRESS'][1]['VALUE'] == $value || (!$current_RET['StudentFieldsView']['ADDRESS'][1]['VALUE'] && $value == ''))
         $checked = ' CHECKED';
-    return '<INPUT type=radio name=values[StudentFieldsView][ADDRESS] value="' . $value . '"' . $checked . '>';
+    return '<div class="text-center"><INPUT type=radio class="styled" name=values[StudentFieldsView][ADDRESS] value="' . $value . '"' . $checked . '></div>';
 }
 
 ?>

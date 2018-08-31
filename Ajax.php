@@ -48,6 +48,25 @@ echo '$(document).ready(function() {
             });
         }
         
+        if($(".switch-fake-title").length > 0){
+            $(".switch-fake-title").each(function(){
+                var check = $(this).closest("label").children("input[type=checkbox]");
+                if(check.is(":checked")){
+                    $(this).text("Yes");
+                }else{
+                    $(this).text("No");
+                }
+            });
+        }
+        
+        $(".switch-fake-title").closest("label").children("input[type=checkbox]").change(function(){
+            if($(this).is(":checked")){
+                $(this).closest("label").children(".switch-fake-title").text("Yes");
+            }else{
+                $(this).closest("label").children(".switch-fake-title").text("No");
+            }
+        });
+        
         $("body").removeClass("sidebar-mobile-main");
         
         // Scroll page to top after ajax call

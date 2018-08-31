@@ -262,4 +262,55 @@ function GetChildrenMP($mp,$marking_period_id='0')
 		break;
 	}
 }
+function GetMPChildren($mp,$marking_period_id='0')
+{	global $_openSIS;
+
+	switch($mp)
+	{
+		case 'year':
+			if(!$_openSIS['GetChildrenMP']['FY'])
+			{
+				$RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SEMESTER_ID FROM school_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''),array(),array('SEMESTER_ID'));
+				foreach($RET as $sem=>$value)
+				{
+					$_openSIS['GetChildrenMP'][$mp]['0'] .= ",'$sem'";
+					foreach($value as $qtr)
+						$_openSIS['GetChildrenMP'][$mp]['0'] .= ",'$qtr[MARKING_PERIOD_ID]'";
+				}
+				$_openSIS['GetChildrenMP'][$mp]['0'] = substr($_openSIS['GetChildrenMP'][$mp]['0'],1);
+                                if($_openSIS['GetChildrenMP'][$mp]['0']!='')
+                                    $_openSIS['GetChildrenMP'][$mp]['0']=$_openSIS['GetChildrenMP'][$mp]['0'].','.$marking_period_id;
+                                else
+                                    $_openSIS['GetChildrenMP'][$mp]['0']=$marking_period_id;
+			}
+			return $_openSIS['GetChildrenMP'][$mp]['0'];
+		break;
+
+		case 'semester':
+			if(GetMP($marking_period_id,'TABLE')=='school_quarters')
+				$marking_period_id = GetParentMP('SEM',$marking_period_id);
+			if(!$_openSIS['GetChildrenMP']['SEM'])
+			{
+				$RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SEMESTER_ID FROM school_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''),array(),array('SEMESTER_ID'));
+				foreach($RET as $sem=>$value)
+				{
+					foreach($value as $qtr)
+						$_openSIS['GetChildrenMP'][$mp][$sem] .= ",'$qtr[MARKING_PERIOD_ID]'";
+					$_openSIS['GetChildrenMP'][$mp][$sem] = substr($_openSIS['GetChildrenMP'][$mp][$sem],1);
+				}
+                                if($_openSIS['GetChildrenMP'][$mp][$marking_period_id]!='')
+                                    $_openSIS['GetChildrenMP'][$mp][$marking_period_id]=$_openSIS['GetChildrenMP'][$mp][$marking_period_id].','.$marking_period_id;
+                                else
+                                    $_openSIS['GetChildrenMP'][$mp][$marking_period_id]=$marking_period_id;
+			}
+                        
+			return $_openSIS['GetChildrenMP'][$mp][$marking_period_id];
+		break;
+
+		case 'quarter':
+			return "".$marking_period_id."";
+		break;
+
+        }
+}
 ?>

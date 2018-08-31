@@ -63,8 +63,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 $_SESSION['stu_search']['search_from_grade'] = 'true';
             }
 
-            echo '<div class="row">';
-            echo '<div class="col-md-12">';
+            
             PopTable('header', 'Find a Student');
 
             if ($extra['pdf'] != true) {
@@ -88,7 +87,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
 
             echo '<div id="searchdiv" class="pt-20 mt-20 well" style="display:none;">';
-            echo '<div><a href="javascript:void(0);" onclick="hide_search_div();" class="text-pink"><i class="icon-square-left"></i> Back to Basic Search</a></div>';
+            echo '<div><a href="javascript:void(0);" onclick="hide_search_div();" class="text-pink"><i class="icon-cancel-square"></i> Close Advance Search</a></div>';
 
             echo '<div class="row">';
             echo '<div class="col-lg-12">';
@@ -201,8 +200,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 				document.search.last.focus();
 				--></script>';
             PopTable('footer');
-            echo '</div>'; //.col-md-6.col-md-offset-3
-            echo '</div>'; //.row
+            
             break;
 
         case 'parent':
@@ -392,8 +390,7 @@ else {
             }
         }
 
-        echo "</div>";
-        echo "</div>"; //.panel-body
+        echo '</div>'; //#students
         if ($_REQUEST['modname'] != 'attendance/Administration.php')
             echo "</div>"; //.panel
     } elseif (count($students_RET) == 1) {

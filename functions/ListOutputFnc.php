@@ -782,7 +782,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
     }
 }
 
-function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false) {
+function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false,$headerVisibility = true) {
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -1171,6 +1171,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
             // END MISC ---
             // WIDTH = 100%
 
+            if($headerVisibility==true){
             echo '<div class="panel-heading">';
             if ($custom_header != false) {
                 echo $custom_header;
@@ -1214,6 +1215,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
             }
             // END SEARCH BOX ----
             echo '</div>'; //.panel-heading
+            } // $headerVisibility
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
                 echo '<div id="pagerNavPosition" class="clearfix"></div>';
@@ -10144,7 +10146,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
             if (!isset($_REQUEST['_openSIS_PDF'])) {
 
                 echo '<div id="pagerNavPosition"></div>';
-                echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+                echo '<div class="table-responsive">';
             }
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
@@ -10357,7 +10359,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                 echo "</TABLE>";
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
-//                    echo '</TD ></TR></TABLE>';
+                    echo '</div>'; //.table-responsive
 
 
                     $number_rec = 100;                   

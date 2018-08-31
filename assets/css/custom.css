@@ -4,6 +4,7 @@ body {
 
 .inline-block {
     display: inline-block;
+    vertical-align: middle;
 }
 
 /* Bootstrap Overwrite */
@@ -41,6 +42,9 @@ div.form-control {
     height: auto;
     min-height: 38px;
     word-wrap: break-word;
+}
+.clockpicker input.form-control {
+    min-width: 90px;
 }
 /* Bootstrap Overwrite End */
 
@@ -145,6 +149,9 @@ label.radio {
 }
 ul[id*="select2-school-"] {
     width: 200px;
+}
+ul[id*="select2-period-"] {
+    width: 250px;
 }
 
 .fileUpload input[type="file"] {
@@ -298,7 +305,13 @@ ul[id*="select2-school-"] {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d5db', endColorstr='#e7e9ef',GradientType=0 ); /* IE6-9 */
     box-shadow: none;
     -moz-box-shadow: none;
-    z-index: 9;
+    /*z-index: 9;*/
+}
+.collapse-icon {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 2;
 }
 
 @media (max-width: 768px) {
@@ -306,8 +319,50 @@ ul[id*="select2-school-"] {
         margin-left: 0;
     }
     #navbar-mobile .nav.navbar-nav .form-group .select2-container {
-        padding-left: 20px !important;
-        padding-right: 12px !important;
+        margin-left: 20px;
+        margin-right: 20px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: calc(100% - 40px) !important;
+        margin-top: 0;
+    }
+    #navbar-mobile .form-group,
+    #navbar-mobile form {
+        height: auto;
+    }
+
+    #navbar-mobile.navbar-collapse {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .navbar-collapse .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+    .page-header .breadcrumb-line .navbar-text {
+        display: none;
+    }
+    .breadcrumb-line:not(.breadcrumb-line-component) .breadcrumb-elements {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .page-header .breadcrumb-elements li {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-left: 5px;
+    }
+    .page-header .breadcrumb-elements li .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+    .page-header .breadcrumb-elements li .select2-selection--single .select2-selection__arrow::after {
+        right: 20px;
+    }
+    .page-header .breadcrumb-elements li .select2-container--focus .select2-selection--single:not([class*=bg-]):not([class*=border-]),
+    .page-header .breadcrumb-elements li .select2-container--open .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+        border-bottom: none;
+        box-shadow: none;
     }
 
     .sidebar-main {
@@ -353,4 +408,48 @@ ul[id*="select2-school-"] {
     .sidebar-mobile-main .sidebar-overlay {
         display: block;
     }
+    .heading-elements {
+        display: block;
+        /*margin: 0 -20px 0 -20px;*/
+        background-color: #fcfcfc;
+        border-top: 1px solid #ddd;
+        padding: 15px 20px 0;
+    }
+    .heading-elements .input-group {
+        position: static;
+        width: auto !important;
+    }
+    .heading-elements .form-group:last-of-type {
+        margin-bottom: 0;
+    }
+    .collapse-icon {
+        top: 23px;
+    }
+}
+
+
+.text-xs-left { text-align: left; }
+.text-xs-right { text-align: right; }
+.text-xs-center { text-align: center; }
+.text-xs-justify { text-align: justify; }
+
+@media (min-width: 769px) {
+    .text-sm-left { text-align: left; }
+    .text-sm-right { text-align: right; }
+    .text-sm-center { text-align: center; }
+    .text-sm-justify { text-align: justify; }
+}
+
+@media (min-width: 1025px) {
+    .text-md-left { text-align: left; }
+    .text-md-right { text-align: right; }
+    .text-md-center { text-align: center; }
+    .text-md-justify { text-align: justify; }
+}
+
+@media (min-width: 1200px) {
+    .text-lg-left { text-align: left; }
+    .text-lg-right { text-align: right; }
+    .text-lg-center { text-align: center; }
+    .text-lg-justify { text-align: justify; }
 }

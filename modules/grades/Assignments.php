@@ -537,7 +537,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
         $has_assigned=0;
        $mp_id=  UserMP().",'E".UserMP()."'";
 
-     $stmt = DBGet(DBQuery("SELECT id  AS TOTAL_ASSIGNED from student_report_card_grades WHERE course_period_id=".UserCoursePeriod()." and marking_period_id in($mp_id)"));
+     $stmt = DBGet(DBQuery("SELECT STUDENT_ID  AS TOTAL_ASSIGNED from gradebook_grades WHERE course_period_id=".UserCoursePeriod()." and assignment_id=".$_REQUEST['assignment_id']." AND POINTS IS NOT NULL"));
      $has_assigned=$stmt[1]['TOTAL_ASSIGNED'];
 		if($has_assigned>0){
                     UnableDeletePromptMod('Gradebook Assignment cannot be deleted because grade was given for this assignment.','','modfunc=&assignment_type_id='.$_REQUEST['assignment_type_id'].'&assignment_id='.$_REQUEST['assignment_id']);
