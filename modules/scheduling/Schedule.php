@@ -209,6 +209,25 @@ echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
 
+
+//More Info
+echo '<div id="modal_moreinfo" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">More info</h5>';
+echo '</div>'; //.modal-header
+
+echo '<div class="modal-body">';
+echo '<div id="modal-mrif"></div>';
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
 if (isset($_SESSION['conflict_cp']) && $_SESSION['conflict_cp'] != '') {
     DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $_SESSION['conflict_cp'] . ' have Parent course restriction');
     unset($_SESSION['conflict_cp']);
@@ -1187,7 +1206,7 @@ function _makeDate_red($value, $column) {
 
 function _makeInfo($value, $column) {
     global $THIS_RET;
-    return "<center><a href='#' onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=more_info&id=$value\",\"\",\"scrollbars=yes,resizable=yes,width=900,height=200\");'><i class=\"icon-info22\"></i></a></center>";
+    return "<center><a href=javascript:void(0) onclick=Sch_Mrinfo('".$value."');><i class=\"icon-info22\"></i></a></center>";
 }
 
 function _makeMP($value, $column) {

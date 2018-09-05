@@ -2,6 +2,11 @@ body {
     background: #e7e9ef;
 }
 
+.inline-block {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* Bootstrap Overwrite */
 .list-group-item.active,
 .list-group-item.active:hover,
@@ -38,6 +43,9 @@ div.form-control {
     min-height: 38px;
     word-wrap: break-word;
 }
+.clockpicker input.form-control {
+    min-width: 90px;
+}
 /* Bootstrap Overwrite End */
 
 .sidebar-user-material-content > a {
@@ -45,18 +53,17 @@ div.form-control {
 }
 
 
-
 #loading-image {
     position: fixed;
     top: 54px;
     right: 0;
     z-index: 999;
-    display: none;
     color: #fff;
-    background: #5090c1;
-    padding: 11px 15px 11px 11px;
+    background: #d81c37;
+    padding: 8px 15px 9px 11px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 .version-info {
     color: #333333;
@@ -72,6 +79,10 @@ div.form-control {
     border-radius: 2px;
     margin: 6px 0 6px 20px;
     background: #f3f3f3;
+}
+
+.sidebar-main {
+    z-index: 10;
 }
 
 label.radio {
@@ -132,9 +143,15 @@ label.radio {
 .breadcrumb-elements .form-group .select2-container {
     min-width: 80px;    
 }
-
 .select2-dropdown {
     min-width: 100px;
+    width: auto !important;
+}
+ul[id*="select2-school-"] {
+    width: 200px;
+}
+ul[id*="select2-period-"] {
+    width: 250px;
 }
 
 .fileUpload input[type="file"] {
@@ -175,8 +192,11 @@ label.radio {
     width: 40px;
 }
 
-.sidebar-main {
-    z-index: 10;
+.form-control.daterange-single {
+    min-width: 80px;
+}
+.fake_datepicker {
+    min-width: 115px;
 }
 
 /*div.form-control {
@@ -232,7 +252,7 @@ label.radio {
 
 /* Nav Pills */
 .nav-pills.nav-pills-primary {
-    
+
 }
 .nav-pills.nav-pills-primary li a {
     text-transform: none;
@@ -244,6 +264,37 @@ label.radio {
     border-radius: 0
 }
 
+
+/* Institute Reports */
+.institute-report-icon {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #eee;
+}
+.institute-report-icon.icon-school {
+    background: url(../images/school.svg) no-repeat center;
+    background-size: 60%;
+}
+.institute-report-icon.icon-student {
+    background: url(../images/students.svg) no-repeat center top 7px;
+    background-size: 65%;
+}
+.institute-report-icon.icon-teacher {
+    background: url(../images/teacher.svg) no-repeat 9px center;
+    background-size: 60%;
+}
+.institute-report-icon.icon-staff {
+    background: url(../images/staff.svg) no-repeat center;
+    background-size: 60%;
+}
+.institute-report-icon.icon-parent {
+    background: url(../images/parent.svg) no-repeat center top 5px;
+    background-size: 60%;
+}
+
+
 /* Footer Styles */
 .footer {
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#d3d5db+0,e7e9ef+100 */
@@ -254,7 +305,13 @@ label.radio {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d5db', endColorstr='#e7e9ef',GradientType=0 ); /* IE6-9 */
     box-shadow: none;
     -moz-box-shadow: none;
-    z-index: 9;
+    /*z-index: 9;*/
+}
+.collapse-icon {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 2;
 }
 
 @media (max-width: 768px) {
@@ -262,8 +319,50 @@ label.radio {
         margin-left: 0;
     }
     #navbar-mobile .nav.navbar-nav .form-group .select2-container {
-        padding-left: 20px !important;
-        padding-right: 12px !important;
+        margin-left: 20px;
+        margin-right: 20px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: calc(100% - 40px) !important;
+        margin-top: 0;
+    }
+    #navbar-mobile .form-group,
+    #navbar-mobile form {
+        height: auto;
+    }
+
+    #navbar-mobile.navbar-collapse {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .navbar-collapse .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+    .page-header .breadcrumb-line .navbar-text {
+        display: none;
+    }
+    .breadcrumb-line:not(.breadcrumb-line-component) .breadcrumb-elements {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .page-header .breadcrumb-elements li {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-left: 5px;
+    }
+    .page-header .breadcrumb-elements li .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+    .page-header .breadcrumb-elements li .select2-selection--single .select2-selection__arrow::after {
+        right: 20px;
+    }
+    .page-header .breadcrumb-elements li .select2-container--focus .select2-selection--single:not([class*=bg-]):not([class*=border-]),
+    .page-header .breadcrumb-elements li .select2-container--open .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+        border-bottom: none;
+        box-shadow: none;
     }
 
     .sidebar-main {
@@ -309,4 +408,48 @@ label.radio {
     .sidebar-mobile-main .sidebar-overlay {
         display: block;
     }
+    .heading-elements {
+        display: block;
+        /*margin: 0 -20px 0 -20px;*/
+        background-color: #fcfcfc;
+        border-top: 1px solid #ddd;
+        padding: 15px 20px 0;
+    }
+    .heading-elements .input-group {
+        position: static;
+        width: auto !important;
+    }
+    .heading-elements .form-group:last-of-type {
+        margin-bottom: 0;
+    }
+    .collapse-icon {
+        top: 23px;
+    }
+}
+
+
+.text-xs-left { text-align: left; }
+.text-xs-right { text-align: right; }
+.text-xs-center { text-align: center; }
+.text-xs-justify { text-align: justify; }
+
+@media (min-width: 769px) {
+    .text-sm-left { text-align: left; }
+    .text-sm-right { text-align: right; }
+    .text-sm-center { text-align: center; }
+    .text-sm-justify { text-align: justify; }
+}
+
+@media (min-width: 1025px) {
+    .text-md-left { text-align: left; }
+    .text-md-right { text-align: right; }
+    .text-md-center { text-align: center; }
+    .text-md-justify { text-align: justify; }
+}
+
+@media (min-width: 1200px) {
+    .text-lg-left { text-align: left; }
+    .text-lg-right { text-align: right; }
+    .text-lg-center { text-align: center; }
+    .text-lg-justify { text-align: justify; }
 }

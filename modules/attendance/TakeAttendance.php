@@ -389,7 +389,13 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
         }
         $period_select .= "</SELECT>";
     }
-    DrawHeader('<div class="form-inline">' . $period_select . '</div>');
+    if ($_REQUEST['attn'] == 'miss') {
+        $backBtn = '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a>';
+        DrawHeader($backBtn,'<div class="form-inline">' . $period_select . '</div>');
+    } else {
+        DrawHeader('<div class="form-inline">' . $period_select . '</div>');
+    }
+    
 }
 $profile_check = DBGet(DBQuery("SELECT PROFILE FROM staff WHERE STAFF_ID=" . UserID()));
 $profile_check = $profile_check[1]['PROFILE'];
@@ -405,23 +411,28 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline">' . DateInputAY($date, 'date', 1) . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
-        DrawHeader('<div class="form-inline">' . DateInputAY($date, 'date', 2) . $btnGo . $date_note . '</div>');
+        echo '<div class="panel-body">';
+        echo '<div class="form-inline">';
+        echo '<div class="inline-block">' . DateInputAY($date, 'date', 2) . '</div>' . $btnGo . $date_note;
+        echo '</div>'; //.form-inline
+        echo '</div>';
+        //DrawHeader('<div class="form-inline"></div>');
     }
 } else {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline">' . DateInputAY($date, 'date', 3) . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
-        DrawHeader('<div class="form-inline">' . DateInputAY($date, 'date', 4) . $btnGo . $date_note . '</div>');
+        DrawHeader('<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 4) . '</div>' . $btnGo . $date_note . '</div>');
     }
 }
-if (isset($_REQUEST['cp_id_miss_attn'])) {
-    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
-} else
-    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
+//if (isset($_REQUEST['cp_id_miss_attn'])) {
+//    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
+//} else
+//    echo "<div style='padding-left:10px; padding-top:8px; float:left;'><input type='button' value='Go' class='btn_medium' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' /></div><div style='clear:both;'></div>";
 
 
 DrawHeader($note);
@@ -448,7 +459,7 @@ else {
     $plural = 'Students';
 }
 if (!$mp_id) {
-    echo "<table align=center><tr><td class=note></td><td class=note_msg>The selected date is not in a school quarter.</td></tr></table>";
+    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">The selected date is not in a school quarter.</div></div>';
 } else {
     if (count($course_RET) != 0) {
         $posted_date2 = ucfirst(strtolower($_REQUEST['month_date'])) . '-' . $_REQUEST['day_date'] . '-' . $_REQUEST['year_date'];
@@ -456,10 +467,6 @@ if (!$mp_id) {
             $cur_date = date('Y-m-d', strtotime($posted_date2));
         } else {
             $cur_date = date('Y-m-d');
-        }
-        if ($_REQUEST['attn'] == 'miss') {
-            echo '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default pull-right"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a></div>';
-//                DrawHeaderHome('<A HREF="Modules.php?modname=miscellaneous/Portal.php"> &lt;&lt; Back to Missing Attendance List</A>');
         }
         if ($_REQUEST['period'] || ( $profile_check == 'admin' && $_SESSION['CpvId'] != '') || $_SESSION['CpvId'] != '')
             ListOutput($stu_RET, $LO_columns, $singular, $plural, array(), array(), $extra);
@@ -472,8 +479,9 @@ if (!$mp_id) {
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer
     } else {
-        if ($_REQUEST['period'])
-            echo "<table align=center><tr><td class=note></td><td class=note_msg>You cannot take attendance for this period on this day</td></tr></table>";
+        if ($_REQUEST['period']) {
+            echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
+        }
     }
 }
 echo '</div>'; //.panel

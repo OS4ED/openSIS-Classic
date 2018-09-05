@@ -303,7 +303,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
             $val1 .= '<label class="control-label col-lg-4">Description</label>';
-            $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['DESCRIPTION'] . '" /></div>';
+            $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . strip_tags(html_entity_decode(html_entity_decode($assignments_RET[1]['DESCRIPTION']))) . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>'; //.col-md-4
             $val1 .= '</div>'; //.row

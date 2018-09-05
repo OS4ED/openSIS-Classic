@@ -67,8 +67,8 @@ function selectFile(input) {
                             $dataWidth.val(Math.round(e.width));
                             $dataScaleX.val(e.scaleX);
                             $dataScaleY.val(e.scaleY);
-                            
-var dataURL =$cropper.cropper('getCroppedCanvas').toDataURL();
+
+var dataURL =$cropper.cropper('getCroppedCanvas',{ width: 300, height: 300 }).toDataURL();
 var imgblob=dataURL.split(',');
 $('#imgblob').val(imgblob[1].trim());
                            

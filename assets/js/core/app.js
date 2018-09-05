@@ -40,6 +40,26 @@ $(function () {
     }
 
 
+    if ($(".switch-fake-title").length > 0) {
+        $(".switch-fake-title").each(function () {
+            var check = $(this).closest("label").children("input[type=checkbox]");
+            if (check.is(":checked")) {
+                $(this).text("Yes");
+            } else {
+                $(this).text("No");
+            }
+        });
+    }
+
+    $(".switch-fake-title").closest("label").children("input[type=checkbox]").change(function () {
+        if ($(this).is(":checked")) {
+            $(this).closest("label").children(".switch-fake-title").text("Yes");
+        } else {
+            $(this).closest("label").children(".switch-fake-title").text("No");
+        }
+    });
+
+
     // ========================================
     //
     // Content area height
@@ -81,17 +101,17 @@ $(function () {
     // -------------------------
 
     // Add control button toggler to page and panel headers if have heading elements
-    $('.panel-footer').has('> .heading-elements:not(.not-collapsible)').prepend('<a class="heading-elements-toggle"><i class="icon-more"></i></a>');
-    $('.page-title, .panel-title').parent().has('> .heading-elements:not(.not-collapsible)').children('.page-title, .panel-title').append('<a class="heading-elements-toggle"><i class="icon-more"></i></a>');
+    //$('.panel-footer').has('> .heading-elements:not(.not-collapsible)').prepend('<a class="heading-elements-toggle"><i class="icon-more"></i></a>');
+    //$('.page-title, .panel-title').parent().has('> .heading-elements:not(.not-collapsible)').children('.page-title, .panel-title').append('<a class="heading-elements-toggle"><i class="icon-more"></i></a>');
 
 
     // Toggle visible state of heading elements
-    $('.page-title .heading-elements-toggle, .panel-title .heading-elements-toggle').on('click', function () {
-        $(this).parent().parent().toggleClass('has-visible-elements').children('.heading-elements').toggleClass('visible-elements');
-    });
-    $('.panel-footer .heading-elements-toggle').on('click', function () {
-        $(this).parent().toggleClass('has-visible-elements').children('.heading-elements').toggleClass('visible-elements');
-    });
+//    $('.page-title .heading-elements-toggle, .panel-title .heading-elements-toggle').on('click', function () {
+//        $(this).parent().parent().toggleClass('has-visible-elements').children('.heading-elements').toggleClass('visible-elements');
+//    });
+//    $('.panel-footer .heading-elements-toggle').on('click', function () {
+//        $(this).parent().toggleClass('has-visible-elements').children('.heading-elements').toggleClass('visible-elements');
+//    });
 
 
 
@@ -399,7 +419,7 @@ $(function () {
         // Toggle min sidebar class
         $('body').toggleClass('sidebar-xs');
         if ($('body').hasClass('sidebar-xs')) {
-            $.cookie("miniSidebar", 1, { expires : 99 });
+            $.cookie("miniSidebar", 1, {expires: 99});
         } else {
             $.cookie("miniSidebar", 0);
         }

@@ -94,7 +94,7 @@ if ($_REQUEST['student_id'] == 'new')
     $id_sent = 0;
 else
     $id_sent = UserStudentID();
-echo '<div class="form-group">' . TextInput($student['EMAIL'], 'students[EMAIL]', 'Email', 'size=100 class=cell_medium maxlength=100 onkeyup=check_email(this,' . $id_sent . ',3); onblur=check_email(this,' . $id_sent . ',3)') . '<div class="text-danger" id=email_error></div></div>';
+echo '<div class="form-group"><label class="control-label col-md-4 text-right">Email</label><div class="col-md-8">' . TextInput($student['EMAIL'], 'students[EMAIL]', '', 'size=100 class=cell_medium maxlength=100 onkeyup=check_email(this,' . $id_sent . ',3); onblur=check_email(this,' . $id_sent . ',3)') . '<div class="help-block" id=email_error></div></div></div>';
 echo '</div><div class="col-lg-6">';
 echo '<div class="form-group">' . TextInput($student['PHONE'], 'students[PHONE]', 'Phone', 'size=100 class=cell_medium maxlength=100') . '</div>';
 echo '</div>'; //.col-lg-6
@@ -324,8 +324,12 @@ echo '</div>'; //.row
 echo '<h5 class="pt-20 text-primary">Access Information</h5>';
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
-echo '<div class="form-group">' . TextInput($student['USERNAME'], 'students[USERNAME]', 'Username', 'onkeyup="usercheck_init_student(this)" onBlur="usercheck_init_student_Mod(this)"');
-echo '<span id="ajax_output_st"></span>';
+echo '<div class="form-group">';
+echo '<label class="control-label col-md-4 text-right">Username</label>';
+echo '<div class="col-md-8">';
+echo TextInput($student['USERNAME'], 'students[USERNAME]', '', 'onkeyup="usercheck_init_student(this)" onBlur="usercheck_init_student_Mod(this)"');
+echo '<div class="help-block" id="ajax_output_st"></div>';
+echo '</div>';
 echo '</div>'; //.form-group
 echo '</div><div class="col-lg-6">';
 echo '<div class="form-group">';
@@ -391,7 +395,7 @@ if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
 //	fclose($file);
     echo '<div width=150 align="center"><IMG src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=150 class=pic>';
     if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-        echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit style="text-decoration:none"><b>Update Student\'s Photo</b></a></div>';
+        echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit class="btn btn-white btn-xs m-t-5"><b>Change Photo</b></a></div>';
     else
         echo '';
 }

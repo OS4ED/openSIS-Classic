@@ -52,34 +52,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     $extra['search'] .= '<div class="row">';
     $extra['search'] .= '<div class="col-lg-6">';
     Widgets('course');
-    $extra['search'] .= '</div><div class="col-lg-6">';
-    Widgets('request');
-    $extra['search'] .= '</div>'; //.col-lg-6
-    $extra['search'] .= '</div>'; //.row
-
-    $extra['search'] .= '<div class="row">';
-    $extra['search'] .= '<div class="col-lg-6">';
     Widgets('activity');
-    $extra['search'] .= '</div><div class="col-lg-6">';
-    Widgets('absences');
-    $extra['search'] .= '</div>'; //.col-lg-6
-    $extra['search'] .= '</div>'; //.row
-
-    $extra['search'] .= '<div class="row">';
-    $extra['search'] .= '<div class="col-lg-6">';
     Widgets('gpa');
-    $extra['search'] .= '</div><div class="col-lg-6">';
-    Widgets('class_rank');
-    $extra['search'] .= '</div>'; //.col-lg-6
-    $extra['search'] .= '</div>'; //.row
-
-    $extra['search'] .= '<div class="row">';
-    $extra['search'] .= '<div class="col-lg-6">';
     Widgets('letter_grade');
     $extra['search'] .= '</div><div class="col-lg-6">';
+    Widgets('request');
+    Widgets('absences');
+    Widgets('class_rank');
     Widgets('eligibility');
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
+
 
     $extra['search'] .= '<div class="form-group"><label>Include courses active as of</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
@@ -87,81 +70,81 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></CENTER>';
     echo "</FORM>";
 }
-$modal_flag=1;
-if($_REQUEST['modname']=='students/AdvancedReport.php' && $_REQUEST['modfunc']=='save')
-$modal_flag=0;
-if($modal_flag==1)
-{
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
+$modal_flag = 1;
+if ($_REQUEST['modname'] == 'students/AdvancedReport.php' && $_REQUEST['modfunc'] == 'save')
+    $modal_flag = 0;
+if ($modal_flag == 1) {
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '</div>';
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
+    echo '<div class="modal-body">';
+    echo '<center><div id="conf_div"></div></center>';
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
 
-echo '<div id="modal_default_request" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
-
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
-
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody></table>';
     }
-    echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal_request"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+    echo '</div>';
+    echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+    echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
+
+
+
+
+    echo '<div id="modal_default_request" class="modal fade">';
+    echo '<div class="modal-dialog">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '</div>';
+
+    echo '<div class="modal-body">';
+    echo '<center><div id="conf_div"></div></center>';
+
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-6">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
+
+    echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody></table>';
+    }
+    echo '</div>';
+    echo '<div class="col-md-6"><div id="course_modal_request"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
 }
 
 if (!$_REQUEST['modfunc']) {
@@ -186,40 +169,18 @@ if (!$_REQUEST['modfunc']) {
         $extra['search'] .= '<div class="row">';
         $extra['search'] .= '<div class="col-lg-6">';
         Widgets('course');
-        $extra['search'] .= '</div><div class="col-lg-6">';
-        Widgets('request');
-        $extra['search'] .= '</div>'; //.col-lg-6
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         Widgets('activity');
-        $extra['search'] .= '</div><div class="col-lg-6">';
-        Widgets('absences');
-        $extra['search'] .= '</div>'; //.col-lg-6
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         Widgets('gpa');
-        $extra['search'] .= '</div><div class="col-lg-6">';
-        Widgets('class_rank');
-        $extra['search'] .= '</div>'; //.col-lg-6
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         Widgets('letter_grade');
         $extra['search'] .= '</div><div class="col-lg-6">';
+        Widgets('request');
+        Widgets('absences');
+        Widgets('class_rank');
         Widgets('eligibility');
-        $extra['search'] .= '</div>'; //.col-lg-6
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4">Include courses active as of </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 2) . '</div></div>';
         $extra['search'] .= '</div>'; //.col-lg-6
         $extra['search'] .= '</div>'; //.row
+
         $extra['new'] = true;
 
         Search('student_id', $extra);
@@ -232,48 +193,32 @@ if (!$_REQUEST['modfunc']) {
     } else {
         $extra['search'] .= '<div class="row">';
         $extra['search'] .= '<div class="col-lg-6">';
+        
         Widgets('course');
-        $extra['search'] .= '</div><div class="col-lg-6">';
-        Widgets('request');
-        $extra['search'] .= '</div>'; //.col-lg-6
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         Widgets('activity');
-        $extra['search'] .= '</div>';
-        $extra['search'] .= '</div>'; //.row
-
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         $extra['search'] .= '<div class="well mb-20">';
         Widgets('absences');
         $extra['search'] .= '</div>'; //.well
-        $extra['search'] .= '</div><div class="col-lg-6">';
-        $extra['search'] .= '<div class="well mb-20">';
-        Widgets('class_rank');
-        $extra['search'] .= '</div>'; //.well
-        $extra['search'] .= '</div>';
-        $extra['search'] .= '</div>'; //.row
-        
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
         $extra['search'] .= '<div class="well mb-20">';
         Widgets('gpa');
         $extra['search'] .= '</div>'; //.well
+        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Include courses active as of </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 3) . '</div></div>';
+        
         $extra['search'] .= '</div><div class="col-lg-6">';
+        
+        Widgets('request');
+        Widgets('eligibility');
+        $extra['search'] .= '<div class="well mb-20">';
+        Widgets('class_rank');
+        $extra['search'] .= '</div>'; //.well
         $extra['search'] .= '<div class="well mb-20">';
         Widgets('letter_grade');
         $extra['search'] .= '</div>'; //.well
-        $extra['search'] .= '</div>';
-        $extra['search'] .= '</div>'; //.row
         
-        $extra['search'] .= '<div class="row">';
-        $extra['search'] .= '<div class="col-lg-6">';
-        Widgets('eligibility');
-        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4">Include courses active as of </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 3) . '</div></div>';
         $extra['search'] .= '</div>'; //.col-lg-6
         $extra['search'] .= '</div>'; //.row
+
+
 
         $extra['new'] = true;
 

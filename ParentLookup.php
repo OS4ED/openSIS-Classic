@@ -81,6 +81,7 @@ if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQ
 //               print_r($searched_staffs);
                 ListOutput($searched_staffs, $columns, $singular, $plural, false, $group = false, $options, 'ForWindow');
                  unset($_REQUEST['func']);
+                if(!empty($searched_staffs))
                 echo '<div id="select-people-div"><input type="button" value="Select" name="button" onclick="SelectedParent(\''.$_REQUEST['address_id'].'\',\''.$_REQUEST['p_type'].'\',\''.$_REQUEST['other_p_erson_id'].'\')"></div>';
                 
                 function makeChooseCheckbox($value, $title) {

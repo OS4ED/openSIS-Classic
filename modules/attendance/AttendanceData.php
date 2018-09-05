@@ -65,9 +65,9 @@ if($_REQUEST['modfunc']=='search')
 	if(User('PROFILE')=='admin')
 		echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y'.(Preferences('DEFAULT_ALL_SCHOOLS')=='Y'?' CHECKED':'').'><span></span>Search All Schools</label></div></div>';
 	$btn = '<div class="p-l-20">'.Buttons('Submit').'</div>';
-	echo '</FORM>';
+	
 	PopTable('footer',$btn);
-}
+}echo '</FORM>';
 if(!$_REQUEST['modfunc'])
 {
    if(!isset($extra))
@@ -86,7 +86,7 @@ if(!$_REQUEST['modfunc'])
     ///////////////////////Old Date Picker///////////////////////////////
 
     ///////////////////////New Date Picker///////////////////////////////
-    echo '<div class="form-inline"><div class="col-md-12">'.DateInputAY($start_date, 'start', 1) .' &nbsp; &nbsp; - &nbsp; &nbsp; ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">'.DateInputAY($start_date, 'start', 1) .'</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;'.$advanced_link.'</div></div>';
     echo '</FORM>';
     echo '</div>';
 

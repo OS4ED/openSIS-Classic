@@ -83,83 +83,83 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<div class="row">';
             echo '<div class="col-lg-12">';
-            echo '<div class="form-group pt-15"><label class="control-label col-lg-2">Comments</label><div class="col-lg-10"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
+            echo '<div class="form-group pt-15"><label class="control-label col-lg-2 text-right">Comments</label><div class="col-lg-10"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
             echo '</div>'; //.col-lg-12
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Birthday</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">From</label><div class="col-lg-8"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From</label><div class="col-lg-8">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">To</label><div class="col-lg-8"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To</label><div class="col-lg-8">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Goal and Progress</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Goal Title</label><div class="col-lg-8"><input type=text name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title</label><div class="col-lg-8"><input type=text name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Goal Description</label><div class="col-lg-8"><input type=text name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description</label><div class="col-lg-8"><input type=text name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Progress Period</label><div class="col-lg-8"><input type=text name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period</label><div class="col-lg-8"><input type=text name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Progress Assessment</label><div class="col-lg-8"><input type=text name="progress_description" placeholder="Progress Assessment" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment</label><div class="col-lg-8"><input type=text name="progress_description" placeholder="Progress Assessment" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Medical</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Immunization</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Type</label><div class="col-lg-8"><input type=text name="type" size=30 placeholder="Type" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text name="type" size=30 placeholder="Type" class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Medical Alert</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Alert" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Alert" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Nurse Visit</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Reason" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Reason" class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="Result" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="Result" class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 

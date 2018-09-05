@@ -44,9 +44,9 @@ function DrawHeader($left = '', $right = '', $center = '') {
     }
     
     if ($left && $left!='')
-        echo '<h6 class="panel-title">' . $left . (($right!='')?'<a class="heading-elements-toggle"><i class="icon-more"></i></a>':'').'</h6>';
+        echo '<h6 class="panel-title">' . $left . (($right!='')?'':'').'</h6>';
     if ($center && $center!='')
-        echo '<h6 class="panel-title">' . $center . (($right!='')?'<a class="heading-elements-toggle"><i class="icon-more"></i></a>':'').'</h6>';
+        echo '<h6 class="panel-title">' . $center . (($right!='')?'':'').'</h6>';
     if ($right && $right!='')
         echo '<div class="heading-elements">' . $right . '</div>';
 

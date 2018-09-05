@@ -164,7 +164,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
     } else
         BackPrompt('No Students were found.');
 }
-
+if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 echo '<div id="modal_default_request" class="modal fade">';
 echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
@@ -200,7 +200,7 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
-
+}
 function _makeExtra($value, $title = '') {
     global $THIS_RET;
 

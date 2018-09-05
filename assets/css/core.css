@@ -1166,9 +1166,9 @@ input[type="file"]:focus {
 .form-control:focus {
   outline: 0;
   border-color: transparent;
-  border-bottom-color: #009688;
-  -webkit-box-shadow: 0 1px 0 #009688;
-  box-shadow: 0 1px 0 #009688;
+  border-bottom-color: #2196F3;
+  -webkit-box-shadow: 0 1px 0 #2196F3;
+  box-shadow: 0 1px 0 #2196F3;
 }
 .form-control[disabled],
 fieldset[disabled] .form-control {
@@ -5883,10 +5883,10 @@ a.thumbnail.active {
 .alert-warning .close {
   color: #aa3510;
 }
-.alert-danger,
+/*.alert-danger,
 .alert-danger .close {
   color: #9c1f1f;
-}
+}*/
 .alert.alert-rounded {
   border-radius: 100px;
   padding-left: 25px;
@@ -6644,6 +6644,7 @@ h6.panel-title,
   padding-right: 0;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
+  background: none;
 }
 .panel-footer:after {
   content: '';

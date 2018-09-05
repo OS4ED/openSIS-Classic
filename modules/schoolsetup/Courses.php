@@ -31,8 +31,8 @@ unset($_SESSION['_REQUEST_vars']['subject_id']);
 unset($_SESSION['_REQUEST_vars']['course_id']);
 unset($_SESSION['_REQUEST_vars']['course_period_id']);
 foreach ($_REQUEST['tables']['courses'][$_REQUEST['course_id']] as $in => $dt) {
-   $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("\'", "'", $dt);
-    
+    $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("\'", "'", $dt);
+
 //    $_REQUEST['tables']['courses'][$_REQUEST['course_id']][$in] = str_replace("'", "\'", $dt);
 }
 foreach ($_REQUEST['tables']['course_periods'][$_REQUEST['cp_id']] as $in => $dt) {
@@ -47,6 +47,7 @@ if ($_REQUEST['error'] == 'Blocked_assoc') {
 
     echo "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
     unset($_REQUEST['error']);
+    $msgFlag=1;
 }
 if ($_REQUEST['error'] == 'Blocked_period_room') {
     echo "<font color=red><b>Cannot Modify period or room as this course period has association. </b></font>";
@@ -100,7 +101,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
 
 
     if ($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SCHEDULE_TYPE'] == 'VARIABLE') {
-        
+
         $room_ids_check = array();
         foreach ($_REQUEST['course_period_variable'][$_REQUEST['course_period_id']] as $tmp_ai => $tmp_ad) {
 
@@ -145,7 +146,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
 
 
     if ($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SCHEDULE_TYPE'] == 'BLOCKED' && $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'] != '') {
-       
+
         $total_seats = $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'];
 
         $room_ids_check = array();
@@ -173,7 +174,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
     }
 
     if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['values']['ROOM_ID'] != '') {
-      
+
         $total_seats = DBGet(DBQuery('SELECT TOTAL_SEATS FROM course_periods WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id']));
         $total_seats = $total_seats[1]['TOTAL_SEATS'];
         $room_id = $_REQUEST['values']['ROOM_ID'];
@@ -219,7 +220,11 @@ if ($_REQUEST['course_period_id'] != 'new') {
             $sql_parent = "UPDATE course_periods SET PARENT_ID=" . $_REQUEST['course_period_id'] . " WHERE COURSE_PERIOD_ID=" . $_REQUEST['course_period_id'];
             DBQuery($sql_parent);
         } else {
+            if($msgFlag=='')
+            {
             echo "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+            $msgFlag=1;
+            }
         }
     }
 }
@@ -289,8 +294,8 @@ if ($_REQUEST['action'] == 'delete') {
 }
 if (isset($_SESSION['conflict'])) {
     echo '<font color=red>' . $_SESSION['conflict'] . '</font>';
-    $_REQUEST['tables']=$_SESSION['tables'];
-    $_REQUEST['conflict']='y';
+    $_REQUEST['tables'] = $_SESSION['tables'];
+    $_REQUEST['conflict'] = 'y';
     unset($_SESSION['conflict']);
     unset($_SESSION['tables']);
 }
@@ -357,7 +362,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'standard_search
 }
 // UPDATING
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()) {
-    
+
     $where = array('course_subjects' => 'SUBJECT_ID',
         'courses' => 'COURSE_ID',
         'course_periods' => 'COURSE_PERIOD_ID', 'course_period_var' => 'COURSE_PERIOD_ID');
@@ -470,7 +475,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                                 if (isset($value)) {
                                     if ($column == 'DOES_ATTENDANCE') {
-                                       
+
                                         if ($value == 'Y') {
                                             $days_upsql .=$column . " = '" . $value . "',";
                                             $up_day = true;
@@ -478,12 +483,11 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                             if (!scheduleAssociation($_REQUEST['course_period_id'])) {
                                                 $days_upsql .=$column . " = NULL,";
                                                 $up_day = true;
-                                                
                                             }
                                         }
                                     } else {
                                         if (!attendanceAssociation($_REQUEST['course_period_id'])) {
-                                          
+
                                             if ($column == 'DAYS') {
                                                 if ($value != '')
                                                     $days_upsql .=$column . " = '" . $value . "',";
@@ -505,7 +509,13 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                             $check_cp = DBGet(DBQuery("SELECT * FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
                                             $check_cp = $check_cp[1];
                                             if (($period['DAYS'] != '' && $check_cp['DAYS'] != $period['DAYS']) || ($period['ROOM_ID'] != '' && $check_cp['ROOM_ID'] != $period['ROOM_ID']) || ($period['PERIOD_ID'] != '' && $check_cp['PERIOD_ID'] != $period['PERIOD_ID']))
+                                            {   
+                                                if($msgFlag=='')
+                                                {
                                                 $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
+                                                $msgFlag=1;
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -514,21 +524,19 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             $days_upsql .=" WHERE id=" . $period['ID'] . " AND course_period_id=$cp_id";
 
                             if ($up_day) {
-                                
+
                                 DBQuery($days_upsql);
                             }
                         }
                     } else {
-                            if(isset($period['PERIOD_ID']) && !isset($period['START_TIME']) && !isset($period['END_TIME']) && $period['PERIOD_ID']!='')
-                            {
-                              
-                              $period_data = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM school_periods WHERE PERIOD_ID=' . $period['PERIOD_ID'] . ''));
-                                 if(!empty($period_data))
-                                    {
-                                      $period['START_TIME'] = $period_data[1]['START_TIME'];
-                                      $period['END_TIME'] = $period_data[1]['END_TIME'];
-                                    }
+                        if (isset($period['PERIOD_ID']) && !isset($period['START_TIME']) && !isset($period['END_TIME']) && $period['PERIOD_ID'] != '') {
+
+                            $period_data = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM school_periods WHERE PERIOD_ID=' . $period['PERIOD_ID'] . ''));
+                            if (!empty($period_data)) {
+                                $period['START_TIME'] = $period_data[1]['START_TIME'];
+                                $period['END_TIME'] = $period_data[1]['END_TIME'];
                             }
+                        }
 
                         if ($period['START_TIME'] != '' && $period['END_TIME'] != '' && $period['PERIOD_ID'] != '' && $period['ROOM_ID'] != '') {
                             $columns['START_TIME'] = $period['START_TIME'];
@@ -562,7 +570,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         unset($_REQUEST['course_period_variable']);
                     }
                 }
-            }       
+            }
         }
         if ($not_pass_update != true && $day_blank_error) {
             echo $day_blank_error;
@@ -611,26 +619,22 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
         foreach ($tables as $id => $columns) {
 
-if(!(attendanceAssociation($id)))
-{
-      $schedule_type=  DBGet(DBQuery('SELECT * FROM  course_periods where course_period_id=\''.$id.'\''));   
-    if($columns['DOES_ATTENDANCE']=='Y')
-        $att='Y';
-    else
-    $att=NULL;
-    if($schedule_type[1]['SCHEDULE_TYPE']=='FIXED')
-    {
-     $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
-                                                            $check_attn = $check_attn[1];
-                                                 
-                                                        if ($check_attn['ATTENDANCE'] == 'Y') {
-    
-    DBQuery('update course_period_var set does_attendance=\''.$att.'\' where course_period_id=\''.$id.'\'');
+            if (!(attendanceAssociation($id))) {
+                $schedule_type = DBGet(DBQuery('SELECT * FROM  course_periods where course_period_id=\'' . $id . '\''));
+                if ($columns['DOES_ATTENDANCE'] == 'Y')
+                    $att = 'Y';
+                else
+                    $att = NULL;
+                if ($schedule_type[1]['SCHEDULE_TYPE'] == 'FIXED') {
+                    $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
+                    $check_attn = $check_attn[1];
 
-                                                        }
-    }
-    
-}
+                    if ($check_attn['ATTENDANCE'] == 'Y') {
+
+                        DBQuery('update course_period_var set does_attendance=\'' . $att . '\' where course_period_id=\'' . $id . '\'');
+                    }
+                }
+            }
 
 //            if ($columns['SHORT_NAME'])
 //                        {
@@ -718,497 +722,506 @@ if(!(attendanceAssociation($id)))
                         $gradeAssociation = true;
                     }
                 }
-                
 
-                    if ($table_name == 'courses' && $columns['SUBJECT_ID'] && $columns['SUBJECT_ID'] != $_REQUEST['subject_id'])
-                        $_REQUEST['subject_id'] = $columns['SUBJECT_ID'];
 
-                    $sql = "UPDATE $table_name SET ";
-                    if($table_name=='course_periods')
-                     $sql1 = "UPDATE $table_name SET ";
-                    $calendar_id = $columns['CALENDAR_ID'];
-                    if ($table_name == 'course_periods') {
+                if ($table_name == 'courses' && $columns['SUBJECT_ID'] && $columns['SUBJECT_ID'] != $_REQUEST['subject_id'])
+                    $_REQUEST['subject_id'] = $columns['SUBJECT_ID'];
 
-                        $current = DBGet(DBQuery("SELECT TEACHER_ID,MARKING_PERIOD_ID,SHORT_NAME,TOTAL_SEATS,CALENDAR_ID FROM course_periods WHERE " . $where[$table_name] . "='$id'"));
-                        if ($scheduleAssociation)
-                            $cur_total_seat = $current[1]['TOTAL_SEATS'];
+                $sql = "UPDATE $table_name SET ";
+                if ($table_name == 'course_periods')
+                    $sql1 = "UPDATE $table_name SET ";
+                $calendar_id = $columns['CALENDAR_ID'];
+                if ($table_name == 'course_periods') {
 
+                    $current = DBGet(DBQuery("SELECT TEACHER_ID,MARKING_PERIOD_ID,SHORT_NAME,TOTAL_SEATS,CALENDAR_ID FROM course_periods WHERE " . $where[$table_name] . "='$id'"));
+                    if ($scheduleAssociation)
+                        $cur_total_seat = $current[1]['TOTAL_SEATS'];
+
+                    if ($columns['TEACHER_ID'])
+                        $staff_id = $columns['TEACHER_ID'];
+                    else
+                        $staff_id = $current[1]['TEACHER_ID'];
+                    if ($columns['CALENDAR_ID'])
+                        $calendar_id = $columns['CALENDAR_ID'];
+                    else
+                        $calendar_id = $current[1]['CALENDAR_ID'];
+                    if ($columns['PERIOD_ID'])
+                        $period_id = $columns['PERIOD_ID'];
+                    else
+                        $period_id = $current[1]['PERIOD_ID'];
+                    if (isset($columns['MARKING_PERIOD_ID']))
+                        $marking_period_id = $columns['MARKING_PERIOD_ID'];
+                    else
+                        $marking_period_id = $current[1]['MARKING_PERIOD_ID'];
+                    if ($columns['DAYS'])
+                        $days = $columns['DAYS'];
+                    else
+                        $days = $current[1]['DAYS'];
+                    if ($columns['SHORT_NAME'])
+                        $short_name = $columns['SHORT_NAME'];
+                    else
+                        $short_name = $current[1]['SHORT_NAME'];
+
+
+                    if (isset($columns['MARKING_PERIOD_ID'])) {
+                        if (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') == 'school_years')
+                            $columns['MP'] = 'FY';
+                        elseif (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') == 'school_semesters')
+                            $columns['MP'] = 'SEM';
+                        else
+                            $columns['MP'] = 'QTR';
+
+                        if (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') != 'school_years')
+                            $mp_title = GetMP($columns['MARKING_PERIOD_ID'], 'SHORT_NAME') . ' - ';
+                    } else {
+                        if (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') == 'school_years')
+                            $current[1]['MP'] = 'FY';
+                        elseif (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') == 'school_semesters')
+                            $current[1]['MP'] = 'SEM';
+                        else
+                            $current[1]['MP'] = 'QTR';
+
+                        if (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') != 'school_years')
+                            $mp_title = GetMP($current[1]['MARKING_PERIOD_ID'], 'SHORT_NAME') . ' - ';
+                    }
+
+                    $col['CP_SECTION'] = 'cp';
+                    if ($columns['SCHEDULE_TYPE'] == 'VARIABLE' && $not_pass_update == false) {
+                        $col['COURSE_PERIOD_ID'] = $_REQUEST['course_period_id'];
+                        $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
                         if ($columns['TEACHER_ID'])
-                            $staff_id = $columns['TEACHER_ID'];
+                            $col['TEACHER_ID'] = $columns['TEACHER_ID'];
                         else
-                            $staff_id = $current[1]['TEACHER_ID'];
-                        if ($columns['CALENDAR_ID'])
-                            $calendar_id = $columns['CALENDAR_ID'];
+                            $col['TEACHER_ID'] = $values[1]['TEACHER_ID'];
+
+                        if ($columns['SECONDARY_TEACHER_ID'])
+                            $col['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
                         else
-                            $calendar_id = $current[1]['CALENDAR_ID'];
-                        if ($columns['PERIOD_ID'])
-                            $period_id = $columns['PERIOD_ID'];
+                            $col['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
+
+                        if ($columns['BEGIN_DATE'])
+                            $col['BEGIN_DATE'] = $columns['BEGIN_DATE'];
                         else
-                            $period_id = $current[1]['PERIOD_ID'];
-                        if (isset($columns['MARKING_PERIOD_ID']))
-                            $marking_period_id = $columns['MARKING_PERIOD_ID'];
+                            $col['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
+
+                        if ($columns['END_DATE'])
+                            $col['END_DATE'] = $columns['END_DATE'];
                         else
-                            $marking_period_id = $current[1]['MARKING_PERIOD_ID'];
-                        if ($columns['DAYS'])
-                            $days = $columns['DAYS'];
+                            $col['END_DATE'] = $values[1]['END_DATE'];
+                        if ($columns['MARKING_PERIOD_ID'])
+                            $col['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
                         else
-                            $days = $current[1]['DAYS'];
-                        if ($columns['SHORT_NAME'])
-                            $short_name = $columns['SHORT_NAME'];
-                        else
-                            $short_name = $current[1]['SHORT_NAME'];
-
-
-                        if (isset($columns['MARKING_PERIOD_ID'])) {
-                            if (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') == 'school_years')
-                                $columns['MP'] = 'FY';
-                            elseif (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') == 'school_semesters')
-                                $columns['MP'] = 'SEM';
-                            else
-                                $columns['MP'] = 'QTR';
-
-                            if (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') != 'school_years')
-                                $mp_title = GetMP($columns['MARKING_PERIOD_ID'], 'SHORT_NAME') . ' - ';
-                        } else {
-                            if (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') == 'school_years')
-                                $current[1]['MP'] = 'FY';
-                            elseif (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') == 'school_semesters')
-                                $current[1]['MP'] = 'SEM';
-                            else
-                                $current[1]['MP'] = 'QTR';
-
-                            if (GetMP($current[1]['MARKING_PERIOD_ID'], 'TABLE') != 'school_years')
-                                $mp_title = GetMP($current[1]['MARKING_PERIOD_ID'], 'SHORT_NAME') . ' - ';
-                        }
-
-                        $col['CP_SECTION'] = 'cp';
-                        if ($columns['SCHEDULE_TYPE'] == 'VARIABLE' && $not_pass_update == false) {
-                            $col['COURSE_PERIOD_ID'] = $_REQUEST['course_period_id'];
-                            $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
-                            if ($columns['TEACHER_ID'])
-                                $col['TEACHER_ID'] = $columns['TEACHER_ID'];
-                            else
-                                $col['TEACHER_ID'] = $values[1]['TEACHER_ID'];
-
-                            if ($columns['SECONDARY_TEACHER_ID'])
-                                $col['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
-                            else
-                                $col['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
-
-                            if ($columns['BEGIN_DATE'])
-                                $col['BEGIN_DATE'] = $columns['BEGIN_DATE'];
-                            else
-                                $col['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
-
-                            if ($columns['END_DATE'])
-                                $col['END_DATE'] = $columns['END_DATE'];
-                            else
-                                $col['END_DATE'] = $values[1]['END_DATE'];
-                            if ($columns['MARKING_PERIOD_ID'])
-                                $col['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
-                            else
-                                $col['MARKING_PERIOD_ID'] = $values[1]['MARKING_PERIOD_ID'];
+                            $col['MARKING_PERIOD_ID'] = $values[1]['MARKING_PERIOD_ID'];
 
 
 
-                            foreach ($_REQUEST['course_period_variable'] as $cp_id => $days) {
-                                foreach ($days as $day => $period) {
+                        foreach ($_REQUEST['course_period_variable'] as $cp_id => $days) {
+                            foreach ($days as $day => $period) {
 
 
-                                    $day_exits = DBGet(DBQuery("SELECT DAYS,PERIOD_ID,ROOM_ID FROM course_period_var WHERE days='$day' AND course_period_id=$cp_id"));
-                                    $col['START_TIME'] = $period['START_TIME'];
-                                    $col['END_TIME'] = $period['END_TIME'];
-                                    if ($period['PERIOD_ID'])
-                                        $col['PERIOD_ID'] = $period['PERIOD_ID'];
-                                    else
-                                        $col['PERIOD_ID'] = $day_exits[1]['PERIOD_ID'];
-                                    if ($period['ROOM_ID'])
-                                        $col['ROOM_ID'] = $period['ROOM_ID'];
-                                    else
-                                        $col['ROOM_ID'] = $day_exits[1]['ROOM_ID'];
-                                    $col['DAYS'] = $day;
-                                    $col['SELECT_DAYS'] = $period['DAYS'];
+                                $day_exits = DBGet(DBQuery("SELECT DAYS,PERIOD_ID,ROOM_ID FROM course_period_var WHERE days='$day' AND course_period_id=$cp_id"));
+                                $col['START_TIME'] = $period['START_TIME'];
+                                $col['END_TIME'] = $period['END_TIME'];
+                                if ($period['PERIOD_ID'])
+                                    $col['PERIOD_ID'] = $period['PERIOD_ID'];
+                                else
+                                    $col['PERIOD_ID'] = $day_exits[1]['PERIOD_ID'];
+                                if ($period['ROOM_ID'])
+                                    $col['ROOM_ID'] = $period['ROOM_ID'];
+                                else
+                                    $col['ROOM_ID'] = $day_exits[1]['ROOM_ID'];
+                                $col['DAYS'] = $day;
+                                $col['SELECT_DAYS'] = $period['DAYS'];
 
 
-                                    if ($period['DAYS'] != '' && $period['PERIOD_ID'] != '' && $period['ROOM_ID'] != '') {
+                                if ($period['DAYS'] != '' && $period['PERIOD_ID'] != '' && $period['ROOM_ID'] != '') {
 
-                                        $conflict = VerifyVariableSchedule_Update($col);
-                                        if ($conflict !== true) {
-                                            echo '<font color=red>' . $conflict . '</font>';
-                                            $not_pass_update = true;
-                                            break 4;
-                                        }
+                                    $conflict = VerifyVariableSchedule_Update($col);
+                                    if ($conflict !== true) {
+                                        echo '<font color=red>' . $conflict . '</font>';
+                                        $not_pass_update = true;
+                                        break 4;
                                     }
                                 }
                             }
                         }
-                        if ($columns['SCHEDULE_TYPE'] == 'VARIABLE') {
-                            $title_val = DBGet(DBQuery("SELECT DAYS,PERIOD_ID FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
-                            foreach ($title_val as $key => $title_value) {
+                    }
+                    if ($columns['SCHEDULE_TYPE'] == 'VARIABLE') {
+                        $title_val = DBGet(DBQuery("SELECT DAYS,PERIOD_ID FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
+                        foreach ($title_val as $key => $title_value) {
 
-                                $days_n[] = $title_value['DAYS'];
-                                $pd_id = DBGet(DBQuery("SELECT SHORT_NAME FROM school_periods WHERE PERIOD_ID='" . $title_value['PERIOD_ID'] . "'"));
+                            $days_n[] = $title_value['DAYS'];
+                            $pd_id = DBGet(DBQuery("SELECT SHORT_NAME FROM school_periods WHERE PERIOD_ID='" . $title_value['PERIOD_ID'] . "'"));
 
-                                $period_value_n[] = $pd_id[1]['SHORT_NAME'];
+                            $period_value_n[] = $pd_id[1]['SHORT_NAME'];
+                        }
+                        for ($i = count($period_value_n); $i >= 0; $i--) {
+                            $period_value.=$period_value_n[$i];
+                            $days.=$days_n[$i];
+                        }
+                    }
+                    if ($columns['SCHEDULE_TYPE'] == 'FIXED') {
+                        $col['COURSE_PERIOD_ID'] = $_REQUEST['course_period_id'];
+                        $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
+                        if ($columns['TEACHER_ID'])
+                            $col['TEACHER_ID'] = $columns['TEACHER_ID'];
+                        else
+                            $col['TEACHER_ID'] = $values[1]['TEACHER_ID'];
+
+                        if ($columns['SECONDARY_TEACHER_ID'])
+                            $col['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
+                        else
+                            $col['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
+
+                        if ($columns['BEGIN_DATE'])
+                            $col['BEGIN_DATE'] = $columns['BEGIN_DATE'];
+                        else
+                            $col['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
+
+                        if ($columns['END_DATE'])
+                            $col['END_DATE'] = $columns['END_DATE'];
+                        else
+                            $col['END_DATE'] = $values[1]['END_DATE'];
+                        if ($columns['MARKING_PERIOD_ID'])
+                            $col['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
+                        else
+                            $col['MARKING_PERIOD_ID'] = $values[1]['MARKING_PERIOD_ID'];
+                        $title_val = DBGet(DBQuery("SELECT DAYS,PERIOD_ID,ROOM_ID FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
+                        if ($columns_var['DAYS'])
+                            $col_var['DAYS'] = $columns_var['DAYS'];
+                        else
+                            $col_var['DAYS'] = $title_val[1]['DAYS'];
+                        if ($columns_var['PERIOD_ID'])
+                            $col_var['PERIOD_ID'] = $columns_var['PERIOD_ID'];
+                        else
+                            $col_var['PERIOD_ID'] = $title_val[1]['PERIOD_ID'];
+                        if ($columns_var['ROOM_ID'])
+                            $col_var['ROOM_ID'] = $columns_var['ROOM_ID'];
+                        else
+                            $col_var['ROOM_ID'] = $title_val[1]['ROOM_ID'];
+                        $days = $title_val[1]['DAYS'];
+                        $pd_id = DBGet(DBQuery("SELECT SHORT_NAME FROM school_periods WHERE PERIOD_ID='" . $title_val[1]['PERIOD_ID'] . "'"));
+                        $period_value.=$pd_id[1]['SHORT_NAME'];
+                        $conflict = VerifyFixedSchedule($col, $col_var, $update = true);
+                        if ($conflict !== true) {
+                            echo '<font color=red>' . $conflict . '</font>';
+                            $_SESSION['tables'] = $_REQUEST['tables'];
+                            break 2;
+                        }
+                    }
+
+                    if ($columns['SCHEDULE_TYPE'] == 'BLOCKED') {
+
+
+                        $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
+
+                        if (isset($columns['CALENDAR_ID']) && ($columns['CALENDAR_ID'] != $values[1]['CALENDAR_ID'])) {
+                            $cal_days = DBGet(DBQuery("SELECT * FROM attendance_calendar WHERE CALENDAR_ID=" . $columns['CALENDAR_ID']));
+
+                            $cal_value = DBGet(DBQuery("SELECT course_period_date as cp_dt FROM course_period_var WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "' "));
+
+                            foreach ($cal_days as $cal_days_k => $cal_days_v) {
+
+                                $cal_days_new[] = $cal_days_v['SCHOOL_DATE'];
                             }
-                            for ($i = count($period_value_n); $i >= 0; $i--) {
-                                $period_value.=$period_value_n[$i];
-                                $days.=$days_n[$i];
+                            foreach ($cal_value as $cal_value_k => $cal_value_v) {
+                                if (!in_array($cal_value_v['CP_DT'], $cal_days_new)) {
+                                    $dlt_cp_dt = DBQuery("DELETE FROM course_period_var WHERE course_period_id=$_REQUEST[course_period_id] and course_period_date='" . $cal_value_v['CP_DT'] . "'");
+                                }
                             }
                         }
-                        if ($columns['SCHEDULE_TYPE'] == 'FIXED') {
-                            $col['COURSE_PERIOD_ID'] = $_REQUEST['course_period_id'];
-                            $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
+                        if (($columns['TEACHER_ID'] && $columns['TEACHER_ID'] != $values[1]['TEACHER_ID']) || ($columns['BEGIN_DATE'] && $columns['BEGIN_DATE'] != $values[1]['BEGIN_DATE']) || ($columns['END_DATE'] && $columns['END_DATE'] != $values[1]['END_DATE']) || ($columns['MARKING_PERIOD_ID'] && $columns['MARKING_PERIOD_ID'] != $values[1]['MARKING_PERIOD_ID'])) {
                             if ($columns['TEACHER_ID'])
-                                $col['TEACHER_ID'] = $columns['TEACHER_ID'];
+                                $col_bl['TEACHER_ID'] = $columns['TEACHER_ID'];
                             else
-                                $col['TEACHER_ID'] = $values[1]['TEACHER_ID'];
+                                $col_bl['TEACHER_ID'] = $values[1]['TEACHER_ID'];
 
                             if ($columns['SECONDARY_TEACHER_ID'])
-                                $col['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
+                                $col_bl['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
                             else
-                                $col['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
+                                $col_bl['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
 
                             if ($columns['BEGIN_DATE'])
-                                $col['BEGIN_DATE'] = $columns['BEGIN_DATE'];
+                                $col_bl['BEGIN_DATE'] = $columns['BEGIN_DATE'];
                             else
-                                $col['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
+                                $col_bl['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
 
                             if ($columns['END_DATE'])
-                                $col['END_DATE'] = $columns['END_DATE'];
+                                $col_bl['END_DATE'] = $columns['END_DATE'];
                             else
-                                $col['END_DATE'] = $values[1]['END_DATE'];
+                                $col_bl['END_DATE'] = $values[1]['END_DATE'];
                             if ($columns['MARKING_PERIOD_ID'])
-                                $col['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
-                            else
-                                $col['MARKING_PERIOD_ID'] = $values[1]['MARKING_PERIOD_ID'];
-                            $title_val = DBGet(DBQuery("SELECT DAYS,PERIOD_ID,ROOM_ID FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
-                            if ($columns_var['DAYS'])
-                                $col_var['DAYS'] = $columns_var['DAYS'];
-                            else
-                                $col_var['DAYS'] = $title_val[1]['DAYS'];
-                            if ($columns_var['PERIOD_ID'])
-                                $col_var['PERIOD_ID'] = $columns_var['PERIOD_ID'];
-                            else
-                                $col_var['PERIOD_ID'] = $title_val[1]['PERIOD_ID'];
-                            if ($columns_var['ROOM_ID'])
-                                $col_var['ROOM_ID'] = $columns_var['ROOM_ID'];
-                            else
-                                $col_var['ROOM_ID'] = $title_val[1]['ROOM_ID'];
-                            $days = $title_val[1]['DAYS'];
-                            $pd_id = DBGet(DBQuery("SELECT SHORT_NAME FROM school_periods WHERE PERIOD_ID='" . $title_val[1]['PERIOD_ID'] . "'"));
-                            $period_value.=$pd_id[1]['SHORT_NAME'];
-                            $conflict = VerifyFixedSchedule($col, $col_var, $update = true);
+                                $col_bl['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
+                            $conflict = VerifyBlockedSchedule($col_bl, $_REQUEST['course_period_id'], 'cp', true);
                             if ($conflict !== true) {
                                 echo '<font color=red>' . $conflict . '</font>';
-                                $_SESSION['tables']=$_REQUEST['tables'];
+
                                 break 2;
                             }
                         }
+                    }
+                    $teacher = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME FROM staff WHERE STAFF_ID='$staff_id'"));
 
-                        if ($columns['SCHEDULE_TYPE'] == 'BLOCKED') {
+                    foreach ($_REQUEST['tables']['course_period_var'][$_REQUEST['course_period_id']]['DAYS'] as $days => $day_val) {
+                        $day_initial[] = $days;
+                    }
 
+                    unset($day_initial);
 
-                            $values = DBGet(DBQuery("SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
+                    if ($short_name)
+                        $mp_title .= paramlib_validation($column = SHORT_NAME, $short_name) . ' - ';
 
-                             if(isset($columns['CALENDAR_ID']) && ($columns['CALENDAR_ID']!= $values[1]['CALENDAR_ID']))
-                            {
-                                   $cal_days=DBGet(DBQuery("SELECT * FROM attendance_calendar WHERE CALENDAR_ID=".$columns['CALENDAR_ID']));
-                                 
-                                  $cal_value= DBGet(DBQuery("SELECT course_period_date as cp_dt FROM course_period_var WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "' "));
-                                 
-                                  foreach($cal_days as $cal_days_k=>$cal_days_v)
-                                  {
-                                      
-                                      $cal_days_new[]=$cal_days_v['SCHOOL_DATE'];
-                                      
-                                      
-                                  }
-                                  foreach($cal_value as $cal_value_k=>$cal_value_v)
-                                  {
-                                      if(!in_array($cal_value_v['CP_DT'],$cal_days_new))
-                                      {
-                                         $dlt_cp_dt=DBQuery("DELETE FROM course_period_var WHERE course_period_id=$_REQUEST[course_period_id] and course_period_date='".$cal_value_v['CP_DT']."'"); 
-                                      }
-                                      
-                                      
-                                  }
+                    $title = str_replace("'", "''", str_replace("\'", "'", $mp_title) . $teacher[1]['FIRST_NAME'] . ' ' . $teacher[1]['MIDDLE_NAME'] . ' ' . $teacher[1]['LAST_NAME']);
+                    $sql .= "TITLE='$title',calendar_id='$calendar_id',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
+                    $days = '';
+                    if ($table_name == 'course_periods')
+                        $sql1.="TITLE='$title',SHORT_NAME='$short_name',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
+                }
+
+                if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {
+                    foreach ($columns as $column => $value) {
+                        if ($column == 'GRADE_SCALE_ID' && str_replace("\'", "''", $value) == '') {
+                            if (!gradeAssociation($id)) {
+                                $sql .= $column . " = NULL,";
+                                $go = true;
+                            } else {
+                                $flag_err = 'Y';
+                                continue;
                             }
-                            if (($columns['TEACHER_ID'] && $columns['TEACHER_ID'] != $values[1]['TEACHER_ID']) || ($columns['BEGIN_DATE'] && $columns['BEGIN_DATE'] != $values[1]['BEGIN_DATE']) || ($columns['END_DATE'] && $columns['END_DATE'] != $values[1]['END_DATE']) || ($columns['MARKING_PERIOD_ID'] && $columns['MARKING_PERIOD_ID'] != $values[1]['MARKING_PERIOD_ID'])) {
-                                if ($columns['TEACHER_ID'])
-                                    $col_bl['TEACHER_ID'] = $columns['TEACHER_ID'];
-                                else
-                                    $col_bl['TEACHER_ID'] = $values[1]['TEACHER_ID'];
-
-                                if ($columns['SECONDARY_TEACHER_ID'])
-                                    $col_bl['SECONDARY_TEACHER_ID'] = $columns['SECONDARY_TEACHER_ID'];
-                                else
-                                    $col_bl['SECONDARY_TEACHER_ID'] = $values[1]['SECONDARY_TEACHER_ID'];
-
-                                if ($columns['BEGIN_DATE'])
-                                    $col_bl['BEGIN_DATE'] = $columns['BEGIN_DATE'];
-                                else
-                                    $col_bl['BEGIN_DATE'] = $values[1]['BEGIN_DATE'];
-
-                                if ($columns['END_DATE'])
-                                    $col_bl['END_DATE'] = $columns['END_DATE'];
-                                else
-                                    $col_bl['END_DATE'] = $values[1]['END_DATE'];
-                                if ($columns['MARKING_PERIOD_ID'])
-                                    $col_bl['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
-                                $conflict = VerifyBlockedSchedule($col_bl, $_REQUEST['course_period_id'], 'cp', true);
-                                if ($conflict !== true) {
-                                    echo '<font color=red>' . $conflict . '</font>';
-
-                                   break 2;
-                                }
+                        } elseif ($column == 'TEACHER_ID' && str_replace("\'", "''", $value) == 0) {
+                            if (!scheduleAssociation($id) && !gradeAssociation($id)) {
+                                $sql .= $column . "='" . $staff_id . "',";
+                                $go = true;
+                            } else {
+                                $flag_err = 'Y';
+                                continue;
                             }
-                        }
-                        $teacher = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME FROM staff WHERE STAFF_ID='$staff_id'"));
+                        } else {
+                            if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                                $value = mysql_real_escape_string($value);
+                                $value = str_replace('%u201D', "\"", $value);
+                            }
 
-                        foreach ($_REQUEST['tables']['course_period_var'][$_REQUEST['course_period_id']]['DAYS'] as $days => $day_val) {
-                            $day_initial[] = $days;
-                        }
+                            if (str_replace("\'", "''", $value) == '') {
+//                                    if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
 
-                        unset($day_initial);
-
-                        if ($short_name)
-                            $mp_title .= paramlib_validation($column = SHORT_NAME, $short_name) . ' - ';
-
-                        $title = str_replace("'", "''", str_replace("\'", "'", $mp_title) . $teacher[1]['FIRST_NAME'] . ' ' . $teacher[1]['MIDDLE_NAME'] . ' ' . $teacher[1]['LAST_NAME']);
-                        $sql .= "TITLE='$title',calendar_id='$calendar_id',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
-                        $days = '';
-                        if($table_name=='course_periods')
-                   $sql1.="TITLE='$title',SHORT_NAME='$short_name',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
-                        
-                        
-                        }
-                  
-                    if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {
-                        foreach ($columns as $column => $value) {
-                            if ($column == 'GRADE_SCALE_ID' && str_replace("\'", "''", $value) == '') {
-                                if (!gradeAssociation($id)) {
+                                if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
                                     $sql .= $column . " = NULL,";
                                     $go = true;
-                                } else {
-                                    $flag_err = 'Y';
-                                    continue;
                                 }
-                            } elseif ($column == 'TEACHER_ID' && str_replace("\'", "''", $value) == 0) {
-                                if (!scheduleAssociation($id) && !gradeAssociation($id)) {
-                                    $sql .= $column . "='" . $staff_id . "',";
+
+                                if ($column == 'DOES_BREAKOFF' && $table_name == 'course_periods') {
+                                    $sql1 .= $column . " = NULL,";
                                     $go = true;
-                                } else {
+                                }
+                                if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
                                     $flag_err = 'Y';
-                                    continue;
+                                }
+                                if ($column == 'DOES_ATTENDANCE' && !(scheduleAssociation($id))) {
+
+                                    $sql .= $column . " = NULL,";
+                                    $go = true;
+                                    $att = 0;
+                                }
+                                if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id)) {
+                                    if($msgFlag=='')
+                                    {
+                                    $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
+                                    $msgFlag=1;
+                                    }
+                                }
+                                if (($column == 'GENDER_RESTRICTION' || $column == 'PARENT_ID') && !scheduleAssociation($id)) {
+                                    if ($column == 'PARENT_ID')
+                                        $sql .= $column . " = " . $id . ",";
+                                    else
+                                        $sql .= $column . " = NULL,";
+                                    $go = true;
+                                }
+                                if ($table_name == 'courses' || $table_name == 'course_subjects') {
+                                    $sql .= $column . "=NULL,";
+                                    $go = true;
+                                }
+                                if (!scheduleAssociation($id) && ($column == 'MARKING_PERIOD_ID' || $column == 'MP')) {
+                                    $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
+                                    $go = true;
                                 }
                             } else {
-                                if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-                                    $value = mysql_real_escape_string($value);
-                                    $value = str_replace('%u201D', "\"", $value);
-                                }
 
-                                if (str_replace("\'", "''", $value) == '') {
-//                                    if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
-       
-                                    if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' ||  $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {    
-                                        $sql .= $column . " = NULL,";
-                                        $go = true;
-                                    }
-                                 
-                                    if ($column == 'DOES_BREAKOFF'  && $table_name == 'course_periods') {    
-                                        $sql1 .= $column . " = NULL,";
-                                        $go = true;
-                                    }
-                                    if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
-                                        $flag_err = 'Y';
-                                    }
-                                    if ($column == 'DOES_ATTENDANCE' && !(scheduleAssociation($id))) {
-                                        
-                                        $sql .= $column . " = NULL,";
-                                        $go = true;
-                                        $att=0;
-                                    }
-                                    if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id)) {
-                                        $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
-                                    }
-                                    if (($column == 'GENDER_RESTRICTION' || $column == 'PARENT_ID') && !scheduleAssociation($id)) {
-                                        if ($column == 'PARENT_ID')
-                                            $sql .= $column . " = " . $id . ",";
-                                        else
-                                            $sql .= $column . " = NULL,";
-                                        $go = true;
-                                    }
-                                    if ($table_name == 'courses' || $table_name == 'course_subjects') {
-                                        $sql .= $column . "=NULL,";
-                                        $go = true;
-                                    }
-                                    if (!scheduleAssociation($id) && ($column == 'MARKING_PERIOD_ID' || $column == 'MP')) {
-                                        $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
+                                if ($column == 'SHORT_NAME' || $column == 'TOTAL_SEATS' || $column == 'DOES_ATTENDANCE' || $column == 'DOES_BREAKOFF') {
+
+                                    if ($column == 'DOES_ATTENDANCE') {
+                                        if (scheduleAssociation($id)) {
+
+                                            $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
+                                            $check_attn = $check_attn[1];
+                                            if ($check_attn['ATTENDANCE'] == 'Y') {
+                                                $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
+                                                $go = true;
+                                            }
+                                        } else {
+                                            if ($columns['PERIOD_ID'] != '') {
+                                                $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $columns['PERIOD_ID']));
+                                                $check_attn = $check_attn[1];
+                                            } else {
+                                                $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
+                                                $check_attn = $check_attn[1];
+                                            }
+                                            if ($check_attn['ATTENDANCE'] == 'Y') {
+                                                $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
+                                                $go = true;
+                                            }
+                                        }
+                                    } else {
+                                        $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
+                                        if ($table_name == 'course_periods')
+                                            $sql1 .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
                                         $go = true;
                                     }
                                 } else {
-
-                                    if ($column == 'SHORT_NAME' || $column == 'TOTAL_SEATS' || $column == 'DOES_ATTENDANCE' || $column == 'DOES_BREAKOFF') {
-                                      
-                                    if ($column == 'DOES_ATTENDANCE') {
-                                            if (scheduleAssociation($id)) {
-                                                
-                                                $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
-                                                $check_attn = $check_attn[1];
-                                                if ($check_attn['ATTENDANCE'] == 'Y') {
-                                                    $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
-                                                    $go = true;
-                                                }
-                                            } else {
-                                                if ($columns['PERIOD_ID'] != '') {
-                                                    $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $columns['PERIOD_ID']));
-                                                    $check_attn = $check_attn[1];
-                                                } else {
-                                                    $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
-                                                    $check_attn = $check_attn[1];
-                                                }
-                                                if ($check_attn['ATTENDANCE'] == 'Y') {
-                                                    $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
-                                                    $go = true;
-                                                }
-                                            }
-                                        } else {
-                                            $sql .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
-                                          if($table_name=='course_periods')
-                                            $sql1 .= $column . "='" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";
+//                                        if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                    if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                        $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
+                                        if ($table_name == 'course_periods')
+                                            $sql1.=$column . "='" . str_replace("'", "''", $value) . "',";
+                                        $go = true;
+                                    } else {
+//                                            if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                        if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                            $flag_err = 'Y';
+                                        }
+                                        if (scheduleAssociation($id) && ($column == 'ROOM_ID' || $column == 'DAYS' || $column == 'PERIOD_ID' || $column == 'MARKING_PERIOD_ID')) {
+                                            $flag_err = 'Y';
+                                        }
+                                        if ($table_name == 'courses' || $table_name == 'course_subjects') {
+                                            $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
                                             $go = true;
                                         }
-                                    } else {
-//                                        if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
-                                        if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' ||  $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                        if (!scheduleAssociation($id) && ($column == 'MARKING_PERIOD_ID' || $column == 'MP' || $column == 'GENDER_RESTRICTION' || $column == 'PARENT_ID')) {
                                             $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
-                                           if($table_name=='course_periods')
-                                            $sql1.=$column . "='" . str_replace("'", "''", $value) . "',";
                                             $go = true;
-                                        } else {
-//                                            if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
-                                              if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS'  || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) { 
-                                                $flag_err = 'Y';
-                                            }
-                                            if (scheduleAssociation($id) && ($column == 'ROOM_ID' || $column == 'DAYS' || $column == 'PERIOD_ID' || $column == 'MARKING_PERIOD_ID')) {
-                                                $flag_err = 'Y';
-                                            }
-                                            if ($table_name == 'courses' || $table_name == 'course_subjects') {
-                                                $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
-                                                $go = true;
-                                            }
-                                            if (!scheduleAssociation($id) && ($column == 'MARKING_PERIOD_ID' || $column == 'MP' || $column == 'GENDER_RESTRICTION' || $column == 'PARENT_ID')) {
-                                                $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
-                                                $go = true;
-                                            }
-                                            if (!scheduleAssociation($id) && ($column == 'BEGIN_DATE' || $column == 'END_DATE')) {
-                                                $sql .= $column . "='" . str_replace("'", "''", date('Y-m-d', strtotime($value))) . "',";
-                                                $go = true;
-                                            }
-                                            if (!scheduleAssociation($id) && $table_name == 'course_period_var' && $_REQUEST['tables']['course_periods'][$id]['SCHEDULE_TYPE'] == 'FIXED') {
+                                        }
+                                        if (!scheduleAssociation($id) && ($column == 'BEGIN_DATE' || $column == 'END_DATE')) {
+                                            $sql .= $column . "='" . str_replace("'", "''", date('Y-m-d', strtotime($value))) . "',";
+                                            $go = true;
+                                        }
+                                        if (!scheduleAssociation($id) && $table_name == 'course_period_var' && $_REQUEST['tables']['course_periods'][$id]['SCHEDULE_TYPE'] == 'FIXED') {
 
-                                                if ($column == 'PERIOD_ID') {
-                                                    $period_time_edt = DBGet(DBQuery("SELECT START_TIME, END_TIME FROM school_periods WHERE period_id={$value}"));
-                                                    $period_time_edt = $period_time_edt[1];
-                                                    $start_time_edt = $period_time_edt['START_TIME'];
-                                                    $end_time_edt = $period_time_edt['END_TIME'];
-                                                    $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $value));
-                                                    $check_attn = $check_attn[1];
-                                                    if ($check_attn['ATTENDANCE'] == 'Y')
-                                                        $sql .=" PERIOD_ID=" . $value . " , START_TIME='" . $start_time_edt . "' , END_TIME='" . $end_time_edt . "',";
-                                                    else
-                                                        $sql .=" PERIOD_ID=" . $value . " , START_TIME='" . $start_time_edt . "' , END_TIME='" . $end_time_edt . "',DOES_ATTENDANCE=NULL,";
-                                                    $go = true;
-                                                }
-                                                if ($column == 'DOES_BREAKOFF' || $column == 'ROOM_ID' || $column == 'DAYS' || $column == 'DOES_ATTENDANCE') {
-                                                    if ($column == 'DOES_ATTENDANCE') {
-                                                        if ($columns['PERIOD_ID'] != '') {
-                                                            $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $columns['PERIOD_ID']));
-                                                            $check_attn = $check_attn[1];
-                                                        } else {
-                                                            $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
-                                                            $check_attn = $check_attn[1];
-                                                        }
-                                                        if ($check_attn['ATTENDANCE'] == 'Y') {
-                                                            $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
-                                                            $go = true;
-                                                        }
-                                                    } else { 
+                                            if ($column == 'PERIOD_ID') {
+                                                $period_time_edt = DBGet(DBQuery("SELECT START_TIME, END_TIME FROM school_periods WHERE period_id={$value}"));
+                                                $period_time_edt = $period_time_edt[1];
+                                                $start_time_edt = $period_time_edt['START_TIME'];
+                                                $end_time_edt = $period_time_edt['END_TIME'];
+                                                $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $value));
+                                                $check_attn = $check_attn[1];
+                                                if ($check_attn['ATTENDANCE'] == 'Y')
+                                                    $sql .=" PERIOD_ID=" . $value . " , START_TIME='" . $start_time_edt . "' , END_TIME='" . $end_time_edt . "',";
+                                                else
+                                                    $sql .=" PERIOD_ID=" . $value . " , START_TIME='" . $start_time_edt . "' , END_TIME='" . $end_time_edt . "',DOES_ATTENDANCE=NULL,";
+                                                $go = true;
+                                            }
+                                            if ($column == 'DOES_BREAKOFF' || $column == 'ROOM_ID' || $column == 'DAYS' || $column == 'DOES_ATTENDANCE') {
+                                                if ($column == 'DOES_ATTENDANCE') {
+                                                    if ($columns['PERIOD_ID'] != '') {
+                                                        $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=' . $columns['PERIOD_ID']));
+                                                        $check_attn = $check_attn[1];
+                                                    } else {
+                                                        $check_attn = DBGet(DBQuery('SELECT * FROM school_periods WHERE PERIOD_ID=(SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $id . ')'));
+                                                        $check_attn = $check_attn[1];
+                                                    }
+                                                    if ($check_attn['ATTENDANCE'] == 'Y') {
                                                         $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
                                                         $go = true;
                                                     }
+                                                } else {
+                                                    $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
+                                                    $go = true;
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }
-                       
-                       $sql = substr($sql, 0, -1) . " WHERE " . $where[$table_name] . "='$id'";
-                     if($table_name=='course_periods')
-                       $sql1=substr($sql1, 0, -1) . " WHERE " . $where[$table_name] . "='$id'";
-                        if($table_name=='course_periods')
-                       DBQuery($sql1);
-                           
-                        $seat_num_check = DBGet(DBQuery('SELECT FILLED_SEATS FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' LIMIT 0,1 '));
-                      
-                        if ($go && $not_pass_update == false) {
-                            
-                         
-                            $f=0;
-                            if ($seat_num_check[1]['FILLED_SEATS'] > 0) {
-                                $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods cp, course_period_var cpv WHERE cp.course_period_id=' . $id . ' AND cp.course_period_id=cpv.course_period_id'));
-//                                 if ((isset($columns['DOES_BREAKOFF']) && ($columns['DOES_BREAKOFF'] != $cp_gdr_teach_id[1]['DOES_BREAKOFF'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
-                                 if ((isset($columns['BEGIN_DATE']) && ($columns['BEGIN_DATE'] != $cp_gdr_teach_id[1]['BEGIN_DATE'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
-                                    $f = 1;
-                                } 
-                                if($f==1) {
-                                    echo "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
-                                }
-                            }
-                            else
-                            {
-                                
-                                if($f!=1)
-                                DBQuery($sql);
-                            }
-                            
-                            
-                        }
-
-                        else {
-                            $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $id));
-
-                            if (((isset($columns['GRADE_SCALE_ID']) && $columns['GRADE_SCALE_ID'] != $cp_gdr_teach_id[1]['GRADE_SCALE_ID']) || (isset($columns['TEACHER_ID']) && $columns['TEACHER_ID'] != $cp_gdr_teach_id[1]['TEACHER_ID'])) && $not_pass_update == false)
-                                $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
-                        }
-                        if ($flag_err == 'Y') {
-                            $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $id));
-
-                            if (((isset($columns['GRADE_SCALE_ID']) && $columns['GRADE_SCALE_ID'] != $cp_gdr_teach_id[1]['GRADE_SCALE_ID']) || (isset($columns['TEACHER_ID']) && $columns['TEACHER_ID'] != $cp_gdr_teach_id[1]['TEACHER_ID'])) && $not_pass_update == false)
-                                $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
-                        }
-                        if ($flag_err == 'Y') {
-                            $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods cp, course_period_var cpv WHERE cp.course_period_id=' . $id . ' AND cp.course_period_id=cpv.course_period_id'));
-                            if (((isset($columns['ROOM_ID']) && $columns['ROOM_ID'] != $cp_gdr_teach_id[1]['ROOM_ID']) || (isset($columns['PERIOD_ID']) && $columns['PERIOD_ID'] != $cp_gdr_teach_id[1]['PERIOD_ID']) || (isset($columns['DAYS']) && $columns['DAYS'] != $cp_gdr_teach_id[1]['DAYS']) || (isset($columns['MARKING_PERIOD_ID']) && $columns['MARKING_PERIOD_ID'] != $cp_gdr_teach_id[1]['MARKING_PERIOD_ID'])))
-                                $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
-                        }
-                        if ($flag_err == 'Y') {
-                            $cp_gdr_teach_id=  DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id='.$id));
-
-                            if ((isset($columns['DOES_BREAKOFF']) && ($columns['DOES_BREAKOFF'] != $cp_gdr_teach_id[1]['DOES_BREAKOFF'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
-                              
-                                $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
                             }
                         }
                     }
 
+                    $sql = substr($sql, 0, -1) . " WHERE " . $where[$table_name] . "='$id'";
+                    if ($table_name == 'course_periods')
+                        $sql1 = substr($sql1, 0, -1) . " WHERE " . $where[$table_name] . "='$id'";
+                    if ($table_name == 'course_periods')
+                        DBQuery($sql1);
 
-                    if ($columns['SCHEDULE_TYPE'] == 'VARIABLE') {
-                      
-                        if($_REQUEST['cp_id']!='new'){
+                    $seat_num_check = DBGet(DBQuery('SELECT FILLED_SEATS FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' LIMIT 0,1 '));
+
+                    if ($go && $not_pass_update == false) {
+
+
+                        $f = 0;
+                        if ($seat_num_check[1]['FILLED_SEATS'] > 0) {
+                            $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods cp, course_period_var cpv WHERE cp.course_period_id=' . $id . ' AND cp.course_period_id=cpv.course_period_id'));
+//                                 if ((isset($columns['DOES_BREAKOFF']) && ($columns['DOES_BREAKOFF'] != $cp_gdr_teach_id[1]['DOES_BREAKOFF'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
+                            if ((isset($columns['BEGIN_DATE']) && ($columns['BEGIN_DATE'] != $cp_gdr_teach_id[1]['BEGIN_DATE'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
+                                $f = 1;
+                            }
+                            if ($f == 1) {
+                                if($msgFlag=='')
+                                {
+                                echo "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
+                                $msgFlag=1;
+                                }
+                            }
+                        } else {
+
+                            if ($f != 1)
+                                DBQuery($sql);
+                        }
+                    }
+
+                    else {
+                        $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $id));
+
+                        if (((isset($columns['GRADE_SCALE_ID']) && $columns['GRADE_SCALE_ID'] != $cp_gdr_teach_id[1]['GRADE_SCALE_ID']) || (isset($columns['TEACHER_ID']) && $columns['TEACHER_ID'] != $cp_gdr_teach_id[1]['TEACHER_ID'])) && $not_pass_update == false)
+                            $assoc_err = "<font color=red><b> 6. </b></font>";
+                    }
+                    if ($flag_err == 'Y') {
+                        $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $id));
+
+                        if (((isset($columns['GRADE_SCALE_ID']) && $columns['GRADE_SCALE_ID'] != $cp_gdr_teach_id[1]['GRADE_SCALE_ID']) || (isset($columns['TEACHER_ID']) && $columns['TEACHER_ID'] != $cp_gdr_teach_id[1]['TEACHER_ID'])) && $not_pass_update == false)
+                        {
+                            if($msgFlag=='')
+                            {
+                            $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                            $msgFlag=1;
+                            }
+                        }
+                    }
+                    if ($flag_err == 'Y') {
+                        $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods cp, course_period_var cpv WHERE cp.course_period_id=' . $id . ' AND cp.course_period_id=cpv.course_period_id'));
+                        if (((isset($columns['ROOM_ID']) && $columns['ROOM_ID'] != $cp_gdr_teach_id[1]['ROOM_ID']) || (isset($columns['PERIOD_ID']) && $columns['PERIOD_ID'] != $cp_gdr_teach_id[1]['PERIOD_ID']) || (isset($columns['DAYS']) && $columns['DAYS'] != $cp_gdr_teach_id[1]['DAYS']) || (isset($columns['MARKING_PERIOD_ID']) && $columns['MARKING_PERIOD_ID'] != $cp_gdr_teach_id[1]['MARKING_PERIOD_ID'])))
+                        {
+                            if($msgFlag=='')
+                            {
+                            $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                            $msgFlag=1;
+                            }
+                        }
+                    }
+                    if ($flag_err == 'Y') {
+                        $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $id));
+
+                        if ((isset($columns['DOES_BREAKOFF']) && ($columns['DOES_BREAKOFF'] != $cp_gdr_teach_id[1]['DOES_BREAKOFF'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
+                            if($msgFlag=='')
+                            {
+                            $assoc_err = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                            $msgFlag=1;
+                            }
+                        }
+                    }
+                }
+
+
+                if ($columns['SCHEDULE_TYPE'] == 'VARIABLE') {
+
+                    if ($_REQUEST['cp_id'] != 'new') {
                         foreach ($_REQUEST['course_period_variable'] as $cp_id => $days) {
 
                             $schedule_check = DBGet(DBQuery("SELECT COUNT(*) AS TOTAL FROM schedule WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
@@ -1219,7 +1232,7 @@ if(!(attendanceAssociation($id)))
                                     if (!isset($period['DOES_ATTENDANCE'])) {
                                         $period['DOES_ATTENDANCE'] = NULL;
                                     }
-                                    
+
                                     foreach ($period as $col => $data) {
                                         if ($schedule_check[1]['TOTAL'] == 0) {
                                             if ($col != 'ID') {
@@ -1227,7 +1240,7 @@ if(!(attendanceAssociation($id)))
                                             }
                                             if ($col == 'ROOM_ID') {
                                                 if ($conflict !== true) {
-                                  
+
                                                     $not_pass_update = true;
                                                     break 2;
                                                 }
@@ -1238,41 +1251,53 @@ if(!(attendanceAssociation($id)))
                                                 $does_att = 1;
                                             }
                                             if ($col == 'PERIOD_ID' && $data != '' && $not_pass_update == false) {
+                                                if($msgFlag=='')
+                                                {
                                                 $error = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                                                $msgFlag=1;
+                                                }
                                             }
                                             if ($col == 'DAYS' && $data != '' && $not_pass_update == false) {
                                                 $schedule_days_check = DBGet(DBQuery("SELECT DAYS FROM course_period_var WHERE ID='" . $period['ID'] . "'"));
                                                 if ($schedule_days_check[1]['DAYS'] != $data) {
+                                                    if($msgFlag=='')
+                                                    {
                                                     $error = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                                                    $msgFlag=1;
+                                                    }
                                                 }
                                             }
                                             if ($col == 'ROOM_ID' && $data != '' && $not_pass_update == false) {
 
                                                 $schedule_days_check = DBGet(DBQuery("SELECT ROOM_ID FROM course_period_var WHERE ID='" . $period['ID'] . "'"));
                                                 if ($schedule_days_check[1]['ROOM_ID'] != $data) {
+                                                    if($msgFlag=='')
+                                                    {
                                                     $error = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                                                    $msgFlag=1;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                     $up_cpv_sql = substr($up_cpv_sql, 0, -1);
                                     $up_cpv_sql.=" WHERE ID='" . $period['ID'] . "'";
-                                    
-                                    if ($not_pass_update == false && $period['ID']!='')
+
+                                    if ($not_pass_update == false && $period['ID'] != '')
                                         DBQuery($up_cpv_sql);
                                 }
                             }
                         }
                     }
-                        if ($error) {
-                            echo $error;
-                        }
+                    if ($error) {
+                        echo $error;
                     }
-                    if (($scheduleAssociation || $gradeAssociation) && is_array($asso_err)) {
-                        foreach ($asso_err as $err) {
-                            ShowErrPhp($err);
-                        }
+                }
+                if (($scheduleAssociation || $gradeAssociation) && is_array($asso_err)) {
+                    foreach ($asso_err as $err) {
+                        ShowErrPhp($err);
                     }
+                }
                 if ($tot_seat == 'error') {
                     echo "<font color=red><b>Cannot Modify seats as it has association. </b></font>";
                 }
@@ -1303,7 +1328,7 @@ if(!(attendanceAssociation($id)))
                             echo '<font color=red>' . $conflict . '</font>';
                             $not_pass = true;
                             $_SESSION['conflict'] = $conflict;
-                            $_SESSION['tables']=$_REQUEST['tables'];
+                            $_SESSION['tables'] = $_REQUEST['tables'];
                             echo "<script>window.location.href='Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=new'</script>";
                             break 2;
                         }
@@ -1315,12 +1340,12 @@ if(!(attendanceAssociation($id)))
                             echo '<font color=red>' . $conflict . '</font>';
                             $not_pass = true;
                             $_SESSION['conflict'] = $conflict;
-                            $_SESSION['tables']['course_periods']=$_REQUEST['tables']['course_periods'];
-                            $_SESSION['tables']['course_period_var']['new']['ROOM_ID']=$_REQUEST['course_period_variable']['new']['ROOM_ID'];
-                            $_SESSION['tables']['course_period_var']['new']['PERIOD_ID']=$_REQUEST['course_period_variable']['new']['PERIOD_ID'];
-                            $_SESSION['tables']['course_period_var']['new']['DAYS'][$_REQUEST['course_period_variable']['new']['DAYS']]='Y';
-                            if(isset($_REQUEST['course_period_variable']['new']['DOES_ATTENDANCE']))
-                            $_SESSION['tables']['course_period_var']['new']['DOES_ATTENDANCE']=$_REQUEST['tables']['course_period_variable']['new']['DOES_ATTENDANCE'];
+                            $_SESSION['tables']['course_periods'] = $_REQUEST['tables']['course_periods'];
+                            $_SESSION['tables']['course_period_var']['new']['ROOM_ID'] = $_REQUEST['course_period_variable']['new']['ROOM_ID'];
+                            $_SESSION['tables']['course_period_var']['new']['PERIOD_ID'] = $_REQUEST['course_period_variable']['new']['PERIOD_ID'];
+                            $_SESSION['tables']['course_period_var']['new']['DAYS'][$_REQUEST['course_period_variable']['new']['DAYS']] = 'Y';
+                            if (isset($_REQUEST['course_period_variable']['new']['DOES_ATTENDANCE']))
+                                $_SESSION['tables']['course_period_var']['new']['DOES_ATTENDANCE'] = $_REQUEST['tables']['course_period_variable']['new']['DOES_ATTENDANCE'];
                             echo "<script>window.location.href='Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=new'</script>";
                             break 2;
                         }
@@ -1399,8 +1424,6 @@ if(!(attendanceAssociation($id)))
                 }
                 // ----------------------------------------------- //
             }
-            
-           
         }
     }
     if ($assoc_err) {
@@ -1416,9 +1439,8 @@ if(!(attendanceAssociation($id)))
         $days_sql = substr($days_sql, 0, -1);
         DBQuery($days_sql);
     }
-    
-     //------------course period name with period and days------//
-           
+
+    //------------course period name with period and days------//
 //
 //                $mod_cp_id=$_REQUEST['course_period_id'];
 //              
@@ -1446,7 +1468,7 @@ if(!(attendanceAssociation($id)))
 //                        }
 //                 $new_cp_ti=$rcp_pos.' -'.implode(' ',$day_arr).' -'.implode(' ',$pr_arr).' -'.$cp_title_arr[count($cp_title_arr)-1];
 //                 DBQuery('update  course_periods  set title=\''.$new_cp_ti.'\' where course_period_id=\''.$mod_cp_id.'\'');
-                 //------------course period name with period and days------//
+    //------------course period name with period and days------//
     if ($not_pass == false)
         unset($_REQUEST['tables']);
 }
@@ -1463,8 +1485,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
         $sql[] = "DELETE FROM course_periods WHERE COURSE_PERIOD_ID='$course_period_id'";
         $sql[] = "DELETE FROM schedule WHERE COURSE_PERIOD_ID='$course_period_id'";
         $sql[] = "DELETE FROM  gradebook_assignment_types WHERE COURSE_PERIOD_ID='$course_period_id'";
-        $sql[] = "DELETE FROM  gradebook_assignments WHERE COURSE_PERIOD_ID='$course_period_id' OR COURSE_ID=".$_REQUEST['course_id'];
-        
+        $sql[] = "DELETE FROM  gradebook_assignments WHERE COURSE_PERIOD_ID='$course_period_id' OR COURSE_ID=" . $_REQUEST['course_id'];
     } elseif (clean_param($_REQUEST['course_id'], PARAM_ALPHANUM)) {
         $table = 'course';
         $course_period = DBGet(DBQuery("SELECT COURSE_PERIOD_ID FROM course_periods WHERE COURSE_ID='$course_id'"));
@@ -1577,8 +1598,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
 
 
 if ($_REQUEST['modfunc'] == 'detail') {
-    if ($_POST['button'] == 'Save' && $_REQUEST['mode'] == 'add')
-    {
+    if ($_POST['button'] == 'Save' && $_REQUEST['mode'] == 'add') {
         $conflict = VerifyBlockedSchedule($_REQUEST['values'], $_REQUEST['course_period_id'], 'cpv');
         $_SESSION['block_schedule_err'] = $conflict;
     }
@@ -1594,31 +1614,31 @@ if ($_REQUEST['modfunc'] == 'detail') {
             $col_blk['ROOM_ID'] = $_REQUEST['values']['ROOM_ID'];
         else
             $col_blk['ROOM_ID'] = $title_val[1]['ROOM_ID'];
-      
+
         $conflict = VerifyBlockedSchedule($col_blk, $_REQUEST['course_period_id'], 'cpv', true);
         $_SESSION['block_schedule_err'] = $conflict;
-        }
- 
+    }
+
     if ($_POST['button'] == 'Save' && $conflict === true) {
-       
+
         if ($_REQUEST['mode'] == 'add') {
             $chek_assoc = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id'] . ' AND (START_DATE<=\'' . date('Y-m-d') . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' OR END_DATE>=\'' . date('Y-m-d') . '\' ))'));
             if ($chek_assoc[1]['REC_EX'] == 0) {
                 $weekday = date('l', strtotime($_REQUEST['meet_date']));
-                if($weekday=='Sunday')
-                    $d='U';
-                if($weekday=='Monday')
-                    $d='M';
-                if($weekday=='Tuesday')
-                    $d='T';
-                if($weekday=='Wednesday')
-                    $d='W';
-                if($weekday=='Thursday')
-                    $d='H';
-                if($weekday=='Friday')
-                    $d='F';
-                if($weekday=='Saturday')
-                    $d='S';
+                if ($weekday == 'Sunday')
+                    $d = 'U';
+                if ($weekday == 'Monday')
+                    $d = 'M';
+                if ($weekday == 'Tuesday')
+                    $d = 'T';
+                if ($weekday == 'Wednesday')
+                    $d = 'W';
+                if ($weekday == 'Thursday')
+                    $d = 'H';
+                if ($weekday == 'Friday')
+                    $d = 'F';
+                if ($weekday == 'Saturday')
+                    $d = 'S';
                 $sql = "INSERT INTO course_period_var ";
                 $fields = 'COURSE_PERIOD_ID,COURSE_PERIOD_DATE,DAYS,';
                 $values = "'" . $_REQUEST['course_period_id'] . "','" . $_REQUEST['meet_date'] . "','" . $d . "',";
@@ -1736,7 +1756,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
         if ($go) {
 
             if (!attendanceAssociation($_REQUEST['course_period_id']))
-            DBQuery($sql);
+                DBQuery($sql);
             if ($_REQUEST['course_period_id'] != 'new') {
                 $schedule_type = DBGet(DBQuery('SELECT SCHEDULE_TYPE FROM course_periods WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id']));
                 if ($schedule_type[1]['SCHEDULE_TYPE'] == 'BLOCKED') {
@@ -1827,7 +1847,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
 //        echo '</FORM>';
 //    }
     else {
-         echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST[subject_id] . '&course_id=' . $_REQUEST[course_id] . '&course_period_id=' . $_REQUEST[course_period_id] . '&month=' . date(strtotime($_REQUEST['meet_date'])) . '"; window.close();</script>';
+        echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST[subject_id] . '&course_id=' . $_REQUEST[course_id] . '&course_period_id=' . $_REQUEST[course_period_id] . '&month=' . date(strtotime($_REQUEST['meet_date'])) . '"; window.close();</script>';
     }
 }
 
@@ -1893,8 +1913,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
                     if ($id == 'DAYS') {
                         foreach ($data as $data_in => $data_drill)
                             $RET[$id].=$data_in;
-                    }
-                    else
+                    } else
                         $RET[$id] = $data;
                 }
             }
@@ -1904,10 +1923,9 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         }
 
         echo '<div class="panel panel-default">';
-        if(isset($_SESSION['block_schedule_err']) && $_SESSION['block_schedule_err']!='')
-        {
-            if($_SESSION['block_schedule_err']!=1)
-            echo '<div id="divErr"><div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> '.$_SESSION['block_schedule_err'].'</div></div>'; 
+        if (isset($_SESSION['block_schedule_err']) && $_SESSION['block_schedule_err'] != '') {
+            if ($_SESSION['block_schedule_err'] != 1)
+                echo '<div id="divErr"><div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' . $_SESSION['block_schedule_err'] . '</div></div>';
             unset($_SESSION['block_schedule_err']);
         }
         echo "<FORM name=F2 id=F2 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id] method=POST>";
@@ -2015,12 +2033,12 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         //		--------------------------------------------- Temp Coment ------------------------------------------------- 	//
         if ($_REQUEST['course_period_id'] != 'new' && $RET['PARENT_ID'] != $_REQUEST['course_period_id']) {
 
-          //  $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseParentCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose</A>" . "&nbsp;&nbsp;" . "<INPUT type=checkbox name='parent_cp[" . $_REQUEST['course_period_id'] . "]' value='" . $_REQUEST['course_period_id'] . "' >&nbsp;Remove" . "<BR>" : '') . "</div></div>";
-       $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A>" . "&nbsp;&nbsp;" . "<INPUT type=checkbox name='parent_cp[" . $_REQUEST['course_period_id'] . "]' value='" . $_REQUEST['course_period_id'] . "' >&nbsp;Remove" . "<BR>" : '') . "</div></div>";
-            } else {
-           // $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseParentCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose</A><BR>" : '') . "</div></div>";
-        
-              $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A><BR>" : '') . "</div></div>";
+            //  $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseParentCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose</A>" . "&nbsp;&nbsp;" . "<INPUT type=checkbox name='parent_cp[" . $_REQUEST['course_period_id'] . "]' value='" . $_REQUEST['course_period_id'] . "' >&nbsp;Remove" . "<BR>" : '') . "</div></div>";
+            $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\">" . ($parent != 'N/A' && AllowEdit() ? "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=\"icon-menu6 m-t-10 pull-right\"></i><DIV id=course_div class=\"form-control\" readonly=\"readonly\">" . ($parent ? $parent : '<span class=text-grey>Click to Select</span>') . "</DIV></A>" . "&nbsp;&nbsp;" . "<INPUT type=checkbox name='parent_cp[" . $_REQUEST['course_period_id'] . "]' value='" . $_REQUEST['course_period_id'] . "' >&nbsp;Remove" . "<BR>" : '') . "</div></div>";
+        } else {
+            // $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\"><DIV id=course_div class=\"form-control\" disabled=\"disabled\">" . $parent . "</DIV> " . ($parent != 'N/A' && AllowEdit() ? "<A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseParentCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose</A><BR>" : '') . "</div></div>";
+
+            $header .= "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Parent Period</label><div class=\"col-md-8\">" . ($parent != 'N/A' && AllowEdit() ? "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=\"icon-menu6 m-t-10 pull-right\"></i><DIV id=course_div class=\"form-control\" readonly=\"readonly\">" . ($parent ? $parent : '<span class=text-grey>Click to Select</span>') . "</DIV></A><BR>" : '') . "</div></div>";
         }
         $header .= '</div>'; //.col-sm-6.col-lg-4
         $header .= '</div>'; //.row
@@ -2028,18 +2046,18 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         $header .= '<div class="clearfix">';
         $header .= '<div class="col-sm-12 col-lg-12"><div class="form-inline">';
 //        echo $RET['DOES_BREAKOFF'];
-        $header .= CheckboxInputSwitch($RET['DOES_BREAKOFF'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_BREAKOFF]', 'Allow Teacher Gradescale', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.'id="course_breakoff_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
-        $header .= CheckboxInputSwitch($RET['COURSE_WEIGHT'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][COURSE_WEIGHT]', 'Course is Weighted', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.'id="course_weight_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
+        $header .= CheckboxInputSwitch($RET['DOES_BREAKOFF'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_BREAKOFF]', 'Allow Teacher Gradescale', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div . 'id="course_breakoff_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
+        $header .= CheckboxInputSwitch($RET['COURSE_WEIGHT'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][COURSE_WEIGHT]', 'Course is Weighted', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div . 'id="course_weight_id" ' . ($RET['GRADE_SCALE_ID'] == '' ? 'disabled="disabled"' : ''), ' switch-success');
         $header .= CheckboxInputSwitch($RET['DOES_HONOR_ROLL'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_HONOR_ROLL]', 'Affects Honor Roll', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div, ' switch-success');
 
         if ($_REQUEST['course_period_id'] != 'new') {
             $get_does_att = DBGet(DBQuery('SELECT count(*) as RET_EX FROM course_period_var WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id'] . ' AND DOES_ATTENDANCE=\'Y\' '));
             if ($get_does_att[1]['RET_EX'] == 0)
-                $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.' disabled id="half_day"', ' switch-success');
+                $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div . ' disabled id="half_day"', ' switch-success');
             else
-                $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.' id="half_day"', ' switch-success');
+                $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div . ' id="half_day"', ' switch-success');
         } else
-            $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div.' disabled id="half_day"', ' switch-success');
+            $header .= CheckboxInputSwitch($RET['HALF_DAY'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][HALF_DAY]', 'Half Day', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div . ' disabled id="half_day"', ' switch-success');
 
         $header .= CheckboxInputSwitch($RET['DOES_CLASS_RANK'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_CLASS_RANK]', 'Affects Class Rank', $checked, $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', $div, ' switch-success');
 
@@ -2068,7 +2086,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         $header .= '<h5>Choose Schedule Type</h5>';
         $header .= '<div class="well">';
         //'tables[course_periods][' . $_REQUEST['course_period_id'] . '][DOES_BREAKOFF]'
-        $header .= '<div><label class="radio-inline" for=fixed_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=fixed_schedule value=fixed onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'FIXED' ? ' checked' : '') . ' ' . disabled() . '>Fixed Schedule</label><label class="radio-inline" for=variable_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=variable_schedule value=variable onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'VARIABLE' ? ' checked' : '') . ' ' . disabled() . '>Variable Schedule</label><label class="radio-inline" for=blocked_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=blocked_schedule value=blocked onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '");  ' . ($RET['SCHEDULE_TYPE'] == 'BLOCKED' ? ' checked' : '') . ' ' . disabled() . '>Enter by Calendar Days</label></div>';        
+        $header .= '<div><label class="radio-inline" for=fixed_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=fixed_schedule value=fixed onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'FIXED' ? ' checked' : '') . ' ' . disabled() . '>Fixed Schedule</label><label class="radio-inline" for=variable_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=variable_schedule value=variable onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'VARIABLE' ? ' checked' : '') . ' ' . disabled() . '>Variable Schedule</label><label class="radio-inline" for=blocked_schedule><input type=radio name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] id=blocked_schedule value=blocked onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '");  ' . ($RET['SCHEDULE_TYPE'] == 'BLOCKED' ? ' checked' : '') . ' ' . disabled() . '>Enter by Calendar Days</label></div>';
         //$header .= '<div><label class="radio-inline" for=fixed_schedule><input type=radio name=schedule_type id=fixed_schedule value=fixed onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'FIXED' ? ' checked' : '') . ' ' . disabled() . '>Fixed Schedule</label><label class="radio-inline" for=variable_schedule><input type=radio name=schedule_type id=variable_schedule value=variable onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '"); ' . ($RET['SCHEDULE_TYPE'] == 'VARIABLE' ? ' checked' : '') . ' ' . disabled() . '>Variable Schedule</label><label class="radio-inline" for=blocked_schedule><input type=radio name=schedule_type id=blocked_schedule value=blocked onclick=show_cp_meeting_days(this.value,"' . $_REQUEST[course_period_id] . '");  ' . ($RET['SCHEDULE_TYPE'] == 'BLOCKED' ? ' checked' : '') . ' ' . disabled() . '>Enter by Calendar Days</label></div>';
 
         if ($_REQUEST['conflict'] == 'y') {
@@ -2092,14 +2110,14 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
                 $caldays[$day] = conv_day($day);
             }
         }
-        if ($_REQUEST['course_period_id'] == 'new' && $not_pass == false){
+        if ($_REQUEST['course_period_id'] == 'new' && $not_pass == false) {
             $header .= '<hr/><DIV id=meeting_days></DIV>';
         } elseif ($RET['SCHEDULE_TYPE'] == 'VARIABLE') {
             $header .='<input type=hidden name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] value=VARIABLE id="variable"/>';
             echo '<input type="hidden" name="get_status" id="get_status" value="" />';
 
-            $header .= '<hr/><DIV id=meeting_days>';
-            
+            $header .= '<DIV id=meeting_days><hr/>';
+
             $header .= '<TABLE  width=100% class="table table-bordered"><TR><TD></TD><TD width="100px" class="subtabs"><strong>Days</strong></TD><TD width="200px" class="subtabs"><strong>Period</strong></TD><TD class="subtabs"><strong>Time</strong></TD><TD width="150px" class="subtabs"><strong>Room</strong></TD><TD width="130px" align="center" class="subtabs"><strong>Takes attendance</strong></TD></TR>';
             $rowcolor = 'even';
             if ($not_pass == true) {
@@ -2189,19 +2207,20 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             echo '<input type="hidden" name="cp_id" id="n_id" value="' . $_REQUEST['course_period_id'] . '"/>';
             echo '<input type="hidden" name="fixed_day4" id="fixed_day4" value="n" />';
         } elseif ($RET['SCHEDULE_TYPE'] == 'FIXED') {
-            $header .='<input type=hidden name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] value=FIXED />';
+            $header .= '<hr/>';
+            $header .= '<input type=hidden name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] value=FIXED />';
             $header .= '<input type="hidden" name="get_status" id="get_status" value="" />';
             $header .= '<input type="hidden" name="cp_id" id="' . $day . '_id" value="' . $course_period_id . '"/>';
             $header .= '<DIV id=meeting_days>';
-            
+
             $header .= '<div class="row">';
             $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Room</label><div class="col-md-8">' . SelectInput($RET['ROOM_ID'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][ROOM_ID]', '', $rooms, 'N/A', 'id=' . $day . '_room ' . $disable, $div) . '</div></div></div>';
             $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Period</label><div class="col-md-8">' . SelectInput($RET['PERIOD_ID'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][PERIOD_ID]', '', $periods, 'N/A', 'id=' . $day . '_period onClick="disable_hidden_field(' . (($day != '') ? 2 : 1) . ');"' . $disable, $div) . '</div></div></div>';
             $header .= '</div>'; //.row
-            
+
             $header.='<input type=hidden id="' . $day . '_period" value="' . $RET['PERIOD_ID'] . '" name=fixed_hidden>';
             $header.='<input type=hidden id="fixed_tag_name" value="' . 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][PERIOD_ID]' . '">';
-            
+
             $header .= '<div class="row">';
             $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Meeting Days</label><div class="col-md-8">';
             if ($not_pass != true)
@@ -2216,12 +2235,11 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             }
             if ($not_pass != true)
                 $header .= '","days",true);\'>' . $RET['DAYS'] . '</div></DIV>';
-            $header .= '</div></div></div>';            
+            $header .= '</div></div></div>';
             $header .= '<div class="col-md-6"><div class="form-group"><label class="col-md-4">&nbsp;</label><div class="col-md-8">' . CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][DOES_ATTENDANCE]', 'Takes attendance', $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success') . '<div id="ajax_output"></div></div></div></div>';
             $header .= '</div>'; //.row
             echo '<input type="hidden" name="fixed_day" id="fixed_day" value="' . $day . '" />';
-        }
-        elseif ($RET['SCHEDULE_TYPE'] == 'BLOCKED') {
+        }elseif ($RET['SCHEDULE_TYPE'] == 'BLOCKED') {
             $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE  SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND CALENDAR_ID=\'' . $RET['CALENDAR_ID'] . '\''), array(), array('SCHOOL_DATE'));
 
             if ($RET['MARKING_PERIOD_ID'] != '') {
@@ -2235,7 +2253,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             }
             $header .='<input type=hidden name=tables[course_periods][' . $_REQUEST['course_period_id'] . '][SCHEDULE_TYPE] value=BLOCKED />';
             //$header .='<TD colspan=6>';
-            $header .= '<hr class="m-b-0"/><div class="m-t-10 m-b-15 text-center">'._makeMonths('Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&month=', $begin, $end).'</div>';
+            $header .= '<hr class="m-b-0"/><div class="m-t-10 m-b-15 text-center">' . _makeMonths('Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&month=', $begin, $end) . '</div>';
             $header .= "<DIV id=meeting_days class=\"table-responsive\">";
             //$header .="<TABLE border=0 cellpadding=0 cellspacing=0 class=pixel_border><TR><TD>";
             $header .= "<table class=\"table table-bordered table-condensed\"><thead><tr align=center>";
@@ -2268,33 +2286,30 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
                     $block_periods = DBGet(DBQuery("SELECT * FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'                                    
                                                               AND course_period_date='" . $date . "'"));
-                    $header .= '<p style="font-size: 70%;"><b>'.$periods[$cpblocked_RET[$date][1]['PERIOD_ID']] . '</b></p>';
-                    $header .= '<p style="font-size: 70%;">'.$rooms[$cpblocked_RET[$date][1]['ROOM_ID']] . '</p>';
+                    $header .= '<p style="font-size: 70%;"><b>' . $periods[$cpblocked_RET[$date][1]['PERIOD_ID']] . '</b></p>';
+                    $header .= '<p style="font-size: 70%;">' . $rooms[$cpblocked_RET[$date][1]['ROOM_ID']] . '</p>';
 
                     if ($cpblocked_RET[$date][1]['PERIOD_ID'] == '' && AllowEdit()) {
 
 
                         if ($calendar_RET[$date1][1]['MINUTES'] == '999') {
-                           //$header .= '<tr><td valign=bottom align=left>' . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=add&calendar_id=$_REQUEST[calendar_id]&meet_date=$date\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
-                      $header .=  '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\''.$_REQUEST[subject_id].'\','.$_REQUEST[course_id].',\''.$_REQUEST[course_period_id].'\',\''.$_REQUEST[calendar_id].'\',\''.$date.'\',\'add\'); return false;"><i class=icon-plus3 ></i></button></td></tr>'; 
-                     
-                               }
+                            //$header .= '<tr><td valign=bottom align=left>' . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=add&calendar_id=$_REQUEST[calendar_id]&meet_date=$date\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
+                            $header .= '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\'' . $_REQUEST[subject_id] . '\',' . $_REQUEST[course_id] . ',\'' . $_REQUEST[course_period_id] . '\',\'' . $_REQUEST[calendar_id] . '\',\'' . $date . '\',\'add\'); return false;"><i class=icon-plus3 ></i></button></td></tr>';
+                        }
                     } else {
                         foreach ($block_periods as $ind => $data) {
                             $header .='<table><tr><td style="font-size: 70%;">Attendance : ' . ($data['DOES_ATTENDANCE'] == 'Y' ? 'Yes' : 'No') . '</td></tr>';
-                            if (AllowEdit())
-                            {
-                              // $header .= '<tr><td valign=bottom align=left>' . button('edit', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=edit&calendar_id=$_REQUEST[calendar_id]&id=$data[ID]&meet_date=$date\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr></table>";
-                            
-                                 $header .=  '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\''.$_REQUEST[subject_id].'\','.$_REQUEST[course_id].',\''.$_REQUEST[course_period_id].'\',\''.$_REQUEST[calendar_id].'\',\''.$date.'\',\'edit\',\''.$data[ID].'\'); return false;"><i class=icon-pencil4 ></i></button></td></tr></table>'; 
-                            }
-                                else
+                            if (AllowEdit()) {
+                                // $header .= '<tr><td valign=bottom align=left>' . button('edit', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=edit&calendar_id=$_REQUEST[calendar_id]&id=$data[ID]&meet_date=$date\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr></table>";
+
+                                $header .= '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\'' . $_REQUEST[subject_id] . '\',' . $_REQUEST[course_id] . ',\'' . $_REQUEST[course_period_id] . '\',\'' . $_REQUEST[calendar_id] . '\',\'' . $date . '\',\'edit\',\'' . $data[ID] . '\'); return false;"><i class=icon-pencil4 ></i></button></td></tr></table>';
+                            } else
                                 $header .= '</table>';
                         }
                         if (AllowEdit())
-                           // $header .= '<tr><td valign=bottom align=left>' . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=add&calendar_id=$_REQUEST[calendar_id]&meet_date=$date&add=new\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
-                    $header .=  '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\''.$_REQUEST[subject_id].'\','.$_REQUEST[course_id].',\''.$_REQUEST[course_period_id].'\',\''.$_REQUEST[calendar_id].'\',\''.$date.'\',\'add\',\'new\'); return false;"><i class=icon-plus3 ></i></button></td></tr>'; 
-                        }
+                        // $header .= '<tr><td valign=bottom align=left>' . button('add', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=add&calendar_id=$_REQUEST[calendar_id]&meet_date=$date&add=new\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr>";
+                            $header .= '<tr><td valign=bottom align=left> <button type="button" class="btn btn-primary btn-icon btn-xs" data-toggle="modal" onclick="BlockModalPeriod(\'' . $_REQUEST[subject_id] . '\',' . $_REQUEST[course_id] . ',\'' . $_REQUEST[course_period_id] . '\',\'' . $_REQUEST[calendar_id] . '\',\'' . $date . '\',\'add\',\'new\'); return false;"><i class=icon-plus3 ></i></button></td></tr>';
+                    }
                 }
                 $header .= "</td></tr>";
                 $header .= "</table></TD>";
@@ -2389,13 +2404,13 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         }
 
         echo '<div class="panel panel-default">';
-         echo "<FORM name=F4 id=F4 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id] method=POST>";
+        echo "<FORM name=F4 id=F4 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id] method=POST>";
         echo '<div class="panel-heading">
                 <h6 class="panel-title">' . $title . '</h6>
                 <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_Timetable_course_F4();"') . '</div>
             </div>';
         echo '<hr class="no-margin"/>';
-       
+
         echo '<div class="panel-body">';
         $header .= '<div class="form-group">';
         $header .= '<label class="col-md-1 control-label text-right">Title:</label>';
@@ -2505,23 +2520,22 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
     echo '</div>'; //.row
 }
 
- echo '<div id="modal_default_block_cp" class="modal fade">
+echo '<div id="modal_default_block_cp" class="modal fade">
                 <div class="modal-dialog">
                     <div class="modal-content">';
 echo '<div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">×</button>
-                            <h5 class="modal-title">Block cp</h5>
                         </div>';
-            
-                        echo '<div class="modal-body">';
-              
-                        echo'<div id="modal-res">';
-                        
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
+
+echo '<div class="modal-body">';
+
+echo'<div id="modal-res">';
+
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
 if (clean_param($_REQUEST['modname'], PARAM_ALPHAEXT) == 'Schedule/Courses.php' && clean_param($_REQUEST['course_period_id'], PARAM_ALPHANUM)) {
     $course_title = DBGet(DBQuery("SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
     $course_title = $course_title[1]['TITLE'] . '<INPUT type=hidden name=tables[parent_id] value=' . $_REQUEST['course_period_id'] . '>';
@@ -2532,41 +2546,40 @@ if (clean_param($_REQUEST['modname'], PARAM_ALPHAEXT) == 'Schedule/Courses.php' 
 
 
 
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h5 class="modal-title">Choose course</h5>
-    </div>
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h5 class="modal-title">Choose Course</h5>';
+echo '</div>';
 
-    <div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
-    echo '</table>';
+    echo '</tbody></table>';
 }
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+echo '</div>';
+echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
 function conv_day($short_date, $type = '') {
     $days = array('U' => 'Sun', 'M' => 'Mon', 'T' => 'Tue', 'W' => 'Wed', 'H' => 'Thu', 'F' => 'Fri', 'S' => 'Sat');
     if ($type == 'key')
@@ -2631,6 +2644,5 @@ function makeTextInput($value, $name) {
 function _makeChooseCheckbox($value, $title) {
     return "<INPUT type=checkbox name=stand_arr[] value=$value checked>";
 }
-
 ?>
 

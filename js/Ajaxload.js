@@ -2423,3 +2423,16 @@ function TransferredOutModalCallback(data){
     $('#modal_default_transferred_out').modal('show');
     $("#modal-res").html(data);
 }
+
+function Sch_Mrinfo(mrif_id)
+{
+    ajax_call('SchMoreInfo.php?id='+mrif_id, Sch_MrinfoCallback,Sch_MrinfoError);  
+}
+function Sch_MrinfoCallback(data){
+    $('#modal_moreinfo').modal('show');
+    $("#modal-mrif").html(data);
+}
+function Sch_MrinfoError(err)
+{ 
+    alert("Error: " + err);
+}

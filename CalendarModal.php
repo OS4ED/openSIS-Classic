@@ -43,25 +43,32 @@ if ($RET[1]['TITLE'] == '') {
     echo '</div>';
 } else {
     echo '<div class="form-group">';
-    echo '<label class="control-label">Title</label>';
-    echo (User('PROFILE') == 'admin' ? TextInputCusIdModal($RET[1]['TITLE'], 'values[TITLE]', '', ' placeholder="Enter Title"', true, 'title') : $RET[1]['TITLE']);
+    echo '<label class="control-label">Title&nbsp;</label>';
+    //echo (User('PROFILE') == 'admin' ? TextInputCusIdModal($RET[1]['TITLE'], 'values[TITLE]', '', ' placeholder="Enter Title"', true, 'title') : $RET[1]['TITLE']);
+    echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[TITLE]" name="values[TITLE]" value="'.$RET[1]['TITLE'].'" placeholder="Enter Title" size="10" type="text">' : $RET[1]['TITLE']);
     echo '</div>';
 }
 
 if ($RET[1]['STAFF_ID']) {
-    echo '<div class="form-group"><label class="control-label">Teacher</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['STAFF_ID'], 'values[STAFF_ID]', '', 'placeholder="Enter Teacher"') : $RET[1]['STAFF_ID']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">Teacher&nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['STAFF_ID'], 'values[STAFF_ID]', '', 'placeholder="Enter Teacher"') : $RET[1]['STAFF_ID']) . '</div>';
 }
 
 if ($RET[1]['ASSIGNED_DATE']) {
-    echo '<div class="form-group"><label class="control-label">Assigned Date</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['ASSIGNED_DATE'], 'values[ASSIGNED_DATE]', '', 'placeholder="Enter Assigned Date"') : $RET[1]['ASSIGNED_DATE']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">Assigned Date&nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['ASSIGNED_DATE'], 'values[ASSIGNED_DATE]', '', 'placeholder="Enter Assigned Date"') : $RET[1]['ASSIGNED_DATE']) . '</div>';
 }
 
 if ($RET[1]['DUE_DATE']) {
-    echo '<div class="form-group"><label class="control-label">Due Date</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['DUE_DATE'], 'values[DUE_DATE]', '', 'placeholder="Enter Due Date"') : $RET[1]['DUE_DATE']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">Due Date&nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['DUE_DATE'], 'values[DUE_DATE]', '', 'placeholder="Enter Due Date"') : $RET[1]['DUE_DATE']) . '</div>';
 }
 echo '<div class="form-group">';
-echo '<label class="control-label">Notes</label>';
-echo (User('PROFILE') == 'admin' ? TextAreaInputModal(html_entity_decode($RET[1]['DESCRIPTION']), 'values[DESCRIPTION]', '', 'style=height:200px;  placeholder="Enter Notes"') : html_entity_decode($RET[1]['DESCRIPTION']));
+echo '<label class="control-label">Notes&nbsp;</label>';
+//echo (User('PROFILE') == 'admin' ? TextAreaInputModal(html_entity_decode($RET[1]['DESCRIPTION']), 'values[DESCRIPTION]', '', 'style=height:200px;  placeholder="Enter Notes"') : html_entity_decode($RET[1]['DESCRIPTION']));
+if($RET[1]['DESCRIPTION']!='')
+{
+$RET[1]['DESCRIPTION']=html_entity_decode(html_entity_decode($RET[1]['DESCRIPTION']));
+$RET[1]['DESCRIPTION']=strip_tags($RET[1]['DESCRIPTION']);
+}
+echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[DESCRIPTION]" name="values[DESCRIPTION]" value="'.$RET[1]['DESCRIPTION'].'" placeholder="Enter Notes" size="10" type="textArea">' : $RET[1]['DESCRIPTION']);
 echo '</div>';
 
 //        if (AllowEdit())

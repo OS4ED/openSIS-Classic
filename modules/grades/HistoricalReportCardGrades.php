@@ -70,7 +70,7 @@ if (UserStudentID()) {
             if ($rows == 0) {
                 DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');
             } elseif ($rows != 0) {
-                echo "<b>This Marking Periods has been updated.</b>";
+                echo '<div class="alert alert-success alert-bordered"><i class="icon-checkmark2"></i> This Marking Periods has been updated.</div>';
             }
             // ------------------------- End --------------------------- //
             $mp_id = $_REQUEST['new_sms'];
@@ -328,12 +328,12 @@ if (UserStudentID()) {
 
         echo '</FORM>';
 
-        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
+        echo '<div class="panel">';
+        echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
 
         $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=25  class=form-control');
 
 
-        echo '<div class="panel">';
         echo '<div class="panel-body alpha-grey">';
 
         echo '<div class="media">';
@@ -367,9 +367,9 @@ if (UserStudentID()) {
                 }
 
                 echo '<div class="form-group">';
-                echo '<div class="col-md-4"><label class="control-label col-md-4">New Marking Period</label><div class="col-md-8">' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div></div>';
-                echo '<div class="col-md-4"><label class="control-label col-md-4">School Name</label><div class="col-md-8">' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div></div>';
-                echo '<div class="col-md-4"><label class="control-label col-md-4">Grade Level</label><div class="col-md-8">' . $sms_grade_level . '</div></div>';
+                echo '<div class="col-md-4"><label class="control-label">New Marking Period</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">School Name</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">Grade Level</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
             }
         } else {
@@ -386,10 +386,12 @@ if (UserStudentID()) {
                     $school_name = $get_schoolid[1]['title'];
                 }
             }
-            echo '<tr> <td >Grade Level:</td><td>' . $sms_grade_level . '</td>
-                      <tr> <td >Select Marking Period:</td><td>' . $mpselect . '</td></tr>
-                      <tr> <td >School Name:</td><td>' . TextInput($school_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</td>
-                      </tr></table>';
+            echo '<div class="form-group clearfix">';
+            echo '<div class="col-md-4"><label class="control-label">Grade Level:</label>' . $sms_grade_level . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">Select Marking Period:</label>' . $mpselect . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">School Name:</label>' . TextInput($school_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</div>';
+            echo '</div>';
+            
             $sql = 'SELECT ID,COURSE_CODE,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
                     IF(ISNULL(UNWEIGHTED_GP),  WEIGHTED_GP,UNWEIGHTED_GP ) AS GP,WEIGHTED_GP as WEIGHTED_GP,
                     GP_SCALE,GPA_CAL,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY
@@ -439,10 +441,7 @@ if (UserStudentID()) {
             if ($mp_id) {
                 $LO_ret = DBGet(DBQuery($sql), $functions);
 
-
-                echo '<div style="width:820px; overflow:auto; overflow-x:scroll; padding-bottom:8px;">';
                 ListOutput($LO_ret, $LO_columns, '', '', $link, array(), array('count' => true, 'download' => true, 'search' => true));
-                echo '</div>';
             }
             $his_id_arr = array();
             foreach ($LO_ret as $ti => $td) {
@@ -451,11 +450,13 @@ if (UserStudentID()) {
             $his_id = implode(',', $his_id_arr);
         }
         
-        echo SubmitButton('Save', 'S1', 'class="btn btn-primary"');
-        echo '</FORM>';
-
         echo '</div>'; //.panel-body
+        
+        echo '<div class="panel-footer text-center">';
+        echo SubmitButton('Save', 'S1', 'class="btn btn-primary"');
+        echo '</div>'; //.panel-footer
         echo '</div>'; //.panel
+        echo '</FORM>';
     }
 }
 

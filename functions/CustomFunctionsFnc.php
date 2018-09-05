@@ -50,51 +50,54 @@ function TextAreaInputOrg($value, $name, $title = '', $options = '', $div = true
 }
 
 function ShowErr($msg) {
-    echo "<script type='text/javascript'>
-	document.getElementById('divErr').innerHTML='<font color=red>" . $msg . "</font>';</script>";
+    echo "<script type='text/javascript'>";
+    echo "$('body').find('.jGrowl').attr('class', '').attr('id', '').hide();
+        $.jGrowl('".$msg."', {
+            position: 'top-center',
+            theme: 'alert-styled-left bg-danger',
+            life: 5000,
+        });";
+    echo "</script>";
 }
 
 function ShowErrPhp($msg) {
-    echo '<font color=red>' . $msg . '<br /></font>';
+    echo '<div class="alert alert-danger no-border">' . $msg . '</div>';
 }
 
 function for_error() {
     $css = getCSS();
-    echo "<br><br><form action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=post>";
+    echo "<form action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=post>";
     echo '<BR><CENTER>' . SubmitButton('Try Again', '', 'class="btn btn-primary"') . '</CENTER>';
     echo "</form>";
-    echo "</div>";
-
-    echo "</td>
-                                        </tr>
-                                      </table></td>
-                                  </tr>
-                                </table></td>
-                            </tr>
-                          </table></td>
-                      </tr>
-                    </table></td>
-                </tr>
-              </table></td>
-          </tr>
-
-			<tr>
-            <td class=\"footer\">
-			<table width=\"100%\" border=\"0\">
-  <tr>
-    <td align='center' class='copyright'>
-       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
-                </center></td>
-  </tr>
-</table>
-			</td>
-          	</tr>
-        </table></td>
-    </tr>
-  </table>
-</center>
-</body>
-</html>";
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';                
+    echo '</div>';
+    echo '</div>';
+    // page container
+    
+    $get_app_details = DBGet(DBQuery('SELECT * FROM app'));
+    // Footer
+    echo '<div class="navbar footer">';
+    echo '<div class="navbar-collapse" id="footer">';
+    echo '<div class="row">';
+    echo '<div class="col-md-9">';
+    echo '<div class="navbar-text">';
+    echo 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="col-md-3">';
+    echo '<div class="version-info">';
+    echo 'Version <b>' . $get_app_details[1][VALUE] . '</b>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    // footer end
+    echo '</body>';
+    echo '</html>';
 
     exit();
 }

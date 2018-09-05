@@ -36,9 +36,8 @@ function DeletePromptCommon($title,$action='delete')
 
 	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
 	{
-		echo '<BR>';
 		PopTable('header','Confirm'.(strpos($action,' ')===false?' '.ucwords($action):''));
-		echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class='btn btn-primary' value=OK>&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=".strip_tags(trim($_REQUEST['modname']))."&category_id=".strip_tags(trim($_REQUEST['category_id']))."&table=".strip_tags(trim($_REQUEST['table']))."&include=".strip_tags(trim($_REQUEST['include']))."&subject_id=".strip_tags(trim($_REQUEST['subject_id']))."&course_id=".strip_tags(trim($_REQUEST['course_id']))."&course_period_id=".strip_tags(trim($_REQUEST['course_period_id']))."\"'></FORM></CENTER>";
+		echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class='btn btn-danger' value=OK> &nbsp; <INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=".strip_tags(trim($_REQUEST['modname']))."&category_id=".strip_tags(trim($_REQUEST['category_id']))."&table=".strip_tags(trim($_REQUEST['table']))."&include=".strip_tags(trim($_REQUEST['include']))."&subject_id=".strip_tags(trim($_REQUEST['subject_id']))."&course_id=".strip_tags(trim($_REQUEST['course_id']))."&course_period_id=".strip_tags(trim($_REQUEST['course_period_id']))."\"'></FORM></CENTER>";
 		PopTable('footer');
 		return false;
 	}

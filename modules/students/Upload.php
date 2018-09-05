@@ -1,4 +1,5 @@
 <?php
+
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -27,70 +28,61 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include("UploadClassFnc.php");
-DrawBC("Students > ".ProgramTitle());
-PopTable ('header','Upload Student\'s Photo');
-if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='edit')
-{
-	if($StudentPicturesPath && (($file = @fopen($picture_path=$StudentPicturesPath.'/'.UserStudentID().'.JPG','r')) || ($file = @fopen($picture_path=$StudentPicturesPath.'/'.UserStudentID().'.JPG','r'))))
-	{
-	echo '<div align=center><IMG SRC="'.$picture_path.'?id='.rand(6,100000).'" width=150 class=pic></div>';
-	}
-	unset($_REQUEST['modfunc']);
+DrawBC("Students > " . ProgramTitle());
+PopTable('header', 'Upload Student\'s Photo');
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit') {
+    if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
+        echo '<div align=center><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150 class=pic></div>';
+    }
+    unset($_REQUEST['modfunc']);
 }
-if(UserStudentID())
-{
-if(clean_param($_REQUEST['action'],PARAM_ALPHAMOD)=='upload' && $_FILES['file']['name'])
-{
+if (UserStudentID()) {
+    if (clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'upload' && $_FILES['file']['name']) {
 //	$target_path=$StudentPicturesPath.'/'.UserStudentID().'.JPG';
 //	$destination_path = $StudentPicturesPath;
-    $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.UserStudentID().' AND PROFILE_ID=3 AND SCHOOL_ID='. UserSchool().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
-        
-        $fileName=$_FILES['file']['name'];
-        $tmpName  = $_FILES['file']['tmp_name'];
+        $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+
+        $fileName = $_FILES['file']['name'];
+        $tmpName = $_FILES['file']['tmp_name'];
         $fileSize = $_FILES['file']['size'];
         $fileType = $_FILES['file']['type'];
-	$upload= new upload();
+        $upload = new upload();
 //	$upload->target_path=$target_path;
-	if(count($stu_img_info)>0)
+        if (count($stu_img_info) > 0)
             $upload->deleteOldImage($stu_img_info[1]['ID']);
 //	$upload->destination_path=$destination_path;
-	$upload->name=$_FILES["file"]["name"];
-        $upload->fileSize=$fileSize;
-	$upload->setFileExtension();
-	$upload->fileExtension;
-	$upload->validateImage();
+        $upload->name = $_FILES["file"]["name"];
+        $upload->fileSize = $fileSize;
+        $upload->setFileExtension();
+        $upload->fileExtension;
+        $upload->validateImage();
         $upload->validateImageSize();
-        if($upload->wrongSize==1){
-	$_FILES["file"]["error"]=1;
-	}
-	if($upload->wrongFormat==1){
-	$_FILES["file"]["error"]=1;
-	}
-	
-	if ($_FILES["file"]["error"] > 0 && $upload->wrongFormat==1)
-    {
-    $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
-    echo '
-	'.$msg.'
+        if ($upload->wrongSize == 1) {
+            $_FILES["file"]["error"] = 1;
+        }
+        if ($upload->wrongFormat == 1) {
+            $_FILES["file"]["error"] = 1;
+        }
+
+        if ($_FILES["file"]["error"] > 0 && $upload->wrongFormat == 1) {
+            $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
+            echo '
+	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+            echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
-PopTable ('footer');
-    }
-    else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize==1)
-    {
-    $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
-    echo '
-	'.$msg.'
+            PopTable('footer');
+        } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
+            $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+            echo '
+	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+            echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
 <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
-PopTable ('footer');
-    }
-  	else
-    {
+            PopTable('footer');
+        } else {
 //	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
 //	  @fopen($upload->target_path,'r');
 //            $fp = fopen($tmpName, 'r');
@@ -99,56 +91,53 @@ PopTable ('footer');
             $content = addslashes($content);
             //fclose($fp);
 
-            if(!get_magic_quotes_gpc())
-            {
+            if (!get_magic_quotes_gpc()) {
                 $fileName = addslashes($fileName);
             }
 
-            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES ('.UserStudentID().',\'3\','.UserSchool().','.UserSyear().',\''.$fileName.'\', \''.$fileSize.'\', \''.$fileType.'\', \''.$content.'\',\'stuimg\')');
-            $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.UserStudentID().' AND PROFILE_ID=3 AND SCHOOL_ID='. UserSchool().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
-      
-	  echo '<div align=center><IMG SRC="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=150 class=pic></div><div class=break></div>';
+            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
+            $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 
-      echo "<b>File Uploaded Successfully.</b><p>";
+            echo '<div class="text-center">';
+            echo '<div class="alert alert-success alert-bordered inline-block"><span class="text-semibold">Well done!</span> File Uploaded Successfully.</div>';
+            echo '</div>';
+            echo '<div align=center><IMG SRC="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=250 class=pic></div><div class=break></div>';
 
-	  PopTable ('footer');
-    }    
-}
-else
-{
-echo '
-'.$msg.'
+
+            PopTable('footer');
+        }
+    } else {
+        echo '
+' . $msg . '
 <form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-echo '<div align=center>Select image file: <input name="file" type="file" onchange="selectFile(this)"/><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>';
+        echo '<div align=center>Select image file: <input name="file" type="file" onchange="selectFile(this)"/><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>';
 //////////////Modal For Filter Save////////////////////
-echo '<div id="modal_crop_image" class="modal fade">';
-echo '<div class="modal-dialog">';
-echo '<div class="modal-content">';
-echo '<div class="modal-header">';
-echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Upload Photo</h5>';
-echo '</div>';
+        echo '<div id="modal_crop_image" class="modal fade">';
+        echo '<div class="modal-dialog">';
+        echo '<div class="modal-content">';
+        echo '<div class="modal-header">';
+        echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+        echo '<h5 class="modal-title">Upload Photo</h5>';
+        echo '</div>';
 
-echo '<div class="modal-body">';
-echo '<div class="image-cropper-container content-group" id=div_img style="height: 400px;">
+        echo '<div class="modal-body">';
+        echo '<div class="image-cropper-container content-group" id=div_img style="height: 400px;">
           <img src="" alt="" class="cropper" id="demo-cropper-image">
           
       </div>';
-echo '<input type=hidden name="imgblob" id="imgblob" value="">';
-echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
-echo '</div>'; //.modal-body
+        echo '<input type=hidden name="imgblob" id="imgblob" value="">';
+        echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+        echo '</div>'; //.modal-body
 
-echo '</div>'; //.modal-content
-echo '</div>'; //.modal-dialog
-echo '</div>'; //.modal
-echo '<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+        echo '</div>'; //.modal-content
+        echo '</div>'; //.modal-dialog
+        echo '</div>'; //.modal
+        echo '<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
-PopTable ('footer');
-}
-}
-else
-{
-	echo 'Please select a student first! from the <b>"Students"</b> Tab';
-	PopTable ('footer');
+        PopTable('footer');
+    }
+} else {
+    echo 'Please select a student first! from the <b>"Students"</b> Tab';
+    PopTable('footer');
 }
 ?>

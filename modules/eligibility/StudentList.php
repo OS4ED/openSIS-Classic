@@ -114,41 +114,9 @@ $extra['search'] .= '<div class="col-md-6">';
 Widgets('activity');
 $extra['search'] .= '</div>'; //.col-md-6
 $extra['search'] .= '</div>'; //.row
-echo '<div id="modal_default" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
-</div>
 
-<div class="modal-body">';
-echo '<center><div id="conf_div"></div></center>';
-echo'<table id="resp_table"><tr><td valign="top">';
-echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
-}
-echo '</div></td>';
-echo '<td valign="top"><div id="course_modal"></div></td>';
-echo '<td valign="top"><div id="cp_modal"></div></td>';
-echo '</tr></table>';
-//         echo '<div id="coursem"><div id="cpem"></div></div>';
-echo' </div>
-</div>
-</div>
-</div>';
+
 if (!$_REQUEST['search_modfunc'] && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
     $extra['new'] = true;
     Search('student_id', $extra);
@@ -159,6 +127,49 @@ if (!$_REQUEST['search_modfunc'] && User('PROFILE') != 'parent' && User('PROFILE
     ListOutput($RET, $columns, 'Student', 'Students', array(), array('STUDENT_ID' => array('FULL_NAME', 'STUDENT_ID')));
     echo '</div>';
 }
+
+
+/*
+ * Course Modal
+ */
+echo '<div id="modal_default" class="modal fade">';
+echo '<div class="modal-dialog modal-lg">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+echo '<h4 class="modal-title">Choose course</h4>';
+echo '</div>';
+
+echo '<div class="modal-body">';
+echo '<div id="conf_div" class="text-center"></div>';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-4">';
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$QI = DBQuery($sql);
+$subjects_RET = DBGet($QI);
+
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    }
+    echo '</tbody></table>';
+}
+echo '</div>';
+echo '<div class="col-md-4" id="course_modal"></div>';
+echo '<div class="col-md-4" id="cp_modal"></div>';
+echo '</div>'; //.row
+echo '</div>'; //.modal-body
+echo '</div>'; //.modal-content
+echo '</div>'; //.modal-dialog
+echo '</div>'; //.modal
+
+
+
+/*
+ * Functions
+ */
 
 function _makeLower($word) {
     return ucwords(strtolower($word));

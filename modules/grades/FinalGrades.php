@@ -56,6 +56,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                                     course_periods rc_cp,course_period_var cpv,courses c,school_periods sp';
         $extra['WHERE'] .= ' AND sg1.MARKING_PERIOD_ID IN (' . $mp_list . ')
                              AND rc_cp.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=rc_cp.COURSE_PERIOD_ID AND c.COURSE_ID = rc_cp.COURSE_ID AND sg1.STUDENT_ID=ssm.STUDENT_ID AND sp.PERIOD_ID=cpv.PERIOD_ID';
+        if(User('PROFILE')=='teacher')
+        {
+            $extra['WHERE'] .= ' AND (rc_cp.TEACHER_ID='.User('STAFF_ID').' OR rc_cp.SECONDARY_TEACHER_ID='.User('STAFF_ID').')';
+        }
         $extra['ORDER'] .= ',sp.SORT_ORDER,c.TITLE';
         $extra['functions']['TEACHER'] = '_makeTeacher';
         if ($_REQUEST['elements']['comments'] == 'Y')
@@ -165,7 +169,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             $i = 0;
             foreach ($RET as $student_id => $course_periods) {
                 $course_period_id = key($course_periods);
-                $grades_RET[$i + 1]['FULL_NAME'] = $course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['FULL_NAME'];
+                $grades_RET[$i + 1]['FULL_NAME'] = '<div style="white-space: nowrap;">'.$course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['FULL_NAME'].'</div>';
 
                 $grades_RET[$i + 1]['bgcolor'] = 'FFFFFF';
                 foreach ($course_periods as $course_period_id => $mps) {
@@ -178,7 +182,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     $grades_RET[$i]['COURSE_TITLE'] = $mps[key($mps)][1]['COURSE_TITLE'];
                     if ($mps[$last_mp][1]['TEACHER'] == '' && $course_period_id != '') {
                         $get_teacher = DBGet(DBQuery('SELECT s.FIRST_NAME,s.LAST_NAME FROM staff s,course_periods cp WHERE cp.COURSE_PERIOD_ID=' . $course_period_id . ' AND s.STAFF_ID=cp.TEACHER_ID'));
-                        $grades_RET[$i]['TEACHER'] = $get_teacher[1]['FIRST_NAME'] . ' ' . $get_teacher[1]['LAST_NAME'];
+                        $grades_RET[$i]['TEACHER'] = '<div style="white-space: nowrap;">'.$get_teacher[1]['FIRST_NAME'] . ' ' . $get_teacher[1]['LAST_NAME'].'</div>';
                     } else
                         $grades_RET[$i]['TEACHER'] = $mps[$last_mp][1]['TEACHER'];
 
@@ -221,7 +225,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
                 $link['remove']['variables'] = array('student_id' => 'STUDENT_ID', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
             }
-            echo '<div style="width:800px; overflow:auto; overflow-y:hidden;">';
+            echo '<div class="panel panel-default">';
             ListOutputGrade($grades_RET, $columns, 'Course', 'Courses', $link);
             echo '</div>';
         } else {
@@ -244,43 +248,44 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 /*
  * Course Selection Modal Start
  */
-echo '<div id="modal_default" class="modal fade">';
-echo '<div class="modal-dialog modal-lg">';
-echo '<div class="modal-content">';
-echo '<div class="modal-header">';
-echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h4 class="modal-title">Choose course</h4>';
-echo '</div>';
-
-echo '<div class="modal-body">';
-echo '<div id="conf_div" class="text-center"></div>';
-echo '<div class="row" id="resp_table">';
-echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
-
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
-if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
-    foreach ($subjects_RET as $val) {
-        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
-    }
-    echo '</table>';
-}
-echo '</div>';
-echo '<div class="col-md-4" id="course_modal"></div>';
-echo '<div class="col-md-4" id="cp_modal"></div>';
-echo '</div>'; //.row
-echo '</div>'; //.modal-body
-echo '</div>'; //.modal-content
-echo '</div>'; //.modal-dialog
-echo '</div>'; //.modal
-
-
-
-
 if (!$_REQUEST['modfunc']) {
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '</div>';
+
+    echo '<div class="modal-body">';
+    echo '<div id="conf_div" class="text-center"></div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
+
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    if (count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</table>';
+    }
+    echo '</div>';
+    echo '<div class="col-md-4" id="course_modal"></div>';
+    echo '<div class="col-md-4" id="cp_modal"></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
+
+
+
+
+
     DrawBC("Gradebook > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
@@ -310,7 +315,7 @@ if (!$_REQUEST['modfunc']) {
 
 
         $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
-        
+
         $MP_TYPE = 'QTR';
         if (!$mps_RET) {
             $MP_TYPE = 'SEM';
@@ -329,7 +334,7 @@ if (!$_REQUEST['modfunc']) {
                 $pro = GetChildrenMP('PRO', $qtr['MARKING_PERIOD_ID']);
                 if ($pro) {
                     $pros = explode(',', str_replace("'", '', $pro));
-                    
+
                     foreach ($pros as $pro)
                         if (GetMP($pro, 'DOES_GRADES') == 'Y')
                             $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . '>' . GetMP($pro, 'SHORT_NAME') . '</label></div>';
@@ -391,7 +396,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0) {
             unset($_SESSION['count_stu']);
-            echo '<div class="text-center">'.SubmitButton('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"').'</div>';
+            echo '<div class="text-center">' . SubmitButton('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
         //PopTable('footer',$submit);
         echo "</FORM>";

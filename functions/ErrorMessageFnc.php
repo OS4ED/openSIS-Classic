@@ -69,18 +69,33 @@ function ErrorMessage($errors, $code = 'error') {
         $return .= "</div>";
 
         if ($code == 'fatal') {
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
             $css = getCSS();
             if (User('PROFILE') != 'teacher') {
-                $return .= "<table width=\"100%\" border=\"0\">
-								<tr>
-    <td align='center' class='copyright'>
-       <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
-                </center></td>
-  </tr>
-								</table>
-								</td>
-								</tr>
-								</table>";
+                $return .= '<div class="navbar footer">';
+                $return .= '<div class="navbar-collapse" id="footer">';
+                $return .= '<div class="row">';
+                $return .= '<div class="col-md-9">';
+                $return .= '<div class="navbar-text">';
+                $return .= 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+                $return .= '</div>';
+                $return .= '</div>';
+                $return .= '<div class="col-md-3">';
+                $return .= '<div class="version-info">';
+                $return .= 'Version <b>' . $get_app_details[1][VALUE] . '</b>';
+                $return .= '</div>';
+                $return .= '</div>';
+                $return .= '</div>';
+                $return .= '</div>';
+                $return .= '</div>';
+                // footer end
+                $return .= '</body>';
+                $return .= '</html>';
             }
             if ($isajax == "")
                 echo $return;
@@ -109,6 +124,7 @@ function ErrorMessage1($errors, $code = 'error') {
                 $return .= '<div class="alert alert-warning no-border">';
             else
                 $return .= '<div class="alert alert-danger no-border">';
+            $return .= '<ul>';
             foreach ($errors as $value)
                 $return .= "<li>$value</li>\n";
             $return .= '</ul>';
@@ -116,17 +132,32 @@ function ErrorMessage1($errors, $code = 'error') {
         $return .= "</div>";
 
         if ($code == 'fatal') {
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
             $css = getCSS();
-            $return .= "<table width=\"100%\" border=\"0\">
-							<tr>
-								<td align='center' class='copyright'>
-								   <center>openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
-											</center></td>
-							  </tr>
-							</table>
-							</td>
-							</tr>
-							</table>";
+            $return .= '<div class="navbar footer">';
+            $return .= '<div class="navbar-collapse" id="footer">';
+            $return .= '<div class="row">';
+            $return .= '<div class="col-md-9">';
+            $return .= '<div class="navbar-text">';
+            $return .= 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '<div class="col-md-3">';
+            $return .= '<div class="version-info">';
+            $return .= 'Version <b>' . $get_app_details[1][VALUE] . '</b>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            $return .= '</div>';
+            // footer end
+            $return .= '</body>';
+            $return .= '</html>';
             if ($isajax == "")
                 if (!$_REQUEST['_openSIS_PDF'])
                     Warehouse('footer');

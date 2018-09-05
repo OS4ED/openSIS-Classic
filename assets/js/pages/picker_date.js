@@ -82,7 +82,7 @@ $(function () {
             format: 'yyyy-mm-dd'
         });
 
-        $('.daterange-single').on('change', function (e) {
+        $('.daterange-single').change(function (e) {
             $('input[type=submit], button[type=submit]').attr('disabled',true);
             var calid = $(this).attr('id');
             var selectedDate = $(this).val();

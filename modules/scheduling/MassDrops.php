@@ -33,7 +33,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
     $END_DATE = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
     $end_date_mod = date('Y-m-d', strtotime($END_DATE));
     if (!VerifyDate($END_DATE)) {
-        DrawHeader('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> The date you entered is not valid.</p>');
+        echo '<div class="alert alert-warning alert-bordered">The date you entered is not valid.</div>';
         for_error_sch();
     } else {
         $mp_table = GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE'));
@@ -63,16 +63,16 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
             unset($_REQUEST['modfunc']);
             unset($_SESSION['MassDrops.php']);
             if ($note)
-                DrawHeader('<p class="text-success"><i class="fa fa-check text-success"></i> ' . $note . '</p>');
+                echo '<div class="alert alert-success alert-bordered"><i class="fa fa-check text-success"></i> ' . $note . '</div>';
             if ($inactive_schedule_found == 1)
-                DrawHeaderHome('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> ' . $inactive_schedule . ' has later schedule date.</p>');
+                echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> ' . $inactive_schedule . ' has later schedule date.</div>';
             if ($inactive_schedule_found == 2)
-                DrawHeaderHome('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> Dropped date can not be changed for ' . $inactive_schedule2 . '.This schedule is locked.</p>');
+                echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> Dropped date can not be changed for ' . $inactive_schedule2 . '.This schedule is locked.</div>';
         }
         else {
             unset($_REQUEST['modfunc']);
             unset($_SESSION['MassDrops.php']);
-            DrawHeader('<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> No Studetn selected</p>');
+            echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> No Studetn selected</div>';
         }
     }
 }
@@ -100,7 +100,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
 
         //echo '<script language=JavaScript>parent.help.location.reload();</script>';
-        
+
         echo '<div class="row">';
         echo '<div class="col-md-6 col-md-offset-3">';
         echo "<FORM class=no-margin-bottom name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
@@ -114,7 +114,7 @@ if (!$_REQUEST['modfunc']) {
         //echo '<div class="panel-footer">';
         $btn = "<div class=\"m-l-20\"><INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop();formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' ></div>";
         //echo '</div>';     
-        PopTable('footer',$btn);   
+        PopTable('footer', $btn);
         echo '</FORM>';
         echo '</div>';
         echo '</div>'; //.row
@@ -136,16 +136,16 @@ if (!$_REQUEST['modfunc']) {
         if (!$extra['columns_before'] && !$extra['columns_after'])
             $columns = $LO_columns;
         if (count($students_RET) > 0) {
-            echo '<div class="panel-body"><label class="control-label">Drop Date</label><div class="form-inline">' . PrepareDate(DBDate(), '') . '</div></div>';
+            echo '<div class="panel-body form-horizontal"><label class="control-label col-md-1 text-right">Drop Date</label><div class="col-md-3">' . PrepareDate(DBDate(), '') . '</div></div>';
             echo '<hr class="no-margin"/>';
         }
         if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
             $tmp_REQUEST = $_REQUEST;
             unset($tmp_REQUEST['expanded_view']);
             if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0) {
-                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true class=big_font ><i class=\"icon-square-down-right\"></i> Expanded View</A>", '<span class="heading-text">'.str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)).'</span>', $extra['header_right']);
+                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true class=big_font ><i class=\"icon-square-down-right\"></i> Expanded View</A>", '<span class="heading-text">' . str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)) . '</span>', $extra['header_right']);
             } elseif (!UserStudentID() && count($students_RET) != 0) {
-                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false class=big_font><i class=\"icon-square-up-left\"></i> Original View</A>", '<span class="heading-text">'.str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['Search'], 0, -4)).'</span>', $extra['header_right']);
+                DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false class=big_font><i class=\"icon-square-up-left\"></i> Original View</A>", '<span class="heading-text">' . str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['Search'], 0, -4)) . '</span>', $extra['header_right']);
             }
             DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
             if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
@@ -163,7 +163,7 @@ if (!$_REQUEST['modfunc']) {
 
         if (count($students_RET) > 0) {
             //echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" onclick=\'formload_ajax("ww");\'') . '</span></div></div>';
-            echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</span></div></div>';
+            echo '<div class="panel-footer text-center">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</div>';
             echo '</div>';
             echo "</FORM>";
         }
@@ -185,17 +185,15 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-       $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>'.count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.</h6>';
-if(count($subjects_RET)>0)
-{
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>'; 
-    foreach($subjects_RET as $val)
-    {
-    echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
     echo '</tbody></table>';
 }

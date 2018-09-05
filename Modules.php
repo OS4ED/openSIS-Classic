@@ -126,6 +126,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/extensions/cookie.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/notifications/jgrowl.min.js"></script>';
 
     /* JS Initializers */
     echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';
@@ -138,6 +139,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript">
         $(function () {
+            $(\'#loading-image\').hide();
             $("body").on("click", "div.sidebar-overlay", function () {
                 $("body").toggleClass("sidebar-mobile-main");
             });
@@ -159,7 +161,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
 
     echo "<BODY>";
 }
-echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i></div>';
+echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Loading...</div>';
 echo '<div class="navbar navbar-inverse bg-white">
             <div class="navbar-header">
                 <a class="sidebar-control sidebar-main-toggle hidden-xs" data-popup="tooltip" data-placement="bottom" data-container="body" data-original-title="Collapse Menu"><i class="icon-paragraph-justify3"></i></a>
@@ -182,7 +184,7 @@ echo '<div class="navbar navbar-inverse bg-white">
 if (User('PROFILE') == 'teacher') {
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=school method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=\'' . UserSyear() . '\' AND st.staff_id=\'' . $_SESSION[STAFF_ID] . '\' AND (ssr.END_DATE>=curdate() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)'));
-    echo "<SELECT class=\"select-search\" name=school onChange='this.form.submit();'>";
+    echo "<SELECT class=\"select-search\" style=\"width: 200px;\" name=school onChange='this.form.submit();'>";
     foreach ($RET as $school) {
         echo "<OPTION value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
     }
@@ -486,7 +488,7 @@ if (User('PROFILE') == 'teacher') {
         $_SESSION['UserCoursePeriod'] = $RET[1]['COURSE_PERIOD_ID'];
     }
 
-    echo "<SELECT class=\"select\" name=period onChange='this.form.submit();' >";
+    echo "<SELECT class=\"select\" style=\"width: 200px;\" name=period onChange='this.form.submit();' >";
     if (count($RET) > 0) {
         $flag = 0;
         foreach ($RET as $period) {
@@ -521,20 +523,37 @@ if (User('PROFILE') == 'teacher') {
 }
 $user_picture = '';
 if (User('PROFILE') != 'parent') {
-    if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
-        if (UserStudentID())
-            $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
-        if (UserID())
-            $picture_path = $UserPicturesPath . UserID() . '.JPG';
-        if (file_exists($picture_path)) {
-            $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
-        } else {
-            $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-        }
-    } else {
-        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+    
+    if(User('PROFILE')=='student')
+    {
+    $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID(). ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $img_info=$img_info[1]['CONTENT'];
     }
+    else
+    {
+    $img_info= DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' .UserID()));
+    $img_info=$img_info[1]['IMG_CONTENT'];
+    }
+    if($img_info!='')
+      $user_picture = '<a href="javascript:void(0)"><IMG src="data:image/jpeg;base64,'. base64_encode($img_info) . '" class="img-circle img-responsive"></a>';
+    else
+        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//    if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
+//        if (UserStudentID())
+//            $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
+//        if (UserID())
+//            $picture_path = $UserPicturesPath . UserID() . '.JPG';
+//        if (file_exists($picture_path)) {
+//            $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
+//        } else {
+//            $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//        }
+//    } else {
+//        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+//    }
 }
+
+//$user_picture .= '<input type="file" name=""  />';
 
 echo '</div>
         </div>

@@ -301,81 +301,138 @@ function formcheck_school_setup_marking() {
 
 function ValidateDate_Marking_Periods()
 {
-    var sm, sd, sy, em, ed, ey, psm, psd, psy, pem, ped, pey, grd;
-    var frm = document.forms["marking_period"];
-    var elem = frm.elements;
-    for (var i = 0; i < elem.length; i++)
-    {
-
-        if (elem[i].name == "month_tables[new][START_DATE]")
-        {
-            sm = elem[i];
+    var sm = '';
+    var sd = '';
+    var sy = '';
+    var em = '';
+    var ed = '';
+    var ey = '';
+    var psm = '';
+    var psd = '';
+    var psy = '';
+    var pem = '';
+    var ped = '';
+    var pey = '';
+    var grd = '';
+    $('#marking_period :input').each(function(){
+        if($(this).attr('name') == 'month_tables[new][START_DATE]'){
+            sm = $(this);
         }
-        if (elem[i].name == "day_tables[new][START_DATE]")
-        {
-            sd = elem[i];
+        if($(this).attr('name') == 'day_tables[new][START_DATE]'){
+            sd = $(this);
         }
-        if (elem[i].name == "year_tables[new][START_DATE]")
-        {
-            sy = elem[i];
+        if($(this).attr('name') == 'year_tables[new][START_DATE]'){
+            sy = $(this);
         }
-
-
-        if (elem[i].name == "month_tables[new][END_DATE]")
-        {
-            em = elem[i];
+        if($(this).attr('name') == 'month_tables[new][END_DATE]'){
+            em = $(this);
         }
-        if (elem[i].name == "day_tables[new][END_DATE]")
-        {
-            ed = elem[i];
+        if($(this).attr('name') == 'day_tables[new][END_DATE]'){
+            ed = $(this);
         }
-        if (elem[i].name == "year_tables[new][END_DATE]")
-        {
-            ey = elem[i];
+        if($(this).attr('name') == 'year_tables[new][END_DATE]'){
+            ey = $(this);
         }
-
-
-        if (elem[i].name == "month_tables[new][POST_START_DATE]")
-        {
-            psm = elem[i];
+        if($(this).attr('name') == 'month_tables[new][POST_START_DATE]'){
+            psm = $(this);
         }
-        if (elem[i].name == "day_tables[new][POST_START_DATE]")
-        {
-            psd = elem[i];
+        if($(this).attr('name') == 'day_tables[new][POST_START_DATE]'){
+            psd = $(this);
         }
-        if (elem[i].name == "year_tables[new][POST_START_DATE]")
-        {
-            psy = elem[i];
+        if($(this).attr('name') == 'year_tables[new][POST_START_DATE]'){
+            psy = $(this);
         }
-
-
-        if (elem[i].name == "month_tables[new][POST_END_DATE]")
-        {
-            pem = elem[i];
+        if($(this).attr('name') == 'month_tables[new][POST_END_DATE]'){
+            pem = $(this);
         }
-        if (elem[i].name == "day_tables[new][POST_END_DATE]")
-        {
-            ped = elem[i];
+        if($(this).attr('name') == 'day_tables[new][POST_END_DATE]'){
+            ped = $(this);
         }
-        if (elem[i].name == "year_tables[new][POST_END_DATE]")
-        {
-            pey = elem[i];
+        if($(this).attr('name') == 'year_tables[new][POST_END_DATE]'){
+            pey = $(this);
         }
-
-        if (elem[i].name == "tables[new][DOES_GRADES]")
-        {
-            grd = elem[i];
+        if($(this).attr('name') == 'tables[new][DOES_GRADES]'){
+            grd = $(this);
         }
-
-    }
+        
+    });
+    
+    
+    
+//    var frm = document.forms["marking_period"];
+//    var elem = frm.elements;
+//    for (var i = 0; i < elem.length; i++)
+//    {
+//
+//        if (elem[i].name == "month_tables[new][START_DATE]")
+//        {
+//            sm = elem[i];
+//        }
+//        if (elem[i].name == "day_tables[new][START_DATE]")
+//        {
+//            sd = elem[i];
+//        }
+//        if (elem[i].name == "year_tables[new][START_DATE]")
+//        {
+//            sy = elem[i];
+//        }
+//
+//
+//        if (elem[i].name == "month_tables[new][END_DATE]")
+//        {
+//            em = elem[i];
+//        }
+//        if (elem[i].name == "day_tables[new][END_DATE]")
+//        {
+//            ed = elem[i];
+//        }
+//        if (elem[i].name == "year_tables[new][END_DATE]")
+//        {
+//            ey = elem[i];
+//        }
+//
+//
+//        if (elem[i].name == "month_tables[new][POST_START_DATE]")
+//        {
+//            psm = elem[i];
+//        }
+//        if (elem[i].name == "day_tables[new][POST_START_DATE]")
+//        {
+//            psd = elem[i];
+//        }
+//        if (elem[i].name == "year_tables[new][POST_START_DATE]")
+//        {
+//            psy = elem[i];
+//        }
+//
+//
+//        if (elem[i].name == "month_tables[new][POST_END_DATE]")
+//        {
+//            pem = elem[i];
+//        }
+//        if (elem[i].name == "day_tables[new][POST_END_DATE]")
+//        {
+//            ped = elem[i];
+//        }
+//        if (elem[i].name == "year_tables[new][POST_END_DATE]")
+//        {
+//            pey = elem[i];
+//        }
+//
+//        if (elem[i].name == "tables[new][DOES_GRADES]")
+//        {
+//            grd = elem[i];
+//        }
+//
+//    }
 
 
     try
     {
         if (false == isDate(sm, sd, sy))
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please enter the start date." + "</font></b>";
-            sm.focus();
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter the start date.</div>';
+            //sm.focus();
             return false;
         }
     } catch (err)
@@ -386,8 +443,8 @@ function ValidateDate_Marking_Periods()
     {
         if (false == isDate(em, ed, ey))
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please enter the end date." + "</font></b>";
-            em.focus();
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter the end date.</div>';
+            //em.focus();
             return false;
         }
     } catch (err)
@@ -398,7 +455,7 @@ function ValidateDate_Marking_Periods()
     {
         if (false == CheckDate(sm, sd, sy, em, ed, ey))
         {
-            em.focus();
+            //em.focus();
             return false;
         }
     } catch (err)
@@ -406,15 +463,14 @@ function ValidateDate_Marking_Periods()
 
     }
 
-    if (true == validate_chk(grd))
+    if(grd.prop('checked') == true)
     {
-
         try
         {
             if (false == isDate(psm, psd, psy))
             {
-                document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please enter the grade posting start date." + "</font></b>";
-                psm.focus();
+                document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter the grade posting start date.</div>';
+                //psm.focus();
                 return false;
             }
         } catch (err)
@@ -428,7 +484,8 @@ function ValidateDate_Marking_Periods()
             {
                 if (false == CheckDate(psm, psd, psy, pem, ped, pey))
                 {
-                    pem.focus();
+                    //pem.focus();
+                    document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter the grade posting end date.</div>';
                     return false;
                 }
             }
@@ -447,7 +504,7 @@ function ValidateDate_Marking_Periods()
         {
             if (false == CheckDateMar(sm, sd, sy, psm, psd, psy))
             {
-                psm.focus();
+                //psm.focus();
                 return false;
             }
         } catch (err)
@@ -1175,7 +1232,7 @@ function ValidateDate_Student()
     {
         if (false == isDate(sm, sd, sy))
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please enter start date." + "</font></b>";
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter start date.</div>';
             sm.focus();
             return false;
         }
@@ -1187,7 +1244,7 @@ function ValidateDate_Student()
     {
         if (false == isDate(em, ed, ey))
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please enter end date." + "</font></b>";
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter end date.</div>';
             em.focus();
             return false;
         }
@@ -1468,7 +1525,7 @@ function school_check(staff_school_chkbox_id)
     {
         var d = $('divErr');
         err = "Please assign at least one school to this staff.";
-        d.innerHTML = "<b><font color=red>" + err + "</font></b>";
+        d.innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + err + '</div>';
         return false;
     } else if (chk == 'y')
     {
@@ -1477,7 +1534,7 @@ function school_check(staff_school_chkbox_id)
         {
             var d = $('divErr');
             var err_stardate = "Start date cannot be greater than end date.";
-            d.innerHTML = "<b><font color=red>" + err_stardate + "</font></b>";
+            d.innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + err_stardate + "</div>";
             return false;
         } else
         {
@@ -1595,7 +1652,7 @@ function formcheck_scheduling_course_F2()
     var check = 0;
     if (document.getElementById("get_status").value == 'false' && document.getElementById('cp_id').value != 'new' && document.getElementById('cp_period'))
     {
-        document.getElementById("divErr").innerHTML = '<font color="red"><b>Cannot take attendance in this period</b></font>';
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Cannot take attendance in this period</div>';
 
         return false;
     }
@@ -1606,12 +1663,12 @@ function formcheck_scheduling_course_F2()
     }
     if (check == 0)
     {
-        document.getElementById("display_meeting_days_chk").innerHTML = '<font color="red">Please select atleast one day</font>';
+        document.getElementById("display_meeting_days_chk").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select atleast one day</div>';
         document.getElementById("DAYS1").focus();
         return false;
     } else if ((document.getElementById("cp_use_standards").checked == true) && (document.getElementById("cp_standard_scale").value == ""))
     {
-        document.getElementById("display_meeting_days_chk").innerHTML = '<font color="red">Please select standard grade scale</font>';
+        document.getElementById("display_meeting_days_chk").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select standard grade scale</div>';
         document.getElementById("cp_standard_scale").focus();
         return false;
     } else
@@ -1648,7 +1705,7 @@ function validate_course_period()
         frmvalidator.addValidation("tables[course_periods][" + hidden_cp_id + "][TOTAL_SEATS]", "num", "Total Seats allows only numeric value");
         if (document.getElementById("inputtables[course_periods][" + hidden_cp_id + "][TOTAL_SEATS]") && document.getElementById("inputtables[course_periods][" + hidden_cp_id + "][TOTAL_SEATS]").value == 0)
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Total Seat cannot be 0." + "</font></b>";
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Total Seat cannot be 0.</div>';
             return false;
         }
         if (document.getElementById("inputtables[course_periods][" + hidden_cp_id + "][TOTAL_SEATS]").value == '')
@@ -1707,13 +1764,13 @@ function validate_block_schedule(option)
 
     if (document.getElementById('hidden_period_block').value == '')
     {
-        document.getElementById("block_error").innerHTML = "<b><font color=red>" + "Please select a period" + "</font></b>";
+        document.getElementById("block_error").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a period.</div>';
         document.getElementById("_period").focus();
         return false;
     }
     if (document.getElementById('_room').value == '')
     {
-        document.getElementById("block_error").innerHTML = "<b><font color=red>" + "Please select a room" + "</font></b>";
+        document.getElementById("block_error").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a room</div>';
         document.getElementById("_room").focus();
         return false;
     }
@@ -1722,13 +1779,13 @@ function validate_cp_other_fields()
 {
     if (document.getElementById("fixed_schedule").checked == false && document.getElementById("variable_schedule").checked == false && document.getElementById("blocked_schedule").checked == false)
     {
-        document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please select schedule type" + "</font></b>";
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select schedule type.</div>';
         document.getElementById("fixed_schedule").focus();
         return false;
     }
     if (document.getElementById("preset").checked == false && document.getElementById("custom").checked == false)
     {
-        document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please select marking period or custom date range" + "</font></b>";
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select marking period or custom date range.</div>';
         document.getElementById("preset").focus();
         return false;
     }
@@ -1736,20 +1793,20 @@ function validate_cp_other_fields()
     {
         if (document.getElementById("monthSelect1").value == '' || document.getElementById("daySelect1").value == '' || document.getElementById("yearSelect1").value == '')
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please input a valid starting date" + "</font></b>";
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please input a valid starting date.</div>';
             document.getElementById("custom").focus();
             return false;
         }
         if (document.getElementById("monthSelect2").value == '' || document.getElementById("daySelect2").value == '' || document.getElementById("yearSelect2").value == '')
         {
-            document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please input a valid ending date" + "</font></b>";
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please input a valid ending date.</div>';
             document.getElementById("custom").focus();
             return false;
         }
     }
     if (document.getElementById("preset").checked == true && document.getElementById("marking_period").value == '')
     {
-        document.getElementById("divErr").innerHTML = "<b><font color=red>" + "Please select marking period" + "</font></b>";
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select marking period.</div>';
         document.getElementById("marking_period").focus();
         return false;
     }
@@ -1783,7 +1840,7 @@ function validate_cp_other_fields()
             a.value = "1";
         if (a.value.trim() == "")
         {
-            document.getElementById("divErr").innerHTML = '<font color="red"><b>You must select at least 1 day</b></font>';
+            document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> You must select at least 1 day.</div>';
             return false;
         }
     } else
@@ -2198,18 +2255,12 @@ function formcheck_attendance_codes()
 
         for (i = 0; i <= ar.length - 1; i++)
         {
-
-
-
-
             frmvalidator.addValidation("values[" + ar[i] + "][TITLE]", "req", "Title cannot be blank");
             frmvalidator.addValidation("values[" + ar[i] + "][TITLE]", "maxlen=50", "Max length for title is 50 characters");
             frmvalidator.addValidation("values[" + ar[i] + "][SHORT_NAME]", "req", "Short Name cannot be blank");
 
             frmvalidator.addValidation("values[" + ar[i] + "][SORT_ORDER]", "num", "Short Order allows only numeric value");
             frmvalidator.setAddnlValidationFunction(formcheck_attendance_codes_extra);
-
-
         }
 
 
@@ -2252,14 +2303,14 @@ function formcheck_attendance_codes_extra()
 
                 if (inp_value == "")
                 {
-                    document.getElementById('divErr').innerHTML = "<b><font color=red>" + unescape("Please enter type") + "</font></b>";
+                    document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + unescape("Please enter type") + '</div>';
                     return false;
                 }
             } else if (inp_name == 'values[new][STATE_CODE]')
             {
                 if (inp_value == "")
                 {
-                    document.getElementById('divErr').innerHTML = "<b><font color=red>" + unescape("Please enter state code") + "</font></b>";
+                    document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + unescape("Please enter state code") + '</div>';
                     return false;
                 }
             }
@@ -2278,14 +2329,14 @@ function formcheck_attendance_codes_extra()
 
                 if (inp_value == "")
                 {
-                    document.getElementById('divErr').innerHTML = "<b><font color=red>" + unescape("Please enter type") + "</font></b>";
+                    document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + unescape("Please enter type") + "</div>";
                     return false;
                 }
             } else if (inp_name == 'values[' + j + '][STATE_CODE]')
             {
                 if (inp_value == "")
                 {
-                    document.getElementById('divErr').innerHTML = "<b><font color=red>" + unescape("Please enter state code") + "</font></b>";
+                    document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + unescape("Please enter state code") + "</div>";
                     return false;
                 }
             }
@@ -2609,14 +2660,14 @@ function pass_check()
 
         if (new_pass.length <= 7 || (new_pass.length > 7 && !new_pass.match((/\d+/))) || (new_pass.length > 7 && !new_pass.match((/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))))
         {
-            document.getElementById('divErr').innerHTML = "<b><font color=red>Password must be minimum 8 characters long with at least one capital, one numeric and one special character</font></b>";
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Password must be minimum 8 characters long with at least one capital, one numeric and one special character</div>';
             return false;
         }
 
         return true;
     } else
     {
-        document.getElementById('divErr').innerHTML = "<b><font color=red>New Password MisMatch</font></b>";
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New Password MisMatch</div>';
         return false;
     }
 }
@@ -2625,17 +2676,17 @@ function reenroll()
 {
     if (document.getElementById("monthSelect1").value == '' || document.getElementById("daySelect1").value == '' || document.getElementById("yearSelect1").value == '')
     {
-        document.getElementById('divErr').innerHTML = "<b><font color=red>Please Enter a Proper Date</font></b>";
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Enter a Proper Date</div>';
         return false;
     }
     if (document.getElementById("grade_id").value == '')
     {
-        document.getElementById('divErr').innerHTML = "<b><font color=red>Please Select a Grade Level</font></b>";
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Select a Grade Level</div>';
         return false;
     }
     if (document.getElementById("en_code").value == '')
     {
-        document.getElementById('divErr').innerHTML = "<b><font color=red>Please Select an Enrollment Code</font></b>";
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Select an Enrollment Code</div>';
         return false;
     } else
     {
@@ -2662,7 +2713,7 @@ function reenroll()
         }
         if (counter == 0)
         {
-            document.getElementById('divErr').innerHTML = '<b><font style="color:red">Please select a student</font></b>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a student</div>';
             return false;
         } else
         {
@@ -2686,7 +2737,7 @@ function sel_staff_val()
     }
     if (!ischecked_method)
     {
-        document.getElementById('sel_err').innerHTML = "<b><font color=red>Please select any one.</font></b>";
+        document.getElementById('sel_err').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select any one.</div>';
         return false;
     } else
     {
@@ -2821,7 +2872,7 @@ function mail_body_chk()
     var body1 = oEditor.GetHTML(true);
     if (body1 == '')
     {
-        document.getElementById('divErr').innerHTML = "<b><font color=red>" + unescape("Please write body of message") + "</font></b>";
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + unescape("Please write body of message") + "</div>";
         this.txtBody.focus();
         return false;
     } else
@@ -2852,7 +2903,7 @@ function validate_group_schedule()
     }
     if (counter == 0)
     {
-        document.getElementById('divErr').innerHTML = '<b><font style="color:red">Please select a student</font></b>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a student</div>';
         return false;
     } else
     {
@@ -2886,7 +2937,7 @@ function validate_group_request()
     }
     if (counter == 0)
     {
-        document.getElementById('divErr').innerHTML = '<b><font style="color:red">Please select a student</font></b>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a student</div>';
         return false;
     } else
     {
@@ -3057,11 +3108,11 @@ function formcheck_calendar_event()
     {
         if (title.value.trim() == '')
         {
-            document.getElementById('err_message').innerHTML = '<font style="color:red"><b>Title cannot be blank.</b></font>';
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Title cannot be blank.</div>';
             return false;
         } else if (title.value.length > 50)
         {
-            document.getElementById('err_message').innerHTML = '<font style="color:red"><b>Max length for title is 50 characters.</b></font>';
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Max length for title is 50 characters.</div>';
             return false;
         } else
             formload_ajax('popform');
@@ -3070,11 +3121,11 @@ function formcheck_calendar_event()
         var title = document.getElementById('values[TITLE]');
         if (title.value.trim() == '')
         {
-            document.getElementById('err_message').innerHTML = '<font style="color:red"><b>Title cannot be blank.</b></font>';
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Title cannot be blank.</div>';
             return false;
         } else if (title.value.length > 50)
         {
-            document.getElementById('err_message').innerHTML = '<font style="color:red"><b>Max length for title is 50 characters.</b></font>';
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Max length for title is 50 characters.</div>';
             return false;
         } else
             formload_ajax('popform');
@@ -3146,17 +3197,17 @@ function forgotpass()
     {
         if (document.getElementById("password_stn_id").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter student id.</div>';
             document.getElementById("password_stn_id").focus();
             return false;
         } else if (document.getElementById("uname").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your username.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your username.</div>';
             document.getElementById("uname").focus();
             return false;
         } else if (document.getElementById("monthSelect1").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter date of birth.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter date of birth.</div>';
             return false;
         } else
             return true;
@@ -3165,19 +3216,19 @@ function forgotpass()
     {
         if (document.getElementById("uname").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your username.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your username.</div>';
             document.getElementById('pass_err_msg_email').innerHTML = '';
             document.getElementById("uname").focus();
             return false;
         } else if (document.getElementById("pass_email").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your email.</div>';
             document.getElementById('pass_err_msg_email').innerHTML = '';
             document.getElementById("pass_stf_email").focus();
             return false;
         } else if (document.getElementById("pass_email").value == '0')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Incorrect login credential.</div>';
             document.getElementById('pass_err_msg_email').innerHTML = '';
             document.getElementById("pass_stf_email").focus();
             return false;
@@ -3193,17 +3244,17 @@ function forgotusername()
     {
         if (document.getElementById("username_stn_id").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter student id.</div>';
             document.getElementById("username_stn_id").focus();
             return false;
         } else if (document.getElementById("pass").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your password.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your password.</div>';
             document.getElementById("pass").focus();
             return false;
         } else if (document.getElementById("monthSelect2").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your date of birth.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your date of birth.</div>';
             return false;
         } else
             return true;
@@ -3212,19 +3263,19 @@ function forgotusername()
     {
         if (document.getElementById("pass").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your password.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your password.</div>';
             document.getElementById('uname_err_msg_email').innerHTML = '';
             document.getElementById("pass").focus();
             return false;
         } else if (document.getElementById("un_email").value == '')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please enter your email.</div>';
             document.getElementById('uname_err_msg_email').innerHTML = '';
             document.getElementById("username_stf_email").focus();
             return false;
         } else if (document.getElementById("un_email").value == '0')
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Incorrect login credential.</div>';
             document.getElementById('uname_err_msg_email').innerHTML = '';
             document.getElementById("username_stf_email").focus();
             return false;
@@ -3254,19 +3305,19 @@ function formcheck_ada_dates()
 
         if (date_1_obj > date_2_obj)
         {
-            document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Start date cannot be after end date.</b></font>';
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Start date cannot be after end date.</div>';
             return false;
         } else
             var frmvalidator = new Validator("ada_from");
     }
     if (date_1 == '')
     {
-        document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Start cannot be blank.</b></font>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Start cannot be blank.</div>';
         return false;
     }
     if (date_2 == '')
     {
-        document.getElementById('divErr').innerHTML = '<font style="color:red"><b>End cannot be blank.</b></font>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> End cannot be blank.</div>';
         return false;
     }
 }
@@ -3331,7 +3382,7 @@ function validate_filter()
 {
     if(document.getElementById('filter_name').value =='')
     {
-        document.getElementById('error_modal_filter').innerHTML ='<font style="color:red">Please enter a valid filter name.</font>';
+        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Please enter a valid filter name.</div>';
         return false;
     }
     else

@@ -43,7 +43,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods'
         $html.='<tbody>';
         foreach ($coursePeriods_RET as $val) {
             $subject_id = DBGet(DBQuery('SELECT SUBJECT_ID FROM courses WHERE COURSE_ID=' . $val['COURSE_ID']));
-            $html.= '<tr><td><a href=javascript:void(0); onclick="MassDropSessionSet(\'' . $val['TITLE'] . '\',\'' . $subject_id[1]['SUBJECT_ID'] . '\',\'' . $val['COURSE_ID'] . '\',\'' . $val['COURSE_PERIOD_ID'] . '\');">' . $val['TITLE'] . '</a></td></tr>';
+            $html.= '<tr><td><a href=javascript:void(0); onclick="MassDropSessionSet(\'' . str_replace("'","",$val['TITLE']) . '\',\'' . $subject_id[1]['SUBJECT_ID'] . '\',\'' . $val['COURSE_ID'] . '\',\'' . $val['COURSE_PERIOD_ID'] . '\');">' . $val['TITLE'] . '</a></td></tr>';
         }
         $html.='</tbody>';
         $html.='</table>';

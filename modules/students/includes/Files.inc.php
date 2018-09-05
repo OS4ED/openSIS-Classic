@@ -128,7 +128,7 @@ if($_FILES['uploadfile']['name'])
                   if(AllowEdit ())
                      {
                       echo '<td><input type="hidden" name="del" value="assets/studentfiles/'.$filename.'"/>
-                          <a href=Modules.php?modname='.$_REQUEST[modname].'&include=Files&file=assets/studentfiles/'.urlencode($filename).'&modfunc=delete><img src="assets/remove_button.gif" border=0 vspace=0></a>
+                          <a href=Modules.php?modname='.$_REQUEST[modname].'&include=Files&file=assets/studentfiles/'.urlencode($filename).'&modfunc=delete class="text-danger"><i class="icon-cross2"></i> Delete</a>
                               </td>';
                      }
                    

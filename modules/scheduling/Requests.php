@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModules.php');
-DrawBC("Scheduling -> " . ProgramTitle());
+DrawBC("Scheduling > " . ProgramTitle());
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 Widgets('request');

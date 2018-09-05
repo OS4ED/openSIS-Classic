@@ -92,7 +92,7 @@ if (!$_REQUEST['modfunc']) {
     echo "<FORM  name=ada_from id=ada_from onSubmit='return formcheck_ada_dates();' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
     $advanced_link = " <A class=\"text-pink\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> Advanced</A>";
 
-    echo '<div class="form-inline"><div class="col-md-12">' . DateInputAY($start_date, 'start', 1) . ' &nbsp; &nbsp; - ' . DateInputAY($end_date, 'end', 2) . ' &nbsp; <INPUT type=submit value=Go  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; <INPUT type=submit value=Go  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';
     echo '</FORM>';
     echo '</div>'; //.panel-body
 

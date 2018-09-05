@@ -99,13 +99,13 @@ $in = $in[1]['TOTAL'];
 
 $inbox_info = $total_count - $in;
 if ($inbox_info > 1) {
-    echo '<div class="alert bg-warning alert-styled-left">';
-    echo 'You have ' . $inbox_info . ' unread messages';
+    echo '<div class="alert alert-danger alert-bordered">';
+    echo '<i class="fa fa-info-circle"></i> You have ' . $inbox_info . ' unread messages';
     echo '</div>';
 } else {
     if ($inbox_info == 1) {
-        echo '<div class="alert bg-warning alert-styled-left">';
-        echo 'You have 1 unread message';
+        echo '<div class="alert alert-danger alert-bordered">';
+        echo '<i class="fa fa-info-circle"></i> You have 1 unread message';
         echo '</div>';
     }
 }
@@ -196,7 +196,7 @@ switch (User('PROFILE')) {
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Calendar.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Calendar.php\');">' : '') . '<i class="icon-calendar3"></i>' . (AllowUse('schoolsetup/Calendar.php') == true ? '</a>' : '') . '</div>
 
@@ -207,7 +207,7 @@ switch (User('PROFILE')) {
                                 </div>
 
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/MarkingPeriods.php\');">' : '') . '<i class="icon-tree7"></i>' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '</a>' : '') . '</div>
 
@@ -217,7 +217,7 @@ switch (User('PROFILE')) {
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('attendance/AttendanceCodes.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=attendance/AttendanceCodes.php\');">' : '') . '<i class="icon-clipboard5"></i>' . (AllowUse('attendance/AttendanceCodes.php') == true ? '</a>' : '') . '</div>
 
@@ -227,7 +227,7 @@ switch (User('PROFILE')) {
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('grades/ReportCardGrades.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=grades/ReportCardGrades.php\');">' : '') . '<i class="icon-stack3"></i>' . (AllowUse('grades/ReportCardGrades.php') == true ? '</a>' : '') . '</div>
 
@@ -236,10 +236,8 @@ switch (User('PROFILE')) {
                                         </div>
                                     </div>
                                 </div>
-                            </div><!-- /.row -->
-                            
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('students/EnrollmentCodes.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=students/EnrollmentCodes.php\');">' : '') . '<i class="icon-clipboard6"></i>' . (AllowUse('students/EnrollmentCodes.php') == true ? '</a>' : '') . '</div>
 
@@ -249,7 +247,7 @@ switch (User('PROFILE')) {
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/GradeLevels.php\');">' : '') . '<i class="icon-graph"></i>' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '</a>' : '') . '</div>
 
@@ -259,7 +257,7 @@ switch (User('PROFILE')) {
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Periods.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Periods.php\');">' : '') . '<i class="icon-watch2"></i>' . (AllowUse('schoolsetup/Periods.php') == true ? '</a>' : '') . '</div>
 
@@ -269,7 +267,7 @@ switch (User('PROFILE')) {
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-15">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Rooms.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Rooms.php\');">' : '') . '<i class="icon-grid6"></i>' . (AllowUse('schoolsetup/Rooms.php') == true ? '</a>' : '') . '</div>
 

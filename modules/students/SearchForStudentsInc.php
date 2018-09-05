@@ -71,9 +71,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             // echo 'test';
             // echo  encode_url("Modules.php?="); 
             if ($extra['pdf'] != true)
-                echo "<FORM name=search class=form-horizontal id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
-                echo "<FORM name=search class=form-horizontal id=search action=ForExport.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
+                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=ForExport.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
 
             Search('general_info');
             if ($extra['search'])
@@ -94,83 +94,83 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Comments </label><div class="col-lg-8"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Birthday</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Goal and Progress</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Goal Title </label><div class="col-lg-8"><input type=text name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title </label><div class="col-lg-8"><input type=text name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Goal Description </label><div class="col-lg-8"><input type=text name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description </label><div class="col-lg-8"><input type=text name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Progress Period </label><div class="col-lg-8"><input type=text name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period </label><div class="col-lg-8"><input type=text name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Progress Assessment </label><div class="col-lg-8"><input type=text name="progress_description" size=30 placeholder="Progress Assessment" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment </label><div class="col-lg-8"><input type=text name="progress_description" size=30 placeholder="Progress Assessment" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Medical</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Immunization</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Type</label><div class="col-lg-8"><input type=text name="type" placeholder="Immunization Type" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text name="type" placeholder="Immunization Type" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="Immunization Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="Immunization Comments" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Medical Alert</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Medical Alert" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Medical Alert" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Nurse Visit</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Nurse Visit Reason" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Nurse Visit Reason" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="Nurse Visit Result" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="Nurse Visit Result" class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="Nurse Visit Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="Nurse Visit Comments" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
@@ -329,16 +329,13 @@ else {
         $columns = $LO_columns;
 
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
-        echo "<FORM name=search class=form-horizontal id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
         echo '<input type=hidden name=filter_form value=Y />';
         echo '<div class="panel">';
         echo '<div class="panel-heading p-0 clearfix">';
-        echo '<div class="pull-left"><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a>Filter Student</a></li></ul></div>';
-        //echo '<h6 class="panel-title">Filter Student</h6>';
-       
-        
+        echo '<div class="collapse-icon"><ul class="icons-list"><li><a data-action="collapse" class=""></a></li></ul></div>';
+        echo '<div><ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a>Filter Student</a></li></ul></div>';
          
-        echo '<div class="heading-elements"><ul class="icons-list"><li><a data-action="collapse" class=""></a></li></ul></div>';
         echo '</div>';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped table-bordered table-xxs">';
@@ -444,22 +441,22 @@ else {
         echo '</tbody>';
         echo '</table>';
         echo '</div>'; //.table-responsive
-        echo '<div class="panel-footer">';
-        echo '<div class="heading-elements p-r-15">';
-//        echo '<input type="submit" class="btn btn-primary m-l-15" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET"> &nbsp; <a id="addiv" href="javascript:void(0);" class="text-pink"><i class="icon-cog"></i> Advanced Search</a>';
+        echo '<div class="panel-footer p-l-15 p-r-15">';
         
-        echo '<input type="submit" class="btn btn-primary m-l-15" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET">';
-//        echo '<form class="heading-form pull-right m-b-0" action="">';
-        echo '<div  class="pull-right m-b-0">';
+        echo '<div class="row">';
+        echo '<div class="col-sm-6 col-md-6 col-lg-6">';
+        echo '<input type="submit" class="btn btn-primary" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET">';
+        echo '</div>';
+        echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
         echo '<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_filter" class="btn btn-primary display-inline-block" onClick="setFilterValues();">Save Filter</a>';
         $filters=DBGet(DBQuery('SELECT * FROM filters WHERE SCHOOL_ID IN ('.UserSchool().',0) AND SHOW_TO IN ('. UserID().',0)'));
-        echo '<div class="form-group no-pull m-l-10 display-inline-block"><select name="filter" class="form-control form-control-bordered width-auto"  onchange="this.form.submit();"><option value="">-- Select Filter --</option>';
+        echo '<div class="m-l-10 display-inline-block"><select name="filter" class="form-control form-control-bordered width-auto"  onchange="this.form.submit();"><option value="">-- Load Filter --</option>';
         foreach ($filters as $value)
         echo '<option value='.$value['FILTER_ID'].' '.($_REQUEST['filter']==$value['FILTER_ID']?'SELECTED':'').' >'.$value['FILTER_NAME'].'</option>';
         echo '</select></div>';
-//        echo '</form>';
-         echo '</div>';
-        echo '</div>'; //.heading-elements
+        echo '</div>';
+        echo '</div>';
+        
         echo '</div>'; //.panel-footer
         echo '</div>'; //.panel
         echo '</form>';
@@ -479,12 +476,14 @@ else {
 //        echo '<form class="form-horizontal m-b-0"  method="post" action="Modules.php?modname='.$_REQUEST[modname].'&modfunc='.$_REQUEST[modfunc].'&search_modfunc=list&next_modname='.$_REQUEST[next_modname]. $extra['action'].">';
         echo '<div class="modal-body">';
         echo '<div id="conf_div"></div>';
-        echo '<div class="form-group m-b-0">';        
+        
+        echo '<div class="form-group">';        
         echo '<label class="control-label text-right col-lg-4">Filter Name</label>';
         echo '<div class="col-lg-8">';
         echo '<input type="text" id="filter_name" name="filter_name" size="30" placeholder="Filter Name" class="form-control">';
         echo '<div id="error_modal_filter"></div></div>'; //.col-lg-8
         echo '</div>'; //.form-group
+        
         echo  '<input type="hidden" id="last_hidden" name="last"/>';
         echo  '<input type="hidden" id="first_hidden" name="first"/>';
         echo  '<input type="hidden" id="stuid_hidden" name="stuid"/>';
@@ -497,18 +496,19 @@ else {
         echo '<div id="_search_all_schools_hidden"></div>';
         echo '<div id="include_inactive_hidden"></div>';
         
-        echo  '<input type="hidden" name="filter_form" value="Y" />';
-        echo '<div class="form-group m-b-0">';        
+        echo '<input type="hidden" name="filter_form" value="Y" />';
+        
+        echo '<div class="form-group">';        
         echo '<label class="control-label text-right col-lg-4">Make Public</label>';
         echo '<div class="col-lg-8">';
-        echo '<input type="checkbox" name="filter_public" value="Y">';
+        echo '<div class="checkbox checkbox-switch switch-success"><label><input type="checkbox" name="filter_public" value="Y"><span></span></label></div>';
         echo '</div>'; //.col-lg-8
         echo '</div>'; //.form-group
         
-        echo '<div class="form-group m-b-0">';        
+        echo '<div class="form-group">';        
         echo '<label class="control-label text-right col-lg-4">All School</label>';
         echo '<div class="col-lg-8">';
-        echo '<input type="checkbox" name="filter_all_school" value="Y">';
+        echo '<div class="checkbox checkbox-switch switch-success"><label><input type="checkbox" name="filter_all_school" value="Y"><span></span></label></div>';
         echo '</div>'; //.col-lg-8
         echo '</div>'; //.form-group
         

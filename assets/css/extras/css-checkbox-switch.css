@@ -190,3 +190,8 @@ Release Dtae : 15 November, 2017
     box-shadow: rgb(226, 195, 102) 0px 0px 0px 8px inset;
     transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;
 }
+
+.switch-fake-title {
+    display: inline;
+    margin-bottom: 0;
+}

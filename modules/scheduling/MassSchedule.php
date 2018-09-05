@@ -48,7 +48,14 @@ if ($_REQUEST['modfunc'] == 'save') {
             unset($_REQUEST);
             $_REQUEST['modname'] = $modname;
             unset($modname);
-            echo '<div class=\"alert bg-danger alert-styled-left\">Schedule start date cannot be before marking periods end date.</div>';
+            echo "<script type='text/javascript'>";
+            echo "$('body').find('.jGrowl').attr('class', '').attr('id', '').hide();
+                $.jGrowl('Schedule start date cannot be before marking periods end date.', {
+                    position: 'top-center',
+                    theme: 'alert-styled-left bg-danger',
+                    life: 5000,
+                });";
+            echo "</script>";
         }
     }
 }
@@ -595,131 +602,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
          AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id)) 
          GROUP BY acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID;");
 
-//                $schedule_type_check1=DBGet(DBQuery("SELECT SCHEDULE_TYPE FROM course_periods WHERE COURSE_PERIOD_ID='".$cps."'"));                
-//                 if($schedule_type_check1[1]['SCHEDULE_TYPE']=='FIXED')
-//                 {
-//                     //echo'INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID AND cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cpv.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID  AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cp.COURSE_PERIOD_ID ='.$_SESSION['MassSchedule.php']['course_period_id'].' LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=\''.UserSyear().'\'  AND acc.SCHOOL_ID=\''.UserSchool().'\' AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE<=\''.date('Y-m-d').'\'  AND ac.STAFF_ID IS NULL GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID';
-//                   DBQuery('INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID AND cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cpv.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID  AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cp.COURSE_PERIOD_ID ='.$_SESSION['MassSchedule.php']['course_period_id'].' LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=\''.UserSyear().'\'  AND acc.SCHOOL_ID=\''.UserSchool().'\' AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE<=\''.date('Y-m-d').'\'  AND ac.STAFF_ID IS NULL GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID');                          
-//                 } 
-//                if($schedule_type_check1[1]['SCHEDULE_TYPE']=='VARIABLE')
-//                {
-//                    $day1=DBGet(DBQuery("SELECT DAYS,PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID='".$cps."' AND DOES_ATTENDANCE='Y'"));
-//                   foreach($day1 as $index=>$day)
-//                    {
-//                       if($day['DAYS']=='M')
-//                           $day2[$day['PERIOD_ID']]='Monday';
-//                       if($day['DAYS']=='T')
-//                           $day2[$day['PERIOD_ID']]='Tuesday';
-//                       if($day['DAYS']=='W')
-//                           $day2[$day['PERIOD_ID']]='Wednesday';
-//                       if($day['DAYS']=='H')
-//                           $day2[$day['PERIOD_ID']]='Thursday';
-//                       if($day['DAYS']=='F')
-//                           $day2[$day['PERIOD_ID']]='Friday';
-//                       if($day['DAYS']=='S')
-//                           $day2[$day['PERIOD_ID']]='Saturday';
-//                       if($day['DAYS']=='U')
-//                           $day2[$day['PERIOD_ID']]='Sunday';
-//                    $days_check=DBGet(DBQuery("SELECT sch.START_DATE FROM schedule sch,course_periods cp WHERE cp.COURSE_PERIOD_ID='".$cps."' AND cp.COURSE_PERIOD_ID=sch.COURSE_PERIOD_ID AND cp.COURSE_ID=sch.COURSE_ID AND sch.SCHOOL_ID='".UserSchool()."' AND sch.SYEAR='".UserSyear()."'"));
-//                   foreach($days_check as $index=>$dates)
-//                   {    
-//                       $day_found_count=0;
-//                       $sec=0;
-//                       $total_diff_days=(strtotime(date('Y-m-d'))-strtotime($dates['START_DATE']))/86400;
-//                       for($i=0;$i<$total_diff_days;$i++)
-//                       {
-//                           
-//                           
-//                       $day_found=date('l',strtotime($dates['START_DATE'])+$sec);
-//                        if($day_found==$day2[$day['PERIOD_ID']])
-//                        {   
-//                            $dates_all=date('Y-m-d',strtotime($dates['START_DATE'])+$sec);
-//                            $calendar_id=DBGet(DBQuery("SELECT CALENDAR_ID FROM course_periods WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".  UserSchool()."' AND COURSE_PERIOD_ID='".$cps."'"));
-//                           $calendar_id=$calendar_id[1]['CALENDAR_ID']; 
-//                           $attendance_day_date=DBGet(DBQuery("SELECT COUNT(*) as PRESENT FROM attendance_calendar WHERE SYEAR='".UserSyear()."' AND SCHOOL_DATE='". $dates_all."' AND SCHOOL_ID='".  UserSchool()."' AND CALENDAR_ID='".$calendar_id."'"));
-//                           if($attendance_day_date[1]['PRESENT']!=0)
-//                           {
-//                            $day_found_count++;
-//                            $teach_id=DBGet(DBquery("SELECT TEACHER_ID FROM teacher_reassignment WHERE course_period_id='".$cps."' AND ASSIGN_DATE<='".$dates_all."'"));
-//                           if($teach_id[1]['TEACHER_ID']!='')
-//                           {
-//                               $teachers_id=$teach_id[1]['TEACHER_ID'];
-//                           }
-//                            else
-//                             {
-//                                $teachers_id=DBGet(DBQuery("SELECT TEACHER_ID,SECONDARY_TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID='".$cps."'"));
-//                                if($teachers_id[1]['SECONDARY_TEACHER_ID']!='')
-//                                 $secondary_teachers_id=$teachers_id[1]['SECONDARY_TEACHER_ID'];
-//                                else
-//                                 $secondary_teachers_id='';
-//                                $teachers_id=$teachers_id[1]['TEACHER_ID'];
-//                             }
-//                        $attendance_completed_check=DBGet(DBQuery("SELECT COUNT(*) as COMPLETED FROM attendance_completed WHERE PERIOD_ID='".$day['PERIOD_ID']."' AND COURSE_PERIOD_ID='".$cps."'
-//                                                                    AND SCHOOL_DATE='".$dates_all."'"));
-//                         if($attendance_completed_check[1]['COMPLETED']==0)
-//                            {  
-//                        if($secondary_teachers_id!='')
-//                           DBquery("INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) 
-//                                    VALUES ('".UserSchool()."','".UserSyear()."','".$dates_all."','".$cps."','".$day['PERIOD_ID']."','".$teachers_id."','".$secondary_teachers_id."')");
-//                          else
-//                           DBquery("INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID) 
-//                                    VALUES ('".UserSchool()."','".UserSyear()."','".$dates_all."','".$cps."','".$day['PERIOD_ID']."','".$teachers_id."')");
-//                            }
-//                          }
-//                        }
-//                           $sec=$sec+86400;
-//                       }
-//
-//                   }
-//                  }
-//                }
-//                if($schedule_type_check1[1]['SCHEDULE_TYPE']=='BLOCKED')
-//                {
-//                
-//                     $block_schedule_vals=DBGet(DBQuery("SELECT COURSE_PERIOD_DATE,PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID='".$cps."' AND DOES_ATTENDANCE='Y'"));
-//
-//                     foreach($block_schedule_vals as $index=>$vals)
-//                     {
-//                      $calendar_id=DBGet(DBQuery("SELECT CALENDAR_ID FROM course_periods WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".  UserSchool()."' AND COURSE_PERIOD_ID='".$cps."'"));
-//                        $calendar_id=$calendar_id[1]['CALENDAR_ID']; 
-//                        $attendance_day_date=DBGet(DBQuery("SELECT COUNT(*) as PRESENT FROM attendance_calendar WHERE SYEAR='".UserSyear()."' AND SCHOOL_DATE='".$vals['COURSE_PERIOD_DATE']."' AND SCHOOL_ID='".  UserSchool()."' AND CALENDAR_ID='".$calendar_id."'"));
-//                        if($attendance_day_date[1]['PRESENT']!=0)  
-//                        {
-//                        $days_check1=DBGet(DBQuery("SELECT sch.START_DATE FROM schedule sch,course_periods cp WHERE cp.COURSE_PERIOD_ID='".$cps."' AND cp.COURSE_PERIOD_ID=sch.COURSE_PERIOD_ID AND cp.COURSE_ID=sch.COURSE_ID AND sch.SCHOOL_ID='".UserSchool()."' AND sch.SYEAR='".UserSyear()."' AND sch.START_DATE<='".$vals['COURSE_PERIOD_DATE']."'"));
-//                        foreach($days_check1 as $days_check)
-//                        {
-//                        if($days_check['START_DATE']!='')
-//                        {
-//                            $teach_id=DBGet(DBquery("SELECT TEACHER_ID FROM teacher_reassignment WHERE course_period_id='".$cps."' AND ASSIGN_DATE<='".$vals['COURSE_PERIOD_DATE']."'"));
-//                            if($teach_id[1]['TEACHER_ID']!='')
-//                            {
-//                                $teachers_id=$teach_id[1]['TEACHER_ID'];
-//                            }
-//                            else
-//                            {
-//                            $teachers_id=DBGet(DBQuery("SELECT TEACHER_ID,SECONDARY_TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID='".$cps."'"));
-//                            if($teachers_id[1]['SECONDARY_TEACHER_ID']!='')
-//                             $secondary_teachers_id=$teachers_id[1]['SECONDARY_TEACHER_ID'];
-//                            else
-//                             $secondary_teachers_id='';
-//                            $teachers_id=$teachers_id[1]['TEACHER_ID'];
-//                             }  
-//                             $attendance_completed_check=DBGet(DBQuery("SELECT COUNT(*) as COMPLETED FROM attendance_completed WHERE PERIOD_ID='".$vals['PERIOD_ID']."' AND COURSE_PERIOD_ID='".$cps."'
-//                                                                    AND SCHOOL_DATE='".$vals['COURSE_PERIOD_DATE']."'"));
-//                         if($attendance_completed_check[1]['COMPLETED']==0)
-//                        {
-//                        if($secondary_teachers_id!='')
-//                        DBquery("INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) 
-//                               VALUES ('".UserSchool()."','".UserSyear()."','".$vals['COURSE_PERIOD_DATE']."','".$cps."','".$vals['PERIOD_ID']."','".$teachers_id."','".$secondary_teachers_id."')");
-//                        else
-//                        DBquery("INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID) 
-//                               VALUES ('".UserSchool()."','".UserSyear()."','".$vals['COURSE_PERIOD_DATE']."','".$cps."','".$vals['PERIOD_ID']."','".$teachers_id."')");
-//                        }     
-//                        }
-//                     }
-//                     }
-//                     }
-//                }
         unset($_REQUEST['modfunc']);
         unset($_SESSION['MassSchedule.php']);
     }
@@ -736,7 +618,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
         PopTable_wo_header('header');
         echo '<div class="row">';
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4">Course to Add</label><div class="col-lg-8"><DIV id=course_div class="form-control">';
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Course to Add</label><div class="col-lg-8"><A HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default" onClick="cleanModal(\"course_modal\");cleanModal(\"cp_modal\");"><i class="icon-menu6 pull-right m-t-10"></i><DIV id=course_div class="form-control m-b-5" readonly="readonly">';
         if ($_SESSION['MassSchedule.php']) {
             $course_title = DBGet(DBQuery('SELECT TITLE FROM courses WHERE COURSE_ID=\'' . $_SESSION['MassSchedule.php']['course_id'] . '\''));
             $course_title = $course_title[1]['TITLE'];
@@ -745,13 +627,11 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
             echo "$course_title - " . strip_tags(trim($_REQUEST[course_weight])) . "<BR>$period_title";
         }
-//        echo '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose a Course</A></div></div></div>";
-        echo '</DIV>' . "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default' onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' >Choose a Course</A></div></div></div>";
-//        echo '<input type=hidden name="subject_id" id="subject_id"/>';
-//        echo '<input type=hidden name="course_id" id="course_id"/>';
-//        echo '<input type=hidden name="course_period_id" id="course_period_id"/>';
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4">Start Date</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4">Marking Period</label><div class="col-lg-8">';
+
+        echo '<span class="text-grey">Click to Select</span></div></A></div></div></div>';
+
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Start Date</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Marking Period</label><div class="col-lg-8">';
         $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
         $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
         $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
@@ -764,43 +644,87 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         echo '</SELECT>';
         echo '</div></div></div>';
         echo '</div>'; //.row
-//        PopTable('footer');
+        PopTable('footer');
     }
 
-    if ($note)
-        DrawHeader('<IMG SRC=assets/check.gif>' . $note);
-    if ($gender_conflict)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $gender_conflict . ' have Gender Clash');
-    if ($drop_stu)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $drop_stu . ' have dropped from school');
-    if ($parent_res)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $parent_res . ' have Parent course restriction');
-    if ($start_date_q_clash)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $start_date_q_clash);
+    if ($note) {
+        echo '<div class="alert bg-success alert-styled-left">' . $note . '</div>';
+    }
+    if ($gender_conflict) {
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $gender_conflict . ' have Gender Clash';
+        echo '</div>';
+    }
+    if ($drop_stu){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $drop_stu . ' have dropped from school';
+        echo '</div>';
+    }
+    if ($parent_res){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $parent_res . ' have Parent course restriction';
+        echo '</div>';
+    }
+    if ($start_date_q_clash){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $start_date_q_clash;
+        echo '</div>';
+    }
 
-    if ($sche_date_err)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $sche_date_err);
+    if ($sche_date_err){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $sche_date_err;
+        echo '</div>';
+    }
     if ($stu_sd_err) {
         if ($stu_sd_err_count > 1) {
             $put = 'their';
         } else {
             $put = 'his/her';
         }
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $stu_sd_err . ' cannot be scheduled before ' . $put . ' enrolled date');
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $stu_sd_err . ' cannot be scheduled before ' . $put . ' enrolled date';
+        echo '</div>';
         unset($stu_sd_err);
         unset($stu_s_date_err_n);
     }
-    if ($period_res)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $period_res . ' have already scheduled in that period');
-    if ($time_clash)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $time_clash . ' have a period time clash');
-    if ($check_seats <= 0 && $no_seat)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif>' . $no_seat);
+    if ($period_res){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $period_res . ' have already scheduled in that period';
+        echo '</div>';
+    }
+    if ($time_clash){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $time_clash . ' have a period time clash';
+        echo '</div>';
+    }
+    if ($check_seats <= 0 && $no_seat){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $no_seat;
+        echo '</div>';
+    }
 
-    elseif ($request_exists)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif>' . $request_clash . ' already have unscheduled requests');
-    if ($dup_schedule)
-        DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . implode(', ', $dup_schedule) . ' have already scheduled in that period');
+    elseif ($request_exists){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo $request_clash . ' already have unscheduled requests';
+        echo '</div>';
+    }
+    if ($dup_schedule){
+        echo '<div class="alert alert-warning alert-styled-left">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo implode(', ', $dup_schedule) . ' have already scheduled in that period';
+        echo '</div>';
+    }
 }
 if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] != 'list')
@@ -830,7 +754,7 @@ if (!$_REQUEST['modfunc']) {
     Search_GroupSchedule('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" ');
+            echo '<div class="text-center">' . SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" ') . '</div>';
 
         echo "</FORM>";
     }
@@ -906,7 +830,7 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
 if (count($subjects_RET) > 0) {
     echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
     echo '<tbody>';
@@ -949,7 +873,7 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
 if (count($subjects_RET) > 0) {
     echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
     echo '<tbody>';
