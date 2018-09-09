@@ -1812,7 +1812,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
             ob_end_clean();
 
             if ($options['save_delimiter'] != 'xml') {
-                $output .= '<table><tr>';
+                $output .= '<table border="1"><tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
                 $output .= '</tr>';

@@ -170,31 +170,31 @@ if(page && page!="index.php" ){
                                 }
                                 fclose($fh1);
 
-                                $myFile = "../assets/studentphotos/dummy.txt";
-                                $fh2 = fopen($myFile, 'w');
-
-                                if ($fh2 == FALSE) {
-                                    echo '<br />';
-                                    echo '<br />Unable to write inside assets/studentphotos directory.';
-                                    echo '<br />Student photos will fail to be saved until this permission issue is solved';
-                                } else {
-                                    unlink($myFile);
-                                }
-
-
-                                fclose($fh2);
-
-                                $myFile = "../assets/userphotos/dummy.txt";
-                                $fh3 = fopen($myFile, 'w');
-
-                                if ($fh3 == FALSE) {
-                                    echo '<br />';
-                                    echo '<br />Unable to write inside assets/userphotos directory.';
-                                    echo '<br />User photos will fail to be saved until this permission issue is solved';
-                                } else {
-                                    unlink($myFile);
-                                }
-                                fclose($fh3);
+//                                $myFile = "../assets/studentphotos/dummy.txt";
+//                                $fh2 = fopen($myFile, 'w');
+//
+//                                if ($fh2 == FALSE) {
+//                                    echo '<br />';
+//                                    echo '<br />Unable to write inside assets/studentphotos directory.';
+//                                    echo '<br />Student photos will fail to be saved until this permission issue is solved';
+//                                } else {
+//                                    unlink($myFile);
+//                                }
+//
+//
+//                                fclose($fh2);
+//
+//                                $myFile = "../assets/userphotos/dummy.txt";
+//                                $fh3 = fopen($myFile, 'w');
+//
+//                                if ($fh3 == FALSE) {
+//                                    echo '<br />';
+//                                    echo '<br />Unable to write inside assets/userphotos directory.';
+//                                    echo '<br />User photos will fail to be saved until this permission issue is solved';
+//                                } else {
+//                                    unlink($myFile);
+//                                }
+//                                fclose($fh3);
 
                                 echo '<br />';
                                 echo '<br />It is recommended to solve all permission issue before performing the installation.';
@@ -202,7 +202,7 @@ if(page && page!="index.php" ){
                                 echo '<input type="button" value="Continue" class="btn_wide" onclick="hideAlert()" />';
                                 echo '</div>';
 
-                                if ($fh1 && $fh2 && fh3)
+                                if ($fh1)
                                 // show Connection information fields
                                     echo '<div id="divConnInfo" style="">';
                                 else
@@ -253,7 +253,7 @@ if(page && page!="index.php" ){
                                     <script
                                         type="text/javascript">
                                             <?php
-                                            if ($fh1 && $fh2 && fh3)
+                                            if ($fh1)
                                                 echo 'hideAlert();';
                                             else
                                                 echo 'showAlert();';
@@ -264,7 +264,7 @@ if(page && page!="index.php" ){
                                             frmvalidator.addValidation("addusername", "req", "Please enter the MySQL Admin Username");
                                     </script>
                                 </form>
-                                <?php echo ($fh1 && $fh2 && fh3) ? '</div>' : '</div>'; ?>
+                                <?php echo ($fh1) ? '</div>' : '</div>'; ?>
                             </div>
 
                         </div>

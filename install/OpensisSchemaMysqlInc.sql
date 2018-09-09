@@ -2114,7 +2114,7 @@ CREATE TABLE IF NOT EXISTS `school_gradelevel_sections` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `user_file_upload` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,

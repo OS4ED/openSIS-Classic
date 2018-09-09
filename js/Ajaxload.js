@@ -1605,8 +1605,8 @@ function fill_hidden_field(id, value)
 
 function peoplecheck_email(i, opt, p_id)
 {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (i.value != '' && re.test(i.value))
+    //var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (i.value != '')
     {
         if (opt == 2 && p_id == 0)
         {
@@ -1658,7 +1658,7 @@ function peoplecheck_email(i, opt, p_id)
                 ajax_call('EmailCheck.php?email=' + i.value + '&p_id=' + p_id + '&opt=' + opt, peoplecheck_email_callback, peoplecheck_email_error);
         }
     }
-    else if (i.value != '' && !re.test(i.value))
+    else if (i.value != '')
     {
         document.getElementById('val_email_' + opt).value = '';
         document.getElementById('email_' + opt).innerHTML = '';
@@ -1693,8 +1693,8 @@ function peoplecheck_email_error(err)
 
 function check_email(i, id, p_id)
 {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (i.value != '' && re.test(i.value))
+    //var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (i.value != '')
         ajax_call('EmailCheckOthers.php?email=' + i.value + '&id=' + id + '&type=' + p_id, check_email_callback, check_email_error);
 }
 function check_email_callback(data) {
@@ -1723,11 +1723,10 @@ function check_email_callback(data) {
 
 function check_email_error(err)
 {
-    alert("Error: " + err);
+   // alert("Error: " + err);
 }
 function check_username_install(username)
 {
-    alert(username);
     if (username != '' || username.toLowerCase() != 'os4ed')
         ajax_call('UsernameCheckOthers.php?email=' + username, check_username_install_callback, check_username_install_error);
 }
@@ -1768,12 +1767,11 @@ function forgotpassemail_init(usr_type)
         document.getElementById('pass_email').value = '';
         return false;
     }
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (i.value.length > 0)
     {
 
-        if (!re.test(pqr))
-        {
+      
             if (usr_type == 'pass_email')
             {
                 document.getElementById('pass_err_msg_email').style.color = '#ff0000';
@@ -1788,7 +1786,7 @@ function forgotpassemail_init(usr_type)
                 document.getElementById('un_email').value = '';
                 return false;
             }
-        }
+   
 
         if (usr_type == 'pass_email')
         {

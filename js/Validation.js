@@ -29,7 +29,7 @@ function formcheck_school_setup_school()
     frmvalidator.addValidation("values[REPORTING_GP_SCALE]", "dec", "Please enter decimal value only");
 
 
-    frmvalidator.addValidation("values[E_MAIL]", "email", "Please enter email in proper format");
+    //frmvalidator.addValidation("values[E_MAIL]", "email", "Please enter email in proper format");
 
     var school_id = document.getElementById("h1").value;
 
@@ -59,7 +59,7 @@ function formcheck_school_setup_school()
         frmvalidator.addValidation("inputvalues[REPORTING_GP_SCALE]", "req", "Please enter grading scale value");
         frmvalidator.addValidation("inputvalues[REPORTING_GP_SCALE]", "dec", "Please enter decimal value only");
 
-        frmvalidator.addValidation("inputvalues[E_MAIL]", "email", "Please enter email in proper format");
+        //frmvalidator.addValidation("inputvalues[E_MAIL]", "email", "Please enter email in proper format");
 
 
     }
@@ -821,7 +821,7 @@ function formcheck_staff_staff(staff_school_chkbox_id)
     frmvalidator.addValidation("values[CONTACT][STAFF_HOME_PHONE]", "req", "Please enter Home Phone");
     frmvalidator.addValidation("values[CONTACT][STAFF_WORK_PHONE]", "req", "Please enter Office Phone");
     frmvalidator.addValidation("values[CONTACT][STAFF_WORK_EMAIL]", "req", "Please enter Work email");
-    frmvalidator.addValidation("values[CONTACT][STAFF_WORK_EMAIL]", "email", "Please enter Work email in proper format");
+    //frmvalidator.addValidation("values[CONTACT][STAFF_WORK_EMAIL]", "email", "Please enter Work email in proper format");
     frmvalidator.addValidation("values[EMERGENCY_CONTACT][STAFF_EMERGENCY_FIRST_NAME]", "req", "Please enter Emergency First Name");
     frmvalidator.addValidation("values[EMERGENCY_CONTACT][STAFF_EMERGENCY_LAST_NAME]", "req", "Please enter Emergency Last Name");
     frmvalidator.addValidation("values[EMERGENCY_CONTACT][STAFF_EMERGENCY_RELATIONSHIP]", "req", "Please select Relationship to Staff");
@@ -986,13 +986,13 @@ function formcheck_student_student()
     frmvalidator.addValidation("values[people][PRIMARY][FIRST_NAME]", "req", "Please enter primary emergency contact frist name ");
     frmvalidator.addValidation("values[people][PRIMARY][LAST_NAME]", "req", "Please enter primary emergency contact last name");
     //frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "req", "Please enter a primary emergency email");
-    frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "email", "Please enter a valid primary emergency email");
+    //frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "email", "Please enter a valid primary emergency email");
 
     frmvalidator.addValidation("values[people][OTHER][RELATIONSHIP]", "req", "Please select a additional relationship to student ");
     frmvalidator.addValidation("values[people][OTHER][FIRST_NAME]", "req", "Please select a additional emergency contact to first name ");
     frmvalidator.addValidation("values[people][OTHER][LAST_NAME]", "req", "Please enter additional emergency contact last name");
     //frmvalidator.addValidation("values[people][OTHER][EMAIL]", "req", "Please enter a additional emergency email");
-    frmvalidator.addValidation("values[people][OTHER][EMAIL]", "email", "Please enter a valid additional emergency email");
+//    frmvalidator.addValidation("values[people][OTHER][EMAIL]", "email", "Please enter a valid additional emergency email");
     frmvalidator.addValidation("students[FIRST_NAME]", "req", "Please enter the first name");
     frmvalidator.addValidation("students[FIRST_NAME]", "maxlen=100", "Max length for school name is 100 characters");
 
@@ -1022,7 +1022,7 @@ function formcheck_student_student()
     frmvalidator.addValidation("students[USERNAME]", "maxlen=50", "Max length for Username is 50");
     frmvalidator.addValidation("students[PASSWORD]", "password=8", "Password should be minimum 8 characters with atleast one special character and one number");
     frmvalidator.addValidation("students[PASSWORD]", "maxlen=20", "Max length for password is 20 characters");
-    frmvalidator.addValidation("students[EMAIL]", "email", "Please enter a valid email");
+//    frmvalidator.addValidation("students[EMAIL]", "email", "Please enter a valid email");
     frmvalidator.addValidation("students[PHONE]", "phone", "Invalid phone number");
     if (document.getElementById("values[people][SECONDARY][CUSTODY]"))
     {
@@ -1039,7 +1039,7 @@ function formcheck_student_student()
             frmvalidator.addValidation("values[people][SECONDARY][FIRST_NAME]", "req", "Please enter secondary emergency contact frist name ");
             frmvalidator.addValidation("values[people][SECONDARY][LAST_NAME]", "req", "Please enter secondary emergency contact last name");
             //frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "req", "Please enter a secondary email");
-            frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "email", "Please enter a valid secondary email");
+//            frmvalidator.addValidation("values[people][SECONDARY][EMAIL]", "email", "Please enter a valid secondary email");
         }
     }
 
@@ -1483,7 +1483,7 @@ function formcheck_user_user(staff_school_chkbox_id) {
     frmvalidator.addValidation("people[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
     frmvalidator.addValidation("people[PASSWORD]", "password=8", "Password should be minimum 8 characters with one special character and one number");
 
-    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
+//    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
 
 }
 function school_check(staff_school_chkbox_id)
@@ -2756,7 +2756,7 @@ function formcheck_add_staff(staff_school_chkbox_id)
     frmvalidator.addValidation("staff[LAST_NAME]", "req", "Please enter the Last Name");
     frmvalidator.addValidation("staff[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
     frmvalidator.addValidation("staff[EMAIL]", "req", "Please select email");
-    frmvalidator.addValidation("staff[EMAIL]", "email", "Invalid email");
+//    frmvalidator.addValidation("staff[EMAIL]", "email", "Invalid email");
     frmvalidator.addValidation("values[SCHOOL][CATEGORY]", "req", "Please select the category");
     frmvalidator.addValidation("month_values[JOINING_DATE]", "req", "Please select the joining date's month");
     frmvalidator.addValidation("day_values[JOINING_DATE]", "req", "Please select the joining date's date");
@@ -2846,7 +2846,7 @@ function formcheck_user_user_mod()
 
     frmvalidator.addValidation("people[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
 
-    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
+//    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
     frmvalidator.addValidation("people[EMAIL]", "req", "Please enter the email");
 
 

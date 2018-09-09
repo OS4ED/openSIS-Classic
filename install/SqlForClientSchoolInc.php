@@ -848,8 +848,8 @@ INSERT INTO `login_message` (`id`, `message`, `display`) VALUES
 --
 -- Dumping data for table `school_years`
 --
-INSERT INTO `school_years` (`marking_period_id`, `syear`, `school_id`, `title`, `short_name`, `sort_order`, `start_date`, `end_date`, `post_start_date`, `post_end_date`, `does_grades`, `does_exam`, `does_comments`, `rollover_id`, `last_updated`, `updated_by`) VALUES
-(1, '".$_SESSION['syear']."', 1, 'Full Year', 'FY', 1, '".$_SESSION['user_school_beg_date']."', '".$_SESSION['user_school_end_date']."', '2018-05-21', '2018-06-08', 'Y', NULL, 'Y', NULL, '2018-01-22 04:18:02', NULL);
+INSERT INTO `school_years` (`marking_period_id`, `syear`, `school_id`, `title`, `short_name`, `sort_order`, `start_date`, `end_date`, `does_exam`, `rollover_id`, `last_updated`, `updated_by`) VALUES
+(1, '".$_SESSION['syear']."', 1, 'Full Year', 'FY', 1, '".$_SESSION['user_school_beg_date']."', '".$_SESSION['user_school_end_date']."', NULL, NULL, '2018-01-22 04:18:02', NULL);
 
 --
 -- Dumping data for table `marking_period_id_generator`
