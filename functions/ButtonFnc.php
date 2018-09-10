@@ -86,7 +86,7 @@ function button($type, $text = '', $link = '', $width = '', $extra = '', $button
     return $button;
 }
 
-function button_missing_atn($type, $text = '', $link = '', $cur_cp_id = '', $width = '', $extra) {
+function button_missing_atn($type, $text = '', $link = '', $cur_cp_id = '', $width = '', $extra='') {
     if ($type == 'dot') {
         $button = '<TABLE border=0 cellpadding=0 cellspacing=0 height=' . $width . ' width=' . $width . ' bgcolor=#' . $text . '><TR><TD>';
         $button .= '<IMG SRC=assets/dot.gif height=' . $width . ' width=' . $width . ' border=0 vspace=0 hspace=0>';
@@ -101,7 +101,7 @@ function button_missing_atn($type, $text = '', $link = '', $cur_cp_id = '', $wid
         if ($_SESSION['take_mssn_attn']) {
             $button .="<b><span onclick=javascript:document.getElementById('" . $cur_cp_id . "').selected='selected';><i class=\"icon-clipboard2\"></i> " . 'Take Attendance' . "</span></b>";
         } else {
-            $button .="<b>Take Attendance</b>";
+            $button .="<b><i class=icon-clipboard2></i> Take Attendance</b>";
         }
         if ($link)
             $button .= '</A>';

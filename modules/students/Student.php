@@ -595,7 +595,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         $_REQUEST['students'][$column] = '';
                         $day_valid = true;
                     } else
+                    {
                         $day_valid = true;
+                        if(substr($column,0,6)=='CUSTOM' && $_REQUEST['students'][$column]!='--')
+                            $_REQUEST['students'][$column]=date('Y-m-d',strtotime($_REQUEST['students'][$column]));
+                    }
                 }
             }
             unset($_REQUEST['day_students']);
@@ -648,7 +652,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 if ((count($_REQUEST['students']) || count($_REQUEST['values'])) && AllowEdit()) {
                     
                     //print_r($content1);
-                    //print_r($_REQUEST);
+//                    print_r($_REQUEST);
                     //echo '<br/><br/>';
                    // print_r($_FILES);
                     //exit;
@@ -734,7 +738,6 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$_REQUEST[student_id]'";
                             $log_sql = substr($log_sql, 0, -1) . " WHERE USER_ID='$_REQUEST[student_id]' AND PROFILE_ID=3";
                             if (!$error) {
-
                                 DBQuery($sql);
                                 $last_student_id = $_REQUEST[student_id];
 

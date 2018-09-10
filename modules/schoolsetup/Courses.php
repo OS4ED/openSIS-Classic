@@ -2330,6 +2330,12 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         $header .= '</div>'; //.clearfix
 
         DrawHeaderHome($header);
+        if (UserProfileID() != 2) {
+        echo '<div class="panel-heading">
+        <h6 class="panel-title"><b>' . $title . '</b></h6>
+        <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'id=save_cps class="btn btn-primary" onclick="return validate_course_period();"') . '</div>
+        </div>';
+        }
         echo '</div>'; //.panel-body
         echo '</FORM>';
         echo '</div>'; //.panel.panel-default

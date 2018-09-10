@@ -1410,10 +1410,14 @@ function show_cp_meeting_days(sch_type, cp_id)
 {
     var cal_id = document.getElementById('calendar_id').value;
     document.getElementById("save_cp").style.display = "block";
+    document.getElementById("save_cps").style.display = "block";
     if (cal_id != '' || sch_type == 'blocked')
     {
         if (sch_type == 'blocked')
+        {
             document.getElementById("save_cp").style.display = "none";
+            document.getElementById("save_cps").style.display = "none";
+        }
         ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type, meeting_days_callback, meeting_days_error);
     }
     else
@@ -1427,10 +1431,14 @@ function show_cp_meeting_daysError(sch_type, cp_id, cal_id, room_id, period_id, 
 {
 
     document.getElementById("save_cp").style.display = "block";
+    document.getElementById("save_cps").style.display = "block";
     if (cal_id != '' || sch_type == 'blocked')
     {
         if (sch_type == 'blocked')
+        {
             document.getElementById("save_cp").style.display = "none";
+            document.getElementById("save_cps").style.display = "none";
+        }
         ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type + '&room_id=' + room_id + '&period_id=' + period_id + '&days=' + days + '&does_attendance=' + does_attendance + '&msg=conflict', meeting_days_callback, meeting_days_error);
     }
     else
@@ -2420,17 +2428,4 @@ function TransferredOutModal(modfunc, student_id, drop_code)
 function TransferredOutModalCallback(data){
     $('#modal_default_transferred_out').modal('show');
     $("#modal-res").html(data);
-}
-
-function Sch_Mrinfo(mrif_id)
-{
-    ajax_call('SchMoreInfo.php?id='+mrif_id, Sch_MrinfoCallback,Sch_MrinfoError);  
-}
-function Sch_MrinfoCallback(data){
-    $('#modal_moreinfo').modal('show');
-    $("#modal-mrif").html(data);
-}
-function Sch_MrinfoError(err)
-{ 
-    alert("Error: " + err);
 }

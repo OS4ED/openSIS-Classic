@@ -130,7 +130,7 @@ echo '<div class="col-md-2">';
 if($_REQUEST['staff_id'] != 'new' && $staff['IMG_NAME'] != '')
 {
     echo '<div width=150 align="center"><IMG SRC="data:image/jpeg;base64,' . base64_encode($staff['IMG_CONTENT']) . '"  width=150 class=pic>';
-    if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
+    if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
         echo '<br><a href=Modules.php?modname=users/UploadUserPhoto.php?modfunc=edit  style="text-decoration:none"><b>Update Staff\'s Photo</b></a></div>';
     else
         echo '';
@@ -139,7 +139,7 @@ else {
 
     if ($_REQUEST['staff_id'] != 'new') {
         echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
-        if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
+        if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
             echo '<div align=center>'
             //. '<div class="fileUpload btn btn-primary btn-sm">'
             . '<label class="fileUpload btn btn-primary btn-xs btn-block mt-15">'
@@ -153,7 +153,7 @@ else {
     } else {
 
         echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
-        if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
+        if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
             echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this)" /></label></div>';
         echo '<div id="uploadFile"></div>';
     }

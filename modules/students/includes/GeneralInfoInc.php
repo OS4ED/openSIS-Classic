@@ -137,7 +137,8 @@ foreach ($fields_RET as $field) {
         case 'autos':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], '', '', 'students', $field['TITLE']);
+            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], '', 'students');
             echo '</div>';
             echo '</div>';
             $i++;
@@ -167,7 +168,7 @@ foreach ($fields_RET as $field) {
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
             echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
-            echo DateInputAY($value['CUSTOM_' . $field['ID']], 'CUSTOM_' . $field['ID'], $field['ID'] + 2);
+            echo DateInputAY($value['CUSTOM_' . $field['ID']], 'students[CUSTOM_' . $field['ID'].']', $field['ID'] + 2);
             echo '<input type=hidden name=custom_date_id[] value="' . $field['ID'] . '" />';
             echo '</div></div>';
             echo '</div>';
@@ -180,7 +181,7 @@ foreach ($fields_RET as $field) {
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
             echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
-            echo _makeSelectInput('CUSTOM_' . $field['ID'], '', '', $field['TITLE']);
+            echo _makeSelectInput('CUSTOM_' . $field['ID'], '', 'students', $field['TITLE']);
             echo '</div></div>';
             echo '</div>';
             $i++;

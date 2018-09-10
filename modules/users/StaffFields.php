@@ -423,6 +423,7 @@ if (!$_REQUEST['modfunc']) {
 
         if ($_REQUEST[category_id] != 5) {
             $link['TITLE']['variables'] = array('id' => 'ID');
+            if($_REQUEST[category_id] != 2 && $_REQUEST[category_id] != 4)
             $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
         }
 
@@ -441,6 +442,7 @@ if (!$_REQUEST['modfunc']) {
                 $arr = array('Street Address 1', 'Street Address 2', 'City', 'State', 'Zip Code', 'Home Phone'
                     , 'Mobile Phone', 'Office Phone', 'Work Email', 'Personal Email', 'Relationship to Staff');
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
+                if($_REQUEST[category_id] != 2 && $_REQUEST[category_id] != 4)
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
                 $link['TITLE']['variables'] = array('id' => 'ID');
 

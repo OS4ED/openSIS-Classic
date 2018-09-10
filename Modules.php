@@ -118,6 +118,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/media/cropper.min.js"></script>';    
     echo '<script type="text/javascript" src="assets/js/plugins/editors/ckeditor/ckeditor.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/tables/datatables/datatables.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/nicescroll.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>';
