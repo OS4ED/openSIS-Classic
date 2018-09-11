@@ -196,18 +196,64 @@
                                     $dbconn->query($app_insert);
                                     header('Location: Step5.php');
                                     exit;
-                                } else if ($v == '6.3' || $v == '6.4') {
+                                } else if ($v == '6.3' || $v == '6.4' || $v == '6.5') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '6.5'),
-('date', 'February 05, 2018'),
-('build', '20180205001'),
+('version', '7.0'),
+('date', 'March 27, 2018'),
+('build', '20180327001'),
 ('update', '0'),
-('last_updated', 'February 05, 2018');";
+('last_updated', 'March 27, 2018');";
                                     $dbconn->query($app_insert);
+                                    $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
+                                    $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
+                                    $dbconn->query('CREATE TABLE `user_file_upload` (
+   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `syear` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `size` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `content` longblob NOT NULL,
+  `file_info` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `keyval` varchar(100) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1');
+                                    $dbconn->query('CREATE TABLE `device_info` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `device_token` longtext CHARACTER SET utf8 NOT NULL,
+  `device_id` longtext CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+ $dbconn->query('CREATE TABLE `filters` (
+  `filter_id` int(11) NOT NULL,
+  `filter_name` varchar(255) DEFAULT NULL,
+  `school_id` int(11) DEFAULT \'0\',
+  `show_to` int(11) NOT NULL DEFAULT \'0\'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+                                    $dbconn->query('CREATE TABLE `filter_fields` (
+  `filter_field_id` int(11) NOT NULL,
+  `filter_id` int(11) DEFAULT NULL,
+  `filter_column` varchar(255) DEFAULT NULL,
+  `filter_value` longtext
+) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+$dbconn->query('ALTER TABLE `filters` ADD PRIMARY KEY (`filter_id`)');
+$dbconn->query('ALTER TABLE `filter_fields` ADD PRIMARY KEY (`filter_field_id`)');
+$dbconn->query('ALTER TABLE `filters` MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;');
+$dbconn->query('ALTER TABLE `filter_fields` MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1');
+$_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     exit;
                                 }
+                                
 
 //----------------------------To select all extra table-------------------------------------
 

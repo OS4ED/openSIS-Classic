@@ -87,7 +87,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
 
             echo '<div id="searchdiv" class="pt-20 mt-20 well" style="display:none;">';
-            echo '<div><a href="javascript:void(0);" onclick="hide_search_div();" class="text-pink"><i class="icon-cancel-square"></i> Close Advance Search</a></div>';
+            echo '<div><a href="javascript:void(0);" onclick="hide_search_div();" class="text-pink"><i class="icon-cancel-square"></i> Close Advanced Search</a></div>';
 
             echo '<div class="row">';
             echo '<div class="col-lg-12">';

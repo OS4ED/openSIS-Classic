@@ -54,7 +54,7 @@ if ($_SESSION['mod'] == 'upgrade') {
     }
 
     fclose($fh);
-    $display_text = 'Your system has been successfully upgraded to version 6.4. Please click the Login button to proceed to login with your existing login credentials.
+    $display_text = 'Your system has been successfully upgraded to version 7.0. Please click the Login button to proceed to login with your existing login credentials.
 ';
     echo '<!DOCTYPE html>
         <html lang="en">

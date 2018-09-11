@@ -1187,7 +1187,7 @@ if (!$_REQUEST['modfunc']) {
 
             if ($h_addr[1]['ADDRESS_ID'] == 0) {
                 echo '<div class="row">';
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"><span class=text-danger>*</span></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();" checked>Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">Add New Address</label></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"><span class=text-danger>*</span></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();" >Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">Add New Address</label></div></div></div>';
                 echo '</div>'; //.row                
             }
 

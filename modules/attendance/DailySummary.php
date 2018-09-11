@@ -233,7 +233,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
             $extra['columns_after']['_' . str_replace('-', '', $value['SCHOOL_DATE'])] = ShortDate($value['SCHOOL_DATE']);
             $extra['functions']['_' . str_replace('-', '', $value['SCHOOL_DATE'])] = '_makeColor';
 
-            $extra['link']['FULL_NAME']['link'] = "Modules.php?modname=" . optional_param('next_modname', '', PARAM_NOTAGS) . "&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=" . optional_param('period_id', '', PARAM_SPCL);
+            $extra['link']['FULL_NAME']['link'] = "Modules.php?modname=" . optional_param('modname', '', PARAM_NOTAGS) . "&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=" . optional_param('period_id', '', PARAM_SPCL);
             $extra['link']['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
         }
     }

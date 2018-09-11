@@ -308,7 +308,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                 $min_end_time = get_min($end_time);
             }
 // ----------------------------------------- Time Clash Logic End ---------------------------------------------------------- //		
-
+            $period_res_cnt=0;
             foreach ($_REQUEST['student'] as $student_id => $yes) {
 
                 # ------------------------------------ PARENT RESTRICTION STARTS----------------------------------------- #
@@ -389,6 +389,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     $select_stu_RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));
                     $select_stu = $select_stu_RET[1]['FIRST_NAME'] . "&nbsp;" . $select_stu_RET[1]['LAST_NAME'];
                     $period_res .= $select_stu . "<br>";
+                    $period_res_cnt++;
                     continue;
                 }
                 # ------------------------------------ Same Days Conflict End ------------------------------------------ #
@@ -695,9 +696,13 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         unset($stu_s_date_err_n);
     }
     if ($period_res){
+        if($period_res_cnt==1)
+            $singu=' is';
+        if($period_res_cnt>1)
+            $singu=' are';
         echo '<div class="alert alert-warning alert-styled-left">';
         echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $period_res . ' have already scheduled in that period';
+        echo $period_res . $singu.' already scheduled in that course';
         echo '</div>';
     }
     if ($time_clash){
@@ -720,9 +725,13 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         echo '</div>';
     }
     if ($dup_schedule){
+        if(count($dup_schedule)>1)
+            $singu=' are';
+        if(count($dup_schedule)==1)
+            $singu=' is';
         echo '<div class="alert alert-warning alert-styled-left">';
         echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo implode(', ', $dup_schedule) . ' have already scheduled in that period';
+        echo implode(', ', $dup_schedule) . $singu.' already scheduled in that course';
         echo '</div>';
     }
 }
