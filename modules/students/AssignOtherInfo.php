@@ -287,7 +287,7 @@ if (!$_REQUEST['modfunc']) {
         }
         if (count($fields_RET['date'])) {
             foreach ($fields_RET['date'] as $field)
-                array_push($fields, '<div class="form-group"><label class="control-label">' . $field['TITLE'] . '</label>' . _makeDateInput('CUSTOM_' . $field['ID']) . '</div>');
+                array_push($fields, '<div class="form-group"><label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'].'">' . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeDateInput('CUSTOM_' . $field['ID']) . '</div></div>');
         }
         if (count($fields_RET['select'])) {
             foreach ($fields_RET['select'] as $field) {
@@ -300,7 +300,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
                 } else {
                     $select_options = array();
                     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
@@ -310,13 +310,13 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
                 }
             }
         }
         if (count($fields_RET['textarea'])) {
             foreach ($fields_RET['textarea'] as $field) {
-                array_push($fields, '<div class="form-group"><label class="control-label col-lg-4">' . $field['TITLE'] . '</label><div class=\"col-lg-8\">' . _makeTextareaInput('CUSTOM_' . $field['ID']) . '</div></div>');
+                array_push($fields, '<div class="form-group"><label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'].'">' . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextareaInput('CUSTOM_' . $field['ID']) . '</div></div>');
             }
         }
         if (!$_REQUEST['category_id'] || $_REQUEST['category_id'] == '1') {
@@ -327,7 +327,7 @@ if (!$_REQUEST['modfunc']) {
                 foreach ($schools_RET as $school)
                     $options[$school['ID']] = $school['TITLE'];
             }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_SCHOOL', $options) . '</div></div>');
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_SCHOOL', $options) . '</div></div>');
 
             $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
             $options = array();
@@ -335,7 +335,7 @@ if (!$_REQUEST['modfunc']) {
                 foreach ($calendars_RET as $calendar)
                     $options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
             }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Calendar</label><div class="col-lg-8">' . _makeSelectInput('CALENDAR_ID', $options) . '</div></div>');
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Calendar</label><div class="col-lg-8">' . _makeSelectInput('CALENDAR_ID', $options) . '</div></div>');
         }
 
         if ($_REQUEST['category_id'] == '') {
@@ -373,7 +373,7 @@ if (!$_REQUEST['modfunc']) {
             //echo '<TABLE cellpadding=5>';
             //echo '<TR>';
             for ($i = 1; $i <= $radio_count; $i++) {
-                array_push($fields, '<div class="checkbox-inline">' . _makeCheckboxInput('CUSTOM_' . $fields_RET['radio'][$i]['ID'], $fields_RET['radio'][$i]['TITLE']) . '</div>');
+                array_push($fields, '<label class="col-lg-4">&nbsp;</label><div class="col-lg-8">' . _makeCheckboxInput('CUSTOM_' . $fields_RET['radio'][$i]['ID'], $fields_RET['radio'][$i]['TITLE']) . '</div>');
                 //if ($i % 5 == 0 && $i != $radio_count)
                 //echo '</TR><TR>';
             }
@@ -383,28 +383,37 @@ if (!$_REQUEST['modfunc']) {
 
         //$test = array_map('htmlspecialchars', $fields);
 
-        $i = 0;
-        $count = 1;
+        $col1html = '<div class="col-md-6">';
+        $col2html = '<div class="col-md-6">';
+        $item = '';
+
+        $col1 = 1;
+        $col2 = 0;
+
+        //$i = 0;
         foreach ($fields as $field) {
-            if ($count == 1) {
-                echo '<div class="row">';
-            }
 
             if (strpos($field, '<h5') === false) {
-                echo '<div class="col-md-6">' . $field . '</div>';
+                if ($col1 == 1) {
+                    $col1html .= $field;
+                    $col1 = 0;
+                    $col2 = 1;
+                } else {
+                    $col2html .= $field;
+                    $col1 = 1;
+                    $col2 = 0;
+                }
             } else {
-                echo '</div>';
-                echo $field;
-                $count = 0;
+                $item .= '<div class="row">' . $col1html . '</div>' . $col2html . '</div></div>';
+                $col1html = '<div class="col-md-6">';
+                $col2html = '<div class="col-md-6">';
+                $col1 = 1;
+                $col2 = 0;
+                $item .= $field;
             }
-
-            if ($count == 2) {
-                echo '</div>';
-                $count = 0;
-            }
-            $count++;
         }
-        echo '</div>';
+        $item .= '<div class="row">' . $col1html . '</div>' . $col2html . '</div></div>';
+        echo $item;
 
         PopTable('footer');
 
@@ -501,7 +510,7 @@ function _makeTextInput($column, $numeric = false) {
 }
 
 function _makeTextareaInput($column, $numeric = false) {
-    return TextAreaInput('', 'values[' . $column . ']', $column);
+    return TextAreaInput('', 'values[' . $column . ']');
 }
 
 function _makeDateInput($column) {
@@ -513,7 +522,7 @@ function _makeSelectInput($column, $options) {
 }
 
 function _makeCheckboxInput($column, $name) {
-    return CheckboxInput('', 'values[' . $column . ']', $name, '', true);
+    return CheckboxInputSwitch('', 'values[' . $column . ']', $name, '', true, 'Yes', 'No', '', 'switch-success');
 }
 
 ?>

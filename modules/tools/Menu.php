@@ -32,6 +32,7 @@ $menu['tools']['admin'] = array(
 			       'tools/DeleteLog.php'=>'Delete Log',
                                'tools/Rollover.php'=>'Rollover',
                                'tools/Backup.php'=>'Backup Database',
+                               'tools/DataImport.php'=>'Data Import Utility',
                                 1=>'Reports',  
                                'tools/Reports.php?func=Basic'=>'At a Glance',
                                'tools/Reports.php?func=Ins_r'=>'Institute Reports',

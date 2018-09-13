@@ -495,7 +495,7 @@ if ((!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'choose_course') && !$_REQ
 
     if ($_REQUEST['subject_id'] && $_REQUEST['subject_id'] != 'new') {
 
-        $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.title,sg.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY c.TITLE";
+        $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY c.TITLE";
         $QI = DBQuery($sql);
         $courses_RET = DBGet($QI);
 

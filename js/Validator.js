@@ -631,7 +631,7 @@ function doDateCheck(from, to) {
         alertDiv = 'divErr';
     }
 
-    if (Date.parse(from+' 12:00:00') > Date.parse(to+' 12:00:00')) {
+    if (Date.parse(from+' 00:00:00') > Date.parse(to+' 00:00:00')) {
         $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + "End date must be after the Start date." + '</div>');
         return false;
     }
@@ -646,7 +646,7 @@ function doDateCheck(from, to) {
 function isDate(fm, fd, fy)
 {
     var strdate;
-    var newDate = fm.val() + "-" + fd.val() + "-" + ChangeYear(fy.val()) + " 12:00:00";
+    var newDate = ChangeYear(fy.val()) + "/" + fm.val() + "/" + fd.val() + " 00:00:00";
 
     strdate = Date.parse(newDate);
 
@@ -689,8 +689,8 @@ function CheckDate(fm, fd, fy, tm, td, ty)
     var from;
     var to;
 
-    from = fm.val() + "-" + fd.val() + "-" + ChangeYear(fy.val());
-    to = tm.val() + "-" + td.val() + "-" + ChangeYear(ty.val());
+    from = ChangeYear(fy.val()) + "/" + fm.val() + "/" + fd.val();
+    to = ChangeYear(ty.val()) + "/" + tm.val() + "/" + td.val();
     if (false == doDateCheck(from, to))
         return false;
     else

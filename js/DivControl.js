@@ -100,10 +100,22 @@ function hide_search_div()
     $("#addiv").css({'display': 'inline-block'});
 }
 
+function hide_search_div1()
+{
+    $("#searchdiv1").hide();
+    $("#addiv1").css({'display': 'inline-block'});
+}
+
 function show_search_div()
 {
     $("#searchdiv").show();
     $("#addiv").hide();
+}
+
+function show_search_div1()
+{
+    $("#searchdiv1").show();
+    $("#addiv1").hide();
 }
 
 function hidediv()

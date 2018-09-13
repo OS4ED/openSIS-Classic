@@ -245,7 +245,7 @@ function _makeDate_modSchl($value, $column = 'MEDICAL_DATE') {
     return DateInputAY($value, 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']', 1);
 }
 
-function _makeDateInput_modSchl($column, $name, $request = 'values', $id) {
+function _makeDateInput_modSchl($column, $name, $request = 'values', $id='') {
     global $value, $field;
     $col_no = explode('_', $column);
     $counter = $col_no[1];

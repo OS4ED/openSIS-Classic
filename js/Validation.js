@@ -3352,7 +3352,7 @@ function toggleDisableStu(event)
 function setFilterValues()
 {
     
-    var ids = ["last", "first", "stuid","altid","addr","grade","section"];
+    var ids = ["last", "first", "stuid","altid","addr","grade","section","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments"];
     
     
      for (var i = 0; i < ids.length; i++) {

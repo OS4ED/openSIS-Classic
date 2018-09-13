@@ -50,7 +50,7 @@ $conn_string = $_SESSION['conn'];
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>   
-                        <h3>openSIS Installation - System Requirements</h3>                 
+                        <h3>openSIS Installation - Database Selection</h3>                 
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">

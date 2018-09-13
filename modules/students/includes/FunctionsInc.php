@@ -97,10 +97,10 @@ function _makeAutoSelectInput($column, $name, $request = 'students') {
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
-        $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
+        $req = $field['REQUIRED'] == 'Y' ? array('<span class="text-danger">', '</span>') : array('', '');
     } else {
         $div = true;
-        $req = $field['REQUIRED'] == 'Y' && ($value[$column] == '' || $value[$column] == '---') ? array('<FONT color=red>', '</FONT>') : array('', '');
+        $req = $field['REQUIRED'] == 'Y' && ($value[$column] == '' || $value[$column] == '---') ? array('<span class="text-danger">', '</span>') : array('', '');
     }
 
     // build the select list...
@@ -121,17 +121,17 @@ function _makeAutoSelectInput($column, $name, $request = 'students') {
 
     // make sure the current value is in the list
     if ($value[$column] != '' && !$options[$value[$column]])
-        $options[$value[$column]] = array($value[$column], '<FONT color=' . ($field['TYPE'] == 'autos' ? 'blue' : 'green') . '>' . $value[$column] . '</FONT>');
+        $options[$value[$column]] = array($value[$column], '<span class=' . ($field['TYPE'] == 'autos' ? 'text-primary' : 'text-success') . '>' . $value[$column] . '</span>');
 
     if ($value[$column] != '---' && count($options) > 1) {
 
         if (isset($num_of_cus_field)) {
             $generated = true;
         }
-        $extra = 'style="max-width:250;"';
-        return SelectInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $options, 'N/A', $extra, $div);
+        $extra = '';
+        return SelectInput($value[$column], $request . '[' . $column . ']', '', $options, 'N/A', $extra, $div);
     } else
-        return TextInput($value[$column] == '---' ? array('---', '<FONT color=red>---</FONT>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
+        return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
 }
 
 function _makeCheckboxInput($column, $name, $request = 'students') {
@@ -143,7 +143,7 @@ function _makeCheckboxInput($column, $name, $request = 'students') {
     } else
         $div = true;
 
-    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['student_id'] == 'new'), '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>');
+    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['student_id'] == 'new'), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
 }
 
 function _makeTextareaInput($column, $name, $request = 'students') {
@@ -170,44 +170,44 @@ function _makeMultipleInput($column, $name, $request = 'students') {
         }
 
         if ($value[$column] != '')
-            $m_input.="<DIV id='div" . $request . "[" . $column . "]'><div onclick='javascript:addHTML(\"";
-        $m_input.='<TABLE border=0 cellpadding=3>';
+            $m_input.="<DIV id='div" . $request . "[" . $column . "]'><div readonly='readonly' class='form-control' onclick='javascript:addHTML(\"";
+        //$m_input.='<TABLE border=0 cellpadding=3>';
         if (count($options) > 12) {
-            $m_input.='<TR><TD colspan=2>';
-            $m_input.='<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
-            if ($value[$column] != '')
-                $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
-            else
-                $m_input.='<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
+            //$m_input.='<TR><TD colspan=2>';
+            $m_input.='<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
+            /* if ($value[$column] != '')
+              $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
+              else
+              $m_input.='<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
 
-            $m_input.='</TD></TR>';
+              $m_input.='</TD></TR>'; */
         }
-        $m_input.='<TR>';
+        //$m_input.='<TR>';
         $i = 0;
         foreach ($options as $option) {
-            if ($i % 2 == 0)
-                $m_input.='</TR><TR>';
+            //if ($i % 2 == 0)
+            //$m_input.='</TR><TR>';
             if ($value[$column] != '') {
 
-                $m_input.='<TD><INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><INPUT type=checkbox name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+                $m_input.='<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             } else {
-                $m_input.='<TD><INPUT type=checkbox name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+                $m_input.='<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             }
             $i++;
         }
-        $m_input.='</TR><TR><TD colspan=2>';
-        if ($value[$column] != '')
-            $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
-        else
-            $m_input.='<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
+        /* $m_input.='</TR><TR><TD colspan=2>';
+          if ($value[$column] != '')
+          $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
+          else
+          $m_input.='<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
 
-        $m_input.='</TD></TR></TABLE>';
+          $m_input.='</TD></TR></TABLE>'; */
         if ($value[$column] != '')
             $m_input.="\",\"div" . $request . "[" . $column . "]" . "\",true);' >" . (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-') . "</div></DIV>";
     } else
         $m_input.=(($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
 
-    $m_input.='<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
+    $m_input.='<p class=help-block>' . $name . '</p>';
     return $m_input;
 }
 
@@ -360,11 +360,11 @@ function _makeLongComments($value, $column) {
         $THIS_RET['ID'] = 'new';
     if ($THIS_RET['ID'] == 'new' || $value == '') {
         $field = "<textarea rows='1' cols='3' style='visibility:hidden;' id=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . " name=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . ">$value</textarea>";
-        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="Add Comment"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >'.$value.'</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">Enter Comment</div></a></div>';
+        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="Add Comment"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">Enter Comment</div></a></div>';
         return $field;
     } else {
         $field = "<textarea rows='1' cols='3' style='visibility:hidden;' id=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . " name=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . ">$value</textarea>";
-        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="Add Comment"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >'.$value.'</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">Enter Comment</div></a></div>';
+        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="Add Comment"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">Enter Comment</div></a></div>';
         return $field;
     }
 }

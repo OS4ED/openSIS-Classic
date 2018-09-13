@@ -35,6 +35,7 @@ if(page && page!="index.php"){
 	}
 
 </script>';
+
 if ($_SESSION['mod'] == 'upgrade') {
 
     $myFile = "../Data.php";
@@ -54,7 +55,7 @@ if ($_SESSION['mod'] == 'upgrade') {
     }
 
     fclose($fh);
-    $display_text = 'Your system has been successfully upgraded to version 7.0. Please click the Login button to proceed to login with your existing login credentials.
+    $display_text = 'Your system has been successfully upgraded to version 7.0. Please click the button below<br/> to proceed to login with your existing login credentials.
 ';
     echo '<!DOCTYPE html>
         <html lang="en">
@@ -93,10 +94,11 @@ if ($_SESSION['mod'] == 'upgrade') {
                                     </ul>
                                 </div>
                                 <div class="installation-steps">
-                                    <div class="padding-20 class="text-center"">
-                                        <h2 class="text-center">Congratulations! You have successfully installed openSIS</h2>
+                                    <div class="text-center"><img src="assets/images/check-clipart-animated.gif" width="80" /><h3 class="text-success">Congratulations! You have successfully upgraded openSIS</h3></div>
+                                        
+                                    <div class="padding-20 p-t-0 class="text-center"">
                                         <p class="text-center">' . $display_text . '</p>
-                                        <div class="text-center"><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-primary btn-lg" target="_parent">Login</a></div>
+                                        <div class="text-center"><br/><a href="../index.php?modfunc=logout&ins=comp" class="btn btn-success btn-lg" target="_parent">Proceed to openSIS Login</a></div>
                                     </div>
                                 </div>
                             </div>

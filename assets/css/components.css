@@ -17046,7 +17046,7 @@ thead .htCollapseButton:after {
 .dataTables_paginate .paginate_button.current:hover,
 .dataTables_paginate .paginate_button.current:focus {
     color: #fff;
-    background-color: #455A64;
+    background-color: #5090C1;
 }
 .dataTables_paginate .paginate_button.disabled,
 .dataTables_paginate .paginate_button.disabled:hover,

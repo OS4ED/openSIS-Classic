@@ -37,6 +37,7 @@ $maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_prefe
 Warehouse('header');
 echo '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
+echo '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
 echo '<link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
 echo '<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">';
 echo '<link href="assets/css/extras/css-checkbox-switch.css" rel="stylesheet">';
@@ -101,7 +102,7 @@ echo "<script type='text/javascript'>
                                 if($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH']=='Y'){
                                     ?>
                                     <div class="form-group">
-                                        <label><b>openSIS is under maintenance and login privileges have been turned off. Please log in when it is available again.</b></label>
+                                        <h4 class="text-center text-danger"><i class="icon-warning22" style="font-size: 50px;"></i><br/><br/>openSIS is under maintenance and login privileges have been turned off. Please log in when it is available again.</h4>
                                     </div> 
                                     <?php
                                 }
@@ -115,8 +116,7 @@ echo "<script type='text/javascript'>
                                     </div>
                                     <?php
                                 }
-                                 if($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH']!='Y')
-                                {
+                                 
                                 ?>
                                 <div class="form-group">
                                     <?php
@@ -156,7 +156,7 @@ echo "<script type='text/javascript'>
                                     <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
                                 </p>
                                 <p class="text-center"><a href="ForgotPass.php">Forgot Username / Password?</a></p>
-                <?php } ?>
+                
                             </form>
                         </div>
                     </div>

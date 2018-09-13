@@ -128,6 +128,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/extensions/cookie.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/notifications/jgrowl.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/notifications/noty.min.js"></script>';
 
     /* JS Initializers */
     echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';

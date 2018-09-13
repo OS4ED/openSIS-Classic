@@ -106,7 +106,7 @@ function _makeSelectInput($column,$name,$request='staff')
 	return SelectInput($value[$column],$request.'['.$column.']',$req[0].$name.$req[1],$options,'N/A',$extra,$div);
 }
 
-function _makeAutoSelectInput($column,$name,$request='staff')
+function _makeAutoSelectInput($column,$name='',$request='staff')
 {	global $value,$field;
 
 	if($_REQUEST['staff_id']=='new' && $field['DEFAULT_SELECTION'])

@@ -2216,7 +2216,9 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 (2, 'users/Staff.php&category_id=5', 'Y', 'Y', '2015-07-28 11:26:33', NULL),
 (4, 'grades/ParentProgressReports.php', 'Y', NULL, '2015-07-28 11:26:33', NULL),
 (0, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:00', NULL),
-(1, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL);
+(1, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
+(0, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
+(1, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL);
 
 --
 -- Dumping data for table `program_config`

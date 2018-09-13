@@ -72,9 +72,11 @@ if($_REQUEST['search_modfunc']=='list')
 
 
 	}
-
+        if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')
+        
 	$custom_RET = DBGet(DBQuery("SELECT TITLE,ID,TYPE FROM staff_fields ORDER BY SORT_ORDER"));
-
+        else
+            $custom_RET = DBGet(DBQuery("SELECT TITLE,ID,TYPE FROM people_fields ORDER BY SORT_ORDER"));
 	foreach($custom_RET as $field)
 	{
                 
@@ -157,9 +159,17 @@ else
 			$fields_list['General'] += $extra['field_names'];
 	}
 /*******************************************************************************/
-	$categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM staff_field_categories ORDER BY SORT_ORDER'));
-	$custom_RET = DBGet(DBQuery('SELECT TITLE,ID,TYPE,CATEGORY_ID FROM staff_fields ORDER BY SORT_ORDER'),array(),array('CATEGORY_ID'));
-	foreach($categories_RET as $category)
+        if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')
+        {
+            $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM staff_field_categories ORDER BY SORT_ORDER'));
+            $custom_RET = DBGet(DBQuery('SELECT TITLE,ID,TYPE,CATEGORY_ID FROM staff_fields ORDER BY SORT_ORDER'),array(),array('CATEGORY_ID'));
+        }
+        else
+        {
+            $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM people_field_categories ORDER BY SORT_ORDER'));
+            $custom_RET = DBGet(DBQuery('SELECT TITLE,ID,TYPE,CATEGORY_ID FROM people_fields ORDER BY SORT_ORDER'),array(),array('CATEGORY_ID'));
+        }
+        foreach($categories_RET as $category)
 	{
 		if(AllowUse('users/User.php&category_id='.$category['ID']))
 		{
@@ -191,7 +201,7 @@ else
 		foreach($fields as $field=>$title)
 		{
 			$i++;
-			echo '<div class="col-sm-6 col-md-4"><div class="checkbox"><label><INPUT type=checkbox onclick="addHTML(\'<LI>'.$title.'</LI>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields['.$field.'] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">'.$title.'</label>'.($field=='PARENTS'?'<p class="help-block">(<label>Relation:</label> <input type=text id=relation name=relation size=8 class="form-control">)</p>':'').'</label></div></div>';
+			echo '<div class="col-sm-6 col-md-4"><div class="checkbox checkbox-switch switch-success"><label><INPUT type=checkbox onclick="addHTML(\'<LI>'.$title.'</LI>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields['.$field.'] value=Y>\',\'fields_div\',false);$(\'#names_div_none\').remove();this.disabled=true"><span></span>'.$title.'</label>'.($field=='PARENTS'?'<p class="help-block">(<label>Relation:</label> <input type=text id=relation name=relation size=8 class="form-control">)</p>':'').'</label></div></div>';
 			//if($i%2==0)
 			//echo '</TR><TR>';
 		}

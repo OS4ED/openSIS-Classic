@@ -63,14 +63,14 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="form-group">'.TextInput($student['PREFERRED_HOSPITAL'], 'medical_info[PREFERRED_HOSPITAL]', 'Preferred Medical Facility', 'class=cell_medium maxlength=100').'</div>';
     echo '</div>'; //.col-md-6    
     echo '</div>'; //.row    
-       
-    echo '</div>'; //.form-horizontal
-    
-    echo '<br/>';
     
 
     
     include('modules/students/includes/OtherInfoInc.php');
+       
+    echo '</div>'; //.form-horizontal
+    
+    echo '<br/>';
 
     $table = 'student_medical_notes';
 

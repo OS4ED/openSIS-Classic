@@ -181,7 +181,6 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             # ---   Advanced Search End ----------------------------------------------------------- #
 
 
-
             echo '<div class="row">';
             echo '<div class="col-md-12">';
             if (User('PROFILE') == 'admin') {
@@ -245,7 +244,7 @@ else {
             DBQuery('INSERT INTO filters (FILTER_NAME'.($_REQUEST['filter_all_school']=='Y'?'':',SCHOOL_ID').($_REQUEST['filter_public']=='Y'?'':',SHOW_TO').') VALUES (\''.singleQuoteReplace("","",$_REQUEST['filter_name']).'\''.($_REQUEST['filter_all_school']=='Y'?'':','.UserSchool()).($_REQUEST['filter_public']=='Y'?'':','.UserID()).')');
 
 
-            $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","_search_all_schools","include_inactive");
+            $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","_search_all_schools","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
             foreach($filters as $filter_columns)
             {
                 if($_REQUEST[$filter_columns]!='')
@@ -441,11 +440,146 @@ else {
         echo '</tbody>';
         echo '</table>';
         echo '</div>'; //.table-responsive
+
+            # ---   Advanced Filter Start ---------------------------------------------------------- #
+            echo '<div style="height:10px;"></div>';
+            echo '<input type=hidden name=sql_save_session value=true />';
+
+
+            echo '<div id="searchdiv1" style="display:none;" class="well">';
+            echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div1();"><i class="icon-cancel-square"></i> Close Advanced Filter</a></div>';
+            echo '<br/>';
+
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['mp_comment']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="mp_comment" name="mp_comment" class="form-control p-t-0 p-b-0 input-xs" placeholder="Comments" value="'.$_REQUEST['mp_comment'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text id="mp_comment" name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Birthday</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Goal and Progress</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['goal_title']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title </label><div class="col-lg-8"><input type="text" id="goal_title" name="goal_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="Goal Title" value="'.$_REQUEST['goal_title'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title </label><div class="col-lg-8"><input type=text id="goal_title" name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['goal_description']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description </label><div class="col-lg-8"><input type="text" id="goal_description" name="goal_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="Goal Description" value="'.$_REQUEST['goal_description'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description </label><div class="col-lg-8"><input type=text id="goal_description" name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['progress_name']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period </label><div class="col-lg-8"><input type="text" id="progress_name" name="progress_name" class="form-control p-t-0 p-b-0 input-xs" placeholder="Progress Period" value="'.$_REQUEST['progress_name'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period </label><div class="col-lg-8"><input type=text id="progress_name" name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['progress_description']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment </label><div class="col-lg-8"><input type="text" id="progress_description" name="progress_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="Progress Assessment" value="'.$_REQUEST['progress_description'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment </label><div class="col-lg-8"><input type=text id="progress_description" name="progress_description" size=30 placeholder="Progress Assessment" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Medical</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['doctors_note_comments']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note </label><div class="col-lg-8"><input type="text" id="doctors_note_comments" name="doctors_note_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Doctor\'s Note" value="'.$_REQUEST['doctors_note_comments'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text id="doctors_note_comments" name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Immunization</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['type']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type </label><div class="col-lg-8"><input type="text" id="type" name="type" class="form-control p-t-0 p-b-0 input-xs" placeholder="Immunization Type" value="'.$_REQUEST['type'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text id="type" name="type" placeholder="Immunization Type" size=30 class="form-control"></div></div>';
+            echo '</div><div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['imm_comments']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="imm_comments" name="imm_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Immunization Comments" value="'.$_REQUEST['imm_comments'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text id="imm_comments" name="imm_comments" placeholder="Immunization Comments" size=30 class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Medical Alert</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['med_alrt_title']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert </label><div class="col-lg-8"><input type="text" id="med_alrt_title" name="med_alrt_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="Medical Alert" value="'.$_REQUEST['med_alrt_title'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text id="med_alrt_title" name="med_alrt_title" placeholder="Medical Alert" size=30 class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<h5 class="text-primary">Nurse Visit</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['reason']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason </label><div class="col-lg-8"><input type="text" id="reason" name="reason" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Reason" value="'.$_REQUEST['reason'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text id="reason" name="reason" size=30 placeholder="Nurse Visit Reason" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['result']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result </label><div class="col-lg-8"><input type="text" id="result" name="result" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Result" value="'.$_REQUEST['result'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text id="result" name="result" size=30 placeholder="Nurse Visit Result" class="form-control"></div></div>';
+            echo '</div><div class="col-md-6">';
+            if($_REQUEST['filter_form']=='Y' && $_REQUEST['med_vist_comments']!='')
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="med_vist_comments" name="med_vist_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Comments" value="'.$_REQUEST['med_vist_comments'].'"/></div></div>';
+            else
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text id="med_vist_comments" name="med_vist_comments" placeholder="Nurse Visit Comments" size=30 class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+
+            echo '</div>';
+
+
+
+            # ---   Advanced Filter End ----------------------------------------------------------- #
+
         echo '<div class="panel-footer p-l-15 p-r-15">';
         
         echo '<div class="row">';
         echo '<div class="col-sm-6 col-md-6 col-lg-6">';
         echo '<input type="submit" class="btn btn-primary" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET">';
+        echo '<a id="addiv1" href="javascript:void(0);" class="text-pink" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> Advanced Filter</a>';
         echo '</div>';
         echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
         echo '<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_filter" class="btn btn-primary display-inline-block" onClick="setFilterValues();">Save Filter</a>';
@@ -495,6 +629,19 @@ else {
         echo '<div id="address_group_hidden"></div>';
         echo '<div id="_search_all_schools_hidden"></div>';
         echo '<div id="include_inactive_hidden"></div>';
+
+        echo  '<input type="hidden" id="mp_comment_hidden" name="mp_comment"/>';
+        echo  '<input type="hidden" id="goal_title_hidden" name="goal_title"/>';
+        echo  '<input type="hidden" id="goal_description_hidden" name="goal_description"/>';
+        echo  '<input type="hidden" id="progress_name_hidden" name="progress_name"/>';
+        echo  '<input type="hidden" id="progress_description_hidden" name="progress_description"/>';
+        echo  '<input type="hidden" id="doctors_note_comments_hidden" name="doctors_note_comments"/>';
+        echo  '<input type="hidden" id="type_hidden" name="type"/>';
+        echo  '<input type="hidden" id="imm_comments_hidden" name="imm_comments"/>';
+        echo  '<input type="hidden" id="med_alrt_title_hidden" name="med_alrt_title"/>';
+        echo  '<input type="hidden" id="reason_hidden" name="reason"/>';
+        echo  '<input type="hidden" id="result_hidden" name="result"/>';
+        echo  '<input type="hidden" id="med_vist_comments_hidden" name="med_vist_comments"/>';
         
         echo '<input type="hidden" name="filter_form" value="Y" />';
         

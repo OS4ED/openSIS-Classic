@@ -363,23 +363,24 @@ if ($_REQUEST['modfunc'] == 'detail') {
                 }
                 $sql = substr($sql, 0, -1);
                 if (!$_REQUEST['values']) {
-                    if ($_REQUEST['show_all'] == 'Y') {
+                    if ($_REQUEST['new'] == 'Y') {
                         $sql.=' CALENDAR_ID=\'0\'';
                         $go = true;
                     }
-                    if (isset($_REQUEST['show_all']) && $_REQUEST['show_all'] != 'Y') {
+                    if (isset($_REQUEST['new']) && $_REQUEST['new'] != 'Y') {
                         $sql.=' CALENDAR_ID=\'' . $_REQUEST[calendar_id] . '\'';
                         $go = true;
                     }
                 } else {
-                    if ($_REQUEST['show_all'] == 'Y') {
+                    if ($_REQUEST['new'] == 'Y') {
                         $sql.=',CALENDAR_ID=\'0\'';
                     }
-                    if (isset($_REQUEST['show_all']) && $_REQUEST['show_all'] != 'Y') {
+                    if (isset($_REQUEST['new']) && $_REQUEST['new'] != 'Y') {
                         $sql.=' ,CALENDAR_ID=\'' . $_REQUEST[calendar_id] . '\'';
                     }
                 }
                 $sql.= ' WHERE ID=\'' . $_REQUEST[event_id] . '\'';
+                
                 if ($go)
                     DBQuery($sql);
             }
@@ -388,7 +389,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
                     $_REQUEST['values']['SCHOOL_DATE'] = $_REQUEST['dd'];
 
                 $sql = 'INSERT INTO calendar_events ';
-                if ($_REQUEST['show_all'] == 'Y')
+                if ($_REQUEST['new'] == 'Y')
                     $cal_id = '0';
                 else
                     $cal_id = $_REQUEST['calendar_id'];
@@ -411,7 +412,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
                     }
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
-
+                
                 if ($go) {
 
                     DBQuery($sql);
@@ -940,8 +941,6 @@ function calendarEventsVisibility() {
     foreach ($profiles_RET as $profile) {
         $i++;
         $return .= '<div class="checkbox"><label><INPUT class="styled" type=checkbox name=profiles[' . $profile['ID'] . '] value=Y' . (in_array($profile[ID], $visible_profile) ? ' CHECKED' : '') . "> $profile[TITLE]</label></div>";
-        //if ($i % 4 == 0 && $i != count($profile))
-        //$return .= '<TR>';
     }
     //for (; $i % 4 != 0; $i++)
     //$return .= '<TD></TD>';

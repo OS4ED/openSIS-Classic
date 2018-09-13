@@ -292,7 +292,7 @@ if (!$_REQUEST['modfunc']) {
     Search('student_id', $extra);
 
     if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
-        echo SubmitButton(Save, '', 'class="btn btn-primary" onclick="formload_ajax(\'addAbsences\');"') . "</FORM>";
+        echo SubmitButton(Save, '', 'class="btn btn-primary"') . "</FORM>";
 
     /*
      * Course Selection Modal Start

@@ -111,16 +111,17 @@ if (UserStudentID()) {
 if (count($fields_RET))
     echo $separator;
 $i = 1;
-$q = 0;
+echo '<div class="row">';
+$row = 1;
 foreach ($fields_RET as $field) {
-    $q++;
-    if ($q == 1) {
-        echo '<div class="row">';
+    if ($row == 3) {
+        echo '</div><div class="row">';
+        $row = 1;
     }
     if ($fields_RET[$q]['HIDE'] == 'Y')
         continue;
     if ($field['REQUIRED'] == 'Y') {
-        $req = '<span class=text-danger>*</font> ';
+        $req = ' <span class=text-danger>*</span> ';
     } else {
         $req = '';
     }
@@ -137,9 +138,9 @@ foreach ($fields_RET as $field) {
         case 'autos':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
             echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], '', 'students');
-            echo '</div>';
+            echo '</div></div>';
             echo '</div>';
             $i++;
             break;
@@ -147,7 +148,7 @@ foreach ($fields_RET as $field) {
         case 'edits':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
             echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], '');
             echo '</div></div>';
             echo '</div>';
@@ -157,7 +158,7 @@ foreach ($fields_RET as $field) {
         case 'numeric':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
             echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=5 maxlength=10 class=cell_medium');
             echo '</div></div>';
             echo '</div>';
@@ -167,8 +168,8 @@ foreach ($fields_RET as $field) {
         case 'date':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
-            echo DateInputAY($value['CUSTOM_' . $field['ID']], 'students[CUSTOM_' . $field['ID'].']', $field['ID'] + 2);
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo DateInputAY($value['CUSTOM_' . $field['ID']], 'students[CUSTOM_' . $field['ID'] . ']', $field['ID'] + 2);
             echo '<input type=hidden name=custom_date_id[] value="' . $field['ID'] . '" />';
             echo '</div></div>';
             echo '</div>';
@@ -180,8 +181,8 @@ foreach ($fields_RET as $field) {
         case 'select':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
-            echo _makeSelectInput('CUSTOM_' . $field['ID'], '', 'students', $field['TITLE']);
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo _makeSelectInput('CUSTOM_' . $field['ID'], '', 'students');
             echo '</div></div>';
             echo '</div>';
             $i++;
@@ -190,7 +191,7 @@ foreach ($fields_RET as $field) {
         case 'multiple':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
             echo _makeMultipleInput('CUSTOM_' . $field['ID'], '');
             echo '</div></div>';
             echo '</div>';
@@ -200,7 +201,7 @@ foreach ($fields_RET as $field) {
         case 'radio':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
             echo _makeCheckboxInput('CUSTOM_' . $field['ID'], '');
             echo '</div></div>';
             echo '</div>';
@@ -208,28 +209,36 @@ foreach ($fields_RET as $field) {
             break;
     }
 
-    if ($q == 3) {
-        echo '</div><div class="row">';
-    }
-    if (count($fields_RET) < $i) {
-        echo '</div>';
-    }
+    $row++;
 }
+echo '</div>';
 
 $i = 1;
+echo '<div class="row">';
+$row = 1;
 foreach ($fields_RET as $field) {
+    if ($row == 3) {
+        echo '</div><div class="row">';
+        $row = 1;
+    }
     if ($field['TYPE'] == 'textarea') {
         if ($field['REQUIRED'] == 'Y') {
-            $req = '<font color=red>*</font> ';
+            $req = ' <span class="text-danger">*</span>';
         } else {
             $req = '';
         }
-        echo '<TD>' . $field['TITLE'] . $req . '</td><td>:</td><td>';
-        echo _makeTextareaInput('CUSTOM_' . $field['ID'], 'class=cell_medium');
-        echo '</div>';
+        echo '<div class="col-md-6">';
+        echo '<div class="form-group">';
+        echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label>';
+        echo '<div class="col-lg-8">';
+        echo _makeTextareaInput('CUSTOM_' . $field['ID'], '');
+        echo '</div>'; //.col-lg-8
+        echo '</div>'; //.form-group
+        echo '</div>'; //.col-md-6
     }
+    $row++;
 }
-
+echo '</div>'; //.row
 #############################################CUSTOM FIELDS###############################
 
 
@@ -364,36 +373,12 @@ echo '</div>'; //.form-horizontal
 echo '</div>'; //.col-md-10 (Main columns)
 echo '<div class="col-md-2">';
 
-//// IMAGE
-//if ($_REQUEST['student_id'] != 'new' && $StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
-//    fclose($file);
-//    echo '<div width=150 align="center"><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150 class=pic>';
-//    if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-//        echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit style="text-decoration:none"><b>Update Student\'s Photo</b></a></div>';
-//    else
-//        echo '';
-//}
-//else {
-//    if ($_REQUEST['student_id'] != 'new') {
-//
-//        echo '<div class="text-center"><h6>Upload Student\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class=img-thumbnail>';
-//        if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
-//            echo '<label class="fileUpload btn btn-primary btn-xs mt-15"><span>Upload</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this.value)" /></label>';
-//            echo '<div id="uploadFile"></div>';
-//        }
-//    } else {
-//        echo '<div class="text-center"><h6>Upload Student\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class=img-thumbnail>';
-//        if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-//            echo '<label class="fileUpload btn btn-primary btn-xs mt-15"><span>Upload</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this.value)" /></label>';
-//        echo '<div id="uploadFile"></div>';
-//    }
-//}
 
 if (UserStudentID()) {
     $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 }
 if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
-//	fclose($file);
+
     echo '<div width=150 align="center"><IMG src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=150 class=pic>';
     if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
         echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit class="btn btn-white btn-xs m-t-5"><b>Change Photo</b></a></div>';
@@ -405,7 +390,7 @@ else {
 
         echo '<div align="center">Upload Student\'s Photo:<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
-            echo '<label class="fileUpload btn btn-primary"><span>Select File</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
+            echo '<label class="fileUpload btn btn-primary btn-xs btn-block m-t-10"><span>Select File</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
             echo '<div id="uploadFile"></div>';
         }
     } else {

@@ -130,7 +130,7 @@ if (User('PROFILE') == 'admin') {
             DrawHeader('Please select a Staff');
         if ($_REQUEST['_search_all_schools'] == 'Y')
             $extra['GROUP'] = ' s.STAFF_ID ';
-        $extra['SELECT']=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';
+        $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';
         $extra['functions']=array('CATEGORY'=>StaffCategory);
 		$staff_RET = GetUserStaffList($extra);
       if($_REQUEST['_dis_user']=='Y')        

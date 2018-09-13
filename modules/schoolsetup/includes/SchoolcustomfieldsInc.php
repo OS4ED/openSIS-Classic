@@ -64,7 +64,7 @@ foreach($fields_RET as $field)
 			echo '<div class="form-group">';
 			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
 			echo '<div class="col-md-8">';
-                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','class=form-control');
+                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
 			echo '</div>'; //.col-md-8
 			echo '</div>'; //.form-group
 			echo '</div>'; //.col-md-6
@@ -75,7 +75,7 @@ foreach($fields_RET as $field)
 			echo '<div class="form-group">';
 			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
 			echo '<div class="col-md-8">';
-                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','class=form-control');
+                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
 			echo '</div>'; //.col-md-8
 			echo '</div>'; //.form-group
 			echo '</div>'; //.col-md-6
@@ -109,7 +109,7 @@ foreach($fields_RET as $field)
 			echo '<div class="form-group">';
 			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
 			echo '<div class="col-md-8">';
-                        echo _makeSelectInputSchl('CUSTOM_'.$field['ID'],'','class=form-control');
+                        echo _makeSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
 			echo '</div>'; //.col-md-8
 			echo '</div>'; //.form-group
 			echo '</div>'; //.col-md-6
@@ -120,7 +120,7 @@ foreach($fields_RET as $field)
 			echo '<div class="form-group">';
 			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
 			echo '<div class="col-md-8">';
-                        echo _makeMultipleInputSchl('CUSTOM_'.$field['ID'],'','class=form-control');
+                        echo _makeMultipleInputSchl('CUSTOM_'.$field['ID'],'','values');
 			echo '</div>'; //.col-md-8
 			echo '</div>'; //.form-group
 			echo '</div>'; //.col-md-6

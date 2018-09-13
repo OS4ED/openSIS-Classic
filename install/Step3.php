@@ -70,7 +70,7 @@ session_start();
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>
-                        <h3>openSIS Installation - Site Admin Account Setup</h3>
+                        <h3>openSIS Installation - School Information</h3>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">

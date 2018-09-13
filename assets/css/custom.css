@@ -135,6 +135,9 @@ label.radio {
 .breadcrumb-elements .form-group form {
     margin-bottom: 0;
 }
+.breadcrumb-line:not(.breadcrumb-line-component) .breadcrumb-elements {
+    margin-right: 15px;
+}
 
 #navbar-mobile .form-group .select2-container {
     margin-top: 5px;
@@ -345,6 +348,7 @@ ul[id*="select2-period-"] {
     .breadcrumb-line:not(.breadcrumb-line-component) .breadcrumb-elements {
         padding-left: 0;
         padding-right: 0;
+        margin-right: 0;
     }
     .page-header .breadcrumb-elements li {
         display: block;
