@@ -666,7 +666,7 @@ if(!$_REQUEST['modfunc'] && $course_id)
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['assignment_type_id'] . '][TITLE]', 'Title', 'size=36') . '</div></div>';
 
-        if(substr($programconfig['WEIGHT'],0,1)=='Y'){
+        if($programconfig['WEIGHT']=='Y'){
 
             $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['FINAL_GRADE_PERCENT'], 'tables[' . $_REQUEST['assignment_type_id'] . '][FINAL_GRADE_PERCENT]', ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '<FONT color=red>') . 'Weight Percent' . ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '</FONT>')) . '</div></div>';
             $header .= '<div class="col-md-6"><div class="form-group">' . NoInput($RET['TOTAL_PERCENT'] == 1 ? '100%' : '<FONT COLOR=red>' . (100 * $RET['TOTAL_PERCENT']) . '%</FONT>', 'Percent Total') . '</div></div>';

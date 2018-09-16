@@ -95,12 +95,27 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
 
 
                 if (!$programconfig[$staff_id]) {
-                    $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . $staff_id . '\' AND PROGRAM=\'Gradebook\''), array(), array('TITLE'));
-                    if (count($config_RET))
-                        foreach ($config_RET as $title => $value)
-                            $programconfig[$staff_id][$title] = $value[1]['VALUE'];
-                    else
-                        $programconfig[$staff_id] = true;
+                        $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . $course_period_id . '\''), array(), array('TITLE'));
+
+
+                        if (count($config_RET))
+                        foreach ($config_RET as $title => $value) {
+
+                        if ($title == 'ANOMALOUS_MAX') {
+                        $arr = explode('_', $value[1]['VALUE']);
+
+                        $programconfig[User('STAFF_ID')][$title] = $arr[0];
+                        } elseif (substr($title, 0, 3) == 'SEM' || substr($title, 0, 1) == 'Q' || substr($title, 0, 1) == 'FY') {
+                        $arr = explode('_', $value[1]['VALUE']);
+
+                        $programconfig[User('STAFF_ID')][$title] = $arr[0];
+                        } else {
+                        $unused_var = explode('_', $value[1]['VALUE']);
+                        $programconfig[User('STAFF_ID')][$title] = $unused_var[0];
+                        //			$programconfig[User('STAFF_ID')][$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
+                        }
+                        } else
+                        $programconfig[User('STAFF_ID')] = true;
                 }
 
                 if ($programconfig[$staff_id]['WEIGHT'] == 'Y') {
