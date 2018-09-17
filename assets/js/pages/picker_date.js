@@ -71,18 +71,51 @@ $(function () {
             $(this).children('.daterange-single').trigger('focus');
         });
         
+        $('.datepicker-group-month').click(function(){
+            $(this).children('.daterange-single').trigger('focus');
+        });
+        
         $('.fake_datepicker').click(function(){
             $(this).next('.input-group').children('.daterange-single').trigger('focus');
         });
-        $('.daterange-single').datepicker({
+        $('.datepicker-group .daterange-single').datepicker({
             selectYears: true,
             selectMonths: true,
             autoclose: true,
             //format: 'dd-M-yyyy',
             format: 'yyyy-mm-dd'
         });
+        
+        $('.datepicker-group-month .daterange-single').datepicker({
+            selectYears: true,
+            selectMonths: true,
+            autoclose: true,
+            format: "mm/yyyy",
+            minViewMode: 1,
+            maxViewMode: 2
+        })
+        .change(function(){
+            
+            var calid2 = $(this).attr('id');
+            var selectedDate2 = $(this).val();
+            var newDate2 = selectedDate2.split("/");
+            $('#monthSelect_' + calid2).val(newDate2[0]);
+            $('#yearSelect_' + calid2).val(newDate2[1]);
+            //$(this).closest('form').submit();
+        });
+        /*.on('changeDate', function(){            
+            var calid = $(this).attr('id');
+            var selectedDate = $(this).val();
+            var newDate = selectedDate.split("/");
+            
+            $('#monthSelect_' + calid).val(newDate[0]);
+            $('#yearSelect_' + calid).val(newDate[1]);
+            //$(this).closest('form').submit();
+        });*/
+        
+        //datepickerMonthYear.changeDate
 
-        $('.daterange-single').change(function (e) {
+        $('.datepicker-group .daterange-single').change(function (e) {
             $('input[type=submit], button[type=submit]').attr('disabled',true);
             var calid = $(this).attr('id');
             var selectedDate = $(this).val();

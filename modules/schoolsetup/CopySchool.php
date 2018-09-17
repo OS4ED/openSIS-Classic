@@ -69,11 +69,14 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             DBQuery('INSERT INTO schools (ID,SYEAR,TITLE) values(\'' . $id . '\',\'' . $new_sch_syear . '\',\'' . str_replace("'", "''", str_replace("\'", "''", paramlib_validation($col = TITLE, $_REQUEST['title']))) . '\')');
             DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
             DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+            DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'UPDATENOTIFY\',\'display_school\',"Y")');
 
-            DBQuery('INSERT INTO staff_school_relationship(staff_id,school_id,syear)VALUES(\'' . User('STAFF_ID') . '\',\'' . $id . '\',\'' . UserSyear() . '\')');
+            $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_school_relationship WHERE STAFF_ID=\'' . User('STAFF_ID') . '\' AND SCHOOL_ID='.UserSchool().' AND syear='.UserSyear().''));
+            DBQuery('INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date)VALUES(\'' . User('STAFF_ID') . '\',\'' . $id . '\',\'' . UserSyear() . '\',"'.$current_start_date[1]['START_DATE'].'")');
             if (User('PROFILE_ID') != 0) {
                 $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ')');
+                $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_school_relationship WHERE STAFF_ID=\'' . $super_id[1]['STAFF_ID'] . '\' AND SCHOOL_ID='.$id.' AND syear='.UserSyear().''));
+                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ',"'.$current_start_date[1]['START_DATE'].'")');
             }
             foreach ($_REQUEST['tables'] as $table => $value)
                 _rollover($table);

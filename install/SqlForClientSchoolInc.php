@@ -873,7 +873,7 @@ INSERT INTO `staff` (`staff_id`, `current_school_id`, `title`, `first_name`, `la
 --
 
 INSERT INTO `staff_school_relationship` (`staff_id`, `school_id`, `syear`, `start_date`, `end_date`) VALUES
-(1, 1, ".$_SESSION['syear'].",'0000-00-00', '0000-00-00');
+(1, 1, ".$_SESSION['syear'].",'".$_SESSION['user_school_beg_date']."', '0000-00-00');
     
 --
 -- Dumping data for table `staff_school_info`
