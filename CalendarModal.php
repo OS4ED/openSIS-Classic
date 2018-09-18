@@ -73,10 +73,13 @@ echo '</div>';
 //        if (AllowEdit())
 if (User('PROFILE') == 'admin')
 {
+    if($_REQUEST['event_id']!='new')
+    {
     if($RET[1]['CALENDAR_ID']==0)
     $RET[1]['CALENDAR_ID']=1;
     else
     $RET[1]['CALENDAR_ID']=0;
+    }
     echo '<div class="form-group">' . CheckboxInputSwitchModal($RET[1]['CALENDAR_ID'], 'new', 'Show Events System Wide', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
 }
 //else

@@ -44,7 +44,7 @@ div.form-control {
     word-wrap: break-word;
 }
 .clockpicker input.form-control {
-    min-width: 90px;
+    min-width: 60px;
 }
 /* Bootstrap Overwrite End */
 
@@ -55,14 +55,13 @@ div.form-control {
 
 #loading-image {
     position: fixed;
-    top: 54px;
-    right: 0;
+    top: 48%;
+    right: 42%;
     z-index: 999;
     color: #fff;
     background: #d81c37;
     padding: 8px 15px 9px 11px;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 .version-info {

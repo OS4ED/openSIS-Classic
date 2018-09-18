@@ -372,7 +372,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         }
         $_SESSION['data'] = $arr_data;
 
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECONDARY_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
+        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
         $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');
@@ -443,7 +443,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
 //        <tr><td width=260><b>These fields are in your Excel spread sheet</b></td><td width=\"200\">&nbsp;</td><td><b>These are available fields in openSIS(Click to change the field values)</b></td></tr>
 //		</thead>";
 //         $custom=DBGet(DBQuery("SHOW COLUMNS FROM STAFF WHERE FIELD IN ('TITLE','FIRST_NAME','MIDDLE_NAME','LAST_NAME','IS_DISABLE','EMAIL','PHONE','PROFILE','USERNAME') "));
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECONDARY_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
+        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
         $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');

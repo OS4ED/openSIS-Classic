@@ -300,7 +300,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID']."\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
                 } else {
                     $select_options = array();
                     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
@@ -310,7 +310,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID']."\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
                 }
             }
         }
