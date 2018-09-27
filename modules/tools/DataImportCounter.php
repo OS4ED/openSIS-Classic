@@ -333,7 +333,13 @@ if ($category == 'staff') {
         foreach ($custom as $c) {
             $staff[] = 'CUSTOM_' . $c['ID'];
         }
-
+//    echo '<pre>';
+//    print_r($arr_data);
+//    echo '</pre>';
+//    echo '<br><br>';
+//    print_r($temp_array_index);
+//    echo '<br><br>';
+//    print_r($array_index);
         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'staff'"));
         $staff_id[1]['STAFF_ID'] = $id[1]['AUTO_INCREMENT'];
         $staff_id = $staff_id[1]['STAFF_ID'];
@@ -413,12 +419,17 @@ if ($category == 'staff') {
                     ///////////////////////////For Staff Enrollment////////////////////////////////////////////////////////////
                     $ssr_columns = array('STAFF_ID', 'SYEAR', 'SCHOOL_ID');
                     $ssr_values = array($staff_id, UserSyear(), UserSchool());
+<<<<<<< HEAD
                     $start_date_i = 0;
+=======
+                    $start_date_i=0;
+>>>>>>> b1961539a1dde528038a55a8a409b867b8488010
                     foreach ($staff_school_relationship as $ssr_v) {
 //                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
                         if ($arr_v[$array_index[$ssr_v]] != '') {
                             $ssr_columns[] = $ssr_v;
                             if ($ssr_v == 'START_DATE') {
+<<<<<<< HEAD
                                 $start_date_i = 1;
                                 if ($arr_v[$array_index[$ssr_v]] == '') {
                                     $start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
@@ -438,6 +449,31 @@ if ($category == 'staff') {
                         $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
                     }
 
+=======
+                                $start_date_i=1;
+                                if($arr_v[$array_index[$ssr_v]]=='')
+                                {
+                                $start_date=DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));    
+                                
+                                $ssr_values[] ="'" . $start_date[1]['START_DATE']."'" ;
+                                }
+                                else
+                                $ssr_values[] = "'" .fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]]))."'" ;
+                            } elseif ($ssr_v == 'END_DATE') {
+                                $ssr_values[] ="'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]]))."'" ;
+                            }
+                            else
+                            $ssr_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]]) . "'";
+                        }
+                    }
+                    if($start_date_i==0)
+                    {
+                        $start_date=DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));    
+                        $ssr_columns[] = 'START_DATE';
+                        $ssr_values[] ="'" . $start_date[1]['START_DATE']."'" ;
+                    }
+                    
+>>>>>>> b1961539a1dde528038a55a8a409b867b8488010
                     DBQuery('INSERT INTO staff_school_relationship (' . implode(',', $ssr_columns) . ') VALUES (' . implode(',', $ssr_values) . ')');
                     unset($ssr_columns);
                     unset($ssr_values);
@@ -485,7 +521,11 @@ if ($category == 'staff') {
 
                     if ($arr_v[$array_index['JOINING_DATE']] != '') {
                         $ssi_columns[] = 'JOINING_DATE';
+<<<<<<< HEAD
                         $ssi_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index['JOINING_DATE']])) . "'";
+=======
+                        $ssi_values[] = "'" .fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index['JOINING_DATE']])) . "'";
+>>>>>>> b1961539a1dde528038a55a8a409b867b8488010
                     }
 
                     DBQuery('INSERT INTO staff_school_info (' . implode(',', $ssi_columns) . ') VALUES (' . implode(',', $ssi_values) . ')');
