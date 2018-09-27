@@ -645,7 +645,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         echo '</SELECT>';
         echo '</div></div></div>';
         echo '</div>'; //.row
-        PopTable('footer');
+        PopTable_wo_header('footer');
     }
 
     if ($note) {

@@ -44,7 +44,38 @@ $port = $DatabasePort;
 if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
 
     $print_form = 0;
-    EXPORT_TABLES($host, $user, $pass, $name);
+    $date_time = date("m-d-Y");
+    //EXPORT_TABLES($host, $user, $pass, $name);
+    $Export_FileName = $name . 'Backup' . $date_time . '.sql';
+    $dbconn = new mysqli($host,$user,$pass,$name,$port);
+ if($dbconn->connect_errno!=0)
+            exit($dbconn->error);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
+    $row = $result->fetch_assoc();
+    $mysql_dir1 = substr($row['Value'], 0, 2);
+//     $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
+//     $sql_path="\\".$sql_path_arr[1].'8\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
+    $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
+}
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    if ($pass == '')
+        exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user  $name > $Export_FileName");
+    else
+        exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
+}
+else {
+    exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
+}
+    $content= file_get_contents($Export_FileName);
+    $fname=$Export_FileName;
+    unlink($Export_FileName);
+    header('Content-Type: application/octet-stream');
+    header("Content-Transfer-Encoding: Binary");
+    header("Content-disposition: attachment; filename=\"" . $fname . "\"");
+    //$content= file_get_contents($Export_FileName);
+    echo $content;
+    exit;
     //see import.php too
 }
 if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
@@ -219,7 +250,7 @@ INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERI
         INNER JOIN schools s ON s.ID=acc.SCHOOL_ID LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID 
         AND sch.student_id IN(SELECT student_id FROM student_enrollment se WHERE sch.school_id=se.school_id AND sch.syear=se.syear AND start_date<=acc.school_date AND (end_date IS NULL OR end_date>=acc.school_date))
         AND (cp.MARKING_PERIOD_ID IS NOT NULL AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_semesters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_quarters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE) OR (cp.MARKING_PERIOD_ID IS NULL AND acc.school_date BETWEEN cp.begin_date AND cp.end_date))
-        AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.SCHOOL_DATE<=CURDATE() AND cp.course_period_id=cp_id 
+        AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.SCHOOL_DATE<CURDATE() AND cp.course_period_id=cp_id 
         AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.SCHOOL_DATE=acc.SCHOOL_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID 
         AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id)) 
         GROUP BY acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID;
@@ -417,9 +448,8 @@ INNER JOIN report_card_grade_scales rcgs ON rcgs.id=cp.grade_scale_id
   WHERE srcg.marking_period_id=mp_id AND srcg.student_id=s_id AND srcg.gp_scale<>0 AND srcg.course_period_id IS NOT NULL AND (rcgs.gpa_cal='Y' OR cp.grade_scale_id IS NULL) AND srcg.marking_period_id NOT LIKE 'E%'
   AND (eg.START_DATE IS NULL OR eg.START_DATE='0000-00-00'  OR eg.START_DATE<=CURDATE()) AND (eg.END_DATE IS NULL OR eg.END_DATE='0000-00-00'  OR eg.END_DATE>=CURDATE())  
   GROUP BY srcg.student_id,eg.short_name;
-
-
-  IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
+  
+IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
     INSERT INTO student_gpa_calculated (student_id,marking_period_id)
       VALUES(s_id,mp_id);
   END IF;
@@ -587,10 +617,8 @@ BEGIN
   WHERE srcg.marking_period_id=mp_id AND srcg.student_id=s_id AND srcg.gp_scale<>0 AND srcg.school_id=sch_id AND srcg.syear=sy AND srcg.marking_period_id NOT LIKE 'E%'
 AND (eg.START_DATE IS NULL OR eg.START_DATE='0000-00-00'  OR eg.START_DATE<=CURDATE()) AND (eg.END_DATE IS NULL OR eg.END_DATE='0000-00-00'  OR eg.END_DATE>=CURDATE())
   GROUP BY srcg.student_id,eg.short_name;
-
   
-
-  IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
+IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
     INSERT INTO student_mp_stats(student_id,marking_period_id)
       VALUES(s_id,mp_id);
   END IF;
@@ -775,6 +803,7 @@ CREATE TRIGGER `td_cal_missing_attendance`
     header('Content-Type: application/octet-stream');
     header("Content-Transfer-Encoding: Binary");
     header("Content-disposition: attachment; filename=\"" . $backup_name . "\"");
+    //$a= file_get_contents($content);
     echo $content;
     exit;
 }

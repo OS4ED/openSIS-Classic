@@ -386,11 +386,20 @@ switch (User('PROFILE')) {
             echo '</div>';
         }
 
+//        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE AS INDEX_DATE,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+//                FROM calendar_events ce,calendar_events_visibility cev,schools s
+//                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
+//                    AND ce.SYEAR=\'' . UserSyear() . '\'
+//                    AND ce.SCHOOL_ID IN(' . GetUserSchools(UserID(), true) . ')
+//                    AND s.ID=ce.SCHOOL_ID AND (ce.CALENDAR_ID=cev.CALENDAR_ID)
+//                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'admin\'' : 'cev.PROFILE_ID=\'' . User('PROFILE_ID')) . '\' 
+//                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
+        
         $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE AS INDEX_DATE,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,calendar_events_visibility cev,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
                     AND ce.SYEAR=\'' . UserSyear() . '\'
-                    AND ce.SCHOOL_ID IN(' . GetUserSchools(UserID(), true) . ')
+                    AND ce.SCHOOL_ID IN(' . UserSchool(). ')
                     AND s.ID=ce.SCHOOL_ID AND (ce.CALENDAR_ID=cev.CALENDAR_ID)
                     AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'admin\'' : 'cev.PROFILE_ID=\'' . User('PROFILE_ID')) . '\' 
                     ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
@@ -499,11 +508,20 @@ switch (User('PROFILE')) {
         }
 
 
+//        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+//                FROM calendar_events ce,calendar_events_visibility cev,schools s
+//                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
+//                    AND ce.SYEAR=\'' . UserSyear() . '\'
+//                    AND ce.school_id IN(' . GetUserSchools(UserID(), true) . ')
+//                    AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
+//                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'teacher\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
+//                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
+        
         $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,calendar_events_visibility cev,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
                     AND ce.SYEAR=\'' . UserSyear() . '\'
-                    AND ce.school_id IN(' . GetUserSchools(UserID(), true) . ')
+                    AND ce.school_id IN(' . UserSchool() . ')
                     AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
                     AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'teacher\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
                     ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
@@ -571,11 +589,20 @@ switch (User('PROFILE')) {
             echo '</div>';
         }
 
+//        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+//                FROM calendar_events ce,calendar_events_visibility cev,schools s
+//                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
+//                    AND ce.SYEAR=\'' . UserSyear() . '\'
+//                    AND ce.school_id IN(' . GetUserSchools(UserID(), true) . ')
+//                    AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
+//                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'parent\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
+//                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
+        
         $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,calendar_events_visibility cev,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
                     AND ce.SYEAR=\'' . UserSyear() . '\'
-                    AND ce.school_id IN(' . GetUserSchools(UserID(), true) . ')
+                    AND ce.school_id IN(' . UserSchool() . ')
                     AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
                     AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'parent\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
                     ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));

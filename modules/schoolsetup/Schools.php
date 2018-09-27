@@ -125,16 +125,25 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 $sql = 'INSERT INTO schools (SYEAR' . $fields . ') values(' . $syear . '' . $values . ')';
 
                 DBQuery($sql);
-                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . UserID() . ',' . $id . ',' . $syear. ')');
+                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . UserID() . ',' . $id . ',' . $syear. ',"'.date('Y-m-d').'")');
+                $other_admin_details=DBGet(DBQuery('SELECT * FROM login_authentication WHERE PROFILE_ID=0 AND USER_ID!=' . UserID() . ''));
+                if(!empty($other_admin_details))
+                {
+                foreach($other_admin_details as $school_data)
+                {
+                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $school_data['USER_ID'] . ',' . $id . ',' . $syear. ',"'.date('Y-m-d').'")');    
+                }
+                }
                 if (User('PROFILE_ID') != 0) {
                     $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ')');
+                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ',"'.date('Y-m-d').'")');
                 }
 //                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO system_preference(school_id, full_day_minute, half_day_minute) VALUES (' . $id . ', NULL, NULL)');
 
                 DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear. '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+                DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear . '\',\'UPDATENOTIFY\',\'display_school\',"Y")');
                 $_SESSION['UserSchool'] = $id;
                 unset($_REQUEST['new_school']);
             }
@@ -221,36 +230,36 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Address<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['ADDRESS'], 'values[ADDRESS]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Address</label><div class=\"col-md-8\">" . TextInput($schooldata['ADDRESS'], 'values[ADDRESS]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">City<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['CITY'], 'values[CITY]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">City</label><div class=\"col-md-8\">" . TextInput($schooldata['CITY'], 'values[CITY]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State</label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Zip/Postal Code<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Zip/Postal Code</label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Telephone<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Telephone</label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row 
 
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Principal<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['PRINCIPAL'], 'values[PRINCIPAL]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Principal</label><div class=\"col-md-8\">" . TextInput($schooldata['PRINCIPAL'], 'values[PRINCIPAL]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
@@ -291,9 +300,9 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
     
         
         if(!$_REQUEST['new_school'] && count($sch_img_info)>0)
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\"><table width='100%'><tr><td width='5'>" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit'>" : '') . "<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' width=70 class=pic />" . (AllowEdit() != false ? "</a>" : '') . "</td><td class='pl-10'>" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit'>Click here to change logo</a>" : '') . "</td></tr></table></div></div>";
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\">" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit'>" : '') . "<div class=\"image-holder\"><img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive /></div>" . (AllowEdit() != false ? "</a>" : '') . (AllowEdit() != false ? "<a href='Modules.php?modname=schoolsetup/UploadLogo.php&modfunc=edit' class=\"show text-center m-t-10 text-primary\"><i class=\"icon-upload position-left\"></i> Click here to change logo</a>" : '') . "</div></div>";
         else if (!$_REQUEST['new_school'])
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\">" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php'>Click here to upload logo</a>" : '-') . "</div></div>";
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Logo</label><div class=\"col-md-8\">" . (AllowEdit() != false ? "<a href ='Modules.php?modname=schoolsetup/UploadLogo.php' class=\"form-control text-primary\" readonly=\"readonly\"><i class=\"icon-upload position-left\"></i> Click here to upload logo</a>" : '-') . "</div></div>";
 
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row  
@@ -307,23 +316,24 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Start Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
         echo '</div>'; //.col-md-6
         
-        echo '<div class="row">';
         echo '<div class="col-md-6">';
         echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">End Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
         echo '</div>'; //.col-md-6
+        echo '</div>'; //.row  
         }
+        $btns = '';
         if (User('PROFILE') == 'admin' && AllowEdit()) {
-            echo '<hr class="no-margin"/>';
+            //echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {
-                echo "<div class=\"panel-body no-padding-left no-padding-bottom\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-center\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
             } else {
 
-                echo "<div class=\"panel-body no-padding-left no-padding-bottom\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-center\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
             }
         }
 
 
-        PopTable('footer');
+        PopTable('footer',$btns);
 
         echo "</FORM>";
     }

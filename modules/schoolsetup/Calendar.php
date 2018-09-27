@@ -730,20 +730,23 @@ if (!$_REQUEST['modfunc']) {
     foreach ($title_RET as $title) {
         $options[$title['CALENDAR_ID']] = $title['TITLE'];
     }
-
+    //echo date('M Y',strtotime('first day of +1 month'));
     if (AllowEdit()) {
 
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['calendar_id']);
 
         if ($_REQUEST['calendar_id']) {
-            $link .= '<div class="form-inline clearfix">';
-            $link .= '<div class="form-group pull-left">' . SelectInput($_REQUEST['calendar_id'], 'calendar_id', '', $options, false, " onchange='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . '&amp;calendar_id="+this.form.calendar_id.value;\' ', false) . '</div>';
+            $link .= '<div class="row">';
+            $link .= '<div class="col-md-3">' . SelectInput($_REQUEST['calendar_id'], 'calendar_id', '', $options, false, " onchange='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . '&amp;calendar_id="+this.form.calendar_id.value;\' ', false) . '</div>';
+            $link .= '<div class="col-md-6"><h3 class="text-center m-0"><a href="Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=' . $_REQUEST['modfunc'] . '&month=' . date('m',strtotime('first day of -1 month', $time)) . '&year=' . date('Y',strtotime('first day of -1 month', $time)) . '" class="btn btn-icon"><i class="fa fa-chevron-left fa-lg"></i></a> <span class="inline-block p-l-20 p-r-20">' . date("F Y", $time) . '</span> <a href="Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=' . $_REQUEST['modfunc'] . '&month=' . date('m',strtotime('first day of +1 month', $time)) . '&year=' . date('Y',strtotime('first day of +1 month', $time)) . '" class="btn btn-icon"><i class="fa fa-chevron-right fa-lg"></i></a></h3></div>';
             if (User('PROFILE') == 'admin') {
-                $link .="<div class=\"btn-group pull-right\"><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=create\");' class=\"btn btn-primary btn-icon btn-lg\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Create a New Calendar\"><i class=\"fa fa-plus\"></i></a>";
-                $link .="<a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Delete this Calendar\"><i class=\"fa fa-times\"></i></a><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=edit_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Edit this Calendar\"><i class=\"fa fa-pencil\"></i></a></div>";
+                $link .= '<div class="col-md-3">';
+                $link .= "<div class=\"btn-group pull-right\"><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=create\");' class=\"btn btn-primary btn-icon btn-lg\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Create a New Calendar\"><i class=\"fa fa-plus\"></i></a>";
+                $link .= "<a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Delete this Calendar\"><i class=\"fa fa-times\"></i></a><a href='#' onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=edit_calendar&calendar_id=$_REQUEST[calendar_id]\");' class=\"btn btn-primary btn-lg btn-icon\" data-popup=\"tooltip\" data-placement=\"top\" data-original-title=\"Edit this Calendar\"><i class=\"fa fa-pencil\"></i></a></div>";
+                $link .= '</div>';
             }
-            $link .= '</div>'; //.form-inline
+            $link .= '</div>'; //.row
         }
     } else {
 
@@ -771,7 +774,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body">';
         echo '<div class="form-inline">';
-        DrawHeaderHome('<div class="inline-block">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div>' . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"') : ''));
+        DrawHeaderHome('<div class="inline-block">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => date("m", $time), 'Y' => date("y", $time), 'submit' => true, 'view' => 'month')) . '</div>' . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"') : ''));
         echo '</div>'; //.form-inline
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel

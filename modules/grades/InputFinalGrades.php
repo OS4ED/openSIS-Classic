@@ -205,6 +205,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                     if ($programconfig[User('STAFF_ID')]['WEIGHT'] == 'Y') {
                         $assign_typ_wg = array();
                         $tot_weight_grade = '';
+                        $total_weightage='';
                         if ($course_periods[1]['MARKING_PERIOD_ID'] == NULL) {
                             $sql = 'SELECT a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE, t.ASSIGNMENT_TYPE_ID, t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  ,  t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND g.STUDENT_ID=\'' . $student_id . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\') WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\'' . $course_period_id . '\' OR a.COURSE_ID=\'' . $course_id . '\' AND a.STAFF_ID=\'' . User('STAFF_ID') . '\') AND t.COURSE_ID=\'' . $course_id . '\' AND (a.MARKING_PERIOD_ID=\'' . UserMP() . '\' OR a.MARKING_PERIOD_ID=\'' . $fy_mp_id . '\')';
                         } else {
@@ -231,12 +232,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                                 }
                             }
                             foreach ($assignment_type_count as $assign_key => $value) {
+                                $total_weightage = $total_weightage + $assign_typ_wg[$assign_key];
+                                
                                 if ($tot_weight_grade == '')
                                     $tot_weight_grade = round((round(($tot_weighted_percent[$assign_key] / $value), 2) * $assign_typ_wg[$assign_key]) / 100, 2);
                                 else
                                     $tot_weight_grade = $tot_weight_grade + (round((round(($tot_weighted_percent[$assign_key] / $value), 2) * $assign_typ_wg[$assign_key]) / 100, 2));
                             }
-
 
 
                             //------------------------------------------------------//
@@ -285,7 +287,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
 
 
 
-                            $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade($tot_weight_grade, $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade($tot_weight_grade / 100, $course_period_id, User('STAFF_ID'), '%') . '%'));
+                            $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade($tot_weight_grade/$total_weightage, $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade($tot_weight_grade / $total_weightage, $course_period_id, User('STAFF_ID'), '%') . '%'));
                         } else {
                             foreach ($student as $partial_points)
                                 if ($partial_points['PARTIAL_TOTAL'] != 0) {

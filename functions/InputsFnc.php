@@ -60,49 +60,49 @@ function DateInput2($value, $name, $selectid, $title = '', $div = true, $allow_n
 function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_year) {
     $dt = '';
 
-    $dt.= '<div class="input-group datepicker-group" id="original_date_'.$day.'" value="" style="">';
+    $dt.= '<div class="input-group datepicker-group" id="original_date_' . $day . '" value="" style="">';
     $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
-    $dt.= '<input id="date_'.$day.'" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '<input id="date_' . $day . '" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
     $dt.= '</div>';
-    
+
     $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
     $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $month . '" type="hidden">';
     $dt.= '<input value="" id="yearSelect_date_' . $day . '" name="' . $year . '" type="hidden">';
-    
-    /*if ($allow_day == 'Y') {
-        $dt.='<div class="col-xs-3">';
-        $dt.='<select class="form-control" name="' . $day . '" id="' . $day . '">';
-        $dt.='<option value="">Day</option>';
-        for ($i = 1; $i <= 31; $i++) {
-            if ($i < 10)
-                $i = '0' . $i;
 
-            $dt.='<option value="' . $i . '">' . $i . '</option>';
-        }
-        $dt.='</select>';
-        $dt.='</div>';
-    }
+    /* if ($allow_day == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $day . '" id="' . $day . '">';
+      $dt.='<option value="">Day</option>';
+      for ($i = 1; $i <= 31; $i++) {
+      if ($i < 10)
+      $i = '0' . $i;
 
-
-    if ($allow_month == 'Y') {
-        $dt.='<div class="col-xs-3">';
-        $dt.='<select class="form-control" name="' . $month . '" id="' . $month . '">';
-        $dt.='<option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>';
-        $dt.='</select>';
-        $dt.='</div>';
-    }
+      $dt.='<option value="' . $i . '">' . $i . '</option>';
+      }
+      $dt.='</select>';
+      $dt.='</div>';
+      }
 
 
-    if ($allow_year == 'Y') {
-        $dt.='<div class="col-xs-3">';
-        $dt.='<select class="form-control" name="' . $year . '" id="' . $year . '">';
-        $dt.='<option value="">Year</option>';
-        for ($i = 1930; $i <= 2030; $i++) {
-            $dt.='<option value="' . $i . '">' . $i . '</option>';
-        }
-        $dt.='</select>';
-        $dt.='</div>';
-    }*/
+      if ($allow_month == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $month . '" id="' . $month . '">';
+      $dt.='<option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>';
+      $dt.='</select>';
+      $dt.='</div>';
+      }
+
+
+      if ($allow_year == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $year . '" id="' . $year . '">';
+      $dt.='<option value="">Year</option>';
+      for ($i = 1930; $i <= 2030; $i++) {
+      $dt.='<option value="' . $i . '">' . $i . '</option>';
+      }
+      $dt.='</select>';
+      $dt.='</div>';
+      } */
 
     return $dt;
 }
@@ -157,7 +157,7 @@ function TextInput($value, $name, $title = '', $options = '', $div = true, $divO
             return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
         else {
 
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div ".$divOptions." onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div " . $divOptions . " onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
         }
     } else {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
@@ -180,16 +180,16 @@ function TextInput_time($value, $name, $title = '', $options = '', $div = true, 
         if (strpos($options, 'size') === false && $value != '')
             $options .= ' size=' . strlen($value);
         elseif (strpos($options, 'size') === false)
-            $options .= ' size=10';
+            $options .= ' size=7';
 
         if (strstr($value, '\\') != '')
             $div = false;
         if ((trim($value) == '' || $div == false))
 //            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\"  type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<div class=\"input-group clockpicker\"><INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options><span class=\"input-group-addon\"><span class=\"glyphicon glyphicon-time\"></span></span></div>" . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<div class=\"input-group clockpicker\"><INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options></div>" . (($title != '') ? '</div>' : '');
         else {
-            $tempId = rand(0000,9999);
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div".$tempId."' onclick=\"$('#div".$tempId."').hide(); $('#div".$tempId."picker').show();\"><div ".$divOptions." document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . "</div></DIV><div class=\"input-group clockpicker\" id=\"div".$tempId."picker\" style=\"display:none;\"><INPUT type=text class=form-control id=\"input$name\" name=\"$name\" " . (($value || $value === '0') ? 'value="' . str_replace('"', '&rdquo;', $value) . '"' : '') . $options . "><span class=\"input-group-addon\"><span class=\"glyphicon glyphicon-time\"></span></span></div>" . (($title != '') ? "</div>" : "");
+            $tempId = rand(0000, 9999);
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div" . $tempId . "' onclick=\"$('#div" . $tempId . "').hide(); $('#div" . $tempId . "picker').show();\"><div " . $divOptions . " document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . "</div></DIV><div class=\"input-group clockpicker\" id=\"div" . $tempId . "picker\" style=\"display:none;\"><INPUT type=text class=form-control id=\"input$name\" name=\"$name\" " . (($value || $value === '0') ? 'value="' . str_replace('"', '&rdquo;', $value) . '"' : '') . $options . "></div>" . (($title != '') ? "</div>" : "");
         }
     } else {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
@@ -290,7 +290,7 @@ function TextInput_mod_a($value, $name, $title = '', $options = '', $div = true)
         if ((trim($value) == '' || $div == false))
             return (($title != '') ? '<label for="' . $name . '" class="control-label col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . "<INPUT class='form-control' placeholder='" . $title . "' type=\"text\" name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " id=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
         else
-            return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text placeholder=\\\"" . $title . "\\\" class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>" . ($title != '' ? $title : '') . "\",\"div$name\",true); document.getElementById(\"input$name\").focus();'><input type=\"text\" readonly=\"readonly\" class=\"form-control\" value=\"" . (($value != '') ? str_replace('"', '&rdquo;', $value1) : '-') . ($title != '' ? $title : '') . '" /></div></DIV>';
+            return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text placeholder=\\\"" . $title . "\\\" class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>" . ($title != '' ? $title : '') . "\",\"div$name\",true); document.getElementById(\"input$name\").focus();'>" . (($value != '') ? str_replace('"', '&rdquo;', $value1) : '-') . ($title != '' ? $title : '') . "</div></DIV>";
     } else
         return (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }

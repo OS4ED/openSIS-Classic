@@ -28,7 +28,7 @@
 include('../../RedirectModulesInc.php');
 $cp_id = $_REQUEST['cp_id'];
 if (UserStaffID() || $_REQUEST['staff_id'])
-    echo "<FORM action=Modules.php?modname=$_REQUEST[modname]&dt=1&pr=1 method=POST>";
+    echo "<FORM class=\"form-horizontal\" name=\"search\" action=Modules.php?modname=$_REQUEST[modname]&dt=1&pr=1 method=POST>";
 DrawBC("Users > Teacher Programs");
 ###########################################
 if (UserStaffID() || $_REQUEST['staff_id']) {

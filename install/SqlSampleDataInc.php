@@ -2589,7 +2589,7 @@ INSERT INTO `staff_school_info` (`staff_school_info_id`, `staff_id`, `category`,
 --
 
 INSERT INTO `staff_school_relationship` (`staff_id`, `school_id`, `syear`, `last_updated`, `updated_by`, `start_date`, `end_date`) VALUES
-(1, 1, 2017, '2018-01-22 04:18:03', NULL, '0000-00-00', '0000-00-00'),
+(1, 1, 2017, '2018-01-22 04:18:03', NULL, '2017-07-01', '0000-00-00'),
 (2, 1, 2017, '2018-01-22 04:50:22', NULL, '2017-07-01', NULL),
 (3, 1, 2017, '2018-01-22 04:52:50', NULL, '2017-01-02', NULL),
 (4, 1, 2017, '2018-01-22 05:44:35', NULL, '2017-01-02', NULL),

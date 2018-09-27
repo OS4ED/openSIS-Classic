@@ -1436,12 +1436,32 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                     $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
-                        echo '$(function(){if($("#results").length>0){';
-                        echo "var pager = new Pager('results',$number_rec);\n";
-                        echo "pager.init();\n";
-                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                        echo "pager.showPage(1);\n";
-                        echo '}});';
+                        echo "var table = $('#results').DataTable({"
+                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                        . "language: {
+                            search: '<span>Filter:</span> _INPUT_',
+                            lengthMenu: '<span>Show:</span> _MENU_',
+                            paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+                        },
+                        drawCallback: function () {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+                        },
+                        preDrawCallback: function() {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+                        },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
+                        'iDisplayLength': ".$number_rec.""
+                        . "});";
+                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
+                        echo "$('.dataTables_length select').select2({
+                            minimumResultsForSearch: Infinity,
+                            width: 'auto'
+                        });";
                         echo "</script>\n";
                     }
                 }
@@ -8006,10 +8026,10 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
                     //echo '</TD ></TR></TABLE>';
 
-                    $number_rec = 50;                    
+                    $number_rec = 100;                    
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
-                        echo "$('#results').DataTable({"
+                        echo "var table = $('#results').DataTable({"
                         . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
                         . "language: {
                             search: '<span>Filter:</span> _INPUT_',
@@ -8022,8 +8042,15 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                         preDrawCallback: function() {
                             $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
                         },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
                         'iDisplayLength': ".$number_rec.""
                         . "});";
+                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
                             width: 'auto'
@@ -8789,10 +8816,10 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             if (!isset($_REQUEST['_openSIS_PDF'])) {
                     //echo '</TD ></TR></TABLE>';
 
-                    $number_rec = 50;                    
+                    $number_rec = 100;                    
                     if ($result_count > $number_rec) {
-                        echo "<script type='text/javascript'>\n";
-                        echo "$('#results').DataTable({"
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo "var table = $('#results').DataTable({"
                         . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
                         . "language: {
                             search: '<span>Filter:</span> _INPUT_',
@@ -8805,8 +8832,15 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                         preDrawCallback: function() {
                             $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
                         },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
                         'iDisplayLength': ".$number_rec.""
                         . "});";
+                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
                             width: 'auto'
@@ -13425,16 +13459,36 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                     //echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
+                    //if ($key != 'CHECKBOX')
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
-                        echo '$(function(){if($("#results").length>0){';
-                        
-                        echo "var pager = new Pager('results',$number_rec);\n";
-                        echo "pager.init();\n";
-                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                        echo "pager.showPage(1);\n";
-                        echo '}});';
+                        echo "var table = $('#results').DataTable({"
+                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                        . "language: {
+                            search: '<span>Filter:</span> _INPUT_',
+                            lengthMenu: '<span>Show:</span> _MENU_',
+                            paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+                        },
+                        drawCallback: function () {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+                        },
+                        preDrawCallback: function() {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+                        },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
+                        'iDisplayLength': ".$number_rec.""
+                        . "});";
+                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
+                        echo "$('.dataTables_length select').select2({
+                            minimumResultsForSearch: Infinity,
+                            width: 'auto'
+                        });";
                         echo "</script>\n";
                     }
                 }

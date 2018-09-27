@@ -7,22 +7,22 @@ function formcheck_school_setup_school()
     frmvalidator.addValidation("values[TITLE]", "req", "Please enter the title");
     frmvalidator.addValidation("values[TITLE]", "maxlen=50", "Max length for title is 50 characters");
 //	
-    frmvalidator.addValidation("values[ADDRESS]", "req", "Please enter address");
+    //frmvalidator.addValidation("values[ADDRESS]", "req", "Please enter address");
     frmvalidator.addValidation("values[ADDRESS]", "maxlen=100", "Max length for address is 100 characters");
 
-    frmvalidator.addValidation("values[CITY]", "req", "Please enter city name");
+    //frmvalidator.addValidation("values[CITY]", "req", "Please enter city name");
     frmvalidator.addValidation("values[CITY]", "maxlen=100", "Max length for city is 100 characters");
 
-    frmvalidator.addValidation("values[STATE]", "req", "Please enter state name");
+    //frmvalidator.addValidation("values[STATE]", "req", "Please enter state name");
     frmvalidator.addValidation("values[STATE]", "maxlen=100", "Max length for state is 100 characters");
 
-    frmvalidator.addValidation("values[ZIPCODE]", "req", "Please enter zipcode");
+    //frmvalidator.addValidation("values[ZIPCODE]", "req", "Please enter zipcode");
 //    frmvalidator.addValidation("values[ZIPCODE]", "numeric", "Zip allows only numeric value");
 
-    frmvalidator.addValidation("values[PHONE]", "req", "Please enter phone Number");
+    //frmvalidator.addValidation("values[PHONE]", "req", "Please enter phone Number");
 //    frmvalidator.addValidation("values[PHONE]", "numeric", "Phone number allows number only");
 
-    frmvalidator.addValidation("values[PRINCIPAL]", "req", "Please enter principal name");
+    //frmvalidator.addValidation("values[PRINCIPAL]", "req", "Please enter principal name");
     frmvalidator.addValidation("values[PRINCIPAL]", "maxlen=100", "Max length for state is 100 characters");
 
     frmvalidator.addValidation("values[REPORTING_GP_SCALE]", "req", "Please enter grading scale value");

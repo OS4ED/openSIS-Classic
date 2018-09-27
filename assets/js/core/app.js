@@ -30,14 +30,17 @@ $(function () {
     $('body').addClass('no-transitions');
 
     $('.navigation-main li a').click(function () {
-        $('.navigation-main li.active').removeClass('active');
-        $(this).closest('li').addClass('active');
+        var that = $(this);
+        that.closest('ul').children('li').each(function(){
+            $(this).removeClass('active');
+        });
+        that.parents('li').addClass('active');
     });
 
-    if ($('.current-submenu').length > 0) {
+    /*if ($('.current-submenu').length > 0) {
         $('.current-submenu').closest('li').addClass('active');
         $('.current-submenu').closest('ul').show();
-    }
+    }*/
 
 
     if ($(".switch-fake-title").length > 0) {

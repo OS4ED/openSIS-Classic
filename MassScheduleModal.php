@@ -55,7 +55,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods'
 
 if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
 
-    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.title,sg.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
+    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html = 'course_modal||';
@@ -65,7 +65,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
         $html.='<tbody>';
         foreach ($courses_RET as $val) {
 
-            $html.= '<tr><td><a href=javascript:void(0); onclick="MassScheduleModal(' . $val['COURSE_ID'] . ',\'course_periods\')">' . $val['TITLE'] . '</a></td></tr>';
+            $html.= '<tr><td><a href=javascript:void(0); onclick="MassScheduleModal(' . $val['COURSE_ID'] . ',\'course_periods\')">' . $val['GRADE_COURSE'] . '</a></td></tr>';
         }
         $html.='</tbody>';
         $html.='</table>';

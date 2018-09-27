@@ -33,6 +33,7 @@
 // The third parameter (booleen) specifies whether Not Specified should be allowed as an option
 
 function PrepareDate($date = '', $title = '', $allow_na = true, $options = '', $cal_img = 'Y') {
+    //print_r($options);
     global $_openSIS;
     if ($options == '') {
         $options = array();
@@ -78,12 +79,12 @@ function PrepareDate($date = '', $title = '', $allow_na = true, $options = '', $
     }
 
     $return .= '<div id="date_div_'.$_openSIS['PrepareDate'].'" class="fake_datepicker" onclick="$(\'#original_date_' . $_openSIS['PrepareDate'] . '\').show(); $(\'#date_div_'.$_openSIS['PrepareDate'].'\').hide();">';
-    $return .= '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input readonly="readonly" data-calid="1" class="form-control" value="'.date('M/d/Y', strtotime($date)).'" type="text"></div>';
+    $return .= '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input readonly="readonly" data-calid="1" class="form-control" value="'.(($options['view']=='month')?date('M/Y', strtotime($date)):date('M/d/Y', strtotime($date))).'" type="text"></div>';
     $return .= '</div>';
     
-    $return .= '<div class="input-group datepicker-group" style="display: none;" id="original_date_' . $_openSIS['PrepareDate'] . '" value="' . date('Y-m-d', strtotime($date)) . '">';
+    $return .= '<div class="input-group '.(($options['view']=='month')?'datepicker-group-month':'datepicker-group').'" style="display: none;" id="original_date_' . $_openSIS['PrepareDate'] . '" value="' . date('Y-m-d', strtotime($date)) . '">';
     $return .= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
-    $return .= '<input id="date_' . $_openSIS['PrepareDate'] . '" placeholder="" value="' . date('Y-m-d', strtotime($date)) . '" class="form-control daterange-single" type="text">';
+    $return .= '<input id="date_' . $_openSIS['PrepareDate'] . '" placeholder="" value="' .(($options['view']=='month')?date('m/Y', strtotime($date)):date('Y-m-d', strtotime($date))). '" class="form-control daterange-single" type="text">';
     $return .= '</div>';
 
     // MONTH  ---------------

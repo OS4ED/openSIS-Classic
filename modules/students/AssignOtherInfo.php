@@ -300,7 +300,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID']."\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
                 } else {
                     $select_options = array();
                     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
@@ -310,7 +310,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_' . $field['ID'].'\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID']."\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $select_options) . '</div></div>');
                 }
             }
         }
@@ -415,7 +415,7 @@ if (!$_REQUEST['modfunc']) {
         $item .= '<div class="row">' . $col1html . '</div>' . $col2html . '</div></div>';
         echo $item;
 
-        PopTable('footer');
+        PopTable_wo_header('footer');
 
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
@@ -437,7 +437,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');">');
     $extra['new'] = true;
 
     Search('student_id', $extra);

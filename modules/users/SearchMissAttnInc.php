@@ -95,7 +95,9 @@ if (User('PROFILE') == 'admin') {
     } else {
         $singular = 'User';
         $plural = 'users';
-        $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+//        $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+        $columns = array('FULL_NAME' => 'Name', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+        
     }
     if (is_array($extra['columns_before']))
         $columns = $extra['columns_before'] + $columns;

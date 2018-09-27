@@ -93,7 +93,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</div>'; //.panel-heading
 
         echo '<div class="panel-body p-0">';
-
+        echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</td><td width="200">&nbsp;</td><td>These are available fields in openSIS</td></tr>';
@@ -120,7 +120,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         }
 
         $_SESSION['data'] = $arr_data;
-        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Grade Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
+        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Graduation Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'START_DATE' => 'Student Enrollment Date', 'END_DATE' => 'Student Enrollment End Date');
 
@@ -169,8 +169,8 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
 //print_r($options);
         }
 
-        echo "</table>  ";
-
+        echo '</table>';
+        echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
         echo '<div class="panel-footer text-center"><input type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.');"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
@@ -188,10 +188,10 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
-        
+        echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
-        echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</th><th width="200">&nbsp;</th><th>These are available fields in openSIS (Click to change the field values)</th></tr>';
+        echo '<tr class="bg-grey-200"><th style="word-wrap: break-word;">These fields are in your Excel spread sheet</th><th width="200">&nbsp;</th><th>These are available fields in openSIS</th></tr>';
 	echo '</thead>';
         echo '<tbody>';
 //         $custom=DBGet(DBQuery("SHOW COLUMNS FROM STUDENTS WHERE FIELD IN ('FIRST_NAME','MIDDLE_NAME' ,'LAST_NAME','GENDER','LANGUAGE','BIRTHDATE','ESTIMATED_GRAD_DATE','PHONE','USERNAME') "));
@@ -207,7 +207,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
 //             $options[$custom_enroll_value['FIELD']]=strtoupper(str_replace("_", " ", $custom_enroll_value['FIELD']) );
 //        }
 
-        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Grade Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
+        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Graduation Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'START_DATE' => 'Student Enrollment Date', 'END_DATE' => 'Student Enrollment End Date');
 
@@ -242,12 +242,14 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
                 echo "<td class='" . $class . "'><div id='" . preg_replace('/[()\/]/', '', $key_stu) . "' class='text-center p-t-15'></div></td>";
             }
 
-            echo "<td class=" . $class . "><input type=hidden name=student[$key_stu] value=$value_stu>" . SelectInput($value_stu, 'student[' . $key_stu . '][' . $value_stu . ']', '', $options, 'N/A', ' onchange=drawmapping_full(this.value,' . 'k' . $i . ',' . preg_replace('/[()\/]/', '', $key_stu) . ');') . "</td></tr>";
+            echo "<td class=" . $class . "><input type=hidden name=student[$key_stu] value=$value_stu>" . SelectInput($value_stu, 'student[' . $key_stu . '][' . $value_stu . ']', '', $options, 'N/A', ' onchange=drawmapping_full(this.value,' . 'k' . $i . ',' . preg_replace('/[()\/]/', '', $key_stu) . ');');
             echo "<input type='hidden' name='student_map_value[$key_stu]' id=k$i value=$value_stu>";
+            echo "</td></tr>";
         }
 
         echo '</tbody>';
         echo '</table>';
+        echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<div class="panel-footer text-center"><input type="submit" value="Confirm" class="btn btn-primary" onClick="return valid_mapping_student('.$i.');" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
@@ -345,7 +347,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</div>'; //.panel-heading
 
         echo '<div class="panel-body p-0">';
-
+        echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</td><td width="200">&nbsp;</td><td>These are available fields in openSIS</td></tr>';
@@ -372,7 +374,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         }
         $_SESSION['data'] = $arr_data;
 
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECONDARY_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
+        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
         $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');
@@ -408,7 +410,8 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
 //
 //        echo "</form>";
         
-        echo "</table>";
+        echo '</table>';
+        echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
         echo '<div class="panel-footer text-center"><input type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.');"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
@@ -428,7 +431,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
-        
+        echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</th><th width="200">&nbsp;</th><th>These are available fields in openSIS (Click to change the field values)</th></tr>';
@@ -443,7 +446,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
 //        <tr><td width=260><b>These fields are in your Excel spread sheet</b></td><td width=\"200\">&nbsp;</td><td><b>These are available fields in openSIS(Click to change the field values)</b></td></tr>
 //		</thead>";
 //         $custom=DBGet(DBQuery("SHOW COLUMNS FROM STAFF WHERE FIELD IN ('TITLE','FIRST_NAME','MIDDLE_NAME','LAST_NAME','IS_DISABLE','EMAIL','PHONE','PROFILE','USERNAME') "));
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECONDARY_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
+        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'IS_DISABLE' => 'Disabled', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
         $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
         $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
         $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');
@@ -484,6 +487,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         
         echo '</tbody>';
         echo '</table>';
+        echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<div class="panel-footer text-center"><input type="submit" value="Confirm" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.');" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel

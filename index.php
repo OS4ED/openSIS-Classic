@@ -70,11 +70,11 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
         header("Location:register.php");
 }
 
-$_REQUEST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_REQUEST['USERNAME']);
-if (isset($_POST['USERNAME']))
-    $_POST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_POST['USERNAME']);
-if (isset($_GET['USERNAME']))
-    $_GET['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_GET['USERNAME']);
+//$_REQUEST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_REQUEST['USERNAME']);
+//if (isset($_POST['USERNAME']))
+    //$_POST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_POST['USERNAME']);
+//if (isset($_GET['USERNAME']))
+    //$_GET['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_GET['USERNAME']);
 
 if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
     db_start();

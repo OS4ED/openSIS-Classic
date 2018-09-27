@@ -105,7 +105,7 @@ if ($category == 'student') {
                             $student_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
                         }
                         if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE')
-                            $check_query[] = $students_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
+                            $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
                     }
                 }
                 if (count($check_query) > 0) {
@@ -248,23 +248,36 @@ if ($category == 'student') {
             }
         }
 
-        echo '<div class="text-center"><img src="assets/images/check-clipart-animated.gif"></div>';
-        echo '<h2 class="text-center text-success m-b-0">Congratulations !!!</h2>';
-        echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import has successfully concluded.</h5>';
 
-        echo '<div class="row m-b-10">';
-        echo '<div class="col-xs-10">Number of input records:</div><div class="col-xs-2">' . $records . '</div>';
-        echo '</div>';
-        echo '<div class="row m-b-10">';
-        echo '<div class="col-xs-10">Number of records loaded into the database:</div><div class="col-xs-2">' . $accepted . '</div>';
-        echo '</div>';
-        echo '<div class="row">';
-        echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . $rejected . '</div>';
-        echo '</div>';
-        if ($rejected != 0) {
-            echo '<div class="row m-t-10">';
-            echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is duplicate records</div>';
+        if ($records > 0) {
+            if ($records == $accepted) {
+                echo '<div class="text-center"><img src="assets/images/check-clipart-animated.gif"></div>';
+                echo '<h2 class="text-center text-success m-b-0">Congratulations !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import has successfully concluded.</h5>';
+            } elseif ($accepted > 0 && $rejected > 0) {
+                echo '<div class="text-center"><img src="assets/images/info-icon-animated.gif" width="90"></div>';
+                echo '<h2 class="text-center text-warning m-b-0">Partial Import !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">Some data couldn\'t be processed.</h5>';
+            } elseif ($accepted == 0) {
+                echo '<div class="text-center"><img src="assets/images/error-icon-animated.gif" width="100"></div>';
+                echo '<h2 class="text-center text-danger m-b-0 m-t-0">Oops !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import was rejected by the system.</h5>';
+            }
+
+            echo '<div class="row m-b-10">';
+            echo '<div class="col-xs-10">Number of input records:</div><div class="col-xs-2">' . $records . '</div>';
             echo '</div>';
+            echo '<div class="row m-b-10">';
+            echo '<div class="col-xs-10">Number of records loaded into the database:</div><div class="col-xs-2">' . $accepted . '</div>';
+            echo '</div>';
+            echo '<div class="row">';
+            echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . $rejected . '</div>';
+            echo '</div>';
+            if ($rejected != 0) {
+                echo '<div class="row m-t-10">';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is duplicate records</div>';
+                echo '</div>';
+            }
         }
 
 
@@ -312,7 +325,7 @@ if ($category == 'staff') {
 //        echo '<br><br>';
 //        print_r($array_index);
 //        exit;
-        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'IS_DISABLE', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'SECONDARY_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
+        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'IS_DISABLE', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
         $login_authentication = array('USERNAME', 'PASSWORD');
         $staff_school_relationship = array('START_DATE', 'END_DATE');
         $staff_school_info = array('CATEGORY', 'JOB_TITLE', 'JOINING_DATE');
@@ -328,9 +341,7 @@ if ($category == 'staff') {
         $rejected = 0;
         $records = 0;
         foreach ($arr_data as $arr_i => $arr_v) {
-//            print_r($arr_v);
-//            echo '<br><br>';
-//            echo "if($arr_i>0)<br><br><br><br>";
+            
             ///////////////////////////For Students////////////////////////////////////////////////////////////
             $staff_columns = array();
             $staff_values = array();
@@ -344,6 +355,7 @@ if ($category == 'staff') {
                 foreach ($staff as $staff_v) {
 //                    echo $staff_v.'---'.$arr_v[$array_index[$staff_v]].'<br><br>';
                     if ($staff_v == 'PROFILE') {
+                        $arr_v[$array_index[$staff_v]]=strtolower($arr_v[$array_index[$staff_v]]);
                         $profile = DBGet(DBQuery('SELECT * FROM user_profiles WHERE title=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . '\' '));
                         if ($profile[1]['ID'] == '') {
                             $profile_id = '2';
@@ -361,21 +373,21 @@ if ($category == 'staff') {
                             $arr_v[$array_index[$staff_v]] = '';
                     }
                     if ($staff_v == 'PRIMARY_LANGUAGE_ID') {
-                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . '\' '));
+                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . '\' '));
                         if ($language[1]['LANGUAGE_ID'] != '')
                             $arr_v[$array_index[$staff_v]] = $language[1]['LANGUAGE_ID'];
                         else
                             $arr_v[$array_index[$staff_v]] = '';
                     }
                     if ($staff_v == 'SECOND_LANGUAGE_ID') {
-                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . '\' '));
+                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . '\' '));
                         if ($language[1]['LANGUAGE_ID'] != '')
                             $arr_v[$array_index[$staff_v]] = $language[1]['LANGUAGE_ID'];
                         else
                             $arr_v[$array_index[$staff_v]] = '';
                     }
                     if ($staff_v == 'THIRD_LANGUAGE_ID') {
-                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[strtolower($students_v)]]) . '\' '));
+                        $language = DBGet(DBQuery('SELECT * FROM language WHERE language_name=\'' . singleQuoteReplace("", "", $arr_v[$array_index[strtolower($staff_v)]]) . '\' '));
                         if ($language[1]['LANGUAGE_ID'] != '')
                             $arr_v[$array_index[$staff_v]] = $language[1]['LANGUAGE_ID'];
                         else
@@ -401,13 +413,31 @@ if ($category == 'staff') {
                     ///////////////////////////For Staff Enrollment////////////////////////////////////////////////////////////
                     $ssr_columns = array('STAFF_ID', 'SYEAR', 'SCHOOL_ID');
                     $ssr_values = array($staff_id, UserSyear(), UserSchool());
+                    $start_date_i = 0;
                     foreach ($staff_school_relationship as $ssr_v) {
 //                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
                         if ($arr_v[$array_index[$ssr_v]] != '') {
                             $ssr_columns[] = $ssr_v;
-                            $ssr_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]]) . "'";
+                            if ($ssr_v == 'START_DATE') {
+                                $start_date_i = 1;
+                                if ($arr_v[$array_index[$ssr_v]] == '') {
+                                    $start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+
+                                    $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
+                                } else
+                                    $ssr_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]])) . "'";
+                            } elseif ($ssr_v == 'END_DATE') {
+                                $ssr_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]])) . "'";
+                            } else
+                                $ssr_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$ssr_v]]) . "'";
                         }
                     }
+                    if ($start_date_i == 0) {
+                        $start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+                        $ssr_columns[] = 'START_DATE';
+                        $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
+                    }
+
                     DBQuery('INSERT INTO staff_school_relationship (' . implode(',', $ssr_columns) . ') VALUES (' . implode(',', $ssr_values) . ')');
                     unset($ssr_columns);
                     unset($ssr_values);
@@ -455,7 +485,7 @@ if ($category == 'staff') {
 
                     if ($arr_v[$array_index['JOINING_DATE']] != '') {
                         $ssi_columns[] = 'JOINING_DATE';
-                        $ssi_values[] = "'" . str_replace("'", "", $arr_v[$array_index['JOINING_DATE']]) . "'";
+                        $ssi_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index['JOINING_DATE']])) . "'";
                     }
 
                     DBQuery('INSERT INTO staff_school_info (' . implode(',', $ssi_columns) . ') VALUES (' . implode(',', $ssi_values) . ')');
@@ -471,24 +501,37 @@ if ($category == 'staff') {
             }
         }
 
-        echo '<div class="text-center"><img src="assets/images/check-clipart-animated.gif"></div>';
-        echo '<h2 class="text-center text-success m-b-0">Congratulations !!!</h2>';
-        echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import has successfully concluded.</h5>';
 
-        echo '<div class="row m-b-10">';
-        echo '<div class="col-xs-10">Number of input records:</div><div class="col-xs-2">' . $records . '</div>';
-        echo '</div>';
-        echo '<div class="row m-b-10">';
-        echo '<div class="col-xs-10">Number of records loaded into the database:</div><div class="col-xs-2">' . $accepted . '</div>';
-        echo '</div>';
-        echo '<div class="row m-b-10">';
-        echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . (($rejected > 0) ? '<span class="text-danger">' . $rejected . '</span>' : $rejected) . '</div>';
-        echo '</div>';
+        if ($records > 0) {
+            if ($records == $accepted) {
+                echo '<div class="text-center"><img src="assets/images/check-clipart-animated.gif"></div>';
+                echo '<h2 class="text-center text-success m-b-0">Congratulations !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import has successfully concluded.</h5>';
+            } elseif ($accepted > 0 && $rejected > 0) {
+                echo '<div class="text-center"><img src="assets/images/info-icon-animated.gif" width="90"></div>';
+                echo '<h2 class="text-center text-warning m-b-0">Partial Import !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">Some data could not be processed.</h5>';
+            } elseif ($accepted == 0) {
+                echo '<div class="text-center"><img src="assets/images/error-icon-animated.gif" width="100"></div>';
+                echo '<h2 class="text-center text-danger m-b-0 m-t-0">Oops !!!</h2>';
+                echo '<h5 class="text-center m-t-0 m-b-35 text-grey">The data import was rejected by the system.</h5>';
+            }
 
-        if ($rejected != 0) {
-            echo '<div class="row m-t-10">';
-            echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is duplicate records</div>';
+            echo '<div class="row m-b-10">';
+            echo '<div class="col-xs-10">Number of input records:</div><div class="col-xs-2">' . $records . '</div>';
             echo '</div>';
+            echo '<div class="row m-b-10">';
+            echo '<div class="col-xs-10">Number of records loaded into the database:</div><div class="col-xs-2">' . $accepted . '</div>';
+            echo '</div>';
+            echo '<div class="row m-b-10">';
+            echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . (($rejected > 0) ? '<span class="text-danger">' . $rejected . '</span>' : $rejected) . '</div>';
+            echo '</div>';
+
+            if ($rejected != 0) {
+                echo '<div class="row m-t-10">';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is duplicate records</div>';
+                echo '</div>';
+            }
         }
         unset($arr_data);
         unset($_SESSION['data']);

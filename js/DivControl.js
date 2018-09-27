@@ -1,7 +1,6 @@
 
 function show_div(name, mp_id)
 {
-
     if (document.getElementById(name).checked)
     {
 
@@ -17,20 +16,20 @@ function show_div(name, mp_id)
             document.getElementById('divtables[' + mp_id + '][DOES_EXAM]').innerHTML = '<input type=checkbox name=tables[' + mp_id + '][DOES_EXAM] id=tables[' + mp_id + '][DOES_EXAM]>';
         document.getElementById('tables[' + mp_id + '][DOES_EXAM]').checked = false;
         document.getElementById('tables[' + mp_id + '][DOES_EXAM]').disabled = true;
-        document.getElementById('date_3').style.display = 'block';
+        /*document.getElementById('date_3').style.display = 'block';
         document.getElementById('date_div_3').style.display = 'none';
         document.getElementById('date_4').style.display = 'block';
-        document.getElementById('date_div_4').style.display = 'none';
+        document.getElementById('date_div_4').style.display = 'none';*/
 
-        document.getElementById('monthSelect3').value = '';
-        document.getElementById('daySelect3').value = '';
-        document.getElementById('yearSelect3').value = '';
+        document.getElementById('monthSelect_date_3').value = '';
+        document.getElementById('daySelect_date_3').value = '';
+        document.getElementById('yearSelect_date_3').value = '';
         document.getElementById('date_3').value = ''
 
-        document.getElementById('monthSelect4').value = '';
-        document.getElementById('daySelect4').value = '';
-        document.getElementById('yearSelect4').value = '';
-        document.getElementById('date_4').value = ''
+        document.getElementById('monthSelect_date_4').value = '';
+        document.getElementById('daySelect_date_4').value = '';
+        document.getElementById('yearSelect_date_4').value = '';
+        document.getElementById('date_4').value = '';
 
         document.getElementById("grade_div").style.display = "none";
 

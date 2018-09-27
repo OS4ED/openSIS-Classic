@@ -130,8 +130,17 @@ if (User('PROFILE') == 'admin') {
             DrawHeader('Please select a Staff');
         if ($_REQUEST['_search_all_schools'] == 'Y')
             $extra['GROUP'] = ' s.STAFF_ID ';
-        $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';
+        
+        if($_REQUEST['_search_all_schools']=='Y')
+        {
+        $extra['SELECT'].=',s.STAFF_ID as STF_ID';    
+        $extra['functions']=array('STF_ID'=>makeStaffAllSchool);    
+        }
+        else
+        {
+        $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';    
         $extra['functions']=array('CATEGORY'=>StaffCategory);
+        }
 		$staff_RET = GetUserStaffList($extra);
       if($_REQUEST['_dis_user']=='Y')        
       {
@@ -165,9 +174,16 @@ if (User('PROFILE') == 'admin') {
             $singular = 'Staff';
             $plural = 'Staffs';
             if ($_REQUEST['_dis_user'])
-                $columns = array('FULL_NAME' => 'Staff Member', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
+                $columns = array('FULL_NAME' => 'Name', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
+//                $columns = array('FULL_NAME' => 'Staff Member', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
             else
-                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+                $columns = array('FULL_NAME' => 'Name',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+//                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+        
+            if($_REQUEST['_search_all_schools']=='Y')
+            {
+            $columns+= array('STF_ID' => 'School Name');  
+            }    
         }
         if (is_array($extra['columns_before']))
             $columns = $extra['columns_before'] + $columns;
@@ -200,5 +216,17 @@ if (User('PROFILE') == 'admin') {
 function makeLogin($value) {
     return ProperDate(substr($value, 0, 10)) . substr($value, 10);
 }
-
+function makeStaffAllSchool($value)
+{
+    $schools=DBGet(DBQuery('SELECT * FROM staff_school_relationship WHERE (END_DATE=\'0000-00-00\' OR END_DATE IS NULL OR END_DATE>=\''.date('y-m-d').'\') AND SYEAR='.UserSyear().' AND STAFF_ID='.$value));
+    $return_name=array();
+    foreach($schools as $s)
+    {
+        $name=DBGet(DBQuery('SELECT TITLE FROM schools WHERE ID='.$s['SCHOOL_ID']));
+        $return_name[]=$name[1]['TITLE'];
+        
+    }
+    return implode(',',$return_name);
+    
+}
 ?>
