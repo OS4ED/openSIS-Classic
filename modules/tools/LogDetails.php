@@ -86,11 +86,31 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
     
     $conv_end_date=$_REQUEST['year_end'].'-'.$_REQUEST['month_end'].'-'.$_REQUEST['day_end'];
 }
+if($_REQUEST['modfunc']=='del')
+{
+    print_r($_REQUEST);
+    
+     if (DeletePromptMod('Acess log', $qs)) {
+        if(count($_REQUEST['log_arr'])>0)
+        {
+        // $del_id=implode(',',$_REQUEST['log_arr']);
+            //print_r($_REQUEST['log_arr']);
+     $del_id=  implode(',', $_REQUEST['log_arr']);
+//         echo "DELETE FROM login_records WHERE id in('$del_id')";exit;
+     echo "DELETE FROM login_records WHERE id in($del_id)";
+        DBQuery("DELETE FROM login_records WHERE id in($del_id)");
+            
+        }
+        unset($_REQUEST['modfunc']);
+        }
+}
 if ($_REQUEST['modfunc'] == 'generate') {
 
-
+ echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=del method=POST >";
     if (isset($conv_st_date) && isset($conv_end_date)) {
-        $alllogs_RET = DBGet(DBQuery('SELECT DISTINCT FIRST_NAME,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC'));
+        //echo 'SELECT DISTINCT FIRST_NAME,CONCAT(\'<INPUT type=checkbox name=log_arr[]  checked >\') AS CHECKBOX,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC';
+       
+        $alllogs_RET = DBGet(DBQuery('SELECT  FIRST_NAME,CONCAT(\'<INPUT type=checkbox name=log_arr[] value=\',ID,\' checked >\') AS CHECKBOX,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC'));
 
         foreach($alllogs_RET as $k => $v)
         {
@@ -109,9 +129,12 @@ if ($_REQUEST['modfunc'] == 'generate') {
         }
         if (count($alllogs_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($alllogs_RET, array('LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
-
+              //$extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+            ListOutput($alllogs_RET, array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'log_arr\');"><A>','LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
+            if(count($alllogs_RET)>0) 
+            echo '<div class="panel-footer text-center"><INPUT type=submit value="Delete Log" class="btn btn-primary"></div>';
             echo '</div>';
+            echo "</FORM>";
         } else {
 
             echo '<table border=0 width=90%><tr><td class="alert"></td><td class="alert_msg"><b>No login records were found.</b></td></tr></table>';

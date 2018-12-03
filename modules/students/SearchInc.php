@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+session_start();
 if ($_openSIS['modules_search'] && $extra['force_search'])
     $_REQUEST['search_modfunc'] = '';
 
@@ -377,7 +378,8 @@ else {
         } else {
             if (User('PROFILE') == 'student' || User('PROFILE') == 'parent') {
                 echo '<input type=hidden name=st_arr[] value=' . UserStudentID() . '>';
-            } else {
+            }
+            //else {
                 echo '<div class="panel-body">';
                 if (count($students_RET) > 0) {
                     echo '<div class="table-responsive">';
@@ -387,7 +389,7 @@ else {
                     echo '</div>';
                 }
                 echo '</div>';
-            }
+            //}
         }
 
         echo '</div>'; //#students
@@ -495,6 +497,7 @@ echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
 
+
 /* New Modal Design Starts */
 echo '<div id="modal_default_cp_calc" class="modal fade">';
 echo '<div class="modal-dialog modal-xl">';
@@ -506,7 +509,9 @@ echo '<h5 class="modal-title">Choose course</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
-echo '<div id="conf_div" class="text-center"></div>';
+
+echo '<div id=conf_div1 class=text-center></div>';
+
 echo '<div id="calculating" class="text-center" style="display:none;"><i class="fa fa-refresh fa-spin fa-fw"></i> Checking schedule Please Wait...</div>';
 if ($clash) {
     echo '<div class="text-center"><b>There is a conflict. You cannot add this course period </b>' . ErrorMessage($clash, 'note') . '</div>';
@@ -534,6 +539,7 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
+
 
 function _make_sections($value) {
     if ($value != '') {

@@ -46,12 +46,12 @@
 // without them having to re-run the program each time finding new
 // problems.  Also, the error display will be standardized.
 // If a 2ND is sent, the list will not be treated as errors, but shown anyway
-function ErrorMessage($errors, $code = 'error') {
+function ErrorMessage($errors, $code = 'error', $options = '') {
     $errors = array_unique($errors);
     if ($errors) {
         if (count($errors) == 1) {
             if ($code == 'error' || $code == 'fatal' || $code == 'note')
-                $return .= '<div class="alert alert-warning no-border">';
+                $return .= '<div class="alert alert-warning no-border" '.$options.'>';
             else
                 $return .= '<div class="alert alert-danger no-border">';
             $return .= ($errors[0] ? $errors[0] : $errors[1]);

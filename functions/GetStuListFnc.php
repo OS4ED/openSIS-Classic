@@ -223,6 +223,13 @@ switch (User('PROFILE')) {
              $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\'  AND (ssm.START_DATE IS NOT NULL AND s.IS_DISABLE IS NULL AND ((\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) ) OR ssm.DROP_CODE=' . $get_rollover_id . ' )) ', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
                 }
             $sql .= ' FROM students s ';
+            
+            //////////////extra field table start////////////////////
+            
+            if ($_REQUEST['username']) {
+                $sql .= ',login_authentication la ';
+            }
+            //////////////extra field table start////////////////////
             if ($_REQUEST['mp_comment']) {
                 $sql .= ',student_mp_comments smc ';
             }
@@ -399,6 +406,137 @@ else
         default:
             exit('Error');
     }
+    $sql_home_address=array();
+    $student_contact_ids='';
+    if(isset($_REQUEST['home_address_1']) && $_REQUEST['home_address_1']!=''){
+        $sql_home_address[]='street_address_1=\''. singleQuoteReplace("","",$_REQUEST['home_address_1']).'\'';
+    }
+    if(isset($_REQUEST['home_address_2']) && $_REQUEST['home_address_2']!=''){
+        $sql_home_address[]='street_address_2=\''. singleQuoteReplace("","",$_REQUEST['home_address_2']).'\'';
+    }
+    if(isset($_REQUEST['home_city']) && $_REQUEST['home_city']!=''){
+        $sql_home_address[]='city=\''. singleQuoteReplace("","",$_REQUEST['home_city']).'\'';
+    }
+    if(isset($_REQUEST['home_state']) && $_REQUEST['home_state']!=''){
+        $sql_home_address[]='state=\''. singleQuoteReplace("","",$_REQUEST['home_state']).'\'';
+    }
+    if(isset($_REQUEST['home_zip']) && $_REQUEST['home_zip']!=''){
+        $sql_home_address[]='zipcode=\''. singleQuoteReplace("","",$_REQUEST['home_zip']).'\'';
+    }
+    if(isset($_REQUEST['home_state']) && $_REQUEST['home_state']!=''){
+        $sql_home_address[]='state=\''. singleQuoteReplace("","",$_REQUEST['home_state']).'\'';
+    }
+    if(isset($_REQUEST['home_busno']) && $_REQUEST['home_busno']!=''){
+        $sql_home_address[]='bus_no=\''. singleQuoteReplace("","",$_REQUEST['home_busno']).'\'';
+    }
+    if(isset($_REQUEST['home_bus_pickup']) && $_REQUEST['home_bus_pickup']=='Y'){
+        $sql_home_address[]='bus_pickup=\''. singleQuoteReplace("","",$_REQUEST['home_bus_pickup']).'\'';
+    }
+    if(isset($_REQUEST['home_bus_droppoff']) && $_REQUEST['home_bus_droppoff']=='Y'){
+        $sql_home_address[]='bus_dropoff=\''. singleQuoteReplace("","",$_REQUEST['home_bus_droppoff']).'\'';
+    }
+    if(count($sql_home_address)>0){
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_IDS FROM student_address WHERE TYPE=\'Home Address\' AND '.implode(' AND ',$sql_home_address)));
+        if($ret_students[1]['STUDENT_IDS']!='')
+       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+        else
+          $student_contact_ids.=0;  
+        
+    }
+    $sql_mail_address=array();
+    if(isset($_REQUEST['mail_address_1']) && $_REQUEST['mail_address_1']!=''){
+        $sql_mail_address[]='street_address_1=\''. singleQuoteReplace("","",$_REQUEST['mail_address_1']).'\'';
+    }
+    if(isset($_REQUEST['mail_address_2']) && $_REQUEST['mail_address_2']!=''){
+        $sql_mail_address[]='street_address_2=\''. singleQuoteReplace("","",$_REQUEST['mail_address_2']).'\'';
+    }
+    if(isset($_REQUEST['mail_city']) && $_REQUEST['mail_city']!=''){
+        $sql_mail_address[]='city=\''. singleQuoteReplace("","",$_REQUEST['mail_city']).'\'';
+    }
+    if(isset($_REQUEST['mail_state']) && $_REQUEST['mail_state']!=''){
+        $sql_mail_address[]='state=\''. singleQuoteReplace("","",$_REQUEST['mail_state']).'\'';
+    }
+    if(isset($_REQUEST['home_zip']) && $_REQUEST['home_zip']!=''){
+        $sql_mail_address[]='zipcode=\''. singleQuoteReplace("","",$_REQUEST['mail_zip']).'\'';
+    }
+    if(isset($_REQUEST['home_state']) && $_REQUEST['home_state']!=''){
+        $sql_mail_address[]='state=\''. singleQuoteReplace("","",$_REQUEST['mail_state']).'\'';
+    }
+    if(count($sql_mail_address)>0){
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_IDS FROM student_address WHERE TYPE=\'Mail\' AND '.implode(' AND ',$sql_mail_address)));
+        if($ret_students[1]['STUDENT_IDS']!='')
+       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+         else
+          $student_contact_ids.=0;
+        
+    }
+    
+    
+    $sql_primary=array();
+    if(isset($_REQUEST['primary_realtionship']) && $_REQUEST['primary_realtionship']!=''){
+        $sql_primary[]='relationship=\''. singleQuoteReplace("","",$_REQUEST['primary_realtionship']).'\'';
+    }
+    if(isset($_REQUEST['primary_first_name']) && $_REQUEST['primary_first_name']!=''){
+        $sql_primary[]='first_name=\''. singleQuoteReplace("","",$_REQUEST['primary_first_name']).'\'';
+    }
+    if(isset($_REQUEST['primary_last_name']) && $_REQUEST['primary_last_name']!=''){
+        $sql_primary[]='last_name=\''. singleQuoteReplace("","",$_REQUEST['primary_last_name']).'\'';
+    }
+    if(isset($_REQUEST['primary_home_phone']) && $_REQUEST['primary_home_phone']!=''){
+        $sql_primary[]='home_phone=\''. singleQuoteReplace("","",$_REQUEST['primary_home_phone']).'\'';
+    }
+    if(isset($_REQUEST['primary_work_phone']) && $_REQUEST['primary_work_phone']!=''){
+        $sql_primary[]='work_phone=\''. singleQuoteReplace("","",$_REQUEST['primary_work_phone']).'\'';
+    }
+    if(isset($_REQUEST['primary_mobile_phone']) && $_REQUEST['primary_mobile_phone']!=''){
+        $sql_primary[]='cell_phone=\''. singleQuoteReplace("","",$_REQUEST['primary_mobile_phone']).'\'';
+    }
+    if(isset($_REQUEST['primary_email']) && $_REQUEST['primary_email']!=''){
+        $sql_primary[]='email=\''. singleQuoteReplace("","",$_REQUEST['primary_email']).'\'';
+    }
+    if(count($sql_primary)>0){
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.STUDENT_ID) as STUDENT_IDS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Primary\' AND '.implode(' AND ',$sql_primary)));
+        if($ret_students[1]['STUDENT_IDS']!='')
+       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+         else
+          $student_contact_ids.=0;
+        
+    }
+    
+    $sql_secondary=array();
+    if(isset($_REQUEST['secondary_realtionship']) && $_REQUEST['secondary_realtionship']!=''){
+        $sql_secondary[]='relationship=\''. singleQuoteReplace("","",$_REQUEST['secondary_realtionship']).'\'';
+    }
+    if(isset($_REQUEST['secondary_first_name']) && $_REQUEST['secondary_first_name']!=''){
+        $sql_secondary[]='first_name=\''. singleQuoteReplace("","",$_REQUEST['secondary_first_name']).'\'';
+    }
+    if(isset($_REQUEST['secondary_last_name']) && $_REQUEST['secondary_last_name']!=''){
+        $sql_secondary[]='last_name=\''. singleQuoteReplace("","",$_REQUEST['secondary_last_name']).'\'';
+    }
+    if(isset($_REQUEST['secondary_home_phone']) && $_REQUEST['secondary_home_phone']!=''){
+        $sql_secondary[]='home_phone=\''. singleQuoteReplace("","",$_REQUEST['secondary_home_phone']).'\'';
+    }
+    if(isset($_REQUEST['secondary_work_phone']) && $_REQUEST['secondary_work_phone']!=''){
+        $sql_secondary[]='work_phone=\''. singleQuoteReplace("","",$_REQUEST['secondary_work_phone']).'\'';
+    }
+    if(isset($_REQUEST['secondary_mobile_phone']) && $_REQUEST['secondary_mobile_phone']!=''){
+        $sql_secondary[]='cell_phone=\''. singleQuoteReplace("","",$_REQUEST['secondary_mobile_phone']).'\'';
+    }
+    if(isset($_REQUEST['secondary_email']) && $_REQUEST['secondary_email']!=''){
+        $sql_secondary[]='email=\''. singleQuoteReplace("","",$_REQUEST['secondary_email']).'\'';
+    }
+    if(count($sql_secondary)>0){
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.STUDENT_ID) as STUDENT_IDS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Secondary\' AND '.implode(' AND ',$sql_secondary)));
+        if($ret_students[1]['STUDENT_IDS']!='')
+       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+         else
+          $student_contact_ids.=0;
+        
+    }
+    if($student_contact_ids!=''){
+       $sql .=' AND s.STUDENT_ID IN ('.$student_contact_ids.')';
+    }
+        
     if ($expanded_view == true) {
         $custom_str = CustomFields('where', '', 1);
         if ($custom_str != '')
@@ -445,6 +583,7 @@ else
 
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
+  
 
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
@@ -571,6 +710,39 @@ function appendSQL($sql, & $extra) {
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Preferred Medical Facility starts with: </b></font>' . $_REQUEST['preferred_hospital'] . '<BR>';
     }
+    
+    ////////////////////////extra search field start///////////////////////////
+    
+    
+        if ($_REQUEST['middle_name']) {
+        $sql .= ' AND LOWER(s.middle_name) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['middle_name']))) . '%\' ';
+        }
+        
+                if ($_REQUEST['GENDER']) {
+        $sql .= ' AND LOWER(s.GENDER) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['GENDER']))) . '%\' ';
+        }
+    
+               if ($_REQUEST['ETHNICITY']) {
+        $sql .= ' AND LOWER(s.ETHNICITY) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['ETHNICITY']))) . '%\' ';
+        }
+              if ($_REQUEST['common_name']) {
+        $sql .= ' AND LOWER(s.common_name) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['common_name']))) . '%\' ';
+        }
+        
+                      if ($_REQUEST['LANGUAGE']) {
+        $sql .= ' AND LOWER(s.LANGUAGE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['LANGUAGE']))) . '%\' ';
+        }
+        
+                             if ($_REQUEST['email']) {
+        $sql .= ' AND LOWER(s.email) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['email']))) . '%\' ';
+        }
+        
+                                     if ($_REQUEST['phone']) {
+        $sql .= ' AND LOWER(s.phone) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['phone']))) . '%\' ';
+        }
+        
+ 
+         ////////////////////////extra search field end///////////////////////////
     if ($_REQUEST['mp_comment']) {
         $sql .= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.STUDENT_ID=smc.STUDENT_ID ';
         if (!$extra['NoSearchTerms'])
@@ -581,6 +753,14 @@ function appendSQL($sql, & $extra) {
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>GoalInc Title starts with: </b></font>' . $_REQUEST['goal_title'] . '<BR>';
     }
+    
+                
+            //////////////extra field table start2////////////////////
+            
+                                            if ($_REQUEST['username']) {
+        $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.student_id ';
+        }
+            //////////////extra field table end2////////////////////
     if ($_REQUEST['goal_description']) {
         $sql .= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
         if (!$extra['NoSearchTerms'])
@@ -634,6 +814,12 @@ function appendSQL($sql, & $extra) {
     }
     if ($_REQUEST['med_day'] && $_REQUEST['med_month'] && $_REQUEST['med_year']) {
         $med_date = $_REQUEST['med_year'] . '-' . $_REQUEST['med_month'] . '-' . $_REQUEST['med_day'];
+//        $med_date = $_REQUEST['med_year'] . '-' . $_REQUEST['med_day'] . '-' . $_REQUEST['med_month'];
+//        echo $med_date;
+//        echo '<br>';
+////        echo strtotime($med_date);
+//        echo date('Y-m-d', strtotime($med_date));
+//        echo '<br>';
         $sql .= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Date: </b></font>' . $med_date . '<BR>';
@@ -717,17 +903,59 @@ function appendSQL($sql, & $extra) {
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Comments starts with: </b></font>' . $_REQUEST['med_vist_comments'] . '<BR>';
     }
-    if ($_REQUEST['day_to_birthdate'] && $_REQUEST['month_to_birthdate'] && $_REQUEST['day_from_birthdate'] && $_REQUEST['month_from_birthdate']) {
-        $date_to = $_REQUEST['month_to_birthdate'] . '-' . $_REQUEST['day_to_birthdate'];
-        $date_from = $_REQUEST['month_from_birthdate'] . '-' . $_REQUEST['day_from_birthdate'];
+  if ($_REQUEST['day_to_birthdate'] && $_REQUEST['month_to_birthdate'] && $_REQUEST['year_to_birthdate'] && $_REQUEST['day_from_birthdate'] && $_REQUEST['month_from_birthdate'] && $_REQUEST['year_from_birthdate']) {
+     
+        $date_to =$_REQUEST['year_to_birthdate'].'-'.$_REQUEST['day_to_birthdate'] . '-' . $_REQUEST['month_to_birthdate'];
+        $date_from = $_REQUEST['year_from_birthdate'] . '-' .$_REQUEST['day_from_birthdate'] . '-' . $_REQUEST['month_from_birthdate'];
         
 //        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
 //        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
 //        
-        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6) BETWEEN \'' .$date_from . '\' AND \'' . $date_to. '\') ';
-        
+        $sql .= ' AND (s.BIRTHDATE  BETWEEN \'' .$date_from . '\' AND \'' . $date_to. '\') ';
+        // $sql .= ' AND (s.BIRTHDATE  >= \'' .$date_from . '\' AND s.BIRTHDATE  <= \'' . $date_to. '\') ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Birthday Starts from ' . $date_from . ' to ' . $date_to . '</b></font>';
+    }
+    
+    
+    
+    if ($_REQUEST['day_to_est'] && $_REQUEST['month_to_est'] && $_REQUEST['day_from_est'] && $_REQUEST['month_from_est']) {
+        $date_to_est = $_REQUEST['year_to_est'] . '-' .$_REQUEST['month_to_est'] . '-' . $_REQUEST['day_to_est'];
+        $date_from_est = $_REQUEST['year_from_est'] . '-' .$_REQUEST['month_from_est'] . '-' . $_REQUEST['day_from_est'];
+        
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
+//        
+        $sql .= ' AND (s.ESTIMATED_GRAD_DATE BETWEEN \'' .$date_from_est . '\' AND \'' . $date_to_est. '\') ';
+        
+        if (!$extra['NoSearchTerms'])
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Estimated Grad. Date Starts from ' . $date_from_est . ' to ' . $date_to_est . '</b></font>';
+    }
+    
+        if ($_REQUEST['day_to_st'] && $_REQUEST['month_to_st'] && $_REQUEST['day_from_st'] && $_REQUEST['month_from_st']) {
+        $date_to_st = $_REQUEST['year_to_st'] . '-' .$_REQUEST['month_to_st'] . '-' . $_REQUEST['day_to_st'];
+        $date_from_st = $_REQUEST['year_from_st'] . '-' .$_REQUEST['month_from_st'] . '-' . $_REQUEST['day_from_st'];
+        
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
+//        
+        $sql .= ' AND (ssm.START_DATE BETWEEN \'' .$date_from_st . '\' AND \'' . $date_to_st. '\') ';
+        
+        if (!$extra['NoSearchTerms'])
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Enrollment Starts from ' . $date_from_st . ' to ' . $date_to_st. '</b></font>';
+    }
+    
+        if ($_REQUEST['day_to_en'] && $_REQUEST['month_to_en'] && $_REQUEST['day_from_en'] && $_REQUEST['month_from_en']) {
+        $date_to_en = $_REQUEST['year_to_en'] . '-' .$_REQUEST['month_to_en'] . '-' . $_REQUEST['day_to_en'];
+        $date_from_en = $_REQUEST['year_from_en'] . '-' .$_REQUEST['month_from_en'] . '-' . $_REQUEST['day_from_en'];
+        
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
+//        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
+//        
+        $sql .= ' AND (ssm.END_DATE BETWEEN \'' .$date_from_en . '\' AND \'' . $date_to_en. '\') ';
+        
+        if (!$extra['NoSearchTerms'])
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Enrollment Ends from ' . $date_from_en . ' to ' . $date_to_en. '</b></font>';
     }
     // test cases start
     // test cases end
@@ -740,6 +968,7 @@ function appendSQL($sql, & $extra) {
         } else if ($_SESSION['stu_search']['search_from_grade']) {
             unset($_SESSION['stu_search']['search_from_grade']);
         }
+//        echo $sql;
         return $sql;
     }
 }
@@ -1259,7 +1488,7 @@ function appendSQL_Absence_Summary($sql, & $extra) {
     }
     if ($_REQUEST['med_day'] && $_REQUEST['med_month'] && $_REQUEST['med_year']) {
         $med_date = $_REQUEST['med_year'] . '-' . $_REQUEST['med_month'] . '-' . $_REQUEST['med_day'];
-        $sql .= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND smn.DOCTORS_NOTE_DATE111111111 =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
         $_SESSION['newsql1'].= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Date: </b></font>' . $med_date . '<BR>';

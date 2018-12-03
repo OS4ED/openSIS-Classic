@@ -95,7 +95,7 @@ if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
                 <?php
                 $btn = '<div class="heading-elements text-right"><input type="submit" name="action"  value="Backup" class="btn btn-primary">&nbsp;&nbsp;';
                 $modname = 'tools/Backup.php';
-                $btn .= '<a href=Modules.php?modname=' . $modname . '&modfunc=cancel STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value=Cancel></a></div>';
+                $btn .= '<a href=javascript:void(0); onClick="check_content(\'Ajax.php?modname=miscellaneous/Portal.php\');" STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value=Cancel></a></div>';
                 ?>
 
                 <?php

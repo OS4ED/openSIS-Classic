@@ -257,7 +257,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
     $message .= '<div class="col-md-4">';
     $message .= '<div class="form-group">';
     $message .= '<label class="col-md-4 control-label text-right">Weekdays</label>';
-    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[0] ' . ((in_array('Sunday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Sunday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[1] ' . ((in_array('Monday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Monday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[2] ' . ((in_array('Tuesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Tuesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[3] ' . ((in_array('Wednesday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Wednesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[4] ' . ((in_array('Thursday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Thursday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[5] ' . ((in_array('Friday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Friday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[6] ' . ((in_array('Saturday', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Saturday</label></div></div>';
+    $message .= '<div class="col-md-8"><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[0] ' . ((in_array('U', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Sunday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[1] ' . ((in_array('M', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Monday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[2] ' . ((in_array('T', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Tuesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[3] ' . ((in_array('W', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Wednesday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[4] ' . ((in_array('H', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Thursday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[5] ' . ((in_array('F', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Friday</label></div><div class="checkbox"><label><INPUT class="styled" type=checkbox value=Y name=weekdays[6] ' . ((in_array('S', $weekdays) == true) ? 'CHECKED' : '') . ' DISABLED> Saturday</label></div></div>';
     $message .= '</div>'; //.form-group
     $message .= '</div>'; //.col-md-4
     $message .= '<div class="col-md-4">';
@@ -278,6 +278,43 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
         if ($dup_cal_title[1]['NO'] == 0) {
             DBQuery('UPDATE school_calendars SET TITLE = \'' . $cal_title . '\', DEFAULT_CALENDAR = \'' . $_REQUEST['default'] . '\' WHERE CALENDAR_ID=\'' . $cal_id . '\'');
             DBQuery('DELETE FROM calendar_events_visibility WHERE calendar_id=\'' . $cal_id . '\'');
+        }
+        $end_date_cal=$_REQUEST['year__max'].'-'.$_REQUEST['month__max'].'-'.$_REQUEST['day__max'];
+        $start_date_cal=$_REQUEST['year__min'].'-'.$_REQUEST['month__min'].'-'.$_REQUEST['day__min'];
+        
+        $min_date=DBGet(DBquery('SELECT MIN(SCHOOL_DATE) as SCHOOL_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
+        $max_date=DBGet(DBquery('SELECT MAX(SCHOOL_DATE) as SCHOOL_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
+        $cal_days=DBGet(DBquery('SELECT DAYS FROM school_calendars WHERE CALENDAR_ID='.$cal_id));
+        $days_conv=array('Mon'=>'M','Tue'=>'T','Wed'=>'W','Thu'=>'H','Fri'=>'F','Sat'=>'S','Sun'=>'U');
+        if(strtotime($start_date_cal)<strtotime($min_date[1]['SCHOOL_DATE']) && $start_date_cal!='' && $min_date[1]['SCHOOL_DATE']!='')
+        {
+        $date1_ts = strtotime($start_date_cal);
+        $date2_ts = strtotime($min_date[1]['SCHOOL_DATE']);
+        $diff = $date2_ts - $date1_ts;
+        for($d=0;$d<round($diff / 86400);$d++)
+        {
+            $mk_date=strtotime($start_date_cal)+(86400*$d);
+            if(strpos($cal_days[1]['DAYS'],$days_conv[date('D',$mk_date)])!==false)
+            {
+                $ins_date=date('Y-m-d',$mk_date);
+                DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserSchool().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
+            }
+        }
+        }
+        if(strtotime($end_date_cal)>strtotime($max_date[1]['SCHOOL_DATE']))
+        {
+        $date2_ts = strtotime($end_date_cal);
+        $date1_ts = strtotime($max_date[1]['SCHOOL_DATE']);
+        $diff = $date2_ts - $date1_ts;
+        for($d=1;$d<=round($diff / 86400);$d++)
+        {
+            $mk_date=strtotime($max_date[1]['SCHOOL_DATE'])+(86400*$d);
+            if(strpos($cal_days[1]['DAYS'],$days_conv[date('D',$mk_date)])!==false)
+            {
+                $ins_date=date('Y-m-d',$mk_date);
+                DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserSchool().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
+            }
+        }    
         }
         if (count($_REQUEST['profiles'])) {
             $profile_sql = 'INSERT INTO calendar_events_visibility(calendar_id,profile_id,profile) VALUES';

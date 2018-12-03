@@ -62,7 +62,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
         $html.='<tbody>';
         foreach ($courses_RET as $val) {
 
-            $html.= '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['COURSE_ID'] . ',\'course_periods\')">' . $val['TITLE'] . '</a></td></tr>';
+            $html.= '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['COURSE_ID'] . ',\'course_periods\')">' . $val['GRADE_COURSE'] . '</a></td></tr>';
         }
         $html.='</tbody>';
         $html.='</table>';

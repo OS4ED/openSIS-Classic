@@ -136,11 +136,11 @@ if (User('PROFILE') == 'admin') {
         $extra['SELECT'].=',s.STAFF_ID as STF_ID';    
         $extra['functions']=array('STF_ID'=>makeStaffAllSchool);    
         }
-        else
-        {
+//        else
+//        {
         $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';    
         $extra['functions']=array('CATEGORY'=>StaffCategory);
-        }
+//        }
 		$staff_RET = GetUserStaffList($extra);
       if($_REQUEST['_dis_user']=='Y')        
       {

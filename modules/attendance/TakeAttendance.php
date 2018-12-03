@@ -259,7 +259,7 @@ if (count($codes_RET)) {
             $extra['functions']['CODE_' . $code['ID']] = '_makeRadioSelected';
         else
             $extra['functions']['CODE_' . $code['ID']] = '_makeRadio';
-        $columns['CODE_' . $code['ID']] = $code['TITLE'];
+        $columns['CODE_' . $code['ID']] = '<div style="width: 50px; max-width:50px; white-space:normal;  **overflow: auto;**" class="text-center">'.$code['TITLE'].'</div>';
     }
 } else
     $columns = array();
@@ -321,7 +321,7 @@ if ($_REQUEST['table'] == '0') {
         elseif ($completed_RET[1]['IS_TAKEN_BY_SUBSTITUTE_STAFF'] == 'Y' && User('STAFF_ID') == $completed_RET[1]['STAFF_ID'])
             $note = ErrorMessage(array('<i class="icon-checkmark4"></i> Secondary teacher has taken attendance today for this period.'), 'note');
         else
-            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> You have taken attendance today for this period.'), 'note');
+            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> You have taken attendance today for this period.'), 'note', 'style="margin-bottom: 0;"');
     }
 
     if ($_SESSION['miss_attn'] == 1) {
@@ -391,11 +391,10 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
     }
     if ($_REQUEST['attn'] == 'miss') {
         $backBtn = '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a>';
-        DrawHeader($backBtn,'<div class="form-inline">' . $period_select . '</div>');
+        DrawHeader($backBtn, '<div class="form-inline">' . $period_select . '</div>');
     } else {
         DrawHeader('<div class="form-inline">' . $period_select . '</div>');
     }
-    
 }
 $profile_check = DBGet(DBQuery("SELECT PROFILE FROM staff WHERE STAFF_ID=" . UserID()));
 $profile_check = $profile_check[1]['PROFILE'];
@@ -480,12 +479,12 @@ if (!$mp_id) {
         echo '</div>'; //.panel-footer
     } else {
         if ($_REQUEST['period']) {
-            $extra_sql='SELECT COUNT(*) AS day_exist FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'';
+            $extra_sql = 'SELECT COUNT(*) AS day_exist FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'';
             $extra_ret = DBGET(DBQuery($extra_sql));
-            if(isset($extra_ret[1]['DAY_EXIST']) && $extra_ret[1]['DAY_EXIST']==0)
-            echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a school holiday</div>';
+            if (isset($extra_ret[1]['DAY_EXIST']) && $extra_ret[1]['DAY_EXIST'] == 0)
+                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a school holiday</div>';
             else
-            echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
+                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
         }
     }
 }
@@ -500,36 +499,36 @@ function _makeRadio($value, $title) {
         if ($attn_code_type[1]['TYPE'] == 'official')
             $flag = true;
     }
-    $colors = array('P' => 'control-success', 'A' => 'control-danger', 'H' => 'control-primary', 'T' => 'control-info');
+    $colors = array('P' => 'control-present', 'A' => 'control-absent', 'H' => 'control-late', 'T' => 'control-tardy');
     if ($current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE'] == substr($title, 5)) {
 
         if ($_SESSION['PROFILE'] == 'admin')
-            return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
+            return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
         else {
             if ($flag == true)
-                return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
+                return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
             else {
                 $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . $current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE']));
                 if ($attn_code_type[1]['TYPE'] == 'official')
-                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
                 else
-                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
             }
         }
     }
     else {
         if ($_SESSION['PROFILE'] == 'admin')
-            return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'" . (AllowEdit() ? '' : ' ') . " /><span></span></label></TD></TR></TABLE>";
+            return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'" . (AllowEdit() ? '' : ' ') . " /><span></span></label></TD></TR></TABLE>";
         else {
 
             if ($flag == true)
-                return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
             else {
                 $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . substr($title, 5)));
                 if ($attn_code_type[1]['TYPE'] == 'official')
-                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
                 else
-                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
             }
         }
     }
@@ -538,39 +537,39 @@ function _makeRadio($value, $title) {
 function _makeRadioSelected($value, $title) {
     global $THIS_RET, $current_RET;
     $flag = false;
-    $colors = array('P' => 'control-success', 'A' => 'control-danger', 'H' => 'control-primary', 'T' => 'control-info');
-    $colors1 = array('P' => 'control-success', 'A' => 'control-danger', 'H' => 'control-primary', 'T' => 'control-info');
+    $colors = array('P' => 'control-present', 'A' => 'control-absent', 'H' => 'control-late', 'T' => 'control-tardy');
+    $colors1 = array('P' => 'control-present', 'A' => 'control-absent', 'H' => 'control-late', 'T' => 'control-tardy');
     if ($current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE'] != '') {
         $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . $current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE']));
         if ($attn_code_type[1]['TYPE'] == 'official')
             $flag = true;
         if ($current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE'] != substr($title, 5)) {
             if ($_SESSION['PROFILE'] == 'admin')
-                return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
             else {
                 if ($flag == true)
-                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
                 else {
                     $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . $current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE']));
-                    if ($attn_code_type[1]['TYPE'] == 'official')
-                        return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
-                    else
-                        return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    if ($attn_code_type[1]['TYPE'] == 'official') {
+                        return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] disabled=disabled value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    } else {
+                        return "<TABLE align=center><TR><TD><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]]  value='$title'" . (AllowEdit() ? '' : ' ') . "><span></span></label></TD></TR></TABLE>";
+                    }
                 }
             }
-        }
-        else {
+        } else {
             if ($_SESSION['PROFILE'] == 'admin')
-                return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
+                return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
             else {
                 if ($flag == true)
-                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
+                    return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
                 else {
                     $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . $current_RET[$THIS_RET['STUDENT_ID']][1]['ATTENDANCE_TEACHER_CODE']));
                     if ($attn_code_type[1]['TYPE'] == 'official')
-                        return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
+                        return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
                     else
-                        return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'  CHECKED><span></span></label></TD></TR></TABLE>";
+                        return "<TABLE align=center><TR><TD " . ($colors[$value] ? ' style=background-color:' . $colors[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title'  CHECKED><span></span></label></TD></TR></TABLE>";
                 }
             }
         }
@@ -578,9 +577,9 @@ function _makeRadioSelected($value, $title) {
     else {
         $attn_code_type = DBGet(DBQuery('SELECT TYPE FROM attendance_codes WHERE ID=' . substr($title, 5)));
         if ($attn_code_type[1]['TYPE'] == 'official' && $_SESSION['PROFILE'] != 'admin')
-            return "<TABLE align=center><TR><TD " . ($colors1[$value] ? ' style=background-color:' . $colors1[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
+            return "<TABLE align=center><TR><TD " . ($colors1[$value] ? ' style=background-color:' . $colors1[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' disabled=disabled CHECKED><span></span></label></TD></TR></TABLE>";
         else
-            return "<TABLE align=center><TR><TD " . ($colors1[$value] ? ' style=background-color:' . $colors1[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"".$colors[$value]."\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
+            return "<TABLE align=center><TR><TD " . ($colors1[$value] ? ' style=background-color:' . $colors1[$value] : '') . "><label class=\"radio-inline m-0\"><INPUT class=\"" . $colors[$value] . "\" type=radio name=attendance[$THIS_RET[STUDENT_ID]] value='$title' CHECKED><span></span></label></TD></TR></TABLE>";
     }
 }
 

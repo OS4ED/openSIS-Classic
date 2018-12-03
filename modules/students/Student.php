@@ -158,10 +158,16 @@ if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']][
         unset($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']);
     }
 }
-if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE'] != '') {
+
+if($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']!='')
+{
+    
+    $drp_code=DBGet(DBQuery('SELECT * FROM student_enrollment_codes WHERE TYPE=\'TrnD\' AND SYEAR='. UserSyear()));
+if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE'] != $drp_code[1]['ID']) {
 
     echo "<p align='center'><b style='color:red'>Please enter proper drop date. Cannot drop student without drop date.</b></p>";
     unset($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']);
+}
 }
 # ----------------------------- DELETE GoalInc & Progress -------------------------------------------- #
 
@@ -290,11 +296,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 //////////////////////////////////////////////////////////////////////////////////
     if ($_REQUEST['err_msg'] == true)
         echo "<center><font color=red><b>Birthdate is invalid, data could not be saved.</b><font></center>";
-    if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
-        if ($_POST['button'] == 'Save') { #&& AllowEdit()
 
+    if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
+//        if ($_POST['button'] == 'Save') { #&& AllowEdit()
             if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
-                $drop_code = $_REQUEST['drop_code'];
+                $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['DROP_CODE'];
 
                 $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
 
@@ -341,16 +347,15 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         DBQuery('UPDATE medical_info SET SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ', SYEAR=' . $syear . ' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'');
                         unset($_REQUEST['modfunc']);
                         unset($_SESSION['_REQUEST_vars']['student_id']);
-                        echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=students/Student.php&modfunc=&search_modfunc=list&next_modname=students/Student.php&stuid=' . $_REQUEST['student_id'] . '"; window.close();</script>';
                     } else {
                         unset($_REQUEST['modfunc']);
                         unset($_SESSION['_REQUEST_vars']['student_id']);
-                        echo '<SCRIPT language=javascript>alert("Please provide valid date");window.close();</script>';
+                       
                     }
                 } else {
                     unset($_REQUEST['modfunc']);
                     unset($_SESSION['_REQUEST_vars']['student_id']);
-                    echo '<SCRIPT language=javascript>alert("Please provide valid date");window.close();</script>';
+                    
                 }
             } else {
 
@@ -360,69 +365,16 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     echo '<SCRIPT language=javascript>alert("Please select Grade Level");window.close();</script>';
                 if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
                     unset($_REQUEST['modfunc']);
-                echo '<SCRIPT language=javascript>alert("Please select School and Grade Level");window.close();</script>';
+              
             }
-        }
-        else {
-
-            //echo '<BR>';
-            PopTableforWindow('header', $title);
-            $sql = "SELECT ID,TITLE FROM schools WHERE ID !=" . UserSchool();
-            $sql2 = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID !=' . UserSchool() . '  LIMIT 0,1'));
-            $sch_id = $sql2[1]['ID'];
-            if ($sch_id != '') {
-                $QI = DBQuery($sql);
-                $schools_RET = DBGet($QI);
-                foreach ($schools_RET as $school_array) {
-                    $options[$school_array['ID']] = $school_array['TITLE'];
-                }
-                $res = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE school_id=' . $sch_id . ''));
-                foreach ($res as $res1) {
-                    $options1[$res1['ID']] = $res1['TITLE'];
-                }
-
-                $extraM .= 'onchange=grab_GradeLevel(this.value)';
-                $exg = 'id="grab_grade"';
-                echo "<FORM name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&student_id=" . UserStudentID() . "&drop_code=" . $_REQUEST['drop_code'] . " METHOD=POST>";
-                echo '<TABLE>';
-                echo '<TR><TD>Current school drop date</TD><TD>' . '  ' . DateInput_for_EndInput('', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]', '', $div, true) . '</TD></TR>';
-                echo '<TR><TD>Transferring to</TD><TD>' . SelectInput('', 'TRANSFER[SCHOOL]', '', $options, false, $extraM, 'class=cell_medium') . '</TD></TR>';
-                echo '<TR><TD>Grade Level</TD><TD>' . SelectInput('', 'TRANSFER[Grade_Level]', '', $options1, false, $exg, 'class=cell_medium') . '</TD></TR>';
-                echo '<TR><TD>New school\'s enrollment date</TD><TD>' . '  ' . DateInput_for_EndInput('', 'TRANSFER[STUDENT_ENROLLMENT_START]', '', $div, true) . '</TD></TR>';
-
-
-
-                echo '<TR><TD colspan=2 align=center><INPUT type=submit class="btn btn-primary" name=button value=Save onclick="formload_ajax(\'popform\');">';
-                echo '&nbsp;';
-                echo '</TD></TR>';
-
-                echo '</TABLE>';
-                PopTableWindow('footer');
-                echo '</FORM>';
-
-                unset($_REQUEST['values']);
-                unset($_SESSION['_REQUEST_vars']['values']);
-                unset($_REQUEST['button']);
-                unset($_SESSION['_REQUEST_vars']['button']);
-            } else {
-                echo '<div align=center>There is only one school in the system so student cannot be transfered to any other school<br /><br>
-                   <input type=button class="btn btn-default" value=Close onclick=\'window.close();\'></div>
-                    </form>';
-                PopTableWindow('footer');
-
-
-                unset($_REQUEST['values']);
-                unset($_SESSION['_REQUEST_vars']['values']);
-                unset($_REQUEST['button']);
-                unset($_SESSION['_REQUEST_vars']['button']);
-            }
-        }
+            echo "<script language=javascript>window.location.href='Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]';</script>";
+        
     } elseif (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'lookup') {
         if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
-          
-            if ($_REQUEST['button'] == 'Find' ) {
+
+            if ($_REQUEST['button'] == 'Find') {
                 if ($_REQUEST['nfunc'] == 'status') {
-                  
+                    
                 } else {
                     if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQUEST['USERINFO_EMAIL'] || $_REQUEST['USERINFO_MOBILE'] || $_REQUEST['USERINFO_SADD'] || $_REQUEST['USERINFO_CITY'] || $_REQUEST['USERINFO_STATE'] || $_REQUEST['USERINFO_ZIP']) {
                         $stf_ids = '';
@@ -470,7 +422,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         }
                     }
                 }
-                
+
                 $singular = 'User';
                 $plural = 'Users';
                 $options['save'] = false;
@@ -594,11 +546,10 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     if ($_REQUEST['students'][$column] == '--') {
                         $_REQUEST['students'][$column] = '';
                         $day_valid = true;
-                    } else
-                    {
+                    } else {
                         $day_valid = true;
-                        if(substr($column,0,6)=='CUSTOM' && $_REQUEST['students'][$column]!='--')
-                            $_REQUEST['students'][$column]=date('Y-m-d',strtotime($_REQUEST['students'][$column]));
+                        if (substr($column, 0, 6) == 'CUSTOM' && $_REQUEST['students'][$column] != '--')
+                            $_REQUEST['students'][$column] = date('Y-m-d', strtotime($_REQUEST['students'][$column]));
                     }
                 }
             }
@@ -606,7 +557,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             unset($_REQUEST['month_students']);
             unset($_REQUEST['year_students']);
             if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
-                 $_SESSION['student_id']=$_REQUEST['student_id'];
+                $_SESSION['student_id'] = $_REQUEST['student_id'];
                 $stud_rec = DBGet(DBQuery("SELECT BIRTHDATE,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM students WHERE 
                             STUDENT_ID=" . UserStudentID()));
                 if (isset($_REQUEST['students']['BIRTHDATE'])) {
@@ -650,11 +601,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             if ($n == 1) {
                 $flag = false;
                 if ((count($_REQUEST['students']) || count($_REQUEST['values'])) && AllowEdit()) {
-                    
+
                     //print_r($content1);
 //                    print_r($_REQUEST);
                     //echo '<br/><br/>';
-                   // print_r($_FILES);
+                    // print_r($_FILES);
                     //exit;
                     if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
 
@@ -798,13 +749,13 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                         //$content = fread($fp, filesize($tmpName));
                                         $content = base64_decode($_REQUEST['imgblob']);
                                         $content = addslashes($content);
-                                        
+
                                         //fclose($fp);
 
                                         if (!get_magic_quotes_gpc()) {
                                             $fileName = addslashes($fileName);
                                         }
-                                            
+
                                         DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . $_REQUEST[student_id] . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
                                     }
                                 }
@@ -1784,7 +1735,8 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     if ($_REQUEST['category_id'])
                         $_openSIS['selected_tab'] .= '&category_id=' . $_REQUEST['category_id'];
 
-
+                    
+                    //echo '</div>'; //force breaking non ended div
 
                     echo '<div class="panel panel-default">';
                     echo PopTable('header', $tabs, '');
@@ -1793,14 +1745,12 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         include('modules/students/includes/' . $_REQUEST['include'] . '.php');
                     else {
                         include('modules/' . $_REQUEST['include'] . '.php');
-                        $separator = '<HR>';
+                        //$separator = '<HR>';
                         include('modules/students/includes/OtherInfoInc.php');
                     }
-                    echo PopTable('footer');
-                    echo '</panel>';
 
                     if (isset($_REQUEST['goal_id']) && $_REQUEST['goal_id'] != 'new' && !isset($_REQUEST['progress_id']))
-                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_student_student();"') . '</div></div>';
+                        $buttons = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_student_student();"');
                     else {
                         if ($_REQUEST['student_id'] != 'new') {
 
@@ -1809,17 +1759,19 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $enrollment_info = DBGet(DBQuery('SELECT ENROLLMENT_CODE FROM student_enrollment WHERE STUDENT_ID=' . $student_id));
                             $enrollment_code = $enrollment_info[1]['ENROLLMENT_CODE'];
                             if ($_REQUEST['category_id'] == 1 && $enrollment_code == NULL)
-                                echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right" onclick="formcheck_student_student();"') . '</div></div>';
+                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
                             else
-                                echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right" onclick="formcheck_student_student();"') . '</div></div>';
+                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
                         }
                         else {
                             if ($_REQUEST['category_id'] == 1)
-                                echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'class="btn btn-primary heading-btn pull-right" onclick="formcheck_student_student();"') . '</div></div>';
+                                $buttons = SubmitButton('Save & Next', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
                             else
-                                echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right" onclick="formcheck_student_student();"') . '</div></div>';
+                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
                         }
                     }
+                    echo PopTable('footer',$buttons);
+                    echo '</div>';
                     echo '</FORM>';
                 }
                 else
@@ -1828,13 +1780,24 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 else {
 
                     include('modules/' . $_REQUEST['include'] . '.php');
-                    $separator = '<div class=break></div>';
+                    //$separator = '<div class=break></div>';
                     include('modules/students/includes/OtherInfoInc.php');
                 }
             }
         }
     }
 }
+
+
+echo '<div id="modal_default_transferred_out" class="modal fade">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo "<FORM class=m-b-0 name=student enctype='multipart/form-data' action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&student_id=" . UserStudentID() . "&modfunc=update method=POST>";
+echo '<div id="modal-res"></div>';
+echo '</FORM>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
 
 function makeChooseCheckbox($value, $title) {
     global $THIS_RET;

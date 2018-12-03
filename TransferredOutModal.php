@@ -104,8 +104,6 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
     }
     else {
 
-        //echo '<BR>';
-//        PopTableforWindow('header', $title);
         $sql = "SELECT ID,TITLE FROM schools WHERE ID !=" . UserSchool();
         $sql2 = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID !=' . UserSchool() . '  LIMIT 0,1'));
         $sch_id = $sql2[1]['ID'];
@@ -122,22 +120,42 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
 
             $extraM .= 'onchange=grab_GradeLevel(this.value)';
             $exg = 'id="grab_grade"';
-            echo "<FORM name=popform id=popform action=Modules.php?modname=$_REQUEST[modname]&modfunc=detail&student_id=" . UserStudentID() . "&drop_code=" . $_REQUEST['drop_code'] . " METHOD=POST>";
-            echo '<TABLE>';
-            echo '<TR><TD>Current school drop date</TD><TD>' . '  ' . DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]', '', $div, true) . '</TD></TR>';
-            echo '<TR><TD>Transferring to</TD><TD>' . SelectInputModal('', 'TRANSFER[SCHOOL]', '', $options, false, $extraM, 'class=cell_medium') . '</TD></TR>';
-            echo '<TR><TD>Grade Level</TD><TD>' . SelectInputModal('', 'TRANSFER[Grade_Level]', '', $options1, false, $exg, 'class=cell_medium') . '</TD></TR>';
-            echo '<TR><TD>New school\'s enrollment date</TD><TD>' . '  ' . DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_START]', '', $div, true) . '</TD></TR>';
+            
+            echo '<div class="modal-header">';
+            echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+            echo '<h5 class="modal-title">Transferred Out</h5>';
+            echo '</div>';
+            echo '<div class="modal-body">';
+            echo '<input type="hidden" name="values[student_enrollment]['.$_REQUEST['student_id'].'][DROP_CODE]" value="'.$_REQUEST['drop_code'].'" />';
+            echo '<div class="form-group datepicker-group">';
+            echo '<label class="control-label">Current school drop date</label>';
+            //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]', '', $div, true);
+            echo custom_datepicker('222', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]');
 
+            echo '</div>';
 
+            echo '<div class="form-group">';
+            echo '<label class="control-label">Transferring to</label>';
+            echo SelectInputModal('', 'TRANSFER[SCHOOL]', '', $options, false, $extraM, 'class=cell_medium');
+            echo '</div>';
 
-            echo '<TR><TD colspan=2 align=center><INPUT type=submit class="btn btn-primary" name=button value=Save>';
-            echo '&nbsp;';
-            echo '</TD></TR>';
+            echo '<div class="form-group">';
+            echo '<label class="control-label">Grade Level</label>';
+            echo SelectInputModal('', 'TRANSFER[Grade_Level]', '', $options1, false, $exg, 'class=cell_medium');
+            echo '</div>';
 
-            echo '</TABLE>';
-//            PopTableWindow('footer');
-            echo '</FORM>';
+            echo '<div class="form-group">';
+            echo '<label class="control-label">New school\'s enrollment date</label>';
+            //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_START]', '', $div, true);
+            echo custom_datepicker('223', 'TRANSFER[STUDENT_ENROLLMENT_START]');
+            echo '</div>';
+            echo '</div>'; //.modal-body
+
+            echo '<div class="modal-footer">';
+            echo '<INPUT type=submit class="btn btn-primary" name=button value=Save>';
+            echo '</div>';
+
+            //echo '</FORM>';
 
             unset($_REQUEST['values']);
             unset($_SESSION['_REQUEST_vars']['values']);
@@ -157,3 +175,16 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
         }
     }
 }
+
+function custom_datepicker($id, $name) {
+    $dt.= '<div class="input-group datepicker-group" id="original_date_' . $id . '" value="" style="">';
+    $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
+    $dt.= '<input id="date_' . $id . '" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '</div>';
+    $dt.= '<input value="" id="monthSelect_date_' . $id . '" name="month_' . $name . '" type="hidden">';
+    $dt.= '<input value="" id="daySelect_date_' . $id . '" name="day_' . $name . '" type="hidden">';
+    $dt.= '<input value="" id="yearSelect_date_' . $id . '" name="year_' . $name . '" type="hidden">';
+    echo $dt;
+}
+
+echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';

@@ -414,7 +414,7 @@ footer a:hove {
 .checkbox.checkbox-switch label span::before,
 .checkbox-inline.checkbox-switch span::before {
     position: absolute;
-    top: 5px;
+    top: 0;
     left: 0;
 }
 .checkbox.checkbox-switch label > input:checked + span::before,

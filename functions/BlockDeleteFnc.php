@@ -75,8 +75,8 @@ function BlockDelete($item) {
             $find_student = $find_student[1]['STUDENT_EXIST'];
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
-                echo '<h5 class="text-danger text-center">Period cannot be deleted. There are <b>' . $find_student . '</b> Students Enrolled</h5>';
-                $btn = '<a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . '&course_period_id=' . strip_tags(trim($_REQUEST['course_period_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to Period</a>';
+                echo '<h5 class="text-danger text-center">Course period cannot be deleted. There are <b>' . $find_student . '</b> Students Enrolled</h5>';
+                $btn = '<a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . '&course_period_id=' . strip_tags(trim($_REQUEST['course_period_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to course period</a>';
                 PopTable('footer', $btn, 'style="text-align:center"');
                 return false;
             } else

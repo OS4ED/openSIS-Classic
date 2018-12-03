@@ -168,6 +168,21 @@ function grab_GradeLevel(school_id)
     ajax_call('GrabGradeLevel.php?id=' + school_id, grab_GradeLevel_callback, grab_GradeLevel_error);
 }
 
+function Course_Mrinfo(schedule_id)
+{
+    ajax_call('CourseMoreInfo.php?id=' + schedule_id, Course_Mrinfo_callback, Course_Mrinfo_error);
+}
+
+function Course_Mrinfo_error()
+{
+    alert('Invalid Course');
+}
+
+function Course_Mrinfo_callback(data)
+{
+    document.getElementById('more_info_lbl').innerHTML=data;
+}
+
 
 function grab_coursePeriod(id,table,column_name)
 {
@@ -1566,13 +1581,13 @@ function verify_schedule_callback(data)
     data = data.trim();
     var stat = data.substr(0, 4);
     data = data.substr(4);
-   
+  
     document.getElementById("calculating").style.display = 'none';
     if (stat == 'resp')
     {
 //         document.getElementById('selected_course1').innerHTML= 'aaa';
  document.getElementById('selected_course1').innerHTML= document.getElementById('selected_course1').innerHTML+'<tr id="selected_course_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" value='+cp_id+' ></td><td><b>'+tdata[1]+'</b></td></tr>';
-        document.getElementById('conf_div').innerHTML = '';
+        document.getElementById('conf_div1').innerHTML = '';
          document.getElementById('course_' + cp_id).checked= true;
 //          document.getElementById('selected_course').innerHTML= '<tr id="selected_course_tr_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" ></td><td><b> aaaa</b></td></tr>';
        
@@ -1580,14 +1595,16 @@ function verify_schedule_callback(data)
     }
     else if (stat == 'conf')
     {
-        document.getElementById('conf_div').innerHTML = data;
-        document.getElementById('conf_div').style.color = "red";
+      
+        document.getElementById('conf_div1').style.color = "red";
+        document.getElementById('conf_div1').innerHTML = data;
+        
         var cp_id = document.getElementById('conflicted_cp').value;
         document.getElementById('course_' + cp_id).checked = false;
     }
     else
     {
-        document.getElementById('conf_div').innerHTML = data;
+        document.getElementById('conf_div1').innerHTML = data;
     }
 }
 function verify_schedule_error()

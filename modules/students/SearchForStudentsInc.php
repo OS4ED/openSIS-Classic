@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+//print_r($_REQUEST);
 include('../../RedirectModulesInc.php');
 if ($_openSIS['modules_search'] && $extra['force_search'])
     $_REQUEST['search_modfunc'] = '';
@@ -84,6 +85,15 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
 
             # ---   Advanced Search Start ---------------------------------------------------------- #
+          
+            $qr = DBQuery("SELECT ethnicity_name FROM ethnicity where ethnicity_id>15");
+$res = DBGet($qr);
+$ethnic_option = array('White, Non-Hispanic' => 'White, Non-Hispanic', 'Black, Non-Hispanic' => 'Black, Non-Hispanic', 'Hispanic' => 'Hispanic', 'American Indian or Native Alaskan' => 'American Indian or Native Alaskan', 'Pacific Islander' => 'Pacific Islander', 'Asian' => 'Asian', 'Indian' => 'Indian', 'Middle Eastern' => 'Middle Eastern', 'African' => 'African', 'Mixed Race' => 'Mixed Race', 'White British' => 'White British', 'Asian' => 'Asian', 'Black' => 'Black', 'Chinese' => 'Chinese', 'Other' => 'Other');
+foreach ($res as $v) {
+    $ethnic_option[$v['ETHNICITY_NAME']] = $v['ETHNICITY_NAME'];
+}
+          $language_option = array('English' => 'English', 'Arabic' => 'Arabic', 'Bengali' => 'Bengali', 'Chinese' => 'Chinese', 'French' => 'French', 'German' => 'German', 'Haitian Creole' => 'Haitian Creole', 'Hindi' => 'Hindi', 'Italian' => 'Italian', 'Japanese' => 'Japanese', 'Korean' => 'Korean', 'Malay' => 'Malay', 'Polish' => 'Polish', 'Portuguese' => 'Portuguese', 'Russian' => 'Russian', 'Somali' => 'Somali', 'Spanish' => 'Spanish', 'Thai' => 'Thai', 'Turkish' => 'Turkish', 'Urdu' => 'Urdu', 'Vietnamese' => 'Vietnamese');
+  
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
 
@@ -91,22 +101,243 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div id="searchdiv" style="display:none;" class="well">';
             echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div();"><i class="icon-cancel-square"></i> Close Advanced Search</a></div>';
             echo '<br/>';
-
-            echo '<div class="row">';
+            
+                        echo '<div class="row">';
             echo '<div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
+             echo '</div>'; //.row
+////////////////////////extra search field start///////////////////////////
+            echo '<h5 class="text-primary">General Information</h5>';     
+             
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Middle Name </label><div class="col-lg-8"><input type=text name="middle_name" size=30 placeholder="Middle Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Common Name </label><div class="col-lg-8"><input type=text name="common_name" size=30 placeholder="Common Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
             echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8">'.SelectInput('', 'GENDER', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') .'</div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8">' . SelectInput('', 'ETHNICITY', '', $ethnic_option, 'N/A', '') . '</div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8">' . SelectInput('', 'LANGUAGE', '', $language_option, 'N/A', '') . '</div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Email </label><div class="col-lg-8"><input type=text name="email" size=30 placeholder="Email" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Phone </label><div class="col-lg-8"><input type=text name="phone" size=30 placeholder="phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+
+            echo '</div>'; //.row
+            
+            echo '<h5 class="text-primary">Access Information</h5>';
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Username </label><div class="col-lg-8"><input type=text name="username" size=30 placeholder="Username" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            ////////////////////////extra search field end///////////////////////////
 
             echo '<h5 class="text-primary">Birthday</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', 'year_from_birthdate', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', 'year_to_birthdate', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
-
+            
+            echo '<h5 class="text-primary">Estimated Grad. Date</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_est', 'month_from_est', 'year_from_est', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_est', 'month_to_est', 'year_to_est', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            
+            echo '<h5 class="text-primary">Enrollment Start Date</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_st', 'month_from_st', 'year_from_st', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_st', 'month_to_st', 'year_to_st', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<h5 class="text-primary">Enrollment End Date</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_en', 'month_from_en', 'year_from_en', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_en', 'month_to_en', 'year_to_en', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            
+            echo '<h5 class="text-primary">Home Address Information</h5>';     
+             
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Address Line 1 </label><div class="col-lg-8"><input type=text name="home_address_1" size=30 placeholder="Address Line 1" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Address Line 2 </label><div class="col-lg-8"><input type=text name="home_address_2" size=30 placeholder="Address Line 2" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">City </label><div class="col-lg-8"><input type=text name="home_city" size=30 placeholder="City" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">State </label><div class="col-lg-8"><input type=text name="home_state" size=30 placeholder="State" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Zip/Postal Code </label><div class="col-lg-8"><input type=text name="home_zip" size=30 placeholder="Zip" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Bus No </label><div class="col-lg-8"><input type=text name="home_busno" size=30 placeholder="Bus No." class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Pick-up </label><div class="col-lg-8"><input class="styled" type=checkbox name="home_bus_pickup"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Drop-off </label><div class="col-lg-8"><input class="styled" type=checkbox name="home_bus_droppoff"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            echo '<h5 class="text-primary">Mail Address Information</h5>';     
+             
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Address Line 1 </label><div class="col-lg-8"><input type=text name="mail_address_1" size=30 placeholder="Address Line 1" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Address Line 2 </label><div class="col-lg-8"><input type=text name="mail_address_2" size=30 placeholder="Address Line 2" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">City </label><div class="col-lg-8"><input type=text name="mail_city" size=30 placeholder="City" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">State </label><div class="col-lg-8"><input type=text name="mail_state" size=30 placeholder="State" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Zip/Postal Code </label><div class="col-lg-8"><input type=text name="mail_zip" size=30 placeholder="Zip" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            
+            echo '<h5 class="text-primary">Primary Contact</h5>';     
+             
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Relationship to student </label><div class="col-lg-8">'.SelectInput('', 'primary_realtionship', '', array('Father' => 'Father', 'Mother' => 'Mother','Step Mother' => 'Mother','Step Father' => 'Step Father','Step Mother' => 'Step Mother','Grandmother' => 'Grandmother','Grandfather' => 'Grandfather','Legal Guardian' => 'Legal Guardian','Other Family Member' => 'Other Family Member'), 'N/A', '').'</div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">First Name </label><div class="col-lg-8"><input type=text name="primary_first_name" size=30 placeholder="First Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Second Name </label><div class="col-lg-8"><input type=text name="primary_second_name" size=30 placeholder="Second Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Home Phone </label><div class="col-lg-8"><input type=text name="primary_home_phone" size=30 placeholder="Home Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Work Phone </label><div class="col-lg-8"><input type=text name="primary_work_phone" size=30 placeholder="Work Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Cell/Mobile Phone </label><div class="col-lg-8"><input type=text name="primary_mobile_phone" size=30 placeholder="Cell/Mobile Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Email </label><div class="col-lg-8"><input type=text name="primary_email" size=30 placeholder="Email" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            
+            echo '<h5 class="text-primary">Secondary Contact</h5>';     
+             
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Relationship to student </label><div class="col-lg-8">'.SelectInput('', 'secondary_realtionship', '', array('Father' => 'Father', 'Mother' => 'Mother','Step Mother' => 'Mother','Step Father' => 'Step Father','Step Mother' => 'Step Mother','Grandmother' => 'Grandmother','Grandfather' => 'Grandfather','Legal Guardian' => 'Legal Guardian','Other Family Member' => 'Other Family Member'), 'N/A', '').'</div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">First Name </label><div class="col-lg-8"><input type=text name="secondary_first_name" size=30 placeholder="First Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Second Name </label><div class="col-lg-8"><input type=text name="secondary_second_name" size=30 placeholder="Second Name" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Home Phone </label><div class="col-lg-8"><input type=text name="secondary_home_phone" size=30 placeholder="Home Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Work Phone </label><div class="col-lg-8"><input type=text name="secondary_work_phone" size=30 placeholder="Work Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Cell/Mobile Phone </label><div class="col-lg-8"><input type=text name="secondary_mobile_phone" size=30 placeholder="Cell/Mobile Phone" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Email </label><div class="col-lg-8"><input type=text name="secondary_email" size=30 placeholder="Email" class="form-control"></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            
             echo '<h5 class="text-primary">Goal and Progress</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
@@ -127,7 +358,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">Medical</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_month', 'med_day', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
@@ -138,7 +369,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text name="type" placeholder="Immunization Type" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_month', 'imm_day', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
@@ -151,7 +382,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">Medical Alert</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_month', 'ma_day', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Medical Alert" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
@@ -160,7 +391,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">Nurse Visit</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_month', 'nv_day', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Nurse Visit Reason" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6

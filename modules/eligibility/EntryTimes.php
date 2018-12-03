@@ -36,6 +36,22 @@ if (count($start_end_RET)) {
 }
 
 if ($_REQUEST['values']) {
+    if(isset($_REQUEST['values']['START_TIME']) && $_REQUEST['values']['START_TIME']!='')
+    {
+        $start_value1=explode(' ',$_REQUEST['values']['START_TIME']);
+        $start_value2=explode(':',$start_value1[0]);
+        $_REQUEST['values']['START_HOUR']=$start_value2[0];
+        $_REQUEST['values']['START_MINUTE']=$start_value2[1];
+        $_REQUEST['values']['START_M']=$start_value1[1];
+    }
+    if(isset($_REQUEST['values']['END_TIME']) && $_REQUEST['values']['END_TIME']!='')
+    {
+        $end_value1=explode(' ',$_REQUEST['values']['END_TIME']);
+        $end_value2=explode(':',$end_value1[0]);
+        $_REQUEST['values']['END_HOUR']=$end_value2[0];
+        $_REQUEST['values']['END_MINUTE']=$end_value2[1];
+        $_REQUEST['values']['END_M']=$end_value1[1];
+    }
     if ($_REQUEST['values']['START_M'] == 'PM')
         $_REQUEST['values']['START_HOUR']+=12;
     if ($_REQUEST['values']['END_M'] == 'PM')
@@ -44,10 +60,13 @@ if ($_REQUEST['values']) {
     $start = $_REQUEST['values']['START_DAY'] . $_REQUEST['values']['START_HOUR'] . $_REQUEST['values']['START_MINUTE'];
     $end = $_REQUEST['values']['END_DAY'] . $_REQUEST['values']['END_HOUR'] . $_REQUEST['values']['END_MINUTE'];
     foreach ($_REQUEST['values'] as $key => $value) {
+        if($key!='START_TIME' && $key!='END_TIME')
+        {
         if (isset($$key)) {
             DBQuery('UPDATE program_config SET VALUE=\'' . $value . '\' WHERE PROGRAM=\'eligibility\' AND TITLE=\'' . $key . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'');
         } else {
             DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'eligibility\',\'' . $key . '\',\'' . $value . '\')');
+        }
         }
     }
 
@@ -97,15 +116,17 @@ echo '<div>';
 if (count($start_end_RET)) {
     $start_value = $days[$arr['START_DAY']] . ', ' . $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
     $end_value = $days[$arr['END_DAY']] . ', ' . $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
+    $start_time = $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
+    $end_time = $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">From :</label>';
-    echo '<DIV id="start_time" class="col-md-10"><div class="form-control" readonly onclick=\'addHTML("<div class=form-inline><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($START_HOUR, 'values[START_HOUR]', '', $hour_options, false, '', false)) . '</div><div class=form-group>:</div><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['START_MINUTE'], 'values[START_MINUTE]', '', $minute_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($START_M, 'values[START_M]', '', $m_options, false, '', false)) . '</div></div>","start_time",true);\'>' . $start_value . '</div></DIV>';
+    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($start_time, 'values[START_TIME]', '', NULL) . '</div></div>';
     echo '</div>'; //form-group
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">To :</label>';
-    echo '<DIV id="end_time" class="col-md-10"><div class="form-control" readonly onclick=\'addHTML("<div class=form-inline><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($END_HOUR, 'values[END_HOUR]', '', $hour_options, false, '', false)) . '</div><div class=form-group>:</div><div class=form-group>' . str_replace('"', '\"', SelectInput($arr['END_MINUTE'], 'values[END_MINUTE]', '', $minute_options, false, '', false)) . '</div><div class=form-group>' . str_replace('"', '\"', SelectInput($END_M, 'values[END_M]', '', $m_options, false, '', false)) . '</div></div>","end_time",true);\'>' . $end_value . '</div></DIV>';
+    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">To</label>' . SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div>';
     echo '</div>';
 } else {
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . SelectInput($START_HOUR, 'values[START_HOUR]', '', $hour_options, false, '', false) . ' : ' . SelectInput($START_MINUTE, 'values[START_MINUTE]', '', $minute_options, false, '', false) . ' &nbsp; ' . SelectInput($START_M, 'values[START_M]', '', $m_options, false, '', false) . '</div></div>';
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . SelectInput($END_HOUR, 'values[END_HOUR]', '', $hour_options, false, '', false) . ' : ' . SelectInput($END_MINUTE, 'values[END_MINUTE]', '', $minute_options, false, '', false) . ' &nbsp; ' . SelectInput($END_M, 'values[END_M]', '', $m_options, false, '', false) . '</div></div>';
+    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div>';
+    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div>';
 }
 $btn = '<div class="text-center">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"') . '</div>';
 echo '</div>';

@@ -32,7 +32,12 @@ include('../../RedirectModulesInc.php');
 echo '<div class="row">';
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax'])) {
 
-
+//    print_r($_REQUEST);
+    if($_REQUEST['SYSTEM_WIDE']=='Y')
+        $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']=0;
+    else
+        $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']= UserSchool();
+    unset($_REQUEST['SYSTEM_WIDE']);
     $table = $_REQUEST['table'];
     foreach ($_REQUEST['tables'] as $id => $columns) {
         $flag = 0;
@@ -246,7 +251,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 }
 
 if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
-    $sql = "SELECT CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM school_custom_fields WHERE ID='$_REQUEST[id]'";
+    $sql = "SELECT SCHOOL_ID,CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM school_custom_fields WHERE ID='$_REQUEST[id]'";
     $RET = DBGet(DBQuery($sql));
     $RET = $RET[1];
     $title = $RET['TITLE'];
@@ -316,7 +321,15 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
 
     $new = ($_REQUEST['id'] == 'new');
     $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required','', false, 'Yes', 'No', '', 'switch-success') . '</div></div>';
-
+    
+    if($RET['SCHOOL_ID']>0)
+        $system_wide='N';
+    else
+         $system_wide='Y';
+//    print_r($RET);
+//    echo $system_wide;
+    $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($system_wide, 'SYSTEM_WIDE', 'System Wide','', false, 'Yes','No', '', 'switch-success') . '</div></div>';
+   
     $header .= '</div>';
     $header .= '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right ml-10" onclick="formcheck_schoolfields();"') . $delete_button . '</div></div>';
     $header .= '</div>'; //.panel
@@ -335,7 +348,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $columns = array('TITLE' => 'School Fields', 'TYPE' => 'Field Type');
     $link = array();
     $arr = array('School Name', 'Address', 'City', 'State', 'Zip/Postal Code', 'Principal', 'Base Grading Scale', 'E-Mail', 'Website', 'School Logo');
-    $RET = DBGet(DBQuery("SELECT * FROM school_custom_fields WHERE SCHOOL_ID=" . UserSchool() . " ORDER BY SORT_ORDER"));
+    $RET = DBGet(DBQuery("SELECT * FROM school_custom_fields WHERE SCHOOL_ID IN (" . UserSchool() .",0) ORDER BY SORT_ORDER"));
     foreach ($arr as $key => $value) {
         $fields_RET1[$count] = array('ID' => '', 'TITLE' => $value, 'TYPE' => '<span style="color:#ea8828;">Default</span>');
         $count++;

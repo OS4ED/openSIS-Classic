@@ -227,6 +227,26 @@ function DeletePromptMod($title,$queryString='',$action='delete')
 	else
 		return true;
 }
+
+
+function DeletePromptLog($title,$queryString='',$action='delete')
+{
+   $tmp_REQUEST = $_REQUEST;
+
+     unset($tmp_REQUEST['delete_ok']);
+
+	$PHP_tmp_SELF = PreparePHP_SELF($tmp_REQUEST);
+	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
+	{
+		echo '<BR>';
+		PopTable('header','Confirm '.(strpos($action,' ')===false? ucwords($action):$action));
+		echo "<CENTER><h4>Are you sure you want to $action that ".(strpos($title,' ')===false? ucwords($title):$title)."?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&$queryString\");'></FORM></CENTER>";
+		PopTable('footer');
+		return false;
+	}
+	else
+		return true;
+}
 function DuplicateStudent($title,$action='delete')
 {
    $tmp_REQUEST = $_REQUEST;

@@ -152,7 +152,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         foreach ($columns as $column => $value) {
                             if (trim($value) != '') {
                                 $value = paramlib_validation($column, $value);
-                                $sql.= $column . '=\'' . str_replace("'", "''", $value) . '\',';  // linux
+                                $sql.= $column . '=\'' . singleQuoteReplace('', '', $value) . '\',';  // linux
                             }
                         }
                     }
@@ -227,7 +227,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     if (isset($value)) {
                         $fields .= $column . ',';
 
-                        $values .= '\'' . str_replace("'", "''", $value) . '\','; // linux
+                        $values .= '\'' . singleQuoteReplace('', '', $value) . '\','; // linux
 
                         $go = true;
                     }

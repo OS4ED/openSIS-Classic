@@ -152,7 +152,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                             $stu_grd_cal_max = DBGet(DBQuery('SELECT ID FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY START_DATE DESC LIMIT 1'));
 
                             DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $stu_grd_cal[1]['CALENDAR_ID'] . ',GRADE_ID=' . $stu_grd_cal[1]['GRADE_ID'] . ', NEXT_SCHOOL=\'' . $stu_grd_cal[1]['NEXT_SCHOOL'] . '\' WHERE ID=' . $stu_grd_cal_max[1]['ID']);
-                    }
+                        }
                     }
                 } else {
                     echo '<div class="alert bg-danger alert-styled-left">Please enter proper drop date.Drop date must be greater than student enrollment date.</div>';
@@ -249,18 +249,16 @@ else {
 
 ################################################################################
 
+echo '</div>';
 
 echo '<h5 class="text-primary">Enrollment Information</h5>';
 
 echo '<input type=hidden id=cal_stu_id value=' . $id . ' />';
-echo '<div class="form-horizontal">';
 
 echo '<div class="row">';
-echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment]['.$id.'][CALENDAR_ID]">Calendar <span class="text-danger">*</span></label><div class="col-lg-8">' . SelectInput($calendar, "values[student_enrollment][$id][CALENDAR_ID]", (!$calendar || !$div ? '' : '') . '' . (!$calendar || !$div ? '' : ''), $calendar_options, false, '', $div) . '</div></div></div>';
-echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment]['.$id.'][NEXT_SCHOOL]">Rolling/Retention Options</label><div class="col-lg-8">' . SelectInput($next_school, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_school || !$div ? '' : '') . '' . (!$next_school || !$div ? '' : ''), $next_school_options, false, '', $div) . '</div></div></div>';
+echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][CALENDAR_ID]">Calendar <span class="text-danger">*</span></label><div class="col-lg-8">' . SelectInput($calendar, "values[student_enrollment][$id][CALENDAR_ID]", (!$calendar || !$div ? '' : '') . '' . (!$calendar || !$div ? '' : ''), $calendar_options, false, '', $div) . '</div></div></div>';
+echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][NEXT_SCHOOL]">Rolling/Retention Options</label><div class="col-lg-8">' . SelectInput($next_school, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_school || !$div ? '' : '') . '' . (!$next_school || !$div ? '' : ''), $next_school_options, false, '', $div) . '</div></div></div>';
 echo '</div>'; //.row
-//echo '</div>'; // Force Stop //.tab-content
-echo '</div>'; //.form-horizontal
 
 echo '<hr class="no-margin-bottom"/>';
 
@@ -297,7 +295,7 @@ if ($_REQUEST['student_id'] != 'new') {
 }
 else {
     $id = 'new';
-    echo '<div id="students" class="table-responsive">';
+    echo '<div id="students">';
     ListOutputMod($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link, array(), array('count' => false));
     echo "</div>";
     $next_school = UserSchool();
@@ -307,18 +305,5 @@ else {
 //echo '<div class="panel-body">'; // .panel-body start to end in footer
 //echo '<div class="tab-content">'; // .panel-content start to end in footer
 
-echo '<div id="modal_default_transferred_out" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">';
-            echo '<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
-                <h5 class="modal-title"></h5>
-            </div>';
-            echo '<div class="modal-body">';
-                echo'<div id="modal-res">';
-                echo '</div>';
-            echo '</div>';
-        echo '</div>';
-    echo '</div>';
-echo '</div>';
+
 ?>

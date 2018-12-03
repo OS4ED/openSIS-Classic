@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+//print_r($_REQUEST);
 if ($_REQUEST['modfunc'] == 'cp_insert') {
 
     if ($_POST['exit']) {
@@ -221,6 +222,7 @@ echo '<h5 class="modal-title">More info</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
+echo '<div id="more_info_lbl"></div>';
 echo '<div id="modal-mrif"></div>';
 echo '</div>'; //.modal-body
 
@@ -948,7 +950,32 @@ if ($_REQUEST['del'] == 'true') {
         //echo "<div class=break></div>";
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
+        
+        echo '<div class="panel panel-default">';
+         echo '<div class="panel-body">';
+         
+        $qr = 'SELECT em.STUDENT_ID,em.ACTIVITY_ID,ea.TITLE,ea.START_DATE,ea.END_DATE FROM eligibility_activities ea,student_eligibility_activities em WHERE  em.STUDENT_ID=' . UserStudentID() . ' AND em.SYEAR=\'' . UserSyear() . '\' ';
+        $st_date = date('Y-m-d', strtotime($date));
+        $qr.= ' AND \'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date';
+        $qr.= '  AND em.SYEAR=ea.SYEAR AND em.ACTIVITY_ID=ea.ID ORDER BY ea.START_DATE';
 
+        $RET_AC = DBGet(DBQuery($qr), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
+
+        
+        $columns = array('TITLE' => 'Activity', 'START_DATE' => 'Starts', 'END_DATE' => 'Ends');
+        echo '<div class="table-responsive">';
+        ListOutput($RET_AC, $columns, 'Activity', 'Activities');
+        echo '</div>';
+//        echo "<div class=break></div>";
+        
+        
+        $RET_C = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,e.SCHOOL_DATE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower','SCHOOL_DATE' => 'ProperDate'));
+        $columns = array('COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade', 'SCHOOL_DATE' => 'Date');
+        echo '<div class="table-responsive">';
+        ListOutput($RET_C, $columns, 'Course', 'Courses');
+         echo '</div>';
+        echo '</div>'; //.panel-body
+        echo '</div>';
 
 
 
@@ -961,6 +988,8 @@ if ($_REQUEST['del'] == 'true') {
             $extra['link']['FULL_NAME']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID');
             include('modules/scheduling/UnfilledRequests.php');
         }
+        
+       
     }
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {//echo 'dgf';
         if (!isset($_REQUEST['confirm_cid']) || !$_REQUEST['sel_course_period'])
@@ -985,6 +1014,7 @@ if ($_REQUEST['del'] == 'true') {
     }
 
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'more_info') {
+//    if (clean_param($_REQUEST['search_modfunc'], PARAM_ALPHAMOD) == 'list') {
         $sql = 'SELECT
                                 s.COURSE_ID,s.COURSE_PERIOD_ID,
                                 s.MARKING_PERIOD_ID,s.START_DATE,s.END_DATE,s.MODIFIED_DATE,s.MODIFIED_BY,
@@ -1006,9 +1036,8 @@ if ($_REQUEST['del'] == 'true') {
         $schedule_RET = DBGet($QI, array('TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPA', 'DAYS' => '_makeDays', 'SCHEDULER_LOCK' => '_makeViewLock', 'START_DATE' => '_makeViewDate', 'END_DATE' => '_makeViewDate', 'MODIFIED_DATE' => '_makeViewDate'));
         $columns = array('TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'MODIFIED_NAME' => 'Modified By', 'MODIFIED_DATE' => 'Modified Date');
         $options = array('search' => false, 'count' => false, 'save' => false, 'sort' => false);
-
         ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link, '', $options);
-
+        
         echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
     }
 }
@@ -1204,9 +1233,17 @@ function _makeDate_red($value, $column) {
     }
 }
 
+
 function _makeInfo($value, $column) {
     global $THIS_RET;
-    return "<center><a href=javascript:void(0) onclick=Sch_Mrinfo('".$value."');><i class=\"icon-info22\"></i></a></center>";
+   
+    return "<center><a href=javascript:void(0) data-toggle='modal' data-target='#modal_moreinfo' onclick=Course_Mrinfo('".$value."');><i class=\"icon-info22\"></i></a></center>";
+}
+
+
+function makeModal($value)
+{
+    echo 'Hello';
 }
 
 function _makeMP($value, $column) {
@@ -1283,7 +1320,17 @@ function VerifySchedule(&$schedule) {
                         else
                             foreach (veriry_str_split($schedule[$i]['DAYS']) as $k)
                                 if (strpos($schedule[$j]['DAYS'], $k) !== false) {
+                                    
+                                    if($schedule[$i]['COURSE_PERIOD_ID']!='' && $schedule[$i]['PERIOD_ID']!='' && $k!='')
+                                    {
+                                    $check_conf=DBGet(DBQuery('SELECT COUNT(*) as REC_RET FROM course_period_var WHERE COURSE_PERIOD_ID='.$schedule[$i]['COURSE_PERIOD_ID'].' AND PERIOD_ID='.$schedule[$i]['PERIOD_ID'].' AND DAYS LIKE \'%'.$k.'%\' '));
+                                    if ($check_conf[1]['REC_RET']>0)
                                     $conflicts[$i] = $conflicts[$j] = true;
+                                    }
+                                    else
+                                      $conflicts[$i] = $conflicts[$j] = true;
+                                    
+                                     
                                     break;
                                 }
     $student_id = UserStudentID();
@@ -1327,5 +1374,7 @@ function CreateSelect($val, $name, $link = '', $mpid) {
     $html .= "</select>";
     return $html;
 }
-
+function _makeLower($word) {
+    return ucwords(strtolower($word));
+}
 ?>

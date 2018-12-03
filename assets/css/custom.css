@@ -48,6 +48,18 @@ div.form-control {
 }
 /* Bootstrap Overwrite End */
 
+/* Colors */
+.border-orange-400 {
+    border-color: #E47100;
+}
+.border-yellow-400 {
+    border-color: #E4A900;
+}
+.alpha-yellow {
+    background-color: #f8f7d9;
+}
+
+
 .sidebar-user-material-content > a {
     cursor: default;
 }
@@ -207,6 +219,9 @@ ul[id*="select2-period-"] {
 }
 .fake_datepicker {
     min-width: 115px;
+}
+.form-inline .fake_datepicker {
+    display: inline-block;
 }
 
 /*div.form-control {

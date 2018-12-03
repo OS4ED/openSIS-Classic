@@ -95,14 +95,14 @@ function UpdateAttendanceDaily($student_id,$date='',$comment=false)
         if(count($current_RET) && $current_RET[1]['MINUTES_PRESENT']==$total && $length!=$current_RET[1]['STATE_VALUE'])
 		DBQuery('UPDATE attendance_day SET STATE_VALUE=\''.$length.'\' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
 	if(count($current_RET) && $current_RET[1]['MINUTES_PRESENT']!=$total)
-		DBQuery('UPDATE attendance_day SET MINUTES_PRESENT=\''.$total.'\',STATE_VALUE=\''.$length.'\''.($comment!=false?',COMMENT=\''.str_replace("","",$comment).'\'':'').' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
+		DBQuery('UPDATE attendance_day SET MINUTES_PRESENT=\''.$total.'\',STATE_VALUE=\''.$length.'\''.($comment!=false?',COMMENT=\''.singleQuoteReplace("","",$comment).'\'':'').' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
         elseif(count($current_RET) && $comment!=false && $current_RET[1]['COMMENT']!=$comment)
-		DBQuery('UPDATE attendance_day SET COMMENT=\''.str_replace("","",$comment).'\' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
+		DBQuery('UPDATE attendance_day SET COMMENT=\''.singleQuoteReplace("","",$comment).'\' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
 	elseif(count($current_RET)==0)
         {
                 $check_assoc=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period ap,course_periods cp WHERE ap.STUDENT_ID='.$student_id.' AND ap.SCHOOL_DATE=\''.$date.'\' AND cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID AND cp.SCHOOL_ID='.UserSchool().' AND cp.SYEAR='.UserSyear()));
                 if($check_assoc[1]['REC_EX']>0)
-                DBQuery('INSERT INTO attendance_day (SYEAR,STUDENT_ID,SCHOOL_DATE,MINUTES_PRESENT,STATE_VALUE,MARKING_PERIOD_ID,COMMENT) values(\''.UserSyear().'\',\''.$student_id.'\',\''.$date.'\',\''.$total.'\',\''.$length.'\',\''.$current_mp.'\',\''.str_replace("","",$comment).'\')');
+                DBQuery('INSERT INTO attendance_day (SYEAR,STUDENT_ID,SCHOOL_DATE,MINUTES_PRESENT,STATE_VALUE,MARKING_PERIOD_ID,COMMENT) values(\''.UserSyear().'\',\''.$student_id.'\',\''.$date.'\',\''.$total.'\',\''.$length.'\',\''.$current_mp.'\',\''.singleQuoteReplace("","",$comment).'\')');
         }
 }
 

@@ -1529,7 +1529,7 @@ select[multiple].input-xs {
 }
 .form-horizontal .control-label[class*=col-md-] {
     overflow-wrap: break-word;
-    font-size: 14px;
+    font-size: 13px;
 }
 @media (min-width: 1025px) {
   .help-inline {

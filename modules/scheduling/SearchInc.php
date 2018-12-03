@@ -208,4 +208,12 @@ else {
     } else
         BackPrompt('No Students were found.');
 }
+
+function _make_sections($value) {
+    if ($value != '') {
+        $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+        return $get[1]['NAME'];
+    } else
+        return '';
+}
 ?>

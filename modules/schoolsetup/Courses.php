@@ -2118,7 +2118,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
             $header .= '<DIV id=meeting_days><hr/>';
 
-            $header .= '<TABLE  width=100% class="table table-bordered"><TR><TD></TD><TD width="100px" class="subtabs"><strong>Days</strong></TD><TD width="200px" class="subtabs"><strong>Period</strong></TD><TD class="subtabs"><strong>Time</strong></TD><TD width="150px" class="subtabs"><strong>Room</strong></TD><TD width="130px" align="center" class="subtabs"><strong>Takes attendance</strong></TD></TR>';
+            $header .= '<TABLE  width=100% class="table table-bordered"><TR><TD></TD><TD width="100px" class="subtabs"><strong>Days</strong></TD><TD width="200px" class="subtabs"><strong>Period</strong></TD><TD class="subtabs"><strong>Time</strong></TD><TD width="150px" class="subtabs"><strong>Room</strong></TD><TD width="130px" align="center" class="subtabs"><strong>Takes Attendance</strong></TD></TR>';
             $rowcolor = 'even';
             if ($not_pass == true) {
                 $cp_var_val = $cpdays_RET;
@@ -2236,7 +2236,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             if ($not_pass != true)
                 $header .= '","days",true);\'>' . $RET['DAYS'] . '</div></DIV>';
             $header .= '</div></div></div>';
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="col-md-4">&nbsp;</label><div class="col-md-8">' . CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][DOES_ATTENDANCE]', 'Takes attendance', $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success') . '<div id="ajax_output"></div></div></div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="col-md-4">&nbsp;</label><div class="col-md-8">' . CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][DOES_ATTENDANCE]', 'Takes Attendance', $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success') . '<div id="ajax_output"></div></div></div></div>';
             $header .= '</div>'; //.row
             echo '<input type="hidden" name="fixed_day" id="fixed_day" value="' . $day . '" />';
         }elseif ($RET['SCHEDULE_TYPE'] == 'BLOCKED') {

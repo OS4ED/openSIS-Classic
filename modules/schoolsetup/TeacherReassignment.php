@@ -77,7 +77,7 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
     $staff_id = $_REQUEST['re_assignment_teacher'];
 
     if ($_REQUEST['day_re_assignment'] && $_REQUEST['month_re_assignment'] && $_REQUEST['year_re_assignment'])
-        $assign_date = date('Y-m-d', strtotime($_REQUEST['day_re_assignment'] . '-' . $_REQUEST['month_re_assignment'] . '-' . substr($_REQUEST['year_re_assignment'], 2, 4)));
+        $assign_date = date('Y-m-d', strtotime($_REQUEST['day_re_assignment'] . '-' . $_REQUEST['month_re_assignment'] . '-' . $_REQUEST['year_re_assignment']));
     if ($_REQUEST['day_re_assignment'] != '' && $_REQUEST['month_re_assignment'] != '' && $_REQUEST['year_re_assignment'] != '') {
         if (strtotime($assign_date) >= strtotime(date('Y-m-d'))) {
             if (scheduleAssociation($id)) {

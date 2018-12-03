@@ -98,6 +98,38 @@ $(function () {
         });
     }
 
+    // Present
+    if ($(".control-present").length > 0) {
+        $(".control-present").uniform({
+            radioClass: 'choice attendance-choice',
+            wrapperClass: 'border-success-600 text-success-800'
+        });
+    }
+
+    // Absent
+    if ($(".control-absent").length > 0) {
+        $(".control-absent").uniform({
+            radioClass: 'choice attendance-choice',
+            wrapperClass: 'border-danger-600 text-danger-800'
+        });
+    }
+
+    // Late
+    if ($(".control-late").length > 0) {
+        $(".control-late").uniform({
+            radioClass: 'choice attendance-choice',
+            wrapperClass: 'border-yellow-400 text-yellow-600'
+        });
+    }
+
+    // Tardy
+    if ($(".control-tardy").length > 0) {
+        $(".control-tardy").uniform({
+            radioClass: 'choice attendance-choice',
+            wrapperClass: 'border-orange-400 text-orange-600'
+        });
+    }
+
 
 
     // Bootstrap switch
@@ -106,5 +138,49 @@ $(function () {
     if ($(".switch").length > 0) {
         $(".switch").bootstrapSwitch();
     }
+    
+    
+    
+    
+    $('.attendance-choice.border-success-600').click(function(){
+        $(this).closest('table').parent('td').parent('tr').children('td').removeAttr('class');
+        $(this).closest('table').parent('td').addClass('alpha-success');
+    });
+    
+    
+    $('.attendance-choice.border-danger-600').click(function(){
+        $(this).closest('table').parent('td').parent('tr').children('td').removeAttr('class');
+        $(this).closest('table').parent('td').addClass('alpha-danger');
+    });
+    
+    
+    $('.attendance-choice.border-orange-400').click(function(){
+        $(this).closest('table').parent('td').parent('tr').children('td').removeAttr('class');
+        $(this).closest('table').parent('td').addClass('alpha-orange');
+    });
+    
+    
+    $('.attendance-choice.border-yellow-400').click(function(){
+        $(this).closest('table').parent('td').parent('tr').children('td').removeAttr('class');
+        $(this).closest('table').parent('td').addClass('alpha-yellow');
+    });
+    
+    
+    /* Initialize attendance background on startup (for already taken attendances) */
+    $('.attendance-choice.border-success-600 .checked').each(function(){
+        $(this).closest('table').parent('td').addClass('alpha-success');
+    });
+    
+    $('.attendance-choice.border-danger-600 .checked').each(function(){
+        $(this).closest('table').parent('td').addClass('alpha-danger');
+    });
+    
+    $('.attendance-choice.border-orange-400 .checked').each(function(){
+        $(this).closest('table').parent('td').addClass('alpha-orange');
+    });
+    
+    $('.attendance-choice.border-yellow-400 .checked').each(function(){
+        $(this).closest('table').parent('td').addClass('alpha-yellow');
+    });
 
 });

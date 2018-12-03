@@ -86,11 +86,15 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
                                 $check_dup_continues=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period WHERE STUDENT_ID='.$student_id.' AND SCHOOL_DATE=\''.$date.'\' AND PERIOD_ID=\''.$period_id.'\' AND MARKING_PERIOD_ID=\''.$current_mp.'\''));
                                 if($check_dup_continues[1]['REC_EX']==0)
                                 {
-                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',\'Y\')';                               
+                                $absence_reason=optional_param('absence_reason', '', PARAM_SPCL);
+                                $absence_reason= singleQuoteReplace("","",$absence_reason);
+                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' .$absence_reason. '\',\'Y\')';                               
                                 }
                                 else
                                 {
-                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . optional_param('absence_reason', '', PARAM_SPCL) . '\',ADMIN=\'Y\'
+                                $absence_reason=optional_param('absence_reason', '', PARAM_SPCL);
+                                $absence_reason= singleQuoteReplace("","",$absence_reason);
+                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . $absence_reason . '\',ADMIN=\'Y\'
 								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';   
                                 }
                                  DBQuery($sql);

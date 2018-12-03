@@ -622,7 +622,8 @@ $menu_icons = array(
     "eligibility" => "icon-checkmark3",
     "messaging" => "icon-envelop5",
     "tools" => "icon-hammer-wrench",
-    "billing" => "icon-calculator2"
+    "billing" => "icon-calculator2",
+    "discipline" => "icon-hammer2"
 );
 
 //echo "<li><a href='javascript:void(0)' onmouseup='check_content(\"Ajax.php?modname=miscellaneous/Portal.php\");' onmousedown='document.getElementById(\"header\").innerHTML = \"Home\";document.getElementById(\"cframe\").src = \"Bottom.php?modcat=home\"'><i class=\"icon-home4\"></i><span>" . "Home" . "</span></a></li>";

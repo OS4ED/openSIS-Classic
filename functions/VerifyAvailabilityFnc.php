@@ -473,6 +473,14 @@ function VerifyStudentSchedule($course_RET,$student_id='')
             return 'Course period already scheduled';
         }
     }
+    $check_parent_schedule=DBGet(DBQuery('SELECT PARENT_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$course_RET[1]['COURSE_PERIOD_ID']));
+    if($check_parent_schedule[1]['PARENT_ID']!='' && $check_parent_schedule[1]['PARENT_ID']!=$course_RET[1]['COURSE_PERIOD_ID'])
+    {
+        $check_stu_schedule=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID='.$check_parent_schedule[1]['PARENT_ID'].' AND STUDENT_ID='.$student_id.' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        if($check_stu_schedule[1]['REC_EX']==0)
+            return 'Course period has parent course restriction';
+
+    }
     if($course_RET[1]['TOTAL_SEATS']-$course_RET[1]['FILLED_SEATS']<=0)
     {
         return 'Seat not available';

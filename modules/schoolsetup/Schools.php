@@ -251,6 +251,13 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Zip/Postal Code</label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
+        
+        echo '<div class="col-lg-6">';
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Area Code</label><div class=\"col-md-8\">" . TextInput($schooldata['AREA_CODE'], 'values[AREA_CODE]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row 
+        
+        
         echo '<div class="col-lg-6">';
         echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Telephone</label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6

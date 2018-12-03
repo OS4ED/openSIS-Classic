@@ -333,7 +333,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
 
                                 echo "<TR><TD></TD><TD></TD>";
                                 echo "<TD align=left><label class=\"checkbox checkbox-inline checkbox-switch switch-success switch-xs\"><INPUT type=checkbox name=can_use[" . str_replace('.', '_', $file) . "] value=true" . ($can_use == 'Y' ? ' CHECKED' : '') . (AllowEdit() ? '' : ' DISABLED') . "><span></span></label></TD>";
-                                if ($category['ID'] == '3' || $category['ID'] == '5')
+                                if (($category['ID'] == '3' || $category['ID'] == '5' ) && $res[1]['PROFILE'] != 'admin')
                                     echo "<TD align=left style='padding:0px 0px 0px 47px'>&nbsp;</TD>";
                                 else
                                     echo "<TD align=left><label class=\"checkbox checkbox-inline checkbox-switch switch-success switch-xs\"><INPUT type=checkbox name=can_edit[" . str_replace('.', '_', $file) . "] value=true" . ($can_edit == 'Y' ? ' CHECKED' : '') . (AllowEdit() ? '' : ' DISABLED') . "><span></span></label></TD>";

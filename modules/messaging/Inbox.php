@@ -294,7 +294,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
             $fetch = DBGet(DBQuery($qr));
             foreach ($fetch as $key => $value) {
                 $s = $value['TO_USER'];
-                "<br>";
+                //"<br>";
                 $to_cc = $value['TO_CC'];
                 $to_cc_arr = explode(',', $to_cc);
                 $arr = explode(',', $s);
@@ -630,7 +630,7 @@ if (!isset($_REQUEST['modfunc'])) {
     $columns = array('FROM_USER' => 'FROM', 'MAIL_SUBJECT' => 'SUBJECT', 'MAIL_DATETIME' => 'DATE/TIME');
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['LO_group'] = array('MAIL_ID');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox class=styled value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'mail\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'mail\');"><A>');
     $extra['new'] = true;
     if (is_array($extra['columns_before'])) {
         $LO_columns = $extra['columns_before'] + $columns;
@@ -643,7 +643,7 @@ if (!isset($_REQUEST['modfunc'])) {
 
     //PopTable('header', 'Inbox');
     foreach ($inbox_info as $id => $value) {
-        $extra['columns_before']['CHECKBOX'] = "<INPUT class=styled type=checkbox name=mail[" . $value['MAIL_ID'] . "] value=Y>";
+        $extra['columns_before']['CHECKBOX'] = "<INPUT type=checkbox name=mail[" . $value['MAIL_ID'] . "] value=Y>";
         $inbox_info[$id] = $extra['columns_before'] + $value;
     }
     if (count($inbox_info) != 0) {

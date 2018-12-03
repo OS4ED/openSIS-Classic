@@ -185,7 +185,7 @@ switch (User('PROFILE')) {
 
                 echo '<div class="panel panel-flat">
                         <div class="panel-heading">
-                            <h6 class="panel-title">Please complete the setup before using the system. The following components need to be set</h6>
+                            <h6 class="panel-title">Please complete the setup before using the system. The following components need to be set:</h6>
                             <div class="heading-elements">
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-success" style="width: ' . $percent . '%;">
