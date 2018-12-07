@@ -272,7 +272,8 @@ if (!$_REQUEST['modfunc']) {
         $custom_fields_RET[0][] = array('CATEGORY' => '<B>Addresses</B>', 'ID' => 'ADDRESS', 'TITLE' => '<IMG SRC=assets/bus_button.gif> Bus Dropoff', 'DISPLAY' => _makeAddress('BUS_DROPOFF'));
 
         if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')
-            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'SEARCH' => 'Search', 'DISPLAY' => '<div class="text-center">Expanded View</div>');
+            $columns = array('CATEGORY' => '', 'TITLE' => 'Field',  'DISPLAY' => '<div class="text-center">Expanded View</div>');
+//            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'SEARCH' => 'Search', 'DISPLAY' => '<div class="text-center">Expanded View</div>');
         else
             $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'DISPLAY' => 'Expanded View');
         ListOutputMod($custom_fields_RET, $columns, '', '', array(), array(array('CATEGORY')));

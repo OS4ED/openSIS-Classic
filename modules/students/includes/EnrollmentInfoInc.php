@@ -29,9 +29,15 @@
 include('../../../RedirectIncludes.php');
 
 include_once('modules/students/includes/FunctionsInc.php');
-
+session_start();
 
 #########################################################ENROLLMENT##############################################
+
+if($_SESSION['ERR_TRANS'])
+{
+    echo $_SESSION['ERR_TRANS'];
+}
+
 
 if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) || ($_REQUEST['values']['student_enrollment'] && ($_POST['values']['student_enrollment'] || $_REQUEST['ajax']))) {
     if (!$_REQUEST['values']['student_enrollment']['new']['ENROLLMENT_CODE'] && !$_REQUEST['month_values']['student_enrollment']['new']['START_DATE']) {
@@ -167,7 +173,6 @@ $functions = array('ENROLLMENT_CODE' => '_makeStartInputCodeenrl', 'DROP_CODE' =
 unset($THIS_RET);
 $student_RET_qry = 'SELECT e.SYEAR, s.FIRST_NAME,s.LAST_NAME,s.GENDER, e.ID,e.GRADE_ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e,students s WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.STUDENT_ID=s.STUDENT_ID ORDER BY e.START_DATE';
 $RET = DBGet(DBQuery($student_RET_qry));
-
 $not_add = false;
 if (count($RET)) {
     foreach ($RET as $in => $value) {

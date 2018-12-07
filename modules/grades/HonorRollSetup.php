@@ -35,9 +35,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                 $sql = 'UPDATE honor_roll SET ';
                 foreach ($columns as $column => $value) {
                     $value = paramlib_validation($column, $value);
-                    $values .= ' \' ' . trim(str_replace("\'", "'", str_replace("'", "\'", $value))) . ' \',';
+                    $values .= ' \' ' . trim(singleQuoteReplace("","",$value)) . ' \',';
                     if ($value)
-                        $sql .= $column . '=\'' . trim(str_replace("\'", "'", str_replace("'", "\'", $value))) . '\',';
+                        $sql .= $column . '=\'' . trim(singleQuoteReplace("","",$value)) . '\',';
                     else
                         $sql .= $column . '=NULL ,';
                 }
@@ -54,7 +54,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     if (trim($value) != '') {
                         $value = paramlib_validation($column, $value);
                         $fields .= $column . ',';
-                        $values .= '\'' . str_replace("\'", "''", str_replace("'", "\'", $value)) . '\',';
+                        $values .= '\'' .singleQuoteReplace("","",$value). '\',';
                         $go = true;
                     }
                 }

@@ -26,6 +26,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+//print_r($_REQUEST);
+
 include('../../RedirectModulesInc.php');
 DrawBC("School Setup > ".ProgramTitle());
 
@@ -162,6 +164,13 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                     $check_end = $check1;
                                 }
                                  $days=floor((strtotime($check1,0)-strtotime($check,0))/86400); 
+                                        $mp_id = $_REQUEST['marking_period_id'];
+                                        $title_mp = $_REQUEST['tables'][$mp_id]['TITLE'];
+                                        if(strlen($title_mp) > 25)
+                                        {
+                                            $err_msg = 'Title Cannnot Be Greater Than 25 Characters';
+                                            $error=true;
+                                        }
                                         if(array_key_exists('TITLE', $columns) && trim($columns['TITLE']==''))
                                         {
                                             $err_msg='Data not saved because title cannot be blank';
@@ -926,7 +935,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 //                            else
 //                            {
                             
-//                            echo $sql;
+                            //echo $sql;
 //echo '<br>';
 //echo $sql_ex;exit;
                             DBQuery($sql);

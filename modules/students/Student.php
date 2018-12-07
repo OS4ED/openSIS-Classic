@@ -31,7 +31,7 @@ include("UploadClassFnc.php");
 ini_set('memory_limit', '1200000000M');
 ini_set('max_execution_time', '500000');
 unset($flag);
-
+session_start();
 if ($_REQUEST['modfunc'] == 'clearall') {
 
     if (DeletePromptParent('Parent')) {
@@ -315,7 +315,16 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                 if (strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START']) >= strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'])) {
                     $check_asociation = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
-                    if ($check_asociation[1]['REC_EX'] != 0) {
+                    $end_date_old = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'];
+                    $start_date_new = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'];
+                    if($start_date_new == $end_date_old)
+                    {
+                          $_SESSION['ERR_TRANS'] = "<div class=\"alert bg-warning alert-styled-left\">End Date and Start Date Cannot Be Same</div>";              
+                    }
+                    else
+                    {
+                        unset($_SESSION['ERR_TRANS']);
+                        if ($check_asociation[1]['REC_EX'] != 0) {
                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR,TITLE FROM school_years WHERE SCHOOL_ID=" . $_REQUEST['TRANSFER']['SCHOOL']));
                         $syear = $syear_RET[1]['SYEAR'];
@@ -352,6 +361,8 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         unset($_SESSION['_REQUEST_vars']['student_id']);
                        
                     }
+                    }
+                    
                 } else {
                     unset($_REQUEST['modfunc']);
                     unset($_SESSION['_REQUEST_vars']['student_id']);
@@ -739,7 +750,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     }
 
                                     if ($_FILES["file"]["error"] > 0) {
-                                        echo "cannot upload file";
+                                        echo "<font style='color:red'><b>Unsupported File Format, Cannot Upload File</b></font><br>";
                                     } else {
 //	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
 //	  @fopen($upload->target_path,'r');
@@ -1216,7 +1227,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
                         if (!$error) {
                             if ($un_chl_res != 'exist' && $pass_chl_res != 'exist' && $day_valid != false) {
-
+                                echo $sql;
                                 DBQuery($sql);
                             }
                         }
