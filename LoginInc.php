@@ -38,7 +38,7 @@ Warehouse('header');
 echo '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
 echo '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
-echo '<link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
+//echo '<link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
 echo '<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">';
 echo '<link href="assets/css/extras/css-checkbox-switch.css" rel="stylesheet">';
 echo '<link rel="stylesheet" type="text/css" href="assets/css/login.css">';

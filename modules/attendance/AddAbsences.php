@@ -221,9 +221,28 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="col-lg-12">';
 
 
-
+        $months=array("01"=>'January',"02"=>'February',"03"=>'March',"04"=>'April',"05"=>'May',"06"=>'June',"07"=>'July',"08"=>'August',"09"=>'September',"10"=>'October',"11"=>'November',"12"=>'December');
         $time = mktime(0, 0, 0, $_REQUEST['month'] * 1, 1, substr($_REQUEST['year'], 2));
-        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div></div></div>';
+//        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div></div></div>';
+        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">';
+        echo "<SELECT class=\"form-control\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&month=\"+this.form.monthSelect.value;'>";
+        foreach($months as $mi=>$md){
+            if($_REQUEST['month']==$mi)
+            echo "<OPTION value=".$mi." SELECTED >$md</OPTION>";
+            else
+            echo "<OPTION value=".$mi." >$md</OPTION>";
+
+        }
+        echo '</SELECT>';
+        echo "<SELECT class=\"form-control\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&year=\"+this.form.yearSelect.value;'>";
+        for($years=1959;$years<=date('Y')+30;$years++){
+            if($_REQUEST['year']==$years)
+            echo "<OPTION value=".$years." SELECTED >$years</OPTION>";
+            else
+            echo "<OPTION value=".$years." >$years</OPTION>";
+            
+        }
+        echo '</SELECT>';
         echo '<br/>';
         $skip = date("w", $time);
         $last = 31;

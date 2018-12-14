@@ -1,5 +1,5 @@
 var loadingImage = new Image();
-loadingImage.src = "images/ajax-loader_clock.gif";
+loadingImage.src = "assets/ajax-loader.gif";
 
 function showLoading()
 {

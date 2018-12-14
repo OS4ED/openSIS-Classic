@@ -103,9 +103,9 @@ echo "
 				size = 30;
 			}
 		}
-		</SCRIPT>
-		<link rel=stylesheet type=text/css href=styles/Help.css>
-		</HEAD>
+		</SCRIPT>";
+//		<link rel=stylesheet type=text/css href=styles/Help.css>
+		echo "</HEAD>
 		<BODY><table width=100%; cellspacing=0 cellpadding=0><tr><td>";
 	
 	include 'Help.php';

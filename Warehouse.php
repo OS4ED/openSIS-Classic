@@ -123,10 +123,10 @@ if (WAREHOUSE_PHP == 0) {
 										form.elements[i].checked = checked;
 								}
 							}
-						</script>
+						</script>";
 					
-					<link rel='stylesheet' type='text/css' href='styles/Help.css'>";
-                echo "<link rel=stylesheet type=text/css href=styles/Calendar.css>";
+//					<link rel='stylesheet' type='text/css' href='styles/Help.css'>";
+//                echo "<link rel=stylesheet type=text/css href=styles/Calendar.css>";
                 echo "</head>";
 
                 break;

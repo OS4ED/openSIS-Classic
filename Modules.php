@@ -101,7 +101,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<link href="assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/core.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/bootstrap-datepicker/css/bootstrap-datepicker.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
-    echo '<link href="assets/js/plugins/pickers/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">';
+//    echo '<link href="assets/js/plugins/pickers/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/components.css?v=1.1" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/colors.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';

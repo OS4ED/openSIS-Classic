@@ -1488,7 +1488,7 @@ function appendSQL_Absence_Summary($sql, & $extra) {
     }
     if ($_REQUEST['med_day'] && $_REQUEST['med_month'] && $_REQUEST['med_year']) {
         $med_date = $_REQUEST['med_year'] . '-' . $_REQUEST['med_month'] . '-' . $_REQUEST['med_day'];
-        $sql .= ' AND smn.DOCTORS_NOTE_DATE111111111 =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND smn.DOCTORS_NOTE_DATE=\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
         $_SESSION['newsql1'].= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Date: </b></font>' . $med_date . '<BR>';

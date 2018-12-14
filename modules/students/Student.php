@@ -1227,7 +1227,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
                         if (!$error) {
                             if ($un_chl_res != 'exist' && $pass_chl_res != 'exist' && $day_valid != false) {
-                                echo $sql;
+
                                 DBQuery($sql);
                             }
                         }

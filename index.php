@@ -97,7 +97,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
     $username = optional_param('USERNAME', '', PARAM_RAW);
-    /* if($_REQUEST['remember']) 
+    if($_REQUEST['remember']) 
       {
       $cName='remember_me_name';
       $cPwd='remember_me_pwd';
@@ -108,7 +108,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
       {
       setcookie('remember_me_name', 'gone', time()-60*60*24*100, "/");
       setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
-      } */
+      } 
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
         $password = str_replace("\'", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
     $password = str_replace("&", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
