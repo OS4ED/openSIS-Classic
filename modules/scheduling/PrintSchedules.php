@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+//print_r($_REQUEST);
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['st_arr'])) {
 
@@ -71,7 +72,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         if ((isset($_REQUEST['date1']) && $_REQUEST['date1'] != '')) {
             $extra['WHERE'] .= ' AND POSITION(\'' . get_db_day(date('l', strtotime($_REQUEST['date1']))) . '\' IN cpv.days)>0 AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL)';
         }
-        $extra['WHERE'] .= '  AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
+        $extra['WHERE'] .= ' AND sr.END_DATE>=\'' . date('Y-m-d') . '\' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
 
 //        if($_REQUEST['include_inactive']!='Y')
 //        {
@@ -231,7 +232,8 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
@@ -248,7 +250,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students">';
+            echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students"></div>';
         echo "</FORM>";
     }
 }
@@ -263,7 +265,14 @@ function _makeDays($value, $column = '') {
 }
 
 function _makeChooseCheckbox($value, $title) {
-    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    global $THIS_RET;
+
+//    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    
+//   return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+   return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+   
 }
 
 function get_db_day($day) {

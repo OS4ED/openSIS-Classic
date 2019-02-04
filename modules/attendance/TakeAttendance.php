@@ -228,7 +228,8 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
             UpdateAttendanceDaily($student_id, $date);
     }
     if ($_REQUEST['table'] == '0') {
-        $RET = DBGet(DBQuery('SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\'' . User('STAFF_ID') . '\' OR SUBSTITUTE_STAFF_ID=\'' . User('STAFF_ID') . '\') AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND PERIOD_ID=\'' . UserPeriod() . '\''));
+        // echo 'SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\''.User('STAFF_ID').'\' OR SUBSTITUTE_STAFF_ID=\''.  User('STAFF_ID').'\') AND SCHOOL_DATE=\''.date('Y-m-d',strtotime($date)).'\' AND PERIOD_ID=\''.UserPeriod().'\' ';
+        $RET = DBGet(DBQuery('SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\'' . User('STAFF_ID') . '\' OR SUBSTITUTE_STAFF_ID=\'' . User('STAFF_ID') . '\') AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' and course_period_id=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
         if (!count($RET)) {
             $teacher_type = DBGet(DBQuery('SELECT TEACHER_ID,SECONDARY_TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
             $secondary_teacher_id = $teacher_type[1]['SECONDARY_TEACHER_ID'];
@@ -304,9 +305,15 @@ if ($schedule_type_check[1]['SCHEDULE_TYPE'] == 'VARIABLE') {
 if ($_SESSION['PROFILE'] == 'teacher' && $codes_RET_count[1]['CODES'] == 0)
     $stu_RET = array();
 else if ($_SESSION['PROFILE'] == 'teacher' && $codes_RET_count[1]['CODES'] != 0)
+{
+    unset($_REQUEST['username']);
     $stu_RET = GetStuListAttn($extra);
+}
 else
+{
+    unset($_REQUEST['username']);
     $stu_RET = GetStuListAttn($extra);
+}
 $date_note = $date != date('Y-m-d') ? ' <span class="text-danger m-l-10"><i class="icon-info22"></i> The selected date is not today</span>' : '';
 
 

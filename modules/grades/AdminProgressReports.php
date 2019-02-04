@@ -294,7 +294,7 @@ if(!$_REQUEST['modfunc'])
         }
 	if($_REQUEST['search_modfunc']=='list') 
 	{
-		echo "<FORM action=ForExport.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=save&include_inactive=".strip_tags(trim($_REQUEST[include_inactive]))."&_openSIS_PDF=true method=POST target=_blank>";
+		echo "<FORM id=F1 action=ForExport.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=save&include_inactive=".strip_tags(trim($_REQUEST[include_inactive]))."&_openSIS_PDF=true method=POST target=_blank>";
 		
 		$extra['extra_header_left'] = '<div class="checkbox">';
 		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=assigned_date>Assigned Date</label>';
@@ -313,7 +313,9 @@ if(!$_REQUEST['modfunc'])
 	$extra['link'] = array('FULL_NAME'=>false);
 	$extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
-	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+//	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+        $extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+//        $extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAllBox(this.form);"><A>');
 	$extra['options']['search'] = false;
 	$extra['new'] = true;
           $extra['moreland_cust'] = 'assignment_grade';
@@ -384,7 +386,12 @@ function _removeSpaces($value,$column)
 
 function _makeChooseCheckbox($value,$title)
 {
-	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
+        global $THIS_RET;
+//	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
+        
+        return "<input  class=fd name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . " type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+
 }
 function _makeAssnWG($value,$column)
 {	global $THIS_RET,$student_points,$total_points,$percent_weights;
@@ -398,4 +405,5 @@ function _makeWtg($value,$column)
         return (($THIS_RET['LETTERWTD_GRADE']!=-1.00 && $THIS_RET['LETTERWTD_GRADE']!='' && $THIS_RET['ASSIGN_TYP_WG']!='N/A') ?_makeLetterGrade($wtdper,"",$THIS_RET['CP_TEACHER_ID'],'%').'%':'N/A');
 
 }
+
 ?>

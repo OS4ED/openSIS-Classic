@@ -31,6 +31,7 @@ define('LANG_RECORDS_ADDED_CONFIRMATION', 'Absence records were added for the se
 define('LANG_CHOOSE_STUDENT_ERROR', 'You must choose at least one period and one student.');
 define('LANG_ABSENCE_CODE', 'Absence Code');
 define('LANG_ABSENCE_REASON', 'Absence Reason');
+//print_r($_REQUEST);
 if (!$_REQUEST['month'])
     $_REQUEST['month'] = date("m");
 else
@@ -178,7 +179,9 @@ if (!$_REQUEST['modfunc']) {
     if (optional_param('search_modfunc', '', PARAM_NOTAGS) == 'list') {
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save  METHOD=POST name=addAbsences>";
 
-        PopTable_wo_header('header');
+        //PopTable_wo_header('header');
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-heading">';
 
         echo '<div class="row">';
         echo '<div class="col-lg-12">';
@@ -218,20 +221,37 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.row
 
         echo '</div>'; //.col-lg-12
-        echo '<div class="col-lg-12">';
+        echo '</div>'; //.row
 
+        echo '</div>'; //.panel-header
+
+
+        echo '<div class="panel-body">';
 
         $months=array("01"=>'January',"02"=>'February',"03"=>'March',"04"=>'April',"05"=>'May',"06"=>'June',"07"=>'July',"08"=>'August',"09"=>'September',"10"=>'October',"11"=>'November',"12"=>'December');
         $time = mktime(0, 0, 0, $_REQUEST['month'] * 1, 1, substr($_REQUEST['year'], 2));
 //        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div></div></div>';
-        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">';
+        
+        
+        $date = $_REQUEST['year'].'-'.$_REQUEST['month'].'-1';
+        $prev_month = date('m', strtotime('-1 month', strtotime($date)));
+        $prev_year = date('Y', strtotime('-1 month', strtotime($date)));
+        $next_month = date('m', strtotime('+1 month', strtotime($date)));
+        $next_year = date('Y', strtotime('+1 month', strtotime($date)));
+        
+        echo '<div class="row m-b-15">';
+        echo '<div class="col-md-4 text-left">';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> PREV MONTH</a>';
+        echo '</div>';
+        echo '<div class="col-md-4 text-center">';
+        echo '<div class="form-inline">';
         echo "<SELECT class=\"form-control\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&month=\"+this.form.monthSelect.value;'>";
         foreach($months as $mi=>$md){
             if($_REQUEST['month']==$mi)
             echo "<OPTION value=".$mi." SELECTED >$md</OPTION>";
             else
             echo "<OPTION value=".$mi." >$md</OPTION>";
-
+            
         }
         echo '</SELECT>';
         echo "<SELECT class=\"form-control\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&year=\"+this.form.yearSelect.value;'>";
@@ -243,12 +263,19 @@ if (!$_REQUEST['modfunc']) {
             
         }
         echo '</SELECT>';
-        echo '<br/>';
+        echo '</div>'; //.form-inline
+        echo '</div>'; //.col-md-4
+        echo '<div class="col-md-4 text-right">';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'">NEXT MONTH <i class="icon-arrow-right8 position-right"></i></a>';
+        echo '</div>'; //.col-md-4
+        echo '</div>'; //.row
+        
+        
         $skip = date("w", $time);
         $last = 31;
         while (!checkdate($_REQUEST['month'] * 1, $last, substr($_REQUEST['year'], 2)))
             $last--;
-
+        
         echo '<div class="table-responsive"><table class="table table-bordered table-condensed" width="100%"><thead><tr>';
         echo '<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead><tbody><tr>';
         $calendar_RET = DBGet(DBQuery('SELECT SCHOOL_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND MINUTES!=0 AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\''), array(), array('SCHOOL_DATE'));
@@ -279,10 +306,11 @@ if (!$_REQUEST['modfunc']) {
                 echo '<t class="alpha-grey"></TD>';
             }
         }
-        echo '</tr></tbody></table></div>';
-        echo '</div>'; //.col-lg-6
-        echo '</div>'; //.row
-        Poptable('footer');
+        echo '</tr></tbody></table>';
+        echo '</div>'; //.table-responsive
+        
+        echo '</div>'; //.panel-body
+        echo '</div>'; //.panel
     } elseif ($note)
         DrawHeader('<IMG SRC=assets/check.gif>' . $note);
     if ($error_note)
@@ -315,7 +343,8 @@ if (!$_REQUEST['modfunc']) {
     Search('student_id', $extra);
 
     if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
-        echo SubmitButton(Save, '', 'class="btn btn-primary"') . "</FORM>";
+        echo '<div class="text-center">'.SubmitButton(Save, '', 'class="btn btn-primary"') . '</div>';
+    echo '</FORM>';
 
     /*
      * Course Selection Modal Start

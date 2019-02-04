@@ -13,6 +13,13 @@
 -- Database: `opensis`
 --
 
+CREATE TABLE `api_info` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
+ `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
 CREATE TABLE address (
     address_id int(8) not null auto_increment primary key,
     house_no numeric(5,0),

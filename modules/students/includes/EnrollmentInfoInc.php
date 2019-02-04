@@ -138,7 +138,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                             $max_at_dt = $attendence[1]['SCHOOL_DATE'];
                             if (strtotime($_REQUEST['values'][$table][$id][$column]) >= strtotime($max_at_dt)) {
 
-                                SaveData($iu_extra, '', $field_names);
+                                //SaveData($iu_extra, '', $field_names);
                             } else {
                                 echo '<div class="alert bg-danger alert-styled-left">Student cannot be dropped because student has got attendance till ' . date('m-d-Y', strtotime($max_at_dt)) . '</div>';
                             }
@@ -149,7 +149,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                             if (strtotime($get_details[1]['START_DATE']) > strtotime($_REQUEST['values'][$table][$id][$column])) {
                                 echo '<div class="alert bg-danger alert-styled-left">Student drop date cannot be before student enrollment date </div>';
                             } else {
-                                SaveData($iu_extra, '', $field_names);
+                               // SaveData($iu_extra, '', $field_names);
                             }
                         }
                         $enroll_count = DBGet(DBQuery('SELECT * FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . '  AND SCHOOL_ID=' . UserSchool() . ' ORDER BY START_DATE DESC LIMIT 1'));

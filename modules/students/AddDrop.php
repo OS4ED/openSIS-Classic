@@ -49,7 +49,7 @@ else
 $start_date=date('Y-m-d',strtotime($start_date));
 $end_date=date('Y-m-d',strtotime($end_date));
 echo '<div class="panel panel-default">';
-echo '<div class="panel-body"><div class="col-md-12"><div class="form-inline">'.PrepareDateSchedule($start_date,'_start').'<label class="control-label"> &nbsp; - &nbsp; </label>'.PrepareDateSchedule($end_date,'_end'),'<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>';
+echo '<div class="panel-body"><div class="form-inline"><div class="row"><div class="col-md-12">'.PrepareDateSchedule($start_date,'_start').' &nbsp; <label class="control-label"> &nbsp; - &nbsp; </label> &nbsp; '.PrepareDateSchedule($end_date,'_end'),' &nbsp; <INPUT type=submit class="btn btn-primary" value=Go></div></div></div></div>';
 echo '</div>';
 echo '</FORM>';
 

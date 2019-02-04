@@ -34,11 +34,11 @@ $text = "
 
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.0'),
-('date', 'March 27, 2018'),
-('build', '20180327001'),
+('version', '7.1'),
+('date', 'November 28, 2018'),
+('build', '20181128001'),
 ('update', '0'),
-('last_updated', 'March 27, 2018');
+('last_updated', 'November 28, 2018');
 
 --
 -- Dumping data for table `address`
@@ -673,8 +673,8 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 (0, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:00', NULL),
 (1, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
 (0, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
-(1, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL);
-
+(1, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
+('0', 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL);
 
 --
 -- Dumping data for table `program_config`

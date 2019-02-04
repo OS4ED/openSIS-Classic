@@ -128,7 +128,9 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",CAST(NULL AS CHAR(1)) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'student\');"><A>');
     $extra['new'] = true;
 
     $extra['search'] .= '<div class="row">';
@@ -208,7 +210,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+//    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<INPUT type=checkbox name=unused[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);'>";
+//    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 echo '<div id="modal_default_request" class="modal fade">';

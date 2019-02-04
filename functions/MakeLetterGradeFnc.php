@@ -42,11 +42,31 @@ function _makeLetterGrade($percent,$course_period_id=0,$staff_id=0,$ret='')
                         {
                                 $unused_var=explode('_',$value[1]['VALUE']);
                                 $programconfig[$staff_id][$title] =$unused_var[0];
+                                $programconfig[$staff_id]['current_course_period_id'] =$course_period_id;
 //				$programconfig[$staff_id][$title] = rtrim($value[1]['VALUE'],'_'.$course_period_id);
                         }
 		else
 			$programconfig[$staff_id] = true;
 	}
+        else
+        {
+           if($programconfig[$staff_id]['current_course_period_id']!=$course_period_id)
+           {
+               $programconfig[$staff_id]=array();
+               $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.$staff_id.'\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_'.$course_period_id.'\''),array(),array('TITLE'));
+		if(count($config_RET))
+			foreach($config_RET as $title=>$value)
+                        {
+                                $unused_var=explode('_',$value[1]['VALUE']);
+                                $programconfig[$staff_id][$title] =$unused_var[0];
+                                $programconfig[$staff_id]['current_course_period_id'] =$course_period_id;
+//				$programconfig[$staff_id][$title] = rtrim($value[1]['VALUE'],'_'.$course_period_id);
+                        }
+		else
+			$programconfig[$staff_id] = true;
+               
+           }
+        }
 	if(!$_openSIS['_makeLetterGrade']['courses'][$course_period_id])
 		$_openSIS['_makeLetterGrade']['courses'][$course_period_id] = DBGet(DBQuery('SELECT DOES_BREAKOFF,GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\''.$course_period_id.'\''));
 	$does_breakoff = $_openSIS['_makeLetterGrade']['courses'][$course_period_id][1]['DOES_BREAKOFF'];
@@ -78,6 +98,7 @@ function _makeLetterGrade($percent,$course_period_id=0,$staff_id=0,$ret='')
 	
 	foreach($_openSIS['_makeLetterGrade']['grades'][$grade_scale_id] as $grade)
 	{
+            
 		if($does_breakoff=='Y' ? $percent>=$programconfig[$staff_id][$course_period_id.'-'.$grade['ID']] && is_numeric($programconfig[$staff_id][$course_period_id.'-'.$grade['ID']]) : $percent>=$grade['BREAK_OFF'])
 			return $ret=='ID' ? $grade['ID'] : $grade['TITLE'];
 	}

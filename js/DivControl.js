@@ -615,3 +615,41 @@ function turnCheckOff(id1,id2)
         document.getElementById(id1).checked=false;
 }
 
+function setHiddenCheckbox(name,elem,unique_id)
+{
+//    alert(name+' '+elem.checked+' '+unique_id);
+    if(elem.checked==true)
+    $('#hidden_checkboxes').append("<input type=hidden name='"+name+"' value='Y' data-checkbox-hidden-id='"+unique_id+"' />");
+    else
+    $('[data-checkbox-hidden-id='+unique_id+']').remove();    
+}
+
+function setHiddenCheckboxStudents(name,elem,unique_id)
+{
+   
+    if(elem.checked==true)
+    $('#hidden_checkboxes').append("<input type=hidden name='"+name+"' value='"+unique_id+"' data-checkbox-hidden-id='"+unique_id+"' />");
+    else
+    $('[data-checkbox-hidden-id='+unique_id+']').remove();    
+}
+
+function checkAllDtMod(elem,name)
+{
+    var res_length=document.getElementById('res_length').value;
+    var res_len=document.getElementById('res_len').value;
+    var unique_id=res_len.split(',');
+//    alert(name+' '+elem.checked+' '+unique_id);
+    for(var i=0;i<res_length;i++){
+        if(elem.checked==true){
+            if(document.getElementById(unique_id[i])){
+            $('#hidden_checkboxes').append("<input type=hidden name='"+name+"["+unique_id[i]+"]' value='"+unique_id[i]+"' data-checkbox-hidden-id='"+unique_id[i]+"' />");
+            document.getElementById(unique_id[i]).checked=true;
+            }
+        }else{
+            if(document.getElementById(unique_id[i])){
+            $('[data-checkbox-hidden-id='+unique_id[i]+']').remove();   
+             document.getElementById(unique_id[i]).checked=false;
+            }
+        }
+    }
+}

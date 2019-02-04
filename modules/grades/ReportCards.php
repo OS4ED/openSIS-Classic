@@ -39,11 +39,13 @@ if ($_REQUEST['modfunc'] == 'save') {
     }
 
     if (count($_REQUEST['mp_arr']) && count($_REQUEST['st_arr'])) {
+//    if (count($_REQUEST['mp_arr']) && count($_REQUEST['unused'])) {
         $mp_list = '\'' . implode('\',\'', $_REQUEST['mp_arr']) . '\'';
         $last_mp = end($_REQUEST['mp_arr']);
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
+//        $st_list = '\'' . implode('\',\'', $_REQUEST['unused']) . '\'';
         $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-
+        
 
         $extra['SELECT'] .= ',rc_cp.COURSE_WEIGHT,rpg.TITLE as GRADE_TITLE,sg1.GRADE_PERCENT,sg1.WEIGHTED_GP,sg1.UNWEIGHTED_GP ,sg1.CREDIT_ATTEMPTED , sg1.COMMENT as COMMENT_TITLE,sg1.STUDENT_ID,sg1.COURSE_PERIOD_ID,sg1.MARKING_PERIOD_ID,c.TITLE as COURSE_TITLE,rc_cp.TEACHER_ID AS TEACHER,sp.SORT_ORDER';
 
@@ -400,6 +402,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         } else
             BackPrompt('Missing grades or No Students were found.');
     } else
+        
         BackPrompt('You must choose at least one student and marking period.');
 }
 
@@ -477,7 +480,9 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
@@ -551,7 +556,12 @@ if ($modal_flag == 1) {
 }
 
 function _makeChooseCheckbox($value, $title) {
-    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    global $THIS_RET;
+    
+    
+//    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    
+    return "<input name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 function _makeTeacher($teacher, $column) {

@@ -154,10 +154,11 @@ if (UserStaffID()) {
             if (!$_SESSION['take_mssn_attn']) {
 
                 if (!isset($_REQUEST['process'])) {
+                    $period_select = '<div class="clearfix">';
 
                     $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,cp.SHORT_NAME as CPSHORT, cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE,cp.TITLE as COURSE_PERIOD_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) ORDER BY sp.SORT_ORDER ');
                     $RET = DBGet($QI);
-                    $period_select = "<div class=\"form-inline\"><div class=\"input-group\"><span class=\"input-group-addon\">Choose Period : </span><SELECT name=period class=\"form-control\" onChange='this.form.submit();'>";
+                    $period_select .= "<div class=\"form-inline pull-right\"><div class=\"input-group\"><span class=\"input-group-addon\">Choose Period : </span><SELECT name=period class=\"form-control\" onChange='this.form.submit();'>";
                     $period_select .= "<OPTION value='na' selected>N/A</OPTION>";
                     foreach ($RET as $period) {
                         if ($period['DAYS'] != '')
@@ -185,8 +186,13 @@ if (UserStaffID()) {
                         }
                     }
                     $period_select .= "</SELECT></div></div>";
+
+                    if ($_REQUEST['miss_attn'] != '1' && $_SESSION['miss_attn'] != '1' && $_REQUEST['attn'] != 'miss' && $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php') {
+                        $period_select .= '<div class="inline-block p-t-10"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-arrow-left8"></i> Back to User List </A></div>';
                 }
+                    $period_select .= '</div>';
             }
+        }
         }
 
         if ($incl_page != 'attendance/MissingAttendance.php' && $incl_page != 'attendance/TakeAttendance.php') {

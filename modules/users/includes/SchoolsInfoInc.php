@@ -700,10 +700,36 @@ if (!$_REQUEST['modfunc']) {
                 $functions = array('START_DATE' => '_makeStartInputDate', 'PROFILE' => '_makeUserProfile', 'END_DATE' => '_makeEndInputDate', 'SCHOOL_ID' => '_makeCheckBoxInput_gen', 'ID' => '_makeStatus');
 
 
-                $sql = 'SELECT s.ID,ssr.SCHOOL_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id  AND st.staff_id=' . User('STAFF_ID') . ' GROUP BY ssr.SCHOOL_ID';
+                $sql = 'SELECT s.ID,ssr.SCHOOL_ID as SCH_ID,ssr.SCHOOL_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id  AND st.staff_id=' . User('STAFF_ID') . ' GROUP BY ssr.SCHOOL_ID';
                 $school_admin = DBGet(DBQuery($sql), $functions);
-                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'values[SCHOOLS]\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
-
+                //print_r($school_admin);
+//                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
+                
+                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'values[SCHOOLS]\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
+                $school_ids_for_hidden=array();
+                echo '<div id="hidden_checkboxes" />';
+                foreach($school_admin as $sai=>$sad){
+//                    echo '<pre>';
+//                    print_r($sad);
+                    $school_ids_for_hidden[]=$sad['SCH_ID'];
+                    if(strip_tags($sad['ID'])=='Active')
+                    echo '<input type=hidden name="values[SCHOOLS]['.$sad['SCH_ID'].']" value="Y" data-checkbox-hidden-id="'.$sad['SCH_ID'].'" />';
+                }
+                echo '</div>';
+                $school_ids_for_hidden=implode(',',$school_ids_for_hidden);
+                echo '<input type=hidden id=school_ids_hidden value="'.$school_ids_for_hidden.'" />';
+                
+                $check_all_arr=array();
+                foreach($school_admin as $xy)
+                {
+                    
+                    $check_all_arr[]=$xy['SCH_ID'];
+                }
+                $check_all_stu_list=implode(',',$check_all_arr);
+                echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+                echo '<br>';
+                echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>';
+                
                 ListOutputStaffPrintSchoolInfo($school_admin, $columns, 'School Record', 'School Records', array(), array(), array('search' => false));
                 
             }
@@ -793,7 +819,8 @@ function _makeCheckBoxInput_gen($value, $column) {
     $_SESSION[staff_school_chkbox_id] ++;
     $staff_school_chkbox_id = $_SESSION[staff_school_chkbox_id];
     if ($_REQUEST['staff_id'] == 'new') {
-        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$staff_school_chkbox_id onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
+//        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
     } else {
         $sql = '';
         $staff_infor_qr = DBGet(DBQuery('select school_access from staff_school_info where STAFF_ID=\'' . $_SESSION['staff_selected'] . '\''));
@@ -803,7 +830,7 @@ function _makeCheckBoxInput_gen($value, $column) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         }
         if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\')';
+            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
         }
         if ($dates[1]['START_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.START_DATE>=ssr.END_DATE OR ssr.START_DATE=\'0000-00-00\' OR ssr.END_DATE>=CURDATE() OR ssr.END_DATE IS NULL)';
@@ -812,18 +839,38 @@ function _makeCheckBoxInput_gen($value, $column) {
             $user_exist_school = DBGet(DBQuery($sql));
         else
             $user_exist_school = array();
+//        if($THIS_RET['SCHOOL_ID']==108 || $THIS_RET['SCHOOL_ID']==109)
+//            echo $sql;
+//        if(!empty($user_exist_school)){
+//            
+//        print_r($user_exist_school);
+//        echo '<br>'.$THIS_RET[ID].'<hr>';}
+//        if (!empty($user_exist_school)) {
+//            if (SelectedUserProfile('PROFILE_ID') == 0)
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+//            else
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+//        }
+//        else {
+//            if (SelectedUserProfile('PROFILE_ID') == 0)
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+//            else
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+//        }
+        
         if (!empty($user_exist_school)) {
             if (SelectedUserProfile('PROFILE_ID') == 0)
-                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]] type='checkbox'  id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);'  />" . '</TD></TR></TABLE>';
             else
-                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />". '</TD></TR></TABLE>';
         }
         else {
             if (SelectedUserProfile('PROFILE_ID') == 0)
-                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
             else
-                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
         }
+        
     }
 }
 
@@ -839,7 +886,7 @@ function _makeStatus($value, $column) {
         }
 
         if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\')';
+            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
         }
         if ($dates[1]['START_DATE'] != '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00') {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') ';

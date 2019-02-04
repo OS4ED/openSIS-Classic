@@ -159,8 +159,9 @@ else {
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);
-
+        
         echo '<div class="panel panel-default">';
+        
         if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0)
             DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> Expanded View</A>", $extra['header_right']);
         elseif (!UserStudentID() && count($students_RET) != 0)
@@ -179,9 +180,21 @@ else {
                 $extra['singular'] = 'Student';
                 $extra['plural'] = 'Students';
             }
-
+        
         echo "<div id='students' >";
+         echo '<div id="hidden_checkboxes" />';
+        $check_all_arr=array();
+        foreach($students_RET as $xy)
+        {
+            $check_all_arr[]=$xy['STUDENT_ID'];
+        }
+        $check_all_stu_list=implode(',',$check_all_arr);
+        echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+        echo '<br>';
+        echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
+
         ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+        echo "</div>";
         echo "</div>";
         echo "</div>";
     } elseif (count($students_RET) == 1) {

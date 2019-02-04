@@ -299,6 +299,8 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
     if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
 //        if ($_POST['button'] == 'Save') { #&& AllowEdit()
+        $transfer_flag = 0;
+       
             if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
                 $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['DROP_CODE'];
 
@@ -345,8 +347,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         }
                         if ($gread_exists[1]['PRESENT'] == 1 && $gread_exists[1]['ID']) {
                             DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
+                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         } else {
                             DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
+                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                            
                         }
                         $trans_school = $syear_RET[1]['TITLE'];
 
@@ -356,6 +361,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         DBQuery('UPDATE medical_info SET SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ', SYEAR=' . $syear . ' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'');
                         unset($_REQUEST['modfunc']);
                         unset($_SESSION['_REQUEST_vars']['student_id']);
+                        $transfer_flag = 1;
                     } else {
                         unset($_REQUEST['modfunc']);
                         unset($_SESSION['_REQUEST_vars']['student_id']);
@@ -974,7 +980,30 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 }
                             }
                             $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' AND iD='" . $e_id . "'";
+//                            print_r($_REQUEST);
+//                            echo $_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE'];
+                           if(isset($_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']) && $_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']!='')
+                           {
+                           $sql_drop_type_qr = DBGet(DBQuery('SELECT type FROM student_enrollment_codes WHERE id='.$_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']));
+                        //    print_r($sql_drop_type_qr);
+                            if($sql_drop_type_qr[1]['TYPE'] == 'TrnD')
+                            {
+                                if($transfer_flag == 1)
+                                {
+                                    $error = false;
+                                }
+                                else
+                                {
+                                    $msg = 'Please provide all details to transfer in new school.';
+                                    $error = true;  
+                                }
+                            }
+//                                $error = false;
+//                            else {
+//                              $msg = 'Please select transfer school.';
+//                                        $error = true;  
 
+                           }
                             if (!$error) {
                                 if ($_REQUEST['values']['student_enrollment'][$e_id]['END_DATE'] != '') {
                                     if (strtotime($_REQUEST['values']['student_enrollment'][$e_id]['END_DATE']) >= strtotime($max_at_dt)) {

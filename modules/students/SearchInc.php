@@ -370,10 +370,21 @@ else {
             if (count($students_RET) > 0) {
                 echo '<div class="table-responsive">';
             }
+            echo '<div id="hidden_checkboxes" />';
+                $check_all_arr=array();
+                foreach($students_RET as $xy)
+                {
+                    $check_all_arr[]=$xy['STUDENT_ID'];
+                }
+                $check_all_stu_list=implode(',',$check_all_arr);
+                echo'<input type=text name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+                echo '<br>';
+                echo'<input type=text name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
             ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
             if (count($students_RET) > 0) {
                 echo '</div>';
             }
+            echo '</div>';
             echo '</div>';
         } else {
             if (User('PROFILE') == 'student' || User('PROFILE') == 'parent') {
@@ -381,13 +392,25 @@ else {
             }
             //else {
                 echo '<div class="panel-body">';
+                $stu_ids_for_hidden = array();
                 if (count($students_RET) > 0) {
                     echo '<div class="table-responsive">';
                 }
+                echo '<div id="hidden_checkboxes" />';
+                $check_all_arr=array();
+                foreach($students_RET as $xy)
+                {
+                    $check_all_arr[]=$xy['STUDENT_ID'];
+                }
+                $check_all_stu_list=implode(',',$check_all_arr);
+                echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+                echo '<br>';
+                echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
                 ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
                 if (count($students_RET) > 0) {
                     echo '</div>';
                 }
+                echo '</div>';
                 echo '</div>';
             //}
         }

@@ -1457,6 +1457,13 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                         ],
                         'iDisplayLength': ".$number_rec.""
                         . "});";
+                        echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
+                                var elCheckbox = oArgs.target;
+                                var newValue = elCheckbox.checked;
+                                var record = this.getRecord(elCheckbox);
+                                var column = this.getColumn(elCheckbox);
+                                record.setData(column.key,newValue);
+                                }); ";
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -13484,6 +13491,13 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                         ],
                         'iDisplayLength': ".$number_rec.""
                         . "});";
+                        echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
+                                var elCheckbox = oArgs.target;
+                                var newValue = elCheckbox.checked;
+                                var record = this.getRecord(elCheckbox);
+                                var column = this.getColumn(elCheckbox);
+                                record.setData(column.key,newValue);
+                                }); ";
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -17334,6 +17348,14 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                         ],
                         'iDisplayLength': ".$number_rec.""
                         . "});";
+                        echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
+                                var elCheckbox = oArgs.target;
+                                var newValue = elCheckbox.checked;
+                                var record = this.getRecord(elCheckbox);
+                                var column = this.getColumn(elCheckbox);
+                                record.setData(column.key,newValue);
+                                });"; 
+                        
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -18116,6 +18138,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
                         echo "pager.showPage(1);\n";
                         echo '}});';
+                        
                         echo "</script>\n";
                     }
                 }

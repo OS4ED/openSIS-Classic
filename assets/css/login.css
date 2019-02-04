@@ -461,6 +461,459 @@ footer a:hove {
     height: 100%;
 }
 
+/* ------------------------------------------------------------------------------
+ *
+ *  # Daterange picker
+ *
+ *  Date range picker component for Bootstrap
+ *
+ *  Version: 1.2
+ *  Latest update: Mar 10, 2016
+ *
+ * ---------------------------------------------------------------------------- */
+.daterangepicker {
+    position: absolute;
+    left: 0;
+    margin-top: 5px;
+    width: auto;
+    padding: 0;
+}
+.daterangepicker.dropdown-menu {
+    max-width: none;
+    background-color: transparent;
+    border: 0;
+    z-index: 1000;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.daterangepicker.dropup {
+    margin-top: -7px;
+}
+.daterangepicker .ranges,
+.daterangepicker .calendar {
+    float: left;
+}
+.daterangepicker.opensleft .calendars {
+    float: left;
+}
+.daterangepicker.opensright .calendars {
+    float: right;
+}
+.daterangepicker.single .calendar {
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+.daterangepicker.single .ranges {
+    display: none;
+}
+.daterangepicker.show-calendar .calendar {
+    display: block;
+}
+.daterangepicker .calendar {
+    display: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin: 7px;
+    padding: 14px;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.daterangepicker table {
+    width: 100%;
+    margin: 0;
+}
+.daterangepicker table tbody th,
+.daterangepicker table tbody td {
+    cursor: pointer;
+}
+.daterangepicker th,
+.daterangepicker td {
+    white-space: nowrap;
+    text-align: center;
+}
+.daterangepicker th.week,
+.daterangepicker td.week {
+    font-size: 80%;
+    color: #ccc;
+}
+.daterangepicker th {
+    color: #999999;
+    font-weight: normal;
+    font-size: 12px;
+}
+.daterangepicker th > i {
+    top: 0;
+}
+.daterangepicker th.prev,
+.daterangepicker th.next {
+    cursor: pointer;
+}
+.daterangepicker th.available:hover,
+.daterangepicker th.available:focus {
+    color: #333333;
+}
+.daterangepicker td.available:hover,
+.daterangepicker td.available:focus {
+    background-color: #f5f5f5;
+}
+.daterangepicker td.off,
+.daterangepicker td.disabled {
+    color: #ccc;
+}
+.daterangepicker td.disabled {
+    cursor: not-allowed;
+}
+.daterangepicker td.in-range {
+    background-color: #f5f5f5;
+}
+.daterangepicker td.active,
+.daterangepicker td.active:hover,
+.daterangepicker td.active:focus {
+    background-color: #26A69A;
+    color: #fff;
+    border-radius: 3px;
+}
+.daterangepicker .table-condensed tr > th,
+.daterangepicker .table-condensed tr > td {
+    padding: 10px;
+    line-height: 1;
+}
+.daterangepicker .table-condensed thead tr:last-child th {
+    padding-top: 14px;
+}
+.daterangepicker .table-condensed .month {
+    font-size: 15px;
+    line-height: 1;
+    color: #333333;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: 400;
+}
+.daterangepicker select {
+    display: inline-block;
+}
+.daterangepicker select.monthselect {
+    margin-right: 2%;
+    width: 56%;
+}
+.daterangepicker select.yearselect {
+    width: 40%;
+}
+.daterangepicker select.hourselect,
+.daterangepicker select.minuteselect,
+.daterangepicker select.secondselect,
+.daterangepicker select.ampmselect {
+    width: 60px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0;
+}
+.daterangepicker .daterangepicker_input {
+    position: relative;
+}
+.daterangepicker .daterangepicker_input i {
+    position: absolute;
+    right: 11px;
+    top: auto;
+    bottom: 10px;
+    color: #999999;
+}
+.daterangepicker .daterangepicker_input input {
+    padding-left: 11px;
+    padding-right: 34px;
+}
+.daterangepicker .calendar-time {
+    text-align: center;
+    margin: 12px 0;
+}
+.daterangepicker .calendar-time select.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+.ranges {
+    background-color: #fff;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    width: 200px;
+    margin-top: 7px;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.opensright .ranges {
+    margin-left: 0;
+}
+.opensleft .ranges {
+    margin-right: 0;
+}
+.ranges ul {
+    list-style: none;
+    margin: 0;
+    padding: 7px 0;
+}
+.ranges ul + .daterangepicker-inputs {
+    border-top: 1px solid #e5e5e5;
+}
+.ranges ul li {
+    color: #333333;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-top: 1px;
+}
+.ranges ul li:first-child {
+    margin-top: 0;
+}
+.ranges ul li:hover,
+.ranges ul li:focus {
+    background-color: #f5f5f5;
+}
+.ranges ul li.active {
+    color: #fff;
+    background-color: #26A69A;
+}
+.ranges .daterangepicker-inputs {
+    padding: 12px;
+    padding-top: 19px;
+}
+.ranges .daterangepicker-inputs .daterangepicker_input + .daterangepicker_input {
+    margin-top: 19px;
+}
+.ranges .daterangepicker-inputs .daterangepicker_input > span {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 7px;
+    color: #999999;
+}
+.ranges .daterangepicker-inputs + .range_inputs {
+    border-top: 1px solid #e5e5e5;
+}
+.ranges .range_inputs {
+    padding: 12px;
+}
+.ranges .range_inputs .btn {
+    display: block;
+    width: 100%;
+}
+.ranges .range_inputs .btn + .btn {
+    margin-top: 12px;
+}
+@media (min-width: 769px) {
+    .ranges {
+        margin: 7px;
+    }
+}
+.daterange-custom {
+    cursor: pointer;
+}
+.daterange-custom:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.daterange-custom .label,
+.daterange-custom .badge {
+    margin: 4px 0 0 7px;
+    vertical-align: top;
+}
+.daterange-custom .label-icon {
+    margin-top: 0;
+    margin-right: 5px;
+}
+.daterange-custom-display {
+    display: inline-block;
+    position: relative;
+    padding-left: 21px;
+    line-height: 1;
+}
+.daterange-custom-display:after {
+    content: '\e9c9';
+    font-family: 'icomoon';
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -8px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transition: all ease-in-out 0.2s;
+    -o-transition: all ease-in-out 0.2s;
+    transition: all ease-in-out 0.2s;
+}
+.daterange-custom.is-opened .daterange-custom-display:after {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.daterange-custom-display > i {
+    display: inline-block;
+    font-size: 28px;
+    font-weight: normal;
+    font-style: normal;
+    letter-spacing: -0.015em;
+}
+.daterange-custom-display b {
+    display: inline-block;
+    margin-left: 4px;
+    font-weight: 400;
+}
+.daterange-custom-display b > i {
+    font-size: 11px;
+    display: block;
+    line-height: 12px;
+    text-transform: uppercase;
+    font-style: normal;
+    font-weight: 400;
+}
+.daterange-custom-display em {
+    line-height: 30px;
+    vertical-align: top;
+    margin: 0 4px;
+}
+
+/* ------------------------------------------------------------------------------
+ *
+ *  # Datepicker for Bootstrap
+ *
+ *  Styles for bootstrap datepicker. Comes as a part of datepaginator.js plugin
+ *
+ *  Version: 1.2
+ *  Latest update: Mar 10, 2016
+ *
+ * ---------------------------------------------------------------------------- */
+.datepicker > div {
+    display: none;
+}
+.datepicker.datepicker-dropdown {
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 16px;
+    z-index: 99999 !important;
+    max-width: 310px;
+}
+.datepicker table {
+    margin: 0;
+}
+.datepicker table tr td.day:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+.datepicker table tr td.old,
+.datepicker table tr td.new {
+    color: #999999;
+}
+.datepicker table tr td.disabled,
+.datepicker table tr td.disabled:hover {
+    background-color: transparent;
+    color: #999999;
+    cursor: default;
+}
+.datepicker table tr td.today,
+.datepicker table tr td.today.disabled,
+.datepicker table tr td.today:hover,
+.datepicker table tr td.today.disabled:hover {
+    background-color: #f5f5f5;
+}
+.datepicker table tr td.range,
+.datepicker table tr td.range.disabled,
+.datepicker table tr td.range:hover,
+.datepicker table tr td.range.disabled:hover {
+    background-color: #f5f5f5;
+    border-radius: 0;
+}
+.datepicker table tr td.range.today,
+.datepicker table tr td.range.today.disabled,
+.datepicker table tr td.range.today.active,
+.datepicker table tr td.range.today:hover,
+.datepicker table tr td.range.today.disabled:hover,
+.datepicker table tr td.range.today.active:hover {
+    background-color: #f5f5f5;
+}
+.datepicker table tr td.active,
+.datepicker table tr td span.active,
+.datepicker table tr td.active.disabled,
+.datepicker table tr td span.active.disabled,
+.datepicker table tr td.active:hover,
+.datepicker table tr td span.active:hover,
+.datepicker table tr td.active.disabled:hover,
+.datepicker table tr td span.active.disabled:hover {
+    background-color: #26A69A;
+    color: #fff;
+}
+.datepicker table tr td span {
+    display: block;
+    width: 31%;
+    padding: 8px 16px;
+    float: left;
+    margin: 1%;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.datepicker table tr td span:hover {
+    background-color: #f5f5f5;
+}
+.datepicker table tr td span.disabled,
+.datepicker table tr td span.disabled:hover {
+    background-color: transparent;
+    color: #999999;
+    cursor: default;
+}
+.datepicker table tr td span.old,
+.datepicker table tr td span.new {
+    color: #999999;
+}
+.datepicker table th.datepicker-switch {
+    font-size: 17px;
+    font-weight: 400;
+}
+.datepicker table thead tr:first-child th,
+.datepicker table tfoot tr th {
+    cursor: pointer;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 1;
+}
+.datepicker table .cw {
+    width: 16px;
+    padding: 0 2px 0 5px;
+    vertical-align: middle;
+}
+.datepicker table thead tr:first-child th.cw {
+    cursor: default;
+    background-color: transparent;
+}
+.datepicker .table-condensed td,
+.datepicker .table-condensed th {
+    text-align: center;
+    padding: 10px;
+    border-radius: 3px;
+    border: 0;
+    line-height: 1;
+}
+.datepicker .table-condensed th.prev,
+.datepicker .table-condensed th.datepicker-switch,
+.datepicker .table-condensed th.next {
+    cursor: pointer;
+}
+.datepicker .table-condensed th.prev:hover,
+.datepicker .table-condensed th.datepicker-switch:hover,
+.datepicker .table-condensed th.next:hover {
+    background: #f5f5f5;
+}
+.datepicker .table-condensed th.dow {
+    padding-top: 16px;
+    color: #999999;
+}
+.table-striped .datepicker table tr th,
+.table-striped .datepicker table tr td {
+    background-color: transparent;
+}
+
+
+
 @media screen and (max-width:1024px){
     .login .panel,
     .panel {

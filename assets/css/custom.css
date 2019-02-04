@@ -6,6 +6,11 @@ body {
     display: inline-block;
     vertical-align: middle;
 }
+.form-control.inline-block {
+    display: inline-block !important;
+    vertical-align: middle;
+    width: auto;
+}
 
 /* Bootstrap Overwrite */
 .list-group-item.active,

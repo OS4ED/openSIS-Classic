@@ -47,9 +47,9 @@ function DateInputAY($value, $name, $counter = 1, $placeholder = "Enter Date") {
         return '<table><tr><td><div id="date_div_' . $counter . '" style="display: inline" >' . ProperDateAY($value) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td><input type=text id="date_' . $counter . '" ' . $show . '  style="display:none" readonly></td><td><a onClick="init(' . $counter . ',2);"><img src="assets/calendar.gif"  /></a></td><td><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" ></td></tr></table>';
     else {
         if ($counter == 2)
-            return '<input type="date" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" disabled=disabled><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '" disabled=disabled><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" disabled=disabled>';
+            return '<input type="text" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" disabled=disabled><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '" disabled=disabled><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" disabled=disabled>';
         else
-            return '<input type="date" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" >';
+            return '<input type="text" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" >';
     }
 }
 
@@ -278,6 +278,7 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
         <link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="assets/css/login.css">
         <script src='js/Ajaxload.js'></script>
@@ -293,8 +294,27 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
 
         <script src="assets/js/core/libraries/jquery.min.js"></script>
         <script src="assets/js/core/libraries/bootstrap.min.js"></script>
+        <script src="assets/js/plugins/ui/moment/moment.min.js"></script>
+        <script src="assets/js/plugins/pickers/datepicker.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
+                $('.daterange-single').datepicker({
+                    autoclose: true
+                });
+                $('.daterange-single').datepicker().on('changeDate', function(ev, picker) {
+                    var dateText = $(this).val();
+                    var pieces = dateText.split("/");
+                    var getID = $(this).attr('id').split("_");
+                    var parent = $(this).closest('.form-group');
+                    parent.children("#monthSelect" + getID[1]).val(pieces[0]);
+                    parent.children("#daySelect" + getID[1]).val(pieces[1]);
+                    parent.children("#yearSelect" + getID[1]).val(pieces[2]);
+                });
+
+                $('.daterange-single').each(function () {
+                    var placeholderText = $(this).attr('data-placeholder');
+                    $('.daterange-single').attr('placeholder', placeholderText).val('');
+                });
 
                 var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -431,7 +451,7 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                                             <input type="password" name="pass" id="pass" class="form-control" placeholder="Password" />
                                         </div>
                                         <div class="form-group" id="uname_stu_dob">
-<?php echo DateInputAY('', 'username_dob', 2, 'Date of Birth') ?>
+                                            <?php echo DateInputAY('', 'username_dob', 2, 'Date of Birth') ?>
                                         </div>                                        
                                         <div class="form-group" id="uname_stf_email" style="display: none">
                                             <input type="hidden" name="un_email" id="un_email" value=""/>

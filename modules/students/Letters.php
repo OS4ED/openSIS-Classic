@@ -62,7 +62,7 @@ $extra['search'] .= '</div>'; //.well
 $extra['search'] .= '<div class="well mb-20 pt-5 pb-5">';
 Widgets('absences');
 $extra['search'] .= '</div>'; //.well
-$extra['search'] .= '<div><label class="control-label">Letter Text</label><TEXTAREA name=letter_text rows=2 cols=40 class="form-control" placeholder="Letter Text"></TEXTAREA></div>';
+$extra['search'] .= '<div><label class="control-label col-lg-4 text-right">Letter Text</label><div class="col-lg-8"><TEXTAREA name=letter_text rows=2 cols=40 class="form-control" placeholder="Letter Text"></TEXTAREA></div></div>';
 $extra['search'] .= '</div>'; //.col-md-6
 $extra['search'] .= '</div>';
 
