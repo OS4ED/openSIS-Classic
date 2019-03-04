@@ -28,6 +28,7 @@
 #***************************************************************************************
 
 function Search($type, $extra = array(), $search_from_grade = '') {
+    
     global $_openSIS;
     switch ($type) {
         case 'student_id':
@@ -187,27 +188,60 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             break;
 
         case 'student_fields':
-            $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearch' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"), array(), array('TYPE'));
-            if (!$search_fields_RET) {
-                $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM custom_fields cf WHERE cf.ID IN ('200000000','200000001')"), array(), array('TYPE'));
-            }
+            
+            $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearchable' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"), array(), array('TYPE'));
+//            echo "SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND (puc.PROGRAM='StudentFieldsSearchable' OR puc.PROGRAM = 'StudentFieldsView')AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE";
+//            print_r($search_fields_RET);die;
+//            if (!$search_fields_RET) {
+//                $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND (puc.PROGRAM='StudentFieldsSearchable' OR puc.PROGRAM = 'StudentFieldsView')AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' "), array(), array('TYPE'));
+//            }
+             
+            $field_count = 0;
+            echo '<div class="row">';
             // edit needed
             if (count($search_fields_RET['text'])) {
-                foreach ($search_fields_RET['text'] as $column)
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label><INPUT type=text name=cust[{$column[COLUMN_NAME]}] size=30 class=\"form-control\"></div>";
+                foreach ($search_fields_RET['text'] as $column) {
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label><div class=\"col-md-8\"><INPUT type=text name=cust[{$column[COLUMN_NAME]}] size=30 class=\"form-control\"></div></div>";
+                    echo '</div>';
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
+                }
             }
             if (count($search_fields_RET['numeric'])) {
-                foreach ($search_fields_RET['numeric'] as $column)
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label>Between <INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"> &amp; <INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div>";
+                foreach ($search_fields_RET['numeric'] as $column) {
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label>";
+                    echo "<div class=\"col-md-8\"><div class=\"input-group\"><span class=\"input-group-addon\">Between</span><INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"><span class=\"input-group-addon\">&amp;</span><INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div></div>";
+                    echo '</div>'; //.form-group
+                    echo '</div>';
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
+                }
             }
 
             if (count($search_fields_RET['codeds'])) {
                 foreach ($search_fields_RET['codeds'] as $column) {
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
                     $column['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $column['SELECT_OPTIONS']));
                     $options = explode("\r", $column['SELECT_OPTIONS']);
 
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label>";
+                    echo '<div class="col-md-8">';
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     foreach ($options as $option) {
                         $option = explode('|', $option);
                         if ($option[0] != '' && $option[1] != '')
@@ -215,31 +249,54 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     }
                     echo '</SELECT>';
                     echo "</div>";
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.col-md-6
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
                 }
             }
             if (count($search_fields_RET['select'])) {
                 foreach ($search_fields_RET['select'] as $column) {
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
                     $column['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $column['SELECT_OPTIONS']));
                     $options = explode("\r", $column['SELECT_OPTIONS']);
 
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label>";
+                    echo '<div class="col-md-8">';
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     foreach ($options as $option)
                         echo "<OPTION value=\"$option\">$option</OPTION>";
                     echo '</SELECT>';
-                    echo "</div>";
+                    echo '</div>'; //.col-md-8
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.col-md-6
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
                 }
             }
             if (count($search_fields_RET['autos'])) {
                 foreach ($search_fields_RET['autos'] as $column) {
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
                     if ($column['SELECT_OPTIONS']) {
                         $column['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $column['SELECT_OPTIONS']));
                         $options_RET = explode("\r", $column['SELECT_OPTIONS']);
-                    } else
+                    } else {
                         $options_RET = array();
+                    }
 
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label>";
+                    echo '<div class="col-md-8">';
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     $options = array();
                     foreach ($options_RET as $option) {
                         echo "<OPTION value=\"$option\">$option</OPTION>";
@@ -255,7 +312,13 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                             $options[$option[$column['COLUMN_NAME']]] = true;
                         }
                     echo '</SELECT>';
-                    echo "</div>";
+                    echo '</div>'; //.col-md-8
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.col-md-6
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
                 }
             }
             if (count($search_fields_RET['edits'])) {
@@ -266,55 +329,75 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     } else
                         $options_RET = array();
 
-                    echo "<div class=\"form-group\"><label>$column[TITLE]</label>";
-                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] style='max-width:250;'><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
+                    echo "<div class=\"form-group\"><label class=\"control-label col-md-4 text-right\">$column[TITLE]</label>";
+                    echo '<div class="col-md-8">';
+                    echo "<SELECT name=cust[{$column[COLUMN_NAME]}] class=\"form-control\"><OPTION value=''>N/A</OPTION><OPTION value='!'>No Value</OPTION>";
                     $options = array();
                     foreach ($options_RET as $option)
                         echo "<OPTION value=\"$option\">$option</OPTION>";
                     echo "<OPTION value=\"---\">---</OPTION>";
                     echo "<OPTION value=\"~\">Other Value</OPTION>";
                     echo '</SELECT>';
-                    echo "</div>";
+                    echo '</div>'; //.col-md-8
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.col-md-6
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
                 }
             }
 
             if (count($search_fields_RET['date'])) {
                 $data_counter = 1;
                 foreach ($search_fields_RET['date'] as $column) {
-                    echo "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label text-right col-xs-2\">$column[TITLE]</label>Between</label><div class=\"col-xs-3\">" . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . '</div><div class="col-xs-1">&</div>';
+                    if ($field_count == 0) {
+                        echo '</div><div class="row">';
+                    }
+                    echo '<div class="col-md-6">';
+                    echo "<div class=\"form-group\"><label class=\"control-label text-right col-md-4\">$column[TITLE]</label>";
+                    echo '<div class="col-md-8">';
+                    echo "<div class=\"input-group\">" . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . "<span class=\"input-group-addon\">&amp;</span>";
                     $data_counter++;
-                    echo "<div class=\"col-xs-3\">" . DateInputAY('', '_cust_end[' . $column['COLUMN_NAME'] . ']', $data_counter) . "</div></div></div>";
+                    echo DateInputAY('', '_cust_end[' . $column['COLUMN_NAME'] . ']', $data_counter);
+                    echo '</div>'; //.input-group
+                    echo '</div>'; //.col-md-8
+                    echo '</div>'; //.form-group
+                    echo '</div>'; //.col-md-6
                     $data_counter++;
+                    $field_count++;
+                    if ($field_count == 2) {
+                        $field_count = 0;
+                    }
                 }
             }
-            if (count($search_fields_RET['radio'])) {
-                echo "<TR><TD colspan=2><TABLE>";
 
-                echo "<TR><TD></TD><TD><table border=0 cellpadding=0 cellspacing=0><tr><td width=25><b>All</b></td><td width=30><b>Yes</b></td><td width=25><b>No</b></td></tr></table></TD><TD></TD><TD></TD><TD>";
-                if (count($search_fields_RET['radio']) > 1)
-                    echo "<table border=0 cellpadding=0 cellspacing=0><tr><td width=25><b>All</b></td><td width=30><b>Yes</b></td><td width=25><b>No</b></td></tr></table>";
-                echo "</TD></TR>";
+            if (count($search_fields_RET['radio'])) {
+                echo '<div class="row">';
+                echo '<label class="col-xs-3 col-md-2"></label>';
+                echo '<label class="col-xs-3 col-md-1">All</label>';
+                echo '<label class="col-xs-3 col-md-1">Yes</label>';
+                echo '<label class="col-xs-3 col-md-1">No</label>';
+                echo '</div>';
+//                if (count($search_fields_RET['radio']) > 1){
+//                    echo "<table border=0 cellpadding=0 cellspacing=0><tr><td width=25><b>All</b></td><td width=30><b>Yes</b></td><td width=25><b>No</b></td></tr></table>";
+//                }
 
                 $side = 1;
                 foreach ($search_fields_RET['radio'] as $cust) {
-                    if ($side % 2 != 0)
-                        echo '<TR>';
-                    echo "<TD ALIGN=RIGHT>$cust[TITLE]</TD><TD>
-						<table border=0 cellpadding=0 cellspacing=0><tr><td width=25 align=center>
-						<input name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='' checked='checked' />
-						</td><td width=30 align=center>
-						<input name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='Y' />
-						</td><td width=25 align=center>
-						<input name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='N' />
-						</td></tr></table>
-						</TD><TD>&nbsp; &nbsp; &nbsp; &nbsp;</TD>";
-                    if ($side % 2 == 0)
-                        echo '</TR>';
+                    echo '<div class="row">';
+                    echo "<label class=\"col-xs-3 col-md-2 text-right control-label\">$cust[TITLE]</label>";
+                    echo "<div class=\"col-xs-3 col-md-1\"><label class=\"radio-inline\"><input class=\"styled\" name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='' checked='checked' /></label></div>";
+                    echo "<div class=\"col-xs-3 col-md-1\"><label class=\"radio-inline\"><input class=\"styled\" name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='Y' /></label></div>";
+                    echo "<div class=\"col-xs-3 col-md-1\"><label class=\"radio-inline\"><input class=\"styled\" name='cust[{$cust[COLUMN_NAME]}]' type='radio' value='N' /></label></div>";
+                    echo '</div>';
                     $side++;
                 }
-                echo "</TABLE></TD></TR>";
             }
-            echo '</TABLE>';
             break;
     }
 }
@@ -884,6 +967,7 @@ function SearchStaff($type, $extra = array()) {
             break;
 
         case 'student_fields':
+            
             $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,CUSTOM_FIELDS cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearch' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"), array(), array('TYPE'));
             if (!$search_fields_RET)
                 $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM custom_fields cf WHERE cf.ID IN ('200000000','200000001')"), array(), array('TYPE'));

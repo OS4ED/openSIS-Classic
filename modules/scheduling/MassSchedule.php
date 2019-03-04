@@ -28,6 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 unset($_SESSION['student_id']);
+//print_r($_REQUEST);
 $stu_sd_err_count = 0;
 if (isset($_SESSION['MANUAL_ERROR'])) {
     echo "<div class=\"alert bg-danger alert-styled-left\">" . $_SESSION['MANUAL_ERROR'] . "</div>";
@@ -38,7 +39,6 @@ if ($_REQUEST['modfunc'] == 'save') {
     $_REQUEST['year'] = $_REQUEST['year_start'];
     $_REQUEST['month'] = $_REQUEST['month_start'];
     $_REQUEST['day'] = $_REQUEST['day_start'];
-    //$st_dt = $_REQUEST['year'] . '-' . $mon_arr[$_REQUEST['month']] . '-' . $_REQUEST['day'];
     $st_dt = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['day'];
     if ($_REQUEST['marking_period_id'] != '') {
         $chk_st_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
@@ -148,28 +148,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 // ----------------------------------------- Time Clash Logic Start ---------------------------------------------------------- //
 
         function get_min($time) {
-//                    echo $time.'<br><br>';
-//			$org_tm = $time;
-//			$stage = substr($org_tm,-2);
-//			$main_tm = substr($org_tm,0,5);
-//			$main_tm = trim($main_tm);
-//			$sp_time = split(':',$main_tm);
-//			$hr = $sp_time[0];
-//			$min = $sp_time[1];
-//			if($hr == 12)
-//			{
-//				$hr = $hr;
-//			}
-//			else
-//			{
-//				if($stage == 'AM')
-//					$hr = $hr;
-//				if($stage == 'PM')
-//					$hr = $hr + 12;
-//			}
-//			$time_min = (($hr * 60) + $min);
-//			return $time_min;
-//                    $str_time = "23:12:95";
 
             $str_time = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $time);
 
@@ -742,7 +720,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAllDtMod(this,\'student\');"><A>');
     $extra['new'] = true;
 
     $extra['search'] .= '<div class="row">';
@@ -908,7 +886,7 @@ function _makeChooseCheckbox($value, $title) {
     
 //    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 function _str_split($str) {

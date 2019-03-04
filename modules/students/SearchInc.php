@@ -377,9 +377,9 @@ else {
                     $check_all_arr[]=$xy['STUDENT_ID'];
                 }
                 $check_all_stu_list=implode(',',$check_all_arr);
-                echo'<input type=text name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+                echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
                 echo '<br>';
-                echo'<input type=text name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
+                echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
             ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
             if (count($students_RET) > 0) {
                 echo '</div>';

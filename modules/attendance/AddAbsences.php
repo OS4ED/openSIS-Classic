@@ -240,12 +240,12 @@ if (!$_REQUEST['modfunc']) {
         $next_year = date('Y', strtotime('+1 month', strtotime($date)));
         
         echo '<div class="row m-b-15">';
-        echo '<div class="col-md-4 text-left">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> PREV MONTH</a>';
+        echo '<div class="col-xs-2 col-md-4 text-left">';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> <span class="hidden-xs">PREV MONTH</span></a>';
         echo '</div>';
-        echo '<div class="col-md-4 text-center">';
+        echo '<div class="col-xs-8 col-md-4 text-center">';
         echo '<div class="form-inline">';
-        echo "<SELECT class=\"form-control\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&month=\"+this.form.monthSelect.value;'>";
+        echo "<SELECT class=\"form-control inline-block m-r-10\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&month=\"+this.form.monthSelect.value;'>";
         foreach($months as $mi=>$md){
             if($_REQUEST['month']==$mi)
             echo "<OPTION value=".$mi." SELECTED >$md</OPTION>";
@@ -254,7 +254,7 @@ if (!$_REQUEST['modfunc']) {
             
         }
         echo '</SELECT>';
-        echo "<SELECT class=\"form-control\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&year=\"+this.form.yearSelect.value;'>";
+        echo "<SELECT class=\"form-control inline-block\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&year=\"+this.form.yearSelect.value;'>";
         for($years=1959;$years<=date('Y')+30;$years++){
             if($_REQUEST['year']==$years)
             echo "<OPTION value=".$years." SELECTED >$years</OPTION>";
@@ -265,8 +265,8 @@ if (!$_REQUEST['modfunc']) {
         echo '</SELECT>';
         echo '</div>'; //.form-inline
         echo '</div>'; //.col-md-4
-        echo '<div class="col-md-4 text-right">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'">NEXT MONTH <i class="icon-arrow-right8 position-right"></i></a>';
+        echo '<div class="col-xs-2 col-md-4 text-right">';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'"><span class="hidden-xs">NEXT MONTH</span> <i class="icon-arrow-right8 position-right"></i></a>';
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
         

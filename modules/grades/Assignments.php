@@ -680,8 +680,8 @@ if(!$_REQUEST['modfunc'] && $course_id)
         $header .= '</div>';
 
         $header .= '<div class="row">';
-        $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . ($_REQUEST['assignment_id'] == 'new' ? 'Assigned' : 'Assigned Date') . '</label><div class="col-lg-8">' . DateInputAY($new && Preferences('DEFAULT_ASSIGNED', 'Gradebook') == 'Y' ? date('Y-m-d') : $RET['ASSIGNED_DATE'], 'tables[' . $_REQUEST['assignment_id'] . '][ASSIGNED_DATE]', 1) . '</div></div></div>';
-        $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . ($_REQUEST['assignment_id'] == 'new' ? 'Due' : 'Due Date') . '</label>' . DateInputAY($new && Preferences('DEFAULT_DUE', 'Gradebook') == 'Y' ? date('Y-m-d') : $RET['DUE_DATE'], 'tables[' . $_REQUEST['assignment_id'] . '][DUE_DATE]', 2) . '</div></div>';
+        $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . ($_REQUEST['assignment_id'] == 'new' ? 'Assigned <span class="text-danger">*</span>' : 'Assigned Date  <span class="text-danger">*</span>') . '</label><div class="col-lg-8">' . DateInputAY($new && Preferences('DEFAULT_ASSIGNED', 'Gradebook') == 'Y' ? date('Y-m-d') : $RET['ASSIGNED_DATE'], 'tables[' . $_REQUEST['assignment_id'] . '][ASSIGNED_DATE]', 1) . '</div></div></div>';
+        $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . ($_REQUEST['assignment_id'] == 'new' ? 'Due  <span class="text-danger">*</span>' : 'Due Date  <span class="text-danger">*</span>') . '</label>' . DateInputAY($new && Preferences('DEFAULT_DUE', 'Gradebook') == 'Y' ? date('Y-m-d') : $RET['DUE_DATE'], 'tables[' . $_REQUEST['assignment_id'] . '][DUE_DATE]', 2) . '</div></div>';
         $header .= '</div>';
     }
     elseif ($_REQUEST['assignment_type_id']) {

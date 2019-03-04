@@ -226,10 +226,10 @@ foreach ($res as $v) {
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Pick-up </label><div class="col-lg-8"><input class="styled" type=checkbox name="home_bus_pickup"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Pick-up</label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_pickup"></label></div></div>';
             echo '</div>'; //.col-md-6
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Drop-off </label><div class="col-lg-8"><input class="styled" type=checkbox name="home_bus_droppoff"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Drop-off </label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_droppoff"></label></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             

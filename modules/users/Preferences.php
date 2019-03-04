@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 include('../../RedirectModulesInc.php');
 DrawBC("users > " . ProgramTitle());
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
@@ -87,7 +88,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $flag = 1;
         }
         if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'student_fields') {
-            DBQuery('DELETE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM IN (\'' . 'StudentFieldsSearch' . '\',\'' . 'StudentFieldsView' . '\')');
+            //print_r($_REQUEST);die;
+            DBQuery('DELETE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM IN (\'' . 'StudentFieldsSearch' . '\',\'' . 'StudentFieldsSearchable' . '\',\'' . 'StudentFieldsView' . '\')');
 
             foreach ($_REQUEST['values'] as $program => $values) {
                 foreach ($values as $name => $value) {
@@ -129,7 +131,7 @@ unset($_SESSION['_REQUEST_vars']['search_modfunc']);
 
 if (!$_REQUEST['modfunc']) {
     echo '<input type=hidden id=json_encoder value=' . json_encode(array("family", "all_school")) . ' />';
-    $current_RET = DBGet(DBQuery('SELECT TITLE,VALUE,PROGRAM FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM IN (\'' . 'Preferences' . '\',\'' . 'StudentFieldsSearch' . '\',\'' . 'StudentFieldsView' . '\') '), array(), array('PROGRAM', 'TITLE'));
+    $current_RET = DBGet(DBQuery('SELECT TITLE,VALUE,PROGRAM FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM IN (\'' . 'Preferences' . '\',\'' . 'StudentFieldsSearchable' . '\',\'' . 'StudentFieldsSearch' . '\',\'' . 'StudentFieldsView' . '\') '), array(), array('PROGRAM', 'TITLE'));
 
     if (!$_REQUEST['tab'])
         $_REQUEST['tab'] = 'display_options';
@@ -248,12 +250,13 @@ if (!$_REQUEST['modfunc']) {
 
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'student_fields') {
         if (User('PROFILE_ID') != '')
-            $custom_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'' . '<b>' . '\',sfc.TITLE,\'' . '</b>' . '\') AS CATEGORY,cf.ID,cf.TITLE,\'' . '' . '\' AS SEARCH,\'' . '' . '\' AS DISPLAY FROM custom_fields cf,student_field_categories sfc WHERE sfc.ID=cf.CATEGORY_ID AND (SELECT DISTINCT CAN_USE FROM profile_exceptions WHERE PROFILE_ID=\'' . User('PROFILE_ID') . '\' AND MODNAME=CONCAT(\'' . 'students/Student.php&category_id=' . '\',cf.CATEGORY_ID))=\'' . 'Y' . '\' ORDER BY sfc.SORT_ORDER,sfc.TITLE,cf.SORT_ORDER,cf.TITLE'), array('SEARCH' => '_make', 'DISPLAY' => '_make'), array('CATEGORY'));
+            $custom_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'' . '<b>' . '\',sfc.TITLE,\'' . '</b>' . '\') AS CATEGORY,cf.ID,cf.TITLE,\'' . '' . '\' AS SEARCH,\'' . '' . '\' AS DISPLAY ,\'' . '' . '\' AS SEARCHABLE FROM custom_fields cf,student_field_categories sfc WHERE sfc.ID=cf.CATEGORY_ID AND (SELECT DISTINCT CAN_USE FROM profile_exceptions WHERE PROFILE_ID=\'' . User('PROFILE_ID') . '\' AND MODNAME=CONCAT(\'' . 'students/Student.php&category_id=' . '\',cf.CATEGORY_ID))=\'' . 'Y' . '\' ORDER BY sfc.SORT_ORDER,sfc.TITLE,cf.SORT_ORDER,cf.TITLE'), array('SEARCH' => '_make', 'DISPLAY' => '_make','SEARCHABLE'=>'_make'), array('CATEGORY'));
         else {
             $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')));
             $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
             if ($profile_id_mod != '')
-                $custom_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'' . '<b>' . '\',sfc.TITLE,\'' . '</b>' . '\') AS CATEGORY,cf.ID,cf.TITLE,\'' . '' . '\' AS SEARCH,\'' . '' . '\' AS DISPLAY FROM custom_fields cf,student_field_categories sfc WHERE sfc.ID=cf.CATEGORY_ID AND (SELECT DISTINCT CAN_USE FROM profile_exceptions WHERE PROFILE_ID=\'' . $profile_id_mod . '\' AND MODNAME=CONCAT(\'' . 'students/Student.php&category_id=' . '\',cf.CATEGORY_ID))=\'' . 'Y' . '\' ORDER BY sfc.SORT_ORDER,sfc.TITLE,cf.SORT_ORDER,cf.TITLE'), array('SEARCH' => '_make', 'DISPLAY' => '_make'), array('CATEGORY'));
+                
+                $custom_fields_RET = DBGet(DBQuery('SELECT CONCAT(\'' . '<b>' . '\',sfc.TITLE,\'' . '</b>' . '\') AS CATEGORY,cf.ID,cf.TITLE,\'' . '' . '\' AS SEARCH,\'' . '' . '\' AS DISPLAY,\'' . '' . '\' AS SEARCHABLE FROM custom_fields cf,student_field_categories sfc WHERE sfc.ID=cf.CATEGORY_ID AND (SELECT DISTINCT CAN_USE FROM profile_exceptions WHERE PROFILE_ID=\'' . $profile_id_mod . '\' AND MODNAME=CONCAT(\'' . 'students/Student.php&category_id=' . '\',cf.CATEGORY_ID))=\'' . 'Y' . '\' ORDER BY sfc.SORT_ORDER,sfc.TITLE,cf.SORT_ORDER,cf.TITLE'), array('SEARCH' => '_make', 'DISPLAY' => '_make','SEARCHABLE'=>'_make'), array('CATEGORY'));
         }
 
         $THIS_RET['ID'] = 'CONTACT_INFO';
@@ -272,10 +275,11 @@ if (!$_REQUEST['modfunc']) {
         $custom_fields_RET[0][] = array('CATEGORY' => '<B>Addresses</B>', 'ID' => 'ADDRESS', 'TITLE' => '<IMG SRC=assets/bus_button.gif> Bus Dropoff', 'DISPLAY' => _makeAddress('BUS_DROPOFF'));
 
         if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')
-            $columns = array('CATEGORY' => '', 'TITLE' => 'Field',  'DISPLAY' => '<div class="text-center">Expanded View</div>');
+            $columns = array('CATEGORY' => '', 'TITLE' => 'Field','SEARCHABLE'=>'<div class="text-center">Searchable</div>','DISPLAY' => '<div class="text-center">Expanded View</div>');
 //            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'SEARCH' => 'Search', 'DISPLAY' => '<div class="text-center">Expanded View</div>');
         else
-            $columns = array('CATEGORY' => '', 'TITLE' => 'Field', 'DISPLAY' => 'Expanded View');
+            $columns = array('CATEGORY' => '','TITLE' => 'Field','DISPLAY' => 'Expanded View');
+      
         ListOutputMod($custom_fields_RET, $columns, '', '', array(), array(array('CATEGORY')));
     }
 
@@ -290,20 +294,30 @@ if (!$_REQUEST['modfunc']) {
 
 function _make($value, $name) {
     global $THIS_RET, $categories_RET, $current_RET;
-
+    //echo "<pre>";
+//print_r($current_RET);
     switch ($name) {
-        case 'SEARCH':
+        case 'SEARCH': 
+            
             if ($current_RET['StudentFieldsSearch'][$THIS_RET['ID']])
                 $checked = ' checked';
             return '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox name=values[StudentFieldsSearch][' . $THIS_RET['ID'] . '] value=Y' . $checked . '><span></span></label>';
             break;
 
         case 'DISPLAY':
+           
             if ($current_RET['StudentFieldsView'][$THIS_RET['ID']])
                 $checked = ' checked';
             return '<div class="text-center"><INPUT type=checkbox class="styled" name=values[StudentFieldsView][' . $THIS_RET['ID'] . '] value=Y' . $checked . '></div>';
             break;
+        case 'SEARCHABLE':
+            
+            if ($current_RET['StudentFieldsSearchable'][$THIS_RET['ID']])
+                $checked = ' checked';
+            return '<div class="text-center"><INPUT type=checkbox class="styled" name=values[StudentFieldsSearchable][' . $THIS_RET['ID'] . '] value=Y' . $checked . '></div>';
+            break;
     }
+    
 }
 
 function _makeAddress($value) {

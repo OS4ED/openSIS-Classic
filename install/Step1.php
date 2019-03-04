@@ -156,17 +156,14 @@ if(page && page!="index.php" ){
 
 
 
-                                echo '<div id="divAlert" style="display:none; height:270px;">';
+                                echo '<div id="divAlert" style="display:none;">';
 
                                 $myFile = "../Data.php";
                                 $fh1 = fopen($myFile, 'w');
 
                                 if ($fh1 == FALSE) {
-                                    echo '<br />';
-                                    echo '<br />This install has no rights to create or update file Data.php.';
-                                    echo '<br />';
-                                    echo '<br />You may proceed with this installation, but database access information will not be saved and ';
-                                    echo '<br />the install process will restart when trying to use this system again.';
+                                    echo '<h4 class="m-t-0 m-b-15 text-danger"><i class="fa fa-exclamation-circle text-danger"></i> This install has no rights to create or update file <b>Data.php</b>.</h4>';
+                                    echo '<p class="m-b-15">You may proceed with this installation, but database access information will not be saved and the install process will restart when trying to use this system again.</p>';
                                 }
                                 fclose($fh1);
 
@@ -196,10 +193,12 @@ if(page && page!="index.php" ){
 //                                }
 //                                fclose($fh3);
 
-                                echo '<br />';
-                                echo '<br />It is recommended to solve all permission issue before performing the installation.';
-                                echo '<br />';
-                                echo '<input type="button" value="Continue" class="btn_wide" onclick="hideAlert()" />';
+                                echo '<p class="m-b-25">It is recommended to solve all permission issue before performing the installation.</p>';
+                                echo '<hr/>';
+                                echo '<div class="text-right">';
+                                echo '<a href="Step0.php" class="btn btn-default">Cancel</a> &nbsp; ';
+                                echo '<input type="button" value="Continue" class="btn btn-success" onclick="hideAlert()" />';
+                                echo '</div>';
                                 echo '</div>';
 
                                 if ($fh1)

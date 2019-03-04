@@ -40,18 +40,18 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     switch (User('PROFILE')) {
         case 'admin':
         case 'teacher':
-            echo '<BR>';
+            
             $_SESSION['Search_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
-            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
+
             if (isset($_SESSION['stu_search']['sql'])) {
                 unset($_SESSION['stu_search']);
             }
             PopTable('header', 'Find a Student');
             if ($extra['pdf'] != true)
-                echo "<FORM name=search class=\"form-horizontal\" id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
-                echo "<FORM name=search class=\"form-horizontal\" id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
-            echo '<TABLE border=0>';
+                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
+
             Search('general_info');
             if ($extra['search'])
                 echo $extra['search'];

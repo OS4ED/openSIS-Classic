@@ -951,31 +951,31 @@ if ($_REQUEST['del'] == 'true') {
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
         
-        echo '<div class="panel panel-default">';
-         echo '<div class="panel-body">';
-         
-        $qr = 'SELECT em.STUDENT_ID,em.ACTIVITY_ID,ea.TITLE,ea.START_DATE,ea.END_DATE FROM eligibility_activities ea,student_eligibility_activities em WHERE  em.STUDENT_ID=' . UserStudentID() . ' AND em.SYEAR=\'' . UserSyear() . '\' ';
-        $st_date = date('Y-m-d', strtotime($date));
-        $qr.= ' AND \'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date';
-        $qr.= '  AND em.SYEAR=ea.SYEAR AND em.ACTIVITY_ID=ea.ID ORDER BY ea.START_DATE';
-
-        $RET_AC = DBGet(DBQuery($qr), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
-
-        
-        $columns = array('TITLE' => 'Activity', 'START_DATE' => 'Starts', 'END_DATE' => 'Ends');
-        echo '<div class="table-responsive">';
-        ListOutput($RET_AC, $columns, 'Activity', 'Activities');
-        echo '</div>';
-//        echo "<div class=break></div>";
-        
-        
-        $RET_C = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,e.SCHOOL_DATE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower','SCHOOL_DATE' => 'ProperDate'));
-        $columns = array('COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade', 'SCHOOL_DATE' => 'Date');
-        echo '<div class="table-responsive">';
-        ListOutput($RET_C, $columns, 'Course', 'Courses');
-         echo '</div>';
-        echo '</div>'; //.panel-body
-        echo '</div>';
+//        echo '<div class="panel panel-default">';
+//         echo '<div class="panel-body">';
+//         
+//        $qr = 'SELECT em.STUDENT_ID,em.ACTIVITY_ID,ea.TITLE,ea.START_DATE,ea.END_DATE FROM eligibility_activities ea,student_eligibility_activities em WHERE  em.STUDENT_ID=' . UserStudentID() . ' AND em.SYEAR=\'' . UserSyear() . '\' ';
+//        $st_date = date('Y-m-d', strtotime($date));
+//        $qr.= ' AND \'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date';
+//        $qr.= '  AND em.SYEAR=ea.SYEAR AND em.ACTIVITY_ID=ea.ID ORDER BY ea.START_DATE';
+//
+//        $RET_AC = DBGet(DBQuery($qr), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
+//
+//        
+//        $columns = array('TITLE' => 'Activity', 'START_DATE' => 'Starts', 'END_DATE' => 'Ends');
+//        echo '<div class="table-responsive">';
+//        ListOutput($RET_AC, $columns, 'Activity', 'Activities');
+//        echo '</div>';
+////        echo "<div class=break></div>";
+//        
+//        
+//        $RET_C = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,e.SCHOOL_DATE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower','SCHOOL_DATE' => 'ProperDate'));
+//        $columns = array('COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade', 'SCHOOL_DATE' => 'Date');
+//        echo '<div class="table-responsive">';
+//        ListOutput($RET_C, $columns, 'Course', 'Courses22');
+//         echo '</div>';
+//        echo '</div>'; //.panel-body
+//        echo '</div>';
 
 
 
