@@ -27,7 +27,6 @@
 #
 #***************************************************************************************
 echo "<div id='mapping'></div>";
-
 include('../../RedirectModules.php');
 include('Classes/PHPExcel.php');
 echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
@@ -36,7 +35,7 @@ DrawBC("School Setup > Data Import >" . ProgramTitle());
 if ($_REQUEST['page_display'] && $_REQUEST['action'] != 'process') {
     //echo "<div class=back_preference><a href=Modules.php?modname=$_REQUEST[modname]><strong>&laquo; Back to Data Import Menu</strong></a></div>";
 }
-#echo "<div id='calculating'></div>";
+
 
 function add_person($first, $middle, $last, $email) {
     global $data;
@@ -60,7 +59,6 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
 
         echo '<h5 class="text-center">Click on the Browse button to navigate to the Excel file in your computer\'s hard drive that has your data and select it. <b>After selecting, click Upload.</b></h5>';
         echo '<div class="form-group">';
-        //echo '<label class="text-center">Upload Excel File</label>';
         echo '<input type="hidden"  name="MAX_FILE_SIZE" value="2000000" />';
         echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>Click here to select a file</span></label></div>';
         echo '<p class="help-block">Supported file types: xls, xlsx</p>';
@@ -152,8 +150,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
 //             $options[$custom_enroll_value['FIELD']]=strtoupper(str_replace("_", " ", $custom_enroll_value['FIELD']) );
 //        }
         $class = "odd";
-        # echo "<input type='hidden' id='arr_data' value=$arr_data/>";	
-        #print_r($arr_data);
+
         $i = 0;
         foreach ($arr_data[0] as $key => $value) {
 
@@ -165,8 +162,6 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
             if ($value)
                 echo "<tr class=" . $class . "><td class='" . $class . " p-t-20'>" . $value . "</td><td><div id='" . preg_replace('/[()\/]/', '', $value) . "' class='text-center p-t-15'></div></td><td class=" . $class . ">" . SelectInput($valuee, 'stu[' . $value . ']', '', $options, 'N/A', ' onchange=drawmapping(this.value,' . 'k' . $i . ',' . preg_replace('/[()\/]/', '', $value) . ');') . "</td></tr>";
             echo "<input type='hidden' name='student_map_value[]' id=k$i>";
-
-//print_r($options);
         }
 
         echo '</table>';
@@ -401,15 +396,6 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
                 echo "<tr class=" . $class . "><td class=" . $class . ">" . $value . "</td><td><div id='" . preg_replace('/[()\/]/', '', $value) . "'></div></td><td class=" . $class . ">" . SelectInput($valuee, 'staff[' . $value . ']', '', $options, 'N/A', ' onchange=drawmapping(this.value,' . 'k' . $i . ',' . preg_replace('/[()\/]/', '', $value) . ');') . "</td></tr>";
             echo "<input type='hidden' name='student_map_value[]' id=k$i>";
         }
-//         echo "</table>  ";
-//
-//        echo '</div>'; //.panel-body
-//        echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
-//        echo '<div class="panel-footer text-center"><input type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.');"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
-//        echo '</div>'; //.panel
-//
-//        echo "</form>";
-        
         echo '</table>';
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
@@ -732,9 +718,5 @@ else {
     echo '</div>'; //.panel
     echo '</div>';
     echo '</div>';
-
-//echo "</br>";
-//echo "<div class=course_data_import><a href=Modules.php?modname=$_REQUEST[modname]&page_display=COURSE_INFO><strong>Import Course Info</strong></a></div>";
-//echo '</div>';
 }
 ?>
