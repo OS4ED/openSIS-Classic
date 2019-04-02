@@ -314,9 +314,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     #$clash = true;
                 }
                 # ------------------------------------ Same Days Conflict Start ------------------------------------------ #
-
-                $select_stu_info = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\' AND END_DATE IS NOT NULL AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY ID DESC LIMIT 0,1'));
-                if (count($select_stu_info) > 0) {
+//echo 'SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\' AND END_DATE IS NOT NULL AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY ID DESC LIMIT 0,1';
+                $select_stu_info = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\'  AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY ID DESC LIMIT 0,1'));
+                if (count($select_stu_info) > 0 && $select_stu_info[1]['END_DATE']!='') {
                     if (strtotime($select_stu_info[1]['END_DATE']) < strtotime($course_bg_date[1]['END_DATE'])) {
                         if ($select_stu_RET[1]['FIRST_NAME'] == '') {
                             $select_stu_RET = DBGEt(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));

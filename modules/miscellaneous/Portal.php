@@ -41,6 +41,15 @@ $welcome .= 'User : ' . User('NAME');
 
 //----------------------------------------Update Missing Attendance_________________________________-
 
+//$det=DBGet(DBQuery('SELECT count(1) as REC_EX,STUDENT_ID,course_period_id FROM `schedule` GROUP By STUDENT_ID,course_period_id having count(1)>1'));
+//foreach($det as $dt){
+//    $limit=$dt['REC_EX']-1;
+//    $ids=DBGet(DBQuery('SELECT * FROM schedule WHERE COURSE_PERIOD_ID='.$dt['COURSE_PERIOD_ID'].' AND STUDENT_ID='.$dt['STUDENT_ID'].' LIMIT 0,'.$limit));
+//    foreach($ids as $id_d){
+//        echo 'DELETE FROM schedule WHERE ID='.$id_d['ID'].';<br>';
+//    }
+//}
+
 echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">Please wait.</span> Compiling missing attendance data. Do not click anywhere.</div>
 <div id="resp"></div>';
 $stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
@@ -120,33 +129,39 @@ switch (User('PROFILE')) {
     case 'admin':
         DrawBC($welcome . ' | Role : ' . $title1);
 
-        $user_agent = explode('/', $_SERVER['HTTP_USER_AGENT']);
-        if ($user_agent[0] == 'Mozilla') {
-            $update_notify = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\' AND program=\'UPDATENOTIFY\' AND title=\'display\' LIMIT 0, 1'));
-            if ($update_notify[1]['VALUE'] == 'Y') {
-                if (function_exists('curl_init')) {
-
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, 'http://www.opensis.info/openSIS_CE_Check_Version/info');
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-
-
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-
-
-                    $response = curl_exec($ch);
-                    curl_close($ch);
-                    $response = json_decode($response);
-                    $qr_lcl_qr = DBGet(DBQuery('select value from app where name=\'build\''));
+//        $user_agent = explode('/', $_SERVER['HTTP_USER_AGENT']);
+//        if ($user_agent[0] == 'Mozilla') {
+//            $update_notify = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\' AND program=\'UPDATENOTIFY\' AND title=\'display\' LIMIT 0, 1'));
+//            if ($update_notify[1]['VALUE'] == 'Y') {
+//                
+//                if (function_exists('curl_init')) {
+//                   
+//                    $ch = curl_init();
+//                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+//                    curl_setopt($ch, CURLOPT_URL, 'https://opensis.com/CheckVersion');
+//                    curl_setopt($ch, CURLOPT_HEADER, 0);
+//
+//
+//                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//
+//
+//                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+//
+//
+//                    $response = curl_exec($ch);
+//                   
+//                    
+//                    curl_close($ch);
+//                    $response = json_decode($response);
+//                     
+//                    
+//                    $qr_lcl_qr = DBGet(DBQuery('select value from app where name=\'build\''));
 //                    if ($qr_lcl_qr[1]['VALUE'] != $response[0]->build_id && $response[0]->build_id != '') {
 //                        echo "<div class=\"alert bg-info alert-styled-left\">Latest version " . $response[0]->build_name . ' ' . $response[0]->version . " is available <a href='http://www.opensis.com/download_package/opensis.zip' target='_blank' class=\"text-underlined\"><b>click here</b></a> to download.</div>";
 //                    }
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
         $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\'  AND program=\'UPDATENOTIFY\' AND title=\'display_school\' LIMIT 0, 1'));
         if ($update_notify_s[1]['VALUE'] == 'Y') {

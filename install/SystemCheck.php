@@ -124,8 +124,8 @@ $err = 0;
                                         if (_isCurl() == 1) {
                                             echo '<span class="text-success"><b>OK</b></span>';
                                         } else {
-                                            echo '<span class="text-danger"><b>FAIL</b></span>';
-                                            $err = 1;
+                                            echo '<span class="text-warning"><b>Warning</b></span>';
+                                            //$err = 1;
                                         }
                                         ?>
                                     </div>
@@ -145,7 +145,7 @@ $err = 0;
                                             echo '<span class="text-success"><b>OK</b></span>';
                                         } else {
                                             echo '<span class="text-danger"><b>FAIL</b></span>';
-                                            $err = 1;
+                                           // $err = 1;
                                         }
                                         ?>
                                     </div>

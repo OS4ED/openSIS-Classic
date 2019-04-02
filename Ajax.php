@@ -32,10 +32,9 @@ include("functions/ParamLibFnc.php");
 echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
-    //echo '<script type="text/javascript" src="assets/js/pages/extension_image_cropper.js"></script>';
+echo '<script type="text/javascript" src="assets/js/plugins/forms/inputs/jquery.creditCardValidator.js"></script>';
 echo '<script>';
-echo '$(document).ready(function() {
-        
+echo '$(document).ready(function() {        
         // Animate loader off screen
         $("#loading-image").hide();
         
@@ -59,6 +58,13 @@ echo '$(document).ready(function() {
             });
         }
         
+        if($(".table-responsive").hasScrollBar("horizontal")){
+            $(".table-responsive").mousewheel(function (e, delta) {
+                this.scrollLeft -= (delta * 40);
+                e.preventDefault();
+            });
+        }
+
         $(".switch-fake-title").closest("label").children("input[type=checkbox]").change(function(){
             if($(this).is(":checked")){
                 $(this).closest("label").children(".switch-fake-title").text("Yes");
@@ -79,7 +85,7 @@ echo '$(document).ready(function() {
         $(\'body\').removeClass(\'sidebar-mobile-main\');
         
         // Initializing Tooltips & Popovers after ajax call
-        $(\'[data-toggle="tooltip"]\').tooltip();
+        $(\'[data-toggle="tooltip"], [data-popup="tooltip"]\').tooltip();
         $(\'[data-popup="popover"]\').popover();
         
       });';

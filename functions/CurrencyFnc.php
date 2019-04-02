@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 
-function Currency($num, $sign, $red = false) {
+function Currency($num='', $sign='', $red = false) {
 
     $original = $num;
     if ($sign == 'before' && $num < 0) {

@@ -113,6 +113,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
      */
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/core/libraries/jquery.mousewheel.js"></script>';
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>';
@@ -622,6 +623,7 @@ $menu_icons = array(
     "eligibility" => "icon-checkmark3",
     "messaging" => "icon-envelop5",
     "tools" => "icon-hammer-wrench",
+    "library" => "icon-book3",
     "billing" => "icon-calculator2",
     "discipline" => "icon-hammer2"
 );

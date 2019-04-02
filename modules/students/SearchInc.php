@@ -407,9 +407,9 @@ else {
                 echo '<br>';
                 echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
                 ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
-                if (count($students_RET) > 0) {
-                    echo '</div>';
-                }
+//                if (count($students_RET) > 0) {
+//                    echo '</div>';
+//                }
                 echo '</div>';
                 echo '</div>';
             //}

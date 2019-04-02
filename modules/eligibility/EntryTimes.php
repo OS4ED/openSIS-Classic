@@ -119,14 +119,14 @@ if (count($start_end_RET)) {
     $start_time = $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
     $end_time = $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">From :</label>';
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($start_time, 'values[START_TIME]', '', NULL) . '</div></div>';
+    echo '<div class="col-md-10"><div class="form-inline">' . SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($start_time, 'values[START_TIME]', '', NULL) . '</div></div>';
     echo '</div>'; //form-group
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">To :</label>';
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">To</label>' . SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div>';
+    echo '<div class="col-md-10"><div class="form-inline">' . SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div>';
     echo '</div>';
 } else {
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div>';
-    echo '<div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div>';
+    echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div></div>';
+    echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div></div>';
 }
 $btn = '<div class="text-center">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"') . '</div>';
 echo '</div>';

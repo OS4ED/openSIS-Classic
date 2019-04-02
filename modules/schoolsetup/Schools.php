@@ -136,7 +136,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 }
                 if (User('PROFILE_ID') != 0) {
                     $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                    DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ',"'.date('Y-m-d').'")');
+                    $staff_exists=DBGet(DBQuery('SELECT * FROM staff_school_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND SCHOOL_ID='. $id . ' AND SYEAR='.$syear));
+                    if(count($staff_exists)==0)
+                        DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ',"'.date('Y-m-d').'")');
                 }
 //                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');

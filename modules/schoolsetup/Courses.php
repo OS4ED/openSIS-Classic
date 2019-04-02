@@ -1963,8 +1963,12 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Calendar</label><div class="col-md-8">' . SelectInput($cal_RET['CALENDAR_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][CALENDAR_ID]', '', $options, 'N/A', ' id=calendar_id onchange=reset_schedule();', $div) . '</div></div>';
         }
         $header .= '</div>'; //.col-sm-6.col-lg-4
-        $teachers_RET = DBGet(DBQuery("SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff INNER JOIN staff_school_relationship USING (staff_id) WHERE school_id='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND PROFILE='teacher' AND  (ISNULL(IS_DISABLE) OR IS_DISABLE!='Y') AND (END_DATE>=CURDATE() OR END_DATE IS NULL OR END_DATE='0000-00-00') AND START_DATE<=CURDATE() ORDER BY LAST_NAME,FIRST_NAME "));
-
+          //echo "SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff INNER JOIN staff_school_relationship USING (staff_id) WHERE school_id='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND PROFILE='teacher' AND  (ISNULL(IS_DISABLE) OR IS_DISABLE!='Y') AND (END_DATE>=CURDATE() OR END_DATE IS NULL OR END_DATE='0000-00-00') AND (START_DATE<=CURDATE() OR START_DATE='0000-00-00' OR START_DATE IS NULL ) ORDER BY LAST_NAME,FIRST_NAME ";
+        //$teachers_RET = DBGet(DBQuery("SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff INNER JOIN staff_school_relationship USING (staff_id) WHERE school_id='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND PROFILE='teacher' AND  (ISNULL(IS_DISABLE) OR IS_DISABLE!='Y') AND (END_DATE>=CURDATE() OR END_DATE IS NULL OR END_DATE='0000-00-00') AND (START_DATE<=CURDATE() OR START_DATE='0000-00-00' OR START_DATE IS NULL ) ORDER BY LAST_NAME,FIRST_NAME "));
+        
+      $teachers_RET= DBGet(DBQuery("SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id) ,login_authentication la WHERE (s.PROFILE_ID!=4 OR s.PROFILE_ID IS NULL) AND ssr.SYEAR='".UserSyear()."' AND s.STAFF_ID=la.USER_ID AND la.PROFILE_ID NOT IN (3,4) AND SCHOOL_ID=".UserSchool()." AND (s.IS_DISABLE<>'Y' OR s.IS_DISABLE IS NULL) AND (ssr.END_DATE>='CURDATE()' OR ssr.END_DATE='0000-00-00' OR ssr.END_DATE IS NULL) AND PROFILE='teacher' ORDER BY LAST_NAME,FIRST_NAME")) ;
+        
+        
         if (count($teachers_RET)) {
             foreach ($teachers_RET as $teacher) {
 

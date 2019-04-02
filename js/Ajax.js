@@ -27,6 +27,7 @@ function check_content(the_content) {
     $('#loading-image').show();
     $.ajax(the_content).done(function (data) {
         $('#content').html(data);
+        $('#loading-image').hide();
     });
 }
 function parseCheck_content() {

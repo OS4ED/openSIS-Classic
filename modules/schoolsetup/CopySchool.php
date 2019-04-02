@@ -93,7 +93,9 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
                 $temp_start_date=$current_start_date[1]['START_DATE'];
                 else
                 $temp_start_date=date('Y-m-d');
-                DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ',"'.$temp_start_date.'")');
+                 $staff_exists=DBGet(DBQuery('SELECT * FROM staff_school_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND SCHOOL_ID='. $id . ' AND SYEAR='.UserSyear()));
+                    if(count($staff_exists)==0)
+                        DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ',"'.$temp_start_date.'")');
             }
             foreach ($_REQUEST['tables'] as $table => $value)
                 _rollover($table);

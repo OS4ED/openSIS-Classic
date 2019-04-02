@@ -700,7 +700,7 @@ if (!$_REQUEST['modfunc']) {
                 $functions = array('START_DATE' => '_makeStartInputDate', 'PROFILE' => '_makeUserProfile', 'END_DATE' => '_makeEndInputDate', 'SCHOOL_ID' => '_makeCheckBoxInput_gen', 'ID' => '_makeStatus');
 
 
-                $sql = 'SELECT s.ID,ssr.SCHOOL_ID as SCH_ID,ssr.SCHOOL_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id  AND st.staff_id=' . User('STAFF_ID') . ' GROUP BY ssr.SCHOOL_ID';
+                $sql = 'SELECT s.ID,ssr.SCHOOL_ID as SCH_ID,ssr.SCHOOL_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id  AND st.staff_id=' . User('STAFF_ID') . ' AND ssr.SYEAR='.UserSyear().' GROUP BY ssr.SCHOOL_ID';
                 $school_admin = DBGet(DBQuery($sql), $functions);
                 //print_r($school_admin);
 //                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
@@ -823,8 +823,17 @@ function _makeCheckBoxInput_gen($value, $column) {
 //        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
     } else {
         $sql = '';
-        $staff_infor_qr = DBGet(DBQuery('select school_access from staff_school_info where STAFF_ID=\'' . $_SESSION['staff_selected'] . '\''));
-        $sch_li = explode(',', trim($staff_infor_qr[1]['SCHOOL_ACCESS']));
+        $staff_infor_qr = DBGet(DBQuery('select * from staff_school_relationship where STAFF_ID=\'' . $_SESSION['staff_selected'] . '\' AND SYEAR='. UserSyear()));
+        if(count($staff_infor_qr)>0)
+        {
+            $i=0;
+            foreach($staff_infor_qr as $skey => $sval)
+            {
+                $sch_li[$i]=$sval['SCHOOL_ID'];
+                $i++;
+            }
+        }
+        //$sch_li = explode(',', trim($staff_infor_qr[1]['SCHOOL_ACCESS']));
         $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
         if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
             $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';

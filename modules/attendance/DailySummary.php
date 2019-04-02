@@ -72,7 +72,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
 
 $PHP_tmp_SELF = PreparePHP_SELF();
 //echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
-echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc] method=POST>";
+echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc]&student_id=".UserStudentID()." method=POST>";
 //Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=
 echo "<div class=\"panel panel-default\">";
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
