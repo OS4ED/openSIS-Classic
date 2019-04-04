@@ -196,7 +196,7 @@
                                     $dbconn->query($app_insert);
                                     header('Location: Step5.php');
                                     exit;
-                                } else if ($v == '6.3' || $v == '6.4' || $v == '6.5') {
+                                } else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
 ('version', '7.1'),
