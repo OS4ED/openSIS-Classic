@@ -664,16 +664,15 @@ $(function () {
 });
 
 
-jQuery.fn.hasScrollBar = function (direction)
-{
-    if (direction == 'vertical')
-    {
-        return this.get(0).scrollHeight > this.innerHeight();
-    }
-    else if (direction == 'horizontal')
-    {
-        return this.get(0).scrollWidth > this.innerWidth();
-    }
-    return false;
+//function hasScroll(el, direction){
+//    direction = (direction === 'vertical') ? 'scrollTop' : 'scrollLeft';
+//    var result = !! el[direction];
+//
+//    if (!result) {
+//        el[direction] = 1;
+//        result = !!el[direction];
+//        el[direction] = 0;
+//    }
+//    return result;
+//}
 
-}

@@ -37,6 +37,9 @@ function show_div(name, mp_id)
 }
 
 function selectFile(input) {
+    
+   
+    if(input.files[0].type!='' && (input.files[0].type=='image/png' || input.files[0].type=='image/jpeg'   || input.files[0].type=='image/jpg' || input.files[0].type=='image/tiff' || input.files[0].type=='image/bmp')){
       if (input.files && input.files[0]) {
 
   var reader = new FileReader();
@@ -85,6 +88,9 @@ $('#imgblob').val(imgblob[1].trim());
   
         
     }
+}
+else
+    document.getElementById('divErr').innerHTML='<div class="alert alert-danger alert-styled-left alert-bordered">Unsupported file format, use common image file like - jpeg, png, tiff, bmp etc.</div>';
 //    if (selectedFile.match(/fakepath/)) {
 //        // update the file-path text using case-insensitive regex
 //        selectedFile = selectedFile.replace(/C:\\fakepath\\/i, '');

@@ -1834,7 +1834,7 @@ CREATE VIEW enroll_grade AS
   SELECT e.id, e.syear, e.school_id, e.student_id, e.start_date, e.end_date, sg.short_name, sg.title
   FROM student_enrollment e, school_gradelevels sg WHERE (e.grade_id = sg.id);
 
-CREATE VIEW transcript_grades AS
+CREATE VIEW transcript_grades_new AS
     SELECT s.id AS school_id, IF(mp.mp_source='history',(SELECT school_name FROM history_school WHERE student_id=rcg.student_id and marking_period_id=mp.marking_period_id),s.title) AS school_name,mp_source, mp.marking_period_id AS mp_id,
  mp.title AS mp_name, mp.syear, mp.end_date AS posted, rcg.student_id,
  sgc.grade_level_short AS gradelevel, rcg.grade_letter, rcg.unweighted_gp AS gp_value,

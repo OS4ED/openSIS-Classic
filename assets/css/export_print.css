@@ -5,12 +5,15 @@
     border-top: 1px solid #ccc;
     border-left: 1px solid #ccc;
 }
+td{ font-size:11px; color:#000;}
 .table tr td {
     padding: 5px;
+    font-size:11px; 
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
 .table tr td.subtabs {
     background:  #eee;
     border-bottom: 1px solid #ccc;
+    font-size:11px; 
 }

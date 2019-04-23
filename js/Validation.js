@@ -2749,7 +2749,7 @@ function formcheck_add_staff(staff_school_chkbox_id)
 
     var frmvalidator = new Validator("staff");
 
-    frmvalidator.addValidation("staff[TITLE]", "req", "Please select the salutation");
+    //frmvalidator.addValidation("staff[TITLE]", "req", "Please select the salutation");
     frmvalidator.addValidation("staff[FIRST_NAME]", "req", "Please enter the first name");
 
     frmvalidator.addValidation("staff[FIRST_NAME]", "maxlen=100", "Max length for first name is 100 characters");

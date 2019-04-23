@@ -193,6 +193,7 @@ else {
         echo '<br>';
         echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
 
+      
         ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
         echo "</div>";
         echo "</div>";

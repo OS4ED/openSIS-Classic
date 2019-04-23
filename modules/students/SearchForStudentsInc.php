@@ -154,12 +154,21 @@ foreach ($res as $v) {
             echo '</div>'; //.row
             ////////////////////////extra search field end///////////////////////////
 
-            echo '<h5 class="text-primary">Birthday</h5>';
+            echo '<h5 class="text-primary">Birthday Search</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', 'year_from_birthdate', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', 'year_to_birthdate', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<h5 class="text-primary">DOB</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right"> </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_dob_birthdate', 'month_dob_birthdate', 'year_dob_birthdate', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
@@ -690,12 +699,21 @@ else {
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
-            echo '<h5 class="text-primary">Birthday</h5>';
+            echo '<h5 class="text-primary">Birthday Search</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<h5 class="text-primary">DOB</h5>';
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right"> </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('day_dob_birthdate', 'month_dob_birthdate', 'year_dob_birthdate', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '</div><div class="col-md-6">';
+            
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 

@@ -79,7 +79,7 @@ $(function () {
             $(this).next('.input-group').children('.daterange-single').trigger('focus');
         });
         $('.datepicker-group .daterange-single').datepicker({
-            selectYears: true,
+            selectYears: false,
             selectMonths: true,
             autoclose: true,
             //format: 'dd-M-yyyy',
@@ -93,6 +93,15 @@ $(function () {
             format: "mm/yyyy",
             minViewMode: 1,
             maxViewMode: 2
+        })
+        
+        $('.datepicker-group-month-date .daterange-single').datepicker({
+            selectDays: true,
+            selectMonths: true,
+            autoclose: true,
+            format: "mm-dd",
+            minViewMode: "days",
+            maxViewMode: 1
         })
         .change(function(){
             
@@ -137,6 +146,31 @@ $(function () {
             
             $('input[type=submit], button[type=submit]').attr('disabled',false);
         });
+        
+         $('.datepicker-group-month-date .daterange-single').change(function (e) {
+            $('input[type=submit], button[type=submit]').attr('disabled',true);
+            var calid = $(this).attr('id');
+            var selectedDate = $(this).val();
+            //var newDate = new Date(selectedDate); 
+            var newDate = selectedDate.split("-");
+
+//            var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+//                "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+//            ];
+
+
+            //$('#daySelect_' + calid).val(newDate.getDate());
+            //$('#monthSelect_' + calid).val(monthNames[newDate.getMonth()]);
+            //$('#yearSelect_' + calid).val(newDate.getFullYear());
+            
+            $('#daySelect_' + calid).val(newDate[1]);
+            $('#monthSelect_' + calid).val(newDate[0]);
+            
+            
+            $('input[type=submit], button[type=submit]').attr('disabled',false);
+        });
+        
+        
     }
 
     /*$('.daterange-single').on('apply.daterangepicker', function (ev, picker) {

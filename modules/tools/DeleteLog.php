@@ -38,8 +38,10 @@ if (isset($_REQUEST['del'])) {
 
         $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
 
-        $conv_st_date = con_date($org_start_date);
-    }
+       // $conv_st_date = con_date($org_start_date);
+        $delete_start_date=$_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'].' '.'00:00:00';
+   $conv_st_date=$delete_start_date;
+        }
 
     if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 
@@ -47,12 +49,15 @@ if (isset($_REQUEST['del'])) {
         $end_date = ProperDateMAvr($end_date);
         $org_end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end'];
 
-        $conv_end_date = con_date_end($org_end_date);
-    }
+       // $conv_end_date = con_date_end($org_end_date);
+        $delete_end_date=$_REQUEST['year_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['day_end'].' '.'23:59:59';
+   $conv_end_date=$delete_end_date;
+        }
 
 
     # ------------------------------- Deletion Of Log Records ----------------------------- #
     if (isset($conv_st_date) && isset($conv_end_date)) {
+        
         $sql_del = DBQuery('DELETE FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\'');
         echo '<center><font color="red"><b>Log deleted successfully</b></font></center>';
     }
@@ -70,6 +75,10 @@ if (isset($_REQUEST['del'])) {
     if (!isset($conv_st_date) && !isset($conv_end_date)) {
         echo '<center><font color="red"><b>You have to select atleast one date from the date range</b></font></center>';
     }
+    
+   
+    
+    
     # ------------------------------------------------------------------------------------- #
 }
 
@@ -111,6 +120,7 @@ echo '</div>';
 echo '</div>'; //.row
 
 function con_date($date) {
+   
     $mother_date = $date;
     $year = substr($mother_date, 7);
     $temp_month = substr($mother_date, 3, 3);

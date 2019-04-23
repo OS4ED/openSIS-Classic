@@ -187,7 +187,7 @@ $date_counter = 1;
 
 
 unset($THIS_RET);
-$RET = DBGet(DBQuery('SELECT e.DROP_CODE as DC,e.SYEAR, s.FIRST_NAME,s.LAST_NAME,s.GENDER, e.ID,e.GRADE_ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e,students s WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR<=\'' . UserSyear() . '\' AND e.SCHOOL_ID=\'' . UserSchool() . '\' AND e.STUDENT_ID=s.STUDENT_ID ORDER BY e.START_DATE'), $functions);
+$RET = DBGet(DBQuery('SELECT e.DROP_CODE as DC,e.SYEAR, s.FIRST_NAME,s.LAST_NAME,s.GENDER, e.ID,e.GRADE_ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e,students s WHERE e.STUDENT_ID=\'' . UserStudentID() . '\'  AND e.STUDENT_ID=s.STUDENT_ID ORDER BY e.START_DATE'), $functions);
 
 
 if (count($RET)) {

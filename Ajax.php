@@ -58,12 +58,12 @@ echo '$(document).ready(function() {
             });
         }
         
-        if($(".table-responsive").hasScrollBar("horizontal")){
+        /*if(hasScrollBar(".table-responsive", "horizontal")){
             $(".table-responsive").mousewheel(function (e, delta) {
                 this.scrollLeft -= (delta * 40);
                 e.preventDefault();
             });
-        }
+        }*/
 
         $(".switch-fake-title").closest("label").children("input[type=checkbox]").change(function(){
             if($(this).is(":checked")){

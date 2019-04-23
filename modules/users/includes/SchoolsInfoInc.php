@@ -263,6 +263,7 @@ if ($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE'] == '1') {
 }
 
 if ($select == '') {
+//    print_r($_REQUEST);exit;
     if ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'Y') {
         $sql = "INSERT INTO staff_school_info ";
         $fields = 'STAFF_ID,';
@@ -372,10 +373,10 @@ if ($select == '') {
         $values = "'" . UserStaffID() . "',";
         foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
 
-            if ($column == 'OPENSIS_PROFILE') {
-                $fields .= $column . ',';
-                $values .= "NULL,";
-            } else {
+//            if ($column == 'OPENSIS_PROFILE') {
+//                $fields .= $column . ',';
+//                $values .= "NULL,";
+//            } else {
                 if ($value) {
                     $fields .= $column . ',';
 //                                    if(stripos($_SERVER['SERVER_SOFTWARE'], 'linux'))
@@ -385,7 +386,7 @@ if ($select == '') {
 //                                    else
                     $values .= "'" . singleQuoteReplace('', '', $value) . "',";
                 }
-            }
+//            }
         }
         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
@@ -394,12 +395,48 @@ if ($select == '') {
         $update_staff = $update_staff_RET[1];
         $staff_CHECK = DBGet(DBQuery("SELECT  *  FROM staff where STAFF_ID='" . UserStaffID() . "'"));
         $staff = $staff_CHECK[1];
-
+        
+        if($update_staff['OPENSIS_PROFILE']!=''){
+        $profile_det=DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID='.$update_staff['OPENSIS_PROFILE']));
+        
         $sql_staff = "UPDATE staff SET ";
-        $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',";
-
+        $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',PROFILE='" . $profile_det[1]['PROFILE'] . "' ";
+        }else{
+        $sql_staff = "UPDATE staff SET ";
+        $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',"; 
+        }
         $sql_staff = substr($sql_staff, 0, -1) . " WHERE STAFF_ID='" . UserStaffID() . "'";
         DBQuery($sql_staff);
+        
+        
+        if ($update_staff['OPENSIS_PROFILE'] != '') {
+            $check_rec = DBGet(DBQuery('SELECT COUNT(1) AS REC_EXISTS FROM login_authentication WHERE USER_ID=' . UserStaffID() . ' AND PROFILE_ID NOT IN (3,4) '));
+            if ($check_rec[1]['REC_EXISTS'] == 0)
+                $sql_staff_prf = 'INSERT INTO login_authentication (PROFILE_ID,USER_ID) VALUES (\'' . $update_staff['OPENSIS_PROFILE'] . '\',\'' . UserStaffID() . '\') ';
+            else
+                $sql_staff_prf = 'Update login_authentication SET  PROFILE_ID=\'' . $update_staff['OPENSIS_PROFILE'] . '\' WHERE PROFILE_ID NOT IN (3,4) AND USER_ID=' . UserStaffID();
+        }
+
+       
+        if ($update_staff['OPENSIS_PROFILE'] != '')
+            DBQuery($sql_staff_prf);
+        
+        if ($update_staff['OPENSIS_PROFILE'] == '1') {
+
+            $school_id3 = DBGet(DBQuery("SELECT ID FROM schools WHERE ID NOT IN (SELECT school_id FROM staff_school_relationship WHERE
+                                      STAFF_ID='" . $_REQUEST['staff_id'] . "' AND SYEAR='" . UserSyear() . "')"));
+            foreach ($school_id3 as $index => $val) {
+
+                $sql_up = 'INSERT INTO staff_school_relationship(staff_id,syear,school_id';
+                $sql_up.=')VALUES(\'' . $_REQUEST[staff_id] . '\',\'' . UserSyear() . '\',\'' . $val['ID'] . '\'';
+
+
+                $sql_up.=')';
+            }
+        }
+        
+        
+        
     }
 } else {
     if ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'Y') {
@@ -522,9 +559,6 @@ if ($select == '') {
         }
     } elseif ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'N') {
 
-        unset($_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS']);
-        unset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']);
-
         $sql = "UPDATE staff_school_info  SET ";
 
         foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
@@ -535,6 +569,59 @@ if ($select == '') {
         }
         $sql = substr($sql, 0, -1) . " WHERE STAFF_ID='" . UserStaffID() . "'";
         DBQuery($sql);
+        
+        if(isset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']) && $_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']!='')
+        {
+        
+        $update_staff_RET = DBGet(DBQuery("SELECT  * FROM staff_school_info where STAFF_ID='" . UserStaffID() . "'"));
+        $update_staff = $update_staff_RET[1];
+        $staff_CHECK = DBGet(DBQuery("SELECT  *  FROM staff where STAFF_ID='" . UserStaffID() . "'"));
+        $staff = $staff_CHECK[1];
+        
+        if($update_staff['OPENSIS_PROFILE']!=''){
+        $profile_det=DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID='.$update_staff['OPENSIS_PROFILE']));
+        
+        $sql_staff = "UPDATE staff SET ";
+        $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',PROFILE='" . $profile_det[1]['PROFILE'] . "' ";
+        }else{
+        $sql_staff = "UPDATE staff SET ";
+        $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',"; 
+        }
+        $sql_staff = substr($sql_staff, 0, -1) . " WHERE STAFF_ID='" . UserStaffID() . "'";
+        DBQuery($sql_staff);
+        
+        
+        if ($update_staff['OPENSIS_PROFILE'] != '') {
+            $check_rec = DBGet(DBQuery('SELECT COUNT(1) AS REC_EXISTS FROM login_authentication WHERE USER_ID=' . UserStaffID() . ' AND PROFILE_ID NOT IN (3,4) '));
+            if ($check_rec[1]['REC_EXISTS'] == 0)
+                $sql_staff_prf = 'INSERT INTO login_authentication (PROFILE_ID,USER_ID) VALUES (\'' . $update_staff['OPENSIS_PROFILE'] . '\',\'' . UserStaffID() . '\') ';
+            else
+                $sql_staff_prf = 'Update login_authentication SET  PROFILE_ID=\'' . $update_staff['OPENSIS_PROFILE'] . '\' WHERE PROFILE_ID NOT IN (3,4) AND USER_ID=' . UserStaffID();
+        }
+
+       
+        if ($update_staff['OPENSIS_PROFILE'] != '')
+            DBQuery($sql_staff_prf);
+        
+        if ($update_staff['OPENSIS_PROFILE'] == '1') {
+
+            $school_id3 = DBGet(DBQuery("SELECT ID FROM schools WHERE ID NOT IN (SELECT school_id FROM staff_school_relationship WHERE
+                                      STAFF_ID='" . $_REQUEST['staff_id'] . "' AND SYEAR='" . UserSyear() . "')"));
+            foreach ($school_id3 as $index => $val) {
+
+                $sql_up = 'INSERT INTO staff_school_relationship(staff_id,syear,school_id';
+                $sql_up.=')VALUES(\'' . $_REQUEST[staff_id] . '\',\'' . UserSyear() . '\',\'' . $val['ID'] . '\'';
+
+
+                $sql_up.=')';
+                
+                DBQuery($sql_up);
+            }
+        }
+        }
+        
+        unset($_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS']);
+        unset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']);
     }
 }
 
@@ -608,6 +695,12 @@ if (!$_REQUEST['modfunc']) {
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
+            $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
+            echo '<div class="row">';
+            echo '<div class="col-lg-6">';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_school['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
+            echo '</div>'; //.col-lg-6            
+            echo '</div>'; //.row
             
             echo '';
             
@@ -644,22 +737,23 @@ if (!$_REQUEST['modfunc']) {
             }
 
             
-            $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
-            echo '<div class="row">';
-            echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_school['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
-            echo '</div>'; //.col-lg-6            
-            echo '</div>'; //.row
+//            $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
+//            echo '<div class="row">';
+//            echo '<div class="col-lg-6">';
+//            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_school['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
+//            echo '</div>'; //.col-lg-6            
+//            echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Username <span class=text-danger>*</span></label><div class="col-lg-8">';
             if (!$this_school_mod['USERNAME']) {
                 echo TextInput('', 'USERNAME', '', 'size=20 maxlength=50 onblur="usercheck_init_staff(this)"');
-                echo '<span id="ajax_output_st"></span><input type=hidden id=usr_err_check value=0></div></div>';
+                echo '<span id="ajax_output_st"></span><input type=hidden id=usr_err_check value=0>';
             } else {
-                echo NoInput($this_school_mod['USERNAME'], '', '', 'onkeyup="usercheck_init(this)"') . '<div id="ajax_output"></div></div></div>';
+                echo NoInput($this_school_mod['USERNAME'], '', '', 'onkeyup="usercheck_init(this)"') . '<div id="ajax_output"></div>';
             }
+            echo '</div></div>';
             echo '</div>'; //.col-lg-6
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Password <span class=text-danger>*</span></label><div class="col-lg-8">';
@@ -668,11 +762,10 @@ if (!$_REQUEST['modfunc']) {
 
                 echo '<span id="ajax_output_st"></span>';
             } else {
-
                 echo TextInputModHidden(array($this_school_mod['PASSWORD'], str_repeat('*', strlen($this_school_mod['PASSWORD']))), 'staff_school[PASSWORD]', '', 'size=20 maxlength=100 AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);');
             }
             echo "<span id='passwordStrength'></span></div></div>";
-            echo '</div>'; //.col-lg-4
+            echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
             
             echo '<div class="row">';
@@ -684,9 +777,11 @@ if (!$_REQUEST['modfunc']) {
                 $dis_val = 'N';
             echo CheckboxInput_No($dis_val, 'staff_school[IS_DISABLE]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
             echo '</div></div>';
-            echo '</div>'; //.col-md-4
+            echo '</div>'; //.col-md-6
             echo '</div>'; //.row
-
+            
+            echo '</div>'; //#hideShow
+            
             if ($this_school['SCHOOL_ACCESS']) {
 
                 $pieces = explode(",", $this_school['SCHOOL_ACCESS']);
@@ -707,7 +802,7 @@ if (!$_REQUEST['modfunc']) {
                 
                 $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'values[SCHOOLS]\');" /></a>', 'TITLE' => 'School', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
                 $school_ids_for_hidden=array();
-                echo '<div id="hidden_checkboxes" />';
+                echo '<div id="hidden_checkboxes">';
                 foreach($school_admin as $sai=>$sad){
 //                    echo '<pre>';
 //                    print_r($sad);

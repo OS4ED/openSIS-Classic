@@ -65,45 +65,47 @@ function a(id, block_id)
     }
     if (block_id == 2)
     {
-        document.getElementById("txtToCCUser").value = id;
-
-        document.getElementById("ajax_response_cc").innerHTML = "";
+        $("#txtToCCUser").val(id);
+        $("#ajax_response_cc").html("");
+        $("#ajax_response_cc").hide();
+        $("#ajax_response_cc").removeClass('open');
     }
     if (block_id == 3)
     {
-        document.getElementById("txtToBCCUser").value = id;
-
-        document.getElementById("ajax_response_bcc").innerHTML = "";
+        $("#txtToBCCUser").val(id);
+        $("#ajax_response_bcc").html("");
+        $("#ajax_response_bcc").hide();
+        $("#ajax_response_bcc").removeClass('open');
     }
 
 }
-function b(index, val, block_id)
-{
-
-
-
-
-
+function b(index, val, block_id){
     if (block_id == 1)
     {
-        var a = document.getElementById("txtToUser").value;
+        var a = $("#txtToUser").val();
         var l = a.slice(0, index);
-        document.getElementById("txtToUser").value = l + val;
-        document.getElementById("ajax_response").innerHTML = "";
+        $("#txtToUser").val(l + val);
+        $("#ajax_response").html("");
+        $("#ajax_response").hide();
+        $("#ajax_response").removeClass('open');
     }
     if (block_id == 2)
     {
-        var a = document.getElementById("txtToCCUser").value;
+        var a = $("#txtToCCUser").val();
         var l = a.slice(0, index);
-        document.getElementById("txtToCCUser").value = l + val;
-        document.getElementById("ajax_response_cc").innerHTML = "";
+        $("#txtToCCUser").val(l + val);
+        $("#ajax_response_cc").html("");
+        $("#ajax_response_cc").hide();
+        $("#ajax_response_cc").removeClass('open');
     }
     if (block_id == 3)
     {
-        var a = document.getElementById("txtToBCCUser").value;
+        var a = $("#txtToBCCUser").val();
         var l = a.slice(0, index);
-        document.getElementById("txtToBCCUser").value = l + val;
-        document.getElementById("ajax_response_bcc").innerHTML = "";
+        $("#txtToBCCUser").val(l + val);
+        $("#ajax_response_bcc").html("");
+        $("#ajax_response_bcc").hide();
+        $("#ajax_response_bcc").removeClass('open');
     }
 
 }

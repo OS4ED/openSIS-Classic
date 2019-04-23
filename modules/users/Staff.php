@@ -27,6 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+if ($_SESSION['staff_id']== '' && $_REQUEST['staff_id'] != 'new')
+        $_SESSION['staff_id'] = $_REQUEST['staff_id'];
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
         $_REQUEST['staff']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
@@ -56,9 +59,72 @@ if ($_REQUEST['month_values']['JOINING_DATE'] != '' && $_REQUEST['day_values']['
 }
 
 $show_title = '';
+                if(UserStaffID() !='')    
+                {
+                    
+                        
+  if ($_REQUEST['v'] && isset($_REQUEST['staff_id'])) {
+
+
+
+                $val = optional_param('v', 0, PARAM_INT);
+              
+                if ($val == 1) {
+                    unset($_SESSION['staff_id']);
+                    $_SESSION['staff_id'] = $_SESSION['staff_order'][1];
+                }
+                if ($val == 2) {
+                    $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+                     $final_pos = $final_pos - 1;
+                    unset($_SESSION['staff_id']);
+                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+                }
+                if ($val == 3) {
+                    $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+                    $final_pos = $final_pos + 1;
+                    unset($_SESSION['staff_id']);
+                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+                }
+                if ($val == 4) {
+                    unset($_SESSION['staff_id']);
+                    $final_pos = count($_SESSION['staff_order']);
+                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+                }
+                
+            }
+            $val = $_REQUEST['v'];
+                        $count = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+                         $_SESSION['count_staff'] = $count;
+                        $_SESSION['total_staff'] = count($_SESSION['staff_order']);
+                        $last_stu = count($_SESSION['staff_order']);
+                        $last_stu = $_SESSION['staff_order'][$last_stu];
+                        echo '<div class="row">';
+                        echo '<div class="col-md-12 text-right">';
+                        echo "<p>Showing " . (count($_SESSION['staff_order']) > 1 ? $_SESSION['count_staff'] : '1') . " of " . (count($_SESSION['staff_order']) > 1 ? $_SESSION['total_staff'] : '1') . " &nbsp; ";
+
+                        if (count($_SESSION['staff_order']) > 1) {
+                            if (UserStaffID() != $_SESSION['staff_order'][1]) {
+                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=1&staff_id=" . UserStaffID() . " ><i class=\"icon-first\"></i> First</A></span>";
+
+                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=2&staff_id=" . UserStaffID() . " > <i class=\"icon-backward2\"></i> Previous</A></span>";
+                            }
+                            if (UserStaffID() != $last_stu) {
+
+                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=3&staff_id=" . UserStaffID() . " >Next <i class=\"icon-forward3\"></i></A></span>";
+
+                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=4&staff_id=" . UserStaffID() . " >Last <i class=\"icon-last\"></i></A></span>";
+                            }
+                        }
+                        
+                        echo '</div>';
+                        echo '</div>';
+                        
+                        }
+                        
+                       
 if (isset($_REQUEST['staff_id']) && $_REQUEST['staff_id'] != 'new') {
     $show_title = 'y';
-
+$_REQUEST['staff_id']=$_SESSION['staff_id'];
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "'"));
     $count_staff_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM staff"));
     if ($count_staff_RET[1]['NUM'] > 1) {
@@ -245,7 +311,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 //                        }
 
                 foreach ($_REQUEST['staff'] as $column_name => $value) {
-                    if ($column_name == 'BIRTHDATE')
+                    if ($column_name == 'BIRTHDATE' && $value!='')
                         $value = date("Y-m-d", strtotime($value));
                     if ($column_name == 'SCHOOLS')
                         continue;
@@ -437,7 +503,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             unset($_REQUEST['year_staff']);
             
             foreach ($_REQUEST['staff'] as $column => $value) {
-                if ($column == 'BIRTHDATE')
+                if ($column == 'BIRTHDATE' && $value!='')
                 {
                     $value = date("Y-m-d", strtotime($value));
                    
@@ -495,6 +561,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
          $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
             if ($error != true) {
+                //echo $sql;exit;
                 DBQuery($sql);
                 // possible modification start
                 $staff_id = DBGet(DBQuery("select max(staff_id) as id from staff"));

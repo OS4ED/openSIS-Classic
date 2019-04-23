@@ -146,8 +146,11 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $i = 0;
                         $total_grade_point = 0;
                         $Total_Credit_Hr_Attempted = 0;
+                        $commentc='';
                         foreach ($course_periods as $course_period_id => $mps) {
                             $i++;
+                            //$commentc=$mps[key($mps)][1]['COMMENT_TITLE'];
+                            $commentc=$mps[$last_mp][1]['COMMENT_TITLE'];
                             $grades_RET[$i]['COURSE_TITLE'] = $mps[key($mps)][1]['COURSE_TITLE'];
                             $grades_RET[$i]['TEACHER'] = $mps[key($mps)][1]['TEACHER'];
                             $grades_RET[$i]['TEACHER_ID'] = $mps[key($mps)][1]['TEACHER_ID'];
@@ -274,8 +277,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         $comments_arr[$comment['REPORT_CARD_COMMENT_ID']] = $comment['SORT_ORDER'];
                                     }
                                 }
-                                if ($mps[$last_mp][1]['COMMENT_TITLE'])
-                                    $grades_RET[$i]['COMMENT'] .= $sep . $mps[$last_mp][1]['COMMENT_TITLE'];
+                                if($commentc!='')
+                                $grades_RET[$i]['COMMENT'] .= $sep .$commentc;
+                                //if ($mps[$last_mp][1]['COMMENT_TITLE'])
+                                 //   $grades_RET[$i]['COMMENT'] .= $sep . $mps[$last_mp][1]['COMMENT_TITLE'];
                             }
                         }
                         asort($comments_arr, SORT_NUMERIC);

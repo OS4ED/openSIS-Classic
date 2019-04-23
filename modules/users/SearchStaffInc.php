@@ -208,6 +208,10 @@ if (User('PROFILE') == 'admin') {
                     $staff_RET[$i]['Status'] = '<font style="color:red">Inactive</font>';
             }
         }
+        
+        foreach ($staff_RET as $si => $sd)
+            $_SESSION['staff_order'][$si] = $sd['STAFF_ID'];
+        //print_r($staff_RET);
         ListOutput($staff_RET, $columns, $singular, $plural, $link, false, $extra['options']);
         echo '</div>'; //.panel
     }

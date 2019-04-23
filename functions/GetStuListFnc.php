@@ -584,6 +584,7 @@ else
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
   
+    
 
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
@@ -757,7 +758,8 @@ function appendSQL($sql, & $extra) {
                 
             //////////////extra field table start2////////////////////
             
-                                            if ($_REQUEST['username']) {
+                                          
+    if ($_REQUEST['username']) {
         $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.student_id ';
         }
             //////////////extra field table end2////////////////////
@@ -903,20 +905,36 @@ function appendSQL($sql, & $extra) {
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Comments starts with: </b></font>' . $_REQUEST['med_vist_comments'] . '<BR>';
     }
-  if ($_REQUEST['day_to_birthdate'] && $_REQUEST['month_to_birthdate'] && $_REQUEST['year_to_birthdate'] && $_REQUEST['day_from_birthdate'] && $_REQUEST['month_from_birthdate'] && $_REQUEST['year_from_birthdate']) {
+   
+  if ($_REQUEST['day_to_birthdate'] && $_REQUEST['month_to_birthdate']  && $_REQUEST['day_from_birthdate'] && $_REQUEST['month_from_birthdate']) {
      
-        $date_to =$_REQUEST['year_to_birthdate'].'-'.$_REQUEST['day_to_birthdate'] . '-' . $_REQUEST['month_to_birthdate'];
-        $date_from = $_REQUEST['year_from_birthdate'] . '-' .$_REQUEST['day_from_birthdate'] . '-' . $_REQUEST['month_from_birthdate'];
+       // $date_to =$_REQUEST['year_to_birthdate'].'-'.$_REQUEST['day_to_birthdate'] . '-' . $_REQUEST['month_to_birthdate'];
+        //$date_from = $_REQUEST['year_from_birthdate'] . '-' .$_REQUEST['day_from_birthdate'] . '-' . $_REQUEST['month_from_birthdate'];
         
 //        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
 //        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
 //        
-        $sql .= ' AND (s.BIRTHDATE  BETWEEN \'' .$date_from . '\' AND \'' . $date_to. '\') ';
+      //  $sql .= ' AND (s.BIRTHDATE  BETWEEN \'' .$date_from . '\' AND \'' . $date_to. '\') ';
         // $sql .= ' AND (s.BIRTHDATE  >= \'' .$date_from . '\' AND s.BIRTHDATE  <= \'' . $date_to. '\') ';
-        if (!$extra['NoSearchTerms'])
+       $date_to = $_REQUEST['month_to_birthdate'] . '-' . $_REQUEST['day_to_birthdate'];
+        $date_from = $_REQUEST['month_from_birthdate'] . '-' . $_REQUEST['day_from_birthdate'];
+        $sql .= ' AND (SUBSTR(s.BIRTHDATE,6,2) BETWEEN \'' . $_REQUEST['day_from_birthdate'] . '\' AND \'' . $_REQUEST['day_to_birthdate'] . '\') ';
+        $sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
+      if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Birthday Starts from ' . $date_from . ' to ' . $date_to . '</b></font>';
     }
     
+    
+    if ($_REQUEST['day_dob_birthdate'] && $_REQUEST['month_dob_birthdate']  && $_REQUEST['year_dob_birthdate']) {
+     
+
+        $date_dob = $_REQUEST['year_dob_birthdate'] . '-' . $_REQUEST['day_dob_birthdate'].'-'.$_REQUEST['month_dob_birthdate'];
+        //$date_from = $_REQUEST['month_from_birthdate'] . '-' . $_REQUEST['day_from_birthdate'];
+        $sql .= ' AND s.BIRTHDATE = \'' .$date_dob. '\'';
+        //$sql .= ' AND (SUBSTR(s.BIRTHDATE,9,2) BETWEEN \'' . $_REQUEST['month_from_birthdate'] . '\' AND \'' . $_REQUEST['month_to_birthdate'] . '\') ';
+      if (!$extra['NoSearchTerms'])
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Birthday is ' .$date_dob . '</b></font>';
+    }
     
     
     if ($_REQUEST['day_to_est'] && $_REQUEST['month_to_est'] && $_REQUEST['day_from_est'] && $_REQUEST['month_from_est']) {

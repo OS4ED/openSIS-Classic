@@ -72,7 +72,11 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
 
 $PHP_tmp_SELF = PreparePHP_SELF();
 //echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
-echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc]&student_id=".UserStudentID()." method=POST>";
+if(isset($_REQUEST['search_modfunc']) && $_REQUEST['search_modfunc']=='list')
+echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
+else
+echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[modfunc] method=POST>";
+
 //Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=
 echo "<div class=\"panel panel-default\">";
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
@@ -222,7 +226,12 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
         if ($_REQUEST['_search_all_schools'] != 'Y') {
             $sql .= ' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' ';
         }
-
+//        if()
+//            print_r($_REQUEST);
+            if($_REQUEST['stuid']!=''){
+                $sql .= ' AND ssm.STUDENT_ID=\'' . $_REQUEST['stuid'] . '\' ';
+            }
+//            echo $sql;
 // TODO Do not Delete       $sql = appendSQL($sql,$tmp_extra=array('NoSearchTerms'=>true)); // extra must be lvalue
         $RET = DBGet(DBQuery($sql), array(), array('STUDENT_ID', 'SHORT_DATE'));
     }

@@ -29,7 +29,7 @@ function PDFStart($options="--webpage --quiet -t pdf12 --jpeg --no-links --portr
 {$_REQUEST['_openSIS_PDF'] = 1;
 	$pdfitems['options']=$options;
 	ob_start();
-	echo "<link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">"; 
+	echo "<link rel='stylesheet' type='text/css' href='assets/css/export_print.css'><body style=\" font-family:Arial;\">"; 
 	return $pdfitems;
 }
 ?>

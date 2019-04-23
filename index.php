@@ -429,14 +429,19 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if (isset($login_RET) && count($login_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $login_RET[1]['FAILED_LOGIN'] < $ad_f_cnt && $login_RET[1]['PROFILE'] != 'admin')
                 $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the school administration.";
-            else
-                $error[] = "Due to excessive incorrect login attempts your account has been disabled. Contact the school administration to enable your account.";
+            else{
+               $check_acess=DBGet(DBQuery('SELECT OPENSIS_ACCESS FROM staff_school_info WHERE STAFF_ID='.$login_RET[1]['STAFF_ID']));
+               if($check_acess[1]['OPENSIS_ACCESS']=='N')
+               $error[] = "You do not have portal access. Contact the school administration to enable it.";    
+               else    
+               $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
+            }
         }
         if (isset($student_RET) && count($student_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $student_RET[1]['FAILED_LOGIN'] < $ad_f_cnt)
                 $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the school administration.";
             else
-                $error[] = "Due to excessive incorrect login attempts your account has been disabled. Contact the school administration to enable your account.";
+                $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
         }
     }
     elseif ($student_RET) {

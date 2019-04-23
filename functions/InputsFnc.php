@@ -107,6 +107,60 @@ function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_y
     return $dt;
 }
 
+
+
+
+function SearchDateInputDob($day, $month, $year, $allow_day, $allow_month, $allow_year) {
+    $dt = '';
+
+    $dt.= '<div class="input-group datepicker-group-month-date" id="original_date_' . $day . '" value="" style="">';
+    $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
+    $dt.= '<input id="date_' . $day . '" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '</div>';
+
+    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
+    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+   
+
+    /* if ($allow_day == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $day . '" id="' . $day . '">';
+      $dt.='<option value="">Day</option>';
+      for ($i = 1; $i <= 31; $i++) {
+      if ($i < 10)
+      $i = '0' . $i;
+
+      $dt.='<option value="' . $i . '">' . $i . '</option>';
+      }
+      $dt.='</select>';
+      $dt.='</div>';
+      }
+
+
+      if ($allow_month == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $month . '" id="' . $month . '">';
+      $dt.='<option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>';
+      $dt.='</select>';
+      $dt.='</div>';
+      }
+
+
+      if ($allow_year == 'Y') {
+      $dt.='<div class="col-xs-3">';
+      $dt.='<select class="form-control" name="' . $year . '" id="' . $year . '">';
+      $dt.='<option value="">Year</option>';
+      for ($i = 1930; $i <= 2030; $i++) {
+      $dt.='<option value="' . $i . '">' . $i . '</option>';
+      }
+      $dt.='</select>';
+      $dt.='</div>';
+      } */
+
+    return $dt;
+}
+
+
 function DateInput_for_EndInput($value, $name, $title = '', $div = true, $allow_na = true) {
     if (Preferences('HIDDEN') != 'Y')
         $div = false;

@@ -147,7 +147,8 @@ if (!$_REQUEST['list_gpa']) {
         $extra['WHERE'] .= ' AND sgc.STUDENT_ID=ssm.STUDENT_ID AND sgc.MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\'';
     }
 }
-
+if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
+     $extra['WHERE'] .= ' AND sgc.STUDENT_ID=\''. UserStudentID().'\'';
 $extra['columns_after'] = array('GPA' => 'GPA', 'UNWEIGHTED_GPA' => 'Unweighted GPA', 'WEIGHTED_GPA' => 'Weighted GPA', 'CLASS_RANK' => 'Class Rank');
 $extra['link']['FULL_NAME'] = false;
 $extra['new'] = true;

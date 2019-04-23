@@ -611,16 +611,19 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
         echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Start Date</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
         echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Marking Period</label><div class="col-lg-8">';
-        $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-        $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
-        $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+//        $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+//        $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+//        $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
 
-        echo '<SELECT class="form-control" name=marking_period_id id=marking_period><OPTION value=' . $years_RET[1]['MARKING_PERIOD_ID'] . '>' . $years_RET[1]['TITLE'] . '</OPTION>';
-        foreach ($semesters_RET as $mp)
-            echo "<OPTION value=$mp[MARKING_PERIOD_ID]>" . $mp['TITLE'] . '</OPTION>';
-        foreach ($quarters_RET as $mp)
-            echo "<OPTION value=$mp[MARKING_PERIOD_ID]>" . $mp['TITLE'] . '</OPTION>';
-        echo '</SELECT>';
+//        echo '<SELECT class="form-control" disabled  id=marking_period><OPTION value=' . $years_RET[1]['MARKING_PERIOD_ID'] . '>' . $years_RET[1]['TITLE'] . '</OPTION>';
+//        echo "<OPTION value='' selected>N/A</OPTION>";
+//        foreach ($semesters_RET as $mp)
+//            echo "<OPTION value=$mp[MARKING_PERIOD_ID]>" . $mp['TITLE'] . '</OPTION>';
+//        foreach ($quarters_RET as $mp)
+//            echo "<OPTION value=$mp[MARKING_PERIOD_ID]>" . $mp['TITLE'] . '</OPTION>';
+//        echo '</SELECT>';
+        echo '<div class="form-control" id="showTitle" ></div>';
+        echo '<input type=hidden name=marking_period_id id=val_marking_period_id />';
         echo '</div></div></div>';
         echo '</div>'; //.row
         PopTable_wo_header('footer');

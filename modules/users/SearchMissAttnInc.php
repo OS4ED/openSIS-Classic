@@ -35,13 +35,15 @@ if ($_REQUEST['From'] && $_REQUEST['to']) {
     $From = (date('Y-m-d', strtotime($_REQUEST['placed_From'])));
 } elseif (!$_REQUEST['month_From'] && !$_REQUEST['day_From'] && !$_REQUEST['year_From']) {
     $missing_date= DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS SCHOOL_DATE FROM missing_attendance WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));
-    if(count($missing_date) > 0)
+    
+    if(count($missing_date) > 0 && $missing_date[1]['SCHOOL_DATE']!="")
     {
      $_REQUEST['placed_From'] = $missing_date[1]['SCHOOL_DATE'];
     }
     else
     $_REQUEST['placed_From'] = '01-' . date('m') . '-' . date('Y');
     $From = (date('Y-m-d', strtotime($_REQUEST['placed_From'])));
+    
 }
 if ($_REQUEST['month_to'] && $_REQUEST['day_to'] && $_REQUEST['year_to']) {
     $_REQUEST['placed_to'] = $_REQUEST['day_to'] . '-' . $_REQUEST['month_to'] . '-' . $_REQUEST['year_to'];

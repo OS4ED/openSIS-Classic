@@ -10475,13 +10475,40 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     $number_rec = 100;                   
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
-                        echo '$(function(){if($("#results").length>0){';
-                        
-                        echo "var pager = new Pager('results',$number_rec);\n";
-                        echo "pager.init();\n";
-                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-                        echo "pager.showPage(1);\n";
-                        echo '}});';
+                        echo "var table = $('#results').DataTable({"
+                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                        . "language: {
+                            search: '<span>Filter:</span> _INPUT_',
+                            lengthMenu: '<span>Show:</span> _MENU_',
+                            paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+                        },
+                        drawCallback: function () {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+                        },
+                        preDrawCallback: function() {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+                        },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
+                        aaSorting: [],
+                        'iDisplayLength': " . $number_rec . ""
+                        . "});";
+                        echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
+                                var elCheckbox = oArgs.target;
+                                var newValue = elCheckbox.checked;
+                                var record = this.getRecord(elCheckbox);
+                                var column = this.getColumn(elCheckbox);
+                                record.setData(column.key,newValue);
+                                }); ";
+                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
+                        echo "$('.dataTables_length select').select2({
+                            minimumResultsForSearch: Infinity,
+                            width: 'auto'
+                        });";
                         echo "</script>\n";
                     }
                 }

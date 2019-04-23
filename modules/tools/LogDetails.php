@@ -74,7 +74,7 @@ if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'
 //    $org_start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
 
 //    $conv_st_date = con_date($org_start_date);
-    $conv_st_date=$_REQUEST['year_start'].'-'.$_REQUEST['month_start'].'-'.$_REQUEST['day_start'];
+    $conv_st_date=$_REQUEST['year_start'].'-'.$_REQUEST['month_start'].'-'.$_REQUEST['day_start'].' '.'00:00:00';
 }
 
 if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
@@ -84,22 +84,23 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 //    $conv_end_date = con_date_end($org_end_date);
 //    
     
-    $conv_end_date=$_REQUEST['year_end'].'-'.$_REQUEST['month_end'].'-'.$_REQUEST['day_end'];
+    $conv_end_date=$_REQUEST['year_end'].'-'.$_REQUEST['month_end'].'-'.$_REQUEST['day_end'].' '.'23:59:59';
 }
 if($_REQUEST['modfunc']=='del')
 {
-    print_r($_REQUEST);
+    
+  
     
      if (DeletePromptMod('Acess log', $qs)) {
+         
         if(count($_REQUEST['log_arr'])>0)
         {
         // $del_id=implode(',',$_REQUEST['log_arr']);
             //print_r($_REQUEST['log_arr']);
      $del_id=  implode(',', $_REQUEST['log_arr']);
 //         echo "DELETE FROM login_records WHERE id in('$del_id')";exit;
-     echo "DELETE FROM login_records WHERE id in($del_id)";
         DBQuery("DELETE FROM login_records WHERE id in($del_id)");
-            
+         echo '<script>window.location.href="Modules.php?modname=tools/LogDetails.php"</script>';   
         }
         unset($_REQUEST['modfunc']);
         }
@@ -109,8 +110,7 @@ if ($_REQUEST['modfunc'] == 'generate') {
  echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=del method=POST >";
     if (isset($conv_st_date) && isset($conv_end_date)) {
         //echo 'SELECT DISTINCT FIRST_NAME,CONCAT(\'<INPUT type=checkbox name=log_arr[]  checked >\') AS CHECKBOX,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC';
-       
-        $alllogs_RET = DBGet(DBQuery('SELECT  FIRST_NAME,CONCAT(\'<INPUT type=checkbox name=log_arr[] value=\',ID,\' checked >\') AS CHECKBOX,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC'));
+        $alllogs_RET = DBGet(DBQuery('SELECT ID,  FIRST_NAME,CONCAT(\'<INPUT type=checkbox name=log_arr[] value=\',ID,\' checked >\') AS CHECKBOX,USER_NAME,LAST_NAME,LOGIN_TIME,PROFILE,STAFF_ID,FAILLOG_COUNT,FAILLOG_TIME,USER_NAME,IF(IP_ADDRESS LIKE \'::1\',\'127.0.0.1\',IP_ADDRESS) as IP_ADDRESS,STATUS FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY LOGIN_TIME DESC'),array('CHECKBOX' => '_makeChooseCheckbox'));
 
         foreach($alllogs_RET as $k => $v)
         {
@@ -127,18 +127,31 @@ if ($_REQUEST['modfunc'] == 'generate') {
         }
 
         }
-        if (count($alllogs_RET)) {
+        echo '<div id="hidden_checkboxes" />';
+            $check_all_arr=array();
+        foreach($alllogs_RET as $xy)
+        {
+            $check_all_arr[]=$xy['ID'];
+        }
+        $check_all_stu_list=implode(',',$check_all_arr);
+        echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+        echo '<br>';
+        echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
+echo '</div>';
+//        if (count($alllogs_RET)) {
             echo '<div class="panel panel-default">';
               //$extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
-            ListOutput($alllogs_RET, array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'log_arr\');"><A>','LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
+            ListOutput($alllogs_RET, array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller  onclick="checkAllDtMod(this,\'log_arr\');"><A>','LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
+           
             if(count($alllogs_RET)>0) 
             echo '<div class="panel-footer text-center"><INPUT type=submit value="Delete Log" class="btn btn-primary"></div>';
             echo '</div>';
             echo "</FORM>";
-        } else {
-
-            echo '<table border=0 width=90%><tr><td class="alert"></td><td class="alert_msg"><b>No login records were found.</b></td></tr></table>';
-        }
+//        } else {
+//
+//            echo '<table border=0 width=90%><tr><td class="alert"></td><td class="alert_msg"><b>No login records were found.</b></td></tr></table>';
+//        }
+            
     }
     if ((!isset($conv_st_date) || !isset($conv_end_date))) {
         echo '<center><font color="red"><b>You have to select date from the date range</b></font></center>';
@@ -215,6 +228,16 @@ function con_date_end($date) {
 
     $select_date = $year . '-' . $month . '-' . $day . ' ' . '23:59:59';
     return $select_date;
+}
+
+
+function _makeChooseCheckbox($value, $title) {
+    global $THIS_RET;
+
+    
+//    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+    return "<input  type=checkbox name=unused[$THIS_RET[ID]] value=" . $THIS_RET[ID] . "   id=$THIS_RET[ID] onClick='setHiddenCheckboxStudents(\"log_arr[$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />";
 }
 
 ?>

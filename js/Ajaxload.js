@@ -2432,7 +2432,12 @@ function MassScheduleSessionSet(title,subject_id,course_id,course_period_id)
 
 function MassScheduleSessionSetCallback(data)
 {
-    document.getElementById('course_div').innerHTML =data;   
+//    alert(data);
+    var tdata=data.split('|_*|*_|');
+//    obj.innerHTML = tdata[1];
+    document.getElementById('showTitle').innerHTML=tdata[2];
+    document.getElementById('val_marking_period_id').value=tdata[1];
+    document.getElementById('course_div').innerHTML =tdata[0];   
     $('#modal_default').modal('hide');
     $('.modal-backdrop').remove();
 }

@@ -124,9 +124,13 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                 $school_start_dt = $school_syear_date[1]['START_DATE'];
                 $school_end_dt = $school_syear_date[1]['END_DATE'];
-                if ((strtotime($start_date) > strtotime($end_date) && $start_date != "" && $end_date != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($end_date) && $row_s_date[1]['START_DATE'] != "" && $end_date != "") || (strtotime($start_date) > strtotime($row_s_date[1]['END_DATE']) && $start_date != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($row_s_date[1]['END_DATE']) && $row_s_date[1]['START_DATE'] != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt))) {
+               
+                if ($table_name!='student_goal_progress' && ((strtotime($start_date) > strtotime($end_date) && $start_date != "" && $end_date != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($end_date) && $row_s_date[1]['START_DATE'] != "" && $end_date != "") || (strtotime($start_date) > strtotime($row_s_date[1]['END_DATE']) && $start_date != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($row_s_date[1]['END_DATE']) && $row_s_date[1]['START_DATE'] != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt)))) {
+                {
                     ShowErr('Data not saved because start and end date is not valid');
+                }
                 } else {
+                       
                     if (!is_numeric($table_name)) {
                         $sql = 'UPDATE ' . $table_name . ' SET ';
                     }
@@ -227,7 +231,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     if (isset($value)) {
                         $fields .= $column . ',';
 
-                        $values .= '\'' . singleQuoteReplace('', '', $value) . '\','; // linux
+                        $values .= '\'' . str_replace("'", "''", singleQuoteReplace('', '',$value)) . '\','; // linux
 
                         $go = true;
                     }
