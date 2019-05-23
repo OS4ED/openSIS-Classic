@@ -29,7 +29,7 @@
 include('../../../RedirectIncludes.php');
 include_once('modules/schoolsetup/includes/Functions.php');
 
-$fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE FROM school_custom_fields WHERE SYSTEM_FIELD = 'N' AND SCHOOL_ID='".UserSchool()."' ORDER BY SORT_ORDER,TITLE"));
+$fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE FROM school_custom_fields WHERE SYSTEM_FIELD = 'N' AND (SCHOOL_ID='".UserSchool()."' OR SCHOOL_ID=0) ORDER BY SORT_ORDER,TITLE"));
 
 if(UserSchool())
 {

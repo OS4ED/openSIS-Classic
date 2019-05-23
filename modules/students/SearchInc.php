@@ -64,8 +64,6 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 $_SESSION['stu_search']['search_from_grade'] = 'true';
             }
 
-            
-            PopTable('header', 'Find a Student');
 
             if ($extra['pdf'] != true) {
                 echo "<FORM name=search class=\"no-margin-bottom form-horizontal\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
@@ -73,14 +71,13 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 echo "<FORM name=search class=\"no-margin-bottom form-horizontal\" id=search action=ForExport.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
             }
 
+            PopTable('header', 'Find a Student');
+
             Search('general_info');
             if ($extra['search']) {
                 echo $extra['search'];
             }
             Search('student_fields');
-
-
-
 
             # ---   Advanced Search Start ---------------------------------------------------------- #
 
@@ -187,38 +184,40 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '</div>'; //.col-md-12
             echo '</div>'; //.row
             echo '<hr/>';
+
+            $extra_footer = '<div class="text-right">';
+            $extra_footer .= '<a id="addiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-10"><i class="icon-cog"></i> Advanced Search</a>';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                $extra_footer .= "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                $extra_footer .= "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+            $extra_footer .= '</div>';
 
-            echo '<a id="addiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink"><i class="icon-cog"></i> Advanced Search</a>';
-
-
+            PopTable('footer', $extra['footer'] . $extra_footer);
             echo '</FORM>';
             // set focus to last name text box
             echo '<script type="text/javascript"><!--
 				document.search.last.focus();
 				--></script>';
-            PopTable('footer');
-            
+
             break;
 
         case 'parent':
         case 'student':
-            PopTable('header', 'Search');
             if ($extra['pdf'] != true)
                 echo "<FORM class='form-horizontal m-b-0' action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
                 echo "<FORM class='form-horizontal m-b-0' action=ForExport.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
 
+            PopTable('header', 'Search');
+
             if ($extra['search'])
                 echo $extra['search'];
 
-            echo Buttons('Submit', 'Reset');
+            $btn = Buttons('Submit', 'Reset');
 
+            PopTable('footer', $btn);
             echo '</FORM>';
-            PopTable('footer');
             break;
     }
 }
@@ -370,52 +369,45 @@ else {
             if (count($students_RET) > 0) {
                 echo '<div class="table-responsive">';
             }
-            echo '<div id="hidden_checkboxes" />';
-                $check_all_arr=array();
-                foreach($students_RET as $xy)
-                {
-                    $check_all_arr[]=$xy['STUDENT_ID'];
-                }
-                $check_all_stu_list=implode(',',$check_all_arr);
-                echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
-                echo '<br>';
-                echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
+            echo '<div id="hidden_checkboxes"></div>';
+            $check_all_arr = array();
+            foreach ($students_RET as $xy) {
+                $check_all_arr[] = $xy['STUDENT_ID'];
+            }
+            $check_all_stu_list = implode(',', $check_all_arr);
+            echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
+            echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
             ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
             if (count($students_RET) > 0) {
-                echo '</div>';
+                echo '</div>'; //.table-responsive
             }
-            echo '</div>';
-            echo '</div>';
+            echo '</div>'; //.panel-body
         } else {
             if (User('PROFILE') == 'student' || User('PROFILE') == 'parent') {
                 echo '<input type=hidden name=st_arr[] value=' . UserStudentID() . '>';
             }
-            //else {
-                echo '<div class="panel-body">';
-                $stu_ids_for_hidden = array();
-                if (count($students_RET) > 0) {
-                    echo '<div class="table-responsive">';
-                }
-                echo '<div id="hidden_checkboxes" />';
-                $check_all_arr=array();
-                foreach($students_RET as $xy)
-                {
-                    $check_all_arr[]=$xy['STUDENT_ID'];
-                }
-                $check_all_stu_list=implode(',',$check_all_arr);
-                echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
-                echo '<br>';
-                echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
-                ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
-//                if (count($students_RET) > 0) {
-//                    echo '</div>';
-//                }
-                echo '</div>';
-                echo '</div>';
-            //}
+            echo '<div class="panel-body">';
+            $stu_ids_for_hidden = array();
+            if (count($students_RET) > 0) {
+                echo '<div class="table-responsive">';
+            }
+            echo '<div id="hidden_checkboxes"></div>';
+            $check_all_arr = array();
+            foreach ($students_RET as $xy) {
+                $check_all_arr[] = $xy['STUDENT_ID'];
+            }
+            $check_all_stu_list = implode(',', $check_all_arr);
+            echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
+            echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+            ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            if (count($students_RET) > 0) {
+                echo '</div>'; //.table-responsive
+            }
+            echo '</div>'; //.panel-body
         }
 
         echo '</div>'; //#students
+        echo $extra['footer'];
         if ($_REQUEST['modname'] != 'attendance/Administration.php')
             echo "</div>"; //.panel
     } elseif (count($students_RET) == 1) {
@@ -562,7 +554,6 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
-
 
 function _make_sections($value) {
     if ($value != '') {

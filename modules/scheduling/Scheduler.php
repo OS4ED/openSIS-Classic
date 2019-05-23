@@ -43,9 +43,9 @@ if ($_REQUEST['modname'] == 'scheduling/Scheduler.php' && !$_REQUEST['run']) {
 } else
     $function = '_returnTrue';
 if ($function('Confirm Scheduler Run', 'Are you sure you want to run the scheduler?', '        
-    <div class="form-group"><div class="checkbox-inline"><label><INPUT type=checkbox name=test_mode   value=Y onclick=showhidediv("div1",this);>Schedule Unscheduled Requests</label></div>
-    <div id=div1 style=display:none>' . PrepareDateSchedule($date, '_date', false, '') . '</div> 
-    <div class="form-group"><div class="checkbox-inline"><label><INPUT type=checkbox name=delete_mode value=Y> Delete Current Schedules</label></div></div>')) {
+    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=test_mode   value=Y onclick=showhidediv("div1",this);><span></span>Schedule Unscheduled Requests</label></div>
+    <div id=div1 class="text-center" style=display:none><label>Select Date</label><div class="form-inline m-b-20">' . PrepareDateSchedule($date, '_date', false, '') . '</div></div> 
+    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=delete_mode value=Y><span></span>Delete Current Schedules</label></div></div>')) {
 
     PopTable('header', 'Scheduler Progress');
     echo '<CENTER><TABLE cellpadding=0 cellspacing=0><TR><TD><TABLE cellspacing=0 border=0><TR>';

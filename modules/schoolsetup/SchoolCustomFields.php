@@ -27,17 +27,23 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-
+if(isset($_SESSION['assoc_err']) && $_SESSION['assoc_err']=='Y'){
+    echo'<div class="alert alert-danger alert-bordered"><i class="icon-alert"></i>This custom field cannot be deleted because there is data associated with this field in the database.</div>';
+    unset($_SESSION['assoc_err']);
+}
 
 echo '<div class="row">';
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax'])) {
 
-//    print_r($_REQUEST);
+    // print_r($_REQUEST);
     if($_REQUEST['SYSTEM_WIDE']=='Y')
         $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']=0;
     else
         $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']= UserSchool();
     unset($_REQUEST['SYSTEM_WIDE']);
+    // echo '<br><br>';
+    // print_r($_REQUEST);
+    
     $table = $_REQUEST['table'];
     foreach ($_REQUEST['tables'] as $id => $columns) {
         $flag = 0;
@@ -46,17 +52,19 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
 
             $sql = "UPDATE $table SET ";
-
+            $sort_oder_to_change=0;
             foreach ($columns as $column => $value) {
                 $value = paramlib_validation($column, $value);
                 $sql .= $column . "='" . str_replace("\'", "''", trim($value)) . "',";
+                if($column=='SORT_ORDER' && $value!='') 
+                $sort_oder_to_change=$value;
             }
             $sql = substr($sql, 0, -1) . " WHERE ID='$id'";
             $go = true;
             if ($table == 'school_custom_fields')
                 $custom_field_id = $id;
 
-
+            // print_r($_REQUEST);exit;
             if ($custom_field_id) {
 
                 $chk_cus_data = DBGet(DBQuery('SELECT * from schools WHERE SYEAR=' . UserSyear() . ' AND id=' . UserSchool()));
@@ -117,8 +125,15 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 }
                 if ($flag == 0) {
                     DBQuery($Sql_modify_column);
-                } else
-                    echo'<p style=color:red>Cannot be Modified, As data has been associated with this field</p>';
+                } else{
+                    if($sort_oder_to_change!=0){
+                        DBQuery('UPDATE school_custom_fields SET SORT_ORDER=\''.$sort_oder_to_change.'\' WHERE ID='.$custom_field_id);
+                    }
+                    else{
+                        $_SESSION['assoc_err']='Y';
+                    }
+                }
+                    // echo'<p style=color:red>This custom field cannot be deleted because there is data associated with this field in the database.</p>';
             }
         }
         else {
@@ -227,6 +242,10 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
         if ($go && $flag == 0)
             DBQuery($sql);
     }
+
+    
+    echo '<script>window.location.href="Modules.php?modname=schoolsetup/SchoolCustomFields.php"</script>';
+
     unset($_REQUEST['tables']);
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
@@ -234,9 +253,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 
         $sc_cus_fld_column = 'CUSTOM_' . $_REQUEST['id'];
 
-        $chk_sch_cus = DBGet(DBQuery('SELECT ' . $sc_cus_fld_column . '  as CUSTOM FROM schools WHERE  id=' . UserSchool() . ' and SYEAR=' . UserSyear()));
+        $chk_sch_cus = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM schools WHERE (' . $sc_cus_fld_column . '<>\'\' AND  ' . $sc_cus_fld_column . ' is NOT NULL)'));
 
-        if ($chk_sch_cus[1]['CUSTOM'] == '') {
+        if ($chk_sch_cus[1]['REC_EX'] == 0) {
             if (DeletePromptCommon('school field')) {
                 $id = clean_param($_REQUEST['id'], PARAM_INT);
                 DBQuery('DELETE FROM school_custom_fields WHERE ID=\'' . $id . '\'');
@@ -245,7 +264,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
                 unset($_REQUEST['id']);
             }
         } else {
-            UnableDeletePrompt('Cannot delete because school fields are associated');
+            UnableDeletePrompt('This custom field cannot be deleted because there is data associated with this field in the database.');
         }
     }
 }
@@ -291,8 +310,9 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
 
     // You can't change a student field type after it has been created
     // mab - allow changing between select and autos and edits and text
+    echo "<input id=custom name=custom type=hidden value=" . strip_tags(trim($_REQUEST[id])) . " />";
     if ($_REQUEST['id'] != 'new') {
-        echo "<input id=custom name=custom type=hidden value=" . strip_tags(trim($_REQUEST[id])) . " />";
+       
 
         $type_options = array('select' => 'Pull-Down', 'autos' => 'Auto Pull-down', 'edits' => 'Edit Pull-Down', 'text' => 'Text', 'radio' => 'Checkbox', 'codeds' => 'Coded Pull-Down', 'numeric' => 'Number', 'multiple' => 'Select Multiple from Options', 'date' => 'Date', 'textarea' => 'Long Text');
     } else
@@ -338,14 +358,14 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
 
     echo '</FORM>';
     echo '</div>'; //.col-md-6
-} else {
+} elseif (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) != 'delete') {
 
     echo '<div class="col-md-6 col-md-offset-3">';
     $count = 0;
     $count++;
     $LO_options = array('save' => false, 'search' => false, 'add' => true);
 
-    $columns = array('TITLE' => 'School Fields', 'TYPE' => 'Field Type');
+    $columns = array('TITLE' => 'School Fields','SORT_ORDER' => 'Sort Order', 'TYPE' => 'Field Type');
     $link = array();
     $arr = array('School Name', 'Address', 'City', 'State', 'Zip/Postal Code', 'Principal', 'Base Grading Scale', 'E-Mail', 'Website', 'School Logo');
     $RET = DBGet(DBQuery("SELECT * FROM school_custom_fields WHERE SCHOOL_ID IN (" . UserSchool() .",0) ORDER BY SORT_ORDER"));
@@ -354,8 +374,9 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
         $count++;
     }
     $count2 = 1;
-    foreach ($fields_RET1 as $key2) {
+    foreach ($fields_RET1 as $key_index=>$key2) {
         $dd[$count2] = $key2;
+        $dd[$count2]['SORT_ORDER'] = $key_index;
         $count2++;
     }
     foreach ($RET as $row) {

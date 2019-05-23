@@ -30,7 +30,7 @@ include('../../../RedirectIncludes.php');
 
 include_once('modules/students/includes/FunctionsInc.php');
 session_start();
-
+// print_r($_REQUEST);
 #########################################################ENROLLMENT##############################################
 
 if($_SESSION['ERR_TRANS'])
@@ -276,7 +276,7 @@ if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
 
     $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND ID=\'' . $enroll_id . '\''));
 
-
+    // print_r($_REQUEST);
     if ($end_date[1]['END_DATE']) {
         $end_date = $end_date[1]['END_DATE'];
         DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');
@@ -291,7 +291,7 @@ if ($_REQUEST['student_id'] != 'new') {
         $id = 'new';
     echo '<div id="students" class="table-responsive">';
     ListOutput($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link);
-    echo "</div>";
+    //echo "</div>";
     if ($id != 'new')
         $next_school = $RET[count($RET)]['NEXT_SCHOOL'];
     if ($id != 'new')

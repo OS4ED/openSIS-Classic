@@ -159,7 +159,7 @@ echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).
         echo '<span></span>';
         echo '</div>';
         echo '<h5 class="p-20">A new school called <b class="text-success">'.GetSchool(UserSchool()).'</b> has been created. To finish the operation, click the button below.</h5>';
-        echo '<div class="text-center"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
+        echo '<div class="text-right p-r-20"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
         echo '</div>'; //.new-school-created
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
@@ -334,10 +334,10 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             //echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {
-                $btns = "<div class=\"text-center\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
             } else {
 
-                $btns = "<div class=\"text-center\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
             }
         }
 

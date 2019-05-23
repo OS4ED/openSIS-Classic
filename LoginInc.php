@@ -34,16 +34,15 @@ $cont = db_start();
 //mysql_select_db($DatabaseName,$connection);
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 $maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_preference_misc where system_maintenance_switch=\'Y\''));
-Warehouse('header');
-echo '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
-echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
-echo '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
-//echo '<link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
-echo '<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">';
-echo '<link href="assets/css/extras/css-checkbox-switch.css" rel="stylesheet">';
-echo '<link rel="stylesheet" type="text/css" href="assets/css/login.css">';
-echo '<script type="text/javascript" src="js/Tabmenu.js"></script>';
-echo "<script type='text/javascript'>
+$extra_header  = '';
+$extra_header .= '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
+$extra_header .= '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
+$extra_header .= '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
+$extra_header .= '<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">';
+$extra_header .= '<link href="assets/css/extras/css-checkbox-switch.css" rel="stylesheet">';
+$extra_header .= '<link rel="stylesheet" type="text/css" href="assets/css/login.css">';
+$extra_header .= '<script type="text/javascript" src="js/Tabmenu.js"></script>';
+$extra_header .= "<script type='text/javascript'>
 	function delete_cookie (cookie_name)
 		{
   			var cookie_date = new Date ( );
@@ -52,6 +51,8 @@ echo "<script type='text/javascript'>
 		}
                 
 </script>";
+Warehouse('header', $extra_header);
+
 ?>
 
 <BODY onLoad="document.loginform.USERNAME.focus();
@@ -99,7 +100,7 @@ echo "<script type='text/javascript'>
                             ?>
                             <form name=loginform method='post' class="text-left" action='index.php'>
                                 <?php
-                                if($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH']=='Y'){
+                                if ($maintain_qr[1]['SYSTEM_MAINTENANCE_SWITCH'] == 'Y') {
                                     ?>
                                     <div class="form-group">
                                         <h4 class="text-center text-danger"><i class="icon-warning22" style="font-size: 50px;"></i><br/><br/>openSIS is under maintenance and login privileges have been turned off. Please log in when it is available again.</h4>
@@ -116,23 +117,22 @@ echo "<script type='text/javascript'>
                                     </div>
                                     <?php
                                 }
-                                 
                                 ?>
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_name']))
-								        $name = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_name'])));
-								    if (isset($_SESSION['fill_username'])) {
-								        $name = $_SESSION['fill_username'];
-								        unset($_SESSION['fill_username']);
-								    }
+                                        $name = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_name'])));
+                                    if (isset($_SESSION['fill_username'])) {
+                                        $name = $_SESSION['fill_username'];
+                                        unset($_SESSION['fill_username']);
+                                    }
                                     ?>
                                     <input type="text" class="form-control username" id="username" placeholder="Enter Username" name='USERNAME' value="<?php echo $name; ?>" >
                                 </div>
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_pwd']))
-        $pwd = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_pwd'])));
+                                        $pwd = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_pwd'])));
                                     ?>
                                     <input type="password" class="form-control password" placeholder="Enter Password" id="password" name='PASSWORD' AUTOCOMPLETE = 'off' value="<?php echo $pwd; ?>">
                                 </div>
@@ -141,22 +141,23 @@ echo "<script type='text/javascript'>
                                         <div class="checkbox checkbox-switch switch-success switch-sm">
                                             <label>
                                                 <input type="checkbox" name="remember" id="remember" <?php
-                                                if (isset($_COOKIE['remember_me_name'])) {
-                                                    echo 'checked="checked"';
-                                                } else {
-                                                    echo '';
-                                                }
-                                                ?> /><span></span> Remember Me
+                                    if (isset($_COOKIE['remember_me_name'])) {
+                                        echo 'checked="checked"';
+                                    } else {
+                                        echo '';
+                                    }
+                                    ?> /><span></span> Remember Me
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <br/>
                                 <p>
-                                    <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
+                                    <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();
+                                            Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
                                 </p>
                                 <p class="text-center"><a href="ForgotPass.php">Forgot Username / Password?</a></p>
-                
+
                             </form>
                         </div>
                     </div>
@@ -168,11 +169,11 @@ echo "<script type='text/javascript'>
                     <div class="loader loader4"></div>
                 </div>
                 <!--<div class="panel-footer">
-                <?php //echo $log_msg[1]['MESSAGE']; ?>
+                <?php //echo $log_msg[1]['MESSAGE'];  ?>
                 </div>-->
             </div>
             <footer>
-               openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
+                openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
             </footer>
 
         </div>

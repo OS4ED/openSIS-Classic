@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
-    echo'<p style=color:red>Message deleted sucessfully</p>';
+    echo'<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Message deleted sucessfully</div>';
 }
 $userName = User('USERNAME');
 $user_dt = DBGet(DBQuery('SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USERNAME=\'' . $userName . '\''));

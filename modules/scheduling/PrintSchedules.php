@@ -250,7 +250,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students"></div>';
+            echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students"></div>';
         echo "</FORM>";
     }
 }

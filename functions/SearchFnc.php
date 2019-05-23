@@ -190,11 +190,6 @@ function Search($type, $extra = array(), $search_from_grade = '') {
         case 'student_fields':
             
             $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearchable' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"), array(), array('TYPE'));
-//            echo "SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND (puc.PROGRAM='StudentFieldsSearchable' OR puc.PROGRAM = 'StudentFieldsView')AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE";
-//            print_r($search_fields_RET);die;
-//            if (!$search_fields_RET) {
-//                $search_fields_RET = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND (puc.PROGRAM='StudentFieldsSearchable' OR puc.PROGRAM = 'StudentFieldsView')AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' "), array(), array('TYPE'));
-//            }
              
             $field_count = 0;
             echo '<div class="row">';
@@ -398,6 +393,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     $side++;
                 }
             }
+            echo '</div>'; //.row
             break;
     }
 }

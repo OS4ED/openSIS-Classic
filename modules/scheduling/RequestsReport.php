@@ -30,5 +30,7 @@ include('../../RedirectModulesInc.php');
         $columns = array('SUBJECT_TITLE'=>'Subject','COURSE_TITLE'=>'Course','COUNT'=>'Number of Requests','SEATS'=>'Seats');
 	
 	DrawBC("Scheduling > ".ProgramTitle());
+        echo '<div class="panel panel-default">';
 	ListOutput($count_RET,$columns,'Request','Requests',array(),array(array('SUBJECT_TITLE')));
+        echo '</div>';
 ?>

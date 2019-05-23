@@ -478,7 +478,7 @@ if (!$mp_id) {
             ListOutput($stu_RET, $LO_columns, $singular, $plural, array(), array(), $extra);
         //echo '</br>';
         echo '<div class="panel-footer">';
-        echo '<div class="heading-elements text-center">';
+        echo '<div class="heading-elements text-right p-r-20">';
         if (count($stu_RET) > 0 && count($course_RET) > 0) {
             echo SubmitButton('Save', '', 'class="btn btn-primary"');
         }

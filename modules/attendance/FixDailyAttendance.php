@@ -47,6 +47,5 @@ if (Prompt_Home('Confirm', 'When do you want to recalculate the daily attendance
 
     unset($_REQUEST['modfunc']);
     echo '<div class="alert bg-success alert-styled-left">The Daily Attendance for that timeframe has been recalculated.</div>';
-
 }
 ?>

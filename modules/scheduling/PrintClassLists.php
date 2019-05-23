@@ -429,7 +429,7 @@ function mySearch($extra) {
     echo '</div>';
 
     if (count($course_periods_RET) != 0)
-        echo '<INPUT type=submit class="btn btn-primary" value=\'Create Class Lists for Selected Course Periods\'>';
+        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Create Class Lists for Selected Course Periods\'></div>';
     echo "</FORM>";
 }
 

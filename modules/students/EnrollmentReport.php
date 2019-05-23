@@ -115,7 +115,7 @@ if(!$_REQUEST['modfunc'])
 	if($_REQUEST['search_modfunc']=='list')
 	{
 		if($_SESSION['count_stu']!=0)
-		echo '<CENTER><INPUT type=submit class="btn btn-primary" value=\'Create Enrollment Report for Selected Students\'></CENTER>';
+		echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Enrollment Report for Selected Students\'></div>';
 		echo "</FORM>";
 	}
 }

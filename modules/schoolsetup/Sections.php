@@ -146,7 +146,7 @@ if($_REQUEST['modfunc']!='remove')
     echo '<div class="panel panel-default">';
     ListOutput($sec_RET,$columns,'Section','Sections',$link, true, array('search'=>false));
     echo '<hr class="no-margin"/>';
-    echo '<div class="panel-body">';
+    echo '<div class="panel-body text-right">';
 	echo '<input type=hidden value="'.implode('_',$section_ids).'" id="get_ids" />' ;
     echo '<INPUT class="btn btn-primary" type=submit value=Save>';
     echo '</div>'; //.panel-footer

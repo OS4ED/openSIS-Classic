@@ -31,25 +31,25 @@ DrawBC("Scheduling > " . ProgramTitle());
 //echo '<div class="panel panel-default">';
 if ($_REQUEST['subject_id']) {
     $RET = DBGet(DBQuery("SELECT TITLE FROM course_subjects WHERE SUBJECT_ID='" . $_REQUEST['subject_id'] . "'"));
-    $header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]>Top</A></li><li><A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=courses&subject_id=$_REQUEST[subject_id]>" . $RET[1]['TITLE'] . '</A></li>';
+    $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]>Top</A></li><li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=courses&subject_id=$_REQUEST[subject_id]>" . $RET[1]['TITLE'] . '</A></li>';
     if ($_REQUEST['course_id']) {
         $header2 = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]";
         $location = 'courses';
         $RET = DBGet(DBQuery("SELECT TITLE FROM courses WHERE COURSE_ID='" . $_REQUEST['course_id'] . "'"));
-        $header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=course_periods&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]>" . $RET[1]['TITLE'] . '</A></li>';
+        $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=course_periods&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]>" . $RET[1]['TITLE'] . '</A></li>';
 
         if ($_REQUEST['course_period_id']) {
             $header2 .= "&course_period_id=$_REQUEST[course_period_id]";
             $location = 'course_periods';
             $RET = DBGet(DBQuery("SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID='" . $_REQUEST['course_period_id'] . "'"));
-            $header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=students&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]>" . $RET[1]['TITLE'] . '</A></li>';
+            $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=students&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]>" . $RET[1]['TITLE'] . '</A></li>';
         }
 
         $header2 .= "&students=$location&modfunc=$location><i class=\"fa fa-list position-left\"></i> List Students</A></li><li>" . $header2 . "&unscheduled=true&students=$location&modfunc=$location><i class=\"fa fa-user-times position-left\"></i> List Unscheduled Students</A></li>";
 
-        echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb">'.$header.'</ul><ul class="breadcrumb-elements">'.$header2.'</ul></div>';
+        echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb breadcrumb-white-text">'.$header.'</ul><ul class="breadcrumb-elements">'.$header2.'</ul></div>';
     } else
-        echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb">'.$header.'</ul></div>';
+        echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb breadcrumb-white-text">'.$header.'</ul></div>';
 }
 $LO_options = array('save' => false, 'search' => false, 'print' => false);
 

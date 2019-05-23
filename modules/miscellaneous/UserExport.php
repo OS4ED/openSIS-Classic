@@ -262,9 +262,13 @@ if($_REQUEST['search_modfunc']=='list')
                                     elseif($custom_RET[1]['TYPE']=='codeds' && !$extra['functions'][$field]){
                                         $extra['functions'][$field] = 'DeCodeds';
                                     }
+                                    else{
+                                        $extra['SELECT'] .= ','.$field;  
                             }
                         }
                 }
+                }
+
                $extra['functions']['BIRTHDATE'] = 'ProperDate';
 $extra['functions']['PRIMARY_LANGUAGE_ID'] ='_makeLanguage';
 $extra['functions']['SECOND_LANGUAGE_ID'] ='_makeLanguage';

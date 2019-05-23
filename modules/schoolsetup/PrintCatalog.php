@@ -145,7 +145,7 @@ else {
     }
     echo '</form>';
     echo "<FORM name=exp class=no-margin-bottom id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=print&marking_period_id=" . $_REQUEST['marking_period_id'] . "&_openSIS_PDF=true&report=true method=POST target=_blank>";
-    echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
+    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
     echo '</form>';
     PopTable('footer');
     echo '</div>'; //.col-md-6.col-md-offset-3

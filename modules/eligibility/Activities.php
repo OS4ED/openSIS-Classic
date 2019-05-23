@@ -71,18 +71,18 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     }
                 }
                 if ($column == 'START_DATE') {
-                     $value1=explode('-',$value);
-                    
-                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
+                    $value1 = explode('-', $value);
+
+                    $value = $value1[2] . '-' . $value1[1] . '-' . $value1[0];
                     $s_date1 = strtotime($value);
                 }
                 if ($column == 'END_DATE') {
-                     $value1=explode('-',$value);
-                    
-                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
+                    $value1 = explode('-', $value);
+
+                    $value = $value1[2] . '-' . $value1[1] . '-' . $value1[0];
                     $e_date1 = strtotime($value);
                 } else {
-         
+
                     $value = clean_param($value, PARAM_SPCL);
                 }
                 $sql .= $column . '=\'' . str_replace("\'", "''", trim($value)) . '\',';
@@ -134,14 +134,12 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     $e_date = strtotime($value);
                 }
                 if (trim($value)) {
-            if($column == 'END_DATE' || $column == 'START_DATE')
-            {
-              
-                    $value1=explode('-',$value);
-                    
-                    $value=$value1[2].'-'.$value1[1].'-'.$value1[0];
-                   
-            }
+                    if ($column == 'END_DATE' || $column == 'START_DATE') {
+
+                        $value1 = explode('-', $value);
+
+                        $value = $value1[2] . '-' . $value1[1] . '-' . $value1[0];
+                    }
                     $fields .= $column . ',';
                     $values .= '\'' . str_replace("\'", "''", trim($value)) . '\',';
                     $go = true;
@@ -167,7 +165,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 
                 if ($cnt == 0) {
                     if ($check_rec[1]['REC_EX'] == 0) {
-                        
+
                         DBQuery($sql);
                     } else
                         $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with same title.</div>';
@@ -227,13 +225,12 @@ if ($_REQUEST['modfunc'] != 'remove') {
     echo '<input type=hidden id=id_arr value="' . $id_arr . '" />';
 
     echo '<div class="panel panel-default">';
-    echo '<div class="panel-body">';
+    echo '<div class="panel-body p-0">';
     echo '<div class="table-responsive">';
     ListOutput($activities_RET, $columns, 'Activity', 'Activities', $link);
     echo '</div>';
-    echo '<hr/>';
-    echo SubmitButton('Save', '', 'class="btn btn-primary"');
     echo '</div>'; //.panel-body
+    echo '<div class="panel-footer text-right p-r-20">'.SubmitButton('Save', '', 'class="btn btn-primary"').'</div>';
     echo '</div>'; //.panel
     echo '</FORM>';
 }

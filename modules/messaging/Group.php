@@ -37,7 +37,7 @@ if (!isset($_REQUEST['modfunc'])) {
     echo "<FORM name=Group id=Group action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=group method=POST >";
     //PopTable('header', 'Group');
     echo "<div id='students' class='panel panel-default'>";
-    $custom_header = "<h6 class=\"panel-title text-pink\">GROUPS</h6><div class=\"heading-elements\"><a href='#' class=\"btn btn-default heading-btn\" onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group\");'><i class=\"fa fa-plus\"></i> Add Group</a></div>";
+    $custom_header = "<h6 class=\"panel-title\">Groups</h6><div class=\"heading-elements\"><a href='#' class=\"btn btn-default heading-btn\" onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group\");'><i class=\"fa fa-plus\"></i> Add Group</a></div>";
 
     $select = "SELECT *  from mail_group  WHERE USER_NAME ='$userName'";
     $link['GROUP_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=groupmember";
@@ -57,7 +57,7 @@ if (!isset($_REQUEST['modfunc'])) {
         }
     }
     //ListOutput($list, $columns, 'Group', 'Groups', $link, array(), array('search' => false), '');
-    
+
     ListOutputMessagingGroups($list, $columns, '', '', $link, array(), array('search' => false), '', $custom_header);
     //PopTable('footer');
 }
@@ -85,10 +85,14 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
     unset($_REQUEST['modfunc']);
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
-    PopTable('header', 'Group Members');
     echo "<FORM name=sav class=\"form-horizontal\" id=sav action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=members&groupid=" . strip_tags(trim($_REQUEST[group_id])) . " method=POST>";
 
-    echo "<div id='members'>";
+    //PopTable('header', 'Group Members');
+    echo '<div class="panel panel-default">';
+    echo '<div class="panel-heading">';
+    echo '<h6 class="panel-title">Group Members</h6>';
+    echo '</div>';
+    echo '<div class="panel-body">';
 
     $member = "select * from mail_groupmembers where GROUP_ID='" . $_REQUEST['group_id'] . "'";
     $member_list = DBGet(DBQuery($member));
@@ -117,18 +121,18 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
     $groupdesc = ($groupDetails[1]['DESCRIPTION'] == 'N' ? '' : $groupDetails[1]['DESCRIPTION']);
 
     echo '<div class="row">';
-    echo '<div class="col-md-4">';
+    echo '<div class="col-md-6">';
 
-    echo '<div class="form-group"><label class="col-md-4 control-label text-right">Group Name </label>';
+    echo '<div class="row"><label class="col-md-4 control-label text-right">Group Name </label>';
     echo '<div class="col-md-8">';
     echo TextInput($groupname, 'groupname', '', 'maxlength=50', false);
     echo '</div>'; //.col-md-8
     echo '</div>'; //.form-group
 
     echo '</div>'; //.col-md-4
-    echo '<div class="col-md-4">';
+    echo '<div class="col-md-6">';
 
-    echo '<div class="form-group"><label class="col-md-4 control-label text-right">Description </label>';
+    echo '<div class="row"><label class="col-md-4 control-label text-right">Description </label>';
     echo '<div class="col-md-8">';
     echo TextInput($groupdesc, 'groupdesc', '', 'maxlength=50', false);
     echo '</div>'; //.col-md-8
@@ -159,53 +163,55 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
         }
     }
     $gid = $_REQUEST[group_id];
-
-    $custom_header = '<h6 class="panel-title">' . count($member_list) . ' Member' . (((count($member_list)) > 1) ? 's' : '') . '</h6><div class="heading-elements"><a class="btn btn-default heading-btn" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=exist_group&group_name=' . $grp . '&desc=' . $groupdesc . '&grp_id=' . $gid . '"><i class="fa fa-plus"></i> Add Member</a></div>';
+    echo '</div>';
+    echo '<hr class="m-0" />';
+    echo '<div id="members">';
+    $custom_header = '<h6 class="panel-title">' . count($member_list) . ' Member' . (((count($member_list)) > 1) ? 's' : '') . '</h6><div class="heading-elements"><a class="btn btn-primary heading-btn" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=exist_group&group_name=' . $grp . '&desc=' . $groupdesc . '&grp_id=' . $gid . '"><i class="fa fa-plus"></i> Add Member</a></div>';
     //ListOutput($member_list, $columns, 'Member', 'Members', '', array(), array('search' => false, 'save' => false), '', $custom_header);
     ListOutputMessagingGroups($member_list, $columns, 'Member', 'Members', '', array(), array('search' => false, 'save' => false), '', $custom_header);
-    echo "</div>";
-    {
-        if (isset($userName)) {
-            echo '<br/>';
-            echo '<INPUT type=submit class="btn btn-primary" value=Save>';
-        }
+    echo '</div>';
+    if (isset($userName)) {
+        echo '<div class="panel-footer text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=Save></div>';
     }
+    echo '</div>'; //.panel
+    //PopTable('footer', $btn);
     echo '</FORM>';
-    PopTable('footer');
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
-    PopTable('header', 'Add Group Member');
 
     $grp_name = $_REQUEST['group_name'];
 
     echo "<FORM class=\"form-horizontal\" name=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group_member&search=true&group_id=$grp_name&desc=" . strip_tags(trim($_REQUEST[desc])) . "&grp_id=" . strip_tags(trim($_REQUEST[grp_id])) . " method=POST>";
-
+    
+    echo '<div class="panel panel-default">';
+    echo '<div class="panel-heading">';
+    echo '<h6 class="panel-title">Add Group Member</h6>';
+    echo '</div>';
+    echo '<div class="panel-body">';
+    //PopTable('header', '');
     echo '<div class="row">';
-    echo '<div class="col-md-4">';
+    echo '<div class="col-md-6">';
 
     echo '<div class="form-group"><label class="col-md-4 control-label text-right">Last Name</label>';
     echo '<div class="col-md-8"><INPUT type=text class="form-control" placeholder="Last Name" name=last></div>'; //.col-md-8
     echo '</div>'; //.form-group
 
-    echo '</div>'; //.col-md-4
-    echo '<div class="col-md-4">';
+    echo '</div>'; //.col-md-6
+    echo '<div class="col-md-6">';
 
     echo '<div class="form-group"><label class="col-md-4 control-label text-right">First Name</label>';
     echo '<div class="col-md-8"><INPUT type=text class="form-control" placeholder="First Name" name=first></div>'; //.col-md-8
     echo '</div>'; //.form-group
 
-    echo '</div>'; //.col-md-4
-    echo '<div class="col-md-4">';
+    echo '</div>'; //.col-md-6
+    echo '</div>'; //.row    
+    echo '<div class="row">';
+    echo '<div class="col-md-6">';
 
     echo '<div class="form-group"><label class="col-md-4 control-label text-right">Username</label>';
     echo '<div class="col-md-8"><INPUT type=text class="form-control" placeholder="Username" name=username></div>'; //.col-md-8
     echo '</div>'; //.form-group
-
-    echo '</div>'; //.col-md-4
-    echo '</div>'; //.row    
-
-
-
+    echo '</div>'; //.col-md-6 
 
     if (User('PROFILE') == 'teacher') {
         $profiles = DBGet(DBQuery('SELECT * FROM user_profiles where id!=2'));
@@ -221,10 +227,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
     foreach ($profiles as $key => $value) {
         $options[$value['ID']] = $value['TITLE'];
     }
-    echo '</div>'; //.row    
-    echo '<div class="row">';
-    echo '<div class="col-md-4">';
-
+    echo '<div class="col-md-6">';
     echo '<div class="form-group"><label class="col-md-4 control-label text-right">Profile</label>';
     echo '<div class="col-md-8"><SELECT name=profile class="form-control">';
     foreach ($options as $key => $val)
@@ -232,31 +235,32 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
     echo '</SELECT></div>';
     echo '</div>'; //.form-group
 
-    echo '</div>'; //.col-md-4
+    echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
-    echo '<br/>'; //.row
-
-    echo '<div class="row">';
+    echo '<div class="row m-t-15">';
     echo '<div class="col-md-12">';
     if ($extra['search'])
         echo $extra['search'];
-
+    echo '<div class="form-group m-b-0"><label class="col-md-4 control-label text-right">&nbsp;</label>';
+    echo '<div class="col-md-8">';
     if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher' || User('PROFILE') == 'parent')
-        echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Schools</label>';
-    echo '<label class="checkbox-inline"><INPUT type=checkbox name=_dis_user value=Y>Include Disabled User</label>';
+        echo '<label class="checkbox-inline checkbox-switch switch-xs switch-success"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label>';
+    echo '<label class="checkbox-inline checkbox-switch switch-xs switch-success"><INPUT type=checkbox name=_dis_user value=Y><span></span>Include Disabled User</label>';
+    echo '</div>'; //.col-md-8
+    echo '</div>'; //.form-group
     echo '</div>'; //.col-md-12
     echo '</div>'; //.row
 
-    echo '<hr/>';
+    echo '</div>'; //.panel-body    
+    echo "<div class=\"panel-footer text-right p-r-20\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit'> &nbsp; <INPUT type=RESET class='btn btn-default' value='Reset'></div>";
 
-    echo "<INPUT type=SUBMIT class='btn btn-primary' value='Submit'> &nbsp; <INPUT type=RESET class='btn btn-default' value='Reset'>";
-
+    echo '</div>'; //.panel
     /*     * ******************for Back to user************************** */
     echo '<input type=hidden name=sql_save_session_staf value=true />';
+    //PopTable('footer', $btn);
     /*     * ********************************************* */
     echo '</FORM>';
-    PopTable('footer');
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
 
@@ -586,7 +590,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
 
         ListOutputExcel($userlist, $columns, 'Member', 'Members', '', array(), array('search' => false), '');
     }
-    
+
     echo '<br/>';
     echo "<INPUT TYPE=SUBMIT name=button id=button class='btn btn-primary' VALUE='Add Members' onclick='return mail_group_chk();'/>";
     echo "</FORM>";

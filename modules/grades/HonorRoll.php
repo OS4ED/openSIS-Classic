@@ -220,16 +220,14 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-
-
-
-    Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-
-
         if ($_SESSION['count_stu'] != 0) {
-            echo '<div class="text-center">' . SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"') . '</div>';
+            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
+    }
+    Search('student_id', $extra);
+
+    if ($_REQUEST['search_modfunc'] == 'list') {
         echo "</FORM>";
     }
 

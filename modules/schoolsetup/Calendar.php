@@ -157,7 +157,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found
             if ($dup_cal_title[1]['NO'] == 0) {
                 DBQuery($profile_sql);
             } else {
-                echo'<p style=color:red>Calender title already exists.</p>';
+                echo'<div class="alert alert-danger">Calender title already exists.</div>';
             }
         }
         if ($dup_cal_title[1]['NO'] == 0)
@@ -942,7 +942,7 @@ if (!$_REQUEST['modfunc']) {
         echo "</div>"; //.table-responsive
 
         if (User('PROFILE') == 'admin') {
-            echo '<div class="panel-footer text-center">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
         }
         echo "</div>";
     }

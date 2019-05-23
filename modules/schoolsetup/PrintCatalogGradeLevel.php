@@ -94,12 +94,12 @@ else {
     if (clean_param($_REQUEST['id'], PARAM_ALPHANUM)) {
         $grade_level_RET = DBGet(DBQuery('SELECT TITLE FROM school_gradelevels WHERE id=\'' . $_REQUEST['id'] . '\''));
         $grade_title = $grade_level_RET[1]['TITLE'];
-        DrawHeader('<div class="alert bg-success alert-styled-left">Report generated for ' . $grade_title . ' Grade Level</div>');
+        echo '<div class="alert bg-success alert-styled-left">Report generated for ' . $grade_title . ' Grade Level</div>';
     } else
-        DrawHeader('<div class="alert bg-success alert-styled-left">Report generated for all Grade Levels</div>');
+        echo '<div class="alert bg-success alert-styled-left">Report generated for all Grade Levels</div>';
     echo '</form>';
     echo "<FORM name=exp id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=print&id=" . $_REQUEST['id'] . "&_openSIS_PDF=true&report=true method=POST target=_blank>";
-    echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
+    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
     echo '</form>';
     PopTable('footer');
     echo '</div>'; //.col-md-6.col-md-offset-3

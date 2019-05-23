@@ -356,7 +356,7 @@ if (UserStudentID()) {
         }
 
 
-        echo '<div class="panel-footer text-center">';
+        echo '<div class="panel-footer text-right p-r-20">';
         if (!$LO_ret) {
             echo SubmitButton('Remove Marking Period', 'removemp', 'class="btn btn-primary"');
             echo '&nbsp;';

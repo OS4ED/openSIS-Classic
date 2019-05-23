@@ -180,8 +180,13 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
     // DISPLAY THE MENU
     $LO_options = array('save' => false, 'search' => false);
 
-    if (!$_REQUEST['subject_id'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course')
-        DrawHeaderHome('Courses', "<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search>Search</A>");
+    if (!$_REQUEST['subject_id'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course'){
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-body">';
+        echo "<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search><i class=\"icon-search4 position-left\"></i> Search Course</A>";
+        echo '</div>';
+        echo '</div>'; //.panel
+    }
 
     echo '<div class="row">';
 

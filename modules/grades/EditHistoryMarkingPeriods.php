@@ -112,7 +112,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel-body no-padding">';
     ListOutput($LO_ret, $LO_columns, 'History Marking Period', 'History Marking Periods', $link, array(), array('count' => true, 'download' => false, 'search' => false));
     echo '</div>';
-    echo '<div class="panel-body">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
     echo '</FORM>';
 }
 

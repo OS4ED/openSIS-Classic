@@ -194,7 +194,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list') {
 
         if ($_SESSION['count_course_periods'] != 0)
-            echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top"><INPUT type=submit class="btn btn-primary" value=\'Create Class Pictures for Selected Course Periods\'></span></div></div>';
+            echo '<div class="panel-footer"><div class="heading-elements text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Class Pictures for Selected Course Periods\'></div></div>';
 
         echo '</div>';
         echo '</FORM>';

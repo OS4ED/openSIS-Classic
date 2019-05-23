@@ -86,6 +86,13 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $not_up = 1;
                     }
                 }
+            //  echo '<pre>';
+            //  print_r($_REQUEST);
+            //  echo '</pre>';
+
+            //  echo '<pre>';
+            //  print_r($columns);
+            //  echo '</pre>';
                 $sql = 'UPDATE school_periods SET ';
                 $title_change = '';
                 foreach ($columns as $column => $value) {
@@ -115,8 +122,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             $sql .= $column . '=\'' . str_replace("'", "'", str_replace("\'", "'", $value)) . '\',';
                             $go = true;
                         } else {
-                            $err = 'Cannot modify start time or end time as period is associated';
-                            $go = false;
+                            $check_for_change=DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM school_periods WHERE PERIOD_ID='.$id.' AND '.$column.'=\''.$value.'\'' ));
+                            if($check_for_change[1]['REC_EX']==0){
+                                $err = 'Cannot modify start time or end time as period is associated';
+                                $go = false;
+                            }
+                            
                         }
                     } else {
                         if ($column == 'TITLE' && !isset($_REQUEST['values'][$id]['SHORT_NAME'])) {
@@ -321,7 +332,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         echo "<input type=hidden id=count name=count value=$maxPeriodId />";
     } else
         echo "<input type=hidden id=count name=count value=$count />";
-    echo '<hr class="no-margin"/><div class="panel-body">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_school_setup_periods();"') . '</div>';
+    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_school_setup_periods();"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

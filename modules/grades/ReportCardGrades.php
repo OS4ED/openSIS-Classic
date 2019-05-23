@@ -329,11 +329,12 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="students" class="tab-content">';
     echo '<div class="table-responsive">';
     ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
-    echo '</div></div>';
+    echo '</div>'; //.table-responsive
+    echo '</div>'; //.tab-content
     
-    echo '<div class="pt-20">' . SubmitButton('Save', '', 'class="btn  btn-primary" onclick="formcheck_grade_grade();"') . '</div>';
+    echo '</div>'; //.panel-body
     
-    echo '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn  btn-primary" onclick="formcheck_grade_grade();"') . '</div>';
     echo '</div>'; //.panel
     echo '</FORM>';
 }

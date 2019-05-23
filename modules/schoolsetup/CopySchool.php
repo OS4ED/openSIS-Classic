@@ -268,7 +268,7 @@ function _rollover($table) {
            $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'')); 
            foreach($get_cs_subjects as $gcsi=>$gcsd)
            {
-               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SUBJECT_ID=\''.$gcsd['SUBJECT_ID'].'\''));
                foreach($get_course as $gc)
                {
                    $sql_columns=array('SUBJECT_ID','SCHOOL_ID');

@@ -339,11 +339,12 @@ if (!$_REQUEST['modfunc']) {
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
     $extra['new'] = true;
+    
+    if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
+        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(Save, '', 'class="btn btn-primary"') . '</div>';
 
     Search('student_id', $extra);
 
-    if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
-        echo '<div class="text-center">'.SubmitButton(Save, '', 'class="btn btn-primary"') . '</div>';
     echo '</FORM>';
 
     /*

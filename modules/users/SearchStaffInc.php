@@ -40,7 +40,7 @@ if (User('PROFILE') == 'admin') {
         echo '<div class="col-md-12">';
         PopTable('header', 'Find a Staff');
 
-        echo "<FORM name=search class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=list&next_modname=$_REQUEST[next_modname] method=POST>";
+        echo "<FORM name=search class=\"form-horizontal m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=list&next_modname=$_REQUEST[next_modname] method=POST>";
 
         echo '<div class="row">';
         echo '<div class="col-md-6">';
@@ -106,8 +106,8 @@ if (User('PROFILE') == 'admin') {
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
         
-        echo '<hr>';
-        echo "<INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick='formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-primary\" value='Reset'>";
+        echo '<hr class="m-b-15"/>';
+        echo "<div class=\"text-right\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick='formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'></div>";
 
         /********************for Back to user************************** */
         echo '<input type=hidden name=sql_save_session_staf value=true />';

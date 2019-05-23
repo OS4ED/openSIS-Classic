@@ -128,9 +128,9 @@ if (count($start_end_RET)) {
     echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div></div>';
     echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div></div>';
 }
-$btn = '<div class="text-center">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"') . '</div>';
+$btn = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"');
 echo '</div>';
-PopTable('footer',$btn);
+PopTable('footer',  $btn);
 echo '</FORM>';
 echo '</div>';
 echo '</div>';

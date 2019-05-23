@@ -324,7 +324,7 @@ if(!$_REQUEST['modfunc'])
 	if($_REQUEST['search_modfunc']=='list')
 	{
             if($_SESSION['count_stu']!=0)
-		echo '<div class="text-center"><INPUT type=submit value=\'Create Progress Reports for Selected Students\'  class="btn btn-primary"></div>';
+		echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\'Create Progress Reports for Selected Students\'  class="btn btn-primary"></div>';
 		echo "</FORM>";
 	}
 }

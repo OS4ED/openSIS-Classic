@@ -71,15 +71,15 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                         $fields .= $column . ',';
                         if ($column == 'TITLE' || $column == 'SHORT_NAME') {
                             $value = clean_param($value, PARAM_SPCL);
-                            if($column == 'TITLE')
-                            $title = $value;
+                            if ($column == 'TITLE')
+                                $title = $value;
                         }
                         $values .= '\'' . str_replace("'", "''", str_replace("\'", "''", trim($value))) . '\',';
                         $go = true;
                     }
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
-                $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("","",$title). '\''));
+                $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("", "", $title) . '\''));
                 if ($validate_title[1]['TITLE_EX'] != 0 || $new_cat == 'Attendance') {
                     echo "<div class=\"alert bg-warning alert-styled-left\">Unable to save data, because title already exists.</div>";
                 } else {
@@ -99,11 +99,11 @@ if ($_REQUEST['new_category_title'] && $_REQUEST['cat_edit_id'] == '') {
 
     $new_cat = optional_param('new_category_title', '', PARAM_SPCL);
     if ($new_cat) {
-        $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("","",$new_cat ). '\''));
+        $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("", "", $new_cat) . '\''));
         if ($validate_title[1]['TITLE_EX'] != 0 || $new_cat == 'Attendance') {
             echo "<font color='red'><b>Unable to save data, because category title already exists.</b></font>";
         } else
-            DBQuery('INSERT INTO attendance_code_categories (SYEAR,SCHOOL_ID,TITLE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . singleQuoteReplace("","",$new_cat) . '\')');
+            DBQuery('INSERT INTO attendance_code_categories (SYEAR,SCHOOL_ID,TITLE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . singleQuoteReplace("", "", $new_cat) . '\')');
 
         // possible modification start
         $id = DBGet(DBQuery('SELECT max(ID) as ID from attendance_code_categories'));
@@ -215,9 +215,9 @@ if ($_REQUEST['modfunc'] != 'remove') {
         } else {
 
             PopTable_wo_header_attn_code('header', $tabs);
-            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' => false, 'search' => false));
-            echo '<BR><CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"') . '</CENTER>';
-            PopTable('footer');
+            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' => false, 'search' => false), '', false, false);
+            $btn =  SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"');
+            PopTable('footer', $btn);
         }
     } elseif ($_REQUEST['table'] == 'new' && $_REQUEST['modfunc'] != 'edit') {
         $_openSIS['selected_tab'] = "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]";

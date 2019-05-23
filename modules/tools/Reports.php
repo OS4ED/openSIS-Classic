@@ -177,7 +177,8 @@ if ($_REQUEST['func'] == 'Ins_r') {
                 }
             }
             echo '<br>';
-
+            // print_r($arr);print_r($arr);
+            // echo 'SELECT ID,' . $columns . ' FROM schools';
             $get_school_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM schools'));
 
             echo '<br>';
@@ -188,7 +189,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
 
                     $column_check = explode('_', $i);
                     if ($column_check[0] == 'CUSTOM') {
-                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND SCHOOL_ID=' . $get_school_info[$key]['ID']));
+                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_school_info[$key]['ID'].' OR SCHOOL_ID=0)'));
                         if ($check_validity[1]['REC_EX'] == 0)
                             $j = 'NOT_AVAILABLE_FOR';
                     }
@@ -202,10 +203,11 @@ if ($_REQUEST['func'] == 'Ins_r') {
 
                     if ($j == 'NOT_AVAILABLE_FOR') {
                         $show_legend = 'yes';
-                        $get_school_info[$key][$i] = '<img src="assets/not_available.png" />';
+                        $get_school_info[$key][$i] = "<img src='assets/not_available.png' title='Not Applicable'/>";
                     }
                 }
             }
+            // print_r($get_school_info);
 
             echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
             ListOutputPrint_Institute_Report($get_school_info, $arr);

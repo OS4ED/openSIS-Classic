@@ -433,13 +433,13 @@ foreach ($res as $v) {
             echo '</div>'; //.row
 
             echo '<hr/>';
-            echo '<div>';
+            echo '<div class="text-right">';
+            echo '<a id="addiv" href="javascript:void(0);" class="text-pink m-r-15" onclick="show_search_div();"><i class="icon-cog"></i> Advanced Search</a>';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'>&nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'>&nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch();'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
 
-            echo '<a id="addiv" href="javascript:void(0);" class="text-pink" onclick="show_search_div();"><i class="icon-cog"></i> Advanced Search</a>';
             echo '</div>';
 
             echo '</FORM>';

@@ -199,7 +199,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
     echo '<SELECT name=new_profile_type class=form-control><OPTION value=admin>Administrator<OPTION value=teacher>Teacher<OPTION value=parent>Parent</SELECT>';
     echo '</div>';
     echo '</div>';
-    echo '<div class="text-center "><input type=submit value=save class="btn btn-primary"></div>';
+    echo '<div class="text-right"><input type=submit value=save class="btn btn-primary"></div>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div></div></DIV>';
@@ -347,7 +347,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
         }
         echo '</TABLE>';
 
-        echo '<div class="panel-footer">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+        echo '<div class="panel-footer text-right">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
     }
     echo '</DIV>';
 

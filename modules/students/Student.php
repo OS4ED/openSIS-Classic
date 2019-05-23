@@ -56,14 +56,16 @@ if ($_REQUEST['modfunc'] == 'clearall') {
 // 
         unset($_REQUEST['modfunc']);
         echo "<script>window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3'</script>";
-    }
+    } 
 }
 if ($_REQUEST['student_enable'] == 'N' && $_REQUEST['student_id'] != 'new') {
     DBQuery('UPDATE students SET IS_DISABLE=NULL WHERE student_id=' . $_REQUEST['student_id']);
 }
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
-        $_REQUEST['students']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
+        //$_REQUEST['students']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
+
+        $_REQUEST['students']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . $_REQUEST['month_CUSTOM_' . $custom_id] . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
     }
 }
 if ($_REQUEST['modname'] && $_REQUEST['stu_id'] && $_REQUEST['include_a'] == 'EnrollmentInfoInc') {
@@ -161,13 +163,13 @@ if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']][
 
 if($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']!='')
 {
-    
-    $drp_code=DBGet(DBQuery('SELECT * FROM student_enrollment_codes WHERE TYPE=\'TrnD\' AND SYEAR='. UserSyear()));
-if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE'] != $drp_code[1]['ID']) {
 
-    echo "<p align='center'><b style='color:red'>Please enter proper drop date. Cannot drop student without drop date.</b></p>";
-    unset($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']);
-}
+    $drp_code=DBGet(DBQuery('SELECT * FROM student_enrollment_codes WHERE TYPE=\'TrnD\' AND SYEAR='. UserSyear()));
+    if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['enrollment_id']]['END_DATE'] == '' && $_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE'] != $drp_code[1]['ID']) {
+
+        echo "<p align='center'><b style='color:red'>Please enter proper drop date. Cannot drop student without drop date.</b></p>";
+        unset($_REQUEST['values']['student_enrollment'][$_REQUEST['enrollment_id']]['DROP_CODE']);
+    }
 }
 # ----------------------------- DELETE GoalInc & Progress -------------------------------------------- #
 
@@ -300,33 +302,33 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
     if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
 //        if ($_POST['button'] == 'Save') { #&& AllowEdit()
         $transfer_flag = 0;
-       
-            if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
-                $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['DROP_CODE'];
 
-                $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
+        if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
+            $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['DROP_CODE'];
 
-                $gread_exists = DBGet(DBQuery('SELECT COUNT(TITLE) AS PRESENT,ID FROM school_gradelevels WHERE SCHOOL_ID=\'' . $_REQUEST['TRANSFER']['SCHOOL'] . '\' AND TITLE=(SELECT TITLE FROM
+            $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
+
+            $gread_exists = DBGet(DBQuery('SELECT COUNT(TITLE) AS PRESENT,ID FROM school_gradelevels WHERE SCHOOL_ID=\'' . $_REQUEST['TRANSFER']['SCHOOL'] . '\' AND TITLE=(SELECT TITLE FROM
                             school_gradelevels WHERE ID=(SELECT GRADE_ID FROM student_enrollment WHERE
                             STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'  ORDER BY ID DESC LIMIT 1))'));  //pinki
 
-                $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_START']));
+            $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_START']));
 
 
 
 
-                if (strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START']) >= strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'])) {
-                    $check_asociation = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
-                    $end_date_old = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'];
-                    $start_date_new = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'];
+            if (strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START']) >= strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'])) {
+                $check_asociation = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
+                $end_date_old = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'];
+                $start_date_new = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'];
                     if($start_date_new == $end_date_old)
                     {
-                          $_SESSION['ERR_TRANS'] = "<div class=\"alert bg-warning alert-styled-left\">End Date and Start Date Cannot Be Same</div>";              
+                    $_SESSION['ERR_TRANS'] = "<div class=\"alert bg-warning alert-styled-left\">End Date and Start Date Cannot Be Same</div>";
                     }
                     else
                     {
-                        unset($_SESSION['ERR_TRANS']);
-                        if ($check_asociation[1]['REC_EX'] != 0) {
+                    unset($_SESSION['ERR_TRANS']);
+                    if ($check_asociation[1]['REC_EX'] != 0) {
                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR,TITLE FROM school_years WHERE SCHOOL_ID=" . $_REQUEST['TRANSFER']['SCHOOL']));
                         $syear = $syear_RET[1]['SYEAR'];
@@ -347,10 +349,10 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         }
                         if ($gread_exists[1]['PRESENT'] == 1 && $gread_exists[1]['ID']) {
                             DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
-                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         } else {
                             DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
-                         DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                             
                         }
                         $trans_school = $syear_RET[1]['TITLE'];
@@ -367,24 +369,24 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         unset($_SESSION['_REQUEST_vars']['student_id']);
                        
                     }
-                    }
-                    
-                } else {
-                    unset($_REQUEST['modfunc']);
-                    unset($_SESSION['_REQUEST_vars']['student_id']);
-                    
                 }
+                    
             } else {
-
-                if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] != '')
-                    echo '<SCRIPT language=javascript>alert("Please select School");window.close();</script>';
-                if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
-                    echo '<SCRIPT language=javascript>alert("Please select Grade Level");window.close();</script>';
-                if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
-                    unset($_REQUEST['modfunc']);
-              
+                unset($_REQUEST['modfunc']);
+                unset($_SESSION['_REQUEST_vars']['student_id']);
+                    
             }
-            echo "<script language=javascript>window.location.href='Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]';</script>";
+        } else {
+
+            if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] != '')
+                echo '<SCRIPT language=javascript>alert("Please select School");window.close();</script>';
+            if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
+                echo '<SCRIPT language=javascript>alert("Please select Grade Level");window.close();</script>';
+            if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
+                unset($_REQUEST['modfunc']);
+              
+        }
+        echo "<script language=javascript>window.location.href='Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]';</script>";
         
     } elseif (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'lookup') {
         if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
@@ -617,7 +619,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             }
             if ($n == 1) {
                 $flag = false;
-                if ((count($_REQUEST['students']) || count($_REQUEST['values'])) && AllowEdit()) {
+                if ((count($_REQUEST['students']) || count($_REQUEST['values']) || count($_REQUEST['month_values'])) && AllowEdit()) {
 
                     //print_r($content1);
 //                    print_r($_REQUEST);
@@ -985,25 +987,25 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                            if(isset($_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']) && $_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']!='')
                            {
                            $sql_drop_type_qr = DBGet(DBQuery('SELECT type FROM student_enrollment_codes WHERE id='.$_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']));
-                        //    print_r($sql_drop_type_qr);
+                                //    print_r($sql_drop_type_qr);
                             if($sql_drop_type_qr[1]['TYPE'] == 'TrnD')
                             {
                                 if($transfer_flag == 1)
                                 {
-                                    $error = false;
+                                        $error = false;
                                 }
                                 else
                                 {
-                                    $msg = 'Please provide all details to transfer in new school.';
-                                    $error = true;  
+                                        $msg = 'Please provide all details to transfer in new school.';
+                                        $error = true;
+                                    }
                                 }
-                            }
 //                                $error = false;
 //                            else {
 //                              $msg = 'Please select transfer school.';
 //                                        $error = true;  
 
-                           }
+                            }
                             if (!$error) {
                                 if ($_REQUEST['values']['student_enrollment'][$e_id]['END_DATE'] != '') {
                                     if (strtotime($_REQUEST['values']['student_enrollment'][$e_id]['END_DATE']) >= strtotime($max_at_dt)) {
@@ -1775,7 +1777,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     if ($_REQUEST['category_id'])
                         $_openSIS['selected_tab'] .= '&category_id=' . $_REQUEST['category_id'];
 
-                    
+
                     //echo '</div>'; //force breaking non ended div
 
                     echo '<div class="panel panel-default">';

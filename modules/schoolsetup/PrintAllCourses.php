@@ -61,11 +61,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print_all' && $_REQUES
     }
 } else {
     echo '<div class="row">';
-    echo '<div class="col-md-4 col-md-offset-4">';
+    echo '<div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Print all Courses', 'class="panel panel-default"');
-    DrawHeader('<div class="alert bg-success alert-styled-left">Report Generated</div>');
+    echo '<div class="alert bg-success alert-styled-left">Report Generated</div>';
     echo "<FORM name=exp id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=print_all&_openSIS_PDF=true&report=true method=POST target=_blank>";
-    echo '<div class="text-center"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
+    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
     echo '</form>';
     PopTable('footer');
     echo '</div>'; //.col-md-6.col-md-offset-3

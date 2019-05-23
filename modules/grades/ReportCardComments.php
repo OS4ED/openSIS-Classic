@@ -191,7 +191,7 @@ if (!$_REQUEST['modfunc']) {
         $report_card_comments[] = $ld['ID'];
     if (count($report_card_comments) > 0)
         $report_card_comments = implode(',', $report_card_comments);
-    echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id] method=POST>";
+    echo "<FORM name=F1 id=F1 class=\"m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id] method=POST>";
     DrawHeader('Report Card Comments', '<div class="form-inline"><div class="form-group">' . $course_select . ' &nbsp; ' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_grade_comment();"') . '</div></div>');
     echo '<input type="hidden" name="comment_ids" id="comment_ids" value="' . $report_card_comments . '">';
     echo '<hr class="no-margin"/>';
@@ -202,11 +202,11 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="div_margin" class="tab-content">';
     echo "<div class=\"table-responsive\">";
     ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
-    echo "</div>";
-    echo "</div>";
+    echo "</div>"; //.table-responsive
+    echo "</div>"; //.tab-content
 
-    echo '<div class="pt-20">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_grade_comment();"') . '</div>';
-    echo '</div>';
+    echo '</div>'; //.panel-body
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_grade_comment();"') . '</div>';
     echo '</FORM>';
 }
 

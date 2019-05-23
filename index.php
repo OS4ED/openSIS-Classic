@@ -52,7 +52,7 @@ if (isset($_GET['ins']))
 if ($install == 'comp') {
     if (is_dir('install')) {
         $dir = 'install/'; // IMPORTANT: with '/' at the end
-        //$remove_directory = delete_directory($dir);
+        $remove_directory = delete_directory($dir);
     }
 }
 
@@ -617,7 +617,6 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
     echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<noscript><META http-equiv=REFRESH content="0;url=EnableJavascript.php" /></noscript>';
-    echo '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
     ?>
     <style type="text/css">
         body {
@@ -637,20 +636,6 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
             height: 100%;
         }
     </style>
-    <script>
-        /*$(function(){
-            var winW = $(window).width();
-            var winH = $(window).height();
-            $('.responsive-iframe').width(winW);
-            $('.responsive-iframe').height(winH);
-        });
-        $(window).resize(function(){
-            var winW = $(window).width();
-            var winH = $(window).height();
-            $('.responsive-iframe').width(winW);
-            $('.responsive-iframe').height(winH);
-        });*/
-    </script>
     <?php
 
     echo '</HEAD>';

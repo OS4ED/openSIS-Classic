@@ -397,7 +397,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0) {
             unset($_SESSION['count_stu']);
-            echo '<div class="text-center">' . SubmitButton('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
+            echo '<div class="text-right p-b-20 p-r-20">' . SubmitButton('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
         //PopTable('footer',$submit);
         echo "</FORM>";

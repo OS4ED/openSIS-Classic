@@ -101,11 +101,11 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="tab-content">';
     echo '<div class="table-responsive">';
     ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
-    echo '</div>';
+    echo '</div>'; //.table-responsive
     $count = count($LO_ret);
-    echo '<div class="mt-20">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_honor_roll();"') . '</div>';
     echo '</div>';
     echo '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_honor_roll();"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

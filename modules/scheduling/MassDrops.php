@@ -163,7 +163,7 @@ if (!$_REQUEST['modfunc']) {
 
         if (count($students_RET) > 0) {
             //echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" onclick=\'formload_ajax("ww");\'') . '</span></div></div>';
-            echo '<div class="panel-footer text-center">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</div>';
+            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</div>';
             echo '</div>';
             echo "</FORM>";
         }

@@ -60,8 +60,6 @@ if (strtotime($start_date_mod) < strtotime($get_min_start_date[1]['START_DATE'])
 if ($_REQUEST['modfunc'] == 'search') {
     echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . "&day_start=" . strip_tags(trim($_REQUEST[day_start])) . "&day_end=" . strip_tags(trim($_REQUEST[day_end])) . "&month_start=" . strip_tags(trim($_REQUEST[month_start])) . "&month_end=" . strip_tags(trim($_REQUEST[month_end])) . "&year_start=" . strip_tags(trim($_REQUEST[year_start])) . "&year_end=" . strip_tags(trim($_REQUEST[year_end])) . " method=POST>";
     PopTable('header', 'Advanced');
-    echo '<TABLE>';
-
     Search('general_info', $extra['grades']);
     if (!isset($extra))
         $extra = array();
@@ -69,10 +67,10 @@ if ($_REQUEST['modfunc'] == 'search') {
     if ($extra['search'])
         echo $extra['search'];
     Search('student_fields', is_array($extra['student_fields']) ? $extra['student_fields'] : array());
-    if (User('PROFILE') == 'admin')
-        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div></div>';
+    if (User('PROFILE') == 'admin'){
+        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div>';
+    }
     $btn = '<div class="p-l-20">' . Buttons('Submit') . '</div>';
-
     PopTable('footer', $btn);
     echo '</FORM>';
 }

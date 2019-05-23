@@ -452,7 +452,7 @@ if (UserStudentID()) {
         
         echo '</div>'; //.panel-body
         
-        echo '<div class="panel-footer text-center">';
+        echo '<div class="panel-footer text-right p-r-20">';
         echo SubmitButton('Save', 'S1', 'class="btn btn-primary"');
         echo '</div>'; //.panel-footer
         echo '</div>'; //.panel

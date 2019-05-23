@@ -49,7 +49,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     echo '<div class="panel-body">';
     include('modules/miscellaneous/UserExport.php');
     echo '</div>';
-    echo '<div class="panel-footer text-center"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
+    echo '<div class="panel-footer text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
     echo '</div>';
     echo "</FORM>";
 }
@@ -78,7 +78,7 @@ if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
         
         if ($_SESSION['count_stf'] != '0') {
             unset($_SESSION['count_stf']);
-            echo '<div class="text-center"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
+            echo '<div class="text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
         }
         
         echo "</FORM>";

@@ -51,7 +51,7 @@ function PopTable($action, $title = 'Search', $div_att = 'class="panel"', $cell_
         echo '</div>'; //.tab-content
         echo '</div>'; //.panel-body
         if ($title != 'Search' && $title != '') {
-            echo '<div class="panel-footer text-center">';
+            echo '<div class="panel-footer text-right p-r-20">';
             echo $title;
             echo '</div>'; //.panel-footer
         }

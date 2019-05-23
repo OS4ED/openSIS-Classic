@@ -75,8 +75,8 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
 
 
                                         $sch_typ = DBGet(DBQuery('SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $val3 . ' '));
-                                        if($sch_typ[1]['PERIOD_ID']!='' && $val2!='' && $val4!='' && $val3!='')
-                                        $count_dup = DBGet(DBQuery('SELECT * FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND SCHOOL_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' AND PERIOD_ID=' . $sch_typ[1]['PERIOD_ID'] . ' '));
+                                        if ($sch_typ[1]['PERIOD_ID'] != '' && $val2 != '' && $val4 != '' && $val3 != '')
+                                            $count_dup = DBGet(DBQuery('SELECT * FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND SCHOOL_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' AND PERIOD_ID=' . $sch_typ[1]['PERIOD_ID'] . ' '));
                                         if (count($count_dup) > 1)
                                             DBQuery('DELETE FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND SCHOOL_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' LIMIT ' . (count($count_dup) - 1));
                                     }

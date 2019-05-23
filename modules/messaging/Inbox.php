@@ -671,7 +671,7 @@ function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBC
 
         $outbox_query = DBQuery($q);
     }
-    echo 'Your message has been sent';
+    echo '<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Your message has been sent.</div>';
 }
 
 function array_push_assoc($array, $key, $value) {

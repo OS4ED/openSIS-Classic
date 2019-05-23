@@ -10859,12 +10859,14 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
             if ($options['save_delimiter'] != 'xml') {
                 $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
-                    $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                    // $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                    $output .= '<td>' .$value. '</td>';
                 $output .= '</tr>';
                 foreach ($result as $item) {
                     $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
-                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        // $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                        $output .= '<td>' .$value. '</td>';
                     }
                     $output .= '</tr>';
                 }
@@ -11067,10 +11069,12 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                         $value = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $value);
                         $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
 
-                        if (strpos($value, 'LO_field') === false)
-                            $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
-                        else
-                            $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
+                        // if (strpos($value, 'LO_field') === false)
+                        //     $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
+                        // else
+                        //     $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
+
+                            $item[$key] = $value;
                     }
                 }
 

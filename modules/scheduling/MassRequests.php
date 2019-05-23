@@ -149,7 +149,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-center">'.SubmitButton('Add Request to Selected Students', '', 'class="btn btn-primary" onclick=\' return validate_group_request();\'').'</div>';
+            echo '<div class="text-right p-b-20 p-r-20">'.SubmitButton('Add Request to Selected Students', '', 'class="btn btn-primary" onclick=\' return validate_group_request();\'').'</div>';
         echo '</FORM>';
     }
 }

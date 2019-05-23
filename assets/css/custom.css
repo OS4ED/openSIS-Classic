@@ -133,6 +133,10 @@ label.radio {
     border-bottom: 0;
 }
 
+.breadcrumb.breadcrumb-white-text > li + li::before {
+    color: #fff;
+}
+
 .breadcrumb-line {
     box-shadow: none;
     -moz-box-shadow: none;

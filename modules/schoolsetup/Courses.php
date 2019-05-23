@@ -1858,7 +1858,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
     $subjects_RET = DBGet($QI);
     $credit_div = 'hide';
     if (AllowEdit())
-        $delete_button = "<INPUT type=button class=\"btn btn-default\" value=Delete onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]\"'> ";
+        $delete_button = "<INPUT type=button class=\"btn btn-default\" value=Delete onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]\"'>";
     // ADDING & EDITING FORM
     if (clean_param($_REQUEST['course_period_id'], PARAM_ALPHANUM)) {
         if ($_REQUEST['course_period_id'] != 'new') {
@@ -1935,9 +1935,9 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         if ($_REQUEST['course_period_id'] != 'new')
             echo '<input type="hidden" id="schedule_type_id" value="' . $RET['SCHEDULE_TYPE'] . '"/>';
         if (UserProfileID() != 2) {
-            echo '<div class="panel-heading">
-                <h6 class="panel-title"><b>' . $title . '</b></h6>
-                <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'id=save_cp class="btn btn-primary" onclick="return validate_course_period();"') . '</div>
+            echo '<div class="clearfix p-20">
+                <h6 class="pull-left m-b-0"><b>' . $title . '</b></h6>
+                <div class="pull-right">' . $delete_button . SubmitButton('Save', '', 'id=save_cp class="btn btn-primary m-l-5" onclick="return validate_course_period();"') . '</div>
             </div>';
         }
         echo '<hr class="no-margin"/>';
@@ -2335,9 +2335,9 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
         DrawHeaderHome($header);
         if (UserProfileID() != 2) {
-        echo '<div class="panel-heading">
-        <h6 class="panel-title"><b>' . $title . '</b></h6>
-        <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'id=save_cps class="btn btn-primary" onclick="return validate_course_period();"') . '</div>
+        echo '<div class="clearfix m-t-15">
+        <h6 class="pull-left"><b>' . $title . '</b></h6>
+        <div class="pull-right">' . $delete_button . SubmitButton('Save', '', 'id=save_cps class="btn btn-primary m-l-5" onclick="return validate_course_period();"') . '</div>
         </div>';
         }
         echo '</div>'; //.panel-body

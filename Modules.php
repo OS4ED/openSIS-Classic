@@ -95,7 +95,6 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     /*
      * Include Stylesheets
      */
-    echo '<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">';
@@ -137,7 +136,6 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/ui/ripple.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_select2.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
-    //echo '<script type="text/javascript" src="assets/js/pages/picker_datetime.js"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
     echo '<script type="text/javascript" src="js/custom.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript">

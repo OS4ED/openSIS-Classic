@@ -60,7 +60,7 @@ if (WAREHOUSE_PHP == 0) {
         exit;
     }
 
-    function Warehouse($mode) {
+    function Warehouse($mode, $extra = '') {
         global $__SHOW_FOOTER, $_openSIS;
 
         switch ($mode) {
@@ -74,7 +74,7 @@ if (WAREHOUSE_PHP == 0) {
                 if (basename($_SERVER['PHP_SELF']) == 'index.php')
                     echo "<noscript><meta http-equiv=REFRESH content='0;url=EnableJavascript.php' /></noscript>";
 
-
+                echo $extra;
                 echo "<script language=\"JavaScript\" type=\"text/javascript\">";
                 if (basename($_SERVER['PHP_SELF']) == 'index.php')
                     echo "if(parent.frames.length > 0){ parent.location.href = 'index.php?modfunc=logout'; }";
@@ -138,7 +138,7 @@ if (WAREHOUSE_PHP == 0) {
                              
 							}
 						</script>";
-					
+
 //					<link rel='stylesheet' type='text/css' href='styles/Help.css'>";
 //                echo "<link rel=stylesheet type=text/css href=styles/Calendar.css>";
                 echo "</head>";

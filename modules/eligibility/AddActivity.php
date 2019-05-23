@@ -107,6 +107,9 @@ Widgets('activity');
 $extra['search'] .= '</div>'; //.col-md-6
 $extra['search'] .= '</div>'; //.row
 
+if ($_REQUEST['search_modfunc'] == 'list') {
+    $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Add Activity to Selected Students', '', 'class="btn btn-primary"') . '</div>';
+}
 Search('student_id', $extra);
 echo '<div id="modal_default" class="modal fade">
 <div class="modal-dialog">
@@ -120,19 +123,17 @@ echo '<div id="modal_default" class="modal fade">
 echo '<center><div id="conf_div"></div></center>';
 echo'<table id="resp_table"><tr><td valign="top">';
 echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
-if(count($subjects_RET)>0)
-{
-echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
-foreach($subjects_RET as $val)
-{
-echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
-}
-echo '</table>';
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+if (count($subjects_RET) > 0) {
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>';
+    foreach ($subjects_RET as $val) {
+        echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    }
+    echo '</table>';
 }
 echo '</div></td>';
 echo '<td valign="top"><div id="course_modal"></div></td>';
@@ -144,7 +145,6 @@ echo' </div>
 </div>
 </div>';
 if ($_REQUEST['search_modfunc'] == 'list') {
-    echo SubmitButton('Add Activity to Selected Students', '', 'class="btn btn-primary"');
     echo '</FORM>';
 }
 

@@ -189,7 +189,7 @@ if (!$_REQUEST['modfunc']) {
 
         if ($_SESSION['count_stu'] != '0') {
             unset($_SESSION['count_stu']);
-            echo '<div class="text-center"><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></div>';
+            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></div>';
         }
         echo "</FORM>";
     } else {
