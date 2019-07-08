@@ -619,6 +619,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             }
             if ($n == 1) {
                 $flag = false;
+                 
                 if ((count($_REQUEST['students']) || count($_REQUEST['values']) || count($_REQUEST['month_values'])) && AllowEdit()) {
 
                     //print_r($content1);
@@ -633,6 +634,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $sql = "UPDATE students SET ";
                             $log_sql = 'UPDATE login_authentication SET ';
                             foreach ($_REQUEST['students'] as $column_name => $value) {
+                               
                                 if (substr($column_name, 0, 6) == 'CUSTOM') {
 
                                     $custom_id = str_replace("CUSTOM_", "", $column_name);
@@ -668,7 +670,22 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 }  ###Custom Ends#####
 
                                 if ($column_name != 'FIRST_NAME' && $column_name != 'MIDDLE_NAME' && $column_name != 'LAST_NAME') {
+                                    if($column_name=='ALT_ID' && $value!='')
+                                   {
+                                        
+                                        $alt_check=DBGet(DBQuery("SELECT * FROM students WHERE ALT_ID='".$value."' AND STUDENT_ID!=".$_REQUEST['student_id']));
+                                        if(count($alt_check)==0){
+                                            $value = paramlib_validation($column_name, trim($value));
+                                        }
+                                        else
+                                        {
+                                            echo "<font color=red><b>Unable to save data, because duplicate Alternate ID found.</b></font><br/>";
+                                            $error = true;
+                                        }
+                                   }
+                                   else
                                     $value = paramlib_validation($column_name, trim($value));
+                                  
                                 }
 
                                 if ($column_name == 'BIRTHDATE' || $column_name == 'ESTIMATED_GRAD_DATE') {
@@ -1048,6 +1065,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         $log_fields = 'PROFILE_ID,USER_ID,';
                         $log_values = '3,' . $student_id . ',';
                         foreach ($_REQUEST['students'] as $column => $value) {
+                            
                             if (substr($column, 0, 6) == 'CUSTOM') {
                                 $custom_id = str_replace("CUSTOM_", "", $column);
                                 $custom_RET = DBGet(DBQuery("SELECT TITLE,TYPE FROM custom_fields WHERE ID=" . $custom_id));
@@ -1081,7 +1099,21 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             }
                             if ($value) {
                                 if ($column != 'FIRST_NAME' && $column != 'MIDDLE_NAME' && $column != 'LAST_NAME') {
+                                    if($column=='ALT_ID' && $value!='')
+                                   {
+                                        $alt_check=DBGet(DBQuery("SELECT * FROM students WHERE ALT_ID='".$value."'"));
+                                        if(count($alt_check)==0){
+                                            $value = paramlib_validation($column, trim($value));
+                                        }
+                                        else
+                                        {
+                                            echo "<font color=red><b>Unable to save data, because duplicate Alternate ID found.</b></font><br/>";
+                                            $error = true;
+                                        }
+                                   }
+                                   else
                                     $value = paramlib_validation($column, trim($value));
+                                    
                                 }
 
                                 if ($column == 'BIRTHDATE' || $column == 'ESTIMATED_GRAD_DATE') {
@@ -1682,7 +1714,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                     if ($_REQUEST['student_id'] != 'new') {
 
-                        $sql = "SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.NAME_SUFFIX,la.USERNAME,la.PASSWORD,la.LAST_LOGIN,s.IS_DISABLE,s.ESTIMATED_GRAD_DATE,s.GENDER,s.ETHNICITY,s.COMMON_NAME,s.BIRTHDATE,s.LANGUAGE,s.ALT_ID,s.EMAIL,s.PHONE,(SELECT SCHOOL_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND STUDENT_ID=s.STUDENT_ID ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS SCHOOL_ID,
+                        $sql = "SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.NAME_SUFFIX,la.USERNAME,la.PASSWORD,la.LAST_LOGIN,s.IS_DISABLE,s.ESTIMATED_GRAD_DATE,s.GENDER,s.ETHNICITY,s.COMMON_NAME,s.BIRTHDATE,s.LANGUAGE_ID,s.ALT_ID,s.EMAIL,s.PHONE,(SELECT SCHOOL_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND STUDENT_ID=s.STUDENT_ID ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS SCHOOL_ID,
                         (SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND STUDENT_ID=s.STUDENT_ID ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS GRADE_ID,
                         (SELECT SECTION_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND STUDENT_ID=s.STUDENT_ID ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS SECTION_ID,
                         (SELECT ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND STUDENT_ID=s.STUDENT_ID ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS ENROLLMENT_ID

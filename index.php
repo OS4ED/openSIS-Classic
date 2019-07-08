@@ -609,6 +609,7 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
     //Login
     require "LoginInc.php";
 } elseif ($_REQUEST['modfunc'] != 'create_account') {
+    echo '<!DOCTYPE html>';
     echo '<html>';
     echo '<head>';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">';
@@ -633,7 +634,8 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
             width: 1px;
             min-width: 100%;
             *width: 100%;
-            height: 100%;
+            height: 100vh;
+            vertical-align: top;
         }
     </style>
     <?php

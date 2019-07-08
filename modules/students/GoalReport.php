@@ -220,7 +220,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
@@ -350,7 +350,7 @@ function _grade_id($value) {
 function _makeChooseCheckbox($value, $title) {
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=st_arr[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 function explodeCustom(&$categories_RET, &$custom, $prefix) {

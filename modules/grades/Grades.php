@@ -235,7 +235,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
     unset($_SESSION['_REQUEST_vars']['values']);
 }
 $_SESSION['assignment_id'] = $_REQUEST['assignment_id'];
-
+$extra['GROUP'] = 's.STUDENT_ID';
 $stu_RET = GetStuList($extra);
 $assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>All</OPTION>';
 if ($_REQUEST['student_id'])

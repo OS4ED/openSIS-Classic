@@ -112,7 +112,7 @@ echo '</div>'; //.form-group
 echo '</div>'; //.col-lg-4
 echo '</div>'; //.row
 
-$btn = '<div class="text-center"><input type="submit" class="btn btn-primary" value="Delete" name="del"></div>';
+$btn = '<input type="submit" class="btn btn-primary" value="Delete" name="del">';
 
 PopTable('footer', $btn);
 echo '</FORM>';

@@ -276,7 +276,6 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
         <title>openSIS Student Information System</title>
         <link rel="shortcut icon" href="favicon.ico">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
         <link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">

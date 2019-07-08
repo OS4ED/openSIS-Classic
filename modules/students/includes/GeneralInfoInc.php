@@ -40,8 +40,9 @@ $ethnic_option = array('White, Non-Hispanic' => 'White, Non-Hispanic', 'Black, N
 foreach ($res as $v) {
     $ethnic_option[$v['ETHNICITY_NAME']] = $v['ETHNICITY_NAME'];
 }
-$language_option = array('English' => 'English', 'Arabic' => 'Arabic', 'Bengali' => 'Bengali', 'Chinese' => 'Chinese', 'French' => 'French', 'German' => 'German', 'Haitian Creole' => 'Haitian Creole', 'Hindi' => 'Hindi', 'Italian' => 'Italian', 'Japanese' => 'Japanese', 'Korean' => 'Korean', 'Malay' => 'Malay', 'Polish' => 'Polish', 'Portuguese' => 'Portuguese', 'Russian' => 'Russian', 'Somali' => 'Somali', 'Spanish' => 'Spanish', 'Thai' => 'Thai', 'Turkish' => 'Turkish', 'Urdu' => 'Urdu', 'Vietnamese' => 'Vietnamese');
 
+$language=DBGet(DBQuery('SELECT * FROM language'));
+$language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_NAME'],$language[2]['LANGUAGE_ID'] => $language[2]['LANGUAGE_NAME'], $language[3]['LANGUAGE_ID'] => $language[3]['LANGUAGE_NAME'], $language[4]['LANGUAGE_ID'] => $language[4]['LANGUAGE_NAME'],$language[5]['LANGUAGE_ID'] => $language[5]['LANGUAGE_NAME'],$language[6]['LANGUAGE_ID'] => $language[6]['LANGUAGE_NAME'], $language[7]['LANGUAGE_ID'] => $language[7]['LANGUAGE_NAME'],$language[8]['LANGUAGE_ID'] => $language[8]['LANGUAGE_NAME'], $language[9]['LANGUAGE_ID'] => $language[9]['LANGUAGE_NAME'], $language[10]['LANGUAGE_ID'] => $language[10]['LANGUAGE_NAME'],$language[11]['LANGUAGE_ID'] => $language[11]['LANGUAGE_NAME'], $language[12]['LANGUAGE_ID'] => $language[12]['LANGUAGE_NAME'], $language[13]['LANGUAGE_ID'] => $language[13]['LANGUAGE_NAME'], $language[14]['LANGUAGE_ID'] => $language[14]['LANGUAGE_NAME'], $language[15]['LANGUAGE_ID'] => $language[15]['LANGUAGE_NAME'], $language[16]['LANGUAGE_ID'] => $language[16]['LANGUAGE_NAME'], $language[17]['LANGUAGE_ID'] => $language[17]['LANGUAGE_NAME'],$language[18]['LANGUAGE_ID'] => $language[18]['LANGUAGE_NAME'], $language[19]['LANGUAGE_ID'] => $language[19]['LANGUAGE_NAME'], $language[20]['LANGUAGE_ID'] => $language[20]['LANGUAGE_NAME']);
 echo '<div class="row">';
 echo '<div class="col-md-10">';
 
@@ -79,7 +80,7 @@ echo '<div class="col-lg-6">';
 //echo '<div class="form-group"><label class="control-label col-lg-4">Date of Birth<span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(isset($student['BIRTHDATE']) && $student['BIRTHDATE']!="" ? date("d-M-Y", strtotime($student['BIRTHDATE'])) : "", 'students[BIRTHDATE]', '2', false, '') . '</div></div>';
 echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date of Birth<span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(isset($student['BIRTHDATE']) && $student['BIRTHDATE'] != "" ? $student['BIRTHDATE'] : "", 'students[BIRTHDATE]', '2', false, '') . '</div></div>';
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language</label><div class="col-lg-8">' . SelectInput($student['LANGUAGE'], 'students[LANGUAGE]', '', $language_option, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language</label><div class="col-lg-8">' . SelectInput($student['LANGUAGE_ID'], 'students[LANGUAGE_ID]', '', $language_option, 'N/A', '') . '</div></div>';
 echo '<input type=hidden id=current_date value=' . date('Y-m-d') . '>';
 echo '</div>'; //.col-lg-6
 echo '</div>'; //.row

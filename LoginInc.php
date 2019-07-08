@@ -36,7 +36,6 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
 $maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_preference_misc where system_maintenance_switch=\'Y\''));
 $extra_header  = '';
 $extra_header .= '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">';
-$extra_header .= '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">';
 $extra_header .= '<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">';
 $extra_header .= '<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">';
 $extra_header .= '<link href="assets/css/extras/css-checkbox-switch.css" rel="stylesheet">';

@@ -348,7 +348,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         
         echo $message;
 
-        $btn = "<div class='text-center'><INPUT type=submit class='btn btn-danger' value=Rollover onclick=\"return formcheck_rollover();\">&nbsp;<INPUT type=button class='btn btn-default' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'></div>";
+        $btn = "<INPUT type=submit class='btn btn-danger' value=Rollover onclick=\"return formcheck_rollover();\"> &nbsp; <INPUT type=button class='btn btn-default' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'>";
         PopTable('footer', $btn);
         echo '</FORM>';
         return false;

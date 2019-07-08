@@ -1236,16 +1236,17 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
             if ($cp_type != 'custom') {
                 if (GetMP($_REQUEST['mp'], 'PA_ID') != -1) {
-                    $extra_sql = "'" . GetMP($_REQUEST['mp'], 'PA_ID') . "'='" . ParentMP($_REQUEST['mp']) . "'";
+                    $extra_sql = GetMP($_REQUEST['mp'], 'PA_ID') ."='" . ParentMP($_REQUEST['mp']) . "'";
                 } else {
                     $extra_sql = "";
                 }
-                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM " . GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' AND '" . $parent_sql . "' ORDER BY START_DATE DESC LIMIT 1"));
-                $cp_mp = DBGet(DBQuery("SELECT MP FROM  course_periods WHERE COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
+                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM ". GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' AND ". $extra_sql ." ORDER BY START_DATE DESC LIMIT 1"));
+                
+                $cp_mp = DBGet(DBQuery("SELECT MP FROM course_periods WHERE COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
             }
             $cp_mp = $cp_mp[1]['MP'];
             $prev_mp = $prev_mp[1];
-            if ($cp_mp == 'SEM' && $cp_type != 'custom' && $prev_mp) {
+            if ($cp_mp == 'FY' && $cp_type != 'custom' && $prev_mp) {
                 $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] grades</A></li>";
                 $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] Comments</A></li>";
             }

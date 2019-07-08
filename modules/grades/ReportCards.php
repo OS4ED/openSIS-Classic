@@ -160,16 +160,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     $mpkey = substr(key($mps), 1);
                                 else
                                     $mpkey = key($mps);
-                                $total_grade_point += ($mps[key($mps)][1]['WEIGHTED_GP'] * $mps[key($mps)][1]['CREDIT_ATTEMPTED'] );
-                                $Total_Credit_Hr_Attempted += $mps[key($mps)][1]['CREDIT_ATTEMPTED'];
+                                $total_grade_point += ($mps[$mpkey][1]['WEIGHTED_GP'] * $mps[$mpkey][1]['CREDIT_ATTEMPTED'] );
+                                $Total_Credit_Hr_Attempted += $mps[$mpkey][1]['CREDIT_ATTEMPTED'];
                             }
                             elseif ($mps[key($mps)][1]['UNWEIGHTED_GP']) {
                                 if (substr(key($mps), 0, 1) == 'E')
                                     $mpkey = substr(key($mps), 1);
                                 else
-                                    $mpkey = key($mps);
-                                $total_grade_point += ($mps[key($mps)][1]['UNWEIGHTED_GP'] * $mps[key($mps)][1]['CREDIT_ATTEMPTED'] );
-                                $Total_Credit_Hr_Attempted += $mps[key($mps)][1]['CREDIT_ATTEMPTED'];
+                                    $mpkey = key($mps);                    
+                                $total_grade_point += ($mps[$mpkey][1]['UNWEIGHTED_GP'] * $mps[$mpkey][1]['CREDIT_ATTEMPTED'] );
+                                $Total_Credit_Hr_Attempted += $mps[$mpkey][1]['CREDIT_ATTEMPTED'];
                             }
 
                             if ($_REQUEST['elements']['gpa'] == 'Y')

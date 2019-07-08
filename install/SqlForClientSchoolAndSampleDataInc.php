@@ -2618,17 +2618,17 @@ INSERT INTO `staff_school_relationship` (`staff_id`, `school_id`, `syear`, `last
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity`, `common_name`, `social_security`, `birthdate`, `language`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
-(1, 'Anderson', 'Daniel', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2008-09-02', 'English', NULL, NULL, NULL, NULL, NULL, '2018-01-22 04:46:26', NULL),
-(2, 'Aponte', 'Justin', NULL, NULL, NULL, NULL, NULL, NULL, '2006-01-02', 'English', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:11:57', NULL),
-(3, 'Paiva', 'Laura', NULL, NULL, 'Female', 'White, Non-Hispanic', NULL, NULL, '2008-01-08', 'English', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:15:27', NULL),
-(4, 'Parker', 'Colin', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2008-01-02', 'English', '2024-07-31', NULL, 'colin@example.com', '440-656-6320', NULL, '2018-01-22 05:17:03', NULL),
-(5, 'Loafer', 'Roman', NULL, NULL, 'Male', NULL, 'Rommy', NULL, '2006-01-25', 'English', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:20:52', NULL),
-(6, 'Wallace', 'Luna', NULL, NULL, 'Female', NULL, NULL, NULL, '2008-01-02', 'English', NULL, NULL, 'luna@example.edu', '440-656-6328', NULL, '2018-01-22 05:22:16', NULL),
-(7, 'Parker', 'James', NULL, NULL, 'Male', NULL, NULL, NULL, '2006-01-24', 'English', NULL, NULL, NULL, '440-656-6325', NULL, '2018-01-22 05:23:24', NULL),
+INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity`, `common_name`, `social_security`, `birthdate`, `language_id`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
+(1, 'Anderson', 'Daniel', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2008-09-02', '1', NULL, NULL, NULL, NULL, NULL, '2018-01-22 04:46:26', NULL),
+(2, 'Aponte', 'Justin', NULL, NULL, NULL, NULL, NULL, NULL, '2006-01-02', '1', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:11:57', NULL),
+(3, 'Paiva', 'Laura', NULL, NULL, 'Female', 'White, Non-Hispanic', NULL, NULL, '2008-01-08', '1', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:15:27', NULL),
+(4, 'Parker', 'Colin', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2008-01-02', '1', '2024-07-31', NULL, 'colin@example.com', '440-656-6320', NULL, '2018-01-22 05:17:03', NULL),
+(5, 'Loafer', 'Roman', NULL, NULL, 'Male', NULL, 'Rommy', NULL, '2006-01-25', '1', NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:20:52', NULL),
+(6, 'Wallace', 'Luna', NULL, NULL, 'Female', NULL, NULL, NULL, '2008-01-02', '1', NULL, NULL, 'luna@example.edu', '440-656-6328', NULL, '2018-01-22 05:22:16', NULL),
+(7, 'Parker', 'James', NULL, NULL, 'Male', NULL, NULL, NULL, '2006-01-24', '1', NULL, NULL, NULL, '440-656-6325', NULL, '2018-01-22 05:23:24', NULL),
 (8, 'Holmes', 'Javier', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2006-01-18', NULL, NULL, NULL, NULL, NULL, NULL, '2018-01-22 05:25:41', NULL),
-(9, 'Davis', 'Ronnie', NULL, NULL, 'Male', 'White, Non-Hispanic', 'Ron', NULL, '2010-01-06', 'English', NULL, NULL, 'ronnie@gmail.com', NULL, NULL, '2018-01-23 11:07:28', NULL),
-(10, 'Rodger', 'Mark', NULL, NULL, 'Male', NULL, NULL, NULL, '2006-01-05', 'English', NULL, NULL, 'mark@gmail.com', NULL, NULL, '2018-01-23 11:13:05', NULL);
+(9, 'Davis', 'Ronnie', NULL, NULL, 'Male', 'White, Non-Hispanic', 'Ron', NULL, '2010-01-06', '1', NULL, NULL, 'ronnie@gmail.com', NULL, NULL, '2018-01-23 11:07:28', NULL),
+(10, 'Rodger', 'Mark', NULL, NULL, 'Male', NULL, NULL, NULL, '2006-01-05', '1', NULL, NULL, 'mark@gmail.com', NULL, NULL, '2018-01-23 11:13:05', NULL);
 
 --
 -- Dumping data for table `students_join_people`

@@ -158,7 +158,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.STUDENT_ID,' checked>') AS CHECKBOX";
 
-        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
         $extra['options']['search'] = false;
 
 

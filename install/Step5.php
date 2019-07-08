@@ -64,7 +64,6 @@ if ($_SESSION['mod'] == 'upgrade') {
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <title>openSIS Installer</title>
-                <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
                 <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
                 <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
                 <link rel="stylesheet" href="assets/css/installer.css?v=' . rand(000, 999) . '" type="text/css" />
@@ -153,7 +152,6 @@ You need to follow the instructions in the administrator manual for setting up t
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <title>openSIS Installer</title>
-                <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic" rel="stylesheet" type="text/css">
                 <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
                 <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
                 <link rel="stylesheet" href="assets/css/installer.css?v=' . rand(000, 999) . '" type="text/css" />

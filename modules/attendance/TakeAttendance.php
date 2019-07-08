@@ -301,6 +301,7 @@ if ($schedule_type_check[1]['SCHEDULE_TYPE'] == 'VARIABLE') {
 
     $extra['cpvdate'] = " AND cpv.DAYS='" . $day_check . "'";
 }
+$extra['GROUP']=' s.STUDENT_ID ';
 
 if ($_SESSION['PROFILE'] == 'teacher' && $codes_RET_count[1]['CODES'] == 0)
     $stu_RET = array();

@@ -100,6 +100,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 $values_count++;
             }
         }
+        
         $fields = explode(',', $fields);
         $values = explode(',', $values);
         $medical_student_id = explode(',', $students);
@@ -583,9 +584,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');">');
-     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAllDtMod(this,\'student\');"><A>');
-    
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');">');
     $extra['new'] = true;
 
     Search('student_id', $extra);
@@ -628,7 +627,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list' && $_SESSION['count_stu'] != '0') {
         unset($_SESSION['count_stu']);
-        echo "<div class=\"text-right p-b-20 p-r-20\">" . SubmitButton('Assign Info to Selected Students', '', 'class="btn btn-primary"') . "</div>";
+        echo "<div class=\"text-center m-b-20\">" . SubmitButton('Assign Info to Selected Students', '', 'class="btn btn-primary"') . "</div>";
     }
     echo '</FORM>';
 }
@@ -636,9 +635,7 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title = '') {
     global $THIS_RET;
 
-//    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
-    
-     return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'>";
 }
 
 function _makeTextInput($column, $numeric = false) {
@@ -653,6 +650,8 @@ function _makeTextInput($column, $numeric = false) {
     $title = ucwords(strtolower($title));
     if($column=='Alternate ID')
         $column='alt_id';
+    if($column=='Language')
+        $column='language_id';
     if ($column == 'physician' || $column == 'physician_phone' || $column == 'preferred_hospital')
         return TextInput('', $column, $title, $options);
     else

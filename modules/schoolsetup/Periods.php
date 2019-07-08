@@ -266,7 +266,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         }
     }
     if ($err)
-        echo '<font style="color:red"><b>' . $err . '</b></font>';
+        echo '<div class="alert alert-danger">' . $err . '</div>';
 }
 
 DrawBC("School Setup <i class=\"icon-arrow-right13\"></i> " . ProgramTitle());
@@ -391,7 +391,7 @@ function _makeCheckboxInput($value, $name) {
     else
         $id = 'new';
 
-    return CheckboxInput($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
+    return '<div class="text-center">'.CheckboxInputSwitch($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), 'Yes', 'No', '', 'switch-success').'</div>';
 }
 
 

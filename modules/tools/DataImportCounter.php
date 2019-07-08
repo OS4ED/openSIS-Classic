@@ -56,7 +56,7 @@ if ($category == 'student') {
 //        echo '</pre>';
 //        echo '<br><br>';
 //        print_r($array_index);exit;
-        $students = array('FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'NAME_SUFFIX', 'GENDER', 'ETHNICITY', 'COMMON_NAME', 'SOCIAL_SECURITY', 'BIRTHDATE', 'LANGUAGE', 'ESTIMATED_GRAD_DATE', 'ALT_ID', 'EMAIL', 'PHONE', 'IS_DISABLE');
+        $students = array('FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'NAME_SUFFIX', 'GENDER', 'ETHNICITY', 'COMMON_NAME', 'SOCIAL_SECURITY', 'BIRTHDATE', 'LANGUAGE_ID', 'ESTIMATED_GRAD_DATE', 'ALT_ID', 'EMAIL', 'PHONE', 'IS_DISABLE');
         $login_authentication = array('USERNAME', 'PASSWORD');
         $student_enrollments = array('GRADE_ID', 'SECTION_ID', 'START_DATE', 'END_DATE');
         $custom = DBGet(DBQuery('SELECT * FROM custom_fields'));
@@ -109,6 +109,7 @@ if ($category == 'student') {
                     }
                 }
                 if (count($check_query) > 0) {
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query);exit;
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query)));
                     $check_exist = $check_exist[1]['REC_EXISTS'];
                 }
@@ -325,7 +326,7 @@ if ($category == 'staff') {
 //        echo '<br><br>';
 //        print_r($array_index);
 //        exit;
-        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'IS_DISABLE', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
+        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'IS_DISABLE', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'GENDER', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
         $login_authentication = array('USERNAME', 'PASSWORD');
         $staff_school_relationship = array('START_DATE', 'END_DATE');
         $staff_school_info = array('CATEGORY', 'JOB_TITLE', 'JOINING_DATE');
@@ -546,7 +547,7 @@ echo '<div class="panel-footer text-center"><a href="Modules.php?modname=tools/D
 
 function fromExcelToLinux($excel_time) {
     $ex_date = ($excel_time - 25569) * 86400;
-    return date("Y-m-d", $ex_date);
+    return gmdate("Y-m-d", $ex_date);
 }
 
 ?>

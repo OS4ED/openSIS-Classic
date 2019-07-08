@@ -109,17 +109,17 @@ if ($rolled == 0) {
 foreach ($tables as $table => $name) {
     echo '<INPUT type=hidden name=hide_' . $table . ' id="chk_' . $table . '" value="' . $_REQUEST[$table] . '">';
 }
-echo'<TABLE><TR><TD><div id="staff"></div></TD></TR>
-        <TR><TD><div id="school_periods"></div></TD></TR>
-        <TR><TD><div id="school_years"></div></TD></TR>
-        <TR><TD><div id="attendance_calendars"></div></TD></TR>
-        <TR><TD><div id="report_card_grade_scales"></div></TD></TR>
-        <TR><TD><div id="course_subjects"></div></TD></TR>
-        <TR><TD><div id="courses"></div></TD></TR>
-        <TR><TD><div id="course_periods"></div></TD></TR>
-        <TR><TD><div id="student_enrollment"></div></TD></TR>
-        <TR><TD><div id="honor_roll"></div></TD></TR>
-        <TR><TD><div id="attendance_codes"></div></TD></TR>
-        <TR><TD><div id="student_enrollment_codes"></div></TD></TR>
-        <TR><TD><div id="report_card_comments"></div></TD></TR></TABLE>';
+echo '<div id="staff"></div>';
+echo '<div id="school_periods"></div>';
+echo '<div id="school_years"></div>';
+echo '<div id="attendance_calendars"></div>';
+echo '<div id="report_card_grade_scales"></div>';
+echo '<div id="course_subjects"></div>';
+echo '<div id="courses"></div>';
+echo '<div id="course_periods"></div>';
+echo '<div id="student_enrollment"></div>';
+echo '<div id="honor_roll"></div>';
+echo '<div id="attendance_codes"></div>';
+echo '<div id="student_enrollment_codes"></div>';
+echo '<div id="report_card_comments"></div>';
 ?>

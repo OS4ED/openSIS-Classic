@@ -61,7 +61,7 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>'; //.col-lg-6
     echo '</div>'; //.row
 
-    $btn = '<div class="text-center"><input type="submit" class="btn btn-primary" value="Generate" name="generate"></div>';
+    $btn = '<input type="submit" class="btn btn-primary" value="Generate" name="generate">';
     PopTable('footer', $btn);
     echo '</FORM>';
     echo '</div>';

@@ -262,8 +262,8 @@ if ($_REQUEST['func'] == 'Ins_r') {
         PopTable("header","<i class=\"glyphicon glyphicon-saved\"></i> &nbsp;Selected Fields");
         echo '<div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">No fields selected</div><ol id=names_div class="selected_report_list"></ol>';
         
-        echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Institutes\' class="btn btn-primary"></CENTER>';
-        PopTable('footer');
+        $btn = '<INPUT type=submit value=\'Create Report for Institutes\' class="btn btn-primary">';
+        PopTable('footer', $btn);
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
         echo "</FORM>";

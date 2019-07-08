@@ -2096,3 +2096,5 @@ CREATE TABLE `user_file_upload` (
 
 ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;
 ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;
+
+ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL;

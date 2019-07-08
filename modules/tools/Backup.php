@@ -47,28 +47,28 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
     $date_time = date("m-d-Y");
     //EXPORT_TABLES($host, $user, $pass, $name);
     $Export_FileName = $name . 'Backup' . $date_time . '.sql';
-    $dbconn = new mysqli($host,$user,$pass,$name,$port);
- if($dbconn->connect_errno!=0)
-            exit($dbconn->error);
+    $dbconn = new mysqli($host, $user, $pass, $name, $port);
+    if ($dbconn->connect_errno != 0)
+        exit($dbconn->error);
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
-    $row = $result->fetch_assoc();
-    $mysql_dir1 = substr($row['Value'], 0, 2);
+        $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
+        $row = $result->fetch_assoc();
+        $mysql_dir1 = substr($row['Value'], 0, 2);
 //     $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
 //     $sql_path="\\".$sql_path_arr[1].'8\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
-    $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
-}
+        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
+    }
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    if ($pass == '')
-        exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user  $name > $Export_FileName");
-    else
-        exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
-}
-else {
-    exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
-}
-    $content= file_get_contents($Export_FileName);
-    $fname=$Export_FileName;
+        if ($pass == '')
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user  $name > $Export_FileName");
+        else
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
+    }
+    else {
+        exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
+    }
+    $content = file_get_contents($Export_FileName);
+    $fname = $Export_FileName;
     unlink($Export_FileName);
     header('Content-Type: application/octet-stream');
     header("Content-Transfer-Encoding: Binary");
@@ -85,20 +85,12 @@ if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
             <form id="dataForm" name="dataForm" method="post" action="ForExport.php?modname=tools/Backup.php&action=backup&_openSIS_PDF=true" target=_blank>
                 <?php
                 PopTable('header', 'Backup');
-                ?>
+                echo '<h4 class="text-danger">Note:</h4><p>This backup utility will create a backup of the database along with the database structure. You will be able to use this backup file to restore the database. However, in order to restore, you  will need to have access to MySQL administration application like phpMyAdmin and the root user id and password to MySQL.</p>';
 
-
-
-                <?php echo '<h4 class="text-danger">Note:</h4><p>This backup utility will create a backup of the database along with the database structure. You will be able to use this backup file to restore the database. However, in order to restore, you  will need to have access to MySQL administration application like phpMyAdmin and the root user id and password to MySQL.</p>' ?>
-
-
-                <?php
-                $btn = '<div class="heading-elements text-right"><input type="submit" name="action"  value="Backup" class="btn btn-primary">&nbsp;&nbsp;';
+                $btn = '<input type="submit" name="action"  value="Backup" class="btn btn-primary"> &nbsp; ';
                 $modname = 'tools/Backup.php';
-                $btn .= '<a href=javascript:void(0); onClick="check_content(\'Ajax.php?modname=miscellaneous/Portal.php\');" STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value=Cancel></a></div>';
-                ?>
-
-                <?php
+                $btn .= '<a href=javascript:void(0); onClick="check_content(\'Ajax.php?modname=miscellaneous/Portal.php\');" STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value=Cancel></a>';
+                
                 PopTable('footer', $btn);
                 ?>
             </form>

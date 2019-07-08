@@ -1,5 +1,4 @@
 <?php
-
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -82,24 +81,6 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             $stu_ret = DBGet(DBQuery($studataquery . $student_id), array('BIRTHDATE' => 'ProperDate'));
             $sinfo = $stu_ret[1];
-            $school_html = '<table border="0" align=right style="padding-right:40px"><tr><td align=right><table border="0" cellpadding="4" cellspacing="0">
-		<tr><td>' . DrawLogo() . '</td></tr>
-                          <tr>
-                            <td valign="top" ><div style="font-family:Arial; font-size:13px;">
-                              <div style="font-size:18px; font-weight:bold; ">' . $schoolinfo['TITLE'] . '</div>
-                              <div>' . $schoolinfo['ADDRESS'] . '</div>
-                              <div>' . $schoolinfo['CITY'] . ', ' . $schoolinfo['STATE'] . '&nbsp;&nbsp;' . $schoolinfo['ZIPCODE'] . '</div>
-                              
-                          ';
-            if ($schoolinfo['PHONE'])
-                $school_html .= '<div>Phone: ' . $schoolinfo['PHONE'] . '</div>
-                          ';
-
-
-            $school_html .= '<div style="font-size:15px; ">' . $schoolinfo['PRINCIPAL'] . ', Principal</div></div> </td>
-                            </tr>
-                          </table></td></tr></table>';
-
 
             $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
 
@@ -129,69 +110,17 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $last_mp_name = $rec['MP_NAME'];
             }
             array_push($tsecs, $trecs);
-//        $temp_TRET=array();
-//        $sort_oc=DBGet(DBQuery('SELECT DISTINCT SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
-//        $sort_oc=count($sort_oc);
-//        $mp_oc=DBGet(DBQuery('SELECT DISTINCT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
-//        $mp_oc=count($mp_oc);
-//        if($mp_oc!=$sort_oc)
-//        {
-//            $max_sort_order=DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
-//            $max_sort_order=$max_sort_order[1]['SORT_ORDER'];
-//            foreach($tsecs as $tret_index=>$tret_val)
-//            {
-//                if($temp_TRET[strtotime($tret_val[0]['POSTED'])+$tret_val[0]['MP_ID']]!='')
-//                $counter=$tret_val[0]['MP_ID']+1;
-//                else
-//                $counter=$tret_val[0]['MP_ID'];
-//                $counter=strtotime($tret_val[0]['POSTED'])+$counter;
-//                $temp_TRET[$counter]=$tret_val[0]['MP_ID'];
-//            }
-//        }
-//        else
-//        {
-//            $max_sort_order=DBGet(DBQuery('SELECT MAX(SORT_ORDER) as SORT_ORDER FROM marking_periods WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));
-//            $max_sort_order=$max_sort_order[1]['SORT_ORDER'];
-//            foreach($tsecs as $tret_index=>$tret_val)
-//            {
-//
-//                if($tret_val[0]['MP_SOURCE']=='openSIS')
-//                {
-//                    $counter=DBGet(DBQuery('SELECT SORT_ORDER FROM marking_periods WHERE MARKING_PERIOD_ID='.$tret_val[0]['MP_ID']));
-//                    $counter=$counter[1]['SORT_ORDER'];
-//                }
-//                else
-//                    $counter=$max_sort_order+$tret_val[0]['MP_ID'];   
-//                $temp_TRET[$counter]=$tret_val[0]['MP_ID'];
-//
-//
-//            }
-//        }
-//        sort($temp_TRET);
-//        $temp_tsecs=array();
-//        foreach($tsecs as $tret_index=>$tret_val)
-//        {
-//            foreach($temp_TRET as $tcheck_i=>$tcheck_v)
-//            {
-//                if($tcheck_v==$tret_val[0]['MP_ID'] && $temp_tsecs[$tcheck_i]=='')
-//                {
-//                $temp_tsecs[$tcheck_i]=$tret_val;   
-//                break;
-//                }
-//            }
-//            
-//        }
-//        $tsecs = array();
-//        for($i=0;$i<count($temp_TRET);$i++)
-//        $tsecs[$i]=$temp_tsecs[$i];
-//        
 
+
+            /*
+             * Create Credits and GPA Columns
+             */
             if ($_REQUEST['template'] == 'two')
                 $totallines = 45;
             else
                 $totallines = 200;
             $linesleft = $totallines;
-            $tcolumns = array(0 => array(), 1 => array(), 2 => array());
+            $tcolumns = array(0 => array(), 1 => array());
             $colnum = 0;
             foreach ($tsecs as $tsec) {
                 if (count($tsec) + 3 > $linesleft) {
@@ -203,8 +132,8 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
             $colnum = 0;
             foreach ($tcolumns as $tcolumn) {
-
                 foreach ($tcolumn as $tsection) {
+                    $course_html[$colnum] .= '<div class="item" style="padding-bottom: 15px;">';
 
                     $firstrec = $tsection[0];
                     $posted_arr = explode('-', $firstrec['POSTED']);
@@ -216,11 +145,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
                         $gradelevel = ($firstrec['GRADELEVEL'] != '' ? $firstrec['GRADELEVEL'] : 'Not Found');
-                    $course_html[$colnum] .= "<tr><td colspan='4'><font color=red>$firstrec[SCHOOL_NAME]($gradelevel)</font></td></tr><tr><td height=\"8\" style='font-size:14px; border-bottom:1px solid #000;'>&nbsp;&nbsp;&nbsp;<b>Courses</b></td>
-                  <td height=\"8\" style='font-size:14px; border-bottom:1px solid #000;' align='center' >&nbsp;&nbsp;&nbsp;<b>Credit Hours</TD>
-                  <td align='center' height=\"8\" style='font-size:14px; border-bottom:1px solid #000;'><b>Credits Earned</b></td>
-                  <td height=\"8\" style='font-size:14px; border-bottom:1px solid #000;' align='center' >&nbsp;&nbsp;&nbsp;<b>" . $firstrec['MP_NAME'] . " - Grade " . "(" . $posted_arr[1] . '/' . $posted_arr[0] . ")</b></td>
-                  <td align='center' height=\"8\" style='font-size:14px; border-bottom:1px solid #000;'><b>GP Value</b></td>";
+
+                    $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec[SCHOOL_NAME] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
+                    $course_html[$colnum] .= '<p class="m-t-0 m-b-5">Posted Date : ' . $posted_arr[1] . '/' . $posted_arr[0] . '</p>';
+                    $course_html[$colnum] .= '<table class="invoice-table table-bordered">';
+                    $course_html[$colnum] .= '<thead>';
+                    $course_html[$colnum] .= '<tr>';
+                    $course_html[$colnum] .= '<th class="text-left f-s-12">Course</th><th class="text-left f-s-12" width="20%">Credit Hours</th><th class="text-left f-s-12" width="20%">Credits Earned</th><th class="bg-grey f-s-12" width="5%">Grade</th><th class="text-left f-s-12" width="15%">GP Value</th>';
+                    $course_html[$colnum] .= '</tr>';
+                    $course_html[$colnum] .= '</thead>';
+                    $course_html[$colnum] .= '<tbody>';
 
                     $cred_attempted = 0;
                     $cred_earned = 0;
@@ -271,12 +205,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $trec['MP_ID']));
                             $get_mp_tp[1]['MP_TYPE'] = $get_mp_tp_m[1]['MP_TYPE'];
                         }
-                        $course_html[$colnum] .= "<tr><td height=\"8\">&nbsp;&nbsp;&nbsp;" . $trec['COURSE_NAME'] . "</td>
-                                             <td>" . sprintf("%01.2f", $trec['CREDIT_ATTEMPTED']) . "</td>
-                                             <td style='font-family:Arial; font-size:12px;'>" . sprintf("%01.2f", $trec['CREDIT_EARNED']) . "</td>
-                                             <td style='font-family:Arial; font-size:12px;' align=center>" . $gradeletter . "</td>
-                                             <td style='font-family:Arial; font-size:12px;'>" . sprintf("%01.2f", ($trec['CREDIT_EARNED'] * $gp_val)) . "</td>
-                                             ";
+                        $course_html[$colnum] .= '<tr>';
+                        $course_html[$colnum] .= '<td>' . $trec['COURSE_NAME'] . '</td>';
+                        $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $trec['CREDIT_ATTEMPTED']) . '</td>';
+                        $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $trec['CREDIT_EARNED']) . '</td>';
+                        $course_html[$colnum] .= '<td class="bg-grey f-s-16 text-center"><b>' . $gradeletter . '</b></td>';
+                        $course_html[$colnum] .= '<td>' . sprintf("%01.2f", ($trec['CREDIT_EARNED'] * $gp_val)) . '</td>';
                         $totqp = ($totqp + ($trec['CREDIT_EARNED'] * $gp_val));
                         $tot_qp = ($tot_qp + ($trec['CREDIT_EARNED'] * $gp_val));
                         $qtr_gpa = $trec['GPA'];
@@ -299,6 +233,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $cred_earned_qr += $trec['CREDIT_EARNED'];
                         }
                     }
+
+                    $course_html[$colnum] .= '</tbody>';
                     $crd_ernd+=$cred_earned;
                     $total_credit_earned = $total_credit_earned + $cred_earned;
 
@@ -311,61 +247,175 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $total_CGPA_attemted = $total_CGPA_attemted + $cred_attempted;
                     $total_CGPA = $total_CGPA + ($total_QP_value / $qtr_gpa);
 
-                    $course_html[$colnum] .= "<tr><td colspan=3 style='font-size:16px; border-top:1px solid #000;'>
-                                            <TABLE width='100%' style='font-family:Arial; font-size:12px;'>
-                                            <TR><TD>Credit Attempted: " . sprintf("%01.2f", $cred_attempted) . " / Credit Earned: " . sprintf("%01.2f", $cred_earned) . " / GPA: " . sprintf("%01.2f", ($totqp / $cred_attempted)) . "</TD>
-                                            </TR></TABLE></td></tr>";
+                    $course_html[$colnum] .= '<tfoot>';
+                    $course_html[$colnum] .= '<tr>';
+                    $course_html[$colnum] .= '<td colspan="5">';
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' . sprintf("%01.2f", ($totqp / $cred_attempted)) . '</p>';
+                    $course_html[$colnum] .= '</td>';
+                    $course_html[$colnum] .= '</tr>';
+                    $course_html[$colnum] .= '</tfoot>';
+                    $course_html[$colnum] .= '</table>';
 
                     unset($qtr_gpa);
                     unset($totqp);
-                }
-                $colnum += 1;
-            }
-            $picturehtml = '';
-            if ($_REQUEST['show_photo']) {
-                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' .$student_id. ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
-                if (count($stu_img_info) > 0) {
-                    $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
-                } else {
-                    $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; border:1px solid #333333; background-color:#fff;" src="assets/noimage.jpg"></td>';
+                    $course_html[$colnum] .= '</div>';
+                    if ($_REQUEST['template'] == 'two') {
+                        if ($colnum == 0) {
+                            $colnum = 1;
+                        } else {
+                            $colnum = 0;
+                        }
+                    }
                 }
             }
+            ?>
+            <div class="print-wrapper">
+                <div class="print-header m-b-10">
+                    <div class="school-details">
+                        <h2><?php echo $schoolinfo['TITLE']; ?></h2>
+                        <b>Address :</b> <?php echo (($schoolinfo['ADDRESS'] != '') ? $schoolinfo['ADDRESS'] : '') . ' ' . (($schoolinfo['CITY'] != '') ? ', ' . $schoolinfo['CITY'] : '') . (($schoolinfo['STATE'] != '') ? ', ' . $schoolinfo['STATE'] : '') . (($schoolinfo['ZIPCODE'] != '') ? ', ' . $schoolinfo['ZIPCODE'] : '') ?>
+                        <?php if ($schoolinfo['PHONE']) { ?>
+                            <p><b>Phone :</b> <?php echo $schoolinfo['PHONE']; ?></p>
+                        <?php } ?>
+                    </div>
+                    <div class="header-right">
+                        <h4 class="title">TRANSCRIPT</h4>
+                    </div>
+                </div>
+                <hr/>
 
-            $grade_scale = DBGet(DBQuery('SELECT rcg.TITLE,rcg.GPA_VALUE, rcg.UNWEIGHTED_GP,rcg.COMMENT,rcgs.GP_SCALE FROM report_card_grade_scales rcgs,report_card_grades rcg
+                <div class="transcript-header m-t-10 m-b-20">
+                    <div class="transcript-student-info f-s-15">
+                        <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
+                        <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
+                        <p class="m-t-5 m-b-0"><b>Date of Birth :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
+                        <p class="m-t-5 m-b-0"><b>Student ID :</b> #5426</p>
+                        <p class="m-t-5 m-b-0"><b>Grade Level :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
+                    </div>
+                    <div class="transcript-student-overview">
+                        <table class="table">
+                            <tr>
+                                <td class="p-r-30">Cumulative GPA</td>
+                                <td><?php echo sprintf("%01.2f", (($tot_qp) / ($total_CGPA_attemted))); ?></td>
+                            </tr>
+                            <tr>
+                                <td class="p-r-30">Total Credit Attempted</td>
+                                <td><?php echo sprintf("%01.2f", $total_CGPA_attemted); ?></td>
+                            </tr>
+                            <tr>
+                                <td class="p-r-30">Total Credit Earned</td>
+                                <td><?php echo sprintf("%01.2f", $total_credit_earned); ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="vertical-align: top; padding-right: 15px;" width="50%">
+                            <?php echo $course_html[0]; ?>
+                        </td>
+                        <?php if ($_REQUEST['template'] == 'two') { ?>
+                        <td style="vertical-align: top; padding-left: 15px;">
+                                <?php echo $course_html[1]; ?>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                </table>
+
+<!--                <div class="transcript-columns <?php //echo (($_REQUEST['template'] == 'two') ? 'two-column' : ''); ?>">
+                    <div class="column">
+                        <?php //echo $course_html[0]; ?>
+                    </div>
+                    <?php if ($_REQUEST['template'] == 'two') { ?>
+                        <div class="column">
+                            <?php //echo $course_html[1]; ?>
+                        </div>
+                    <?php } ?>
+                </div>-->
+
+                <div class="text-right m-t-40">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <table align="right" class="m-t-30">
+                                    <tr>
+                                        <td class="text-center p-b-40" style="border-top: 2px solid #333; width: 300px;">
+                                            <i>Signature</i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="border-top: 2px solid #333; width: 300px;">
+                                            <i>Title</i>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="page-break-before: always;">&nbsp;</div>
+
+
+                <?php
+                $grade_scale = DBGet(DBQuery('SELECT rcg.TITLE,rcg.GPA_VALUE, rcg.UNWEIGHTED_GP,rcg.COMMENT,rcgs.GP_SCALE FROM report_card_grade_scales rcgs,report_card_grades rcg
                                         WHERE rcg.grade_scale_id =rcgs.id and rcg.syear=\'' . $tsyear . '\' and rcg.school_id=\'' . UserSchool() . '\' ORDER BY rcg.SORT_ORDER'));
 
-            $grade_scale_value = $grade_scale[1];
+                $grade_scale_value = $grade_scale[1];
+                ?>
+                <div class="m-t-0">
+                    <h3 class="m-b-5 m-t-0">GPA & CGPA based on a <?php echo $grade_scale_value['GP_SCALE']; ?>-point scale as follows:</h3>
+                    <table class="invoice-table table-bordered">
+                        <thead>                            
+                            <tr>
+                                <th class="text-center f-s-12">Grade Letter</th>
+                                <th class="text-center f-s-12">Weighted Grade Points</th>
+                                <th class="text-center f-s-12">Unweighted Grade Points</th>
+                                <th class="text-center f-s-12">Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($grade_scale as $grade_scale_val) { ?>
+                                <tr>
+                                    <td class="text-center f-s-12"><?php echo $grade_scale_val['TITLE']; ?></td>
+                                    <td class="text-center f-s-12"><?php echo $grade_scale_val['GPA_VALUE']; ?></td>
+                                    <td class="text-center f-s-12"><?php echo $grade_scale_val['UNWEIGHTED_GP']; ?></td>
+                                    <td class="text-center f-s-12"><?php echo $grade_scale_val['COMMENT']; ?></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="page-break-before: always;">&nbsp;</div>
 
-            $general_info_html = '<tr><td>
-                              <table height="130px" width="60%">
-                              <tr><td colspan="3"> GPA & CGPA based on a ' . $grade_scale_value['GP_SCALE'] . '-point scale as follows:</td></tr>
-	     	              <tr><td>
-                                   <table height="130px" width="90%">
-                                   <tr><td >Grade Letter</td><td >Weighted Grade Points</td><td >Unweighted Grade Points</td><td >Comments</td></tr>';
-            foreach ($grade_scale as $grade_scale_val) {
+                <?php
+                $picturehtml = '';
+                if ($_REQUEST['show_photo']) {
+                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                    if (count($stu_img_info) > 0) {
+                        $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
+                    } else {
+                        $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; border:1px solid #333333; background-color:#fff;" src="assets/noimage.jpg"></td>';
+                    }
+                }
 
-                $general_info_html .= '<tr><td>' . $grade_scale_val['TITLE'] . '</td>
-                                      <td>' . $grade_scale_val['GPA_VALUE'] . '</td>
-                                      <td>' . $grade_scale_val['UNWEIGHTED_GP'] . '</td>
-                                      <td>' . $grade_scale_val['COMMENT'] . '</td></tr>';
-            }
-            $general_info_html .= '</table>
-                               </td></tr>';
 
-            if ($probation) {
-                $general_info_html = $general_info_html .
-                        '<tr><td width="2%"></td><td width="3%" style="padding-bottom:15px">Status:</td><td width="95%"> ACADEMIC PROBATION
+
+                if ($probation) {
+                    $general_info_html = $general_info_html .
+                            '<tr><td width="2%"></td><td width="3%" style="padding-bottom:15px">Status:</td><td width="95%"> ACADEMIC PROBATION
          Please be reminded of Section 2.3.6 of the Academic Handbook:
          If students fail to raise their CGPA above 3.0 for two consecutive semesters
          the default action is dismissal from the Program.</td></tr>' .
-                        '</table><BR><BR></td></tr>';
-            } else {
-                $general_info_html = $general_info_html .
-                        '</table><BR><BR></td></tr>';
-            }
-            $student_html = '
+                            '</table><BR><BR></td></tr>';
+                } else {
+                    $general_info_html = $general_info_html .
+                            '</table><BR><BR></td></tr>';
+                }
+                $student_html = '
                 <table border="0" style="font-family:Arial; font-size:12px;" cellpadding="0" cellspacing="0"><tr>' . $picturehtml .
-                    '<td width=70% valign=bottom>
+                        '<td width=70% valign=bottom>
                         <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family:Arial; font-size:12px;">
                         <tr><td valign=bottom><div style="font-family:Arial; font-size:13px; padding:0px 12px 0px 12px;"><div style="font-size:18px;">' . $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME'] . '</div>
                             <div>' . $sinfo['ADDRESS'] . '</div>
@@ -381,84 +431,12 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
 
-            echo '  <!-- HEADER CENTER "' . $schoolinfo['TITLE'] . ' Transcript" -->
-                <!-- FOOTER CENTER "Transcript is unofficial unless signed by a school official" -->
-              <!-- MEDIA LEFT .25in -->
-              <!-- MEDIA TOP .25in -->
-              <!-- MEDIA RIGHT .25in -->
-              <!-- MEDIA BOTTOM .25in -->
-            <table width="860px" border="0" cellpadding="2" cellspacing="0">
-                
-              <tr>  <!-- this is the header row -->
-                <td height="100" valign="top">
-                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        
-                        <td width="50%" valign="top" align="center">' . $student_html . '</td>
-                        
-                        <td width="50%" valign="top" align="right">' . $school_html . '</td>
-                      </tr>
-                    </table>
-                </td>
-              </tr>  <!-- end of header row -->
-              <tr>   <!-- this is the main body row -->
-                <td width="100%" valign="top" >
-                  <table width="100%" height="400px" border="1" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td valign="top">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="6" style="font-family:Arial; font-size:12px;">
-                                  <tr>
-                                    <td valign="top" align="left" valign="top">     <!-- -->
-                                        <table border="0" cellpadding="3" cellspacing="0" style="font-family:Arial; font-size:12px;">
-                                            ' . $course_html[0] . '
-                                        </table>
-                                      </td>
-                                      <td valign="top"align="center"><table width="100%">' . $course_html[1] . '</table></td>
-                                      <td valign="top"align="center"><table width="100%">' . $course_html[2] . '</table></td>
-                                    </tr>
-                            </table>
-                        </td>
-                    </tr> ' . $general_info_html . '
-                  </table>
-                </td>
-              
-              </tr>  <!-- end of main body row -->
-              <tr>   <!-- this is the footer row --> 
-                <td align=left>
-                    <table align=left>
-                        <tr>
-                           
-                            <td valign="Top" align="left">
-                                <table width="100%" >
-                                    
-                                    <tr><td colspan="3" height="10">&nbsp;</td></tr> 
-                                    <tr valign="bottom">
-                                        <td align="center" valign="bottom"><br>_______________________________</td>
-										<td colspan="2" >&nbsp;</td>
-                                    </tr> 
-									<tr>
-                                        <td align="left" valign="top" style="font-family:Arial; font-size:13px; font-weight:bold">Signature</td>
-                                        <td colspan="2">&nbsp;</td>
-                                        
-                                    </tr>
-                                    <tr><td colspan="3" height="10">&nbsp;</td></tr> 
-                                    <tr valign="bottom">
-                                        <td align="center" valign="bottom"><br>_______________________________</td>
-										<td colspan="2" >&nbsp;</td>
-                                    </tr> 
-									<tr>
-                                        <td align="left" valign="top" style="font-family:Arial; font-size:13px; font-weight:bold">Title</td>
-                                        <td colspan="2">&nbsp;</td>
-                                        
-                                    </tr> 
-                                </table>
-                            </td>
-                       </tr>     
-                   </table> 
-                </td>
-              </tr>   <!-- end of footer row -->
-            </table><div style="page-break-before: always;">&nbsp;</div>';
-            echo '<!-- NEW PAGE -->';
+                echo '';
+                echo '<!-- NEW PAGE -->';
+                ?>
+
+            </div>
+            <?php
         }
     }
     PDFStop($handle);
@@ -552,14 +530,12 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
-    
 //    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
-    
+
     return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 function _convertlinefeed($string) {
     return str_replace("\n", "&nbsp;&nbsp;&nbsp;", $string);
 }
-
 ?>
