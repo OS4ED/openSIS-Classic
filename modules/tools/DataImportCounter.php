@@ -96,6 +96,9 @@ if ($category == 'student') {
                 $check_query = array();
                 $check_exist = 0;
                 foreach ($students as $students_v) {
+                    
+                    //echo '<pre>';print_r($students_v);
+                    
 //                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
                     if ($arr_v[$array_index[$students_v]] != '') {
                         $student_columns[] = $students_v;
@@ -104,12 +107,13 @@ if ($category == 'student') {
                         } else {
                             $student_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
                         }
-                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE')
+                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' || $students_v == 'ALT_ID')
                             $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
                     }
                 }
                 if (count($check_query) > 0) {
-                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query);exit;
+
+//echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query);exit;
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query)));
                     $check_exist = $check_exist[1]['REC_EXISTS'];
                 }
@@ -326,7 +330,7 @@ if ($category == 'staff') {
 //        echo '<br><br>';
 //        print_r($array_index);
 //        exit;
-        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'IS_DISABLE', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'GENDER', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
+        $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'GENDER', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
         $login_authentication = array('USERNAME', 'PASSWORD');
         $staff_school_relationship = array('START_DATE', 'END_DATE');
         $staff_school_info = array('CATEGORY', 'JOB_TITLE', 'JOINING_DATE');

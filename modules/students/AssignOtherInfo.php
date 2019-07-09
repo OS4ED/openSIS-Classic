@@ -81,12 +81,19 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 $students_count++;
             }
         }
-
+        
         foreach ($_REQUEST['values'] as $field => $value) {
 
             $arr = explode('[', $field);
-
-            if ($arr[0] != 'medical_info') {
+            if ($arr[0] == 'language_id') {
+                if (isset($value) && trim($value) != '') {
+                    $value = paramlib_validation($field, $value);
+                    $lng_id=DBGet(DBQuery('SELECT * FROM `language` WHERE language_name LIKE \'%'.$value.'%\''));
+                    $lng_id=$lng_id[1]['LANGUAGE_ID'];
+                    $update .= ',' . $field . "='$lng_id'";  
+                }
+            }
+           elseif (($arr[0] != 'medical_info')&&($arr[0] != 'language_id')) {
                 if (isset($value) && trim($value) != '') {
                     $value = paramlib_validation($field, $value);
                     $update .= ',' . $field . "='$value'";
@@ -286,7 +293,7 @@ if (!$_REQUEST['modfunc']) {
         }
         
         if ($_REQUEST[category_id] == 1 || $_REQUEST[category_id] == '') {
-            $arr = array('First Name','Middle Name','Last Name','Estimated Grad. Date','Ethnicity', 'Common Name','Date of Birth', 'Gender', 'Language', 'Email', 'Phone','Alternate ID');
+            $arr = array('First Name','Middle Name','Last Name','Estimated Grad. Date','Ethnicity', 'Common Name','Date of Birth', 'Gender', 'Language', 'Email', 'Phone');
 
             foreach ($arr as $v_g) {
                 if ($v_g == 'Common Name' || $v_g == 'First Name' || $v_g == 'Middle Name' || $v_g == 'Last Name') {
@@ -648,8 +655,6 @@ function _makeTextInput($column, $numeric = false) {
     $title = str_replace(']', '', $title);
     $title = str_replace('_', ' ', $title);
     $title = ucwords(strtolower($title));
-    if($column=='Alternate ID')
-        $column='alt_id';
     if($column=='Language')
         $column='language_id';
     if ($column == 'physician' || $column == 'physician_phone' || $column == 'preferred_hospital')
