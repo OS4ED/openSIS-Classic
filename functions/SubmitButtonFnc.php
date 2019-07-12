@@ -25,7 +25,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
 function SubmitButton($value='Submit',$name='',$options='')
 {
 	if(AllowEdit() || $_SESSION['take_mssn_attn'])

@@ -94,30 +94,89 @@ if ($category == 'student') {
                 $student_columns = array('STUDENT_ID');
                 $student_values = array($student_id);
                 $check_query = array();
+                $check_query_alt_id = array();
+                $check_query_username = array();
                 $check_exist = 0;
                 foreach ($students as $students_v) {
-                    
                     //echo '<pre>';print_r($students_v);
                     
-//                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
+                    //echo '<pre>';print_r($students_v);
+                    //echo ($arr_v[$array_index[$students_v]]);
+                   //echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
                     if ($arr_v[$array_index[$students_v]] != '') {
                         $student_columns[] = $students_v;
-                        if ($students_v == 'BIRTHDATE' || $students_v == 'ESTIMATED_GRAD_DATE') {
+                        if ($students_v == 'BIRTHDATE' || $students_v == 'ESTIMATED_GRAD_DATE' ) {
                             $student_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])) . "'";
+                          //echo '<pre>';print_r( $student_values);
+                            
                         } else {
                             $student_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
                         }
-                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' || $students_v == 'ALT_ID')
-                            $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
-                    }
+                         if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' )
+                            
+                             $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
+                        //echo '<pre>';print_r($check_query);
+                         if ($students_v == 'ALT_ID')
+                            $check_query_alt_id[]= $students_v . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
+                           // echo '<pre>';print_r($check_query_alt_id);//exit;
+                         
+                        
+                          
+                        }
+                    
+                    
+                   
                 }
+                
+                
+                foreach ($login_authentication as $username) {
+                 
+                    
+                    //echo '<pre>';print_r($students_v);
+                    //echo ($arr_v[$array_index[$students_v]]);
+                   //echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
+                    if ($arr_v[$array_index[$username]] != '') {
+                        //$log_columns[] = $username;
+                      
+                         
+                        //echo '<pre>';print_r($check_query);
+                         if ($username == 'USERNAME')
+                            $check_query_username[]= $username . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$username]]) ). "'";
+                           // echo '<pre>';print_r($check_query_alt_id);//exit;
+                         
+                        
+                          
+                        }
+                    
+                    
+                   
+                }
+                
+                
                 if (count($check_query) > 0) {
+                    //echo count($check_query);exit;
 
-//echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query);exit;
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query);//exit;
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query)));
                     $check_exist = $check_exist[1]['REC_EXISTS'];
                 }
-                if ($check_exist == 0) {
+                
+                if (count($check_query_alt_id) > 0) {
+                    //echo count($check_query_alt_id);
+                    
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query_alt_id);//exit;
+                    $check_exist_al= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" ",$check_query_alt_id)));
+                    $check_exist_alt= $check_exist_al[1]['REC_EXISTS'];
+                }
+                  if (count($check_query_username) > 0) {
+                    //echo count($check_query_alt_id);
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username);
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query_alt_id);//exit;
+                    $check_exist_al_username= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username)));
+                    $check_exist_alt_username= $check_exist_al_username[1]['REC_EXISTS'];
+                }
+                
+                if ( $check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
                     DBQuery('INSERT INTO students (' . implode(',', $student_columns) . ') VALUES (' . implode(',', $student_values) . ')');
                     unset($student_columns);
                     unset($student_values);
@@ -174,6 +233,7 @@ if ($category == 'student') {
                         $la_values[] = "''";
                     }
                     DBQuery('INSERT INTO login_authentication (' . implode(',', $la_columns) . ') VALUES (' . implode(',', $la_values) . ')');
+                    //DBQuery('INSERT INTO login_authentication (' . implode(',', $username_columns) . ') VALUES (' . implode(',', $username_values) . ')');
                     unset($la_columns);
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +353,9 @@ if ($category == 'student') {
         unset($temp_array_index);
     }
 }
+
+
+
 if ($category == 'staff') {
 
     if (count($_SESSION['data']) > 1) {
@@ -356,6 +419,8 @@ if ($category == 'staff') {
                 $staff_columns = array('STAFF_ID', 'CURRENT_SCHOOL_ID');
                 $staff_values = array($staff_id, UserSchool());
                 $check_query = array();
+                $check_query_alt_id = array();
+                $check_query_username = array();
                 $check_exist = 0;
                 foreach ($staff as $staff_v) {
 //                    echo $staff_v.'---'.$arr_v[$array_index[$staff_v]].'<br><br>';
@@ -404,13 +469,64 @@ if ($category == 'staff') {
                         $staff_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
                         if ($staff_v == 'FIRST_NAME' || $staff_v == 'LAST_NAME' || $staff_v == 'EMAIL' || $staff_v == 'BIRTHDATE')
                             $check_query[] = $staff_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
+                           //echo '<pre>'; print_r($check_query);
+                        if($staff_v == 'ALTERNATE_ID')
+                        
+                         $check_query_alt_id[] = $staff_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
+                         //print_r($check_query_alternate);
                     }
                 }
+                
+                   
+                foreach ($login_authentication as $username) {
+                 
+                    
+                    //echo '<pre>';print_r($students_v);
+                    //echo ($arr_v[$array_index[$students_v]]);
+                   //echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
+                    if ($arr_v[$array_index[$username]] != '') {
+                        //$log_columns[] = $username;
+                      
+                         
+                        //echo '<pre>';print_r($check_query);
+                         if ($username == 'USERNAME')
+                            $check_query_username[]= $username . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$username]]) ). "'";
+                           // echo '<pre>';print_r($check_query_alt_id);//exit;
+                         
+                        
+                          
+                        }
+                    
+                    
+                   
+                }
+                
                 if (count($check_query) > 0) {
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" AND ", $check_query);//exit;
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" AND ", $check_query)));
+                    //print_r( $check_exist) ;
                     $check_exist = $check_exist[1]['REC_EXISTS'];
                 }
-                if ($check_exist == 0) {
+                
+                 if (count($check_query_alt_id) > 0) {
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" AND ", $check_query_alternate_id);//exit;
+                    $check_exist_al = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" ", $check_query_alt_id)));
+                    //print_r( $check_exist) ;
+                    $check_exist_alt = $check_exist_al[1]['REC_EXISTS'];
+                }
+                
+                 if (count($check_query_username) > 0) {
+                    //echo count($check_query_alt_id);
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username);
+                    //echo 'SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query_alt_id);//exit;
+                    $check_exist_al_username= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username)));
+                    $check_exist_alt_username= $check_exist_al_username[1]['REC_EXISTS'];
+                }
+                
+                
+                
+                //print_r($check_exist);
+                if ($check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
                     DBQuery('INSERT INTO staff (' . implode(',', $staff_columns) . ') VALUES (' . implode(',', $staff_values) . ')');
                     unset($staff_columns);
                     unset($staff_values);

@@ -707,7 +707,7 @@ if (!$_REQUEST['modfunc']) {
             if ($this_school_mod['USERNAME'] && (!$this_school['OPENSIS_ACCESS'] == 'Y')) {
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
+                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15">';
@@ -715,13 +715,13 @@ if (!$_REQUEST['modfunc']) {
                 if ($this_school['OPENSIS_ACCESS'] == 'N'){
                     echo '<div class="row">';
                     echo '<div class="col-md-12">';
-                    echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
+                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }elseif ($this_school['OPENSIS_ACCESS'] == 'Y'){
                     echo '<div class="row">';
                     echo '<div class="col-md-12">';
-                    echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
+                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }
@@ -730,7 +730,7 @@ if (!$_REQUEST['modfunc']) {
             elseif (!$this_school_mod['USERNAME'] || $this_school['OPENSIS_ACCESS'] == 'N') {
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo '<h5 class="text-primary visible-lg-inline-block">openSIS Access Information</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
+                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15" style="display:none">';
