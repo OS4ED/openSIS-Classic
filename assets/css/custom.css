@@ -448,7 +448,7 @@ ul[id*="select2-period-"] {
         /*margin: 0 -20px 0 -20px;*/
         background-color: #fcfcfc;
         border-top: 1px solid #ddd;
-        padding: 15px 20px 0;
+        padding: 15px 0 0;
     }
     .heading-elements .input-group {
         position: static;

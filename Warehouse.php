@@ -110,32 +110,18 @@ if (WAREHOUSE_PHP == 0) {
 									document.getElementById(hide[i]).innerHTML = '';
 							}
 
-							function checkAll(form,value,name_like)
+                                                        function checkAll(form,value,name_like)
 							{
-                                                       
 								if(value==true)
 									checked = true;
 								else
 									checked = false;
-                                                                
-                                                                var arr_len=document.getElementById('res_len').value;
-                                                                
-                                                                var count = document.getElementById('res_length').value;                                                      
 
-                                                                var stu_list=document.getElementById('res_len').value;
-
-                                                                var  res_list = stu_list.split(',');
-                                                                
-                                                                for(i=0;i<count;i++)
-                                                                {
-                                                               
-                                                                    var check_id = res_list[i];
-                               
-                                                                    console.log(check_id);
-                                                                    
-                                                                    document.getElementById(check_id).checked = true;
-                                                                }
-                             
+								for(i=0;i<form.elements.length;i++)
+								{
+									if(form.elements[i].type=='checkbox' && form.elements[i].name!='controller' && form.elements[i].name.substr(0,name_like.length)==name_like)
+										form.elements[i].checked = checked;
+								}
 							}
 						</script>";
 
@@ -167,4 +153,35 @@ if (WAREHOUSE_PHP == 0) {
     }
 
 }
+
+/*
+							function checkAll(form,value,name_like)
+							{
+                                                       
+								if(value==true)
+									checked = true;
+								else
+									checked = false;
+                                                                
+                                                                var arr_len=document.getElementById('res_len').value;
+                                                                
+                                                                var count = document.getElementById('res_length').value;                                                      
+
+                                                                var stu_list=document.getElementById('res_len').value;
+
+                                                                var  res_list = stu_list.split(',');
+                                                                
+                                                                for(i=0;i<count;i++)
+                                                                {
+                                                               
+                                                                    var check_id = res_list[i];
+                               
+                                                                    console.log(check_id);
+                                                                    
+                                                                    document.getElementById(check_id).checked = true;
+                                                                }
+                             
+							} 
+
+ */
 ?>

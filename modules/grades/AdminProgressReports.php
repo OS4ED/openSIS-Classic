@@ -188,7 +188,7 @@ if($_REQUEST['modfunc']=='save')
 				$sql .= ' AND ((a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=DUE_DATE) OR g.POINTS IS NOT NULL)';
 			if($_REQUEST['exclude_ec']=='Y')
 				$sql .= ' AND (a.POINTS!=\'0\' OR g.POINTS IS NOT NULL AND g.POINTS!=\'-1\')';
-			$sql .=' AND a.DUE_DATE>=\''.$student['START_DATE'].'\' ORDER BY a.ASSIGNMENT_ID';
+			$sql .=' AND a.DUE_DATE>=\''.$student['START_DATE'].'\' ORDER BY a.ASSIGNMENT_TYPE_ID';
 			$grades_RET = DBGet(DBQuery($sql),array('ASSIGNED_DATE'=>'_removeSpaces','ASSIGN_TYP_WG'=>'_makeAssnWG','DUE_DATE'=>'_removeSpaces','TITLE'=>'_removeSpaces','POINTS'=>'_makeExtra','LETTER_GRADE'=>'_makeExtra','WEIGHT_GRADE'=>'_makeWtg'));
                         
 //			$sum_points = $sum_percent = 0;

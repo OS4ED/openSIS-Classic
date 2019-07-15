@@ -90,8 +90,11 @@ if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
         }
     }
     $QI = "SELECT c.COURSE_ID,c.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS,(SELECT count(*) FROM schedule_requests sr WHERE sr.COURSE_ID=c.COURSE_ID) AS COUNT_REQUESTS FROM courses c,course_periods cp WHERE c.SUBJECT_ID='$_REQUEST[subject_id]' AND c.COURSE_ID=cp.COURSE_ID AND c.SYEAR='" . UserSyear() . "' AND c.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY c.COURSE_ID,c.TITLE ORDER BY c.TITLE";
+
     $QI = DBQuery($QI);
-    $RET = DBGet($QI, array('OPEN_SEATS' => '_calcOpenSeats'));
+    
+    $RET = DBGet($QI, array('OPEN_SEATS' => '_calcOpenSeatsNew'));
+    
     if (count($RET) && $_REQUEST['course_id']) {
         foreach ($RET as $key => $value) {
             if ($value['COURSE_ID'] == $_REQUEST['course_id'])
@@ -122,8 +125,9 @@ if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course
         }
     }
     $QI = "SELECT cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS FROM course_periods cp WHERE cp.COURSE_ID='" . $_REQUEST['course_id'] . "' AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE ORDER BY cp.TITLE";
-
+  
     $QI = DBQuery($QI);
+  
     $RET = DBGet($QI, array('OPEN_SEATS' => '_calcOpenSeats'));
 
     if (count($RET) && $_REQUEST['course_period_id']) {
@@ -177,11 +181,24 @@ echo '</div>'; //.row
 
 function _calcOpenSeats($null) {
     global $THIS_RET;
+//    print_r($THIS_RET);
     $sql = "SELECT COUNT(*) as TOT
 				FROM schedule ss,students s,student_enrollment ssm
 				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ss.COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]' ";
-
+//    echo "<br>".$sql;
     $res = DBGet(DBQuery($sql));
+//    print_r($res);
+    return $THIS_RET['TOTAL_SEATS'] - $res[1]['TOT'];
+}
+function _calcOpenSeatsNew($null) {
+    global $THIS_RET;
+//    print_r($THIS_RET);
+    $sql = "SELECT COUNT(*) as TOT
+				FROM schedule ss,students s,student_enrollment ssm
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_ID='$THIS_RET[COURSE_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ss.COURSE_ID='$THIS_RET[COURSE_ID]' ";
+//    echo "<br>".$sql;
+    $res = DBGet(DBQuery($sql));
+//    print_r($res);
     return $THIS_RET['TOTAL_SEATS'] - $res[1]['TOT'];
 }
 

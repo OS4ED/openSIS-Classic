@@ -162,7 +162,7 @@ if ($_REQUEST['profile'] != 'none') {
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo '<label class="control-label text-right col-lg-4">Passworddd</label>';
+    echo '<label class="control-label text-right col-lg-4">Password</label>';
     echo '<div class="col-lg-8">';
     if (!isset($staff['STAFF_ID'])) {
         //for adding new user

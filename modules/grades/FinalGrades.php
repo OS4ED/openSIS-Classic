@@ -393,14 +393,18 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
+    if ($_REQUEST['search_modfunc'] == 'list') {
+        //if ($_SESSION['count_stu'] != 0) {
+            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
+        //}
+    }
     Search('student_id', $extra, 'true');
 
     if ($_REQUEST['search_modfunc'] == 'list') {
+        
         if ($_SESSION['count_stu'] != 0) {
             unset($_SESSION['count_stu']);
-            echo '<div class="text-center">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
-        //PopTable('footer',$submit);
         echo "</FORM>";
     }
 }

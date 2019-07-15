@@ -40,7 +40,7 @@ function DrawHeader($left = '', $right = '', $center = '') {
         $font_color = '';
     }
     if ($left != '' || $right != '' || $center != '') {
-        echo '<div class="panel-heading">';
+        echo '<div class="panel-heading clearfix">';
     }
     
     if ($left && $left!='')
@@ -48,7 +48,7 @@ function DrawHeader($left = '', $right = '', $center = '') {
     if ($center && $center!='')
         echo '<h6 class="panel-title">' . $center . (($right!='')?'':'').'</h6>';
     if ($right && $right!='')
-        echo '<div class="heading-elements">' . $right . '</div>';
+        echo '<div class="heading-elements clearfix">' . $right . '</div>';
 
     if ($left != '' || $right != '' || $center != '') {
         echo '</div>';
