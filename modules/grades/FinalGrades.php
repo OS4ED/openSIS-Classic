@@ -331,6 +331,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] .= '<div class="form-inline">';
         foreach ($mps_RET as $sem => $quarters) {
             foreach ($quarters as $qtr) {
+                $qtr1=$qtr['MARKING_PERIOD_ID'];
                 $pro = GetChildrenMP('PRO', $qtr['MARKING_PERIOD_ID']);
                 if ($pro) {
                     $pros = explode(',', str_replace("'", '', $pro));
@@ -340,7 +341,11 @@ if (!$_REQUEST['modfunc']) {
                             $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . '>' . GetMP($pro, 'SHORT_NAME') . '</label></div>';
                 }
                 $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $qtr['MARKING_PERIOD_ID'] . ' ' . (($qtr['MARKING_PERIOD_ID'] == GetCurrentMP($MP_TYPE, DBDate())) ? 'checked' : '') . '>' . $qtr['SHORT_NAME'] . '</label></div>';
-            }
+            
+                if (GetMP($qtr1, 'DOES_EXAM') == 'Y')
+                $extra['extra_header_left'] .= '<div class="form-group"><label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $qtr1 . '>' . GetMP($qtr1 ,'SHORT_NAME') . ' Exam</label></div>';
+                }
+            
 
             if (GetMP($sem, 'DOES_EXAM') == 'Y')
                 if (GetMP($sem, 'DOES_EXAM') == 'Y')
