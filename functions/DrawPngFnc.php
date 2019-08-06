@@ -46,10 +46,30 @@ function DrawLogo()
                             $size = getimagesize($logo);
                             $width=$size[0];
                             $height=$size[1];
-                            $image='<img src="data:image/jpeg;base64,'.base64_encode($sch_img_info[1]['CONTENT']).'" width=100  height=100 alt="Logo" />';
+                            $image='<img src="data:image/jpeg;base64,'.base64_encode($sch_img_info[1]['CONTENT']).'" width="60" style="float: left;" class="m-r-15" alt="Logo" />';
                         }
                          else {
-                             $image= '<img src="assets/logo.png" alt="Logo" />';
+                             $image= '<img src="assets/logo.png" width="60" style="float: left;" class="m-r-15" alt="Logo" />';
+                        }
+
+	return $image;
+}
+function DrawLogoReport()
+{	                        
+    
+                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserSchool().' AND FILE_INFO=\'schlogo\''));
+                        if(!$_REQUEST['new_school'] && count($sch_img_info)>0){
+//                            $image="<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive />";
+//                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\''.  UserSchool().'\' AND program=\'SchoolLogo\''));    
+//                        if($logo_ret && file_exists($logo_ret[1]['VALUE'])){
+                            $logo=$logo_ret[1]['VALUE'];
+                            $size = getimagesize($logo);
+                            $width=$size[0];
+                            $height=$size[1];
+                            $image='<img src="data:image/jpeg;base64,'.base64_encode($sch_img_info[1]['CONTENT']).'" width="60" style="float: left;" class="m-r-15" alt="Logo" />';
+                        }
+                         else {
+                             $image= '<img src="assets/logo.png" width="60" style="float: left;" class="m-r-15" alt="Logo" />';
                         }
 
 	return $image;

@@ -64,4 +64,20 @@ function GetUserSchools($staff_id,$str=false)
           return $schools[1]['SCHOOL_ID'];
       }
 }
+
+function GetSchoolInfo($sch)
+{	global $_openSIS;
+		if(!$_openSIS['GetSchoolInfo'])
+	{
+		$QI=DBQuery('SELECT * FROM schools');
+		$_openSIS['GetSchoolInfo'] = DBGet($QI,array(),array('ID'));
+	}
+	if($_openSIS['GetSchoolInfo'][$sch])
+		return 'Address :'.$_openSIS['GetSchoolInfo'][$sch][1]['ADDRESS'].','.$_openSIS['GetSchoolInfo'][$sch][1]['CITY'].','.$_openSIS['GetSchoolInfo'][$sch][1]['STATE'].','.$_openSIS['GetSchoolInfo'][$sch][1]['ZIPCODE']. ($_openSIS['GetSchoolInfo'][$sch][1]['PHONE']!=NULL ? ' <p> Phone :'.$_openSIS['GetSchoolInfo'][$sch][1]['PHONE'].'</p>' : '');
+                 
+	else
+		return $sch;
+}
+
+
 ?>

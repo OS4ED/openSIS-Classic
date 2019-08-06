@@ -60,7 +60,7 @@ if ($_REQUEST['staff_id'] != 'new') {
     echo '<div class="col-md-6">';
 }
 echo '<div class="form-group">';
-echo '<label class="control-label text-right col-lg-4" for="people[EMAIL]">Email Address <span class=text-danger>*</span></label>';
+echo '<label class="control-label text-right col-lg-4" for="people[EMAIL]">Email Address </label>';
 echo '<div class="col-lg-8">' . TextInput($staff['EMAIL'], 'people[EMAIL]', '', 'size=25 maxlength=100 id=email class=form-control onkeyup=check_email(this,' . $id_sent . ',4); onblur=check_email(this,' . $id_sent . ',4)') . '<p class="help-block" id="email_error"></p></div>';
 echo '</div>';
 
@@ -224,7 +224,7 @@ if (in_array($staff['PROFILE'], $parent_profs_arr)) {
     echo '<div class="row">';
     echo '<div class="col-md-12">';
     echo '<h5>Associated Students </h5>';
-    $sql = 'SELECT s.STUDENT_ID,CONCAT(s.FIRST_NAME, \' \' ,s.LAST_NAME) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS SCHOOL FROM students s,student_enrollment ssm,school_gradelevels gr,schools sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.GRADE_ID=gr.ID AND ssm.SCHOOL_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
+    $sql = 'SELECT s.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS SCHOOL FROM students s,student_enrollment ssm,school_gradelevels gr,schools sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.GRADE_ID=gr.ID AND ssm.SCHOOL_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
     $students = DBGet(DBQuery($sql));
     foreach ($students as $sti => $std) {
         $get_relation = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE STUDENT_ID=' . $std['STUDENT_ID'] . ' AND PERSON_ID=' . $staff['STAFF_ID']));

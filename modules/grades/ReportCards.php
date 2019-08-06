@@ -1,5 +1,4 @@
 <?php
-
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -28,7 +27,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
-ini_set('max_execution_time', 5000);
+ini_set('max_execution_time', 50000);
 ini_set('memory_limit', '12000M');
 if ($_REQUEST['modfunc'] == 'save') {
     $cur_session_RET = DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
@@ -45,7 +44,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
 //        $st_list = '\'' . implode('\',\'', $_REQUEST['unused']) . '\'';
         $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-        
+
 
         $extra['SELECT'] .= ',rc_cp.COURSE_WEIGHT,rpg.TITLE as GRADE_TITLE,sg1.GRADE_PERCENT,sg1.WEIGHTED_GP,sg1.UNWEIGHTED_GP ,sg1.CREDIT_ATTEMPTED , sg1.COMMENT as COMMENT_TITLE,sg1.STUDENT_ID,sg1.COURSE_PERIOD_ID,sg1.MARKING_PERIOD_ID,c.TITLE as COURSE_TITLE,rc_cp.TEACHER_ID AS TEACHER,sp.SORT_ORDER';
 
@@ -70,8 +69,9 @@ if ($_REQUEST['modfunc'] == 'save') {
 
         $extra['ORDER'] .= ',sp.SORT_ORDER,c.TITLE';
         $extra['functions']['TEACHER'] = '_makeTeacher';
-        $extra['group'] = array('STUDENT_ID', 'COURSE_PERIOD_ID', 'MARKING_PERIOD_ID');
+        $extra['group'] = array('STUDENT_ID', 'MARKING_PERIOD_ID','COURSE_PERIOD_ID');
         $RET = GetStuList($extra);
+        print_r($RET);
         if (($_REQUEST['elements']['comments'] == 'Y') || ($_REQUEST['elements']['comments'] == 'Y' && $_REQUEST['elements']['percents'] )) {
             // GET THE COMMENTS
             unset($extra);
@@ -130,12 +130,208 @@ if ($_REQUEST['modfunc'] == 'save') {
             if ($_REQUEST['elements']['gpa'] == 'Y')
                 $columns['GPA'] = 'GPA';
             //start of report card print
-
             $handle = PDFStart();
             $total_stu = 1;
             if (!isset($_REQUEST['elements']['percents']) || (isset($_REQUEST['elements']['percents']) && $_REQUEST['elements']['percents'] == 'Y')) {
                 foreach ($RET as $student_id => $course_periods) {
+                    ?>
+                    <div class="print-wrapper">
+                        <div class="print-header m-b-10">
+                            <div class="school-details">
+                                <?php echo DrawLogoReport(); 
+                                
+                               echo '<h2>'.GetSchool(UserSchool()) . ' (' . $cur_session . ')</h2>';?>
+                                <!--<img src="assets/images/peach_county_logo.png" alt="" width="60" style="float: left;" class="m-r-15"/>-->
+                                <!--                               
+                                <h2>Peach Tree School</h2>
+                                Address : 123 Main Street , Atlanta, Georgia, 78990 <p>Phone : 860-347-6971</p>-->
 
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="transcript-header m-t-10 m-b-20">
+                            <div class="transcript-student-info f-s-15">
+                                <h2 class="m-0">Anderson, Daniel </h2>
+                                <p class="m-t-5 m-b-0">123 Main Street, Atlanta, Georgia, 123456</p>
+                                <p class="m-t-5 m-b-0">Date of Birth : Sep/2/2008</p>
+                                <p class="m-t-5 m-b-0">Student ID :1</p>
+                                <p class="m-t-5 m-b-0">Grade Level : 5th</p>
+                            </div>
+
+                            <div class="header-right" style="text-align: center;">
+                                <h4 class="title">REPORT CARD</h4>
+                            </div>
+                        </div>
+                        <table  width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td><h2 class="m-t-0 m-b-5">Semester 1</h2></td>
+                                <td>
+                                    <div style="text-align: right; font-weight: 600;">
+                                        Year-to-Date Daily Absences : 3 &nbsp;&nbsp;|&nbsp;&nbsp; Daily Absences this Semester 2:5
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <table style="border-collapse:collapse" width="100%" cellspacing="1" cellpadding="6" border="1px solid #a9d5e9 ">
+                            <tbody>
+                                <tr>
+                                    <th class="text-left f-s-12">Course</th>
+                                    <th class="text-left f-s-12">Teacher</th>
+                                    <th class="text-left f-s-12">Semester 1</th>
+                                    <th class="text-left f-s-12">Comment</th>
+                                    <th class="text-left f-s-12">GPA</th>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>B-</td>
+                                    <td>3,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>B-</td>
+                                    <td>3,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <h2 class="m-0" style="text-align: right;">Term GPA : 2.40</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                       
+                        <br/><br/>
+                        
+                        <table  width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td><h2 class="m-t-0 m-b-5">Semester 2</h2></td>
+                                <td>
+                                    <div style="text-align: right; font-weight: 600;">
+                                        Year-to-Date Daily Absences : 3 &nbsp;&nbsp;|&nbsp;&nbsp; Daily Absences this Semester 2:5
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <table style="border-collapse:collapse" width="100%" cellspacing="1" cellpadding="6" border="1px solid #a9d5e9 ">
+                            <tbody>
+                                <tr>
+                                    <th class="text-left f-s-12">Course</th>
+                                    <th class="text-left f-s-12">Teacher</th>
+                                    <th class="text-left f-s-12">Semester 1</th>
+                                    <th class="text-left f-s-12">Comment</th>
+                                    <th class="text-left f-s-12">GPA</th>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>B-</td>
+                                    <td>3,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>B-</td>
+                                    <td>3,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td>English</td>
+                                    <td>Jennifer  Lawrence </td>
+                                    <td>C</td>
+                                    <td>4,</td>
+                                    <td>3.000</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <h2 class="m-0" style="text-align: right;">Term GPA : 2.40</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table  width="100%" cellspacing="0" cellpadding="0" class="m-b-40">
+                            <tr> 
+                                <td colspan="3">
+                                    <h3 class="m-t-30 m-b-10">Explanation of Comment Codes</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>2:Produces Good Work</p>
+                                    <p>6:Move Effort Needed</p>
+                                </td>
+                                <td>
+                                    <p>3:Maintains Required Standard</p>
+                                    <p>7:Must Improved</p>
+                                </td>
+                                <td>
+                                    <p>4:Improvement Shown</p>
+                                    <p>21:Disappointing</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <table  width="100%" cellspacing="70" cellpadding="0" class="m-b-30 m-t-40">
+                            <tr>
+                                <td class="text-center p-b-40 f-s-15" style="border-top: 1px solid #333; width: 250px;">
+                                    <br/><b>Teacher's Signature</b><br/>
+                                    <p class="text-center m-t-30">Date:<span style="border-top: 1px solid #333; width: 250px; display: inline-block; margin-left: 15px;"></span></p>
+                                </td>
+                                 <td class="text-center p-b-40 f-s-15" style="border-top: 1px solid #333; width: 250px;">
+                                    <br/><b>Principal's Signature</b><br/>
+                                    <p class="text-center m-t-30">Date:<span style="border-top: 1px solid #333; width: 250px; display: inline-block; margin-left: 15px;"></span></p>
+                                </td>
+                                 <td class="text-center p-b-40 f-s-15" style="border-top: 1px solid #333; width: 250px;">
+                                   <br/><b>Parent/Guardian's Signature</b><br/>
+                                     <p class="text-center m-t-30">Date:<span style="border-top: 1px solid #333; width: 250px; display: inline-block; margin-left: 15px;"></span></p>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <?php
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                     echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . ' (' . $cur_session . ')' . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                     echo '<!-- MEDIA SIZE 8.5x11in -->';
@@ -146,11 +342,11 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $i = 0;
                         $total_grade_point = 0;
                         $Total_Credit_Hr_Attempted = 0;
-                        $commentc='';
+                        $commentc = '';
                         foreach ($course_periods as $course_period_id => $mps) {
                             $i++;
                             //$commentc=$mps[key($mps)][1]['COMMENT_TITLE'];
-                            $commentc=$mps[$last_mp][1]['COMMENT_TITLE'];
+                            $commentc = $mps[$last_mp][1]['COMMENT_TITLE'];
                             $grades_RET[$i]['COURSE_TITLE'] = $mps[key($mps)][1]['COURSE_TITLE'];
                             $grades_RET[$i]['TEACHER'] = $mps[key($mps)][1]['TEACHER'];
                             $grades_RET[$i]['TEACHER_ID'] = $mps[key($mps)][1]['TEACHER_ID'];
@@ -167,7 +363,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 if (substr(key($mps), 0, 1) == 'E')
                                     $mpkey = substr(key($mps), 1);
                                 else
-                                    $mpkey = key($mps);                    
+                                    $mpkey = key($mps);
                                 $total_grade_point += ($mps[$mpkey][1]['UNWEIGHTED_GP'] * $mps[$mpkey][1]['CREDIT_ATTEMPTED'] );
                                 $Total_Credit_Hr_Attempted += $mps[$mpkey][1]['CREDIT_ATTEMPTED'];
                             }
@@ -277,10 +473,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         $comments_arr[$comment['REPORT_CARD_COMMENT_ID']] = $comment['SORT_ORDER'];
                                     }
                                 }
-                                if($commentc!='')
-                                $grades_RET[$i]['COMMENT'] .= $sep .$commentc;
+                                if ($commentc != '')
+                                    $grades_RET[$i]['COMMENT'] .= $sep . $commentc;
                                 //if ($mps[$last_mp][1]['COMMENT_TITLE'])
-                                 //   $grades_RET[$i]['COMMENT'] .= $sep . $mps[$last_mp][1]['COMMENT_TITLE'];
+                                //   $grades_RET[$i]['COMMENT'] .= $sep . $mps[$last_mp][1]['COMMENT_TITLE'];
                             }
                         }
                         asort($comments_arr, SORT_NUMERIC);
@@ -323,8 +519,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     foreach ($mp_abs as $abs)
                                         $count += 1 - $abs['STATE_VALUE'];
                                 echo '<br/><table width="100%" border="0" cellspacing="0"><tr>';
-                                echo '<td><strong>Year-to-Date Daily Absences :</strong> ' . $count.'</td>';
-                                echo '<td align="right">'.$mp_absences.'</td>';
+                                echo '<td><strong>Year-to-Date Daily Absences :</strong> ' . $count . '</td>';
+                                echo '<td align="right">' . $mp_absences . '</td>';
                                 echo '</tr></table><br/>';
                                 $count_lines++;
                             } elseif ($_REQUEST['elements']['mp_absences'] == 'Y') {
@@ -407,7 +603,6 @@ if ($_REQUEST['modfunc'] == 'save') {
         } else
             BackPrompt('Missing grades or No Students were found.');
     } else
-        
         BackPrompt('You must choose at least one student and marking period.');
 }
 
@@ -455,7 +650,7 @@ if (!$_REQUEST['modfunc']) {
         foreach ($mps_RET as $sem => $quarters) {
 
             foreach ($quarters as $qtr) {
-                $qtr1=$qtr['MARKING_PERIOD_ID'];
+                $qtr1 = $qtr['MARKING_PERIOD_ID'];
                 $pro = GetChildrenMP('PRO', $qtr['MARKING_PERIOD_ID']);
                 if ($pro) {
                     $pros = explode(',', str_replace("'", '', $pro));
@@ -464,10 +659,10 @@ if (!$_REQUEST['modfunc']) {
                             $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . '>' . GetMP($pro, 'SHORT_NAME') . '</label>';
                 }
                 $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $qtr['MARKING_PERIOD_ID'] . '>' . $qtr['SHORT_NAME'] . '</label>';
-              
+
                 if (GetMP($qtr1, 'DOES_EXAM') == 'Y')
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $qtr1 . '>' . GetMP($qtr1, 'SHORT_NAME') . ' Exam</label>';
-                }
+                    $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $qtr1 . '>' . GetMP($qtr1, 'SHORT_NAME') . ' Exam</label>';
+            }
             if (GetMP($sem, 'DOES_EXAM') == 'Y')
                 $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $sem . '>' . GetMP($sem, 'SHORT_NAME') . ' Exam</label>';
             if (GetMP($sem, 'DOES_GRADES') == 'Y' && $sem != $quarters[1]['MARKING_PERIOD_ID'])
@@ -566,10 +761,10 @@ if ($modal_flag == 1) {
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
-    
-    
+
+
     return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
-    
+
 //    return "<input name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
@@ -579,5 +774,4 @@ function _makeTeacher($teacher, $column) {
 
     return $TEACHER_NAME[1]['NAME'];
 }
-
 ?>

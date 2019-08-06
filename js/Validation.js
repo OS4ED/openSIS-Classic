@@ -2847,7 +2847,7 @@ function formcheck_user_user_mod()
     frmvalidator.addValidation("people[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
 
 //    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
-    frmvalidator.addValidation("people[EMAIL]", "req", "Please enter the email");
+     //frmvalidator.addValidation("people[EMAIL]", "req", "Please enter the email");
 
 
     frmvalidator.addValidation("student_addres[ADDRESS]", "req", "Please enter the address");

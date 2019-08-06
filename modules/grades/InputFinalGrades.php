@@ -1246,7 +1246,8 @@ if (!$_REQUEST['_openSIS_PDF']) {
             }
             $cp_mp = $cp_mp[1]['MP'];
             $prev_mp = $prev_mp[1];
-            if ($cp_mp == 'FY' && $cp_type != 'custom' && $prev_mp) {
+            
+            if ($cp_mp !='FY' && $cp_type != 'custom' && $prev_mp) {
                 $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] grades</A></li>";
                 $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] Comments</A></li>";
             }

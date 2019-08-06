@@ -177,7 +177,6 @@ if ($_REQUEST['students']) {
 }
 
 echo '</div>'; //.row
-//echo '</div>'; //.panel
 
 function _calcOpenSeats($null) {
     global $THIS_RET;
@@ -185,20 +184,19 @@ function _calcOpenSeats($null) {
     $sql = "SELECT COUNT(*) as TOT
 				FROM schedule ss,students s,student_enrollment ssm
 				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ss.COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]' ";
-//    echo "<br>".$sql;
+
     $res = DBGet(DBQuery($sql));
-//    print_r($res);
+
     return $THIS_RET['TOTAL_SEATS'] - $res[1]['TOT'];
 }
 function _calcOpenSeatsNew($null) {
     global $THIS_RET;
-//    print_r($THIS_RET);
     $sql = "SELECT COUNT(*) as TOT
 				FROM schedule ss,students s,student_enrollment ssm
 				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_ID='$THIS_RET[COURSE_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ss.COURSE_ID='$THIS_RET[COURSE_ID]' ";
-//    echo "<br>".$sql;
+
     $res = DBGet(DBQuery($sql));
-//    print_r($res);
+
     return $THIS_RET['TOTAL_SEATS'] - $res[1]['TOT'];
 }
 

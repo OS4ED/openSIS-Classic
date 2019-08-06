@@ -1937,7 +1937,8 @@ CREATE TABLE `user_file_upload` (
   `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `content` longblob NOT NULL,
-  `file_info` varchar(255) NOT NULL
+  `file_info` varchar(255) NOT NULL,
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`;

@@ -102,8 +102,8 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
             $courselist_ret = DBGet(DBQuery('SELECT s.TITLE AS COURSE, s.COURSE_ID, cp.COURSE_PERIOD_ID,cp.TEACHER_ID 
-                                                        FROM gradebook_grades g, courses s, course_periods cp, gradebook_assignments ga
-                                                        WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID
+                                                        FROM gradebook_grades g, courses s, course_periods cp, gradebook_assignments ga, schedule sc
+                                                        WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID AND sc.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sc.STUDENT_ID=g.STUDENT_ID 
                                                         AND s.COURSE_ID = cp.COURSE_ID AND ga.assignment_id = g.assignment_id AND ga.marking_period_id in (' . GetAllMP($MP_TYPE, UserMP()) . ')  and  g.STUDENT_ID=\'' . $student[STUDENT_ID] . '\' and s.syear=\'' . UserSyear() . '\' group by cp.COURSE_PERIOD_ID'));
             if (!empty($courselist_ret[1])) {
                 foreach ($courselist_ret as $courselist => $course) {
@@ -161,7 +161,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $sql .= ' AND ((a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=DUE_DATE) OR g.POINTS IS NOT NULL)';
                     if ($_REQUEST['exclude_ec'] == 'Y')
                         $sql .= ' AND (a.POINTS!=\'0\' OR g.POINTS IS NOT NULL AND g.POINTS!=\'-1\')';
-                    $sql .= ' AND a.DUE_DATE>=\'' . $student['START_DATE'] . '\' ORDER BY a.ASSIGNMENT_ID';
+                    $sql .= ' AND a.DUE_DATE>=\'' . $student['START_DATE'] . '\' ORDER BY a.ASSIGNMENT_TYPE_ID';
                     $grades_RET = DBGet(DBQuery($sql), array('ASSIGNED_DATE' => '_removeSpaces', 'ASSIGN_TYP_WG' => '_makeAssnWG', 'DUE_DATE' => '_removeSpaces', 'TITLE' => '_removeSpaces', 'POINTS' => '_makeExtra', 'LETTER_GRADE' => '_makeExtra', 'WEIGHT_GRADE' => '_makeWtg'));
 
 //			$sum_points = $sum_percent = 0;

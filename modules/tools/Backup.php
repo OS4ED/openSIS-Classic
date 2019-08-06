@@ -45,7 +45,6 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
 
     $print_form = 0;
     $date_time = date("m-d-Y");
-    //EXPORT_TABLES($host, $user, $pass, $name);
     $Export_FileName = $name . 'Backup' . $date_time . '.sql';
     $dbconn = new mysqli($host, $user, $pass, $name, $port);
     if ($dbconn->connect_errno != 0)
@@ -54,9 +53,10 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
         $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
         $row = $result->fetch_assoc();
         $mysql_dir1 = substr($row['Value'], 0, 2);
-//     $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
-//     $sql_path="\\".$sql_path_arr[1].'8\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
-        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
+        $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
+        $sql_path="\\".$sql_path_arr[1].'8\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
+        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
+//        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
     }
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         if ($pass == '')
@@ -76,7 +76,6 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
     //$content= file_get_contents($Export_FileName);
     echo $content;
     exit;
-    //see import.php too
 }
 if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
     ?>

@@ -110,9 +110,9 @@ echo '<div class="col-md-6">';
 echo '</div>';
 echo '<div class="col-md-6">';
 if ($staff['PHYSICAL_DISABILITY'] == 'Y') {
-    echo '<table id="span_disability_desc"><tr><td style="width:120px">Disability Description</td><td>:</td><td>' . TextAreaInput($staff['DISABILITY_DESC'], 'staff[DISABILITY_DESC]', '', '', 'true') . '</td></tr></table>';
+    echo '<div class="form-group" id="span_disability_desc"><label class="control-label col-lg-4 text-right">Disability Description</label><div class="col-lg-8">' . TextAreaInput($staff['DISABILITY_DESC'], 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
 } else {
-    echo '<div class="form-group" id="span_disability_desc" style="display:none"><label class="control-label col-lg-4">Disability Description</label><div class="col-lg-8">' . TextAreaInput('', 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
+    echo '<div class="form-group" id="span_disability_desc" style="display:none"><label class="control-label col-lg-4 text-right">Disability Description</label><div class="col-lg-8">' . TextAreaInput('', 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
 }
 echo '</div>';
 echo '</div>';

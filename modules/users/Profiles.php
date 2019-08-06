@@ -233,6 +233,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
             echo "<td class=\"bg-primary\"></td></TR>";
             if (count($values)) {
                 foreach ($values as $file => $title) {
+                    
                     if ($_REQUEST['profile_id'] != 0 && $xprofile == 'admin' && $modcat == 'tools' && ($title == 'Backup Database' || $title == 'Reports' || $title == 'At a Glance' || $title == 'Institute Reports' || $title == 'Institute Custom Field Reports'))
                         continue;
                     if (!is_numeric($file)) {

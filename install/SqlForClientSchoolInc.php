@@ -34,11 +34,11 @@ $text = "
 
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.2'),
-('date', 'April 22, 2019'),
-('build', '20190422001'),
+('version', '7.3'),
+('date', 'August 05, 2019'),
+('build', '20190805001'),
 ('update', '0'),
-('last_updated', 'April 22, 2019');
+('last_updated', 'August 05, 2019');
 
 --
 -- Dumping data for table `address`
@@ -674,7 +674,9 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 (1, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
 (0, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
 (1, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
-('0', 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL);
+(0, 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL),
+(1, 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL);
+
 
 --
 -- Dumping data for table `program_config`
@@ -792,7 +794,7 @@ INSERT INTO `program_user_config` (`user_id`, `school_id`, `program`, `title`, `
 
 
 INSERT INTO `schools` (`syear`, `title`, `address`, `city`, `state`, `zipcode`, `area_code`, `phone`, `principal`, `www_address`, `e_mail`, `reporting_gp_scale`, `last_updated`, `updated_by`) VALUES
-(".$_SESSION['syear'].", '".$_SESSION['sname']."', '123 Main Street', 'Atlanta', 'Georgia', '78990', NULL, '860-347-6971', 'P. Lawrence', NULL, NULL, 4.000, '2018-01-22 04:18:02', NULL);
+(".$_SESSION['syear'].", '".$_SESSION['sname']."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,'', NULL);
 
 
 
@@ -978,9 +980,9 @@ INSERT INTO `language` (`language_id`, `language_name`, `sort_order`, `last_upda
 -- Dumping data for table `student_enrollment_codes`
 --
 INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`, `last_updated`, `updated_by`) VALUES
-(".$_SESSION['syear'].",  'Transferred out', 'TRAN', 'TrnD', '2015-07-28 05:56:33', NULL),
-(".$_SESSION['syear'].",  'Transferred in', 'TRAN', 'TrnE', '2015-07-28 05:56:33', NULL),
-(".$_SESSION['syear'].",  'Rolled over', 'ROLL', 'Roll', '2015-07-28 05:56:33', NULL),
+(".$_SESSION['syear'].",  'Transferred Out', 'TRAN', 'TrnD', '2015-07-28 05:56:33', NULL),
+(".$_SESSION['syear'].",  'Transferred In', 'TRAN', 'TrnE', '2015-07-28 05:56:33', NULL),
+(".$_SESSION['syear'].",  'Rolled Over', 'ROLL', 'Roll', '2015-07-28 05:56:33', NULL),
 (".$_SESSION['syear'].",  'Dropped Out', 'DROP', 'Drop', '2015-07-28 05:56:33', NULL),
 (".$_SESSION['syear'].",  'New', 'NEW', 'Add', '2015-07-28 05:56:33', NULL);
 

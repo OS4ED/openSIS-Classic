@@ -32,7 +32,7 @@ ini_set('memory_limit', '1200000000M');
 ini_set('max_execution_time', '500000');
 unset($flag);
 session_start();
-if ($_REQUEST['modfunc'] == 'clearall') {
+if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'clearall') {
 
     if (DeletePromptParent('Parent')) {
 
@@ -261,7 +261,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
     if (UserStudentID() != '' && $_REQUEST['student_id'] != 'new')
         $_REQUEST['student_id'] = UserStudentID();
     ####################
-    if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' && $title_set != 'y' && $_REQUEST['modfunc'] != 'detail' && $_REQUEST['modfunc'] != 'lookup') {
+    if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' && $title_set != 'y' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'detail' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'lookup') {
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
 
@@ -299,7 +299,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
     if ($_REQUEST['err_msg'] == true)
         echo "<center><font color=red><b>Birthdate is invalid, data could not be saved.</b><font></center>";
 
-    if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
+    if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
 //        if ($_POST['button'] == 'Save') { #&& AllowEdit()
         $transfer_flag = 0;
 
@@ -557,7 +557,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 $_openSIS['allow_edit'] = true;
         }
 
-        if ($_REQUEST['modfunc'] == 'update' && AllowEdit()) {
+        if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'update' && AllowEdit()) {
             if (count($_REQUEST['month_students'])) {
                 foreach ($_REQUEST['month_students'] as $column => $value) {
                     $_REQUEST['students'][$column] = $_REQUEST['day_students'][$column] . '-' . $_REQUEST['month_students'][$column] . '-' . $_REQUEST['year_students'][$column];
@@ -1710,7 +1710,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     }
                 }
 
-                if ($_REQUEST['modfunc'] != 'delete' || $_REQUEST['delete_ok'] == '1') {
+                if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'delete' || $_REQUEST['delete_ok'] == '1') {
 
                     if ($_REQUEST['student_id'] != 'new') {
 

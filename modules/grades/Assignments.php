@@ -41,31 +41,6 @@ $_openSIS['allow_edit'] = true;
 unset($_SESSION['_REQUEST_vars']['assignment_type_id']);
 unset($_SESSION['_REQUEST_vars']['assignment_id']);
 
-//$config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND PROGRAM=\'Gradebook\'  AND SCHOOL_ID='.UserSchool().''),array(),array('TITLE'));
-////if(count($config_RET))
-////	foreach($config_RET as $title=>$value)
-////		$programconfig[$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
-////else
-////	$programconfig = true;
-//
-//if(count($config_RET))
-//{
-//	foreach($config_RET as $title=>$value)
-//		 if(substr($title,0,3)=='SEM' || substr($title,0,2)=='FY' || substr($title,0,1)=='Q')
-//            {
-//                $value1= explode("_",$value[1]['VALUE']);
-//                $programconfig[$title] = $value1[0];
-//            }
-// else {
-//     $value1= explode("_".UserCoursePeriod(),$value[1]['VALUE']);
-//     if(count($value1)>1)
-//      $programconfig[$title] = $value1[0];
-//else
-//    $programconfig[$title] = $value[1]['VALUE'];
-// }
-//}
-
-
 $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND school_id=\''.UserSchool().'\' AND PROGRAM=\'Gradebook\' AND value like "%_'.UserCoursePeriod().'%"'),array(),array('TITLE'));
 if(count($config_RET))
 {
@@ -97,7 +72,7 @@ if(clean_param($_REQUEST['day_tables'],PARAM_NOTAGS) && ($_POST['day_tables'] ||
 if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax']))
 {
         $redirect_now='n';
-    $table = $_REQUEST['table'];
+    $table = trim($_REQUEST['table']);
         $err=false;
         $f=0;
 	foreach($_REQUEST['tables'] as $id=>$columns)
@@ -353,7 +328,8 @@ $grade_assign_qr=  DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   student
                     }
 					$fields .= $column.',';
 
-					$values .= '\''.str_replace("'","''",$value).'\',';
+					$values .= '\''.singleQuoteReplace("'","''",$value).'\',';
+                        
                     $go = true;
                 }
             }
@@ -492,7 +468,7 @@ $grade_assign_qr=  DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   student
         }
                 if($msg)
                 {
-                    echo '<b>'.$msg.'</b>';
+                    echo '<div class="alert alert-danger no-border">'.$msg.'</div>';
         }
     }
     unset($_REQUEST['tables']);

@@ -32,7 +32,7 @@ function GetStaffList(& $extra)
 	{
 		case 'admin':
 		$profiles_RET = DBGet(DBQuery('SELECT * FROM user_profiles'),array(),array('ID'));
-                     $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
+                     $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
                         la.USERNAME,s.PROFILE,s.IS_DISABLE,s.PROFILE_ID,s.IS_DISABLE,s.STAFF_ID '.$extra['SELECT'].'
                         FROM
                         people s '.$extra['FROM'].',login_authentication la,students st,student_enrollment ssm
@@ -88,7 +88,7 @@ function GetUserStaffList(& $extra)
 	{
 		case 'admin':
 		$profiles_RET = DBGet(DBQuery('SELECT * FROM user_profiles'),array(),array('ID'));
-                  $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
+                  $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
 					s.PROFILE,s.IS_DISABLE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID '.$extra['SELECT'].'
                 FROM
 					staff s INNER JOIN staff_school_relationship ssr USING(staff_id) '.$extra['FROM'].',login_authentication la

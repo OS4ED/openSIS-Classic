@@ -250,7 +250,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $course_html[$colnum] .= '<tfoot>';
                     $course_html[$colnum] .= '<tr>';
                     $course_html[$colnum] .= '<td colspan="5">';
-                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' . sprintf("%01.2f", ($totqp / $cred_attempted)) . '</p>';
+                    if($cred_attempted!=0)
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' .sprintf("%01.2f", ($totqp / $cred_attempted)) . '</p>';
+                    else
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' .sprintf("%01.2f", 0) . '</p>';    
                     $course_html[$colnum] .= '</td>';
                     $course_html[$colnum] .= '</tr>';
                     $course_html[$colnum] .= '</tfoot>';
@@ -289,14 +292,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                         <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
                         <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
                         <p class="m-t-5 m-b-0"><b>Date of Birth :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
-                        <p class="m-t-5 m-b-0"><b>Student ID :</b> #5426</p>
+                        <p class="m-t-5 m-b-0"><b>Student ID :</b><?php echo $student_id ?></p>
                         <p class="m-t-5 m-b-0"><b>Grade Level :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
                     </div>
                     <div class="transcript-student-overview">
                         <table class="table">
                             <tr>
                                 <td class="p-r-30">Cumulative GPA</td>
-                                <td><?php echo sprintf("%01.2f", (($tot_qp) / ($total_CGPA_attemted))); ?></td>
+                                <td><?php echo $tot_qp != 0 ? sprintf("%01.2f", ($tot_qp / $total_CGPA_attemted)) : '0.00'; ?></td>
                             </tr>
                             <tr>
                                 <td class="p-r-30">Total Credit Attempted</td>

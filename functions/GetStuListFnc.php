@@ -583,9 +583,8 @@ else
 
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
-  
     
-
+//        echo "<br><br>".$sql;
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
     if ($_REQUEST['modname'] == 'students/Student.php' && $_REQUEST['search_modfunc'] == 'list')

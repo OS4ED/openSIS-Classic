@@ -251,10 +251,30 @@
  `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
+                                    $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+                                $extra_tab = array();
+                                //$fetch1 = $stu_info->fetch_assoc();
+
+                                while ($fetch = $stu_info->fetch_assoc()) {
+                                       $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                       $fetchlang=$stu_lang->fetch_assoc();
+                                       if(count($fetchlang)>0)
+                                        $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                       else
+                                       {
+                                            $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                            $fetchlang=$stu_lang->fetch_assoc();
+                                            if(count($fetchlang)>0)
+                                              $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                       }
+                                }
 $dbconn->query('ALTER TABLE `filters` ADD PRIMARY KEY (`filter_id`)');
 $dbconn->query('ALTER TABLE `filter_fields` ADD PRIMARY KEY (`filter_field_id`)');
 $dbconn->query('ALTER TABLE `filters` MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;');
 $dbconn->query('ALTER TABLE `filter_fields` MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1');
+$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+
 $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     exit;

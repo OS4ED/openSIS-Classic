@@ -54,11 +54,11 @@ SET time_zone = '+00:00';
 --
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.2'),
-('date', 'April 22, 2019'),
-('build', '20190422001'),
+('version', '7.3'),
+('date', 'August 05, 2019'),
+('build', '20190805001'),
 ('update', '0'),
-('last_updated', 'April 22, 2019');
+('last_updated', 'August 05, 2019');
 
 --
 -- Dumping data for table `attendance_calendar`
@@ -2212,7 +2212,9 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 (1, 'schoolsetup/Sections.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
 (0, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
 (1, 'tools/DataImport.php', 'Y', 'Y', '2017-07-25 17:53:25', NULL),
-('0', 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL);
+(0, 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL),
+(1, 'tools/GenerateApi.php', 'Y', 'Y', '2018-11-02 20:34:02', NULL);
+
 
 --
 -- Dumping data for table `program_config`
@@ -2696,9 +2698,9 @@ INSERT INTO `student_enrollment` (`id`, `syear`, `school_id`, `student_id`, `gra
 --
 
 INSERT INTO `student_enrollment_codes` (`id`, `syear`, `title`, `short_name`, `type`, `last_updated`, `updated_by`) VALUES
-(1, 2017, 'Transferred out', 'TRAN', 'TrnD', '2015-07-28 05:56:33', NULL),
-(2, 2017, 'Transferred in', 'TRAN', 'TrnE', '2015-07-28 05:56:33', NULL),
-(3, 2017, 'Rolled over', 'ROLL', 'Roll', '2015-07-28 05:56:33', NULL),
+(1, 2017, 'Transferred Out', 'TRAN', 'TrnD', '2015-07-28 05:56:33', NULL),
+(2, 2017, 'Transferred In', 'TRAN', 'TrnE', '2015-07-28 05:56:33', NULL),
+(3, 2017, 'Rolled Over', 'ROLL', 'Roll', '2015-07-28 05:56:33', NULL),
 (4, 2017, 'Dropped Out', 'DROP', 'Drop', '2015-07-28 05:56:33', NULL),
 (5, 2017, 'New', 'NEW', 'Add', '2015-07-28 05:56:33', NULL);
 
