@@ -204,17 +204,17 @@ function valid_mapping_student(option)
             error = 'BIRTHDATE';
         }
     }
-    if (un != 1)
-    {
-        if (error != '')
-        {
-            error = error + ', USERNAME';
-        }
-        else
-        {
-            error = 'USERNAME';
-        }
-    }
+//    if (un != 1)
+//    {
+//        if (error != '')
+//        {
+//            error = error + ', USERNAME';
+//        }
+//        else
+//        {
+//            error = 'USERNAME';
+//        }
+//    }
     if (es_gd != 1)
     {
         if (error != '')
