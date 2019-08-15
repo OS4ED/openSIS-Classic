@@ -346,7 +346,7 @@ function TextInput_mod_a($value, $name, $title = '', $options = '', $div = true)
         else
             return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<INPUT type=text placeholder=\\\"" . $title . "\\\" class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>" . ($title != '' ? $title : '') . "\",\"div$name\",true); document.getElementById(\"input$name\").focus();'>" . (($value != '') ? str_replace('"', '&rdquo;', $value1) : '-') . ($title != '' ? $title : '') . "</div></DIV>";
     } else
-        return (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+        return (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . ($title != '' ? '<label class="control-label">' . $title . '</label>' : '');
 }
 
 function TextAreaInput($value, $name, $title = '', $options = '', $div = true) {

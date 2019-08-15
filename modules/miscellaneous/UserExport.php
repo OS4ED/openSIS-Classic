@@ -29,14 +29,14 @@ include('../../RedirectModulesInc.php');
 $extra['search'] .= '<TR><TD align=center colspan=2><TABLE><TR><TD><DIV id=fields_div></DIV></TD></TR></TABLE></TD></TR>';
 $extra['new'] = true;
 $_openSIS['CustomFields'] = true;
-if($_REQUEST['fields']['TITLE'] || $_REQUEST['fields']['FIRST_NAME'] || $_REQUEST['fields']['LAST_NAME'] || $_REQUEST['fields']['MIDDLE_NAME'] || $_REQUEST['fields']['GENDER'] || $_REQUEST['fields']['BIRTHDATE'] || $_REQUEST['fields']['PRIMARY_LANGUAGE_ID'] || $_REQUEST['fields']['SECOND_LANGUAGE_ID'] || $_REQUEST['fields']['THIRD_LANGUAGE_ID'] || $_REQUEST['fields']['GENDER'] || $_REQUEST['fields']['GENDER'] || $_REQUEST['fields']['LAST_YEAR_ID'] || $_REQUEST['fields']['PHONE'] || $_REQUEST['fields']['USERNAME'] || $_REQUEST['fields']['IS_DISABLE'] || $_REQUEST['fields']['EMAIL'] || $_REQUEST['fields']['LAST_LOGIN'] || $_REQUEST['fields']['PROFILE'])
+if($_REQUEST['fields']['TITLE'] || $_REQUEST['fields']['FIRST_NAME'] || $_REQUEST['fields']['LAST_NAME'] || $_REQUEST['fields']['MIDDLE_NAME'] || $_REQUEST['fields']['GENDER'] || $_REQUEST['fields']['BIRTHDATE'] || $_REQUEST['fields']['CELL_PHONE'] || $_REQUEST['fields']['WORK_PHONE'] || $_REQUEST['fields']['HOME_PHONE'] || $_REQUEST['fields']['PRIMARY_LANGUAGE_ID'] || $_REQUEST['fields']['SECOND_LANGUAGE_ID'] || $_REQUEST['fields']['THIRD_LANGUAGE_ID'] || $_REQUEST['fields']['LAST_YEAR_ID'] || $_REQUEST['fields']['PHONE'] || $_REQUEST['fields']['USERNAME'] || $_REQUEST['fields']['IS_DISABLE'] || $_REQUEST['fields']['EMAIL'] || $_REQUEST['fields']['LAST_LOGIN'] || $_REQUEST['fields']['PROFILE'])
 {
     
     if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')
     {
     if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
     {
-        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssr.SCHOOL_ID as SCHOOLS ';
+        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssr.SCHOOL_ID as SCHOOLS ';
     }
     else {
          $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssr.SCHOOL_ID as SCHOOLS ';
@@ -46,7 +46,7 @@ if($_REQUEST['fields']['TITLE'] || $_REQUEST['fields']['FIRST_NAME'] || $_REQUES
     {
         if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
         {
-        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssm.SCHOOL_ID as SCHOOLS ';
+        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.HOME_PHONE,s.WORK_PHONE,s.CELL_PHONE,s.PROFILE,s.CURRENT_SCHOOL_ID,ssm.SCHOOL_ID as SCHOOLS ';
         }
         else {
          $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssm.SCHOOL_ID as SCHOOLS ';
@@ -56,6 +56,21 @@ if($_REQUEST['fields']['TITLE'] || $_REQUEST['fields']['FIRST_NAME'] || $_REQUES
          
          $extra['WHERE'] .=' AND la.USER_ID=s.STAFF_ID AND la.PROFILE_ID=s.PROFILE_ID ';
 	
+}
+
+if($_REQUEST['fields']['STREET_ADDRESS_1'] || $_REQUEST['fields']['STREET_ADDRESS_2']  || $_REQUEST['fields']['STATE']  || $_REQUEST['fields']['CITY'] || $_REQUEST['fields']['ZIPCODE'])
+{
+   if($_REQUEST['modname']=='users/UserAdvancedReport.php')
+    {
+     if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
+        { 
+       $extra['SELECT'] .=' ,sa.STREET_ADDRESS_1,sa.STREET_ADDRESS_2,sa.STATE,sa.CITY,sa.ZIPCODE ';  
+     }else{
+       $extra['SELECT'] .=' ,sa.STREET_ADDRESS_1,sa.STREET_ADDRESS_2,sa.STATE,sa.CITY,sa.ZIPCODE';  
+   }
+   }
+     $extra['FROM'] .= ' ,student_address sa';
+     $extra['WHERE'] .=' AND sa.PEOPLE_ID=s.STAFF_ID';
 }
 if($_REQUEST['fields']['STAFF_ADDRESS1_PRIMARY'] || $_REQUEST['fields']['STAFF_ADDRESS2_PRIMARY'] || $_REQUEST['fields']['STAFF_CITY_PRIMARY'] || $_REQUEST['fields']['STAFF_STATE_PRIMARY'] || $_REQUEST['fields']['STAFF_ZIP_PRIMARY'] || $_REQUEST['fields']['STAFF_ADDRESS1_MAIL'] || $_REQUEST['fields']['STAFF_ADDRESS2_MAIL'] || $_REQUEST['fields']['STAFF_CITY_MAIL'] || $_REQUEST['fields']['STAFF_STATE_MAIL'] || $_REQUEST['fields']['STAFF_ZIP_MAIL'])
 {
@@ -163,6 +178,7 @@ if($_REQUEST['search_modfunc']=='list')
     
 	if(!$fields_list)
 	{
+                if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
 		$fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
                 if($extra['field_names'])
                 {
@@ -170,16 +186,26 @@ if($_REQUEST['search_modfunc']=='list')
                     
                 }
 			
-
+                }else{
+                    $fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+                if($extra['field_names'])
+                {
+                    $fields_list += $extra['field_names'];
+                    
+                }
+                }
 	}
+
         
         if(!$fields_list_cert)
         {
+                            if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
             $fields_list_cert = array('STAFF_CERTIFICATION_DATE'=>'Staff Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Staff Certification Expiry Date','STAFF_CERTIFICATION_CODE'=>'Certification Code','STAFF_CERTIFICATION_SHORT_NAME'=>'Certification Short Name','STAFF_CERTIFICATION_NAME'=>'Certification Name','STAFF_PRIMARY_CERTIFICATION_INDICATOR'=>'Primary Certification Indicator');
             if($extra_cert['field_names'])
             {
                 $fields_list_cert += $extra_cert['field_names'];
             }
+        }
         }
         
         if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')
@@ -309,16 +335,26 @@ else
 {
 	if(!$fields_list)
 	{
+           if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
 		if(AllowUse('users/User.php&category_id=1'))
 			$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of Birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
 //                        $fields_list['Certificate'] = array('STAFF_CERTIFICATION_DATE'=>'Staff Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Staff Certification Expiry Date');
 		if($extra['field_names'])
 			$fields_list['General'] += $extra['field_names'];
 //                        $field_list_cert['Certificate'] +=$extra_cert['field_names'];
-	}
+            }else{
+                	$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','SCHOOLS'=>'Schools','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+//                        $fields_list['Certificate'] = array('STAFF_CERTIFICATION_DATE'=>'Staff Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Staff Certification Expiry Date');
+		if($extra['field_names'])
+			$fields_list['General'] += $extra['field_names'];
+//                        $field_list_cert['Certificate'] +=$extra_cert['field_names'];
+            }
+                
+            }
         
         if(!$fields_list_cert)
         {
+           if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
             if(AllowUse('users/User.php&category_id=1'))
             {
                 $fields_list['Certificate'] = array('STAFF_CERTIFICATION_DATE'=>'Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Certification Expiry Date','STAFF_CERTIFICATION_CODE'=>'Certification Code','STAFF_CERTIFICATION_NAME'=>'Certification Name','STAFF_CERTIFICATION_SHORT_NAME'=>'Certification Short Name','STAFF_PRIMARY_CERTIFICATION_INDICATOR'=>'Primary Certification Indicator');
@@ -328,6 +364,7 @@ else
             {
                 $fields_list['Certificate'] += $extra_cert['field_names'];
             }
+           }
         }
 /*******************************************************************************/
         if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')

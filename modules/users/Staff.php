@@ -545,9 +545,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     $fields .= $column . ',';
                     if ($column == 'FIRST_NAME' || $column == 'LAST_NAME') {
                         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-                            $values .= "'" . $value . " ',";
+                            $values .= "'" . trim($value) . "',";
                         } else
-                            $values .= "'" . $value . " ',";
+                            $values .= "'" . trim($value) . "',";
                     }
                     else {
                         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {

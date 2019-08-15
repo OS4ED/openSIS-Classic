@@ -29,10 +29,15 @@
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
     $start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
+    
     if (!VerifyDate($start_date))
+    {
+//        $start_date=date('Y-m-d',strtotime($start_date));
         BackPrompt('The date you entered is not valid');
+    }
     if ($_REQUEST['student']) {
         $count = 0;
+         $start_date=date('Y-m-d',strtotime($start_date));
         $id_array = array();
         foreach ($_REQUEST['student'] as $student_id => $yes) {
             $next_grade = DBGet(DBQuery('SELECT NEXT_GRADE_ID FROM school_gradelevels WHERE ID=\'' . $_REQUEST['grade_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -42,6 +47,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                 $rolling_ret = 0;
             $qr = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE ID=(SELECT max(ID) FROM student_enrollment where STUDENT_ID=' . $student_id . ')'));
             $end_date = $qr[1]['END_DATE'];
+            //echo $start_date; exit;
             if (strtotime($start_date) > strtotime($end_date)) {
                 DBQuery('INSERT INTO student_enrollment (SYEAR,SCHOOL_ID,STUDENT_ID,GRADE_ID,START_DATE,ENROLLMENT_CODE,NEXT_SCHOOL,CALENDAR_ID) VALUES (\'' . UserSyear() . '\',\'' . UserSchool() . '\',' . $student_id . ',\'' . $_REQUEST['grade_id'] . '\',\'' . $start_date . '\',\'' . $_REQUEST['en_code'] . '\',\'' . $rolling_ret . '\',\'' . $_REQUEST['cal_id'] . '\')');
 

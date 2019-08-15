@@ -1026,7 +1026,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id)) {
                                     if($msgFlag=='')
                                     {
-                                    $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
+                                    $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association.</b></font>";
                                     $msgFlag=1;
                                     }
                                 }
@@ -1165,8 +1165,8 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             if ($f == 1) {
                                 if($msgFlag=='')
                                 {
-                                echo "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
-                                $msgFlag=1;
+//                                echo "<font color=red><b>Cannot Modify this course period as it has association. </b></font>";
+                                $msgFlag=0;
                                 }
                             }
                         } else {

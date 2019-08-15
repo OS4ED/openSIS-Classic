@@ -95,16 +95,17 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
                     echo 'Unable to save data, because title already exists.';
                     echo '</div>';
-                } else if (isset($validate_srt_odr) && count($validate_srt_odr) != 0) {
-                    $samedata = DBGet(DBQuery("select SORT_ORDER from rooms  WHERE room_id='$id'"));
-                    $samedata = $samedata[1]['SORT_ORDER'];
-                    if ($samedata != $srt_odr) {
-                        echo '<div class="alert bg-danger alert-styled-left">';
-                        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                        echo 'Unable to save data, because sort order already exists.';
-                        echo '</div>';
-                    }
-                } else {
+//                } else if (isset($validate_srt_odr) && count($validate_srt_odr) != 0) {
+//                    $samedata = DBGet(DBQuery("select SORT_ORDER from rooms  WHERE room_id='$id'"));
+//                    $samedata = $samedata[1]['SORT_ORDER'];
+//                    if ($samedata != $srt_odr) {
+//                        echo '<div class="alert bg-danger alert-styled-left">';
+//                        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+//                        echo 'Unable to save data, because sort order already exists.';
+//                        echo '</div>';
+//                    }
+                 
+                }else {
 
                     DBQuery($sql);
                 }
@@ -121,18 +122,18 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         if ($value != '') {
                             $value = trim(paramlib_validation($column, $value));
 
-                            $validate_srtodr = DBGet(DBQuery('SELECT count(*) as NO  FROM rooms WHERE  SORT_ORDER=\'' . $value . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-                            if ($validate_srtodr[1]['NO'] > 0) {
-                                echo '<div class="alert bg-danger alert-styled-left">';
-                                echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                                echo 'Unable to save data, because sort order already exists.';
-                                echo '</div>';
-                                $go = false;
-                            } else {
+//                            $validate_srtodr = DBGet(DBQuery('SELECT count(*) as NO  FROM rooms WHERE  SORT_ORDER=\'' . $value . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+//                            if ($validate_srtodr[1]['NO'] > 0) {
+//                                echo '<div class="alert bg-danger alert-styled-left">';
+//                                echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+//                                echo 'Unable to save data, because sort order already exists.';
+//                                echo '</div>';
+//                                $go = false;
+//                            } else {
                                 $fields .= $column . ',';
                                 $values .= '\'' . singleQuoteReplace("'", "''", $value) . ' \',';
                                 $go = true;
-                            }
+//                            }
                         }
                     } else {
                         $value = trim(paramlib_validation($column, $value));
@@ -144,7 +145,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
 
-                $validate_title = DBGet(DBQuery('SELECT *  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+                $validate_title = DBGet(DBQuery('SELECT TITLE  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 
 
                 if (count($validate_title) != 0) {

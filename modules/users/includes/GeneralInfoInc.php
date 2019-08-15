@@ -203,7 +203,7 @@ if ($_REQUEST['profile'] != 'none') {
     echo '</div>';
 }
 
-include('modules/users/includes/OtherInfoInc.inc.php');
+include('modules/users/includes/OtherInfoUserInc.php');
 
 echo '</div>'; //.row
 

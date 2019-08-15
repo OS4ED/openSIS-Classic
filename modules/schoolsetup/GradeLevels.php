@@ -45,11 +45,11 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                
                 foreach($columns as $column=>$value)
                 {
-                    if($column==SORT_ORDER && in_array($value, $sort_order) && ($value!='' || $value!=NULL) )
-                        {
-                            $err_msg="Sort order already exists";
-                            break 2;
-                        }
+//                    if($column==SORT_ORDER && in_array($value, $sort_order) && ($value!='' || $value!=NULL) )
+//                        {
+//                            $err_msg="Sort order already exists";
+//                            break 2;
+//                        }
                     $value=trim(paramlib_validation($column,$value));
                     if(($column==NEXT_GRADE_ID || $column==SORT_ORDER)  && (str_replace("\'","''",$value)=='' || str_replace("\'","''",$value)==0 ))
                         $sql .= $column.'=NULL,';
@@ -84,13 +84,13 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                     }
                     else 
                     {
-                        if(in_array($columns['SORT_ORDER'], $sort_order) && ($columns['SORT_ORDER']!='' || $columns['SORT_ORDER']!=NULL) )
-                        {
-                            $err_msg="Sort order already exists";
-                            break;
-                        }
-                        else 
-                        {
+//                        if(in_array($columns['SORT_ORDER'], $sort_order) && ($columns['SORT_ORDER']!='' || $columns['SORT_ORDER']!=NULL) )
+//                        {
+//                            $err_msg="Sort order already exists";
+//                            break;
+//                        }
+//                        else 
+//                        {
                             if(clean_param(trim($_REQUEST['values']['new']['TITLE']),PARAM_NOTAGS)!='')
                             {
                                 $sql = 'INSERT INTO school_gradelevels ';
@@ -113,7 +113,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                                 if($go)
                                         DBQuery($sql);
                             }
-                        }
+//                        }
                     }
                  }
             }

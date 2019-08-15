@@ -42,15 +42,15 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                     break;
                 }
             }
-            if($vd['SORT_ORDER']!='')
-            {
-                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserSchool()));
-                if($check_sort[1]['REC_EX']>0)
-                {
-                $err_msg='Sort order already exists.';
-                unset($vd['SORT_ORDER']);
-                }  
-            }
+//            if($vd['SORT_ORDER']!='')
+//            {
+//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserSchool()));
+//                if($check_sort[1]['REC_EX']>0)
+//                {
+//                $err_msg='Sort order already exists.';
+//                unset($vd['SORT_ORDER']);
+//                }  
+//            }
                 
                 
             if($vd['NAME']!='' && $vd['SORT_ORDER']!='')
@@ -75,19 +75,19 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 $go++;
                 
             }
-            if($vd['SORT_ORDER']!='')
-            {
-                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserSchool().' AND ID!='.$vi));
-                if($check_sort[1]['REC_EX']>0)
-                {
-                $err_msg='Sort order already exists.';
-                unset($vd['SORT_ORDER']);
-                if($vd['NAME']!='')
-                $go++;
-                }
-                else
-                $go++;
-            }
+//            if($vd['SORT_ORDER']!='')
+//            {
+//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserSchool().' AND ID!='.$vi));
+//                if($check_sort[1]['REC_EX']>0)
+//                {
+//                $err_msg='Sort order already exists.';
+//                unset($vd['SORT_ORDER']);
+//                if($vd['NAME']!='')
+//                $go++;
+//                }
+//                else
+//                $go++;
+//            }
                 
                     
             $qry='UPDATE school_gradelevel_sections SET ';
@@ -97,7 +97,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             $qry.=' SORT_ORDER=\''.$vd['SORT_ORDER'].'\',';
             $qry=substr($qry,0,-1);
             $qry.='WHERE ID='.$vi;
-            if($go>1)        
+            if($go=1)        
             DBQuery($qry);
                 
             

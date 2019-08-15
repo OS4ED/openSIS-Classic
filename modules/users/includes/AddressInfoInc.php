@@ -68,7 +68,7 @@ echo '<label class="control-label col-lg-4 text-right">Zip Code <span class=text
 echo '<div class="col-lg-8">'.TextInput($addr['ZIPCODE'], 'student_addres[ZIPCODE]', '', 'size=25 maxlength=100 id=email').'</div>';
 echo '</div>'; //.form-group
 echo '</div>'; //.col-md-6
-
+include('modules/users/includes/OtherInfoUserInc.php');
 echo '</div>'; //.row
 
 $_REQUEST['category_id'] = 3;

@@ -54,7 +54,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             $inactive_schedule_found = 1;
                         }
                     } else {
-                        DBQuery('UPDATE schedule SET END_DATE=\'' . $END_DATE . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
                         DBQuery('CALL SEAT_COUNT()');
                         $note = "Selected students have been dropped from the course period.";
                     }

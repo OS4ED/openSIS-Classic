@@ -43,23 +43,23 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                         $value = paramlib_validation($column, $value);
 
 
-                        if ($column == 'SORT_ORDER') {
-                            $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
-
-
-                            $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear();
-
-
-                            if ($c_id == 'NULL')
-                                $ck_sql.=' AND COURSE_ID is Null';
-                            else
-                                $ck_sql.=' AND COURSE_ID=' . $c_id;
-                            $chk_dup_srt = DBGet(DBQuery($ck_sql));
-                            if (count($chk_dup_srt) > 0) {
-                                echo'<div class="alert bg-danger alert-styled-left"> ID can not be duplicate</div>';
-                                break 2;
-                            }
-                        }
+//                        if ($column == 'SORT_ORDER') {
+//                            $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
+//
+//
+//                            $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear();
+//
+//
+//                            if ($c_id == 'NULL')
+//                                $ck_sql.=' AND COURSE_ID is Null';
+//                            else
+//                                $ck_sql.=' AND COURSE_ID=' . $c_id;
+//                            $chk_dup_srt = DBGet(DBQuery($ck_sql));
+//                            if (count($chk_dup_srt) > 0) {
+//                                echo'<div class="alert bg-danger alert-styled-left"> ID can not be duplicate</div>';
+//                                break 2;
+//                            }
+//                        }
                         $sql .= $column . "='" . str_replace("\'", "''", $value) . "',";
                     }
                     $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . $id . '\'';
@@ -76,23 +76,23 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                             if (trim($value) != '') {
                                 $value = paramlib_validation($column, $value);
 
-                                if ($column == 'SORT_ORDER') {
-                                    $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
-
-
-                                    $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear();
-
-
-                                    if ($c_id == 'NULL')
-                                        $ck_sql.=' AND COURSE_ID is Null';
-                                    else
-                                        $ck_sql.=' AND COURSE_ID=' . $c_id;
-                                    $chk_dup_srt = DBGet(DBQuery($ck_sql));
-                                    if (count($chk_dup_srt) > 0) {
-                                        echo'<div class="alert bg-danger alert-styled-left"> ID can not be duplicate</div>';
-                                        break 2;
-                                    }
-                                }
+//                                if ($column == 'SORT_ORDER') {
+//                                    $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
+//
+//
+//                                    $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear();
+//
+//
+//                                    if ($c_id == 'NULL')
+//                                        $ck_sql.=' AND COURSE_ID is Null';
+//                                    else
+//                                        $ck_sql.=' AND COURSE_ID=' . $c_id;
+//                                    $chk_dup_srt = DBGet(DBQuery($ck_sql));
+//                                    if (count($chk_dup_srt) > 0) {
+//                                        echo'<div class="alert bg-danger alert-styled-left"> ID can not be duplicate</div>';
+//                                        break 2;
+//                                    }
+//                                }
                                 $fields .= $column . ',';
 
                                 $values .= ' " ' . str_replace("\'", "'", $value) . ' ",';

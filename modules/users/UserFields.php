@@ -338,10 +338,10 @@ if (!$_REQUEST['modfunc']) {
             $header .= '<div class="col-md-6" id="show_textarea" style="display:block"><div class="form-group" >' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', 'Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices (*)', 'rows=7 cols=40') . '<p class="help-block">* One per line</p></div></div>';
             $colspan = 1;
         }
-        $header .= '<div class="col-md-3"><div class="form-group">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', 'Default') . '<p class="help-block col-lg-12">* for dates: YYYY-MM-DD, for checkboxes: Y &amp; for long text it will be ignored</p></div></div>';
+        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">Default</label><div class="col-lg-8">' . TextInput($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '</div><p class="help-block">* for dates: YYYY-MM-DD, for checkboxes: Y &amp; for long text it will be ignored</p></div></div>';
 
         $new = ($_REQUEST['id'] == 'new');
-        $header .= '<div class="col-md-3">' . CheckboxInput($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required', '', $new) . '</div>';
+        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">Required</label><div class="col-lg-8">' . CheckboxInput($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', '', '', $new) . '</div></div></div>';
 
         $header .= '</div>'; //.row
     } elseif ($_REQUEST['category_id']) {

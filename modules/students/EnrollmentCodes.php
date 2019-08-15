@@ -155,7 +155,7 @@ function makeSelectInput($value, $name) {
         $id = 'new';
 
     if ($name == 'TYPE')
-        $options = array('Add' => 'Add', 'Drop' => 'Drop', 'Roll' => 'Roll Over', 'TrnD' => 'Drop(Transfer)', 'TrnE' => 'Enroll(Transfer)');
+        $options = array('Add' => 'Add', 'Drop' => 'Drop', 'Roll' => 'Roll Over', 'TrnD' => 'Drop (Transfer)', 'TrnE' => 'Enroll (Transfer)');
 
     return SelectInput($value, 'values[' . $id . '][' . $name . ']', '', $options);
 }

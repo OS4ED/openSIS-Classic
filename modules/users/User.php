@@ -29,7 +29,7 @@
 include('../../RedirectModulesInc.php');
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
-        $_REQUEST['staff']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
+        $_REQUEST['staff']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . $_REQUEST['month_CUSTOM_' . $custom_id] . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
     }
 }
 if (isset($_REQUEST['user_checkbox']) && count($_REQUEST['user_checkbox']) > 0) {
@@ -134,6 +134,45 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
         $up_go = 'n';
 
         if ($_REQUEST['category_id'] == 1) {
+            
+            
+            
+            if(count($_REQUEST['staff'])>0){
+            
+                  $disp_error = '';
+            if ($_REQUEST['modfunc'] == 'update') {
+//                print_r($_REQUEST);
+                $flag = 0;
+                $qry = 'UPDATE people SET ';
+//                print_r($_REQUEST['people']);
+                foreach ($_REQUEST['staff'] as $in => $d) {
+
+                    $field_id = explode('_', $in);
+                    $field_id = $field_id[1];
+                    $check_stat = DBGet(DBQuery('SELECT TITLE,REQUIRED FROM people_fields WHERE ID=\'' . $field_id . '\' '));
+                    if ($check_stat[1]['REQUIRED'] == 'Y') {
+                        if ($d != '') {
+                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                            $flag++;
+                        } else {
+                            $disp_error = '<font style="color:red"><b>' . $check_stat[1]['TITLE'] . ' is required.</b></font>';
+                        }
+                    } else {
+                        if ($d != '')
+                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                        else
+                            $qry.=' ' . $in . '=NULL,';
+
+                        $flag++;
+                    }
+                }
+                if ($flag > 0) {
+
+                    $qry = substr($qry, 0, -1) . ' WHERE STAFF_ID=' . $_REQUEST['staff_id'];
+                    DBQuery($qry);
+                }
+            }
+            }
             if (count($_REQUEST['people']) > 0) {
                 $staff_info_sql = "SELECT PROFILE_ID FROM people WHERE STAFF_ID=" . $_REQUEST['staff_id'];
                 $staff_info = DBGet(DBQuery($staff_info_sql));
@@ -226,9 +265,12 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
             $disp_error = '';
             if ($_REQUEST['modfunc'] == 'update') {
+//                print_r($_REQUEST);
                 $flag = 0;
                 $qry = 'UPDATE people SET ';
-                foreach ($_REQUEST['people'] as $in => $d) {
+//                print_r($_REQUEST['people']);
+                foreach ($_REQUEST['staff'] as $in => $d) {
+
                     $field_id = explode('_', $in);
                     $field_id = $field_id[1];
                     $check_stat = DBGet(DBQuery('SELECT TITLE,REQUIRED FROM people_fields WHERE ID=\'' . $field_id . '\' '));

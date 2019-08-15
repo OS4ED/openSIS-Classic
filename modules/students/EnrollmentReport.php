@@ -41,7 +41,7 @@ if($_REQUEST['modfunc']=='save')
 	if(count($_REQUEST['st_arr']))
 	{	
 	$st_list = '\''.implode('\',\'',$_REQUEST['st_arr']).'\'';
-        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.',' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.SCHOOL_ID,s.ALT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
+        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.', ' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.SCHOOL_ID,s.ALT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.enrollment_code=sec.id)AS ENROLLMENT_CODE,
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.drop_code=sec.id) AS DROP_CODE,ssm.SCHOOL_ID 
                 FROM  students s , student_enrollment ssm
@@ -49,12 +49,12 @@ if($_REQUEST['modfunc']=='save')
                 ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetSchool','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
         if(count($RET))
 	{
-            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','SCHOOL_ID'=>'Last School');
+            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','SCHOOL_ID'=>'School Name');
 		$handle = PDFStart();
 		foreach($RET as $student_id=>$value)
 		{
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enroll Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enrollment Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 			echo '<!-- MEDIA SIZE 8.5x11in -->';
 			
 				unset($_openSIS['DrawHeader']);
@@ -106,7 +106,8 @@ if(!$_REQUEST['modfunc'])
 	$extra['link'] = array('FULL_NAME'=>false);
 	$extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
-	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+	// $extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
 	$extra['options']['search'] = false;
 	$extra['new'] = true;
 	
@@ -123,8 +124,13 @@ if(!$_REQUEST['modfunc'])
 function _makeChooseCheckbox($value,$title)
 {
 //	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
-        global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    //     global $THIS_RET;
+    // return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+	global $THIS_RET;
+	//	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
+			
+			return "<input  class=fd name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . " type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+		
 }
 
 function _makeTeacher($teacher,$column)

@@ -270,8 +270,17 @@ if (!$_REQUEST['modfunc']) {
             }
 
             
-            if ($_REQUEST['address_id'] == 'new')
-                echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>Same as Home Address</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">Add New Address</label></div>';
+            if ($_REQUEST['address_id']!='new'){
+                 $st_mail=DBGet(DBQuery('SELECT staff_address1_mail FROM staff_address WHERE staff_address_id='.$_REQUEST['address_id'])); 
+                 if(count($st_mail)){
+                   echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5>';  
+                 }
+            }else{
+                 echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>Same as Home Address</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">Add New Address</label></div>';
+
+            }
+                
+                
             if ($_REQUEST['address_id'] == 'new')
                 echo '<div id="hideShow" style="display:none">';
             else
@@ -378,7 +387,7 @@ if (!$_REQUEST['modfunc']) {
 
             $_REQUEST['category_id'] = 2;
             $_REQUEST['custom'] = 'staff';
-            include('modules/users/includes/OtherInfoInc.inc.php');
+            include('modules/users/includes/OtherInfoInc.php');
             ############################################################################################			
         }
     } 

@@ -36,7 +36,7 @@ if ($_REQUEST['modfunc'] == 'save') {
     $RET = GetStuList($extra);
 
     if (count($RET)) {
-        $columns = array('ASSIGN_TYP' => 'Assignment Type', 'TITLE' => 'Assignment', 'ASSIGN_TYP_WG' => 'Weight (%)');
+        $columns = array('ASSIGN_TYP' => 'Assignment Type', 'ASSIGN_TYP_WG' => 'Weight (%)', 'TITLE' => 'Assignment');
         if ($_REQUEST['assigned_date'] == 'Y')
             $columns += array('ASSIGNED_DATE' => 'Assigned Date');
         if ($_REQUEST['due_date'] == 'Y')

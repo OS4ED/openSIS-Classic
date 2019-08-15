@@ -861,9 +861,12 @@ if ($_REQUEST['del'] == 'true') {
         $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.SORT_ORDER,s.MARKING_PERIOD_ID';
 
         $QI = DBQuery($sql);
-        if ($_REQUEST['_openSIS_PDF'] == true)
+        
+        if ($_REQUEST['_openSIS_PDF'] == true){
             $schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
         //$schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate_red', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
+//       print_r($schedule_RET);
+        }
         else
             $schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect_red', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
         //$schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect_red', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate_red', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
@@ -1069,16 +1072,17 @@ function _makeViewLock($value, $column) {
 function _makePeriodSelect($course_period_id, $column = '') {
     global $_openSIS, $THIS_RET, $fy_id;
 
-    $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.PARENT_ID,cp.TITLE,cp.MARKING_PERIOD_ID,COALESCE(cp.TOTAL_SEATS-cp.FILLED_SEATS,0) AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET[COURSE_ID] . '\' ORDER BY sp.SORT_ORDER';
-    $QI = DBQuery($sql);
-    $orders_RET = DBGet($QI);
+    $sql = 'SELECT sp.TITLE AS PERIOD,cp.COURSE_PERIOD_ID,cp.PARENT_ID,cp.TITLE,cp.MARKING_PERIOD_ID,COALESCE(cp.TOTAL_SEATS-cp.FILLED_SEATS,0) AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET[COURSE_ID] . '\' ORDER BY sp.SORT_ORDER';
+    $orders_RET = DBGet(DBQuery($sql));
+
 
     foreach ($orders_RET as $value) {
         if ($value['COURSE_PERIOD_ID'] != $value['PARENT_ID']) {
             $parent = DBGet(DBQuery('SELECT SHORT_NAME FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $value['PARENT_ID'] . '\''));
             $parent = $parent[1]['SHORT_NAME'];
         }
-        $periods[$value['COURSE_PERIOD_ID']] = $value['TITLE'] . (($value['MARKING_PERIOD_ID'] != $fy_id && $value['COURSE_PERIOD_ID'] != $course_period_id) ? ' (' . GetMP($value['MARKING_PERIOD_ID']) . ')' : '') . ($value['COURSE_PERIOD_ID'] != $course_period_id ? ' (' . $value['AVAILABLE_SEATS'] . ' seats)' : '') . (($value['COURSE_PERIOD_ID'] != $course_period_id && $parent) ? ' -> ' . $parent : '');
+        
+        $periods[$value['COURSE_PERIOD_ID']] =$value['PERIOD'].' - '. $value['TITLE'] . (($value['MARKING_PERIOD_ID'] != $fy_id && $value['COURSE_PERIOD_ID'] != $course_period_id) ? ' (' . GetMP($value['MARKING_PERIOD_ID']) . ')' : '') . ($value['COURSE_PERIOD_ID'] != $course_period_id ? ' (' . $value['AVAILABLE_SEATS'] . ' seats)' : '') . (($value['COURSE_PERIOD_ID'] != $course_period_id && $parent) ? ' -> ' . $parent : '');
     }
 
 
