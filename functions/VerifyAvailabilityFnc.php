@@ -253,7 +253,7 @@ function VerifyVariableSchedule_Update($columns)
         $days_append_sql =  substr($days_append_sql,0,-4).')';
         $days_room_append_sql =  substr($days_room_append_sql,0,-4).')';
 
-    $sql_same_period="SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,course_period_var cpv  WHERE  days = '".$columns[DAYS]."' AND period_id='".$per_id."' AND ROOM_ID=$columns[ROOM_ID] AND TEACHER_ID=$teacher AND cpv.course_period_id = cp.course_period_id AND cp.COURSE_PERIOD_ID!={$_REQUEST['cp_id']}";
+    $sql_same_period="SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,course_period_var cpv  WHERE  days = '".$columns[DAYS]."' AND period_id='".$per_id."' AND ROOM_ID=$columns[ROOM_ID] AND TEACHER_ID=$teacher {$mp_append_sql} AND cpv.course_period_id = cp.course_period_id AND cp.COURSE_PERIOD_ID!={$_REQUEST['cp_id']}";
     $same_cp_RET=DBGet(DBQuery($sql_same_period));
     if(count($same_cp_RET)>0)
     {

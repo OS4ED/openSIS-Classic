@@ -270,7 +270,12 @@ if($_REQUEST['search_modfunc']=='list')
                             
                         if(!$fields_list[$field])
                         {
-                            $get_column = DBGet(DBQuery("SELECT ID,TITLE FROM staff_fields  ORDER BY SORT_ORDER"));
+                           
+                            if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php')
+        
+                                 $get_column = DBGet(DBQuery("SELECT ID,TITLE FROM staff_fields  ORDER BY SORT_ORDER"));
+                                else
+                                    $get_column = DBGet(DBQuery("SELECT TITLE,ID,TYPE FROM people_fields ORDER BY SORT_ORDER"));
                             foreach($get_column as $COLUMN_NAME)
                             {
                                 if('CUSTOM_'.$COLUMN_NAME['ID']==$field)
@@ -289,7 +294,8 @@ if($_REQUEST['search_modfunc']=='list')
                                         $extra['functions'][$field] = 'DeCodeds';
                                     }
                                     else{
-                                        $extra['SELECT'] .= ','.$field;  
+                                        
+                                        $extra['SELECT'] .= ',s.'.$field;  
                             }
                         }
                 }
@@ -302,7 +308,7 @@ $extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
                 if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
                 {
                     $RET = GetStaffList($extra);
-                    $RET_CERT = GetStaffList($extra_cert);
+                    //$RET_CERT = GetStaffList($extra_cert);
                 }
                 else
                 {
@@ -319,7 +325,6 @@ $extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
 //                        $extra_cert['array_function']($RET_CERT);
 //                    }
 //                    echo "<pre>";
-//                    print_r($RET_CERT);
                     echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
                   ListOutputPrint_Report($RET,$columns,$extra['singular']?$extra['singular']:'User',$extra['plural']?$extra['plural']:'users',array(),$extra['LO_group'],$extra['LO_options']);
                   echo "<br>";
@@ -379,8 +384,8 @@ else
         }
         foreach($categories_RET as $category)
 	{
-		if(AllowUse('users/User.php&category_id='.$category['ID']))
-		{
+//		if(AllowUse('users/User.php&category_id='.$category['ID']))
+//		{
 			foreach($custom_RET[$category['ID']] as $field)
 			{
 				 $title=strtolower(trim($field['TITLE']));
@@ -392,7 +397,7 @@ else
 				}
 				$fields_list[$category['TITLE']]['CUSTOM_'.$field['ID']] = $field['TITLE'];
 			}	
-		}
+		//}
 	}
 
 	

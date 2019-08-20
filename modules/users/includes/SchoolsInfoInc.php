@@ -168,7 +168,7 @@ if ($_REQUEST['teacher_view'] != 'y') {
             }
             else {
                 $user_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "'"));
-                if ($user_profile[1]['PROFILE_ID'] != '') {
+                if ($user_profile[1]['PROFILE_ID'] != '' && count($cur_school)>0) {
                     $school_selected = implode(',', array_unique(array_keys($_REQUEST['values']['SCHOOLS'])));
                     $del_qry.="DELETE FROM staff_school_relationship WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "' AND SYEAR='" . UserSyear() . "'";
                     if ($school_selected != '')
@@ -178,6 +178,8 @@ if ($_REQUEST['teacher_view'] != 'y') {
 
                     $del_qry = '';
                 }
+                
+                
             }
         }
         else {
@@ -189,6 +191,7 @@ if ($_REQUEST['teacher_view'] != 'y') {
 
         unset($error);
     }
+    
 //if($error=='start_date_school_year')
 //{
 //unset($error);
@@ -239,7 +242,7 @@ $password = md5($_REQUEST['staff_school']['PASSWORD']);
 $sql = DBGet(DBQuery('SELECT PASSWORD FROM login_authentication WHERE PASSWORD=\'' . $password . '\'' . (UserStaffID() != '' ? ' AND USER_ID!=' . UserStaffID() . ' AND PROFILE_ID IN (SELECT id FROM user_profiles WHERE profile=\'teacher\')' : '')));
 $number = count($sql);
 if ($number != 0) {
-    echo '<div class="alert bg-danger alert-styled-left">Invalid password</divz>';
+    echo '<div class="alert bg-danger alert-styled-left">Invalid password</div>';
 }
 
 
@@ -439,7 +442,12 @@ if ($select == '') {
         
     }
 } else {
+    
     if ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'Y') {
+         if(count($_REQUEST['values']['SCHOOLS'])==0)
+                {
+                    $sch_err= "<div class=\"alert bg-danger alert-styled-left\">Please Select atleast one School.</div>";
+                }
         $sql = "UPDATE staff_school_info  SET ";
 
         foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
@@ -557,7 +565,12 @@ if ($select == '') {
                 $sql_up.=')';
             }
         }
+       
     } elseif ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'N') {
+         if(count($_REQUEST['values']['SCHOOLS'])==0)
+                {
+                    $sch_err= "<div class=\"alert bg-danger alert-styled-left\">Please Select atleast one School.</div>";
+                }
 
         $sql = "UPDATE staff_school_info  SET ";
 
@@ -624,7 +637,11 @@ if ($select == '') {
         unset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']);
     }
 }
-
+if($sch_err!='')
+    {
+        echo $sch_err;
+        unset($sch_err);
+    }
 if (!$_REQUEST['modfunc']) {
     $this_school_RET = DBGet(DBQuery("SELECT * FROM staff_school_info   WHERE   STAFF_ID=" . UserStaffID()));
     $this_school = $this_school_RET[1];

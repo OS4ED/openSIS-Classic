@@ -31,6 +31,7 @@ include('../../RedirectModulesInc.php');
 DrawBC("users > " . ProgramTitle());
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'password') {
+        //print_r($_REQUEST);exit;
         $column_name = PASSWORD;
         $pass_current = paramlib_validation($column_name, $_REQUEST['values']['current']);
         $pass_new = paramlib_validation($column_name, $_REQUEST['values']['new']);
@@ -50,7 +51,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $error = 'Your new passwords did not match.';
 
         elseif ($number > 0) {
-            echo '<font color = red><b>This password is alredy taken</b></font>';
+                $error = 'This password is alredy taken';
         } else {
             if (User('PROFILE') == 'parent') {
                 $password_RET = DBGet(DBQuery('SELECT l.PASSWORD FROM people p,login_authentication l WHERE l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=p.STAFF_ID AND l.PROFILE_ID=p.PROFILE_ID'));
@@ -121,7 +122,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 //    
 //            }
 //        else 
-    echo "<script>window.location.href='Modules.php?modname=users/Preferences.php'</script>";
+    //echo "<script>window.location.href='Modules.php?modname=users/Preferences.php'</script>";
 //            header("Location:Modules.php?modname=users/Preferences.php");
 }
 
@@ -284,7 +285,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['tab'] == 'display_options')
         echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save ></div></div>";
     else
-        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick='formload_ajax(\"perf_form\");return pass_check();'></div>";
+        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick='return pass_check();'></div>";
     PopTable('footer');
     echo '</FORM>';
 }

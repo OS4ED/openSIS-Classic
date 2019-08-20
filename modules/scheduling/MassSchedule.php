@@ -683,7 +683,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
             $singu=' are';
         echo '<div class="alert alert-warning alert-styled-left">';
         echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $period_res . $singu.' already scheduled in that course';
+        echo $period_res . $singu.' already scheduled in that period';
         echo '</div>';
     }
     if ($time_clash){

@@ -146,7 +146,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
     }
 
     $start = time() - ($today - $START_DAY) * 60 * 60 * 24;
-    $end = time();
+//    $end = time();
 
     if (!$_REQUEST['start_date']) {
         $start_time = $start;
@@ -158,15 +158,16 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
         $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 7));
     }
 
-    $sql = 'SELECT min(unix_timestamp(SCHOOL_DATE)) as SCHOOL_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'';
-    $begin_year = DBGet(DBQuery($sql));
-    $begin_year = $begin_year[1]['SCHOOL_DATE'];
+    $sql = 'SELECT max(unix_timestamp(END_DATE)) as END_DATE FROM eligibility_activities WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'';
+    $end_year = DBGet(DBQuery($sql));
+    $end_year = $end_year[1]['END_DATE'];
 
-    $date_select = "<OPTION value=$start>" . date('M d, Y', $start) . ' - ' . date('M d, Y', $end) . '</OPTION>';
+//    $date_select = "<OPTION value=$start>" . date('M d, Y', $start) . ' - ' . date('M d, Y', $end) . '</OPTION>';
 
-    if ($begin_year != "" || !begin_year) {
-        for ($i = $start - (60 * 60 * 24 * 7); $i >= $begin_year; $i-=(60 * 60 * 24 * 7)) {
-            $date_select .= "<OPTION value='" . $i . '-' . ($i + 1 + (($END_DAY - $START_DAY)) * 60 * 60 * 24) . "'" . (($i + 86400 >= $start_time && $i - 86400 <= $start_time) ? ' SELECTED' : '') . ">" . date('M d, Y', $i) . ' - ' . date('M d, Y', ($i + 1 + (($END_DAY - $START_DAY)) * 60 * 60 * 24)) . '</OPTION>';
+    if ($end_year != "" || !$end_year) {
+        
+        for ($i = $start; $i <= $end_year; $i+=(60 * 60 * 24 * 7)) {
+            $date_select .= "<OPTION value='" . $i . "'" . (($i + 86400 >= $start_time && $i - 86400 <= $start_time) ? ' SELECTED' : '') . ">" . date('M d, Y', $i) . ' - ' . date('M d, Y', ($i + (60 * 60 * 24 * 6))) . '</OPTION>';
         }
     }
 

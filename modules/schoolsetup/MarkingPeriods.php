@@ -607,11 +607,11 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             $go = true;
                                                                         }
                                                                 }
-                                                                else
-                                                                { 
-                                                                    $err_msg="End date cannot be after $nm end date";
-                                                                    break 2;
-                                                                }
+//                                                                else
+//                                                                { 
+//                                                                    $err_msg="End date cannot be after $nm end date";
+//                                                                    break 2;
+//                                                                }
                                                             }
                                                             else
                                                             {
@@ -646,11 +646,11 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             $go = true;
                                                                         }
                                                                     }
-                                                                    else
-                                                                    { 
-                                                                        $err_msg="End date cannot be before $nm end date";
-                                                                        break 2;
-                                                                    }
+//                                                                    else
+//                                                                    { 
+//                                                                        $err_msg="End date cannot be before $nm end date";
+//                                                                        break 2;
+//                                                                    }
                                                                 }
                                                                 else
                                                                 {   
@@ -850,18 +850,18 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                             }
                                             if($column=='END_DATE' && $columns['END_DATE']!='')
                                             {  
-                                                if(strtotime($dates['END_DATE'])>=strtotime($columns['END_DATE']))
-                                                {
+//                                                if(strtotime($dates['END_DATE'])>=strtotime($columns['END_DATE']))
+//                                                {
                                                     $fields .= $column.',';
                                                     $values .= '\''.singleQuoteReplace('','',date('Y-m-d',strtotime($value))).'\',';
                                                     $go = true;
-                                                }
-                                                else
-                                                {
-                                                    $err_msg="End date cannot be after $nm end date";
-                                                    $_REQUEST['marking_period_id']='new';
-                                                    break 2;
-                                                }
+//                                                }
+//                                                else
+//                                                {
+//                                                    $err_msg="End date cannot be after $nm end date";
+//                                                    $_REQUEST['marking_period_id']='new';
+//                                                    break 2;
+//                                                }
                                             }
                                             if(($column=='POST_START_DATE' && $columns['POST_START_DATE']!='') || ($column=='POST_END_DATE' && $columns['POST_END_DATE']!=''))
                                             {
@@ -934,10 +934,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 //                            $err_msg='Cannot modify marking period as students have been graded';
 //                            else
 //                            {
-                            
-                            //echo $sql;
-//echo '<br>';
-//echo $sql_ex;exit;
+                           
                             DBQuery($sql);
                                 if($sql_ex!='')
                                 DBQuery($sql_ex);
@@ -1267,9 +1264,11 @@ if(!$_REQUEST['modfunc'])
 
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&mp_term=SEM&year_id=$_REQUEST[year_id]"; //." onclick='grabA(this); return false;'";
         $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID');
-        if ($sem_edate == '' || $sem_edate < $fy_edate || $sem_sdate != $fy_sdate)
+        if ($sem_edate == '' || $sem_edate < $fy_edate || $sem_sdate != $fy_sdate){
             $link['add']['link'] = "Modules.php?modname=$_REQUEST[modname]&mp_term=SEM&marking_period_id=new&year_id=$_REQUEST[year_id]";
-
+        }else{
+            $link['add']['link'] = "Modules.php?modname=$_REQUEST[modname]&mp_term=SEM&marking_period_id=new&year_id=$_REQUEST[year_id]";
+        }
         ListOutput($sem_RET, $columns, 'Semester', 'Semesters', $link, array(), $LO_options);
         echo '</div>';
         echo '</div>';

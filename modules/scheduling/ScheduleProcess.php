@@ -79,7 +79,7 @@ if($insert=='true')
         DBQuery("INSERT INTO temp_schedule(SYEAR,SCHOOL_ID,STUDENT_ID,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID) values('".UserSyear()."','".UserSchool()."','".UserStudentID()."','".$date."','".$mark_end_date."','".User('STAFF_ID')."','$course[COURSE_ID]','".$course_period_id."','$course[MP]','$course[MARKING_PERIOD_ID]')");
       $html=$course_period_id."||".$course['CP_TITLE'].'||resp';
        // $html = 'resp';
-        $html .= '<tr id="selected_course_tr_'.$course["COURSE_PERIOD_ID"].'"><td align=left><INPUT type="checkbox" id="selected_course_'.$course["COURSE_PERIOD_ID"].'" name="selected_course_periods[]" checked="checked" value="'.$course["COURSE_PERIOD_ID"].'"></td><td><b> '.$course["CP_TITLE"].'</b></td></tr>';
+        $html .= '<label class="checkbox-inline checkbox-switch switch-success switch-xs" id="selected_course_tr_'.$course["COURSE_PERIOD_ID"].'"><INPUT type="checkbox" id="selected_course_'.$course["COURSE_PERIOD_ID"].'" name="selected_course_periods[]" checked="checked" value="'.$course["COURSE_PERIOD_ID"].'"><span></span>'.$course["CP_TITLE"].'</label>';
         $_SESSION['course_periods'][$course_period_id]=$course['CP_TITLE'];
     }
     else

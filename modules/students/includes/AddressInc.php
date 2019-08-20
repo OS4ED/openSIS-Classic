@@ -780,7 +780,7 @@ if (!$_REQUEST['modfunc']) {
         $m_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
                                    sa.TYPE=\'Mail\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\'  AND sa.SYEAR=\'' . UserSyear() . '\' AND sa.SCHOOL_ID=\'' . UserSchool() . '\' '));
         $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
-
+        
         if (count($sec_par_id) > 0) {
             $s_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
@@ -801,7 +801,7 @@ if (!$_REQUEST['modfunc']) {
             $s_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
         } else {
             $s_addr = DBGet(DBQuery('SELECT ID AS ADDRESS_ID from student_address WHERE STUDENT_ID=' . UserStudentID() . ' AND TYPE=\'Secondary\' '));
-        }
+            }
         echo "<INPUT type=hidden name=address_id value=$_REQUEST[address_id]>";
 
         if ($_REQUEST['address_id'] != '0' && $_REQUEST['address_id'] !== 'old') {
@@ -925,7 +925,7 @@ if (!$_REQUEST['modfunc']) {
             if ($h_addr[1]['ADDRESS_ID'] != 0)
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $m_checked . ' id="same_addr" name="same_addr" set_check_value value="Y">&nbsp;Same as Home Address &nbsp;</label></div></div></div></div>';
             if ($h_addr[1]['ADDRESS_ID'] == 0)
-                echo '<div class="form-group"><div class="col-md-12"><span class=text-danger>*</span><label class="radio-inline"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>&nbsp;Same as Home Address</label><label class="radio-inline"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">&nbsp;Add New Address</label></div></div>';
+                echo '<div class="form-group"><div class="col-md-12"><label class="radio-inline"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>&nbsp;Same as Home Address</label><label class="radio-inline"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">&nbsp;Add New Address</label></div></div>';
             echo '</div>';
 
             if ($h_addr[1]['ADDRESS_ID'] == 0)
@@ -985,7 +985,8 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Cell/Mobile Phone</label><div class="col-md-8">' . TextInput($p_addr[1]['CELL_PHONE'], 'values[people][PRIMARY][CELL_PHONE]', '', 'id=pri_cphone') . '</div></div></div>';
             echo'<input type=hidden id=hidden_primary name=hidden_primary>';
             if ($p_addr[1]['CONTACT_ID'] == '') {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Emaill<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,0) ') . '<p id="email_1" class="help-block"></p></div></div></div>';
+                // label removed // jit <span class=text-danger>*</span>
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email</label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,0) ') . '<p id="email_1" class="help-block"></p></div></div></div>';
             } else {
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,' . $p_addr[1]['CONTACT_ID'] . ') ') . '<p class="help-block" id="email_1"></p></div></div></div>';
             }
@@ -1043,7 +1044,7 @@ if (!$_REQUEST['modfunc']) {
 
             echo '<div class="row">';
             if ($h_addr[1]['ADDRESS_ID'] == 0) {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"><span class=red>*</span></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rps" name="r5" value="Y" onClick="prim_hidediv();" checked>&nbsp;Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rpn" name="r5" value="N" onClick="prim_showdiv();">&nbsp;Add New Address</label></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rps" name="r5" value="Y" onClick="prim_hidediv();" checked>&nbsp;Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rpn" name="r5" value="N" onClick="prim_showdiv();">&nbsp;Add New Address</label></div></div></div>';
             }
             echo '</div>'; //.row
 
@@ -1114,7 +1115,7 @@ if (!$_REQUEST['modfunc']) {
                     //echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=secondary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
 //                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal" data-target="#modal_default_lookup" name=lookup class=btn btn-primary value=Lookup onclick=(\'modal_default_lookup\');></span></div></div></div></div>';
 //                
-                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'secondary\');></span></div></div></div></div>';
+                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'secondary\');></span></div></div></div></div>';
                 }
                 echo '</div>'; //.row
             }
@@ -1187,7 +1188,8 @@ if (!$_REQUEST['modfunc']) {
 
             if ($h_addr[1]['ADDRESS_ID'] == 0) {
                 echo '<div class="row">';
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"><span class=text-danger>*</span></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();" >Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">Add New Address</label></div></div></div>';
+                // label removed * //jit
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();" >Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">Add New Address</label></div></div></div>';
                 echo '</div>'; //.row                
             }
 

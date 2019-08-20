@@ -241,21 +241,29 @@ else {
                 $extra['FROM'] .= ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) ';
 
 
-            if ($_REQUEST['request_course_id']) {
-                $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
-                if (!$_REQUEST['not_request_course']) {
-                    $extra['FROM'] .= ',schedule_requests sch_r';
-                    $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.SCHOOL_ID=ssm.SCHOOL_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
-                    $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
-                } else {
-                    $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sch_r WHERE sch_r.STUDENT_ID=ssm.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
-                    $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
-                }
-            }
+
             $extra['ORDER_BY'] = 'FULL_NAME';
             $extra['DISTINCT'] = 'DISTINCT';
         }
+    }
+    if ($_REQUEST['request_course_id']) {
+        $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
+        if (!$_REQUEST['not_request_course']) {
+            $extra['FROM'] .= ',schedule_requests sch_r';
+            $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.SCHOOL_ID=ssm.SCHOOL_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
+        } else {
+            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sch_r WHERE sch_r.STUDENT_ID=ssm.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
+        }
+    }
+
+    if ($_SESSION['MassDrops.php']['course_period_id'] != '') {
+
+        $extra['WHERE'] = ' AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\'';
+        unset($_SESSION['MassDrops.php']['course_period_id']);
     }
 
     $extra['SELECT'] .= ' ,ssm.SECTION_ID';
@@ -266,7 +274,6 @@ else {
 
     if ($_REQUEST['section'] != '')
         $extra['WHERE'] .= ' AND ssm.SECTION_ID=' . $_REQUEST['section'];
-
     $students_RET = GetStuList($extra);
 
     if ($_REQUEST['modname'] == 'grades/HonorRoll.php') {
@@ -522,7 +529,8 @@ echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
 echo '<h5 class="modal-title">Choose course</h5>';
 echo '</div>'; //.modal-header
-
+if ($_REQUEST['modname'] == 'scheduling/Schedule.php')
+echo '<FORM class="m-b-0" name="courses" method="post" action="Modules.php?modname=scheduling/Schedule.php?modfunc=cp_insert">';
 echo '<div class="modal-body">';
 
 echo '<div id=conf_div1 class=text-center></div>';
@@ -531,7 +539,8 @@ echo '<div id="calculating" class="text-center" style="display:none;"><i class="
 if ($clash) {
     echo '<div class="text-center"><b>There is a conflict. You cannot add this course period </b>' . ErrorMessage($clash, 'note') . '</div>';
 }
-echo'<div class="row" id="resp_table">';
+echo '<div class="row" id="resp_table">';
+echo '<div class="col-md-12" class="col-md-4"id="selected_course1"></div>';
 echo '<div class="col-md-4">';
 $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
@@ -550,6 +559,11 @@ echo '<div class="col-md-4"><div id="course_modal_cp"></div></div>';
 echo '<div class="col-md-4"><div id="cp_modal_cp"></div></div>';
 echo '</div>'; //.row
 echo '</div>'; //.modal-body
+//if (count($coursePeriods_RET)) {
+    echo '<div id="sub_btn" class="modal-footer text-right p-r-20" style="display:none">' . SubmitButtonModal('Done', 'done', 'class="btn btn-primary" ') . '&nbsp;&nbsp;' . SubmitButtonModal('Close', 'exit', 'class="btn btn-white"') . '</div>';
+//}
+if ($_REQUEST['modname'] == 'scheduling/Schedule.php')
+echo '</FORM>';
 
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog

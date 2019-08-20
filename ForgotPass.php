@@ -47,9 +47,9 @@ function DateInputAY($value, $name, $counter = 1, $placeholder = "Enter Date") {
         return '<table><tr><td><div id="date_div_' . $counter . '" style="display: inline" >' . ProperDateAY($value) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td><td><input type=text id="date_' . $counter . '" ' . $show . '  style="display:none" readonly></td><td><a onClick="init(' . $counter . ',2);"><img src="assets/calendar.gif"  /></a></td><td><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" ></td></tr></table>';
     else {
         if ($counter == 2)
-            return '<input type="text" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" disabled=disabled><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '" disabled=disabled><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" disabled=disabled>';
+            return '<input type="text" id="date_' . $counter . '"  data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" /><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '" /><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" />';
         else
-            return '<input type="text" id="date_' . $counter . '" required data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" ><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" >';
+            return '<input type="text" id="date_' . $counter . '"  data-placeholder="' . $placeholder . '" class="form-control daterange-single"><input type=hidden ' . $monthVal . ' id="monthSelect' . $counter . '" name="month_' . $name . '" /><input type=hidden ' . $dayVal . '  id="daySelect' . $counter . '"   name="day_' . $name . '"><input type=hidden ' . $yearVal . '  id="yearSelect' . $counter . '" name="year_' . $name . '" />';
     }
 }
 
@@ -375,30 +375,31 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                         </div>
                         <div class="panel-body">
 
-                            <div class="tab-content">
-                                <div id="forgot_password" class="tab-pane fade in active">
-                                    <form name="f1" id="f1" method="post" action="ResetUserInfo.php">
-                                        <div class="form-group">
-                                            <label>I am a</label>
-                                            <div class="radio styled-radio">
-                                                <label><input type="radio" name="pass_user_type" id="pass_student" value="pass_student" checked="checked" onclick="show_fields('student');
-                forgotpassusername_init(this.value);" /><span></span>Student</label>
-                                                <label><input type="radio" name="pass_user_type" id="pass_staff" value="pass_staff" onclick="show_fields('staff');
-                                                        forgotpassusername_init(this.value);
-                                                        forgotpassemail_init('pass_email');" /><span></span>Staff</label>
-                                                <label><input type="radio" name="pass_user_type" id="pass_parent" value="pass_parent" onclick="show_fields('parent');
-                                                        forgotpassusername_init(this.value);
-                                                        forgotpassemail_init('pass_email');" /><span></span>Parent</label>
-                                            </div>
-                                            <input type="hidden" name="pass_type_form" id="pass_type_form" value="password"/>
+ <div class="tab-content">
+<div id="forgot_password" class="tab-pane fade in active">
+ <form name="f1" id="f1" method="post" action="ResetUserInfo.php">
+ <div class="form-group">
+ <label>I am a</label>
+    <div class="radio styled-radio">
+<label><input type="radio" name="pass_user_type" id="pass_student" value="pass_student" checked="checked" onclick="show_fields('student');
+forgotpassusername_init(this.value);" /><span></span>Student</label>
 
-                                        </div>
-                                        <input type="hidden" id="valid_func" value="N"/>
-                                        <div id="divErr">
-                                            <?php
-                                            if ($_SESSION['err_msg'] != '')
-                                                echo $_SESSION['err_msg'];
-                                            unset($_SESSION['err_msg']);
+
+ <label><input type="radio" name="pass_user_type" id="pass_staff" value="pass_staff" onclick="show_fields('staff');
+ forgotpassusername_init(this.value);
+ forgotpassemail_init('pass_email');" /><span></span>Teacher</label>
+<label><input type="radio" name="pass_user_type" id="pass_parent" value="pass_parent" onclick="show_fields('parent');  forgotpassusername_init(this.value);
+   forgotpassemail_init('pass_email');" /><span></span>Parent</label>
+ </div>
+ <input type="hidden" name="pass_type_form" id="pass_type_form" value="password"/>
+
+    </div>
+    <input type="hidden" id="valid_func" value="N"/>
+    <div id="divErr">
+<?php
+if ($_SESSION['err_msg'] != '')
+    echo $_SESSION['err_msg'];
+ unset($_SESSION['err_msg']);
                                             ?>
                                         </div>
 
@@ -411,17 +412,20 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                                             <p id="err_msg"></p>
                                         </div>
                                         <div class="form-group" id="pass_stu_dob">
-                                            <?php echo DateInputAY('', 'password_dob', 1, 'Date of Birth') ?>
+                                            <?php echo DateInputAY('', 'password_dob', 3, 'Date of Birth') ?>
                                         </div>
                                         <div id="pass_stf_email" class="form-group" style="display: none">
                                             <input type="hidden" name="pass_email" id="pass_email" value=""/>
                                             <input type="text" name="password_stf_email" id="password_stf_email" placeholder="Email Address" class="form-control" onblur="forgotpassemail_init('pass_email');" />
-                                            <span style="display: none" id="pass_calculating_email"><img src="assets/ajax_loader.gif"/></span>
-                                            <span id="pass_err_msg_email"></span>
+                                            <span style="display: none" id="pass_calculating_email"><img src="assets/ajax_loader.gif"/>
+                                            </span>
+                                            <span id="pass_err_msg_email">
+                                                
+                                            </span>
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <input type="submit" class="btn btn-success btn-lg btn-block" value="Confirm" onClick="return forgotpass();" />
+                                                <input type="submit" class="btn btn-success btn-lg btn-block" value="Confirm" />
                                             </div>
                                             <div class="col-xs-6">
                                                 <a href="index.php" class="btn btn-default btn-rounded btn-lg btn-block">Cancel</a>
@@ -436,11 +440,11 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                                             <div class="radio styled-radio">
                                                 <label onclick="uname_show_fields('student')"><input type="radio" name="uname_user_type" id="uname_student" value="uname_student" checked="checked" /><span></span>Student</label>
                                                 <label onclick="uname_show_fields('staff');
-                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span>Staff</label>
+                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span>Teacher</label>
                                                 <label onclick="uname_show_fields('parent');
                                                         forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_parent" value="uname_parent" /><span></span>Parent</label>
                                             </div>                                            
-                                            <input type="hidden" name="user_type_form" id="user_type_form" value="username" disabled="disabled"/>                                            
+                                            <input type="hidden" name="user_type_form" id="user_type_form" value="username" />                                            
 
                                         </div>
                                         <div class="form-group" id="uname_stu_id">

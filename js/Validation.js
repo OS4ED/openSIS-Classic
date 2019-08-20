@@ -985,8 +985,8 @@ function formcheck_student_student()
     frmvalidator.addValidation("values[people][PRIMARY][RELATIONSHIP]", "req", "Please select a primary relationship to student ");
     frmvalidator.addValidation("values[people][PRIMARY][FIRST_NAME]", "req", "Please enter primary emergency contact frist name ");
     frmvalidator.addValidation("values[people][PRIMARY][LAST_NAME]", "req", "Please enter primary emergency contact last name");
-    //frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "req", "Please enter a primary emergency email");
-    //frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "email", "Please enter a valid primary emergency email");
+    // frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "req", "Please enter a primary emergency email");
+    frmvalidator.addValidation("values[people][PRIMARY][EMAIL]", "email", "Please enter a valid primary emergency email");
 
     frmvalidator.addValidation("values[people][OTHER][RELATIONSHIP]", "req", "Please select a additional relationship to student ");
     frmvalidator.addValidation("values[people][OTHER][FIRST_NAME]", "req", "Please select a additional emergency contact to first name ");
@@ -1083,11 +1083,11 @@ function formcheck_student_student()
     {
         var v3 = 1;
     }
-    if (document.getElementsByName("values[people][PRIMARY][FIRST_NAME]")[0])
-    {
-        if (document.getElementsByName("values[people][PRIMARY][FIRST_NAME]")[0].value != '')
-            var k = 1;
-    } else
+    // if (document.getElementsByName("values[people][PRIMARY][FIRST_NAME]")[0])
+    // {
+    //     if (document.getElementsByName("values[people][PRIMARY][FIRST_NAME]")[0].value != '')
+    //         var k = 1;
+    // } else
     {
         var k = 1;
     }
@@ -2647,7 +2647,7 @@ function passwordMatch()
         if (new_pass != vpass && vpass != '')
         {
             $('#passwordMatch').show();
-            $('#passwordMatch').css({color: '#f44336'}).html('<i class="icon-checkmark-circle"></i> Password MisMatch');
+            $('#passwordMatch').css({color: '#f44336'}).html('<i class="icon-checkmark-circle"></i> Password Mismatch');    //jit
         }
     }
 
@@ -2667,7 +2667,7 @@ function pass_check()
         return true;
     } else
     {
-        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New Password MisMatch</div>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New Password Mismatch</div>';    //jit
         return false;
     }
 }

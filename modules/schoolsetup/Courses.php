@@ -1005,7 +1005,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             if (str_replace("\'", "''", $value) == '') {
 //                                    if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
 
-                                if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
+                                if (($table_name == 'course_periods' || $table_name == 'course_period_var') && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK' || $column == 'SECONDARY_TEACHER_ID') && !gradeAssociation($id)) {
                                     $sql .= $column . " = NULL,";
                                     $go = true;
                                 }
@@ -1014,7 +1014,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                     $sql1 .= $column . " = NULL,";
                                     $go = true;
                                 }
-                                if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID'  || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
                                     $flag_err = 'Y';
                                 }
                                 if ($column == 'DOES_ATTENDANCE' && !(scheduleAssociation($id))) {
@@ -1047,7 +1047,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 }
                             } else {
 
-                                if ($column == 'SHORT_NAME' || $column == 'TOTAL_SEATS' || $column == 'DOES_ATTENDANCE' || $column == 'DOES_BREAKOFF') {
+                                if ($column == 'SHORT_NAME' || $column == 'TOTAL_SEATS' || $column == 'DOES_ATTENDANCE' || $column == 'DOES_BREAKOFF'  || $column == 'CREDITS') {
 
                                     if ($column == 'DOES_ATTENDANCE') {
                                         if (scheduleAssociation($id)) {
@@ -1079,14 +1079,14 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                     }
                                 } else {
 //                                        if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
-                                    if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                    if (!gradeAssociation($id) && ($column == 'COURSE_WEIGHT' || $column == 'GRADE_SCALE_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'TEACHER_ID'  || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
                                         $sql .= $column . "='" . str_replace("'", "''", $value) . "',";
                                         if ($table_name == 'course_periods')
                                             $sql1.=$column . "='" . str_replace("'", "''", $value) . "',";
                                         $go = true;
                                     } else {
 //                                            if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_BREAKOFF' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
-                                        if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' || $column == 'CREDITS' || $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
+                                        if (gradeAssociation($id) && ($column == 'TEACHER_ID' || $column == 'SECONDARY_TEACHER_ID' || $column == 'GRADE_SCALE_ID' ||  $column == 'DOES_HONOR_ROLL' || $column == 'HALF_DAY' || $column == 'DOES_CLASS_RANK')) {
                                             $flag_err = 'Y';
                                         }
                                         if (scheduleAssociation($id) && ($column == 'ROOM_ID' || $column == 'DAYS' || $column == 'PERIOD_ID' || $column == 'MARKING_PERIOD_ID')) {

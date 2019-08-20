@@ -10,8 +10,7 @@ function loadajax(frmname)
     {
         this.formobj.old_onsubmit = this.formobj.onsubmit;
         this.formobj.onsubmit = null;
-    }
-    else
+    } else
     {
         this.formobj.old_onsubmit = null;
     }
@@ -180,27 +179,27 @@ function Course_Mrinfo_error()
 
 function Course_Mrinfo_callback(data)
 {
-    document.getElementById('more_info_lbl').innerHTML=data;
+    document.getElementById('more_info_lbl').innerHTML = data;
 }
 
 
-function grab_coursePeriod(id,table,column_name)
+function grab_coursePeriod(id, table, column_name)
 {
 
-    ajax_call('ChooseCP.php?id=' + id+'&table_name='+table+'&column_name='+column_name, grab_coursePeriod_callback, grab_GradeLevel_error);
+    ajax_call('ChooseCP.php?id=' + id + '&table_name=' + table + '&column_name=' + column_name, grab_coursePeriod_callback, grab_GradeLevel_error);
 }
 
 function grab_coursePeriod_callback(data)
-{ 
-var tdata=data.split('||');
+{
+    var tdata = data.split('||');
 
 //if(tdata[0].trim()==1)
 //{
-    
+
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 //    }
-    
+
 //    if(tdata[0].trim()=='2')
 //{
 //   
@@ -216,7 +215,7 @@ function grab_GradeLevel_callback(data)
 }
 function grab_GradeLevel_error()
 {
-alert('Not working');
+    alert('Not working');
 }
 // ------------------------------------------------------ USER ---------------------------------------------------------------------------------- //
 function usercheck_init_staff(i) {
@@ -293,11 +292,11 @@ function usercheck_init_student_Mod(i) {
 
 function usercheck_callback_student_Mod(data) {
     var response = data;
-    document.getElementById('ajax_output_st').innerHTML='';
-    if(response != 1)
+    document.getElementById('ajax_output_st').innerHTML = '';
+    if (response != 1)
     {
-        document.getElementById('students[USERNAME]').value='';
-        document.getElementById('students[PASSWORD]').value='';
+        document.getElementById('students[USERNAME]').value = '';
+        document.getElementById('students[PASSWORD]').value = '';
     }
 }
 
@@ -369,8 +368,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
             var ids = document.getElementById('fixed_day3').value;
         else
             var ids = document.getElementById('fixed_day3_' + i_value).value;
-    }
-    else if (option == 4)
+    } else if (option == 4)
         var ids = document.getElementById('fixed_day4').value;
     else
         var ids = option;
@@ -378,8 +376,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
     if (document.getElementById(ids + '_period'))
     {
         period_id = document.getElementById(ids + '_period').value;
-    }
-    else
+    } else
     {
         if (option == 3)
         {
@@ -387,8 +384,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
                 period_id = document.getElementById('disabled_option_' + i_value).value;
             else
                 period_id = 0;
-        }
-        else
+        } else
             period_id = 0;
     }
 
@@ -407,8 +403,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
             err[err.length] = 'Select Period';
             attendance.checked
             document.getElementById('get_status').value = 'false';
-        }
-        else
+        } else
             err[err.length] = '';
         if (err != '') {
             obj.style.color = '#ff0000';
@@ -422,8 +417,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
         if (window.XMLHttpRequest)
         {// code for IE7+, Firefox, Chrome, Opera, Safari
             xmlhttp = new XMLHttpRequest();
-        }
-        else
+        } else
         {// code for IE6, IE5
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
@@ -441,15 +435,13 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
         }
         xmlhttp.open("GET", 'ValidatorAttendance.php?u=' + attendance.value + '&p_id=' + period_id + '&cp_id=' + cp_id + '&ids=' + att_id, true);
         xmlhttp.send();
-    }
-    else
+    } else
     {
         if (period_id.length == 0)
         {
             err[err.length] = 'Select Period';
             document.getElementById('get_status').value = 'false';
-        }
-        else
+        } else
             err[err.length] = '';
         if (err != '') {
             obj.style.color = '#ff0000';
@@ -500,8 +492,7 @@ function formcheck_periods_attendance_F2(option, attendance, i_value)
             }
 
 
-        }
-        else
+        } else
         {
             document.getElementById('half_day').disabled = true;
             document.getElementById('half_day').checked = false;
@@ -520,8 +511,7 @@ function attendance_callback(data)
     {
         document.getElementById('get_status').value = response;
         document.getElementById(response[1]).checked = false;
-    }
-    else
+    } else
     {
         document.getElementById('get_status').value = '';
 
@@ -533,8 +523,7 @@ function attendance_callback(data)
             var clickEvent = new MouseEvent("click");
             child.dispatchEvent(clickEvent);
             document.getElementById('half_day').disabled = false;
-        }
-        else
+        } else
         {
             if (document.getElementById('F_does_attendance'))
             {
@@ -567,8 +556,7 @@ function formcheck_periods_F2(option)
         {
             err[err.length] = 'Select Period';
             document.getElementById('get_status').value = 'false';
-        }
-        else
+        } else
             err[err.length] = '';
         if (err == '')
         {
@@ -583,14 +571,12 @@ function formcheck_periods_F2(option)
         }
         if (!document.getElementById(ids + '_does_attendance'))
             ajax_call('ValidatorAttendance.php?u=N&p_id=' + period_id + '&cp_id=' + cp_id, attendance_callback, attendance_error);
-    }
-    else
+    } else
     {
         if (document.getElementById(ids + '_does_attendance').checked)
         {
             formcheck_periods_attendance_F2(document.getElementById(ids + '_does_attendance'));
-        }
-        else
+        } else
             document.getElementById('get_status').value = '';
     }
 }
@@ -740,8 +726,7 @@ function rollover_callback(roll_data)
     if (value == 0)
     {
         var rollover_class = 'rollover_no';
-    }
-    else
+    } else
     {
         var rollover_class = 'rollover_yes';
     }
@@ -753,21 +738,17 @@ function rollover_callback(roll_data)
         if (document.getElementById("chk_school_periods").value == 'Y')
         {
             ajax_rollover('school_periods');
-        }
-        else
+        } else
         {
             ajax_rollover('school_years');
         }
-    }
-    else if (total_data[0] == 'School Periods')
+    } else if (total_data[0] == 'School Periods')
     {
         document.getElementById("school_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("school_periods").setAttribute("class", rollover_class);
         document.getElementById("school_periods").setAttribute("className", rollover_class);
         ajax_rollover('school_years');
-    }
-
-    else if (total_data[0] == 'Marking Periods')
+    } else if (total_data[0] == 'Marking Periods')
     {
         document.getElementById("school_years").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("school_years").setAttribute("class", rollover_class);
@@ -776,37 +757,30 @@ function rollover_callback(roll_data)
         if (document.getElementById("chk_school_calendars").value == 'Y')
         {
             ajax_rollover('school_calendars');
-        }
-        else if (document.getElementById("chk_report_card_grade_scales").value == 'Y')
+        } else if (document.getElementById("chk_report_card_grade_scales").value == 'Y')
         {
             ajax_rollover('report_card_grade_scales');
-        }
-        else if (document.getElementById("chk_course_subjects").value == 'Y')
+        } else if (document.getElementById("chk_course_subjects").value == 'Y')
         {
             ajax_rollover('course_subjects');
-        }
-        else if (document.getElementById("chk_courses").value == 'Y')
+        } else if (document.getElementById("chk_courses").value == 'Y')
         {
             ajax_rollover('courses');
-        }
-        else if (document.getElementById("chk_course_periods").value == 'Y')
+        } else if (document.getElementById("chk_course_periods").value == 'Y')
         {
             ajax_rollover('course_periods');
-        }
-        else
+        } else
         {
             ajax_rollover('student_enrollment_codes');
         }
 
-    }
-    else if (total_data[0] == 'Calendars')
+    } else if (total_data[0] == 'Calendars')
     {
         document.getElementById("attendance_calendars").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("attendance_calendars").setAttribute("class", rollover_class);
         document.getElementById("attendance_calendars").setAttribute("className", rollover_class);
         ajax_rollover('report_card_grade_scales');
-    }
-    else if (total_data[0] == 'Report Card Grade Codes')
+    } else if (total_data[0] == 'Report Card Grade Codes')
     {
         document.getElementById("report_card_grade_scales").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("report_card_grade_scales").setAttribute("class", rollover_class);
@@ -819,8 +793,7 @@ function rollover_callback(roll_data)
             ajax_rollover('course_periods');
         else
             ajax_rollover('student_enrollment_codes');
-    }
-    else if (total_data[0] == 'Subjects')
+    } else if (total_data[0] == 'Subjects')
     {
         document.getElementById("course_subjects").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("course_subjects").setAttribute("class", rollover_class);
@@ -831,8 +804,7 @@ function rollover_callback(roll_data)
             ajax_rollover('course_periods');
         else
             ajax_rollover('student_enrollment_codes');
-    }
-    else if (total_data[0] == 'Courses')
+    } else if (total_data[0] == 'Courses')
     {
         document.getElementById("courses").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("courses").setAttribute("class", rollover_class);
@@ -841,22 +813,19 @@ function rollover_callback(roll_data)
             ajax_rollover('course_periods');
         else
             ajax_rollover('student_enrollment_codes');
-    }
-    else if (total_data[0] == 'Course Periods')
+    } else if (total_data[0] == 'Course Periods')
     {
         document.getElementById("course_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("course_periods").setAttribute("class", rollover_class);
         document.getElementById("course_periods").setAttribute("className", rollover_class);
         ajax_rollover('student_enrollment_codes');
-    }
-    else if (total_data[0] == 'Student Enrollment Codes')
+    } else if (total_data[0] == 'Student Enrollment Codes')
     {
         document.getElementById("student_enrollment_codes").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("student_enrollment_codes").setAttribute("class", rollover_class);
         document.getElementById("student_enrollment_codes").setAttribute("className", rollover_class);
         ajax_rollover('student_enrollment');
-    }
-    else if (total_data[0] == 'Students')
+    } else if (total_data[0] == 'Students')
     {
         document.getElementById("student_enrollment").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("student_enrollment").setAttribute("class", rollover_class);
@@ -864,21 +833,17 @@ function rollover_callback(roll_data)
         if (document.getElementById("chk_honor_roll").value == 'Y')
         {
             ajax_rollover('honor_roll');
-        }
-        else if (document.getElementById("chk_attendance_codes").value == 'Y')
+        } else if (document.getElementById("chk_attendance_codes").value == 'Y')
         {
             ajax_rollover('attendance_codes');
-        }
-        else if (document.getElementById("chk_report_card_comments").value == 'Y')
+        } else if (document.getElementById("chk_report_card_comments").value == 'Y')
         {
             ajax_rollover('report_card_comments');
-        }
-        else
+        } else
         {
             ajax_rollover('NONE');
         }
-    }
-    else if (total_data[0] == 'Honor Roll Setup')
+    } else if (total_data[0] == 'Honor Roll Setup')
     {
         document.getElementById("honor_roll").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("honor_roll").setAttribute("class", rollover_class);
@@ -886,18 +851,15 @@ function rollover_callback(roll_data)
         if (document.getElementById("chk_attendance_codes").value == 'Y')
         {
             ajax_rollover('attendance_codes');
-        }
-        else if (document.getElementById("chk_report_card_comments").value == 'Y')
+        } else if (document.getElementById("chk_report_card_comments").value == 'Y')
         {
             ajax_rollover('report_card_comments');
-        }
-        else
+        } else
         {
             ajax_rollover('NONE');
         }
 
-    }
-    else if (total_data[0] == 'Attendance Codes')
+    } else if (total_data[0] == 'Attendance Codes')
     {
         document.getElementById("attendance_codes").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("attendance_codes").setAttribute("class", rollover_class);
@@ -906,21 +868,17 @@ function rollover_callback(roll_data)
         if (document.getElementById("chk_report_card_comments").value == 'Y')
         {
             ajax_rollover('report_card_comments');
-        }
-        else
+        } else
         {
             ajax_rollover('NONE');
         }
-    }
-
-    else if (total_data[0] == 'Report Card Comment Codes')
+    } else if (total_data[0] == 'Report Card Comment Codes')
     {
         document.getElementById("report_card_comments").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("report_card_comments").setAttribute("class", rollover_class);
         document.getElementById("report_card_comments").setAttribute("className", rollover_class);
         ajax_rollover('NONE');
-    }
-    else
+    } else
     {
         document.getElementById("response").innerHTML = roll_data;
         document.getElementById("calculating").style.display = "none";
@@ -944,8 +902,7 @@ function back_before_roll_callback(data)
     {
         document.getElementById('back_db').style.display = "none";
         ajax_rollover('staff');
-    }
-    else
+    } else
     {
         alert('Error: ' + data);
     }
@@ -1003,13 +960,11 @@ function formcheck_rollover()
             {
                 document.getElementById("start_date").innerHTML = "New Year's Begin Date Has To Be After Previous Year's End Date";
                 return false;
-            }
-            else if (s_start_dt >= s_end_dt)
+            } else if (s_start_dt >= s_end_dt)
             {
                 document.getElementById("start_date").innerHTML = "New Year's End Date Has To Be After New Year's Start Date";
                 return false;
-            }
-            else
+            } else
             {
                 var tot_round = document.getElementById("tot_round");
 
@@ -1037,8 +992,7 @@ function formcheck_rollover()
                             {
                                 document.getElementById("start_date").innerHTML = "Please Enter Valid " + sem_name;
                                 return false;
-                            }
-                            else
+                            } else
                             {
                                 sem_dt = Date.parse(sem_dt);
                                 if (sem_dt < s_start_dt)
@@ -1050,8 +1004,7 @@ function formcheck_rollover()
                                 {
                                     document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Be After School's End Date";
                                     return false;
-                                }
-                                else
+                                } else
                                 {
 
                                     if (j != l_st_m)
@@ -1068,8 +1021,7 @@ function formcheck_rollover()
                                             document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Before " + sem_p_name;
                                             return false;
                                         }
-                                    }
-                                    else
+                                    } else
                                     {
                                         if (prev_l_st != 0)
                                         {
@@ -1434,8 +1386,7 @@ function show_cp_meeting_days(sch_type, cp_id)
             document.getElementById("save_cps").style.display = "none";
         }
         ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type, meeting_days_callback, meeting_days_error);
-    }
-    else
+    } else
     {
         document.getElementById('meeting_days').innerHTML = '<font color=red>Please select calendar</font>';
         document.getElementById('calendar_id').focus();
@@ -1455,8 +1406,7 @@ function show_cp_meeting_daysError(sch_type, cp_id, cal_id, room_id, period_id, 
             document.getElementById("save_cps").style.display = "none";
         }
         ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type + '&room_id=' + room_id + '&period_id=' + period_id + '&days=' + days + '&does_attendance=' + does_attendance + '&msg=conflict', meeting_days_callback, meeting_days_error);
-    }
-    else
+    } else
     {
         document.getElementById('meeting_days').innerHTML = '<font color=red>Please select calendar</font>';
         document.getElementById('calendar_id').focus();
@@ -1482,7 +1432,7 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
     if (cp_id != 'new')
     {
         var schedule_type_id = document.getElementById('schedule_type_id').value;
-       
+
         if (schedule_type_id == 'FIXED')
         {
             var child = document.getElementById("divtables[course_periods][" + cp_id + "][HALF_DAY]").children[0];
@@ -1495,7 +1445,7 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
         {
             var does_attendance_ids = document.getElementById('does_attendance_ids').value;
             does_attendance_ids = does_attendance_ids.split(',');
-           
+
             var go_dai = 'y';
             for (var dai = 0; dai <= does_attendance_ids.length; dai++)
             {
@@ -1517,8 +1467,7 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
         }
 
 
-    }
-    else
+    } else
     {
         document.getElementById('half_day').disabled = true;
         document.getElementById('half_day').checked = false;
@@ -1539,10 +1488,10 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
 
 function period_time_callback(data)
 {
-    
+
     var n = data.indexOf("/");
     var id = data.substr(0, n).trim() + '_period_time';
-  
+
     document.getElementById(id).innerHTML = data.substr(n + 1);
 
 }
@@ -1553,17 +1502,17 @@ function period_time_error()
 
 function verify_schedule(thisform)
 {
- 
+
     if (thisform.checked == false)
     {
-        
+
         // document.getElementById('selected_' + thisform.id).innerHTML='';
 //        if (document.getElementById('selected_course_' + thisform.value))
 //        {
 //            document.getElementById('selected_course_' + thisform.value).checked = false;
-            var row = document.getElementById('selected_' + thisform.id);
-            
-            row.parentNode.removeChild(row);
+        var row = document.getElementById('selected_' + thisform.id);
+
+        row.parentNode.removeChild(row);
 //
 //        }
     }
@@ -1572,37 +1521,34 @@ function verify_schedule(thisform)
 
 function verify_schedule_callback(data)
 {
-    if(data.indexOf("||")>0)
+    if (data.indexOf("||") > 0)
     {
-    var tdata=data.split("||");
-    data=tdata[2];
-    cp_id=tdata[0].trim();
+        var tdata = data.split("||");
+        data = tdata[2];
+        cp_id = tdata[0].trim();
     }
     data = data.trim();
     var stat = data.substr(0, 4);
     data = data.substr(4);
-  
     document.getElementById("calculating").style.display = 'none';
     if (stat == 'resp')
     {
-//         document.getElementById('selected_course1').innerHTML= 'aaa';
- document.getElementById('selected_course1').innerHTML= document.getElementById('selected_course1').innerHTML+'<tr id="selected_course_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" value='+cp_id+' ></td><td><b>'+tdata[1]+'</b></td></tr>';
+        $('#sub_btn').show();
+        document.getElementById('selected_course1').innerHTML = document.getElementById('selected_course1').innerHTML + '<label class="checkbox-inline checkbox-switch switch-success switch-xs" id="selected_course_' + cp_id + '"><INPUT type="checkbox" id="selected_course_' + cp_id + '" name="selected_course_periods[]" checked="checked" value=' + cp_id + ' ><span></span>' + tdata[1] + '</label>';
         document.getElementById('conf_div1').innerHTML = '';
-         document.getElementById('course_' + cp_id).checked= true;
+        document.getElementById('course_' + cp_id).checked = true;
 //          document.getElementById('selected_course').innerHTML= '<tr id="selected_course_tr_'+cp_id+'"><td align=left><INPUT type="checkbox" id="selected_course_'+cp_id+'" name="selected_course_periods[]" checked="checked" ></td><td><b> aaaa</b></td></tr>';
-       
- // document.getElementById('resp_table').innerHTML += data;
-    }
-    else if (stat == 'conf')
+
+        // document.getElementById('resp_table').innerHTML += data;
+    } else if (stat == 'conf')
     {
-      
+
         document.getElementById('conf_div1').style.color = "red";
         document.getElementById('conf_div1').innerHTML = data;
-        
+
         var cp_id = document.getElementById('conflicted_cp').value;
         document.getElementById('course_' + cp_id).checked = false;
-    }
-    else
+    } else
     {
         document.getElementById('conf_div1').innerHTML = data;
     }
@@ -1653,8 +1599,7 @@ function peoplecheck_email(i, opt, p_id)
             if (pri_email == i.value)
             {
                 peoplecheck_email_callback('0_2');
-            }
-            else
+            } else
                 ajax_call('EmailCheck.php?email=' + i.value + '&p_id=' + p_id + '&opt=' + opt, peoplecheck_email_callback, peoplecheck_email_error);
         }
         if (opt == 1 && p_id != 0)
@@ -1667,8 +1612,7 @@ function peoplecheck_email(i, opt, p_id)
             {
 
                 peoplecheck_email_callback('0_1');
-            }
-            else
+            } else
                 ajax_call('EmailCheck.php?email=' + i.value + '&p_id=' + p_id + '&opt=' + opt, peoplecheck_email_callback, peoplecheck_email_error);
         }
         if (opt == 1 && p_id == 0)
@@ -1682,13 +1626,11 @@ function peoplecheck_email(i, opt, p_id)
             else
                 ajax_call('EmailCheck.php?email=' + i.value + '&p_id=' + p_id + '&opt=' + opt, peoplecheck_email_callback, peoplecheck_email_error);
         }
-    }
-    else if (i.value != '')
+    } else if (i.value != '')
     {
         document.getElementById('val_email_' + opt).value = '';
         document.getElementById('email_' + opt).innerHTML = '';
-    }
-    else if (i.value == '')
+    } else if (i.value == '')
     {
         document.getElementById('val_email_' + opt).value = '';
         document.getElementById('email_' + opt).innerHTML = '';
@@ -1702,8 +1644,7 @@ function peoplecheck_email_callback(data) {
         obj.style.color = '#ff0000';
         obj.innerHTML = 'Email already taken';
         document.getElementById('val_email_' + response[1]).value = '';
-    }
-    else
+    } else
     {
         obj.style.color = '#008800';
         obj.innerHTML = 'Email available';
@@ -1748,7 +1689,7 @@ function check_email_callback(data) {
 
 function check_email_error(err)
 {
-   // alert("Error: " + err);
+    // alert("Error: " + err);
 }
 function check_username_install(username)
 {
@@ -1796,22 +1737,22 @@ function forgotpassemail_init(usr_type)
     if (i.value.length > 0)
     {
 
-      
-            if (usr_type == 'pass_email')
-            {
-                document.getElementById('pass_err_msg_email').style.color = '#ff0000';
-                document.getElementById('pass_err_msg_email').innerHTML = 'Please enter proper email address.';
-                document.getElementById('pass_email').value = '';
-                return false;
-            }
-            else
-            {
-                document.getElementById('uname_err_msg_email').style.color = '#ff0000';
-                document.getElementById('uname_err_msg_email').innerHTML = 'Please enter proper email address.';
-                document.getElementById('un_email').value = '';
-                return false;
-            }
-   
+
+//            if (usr_type == 'pass_email')
+//            {
+//                document.getElementById('pass_err_msg_email').style.color = '#ff0000';
+//                document.getElementById('pass_err_msg_email').innerHTML = 'Please enter proper email address.';
+//                document.getElementById('pass_email').value = '';
+//                return false;
+//            }
+//            else
+//            {
+//                document.getElementById('uname_err_msg_email').style.color = '#ff0000';
+//                document.getElementById('uname_err_msg_email').innerHTML = 'Please enter proper email address.';
+//                document.getElementById('un_email').value = '';
+//                return false;
+//            }
+
 
         if (usr_type == 'pass_email')
         {
@@ -1834,8 +1775,7 @@ function forgotpassemail_init(usr_type)
         }
 
 
-    }
-    else
+    } else
     {
         document.getElementById('pass_err_msg_email').innerHTML = '';
         document.getElementById('uname_err_msg_email').innerHTML = '';
@@ -1855,14 +1795,13 @@ function forgotpassemail_callback(data) {
     {
         document.getElementById('pass_calculating_email').style.display = "none";
         obj = document.getElementById('pass_err_msg_email');
-    }
-    else
+    } else
     {
         document.getElementById('uname_calculating_email').style.display = "none";
         obj = document.getElementById('uname_err_msg_email');
     }
 
-    if (response[0] == '1')
+    if (response[0] == 1)
     {
         obj.style.color = '#008800';
 
@@ -1870,7 +1809,7 @@ function forgotpassemail_callback(data) {
         if (response[1] == 'pass_email')
         {
             document.getElementById('divErr').innerHTML = '';
-            document.getElementById('pass_email').value = response[0];
+            document.getElementById('pass_email').value = response[0].trim();
             if (document.getElementById("valid_func").value == 'Y')
             {
                 document.getElementById("valid_func").value = 'N';
@@ -1881,24 +1820,19 @@ function forgotpassemail_callback(data) {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
                         document.getElementById("password_stn_id").focus();
                         return false;
-                    }
-                    else if (document.getElementById("uname").value == '')
+                    } else if (document.getElementById("uname").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your username.</b></font>';
                         document.getElementById("uname").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("monthSelect1").value == '')
+                    } else if (document.getElementById("monthSelect1").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter date of birth.</b></font>';
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
 
-                }
-                else
+                } else
                 {
                     if (document.getElementById("uname").value == '')
                     {
@@ -1906,30 +1840,26 @@ function forgotpassemail_callback(data) {
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("uname").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("pass_email").value == '')
+                    } else if (document.getElementById("pass_email").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("pass_stf_email").focus();
                         return false;
-                    }
-                    else if (document.getElementById("pass_email").value == '0')
+                    } else if (document.getElementById("pass_email").value == '0')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("pass_stf_email").focus();
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
                 }
 
-            }
+            } else
+                return true;
 
-        }
-        else
+        } else
         {
             document.getElementById('divErr').innerHTML = '';
             document.getElementById('un_email').value = response[0];
@@ -1944,24 +1874,19 @@ function forgotpassemail_callback(data) {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
                         document.getElementById("username_stn_id").focus();
                         return false;
-                    }
-                    else if (document.getElementById("pass").value == '')
+                    } else if (document.getElementById("pass").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your password.</b></font>';
                         document.getElementById("pass").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("monthSelect2").value == '')
+                    } else if (document.getElementById("monthSelect2").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your date of birth.</b></font>';
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
 
-                }
-                else
+                } else
                 {
                     if (document.getElementById("pass").value == '')
                     {
@@ -1969,29 +1894,25 @@ function forgotpassemail_callback(data) {
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("pass").focus();
                         return false;
-                    }
-                    else if (document.getElementById("un_email").value == '')
+                    } else if (document.getElementById("un_email").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("username_stf_email").focus();
                         return false;
-                    }
-                    else if (document.getElementById("un_email").value == '0')
+                    } else if (document.getElementById("un_email").value == '0')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("username_stf_email").focus();
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
                 }
             }
         }
 
-    }
-    else
+    } else
     {
         obj.style.color = '#ff0000';
 
@@ -2011,24 +1932,19 @@ function forgotpassemail_callback(data) {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
                         document.getElementById("password_stn_id").focus();
                         return false;
-                    }
-                    else if (document.getElementById("uname").value == '')
+                    } else if (document.getElementById("uname").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your username.</b></font>';
                         document.getElementById("uname").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("monthSelect1").value == '')
+                    } else if (document.getElementById("monthSelect1").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter date of birth.</b></font>';
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
 
-                }
-                else
+                } else
                 {
                     if (document.getElementById("uname").value == '')
                     {
@@ -2036,29 +1952,24 @@ function forgotpassemail_callback(data) {
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("uname").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("pass_email").value == '')
+                    } else if (document.getElementById("pass_email").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("pass_stf_email").focus();
                         return false;
-                    }
-                    else if (document.getElementById("pass_email").value == '0')
+                    } else if (document.getElementById("pass_email").value == '0')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
                         document.getElementById('pass_err_msg_email').innerHTML = '';
                         document.getElementById("pass_stf_email").focus();
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
                 }
 
             }
-        }
-        else
+        } else
         {
             document.getElementById('divErr').innerHTML = '';
             document.getElementById('un_email').value = response[0];
@@ -2073,24 +1984,19 @@ function forgotpassemail_callback(data) {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter student id.</b></font>';
                         document.getElementById("username_stn_id").focus();
                         return false;
-                    }
-                    else if (document.getElementById("pass").value == '')
+                    } else if (document.getElementById("pass").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your password.</b></font>';
                         document.getElementById("pass").focus();
                         return false;
-                    }
-
-                    else if (document.getElementById("monthSelect2").value == '')
+                    } else if (document.getElementById("monthSelect2").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your date of birth.</b></font>';
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
 
-                }
-                else
+                } else
                 {
                     if (document.getElementById("pass").value == '')
                     {
@@ -2098,22 +2004,19 @@ function forgotpassemail_callback(data) {
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("pass").focus();
                         return false;
-                    }
-                    else if (document.getElementById("un_email").value == '')
+                    } else if (document.getElementById("un_email").value == '')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Please enter your email.</b></font>';
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("username_stf_email").focus();
                         return false;
-                    }
-                    else if (document.getElementById("un_email").value == '0')
+                    } else if (document.getElementById("un_email").value == '0')
                     {
                         document.getElementById('divErr').innerHTML = '<font style="color:red"><b>Incorrect login credential.</b></font>';
                         document.getElementById('uname_err_msg_email').innerHTML = '';
                         document.getElementById("username_stf_email").focus();
                         return false;
-                    }
-                    else
+                    } else
                         document.getElementById('f1').submit();
                 }
             }
@@ -2231,223 +2134,223 @@ function checkVersion(data)
 
     alert(data);
 }
-function chooseCpModal(id,table)
+function chooseCpModal(id, table)
 {
 
-    ajax_call('ChooseCPModal.php?id=' + id+'&table_name='+table, chooseCpModalCallback, chooseCpModalError);
+    ajax_call('ChooseCPModal.php?id=' + id + '&table_name=' + table, chooseCpModalCallback, chooseCpModalError);
 }
 
 function chooseCpModalCallback(data)
-{ 
-    var tdata=data.split('||');
+{
+    var tdata = data.split('||');
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 }
 function chooseCpModalError(err)
-{ 
+{
     alert("Error: " + err);
 }
 
 function parentLookup(address_id)
 {
-    
-   
-    var USERINFO_FIRST_NAME=document.getElementById('USERINFO_FIRST_NAME').value;
-   
-       var USERINFO_LAST_NAME=document.getElementById('USERINFO_LAST_NAME').value;
-        
-       var USERINFO_EMAIL=document.getElementById('USERINFO_EMAIL').value;
-      var USERINFO_MOBILE=document.getElementById('USERINFO_MOBILE').value;
-      var USERINFO_SADD=document.getElementById('USERINFO_SADD').value;
-       var USERINFO_CITY=document.getElementById('USERINFO_CITY').value;
-        var USERINFO_STATE=document.getElementById('USERINFO_STATE').value;
-        var USERINFO_ZIP=document.getElementById('USERINFO_ZIP').value;
-        var p_type=document.getElementById('p_type').value;
-         var other_p_erson_id=document.getElementById('other_p_erson_id').value;
-  ajax_call('ParentLookup.php?USERINFO_FIRST_NAME='+USERINFO_FIRST_NAME+'&USERINFO_LAST_NAME='+USERINFO_LAST_NAME+'&USERINFO_EMAIL='+USERINFO_EMAIL+'&USERINFO_MOBILE='+USERINFO_MOBILE+'&USERINFO_SADD='+USERINFO_SADD+'&USERINFO_CITY='+USERINFO_CITY+'&USERINFO_STATE='+USERINFO_STATE+'&USERINFO_ZIP='+USERINFO_ZIP+'&address_id='+address_id+'&p_type='+p_type+'&other_p_erson_id='+other_p_erson_id, parentLookupCallback, chooseCpModalError);  
+
+
+    var USERINFO_FIRST_NAME = document.getElementById('USERINFO_FIRST_NAME').value;
+
+    var USERINFO_LAST_NAME = document.getElementById('USERINFO_LAST_NAME').value;
+
+    var USERINFO_EMAIL = document.getElementById('USERINFO_EMAIL').value;
+    var USERINFO_MOBILE = document.getElementById('USERINFO_MOBILE').value;
+    var USERINFO_SADD = document.getElementById('USERINFO_SADD').value;
+    var USERINFO_CITY = document.getElementById('USERINFO_CITY').value;
+    var USERINFO_STATE = document.getElementById('USERINFO_STATE').value;
+    var USERINFO_ZIP = document.getElementById('USERINFO_ZIP').value;
+    var p_type = document.getElementById('p_type').value;
+    var other_p_erson_id = document.getElementById('other_p_erson_id').value;
+    ajax_call('ParentLookup.php?USERINFO_FIRST_NAME=' + USERINFO_FIRST_NAME + '&USERINFO_LAST_NAME=' + USERINFO_LAST_NAME + '&USERINFO_EMAIL=' + USERINFO_EMAIL + '&USERINFO_MOBILE=' + USERINFO_MOBILE + '&USERINFO_SADD=' + USERINFO_SADD + '&USERINFO_CITY=' + USERINFO_CITY + '&USERINFO_STATE=' + USERINFO_STATE + '&USERINFO_ZIP=' + USERINFO_ZIP + '&address_id=' + address_id + '&p_type=' + p_type + '&other_p_erson_id=' + other_p_erson_id, parentLookupCallback, chooseCpModalError);
 }
-function modal_parenttype(type,other_p_erson_id='')
+function modal_parenttype(type, other_p_erson_id = '')
 {
-   
-     $('#modal_default_lookup').modal('show');
-      $("#other_p_erson_id").val(other_p_erson_id);
-      
-     $("#p_type").val(type);
+
+    $('#modal_default_lookup').modal('show');
+    $("#other_p_erson_id").val(other_p_erson_id);
+
+    $("#p_type").val(type);
 }
 function parentLookupCallback(data)
-{ 
-  
+{
+
 //    var tdata=data.split('||');
 //    var obj = document.getElementById(tdata[0].trim());
 //    obj.innerHTML = tdata[1];
-    
-document.getElementById("parent_res").innerHTML=data;
+
+    document.getElementById("parent_res").innerHTML = data;
 }
 
-function SelectedParent(address_id,type,other_p_erson_id='')
+function SelectedParent(address_id, type, other_p_erson_id = '')
 {
-    
-   var selected_staff=document.querySelector('input[name="staff"]:checked').value;
-     //ajax_call('modules/students/.php?id=' + id+'&table_name='+table, SelectedParentCallback, chooseCpModalError);
-     
-    
-         
-     $("#modal_default_lookup").hide();
- if(type=='other')
-     window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type='+type+'&nfunc=status&ajax=true&button=Select&con_info=old&add_id='+other_p_erson_id+'&address_id='+address_id+'&staff='+selected_staff+'&person_id='+other_p_erson_id ;
-     else
-    window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type='+type+'&nfunc=status&ajax=true&button=Select&add_id=&address_id='+address_id+'&staff='+selected_staff ;
+
+    var selected_staff = document.querySelector('input[name="staff"]:checked').value;
+    //ajax_call('modules/students/.php?id=' + id+'&table_name='+table, SelectedParentCallback, chooseCpModalError);
+
+
+
+    $("#modal_default_lookup").hide();
+    if (type == 'other')
+        window.location.href = 'Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type=' + type + '&nfunc=status&ajax=true&button=Select&con_info=old&add_id=' + other_p_erson_id + '&address_id=' + address_id + '&staff=' + selected_staff + '&person_id=' + other_p_erson_id;
+    else
+        window.location.href = 'Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type=' + type + '&nfunc=status&ajax=true&button=Select&add_id=&address_id=' + address_id + '&staff=' + selected_staff;
 
 
 }
-function cpActionModal(title,subject_id,course_id,course_period_id)
+function cpActionModal(title, subject_id, course_id, course_period_id)
 {
-     ajax_call('CpSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, cpActionModalCallback);  
+    ajax_call('CpSessionSet.php?title=' + title + '&subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id, cpActionModalCallback);
 }
 
 function cpActionModalCallback(data)
 {
-    document.getElementById('course_div').innerHTML =data;   
+    document.getElementById('course_div').innerHTML = data;
     $('#modal_default').modal('hide');
     $('.modal-backdrop').remove();
 }
 
-function chooseCpModalSearch(id,table)
+function chooseCpModalSearch(id, table)
 {
-    ajax_call('ChooseCpSearch.php?id=' + id+'&table_name='+table, chooseCpModalSearchCallback, chooseCpModalSearchError);
+    ajax_call('ChooseCpSearch.php?id=' + id + '&table_name=' + table, chooseCpModalSearchCallback, chooseCpModalSearchError);
 }
 
 function chooseCpModalSearchCallback(data)
-{ 
-    var tdata=data.split('||');
+{
+    var tdata = data.split('||');
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 }
 function chooseCpModalSearchError(err)
-{ 
+{
     alert("Error: " + err);
 }
 
-function chooseCpModalSearchRequest(id,table)
+function chooseCpModalSearchRequest(id, table)
 {
-    ajax_call('ChooseRequestSearch.php?id=' + id+'&table_name='+table, chooseCpModalSearchRequestCallback, chooseCpModalSearchRequestError);
+    ajax_call('ChooseRequestSearch.php?id=' + id + '&table_name=' + table, chooseCpModalSearchRequestCallback, chooseCpModalSearchRequestError);
 }
 
 function chooseCpModalSearchRequestCallback(data)
-{ 
-   
-    var tdata=data.split('||');
+{
+
+    var tdata = data.split('||');
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 }
 function chooseCpModalSearchRequestError(err)
-{ 
+{
     alert("Error: " + err);
 }
 
-function MassDropModal(id,table)
+function MassDropModal(id, table)
 {
-    ajax_call('MassDropModal.php?id=' + id+'&table_name='+table, MassDropModalCallback, MassDropModalError);
+    ajax_call('MassDropModal.php?id=' + id + '&table_name=' + table, MassDropModalCallback, MassDropModalError);
 }
 
 function MassDropModalCallback(data)
-{ 
-    var tdata=data.split('||');
+{
+    var tdata = data.split('||');
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 }
 function MassDropModalError(err)
-{ 
+{
     alert("Error: " + err);
 }
 
-function MassDropSessionSet(title,subject_id,course_id,course_period_id)
+function MassDropSessionSet(title, subject_id, course_id, course_period_id)
 {
-     ajax_call('MassDropSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, MassDropSessionSetCallback);  
+    ajax_call('MassDropSessionSet.php?title=' + title + '&subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id, MassDropSessionSetCallback);
 }
 
 function MassDropSessionSetCallback(data)
 {
-    document.getElementById('course_div').innerHTML =data;   
+    document.getElementById('course_div').innerHTML = data;
     $('#modal_default').modal('hide');
     $('.modal-backdrop').remove();
 }
 
-function CalendarModal(event_id,cal_id,date,year,month,tochar)
+function CalendarModal(event_id, cal_id, date, year, month, tochar)
 {
-    
-     $('#modal_default_calendar').modal('show');
-    ajax_call('CalendarModal.php?event_id='+event_id+'&calendar_id='+cal_id+'&school_date='+date+'&month='+month+'&year='+year+'&tochar=tochar',CalendarModalCallback, chooseCpModalError);  
+
+    $('#modal_default_calendar').modal('show');
+    ajax_call('CalendarModal.php?event_id=' + event_id + '&calendar_id=' + cal_id + '&school_date=' + date + '&month=' + month + '&year=' + year + '&tochar=tochar', CalendarModalCallback, chooseCpModalError);
 
 }
 
 
 function CalendarModalCallback(data)
-{ 
-  
+{
+
 //    var tdata=data.split('||');
 //    var obj = document.getElementById(tdata[0].trim());
 //    obj.innerHTML = tdata[1];
-    
-document.getElementById("modal-res").innerHTML=data;
+
+    document.getElementById("modal-res").innerHTML = data;
 }
 
 
 function CalendarModalAssignment(assignment_id)
 {
-    
+
     $('#modal_default_calendar').modal('show');
-     ajax_call('CalendarModal.php?assignment_id='+assignment_id,CalendarModalCallback, chooseCpModalError);  
+    ajax_call('CalendarModal.php?assignment_id=' + assignment_id, CalendarModalCallback, chooseCpModalError);
 }
 
 
-function BlockModalPeriod(subject_id,course_id,course_period_id,calendar_id,date,mode,id,add1)
+function BlockModalPeriod(subject_id, course_id, course_period_id, calendar_id, date, mode, id, add1)
 {
-      $('#modal_default_block_cp').modal('show');
-       ajax_call('CoursePeriodModal.php?subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id+'&calendar_id='+calendar_id+'&meet_date='+date+'&mode='+mode+'&id='+id+'&add='+add1,CalendarModalCallback, chooseCpModalError);  
+    $('#modal_default_block_cp').modal('show');
+    ajax_call('CoursePeriodModal.php?subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id + '&calendar_id=' + calendar_id + '&meet_date=' + date + '&mode=' + mode + '&id=' + id + '&add=' + add1, CalendarModalCallback, chooseCpModalError);
 
-    
+
 }
 
-function MassScheduleModal(id,table)
+function MassScheduleModal(id, table)
 {
-    ajax_call('MassScheduleModal.php?id=' + id+'&table_name='+table, MassScheduleModalCallback, MassScheduleModalError);
+    ajax_call('MassScheduleModal.php?id=' + id + '&table_name=' + table, MassScheduleModalCallback, MassScheduleModalError);
 }
 
 function MassScheduleModalCallback(data)
-{ 
-    var tdata=data.split('||');
+{
+    var tdata = data.split('||');
     var obj = document.getElementById(tdata[0].trim());
     obj.innerHTML = tdata[1];
 }
 function MassScheduleModalError(err)
-{ 
+{
     alert("Error: " + err);
 }
 
-function MassScheduleSessionSet(title,subject_id,course_id,course_period_id)
+function MassScheduleSessionSet(title, subject_id, course_id, course_period_id)
 {
-     ajax_call('MassScheduleSessionSet.php?title='+title+'&subject_id='+subject_id+'&course_id='+course_id+'&course_period_id='+course_period_id, MassScheduleSessionSetCallback);  
+    ajax_call('MassScheduleSessionSet.php?title=' + title + '&subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id, MassScheduleSessionSetCallback);
 }
 
 function MassScheduleSessionSetCallback(data)
 {
 //    alert(data);
-    var tdata=data.split('|_*|*_|');
+    var tdata = data.split('|_*|*_|');
 //    obj.innerHTML = tdata[1];
-    document.getElementById('showTitle').innerHTML=tdata[2];
-    document.getElementById('val_marking_period_id').value=tdata[1];
-    document.getElementById('course_div').innerHTML =tdata[0];   
+    document.getElementById('showTitle').innerHTML = tdata[2];
+    document.getElementById('val_marking_period_id').value = tdata[1];
+    document.getElementById('course_div').innerHTML = tdata[0];
     $('#modal_default').modal('hide');
     $('.modal-backdrop').remove();
 }
 
 function TransferredOutModal(modfunc, student_id, drop_code)
 {
-     ajax_call('TransferredOutModal.php?modfunc='+modfunc+'&student_id='+student_id+'&drop_code='+drop_code, TransferredOutModalCallback,MassScheduleModalError);  
+    ajax_call('TransferredOutModal.php?modfunc=' + modfunc + '&student_id=' + student_id + '&drop_code=' + drop_code, TransferredOutModalCallback, MassScheduleModalError);
 }
 
-function TransferredOutModalCallback(data){
+function TransferredOutModalCallback(data) {
     $('#modal_default_transferred_out').modal('show');
     $("#modal-res").html(data);
 }

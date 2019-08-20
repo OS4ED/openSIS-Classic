@@ -590,9 +590,11 @@ echo '</div>
                                     <div class="navigation-wrapper collapse" id="user-nav">
                                         <ul class="navigation">
                                 
-                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=messaging/Inbox.php\');"><i class="icon-comment-discussion"></i> <span>Messages</span></a></li>
-                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=users/Preferences.php\');"><i class="icon-equalizer"></i> <span>Preferences</span></a></li>
-                                            <li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
+                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=messaging/Inbox.php\');"><i class="icon-comment-discussion"></i> <span>Messages</span></a></li>';
+if(User('PROFILE')!='student')                                            
+echo'<li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=users/Preferences.php\');"><i class="icon-equalizer"></i> <span>Preferences</span></a></li>';
+
+                                            echo'<li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
                                         </ul>
                                     </div>
                                 </div>

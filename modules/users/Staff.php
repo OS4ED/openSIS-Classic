@@ -230,7 +230,7 @@ if ($_REQUEST['category_id'] == 4 && !isset($_REQUEST['certification_id'])) {
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
-    if ($_REQUEST['values']['SCHOOLS']) {
+if (count($_REQUEST['values']['SCHOOLS'])>0) {
         $school_array = $_REQUEST['values']['SCHOOLS'];
         $cur_school = array_keys($school_array);
         if ($_REQUEST['staff_id'] == 'new')

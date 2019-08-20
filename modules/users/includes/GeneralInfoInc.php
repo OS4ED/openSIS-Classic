@@ -166,10 +166,10 @@ if ($_REQUEST['profile'] != 'none') {
     echo '<div class="col-lg-8">';
     if (!isset($staff['STAFF_ID'])) {
         //for adding new user
-        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);");
+        echo TextInput(str_repeat('*', strlen($staff['PASSWORD'])), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value);");
     } else {
         //for existing users while updating
-        echo TextInput(array($staff['PASSWORD'], str_repeat('*', strlen($staff['PASSWORD']))), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value,$staff[STAFF_ID]);");
+        echo TextInput(str_repeat('*', strlen($staff['PASSWORD'])), 'login_authentication[PASSWORD]', '', "size=25 maxlength=100 class=cell_floating AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);validate_password(this.value,$staff[STAFF_ID]);");
     }
     echo '<p id="passwordStrength" class="help-block"></p>';
     echo '</div>'; //.col-lg-8

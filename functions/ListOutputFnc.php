@@ -782,7 +782,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
     }
 }
 
-function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false,$headerVisibility = true) {
+function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true) {
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -1171,50 +1171,50 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
             // END MISC ---
             // WIDTH = 100%
 
-            if($headerVisibility==true){
-            echo '<div class="panel-heading">';
-            if ($custom_header != false) {
-                echo $custom_header;
-            } else {
-
-                // SEARCH BOX & MORE HEADERS
-                if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-                    echo "<h6 class=\"panel-title\">";
-                    if ($singular && $plural && $options['count']) {
-                        if ($display_count > 1)
-                            echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
-                        elseif ($display_count == 1)
-                            echo "<span class=\"heading-text\">1 $singular was found.</span>";
-                    }else {
-                        echo '&nbsp;';
-                    }
-                    if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
-
-                    echo '</h6>';
-                    $colspan = 1;
-                    if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
-                        $_REQUEST['portal_search'] = 'true';
-                        $tmp_REQUEST = $_REQUEST;
-                        unset($tmp_REQUEST['LO_search']);
-                        unset($tmp_REQUEST['page']);
-                        echo "<div class=\"heading-elements\">";
-                        echo '<div class="form-group">';
-                        echo "<INPUT type=hidden id=hidden_field >";
-                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                        echo '</div>'; //.input-group
-                        echo '</div>'; //.form-group
-                        echo "</div>"; //.heading-elements
-                        $colspan++;
-                    }
-                    echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+            if ($headerVisibility == true) {
+                echo '<div class="panel-heading">';
+                if ($custom_header != false) {
+                    echo $custom_header;
                 } else {
-                    echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+
+                    // SEARCH BOX & MORE HEADERS
+                    if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
+                        echo "<h6 class=\"panel-title\">";
+                        if ($singular && $plural && $options['count']) {
+                            if ($display_count > 1)
+                                echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                            elseif ($display_count == 1)
+                                echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        }else {
+                            echo '&nbsp;';
+                        }
+                        if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
+                            echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
+
+                        echo '</h6>';
+                        $colspan = 1;
+                        if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
+                            $_REQUEST['portal_search'] = 'true';
+                            $tmp_REQUEST = $_REQUEST;
+                            unset($tmp_REQUEST['LO_search']);
+                            unset($tmp_REQUEST['page']);
+                            echo "<div class=\"heading-elements\">";
+                            echo '<div class="form-group">';
+                            echo "<INPUT type=hidden id=hidden_field >";
+                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                            echo '</div>'; //.input-group
+                            echo '</div>'; //.form-group
+                            echo "</div>"; //.heading-elements
+                            $colspan++;
+                        }
+                        echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+                    } else {
+                        echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+                    }
                 }
-            }
-            // END SEARCH BOX ----
-            echo '</div>'; //.panel-heading
+                // END SEARCH BOX ----
+                echo '</div>'; //.panel-heading
             } // $headerVisibility
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -1455,7 +1455,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                                 targets: 0
                             }
                         ],
-                        'iDisplayLength': ".$number_rec.""
+                        'iDisplayLength': " . $number_rec . ""
                         . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
@@ -2235,11 +2235,11 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                     //echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -3014,11 +3014,11 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     //echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -4512,11 +4512,11 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                 echo "</TABLE>";
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -5160,18 +5160,21 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                         }
                         else {
                             echo "<TD $color >";
-                            if ($key == 'FULL_NAME')
-                                echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
                             if ($color == Preferences('HIGHLIGHT'))
                                 echo '';
-
-                            if (count(explode(',', $item[$key])) > 1) {
-                                $room = explode(',', $item[$key]);
-                                for ($v = 0; $v < count(explode(',', $item[$key])); $v++) {
-                                    echo $room[$v] . '';
-                                }
-                            } else
+                            if ($key == 'FULL_NAME') {
+                                echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
                                 echo $item[$key];
+                            } else {
+
+                                if (count(explode(',', $item[$key])) > 1) {
+                                    $room = explode(',', $item[$key]);
+                                    for ($v = 0; $v < count(explode(',', $item[$key])); $v++) {
+                                        echo $room[$v] . '';
+                                    }
+                                } else
+                                    echo $item[$key];
+                            }
                             if (!$item[$key])
                                 echo '&nbsp;';
                             if ($key == 'FULL_NAME')
@@ -7652,16 +7655,16 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             }
 
             if ($options['save_delimiter'] == 'xml') {
-            foreach ($result as $item) {
-                foreach ($column_names as $key => $value) {
-                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-                        $item[$key] = str_replace(',', ';', $item[$key]);
-                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                foreach ($result as $item) {
+                    foreach ($column_names as $key => $value) {
+                        if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                            $item[$key] = str_replace(',', ';', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                        $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                    }
+                    $output .= "\n";
                 }
-                $output .= "\n";
-            }
             }
             header("Cache-Control: public");
             header("Pragma: ");
@@ -7672,7 +7675,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             echo $output;
             exit();
         }
-        
+
         // END SAVING THE LIST ---
         if ($options['center'])
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
@@ -7681,7 +7684,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     echo " <TR><TD align=center>";
             }
 
-      if ($options['count'] || $display_zero) {
+        if ($options['count'] || $display_zero) {
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
@@ -7691,7 +7694,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                 echo '<div class="panel-body">';
                 echo '<div class="alert alert-danger no-border">None were found.</div>';
                 echo '</div>';
-        }
+            }
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -7719,8 +7722,8 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                                 }
                             } else {
                                 $pages .= "$i, ";
+                            }
                         }
-                    }
                         $pages = substr($pages, 0, -2);
                     } else {
                         for ($i = 1; $i <= 7; $i++) {
@@ -7765,7 +7768,6 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             }
             // END MISC ---
             // WIDTH = 100%
-
 //            echo '<div class="panel-heading">';
 //            if ($custom_header != false) {
 //                echo $custom_header;
@@ -7816,7 +7818,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             echo '<div class="table-responsive">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '<THEAD>';
+            echo '<THEAD>';
             //if(!isset($_REQUEST['_openSIS_PDF']))
             echo '<TR class="bg-grey-200">';
 
@@ -7840,7 +7842,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                         if ($ForWindow == 'ForWindow') {
                             echo "HREF=#";
                         } else {
-                        echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
+                            echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
                         }
                     }
                     echo " class=column_heading><b>$value</b></A>";
@@ -7856,7 +7858,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             $color = '';
 
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '</THEAD><TBODY>';
+            echo '</THEAD><TBODY>';
 
 
             // mab - enable add link as first or last
@@ -7931,11 +7933,10 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     if (count($link['remove']['variables'])) {
                         foreach ($link['remove']['variables'] as $var => $val)
                             $button_link .= "&$var=" . ($item[$val]);
-                       
-                        }
-
-                    echo "<TD>" . button_missing_atn('remove', ''.$button_title, $button_link) . "</TD>";
                     }
+
+                    echo "<TD>" . button_missing_atn('remove', '' . $button_title, $button_link) . "</TD>";
+                }
 
                 if ($cols) {
                     foreach ($column_names as $key => $value) {
@@ -8019,21 +8020,21 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     echo "</TR>";
                 }
             }
-            
+
 
             echo '</TBODY>';
             echo "</TABLE>";
             echo '</div>'; //.table-responsive
             // END PRINT THE LIST ---
-            
-            
+
+
             if ($result_count != 0) {
                 //if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
                 // SHADOW
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
                     //echo '</TD ></TR></TABLE>';
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
@@ -8055,7 +8056,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                                 targets: 0
                             }
                         ],
-                        'iDisplayLength': ".$number_rec.""
+                        'iDisplayLength': " . $number_rec . ""
                         . "});";
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
@@ -8437,16 +8438,16 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             }
 
             if ($options['save_delimiter'] == 'xml') {
-            foreach ($result as $item) {
-                foreach ($column_names as $key => $value) {
-                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-                        $item[$key] = str_replace(',', ';', $item[$key]);
-                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                foreach ($result as $item) {
+                    foreach ($column_names as $key => $value) {
+                        if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                            $item[$key] = str_replace(',', ';', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                        $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                    }
+                    $output .= "\n";
                 }
-                $output .= "\n";
-            }
             }
             header("Cache-Control: public");
             header("Pragma: ");
@@ -8457,7 +8458,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             echo $output;
             exit();
         }
-        
+
         // END SAVING THE LIST ---
         if ($options['center'])
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
@@ -8504,8 +8505,8 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                                 }
                             } else {
                                 $pages .= "$i, ";
+                            }
                         }
-                    }
                         $pages = substr($pages, 0, -2);
                     } else {
                         for ($i = 1; $i <= 7; $i++) {
@@ -8550,7 +8551,6 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             }
             // END MISC ---
             // WIDTH = 100%
-
 //            echo '<div class="panel-heading">';
 //            if ($custom_header != false) {
 //                echo $custom_header;
@@ -8601,7 +8601,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             echo '<div class="table-responsive">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '<THEAD>';
+            echo '<THEAD>';
             //if(!isset($_REQUEST['_openSIS_PDF']))
             echo '<TR class="bg-grey-200">';
 
@@ -8625,7 +8625,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                         if ($ForWindow == 'ForWindow') {
                             echo "HREF=#";
                         } else {
-                        echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
+                            echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
                         }
                     }
                     echo " class=column_heading><b>$value</b></A>";
@@ -8641,7 +8641,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             $color = '';
 
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '</THEAD><TBODY>';
+            echo '</THEAD><TBODY>';
 
 
             // mab - enable add link as first or last
@@ -8719,10 +8719,10 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                         if ($_SESSION['take_mssn_attn'] && $var == 'cp_id') {
                             $cur_cp_id = $item[$val];
                         }
-                        }
+                    }
 
                     echo "<TD>" . button_missing_atn('remove', $button_title, $button_link) . "</TD>";
-                    }
+                }
 
                 if ($cols) {
                     foreach ($column_names as $key => $value) {
@@ -8809,7 +8809,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             if ($result_count != 0) {
                 //if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
                 // SHADOW
-                
+
 
                 if ($options['center'])
                     echo '';
@@ -8818,17 +8818,17 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
             echo '</TBODY>';
             echo "</TABLE>";
             echo '</div>'; //.table-responsive
-            
-            
-            if (!isset($_REQUEST['_openSIS_PDF'])) {
-                    //echo '</TD ></TR></TABLE>';
 
-                    $number_rec = 100;                    
-                    if ($result_count > $number_rec) {
-                        echo "<script language='javascript' type='text/javascript'>\n";
-                        echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+
+            if (!isset($_REQUEST['_openSIS_PDF'])) {
+                //echo '</TD ></TR></TABLE>';
+
+                $number_rec = 100;
+                if ($result_count > $number_rec) {
+                    echo "<script language='javascript' type='text/javascript'>\n";
+                    echo "var table = $('#results').DataTable({"
+                    . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                    . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -8845,16 +8845,16 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                                 targets: 0
                             }
                         ],
-                        'iDisplayLength': ".$number_rec.""
-                        . "});";
-                        echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
-                        echo "$('.dataTables_length select').select2({
+                        'iDisplayLength': " . $number_rec . ""
+                    . "});";
+                    echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
+                    echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
                             width: 'auto'
                         });";
-                        echo "</script>\n";
-                    }
+                    echo "</script>\n";
                 }
+            }
             // END PRINT THE LIST ---
         }
         if ($result_count == 0) {
@@ -9711,11 +9711,11 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                     echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -10213,7 +10213,6 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
             // END MISC ---
             // WIDTH = 100%
             //echo '<TABLE width=100% border=0 cellspacing=0 cellpadding=0><TR>';
-
             // SEARCH BOX & MORE HEADERS
             if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
                 //echo '<TD align=center>';
@@ -10238,7 +10237,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo '<div class="heading-elements">';
                     echo '<div class="form-group">';
                     echo '<div class="input-group">';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''). "' placeholder=\"Search\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '') . "' placeholder=\"Search\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-elements
@@ -10251,7 +10250,6 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                 echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
             // END SEARCH BOX ----
             //echo '</TD></TR><TR><TD>';
-
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
 
@@ -10472,7 +10470,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo '</div>'; //.table-responsive
 
 
-                    $number_rec = 100;                   
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
@@ -10859,14 +10857,14 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
             if ($options['save_delimiter'] != 'xml') {
                 $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
-                    // $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-                    $output .= '<td>' .$value. '</td>';
+                // $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                    $output .= '<td>' . $value . '</td>';
                 $output .= '</tr>';
                 foreach ($result as $item) {
                     $output .= '<tr>';
                     foreach ($column_names as $key => $value) {
                         // $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-                        $output .= '<td>' .$value. '</td>';
+                        $output .= '<td>' . $value . '</td>';
                     }
                     $output .= '</tr>';
                 }
@@ -11074,7 +11072,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                         // else
                         //     $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
 
-                            $item[$key] = $value;
+                        $item[$key] = $value;
                     }
                 }
 
@@ -11956,11 +11954,11 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                     echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                   
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -13520,7 +13518,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                                 targets: 0
                             }
                         ],
-                        'iDisplayLength': ".$number_rec.""
+                        'iDisplayLength': " . $number_rec . ""
                         . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
@@ -14285,11 +14283,11 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -15034,11 +15032,11 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -15833,11 +15831,11 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                     //echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
@@ -17147,7 +17145,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
             echo '<div class="table-responsive">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '<THEAD>';
+            echo '<THEAD>';
             //if(!isset($_REQUEST['_openSIS_PDF']))
             echo '<TR class="bg-grey-200">';
 
@@ -17187,7 +17185,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
             $color = '';
 
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-                echo '</THEAD><TBODY>';
+            echo '</THEAD><TBODY>';
 
 
             // mab - enable add link as first or last
@@ -17355,7 +17353,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                 if (!isset($_REQUEST['_openSIS_PDF'])) {
                     //echo '</TD ></TR></TABLE>';
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
@@ -17377,7 +17375,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                                 targets: 0
                             }
                         ],
-                        'iDisplayLength': ".$number_rec.""
+                        'iDisplayLength': " . $number_rec . ""
                         . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
@@ -17385,8 +17383,8 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                                 var record = this.getRecord(elCheckbox);
                                 var column = this.getColumn(elCheckbox);
                                 record.setData(column.key,newValue);
-                                });"; 
-                        
+                                });";
+
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -17502,6 +17500,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
         }
     }
 }
+
 function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
     if (!isset($options['save']))
         $options['save'] = true;
@@ -18159,17 +18158,17 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                     //echo '</TD ></TR></TABLE>';
 
 
-                    $number_rec = 100;                    
+                    $number_rec = 100;
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo '$(function(){if($("#results").length>0){';
-                        
+
                         echo "var pager = new Pager('results',$number_rec);\n";
                         echo "pager.init();\n";
                         echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
                         echo "pager.showPage(1);\n";
                         echo '}});';
-                        
+
                         echo "</script>\n";
                     }
                 }
