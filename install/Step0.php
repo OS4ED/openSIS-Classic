@@ -85,7 +85,7 @@ if(page && page!="index.php"){
                                             echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS" /><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 4.7 thru 6.0)</small></h5></a></td>';
                                         } else {
                                             echo '<td valign="middle" align="center"><a href="SystemCheck.php"><img src="assets/images/icon-package.png" alt="New Installation" /><br/><h5 class="text-black"><b>New Installation</b><br/><small>(Ver 7.3)</small></h5></a></td>';
-                                            echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS"/><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 6.3 thru 7.2)</small></h5></a></td>';
+                                            echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS"/><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 7.1 onwards)</small></h5></a></td>';
                                         }
                                         ?>
                                     </tr>

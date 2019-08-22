@@ -182,6 +182,11 @@ function Course_Mrinfo_callback(data)
     document.getElementById('more_info_lbl').innerHTML = data;
 }
 
+function cleanTempData()
+{
+    ajax_call('CleanTempSchedule.php');
+        
+}
 
 function grab_coursePeriod(id, table, column_name)
 {

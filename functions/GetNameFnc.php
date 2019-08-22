@@ -28,7 +28,7 @@
 function GetNameFromUserName($userName)
 {	
     
-    $q="Select * from login_authentication where username='$userName'";
+       $q="Select * from login_authentication where username='$userName'";
 
        $userProfile=  DBGet(DBQuery($q));
 

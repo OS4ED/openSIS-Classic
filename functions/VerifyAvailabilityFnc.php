@@ -48,7 +48,8 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     $period=$columns_var['PERIOD_ID'];
     $room=$columns_var['ROOM_ID'];
     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-      
+    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+ 
     if($update)
     {
         $check_cp=  DBGet(DBQuery("SELECT * FROM course_periods cp,course_period_var cpv WHERE cp.course_period_id=cpv.course_period_id AND cp.course_period_id='".$columns['COURSE_PERIOD_ID']."'"));
@@ -95,7 +96,7 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     $cp_RET=  DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.course_period_id=cpv.course_period_id AND (secondary_teacher_id IN ($all_teacher) OR teacher_id IN ($all_teacher)){$mp_append_sql}{$period_append_sql}{$days_append_sql}{$cp_id}"));
     if($cp_RET)
         return 'Teacher Not Available';
-    elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+    elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
     else
     {
@@ -135,7 +136,8 @@ function VerifyVariableSchedule($columns)
     $start_date=$columns['BEGIN_DATE'];
     $end_date=$columns['END_DATE'];
      $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-      
+     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+ 
     if(!$_REQUEST['course_period_variable'])
         return 'Please input valid data';
     if($mp_id!='')
@@ -177,7 +179,7 @@ function VerifyVariableSchedule($columns)
     $cp_RET=  DBGet(DBQuery($sql_ch));
     if($cp_RET)
         return 'Teacher Not Available';
-     elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+     elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
     elseif($day_RET)
             return 'Day Not Available';
@@ -226,7 +228,8 @@ function VerifyVariableSchedule_Update($columns)
     $id=$columns['ID'];
     $per_id=$columns['PERIOD_ID'];
     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-      
+    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+ 
     if(!$_REQUEST['course_period_variable'] ||  $columns['PERIOD_ID']='' ||  $columns['ROOM_ID']=='')
         return 'Please input valid data';
     if($columns['CP_SECTION']=='cpv')
@@ -267,7 +270,7 @@ function VerifyVariableSchedule_Update($columns)
        $cp_RET=  DBGet(DBQuery($sql_op));
         if(count($cp_RET)>0)
             return 'Teacher Not Available';
-         elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+         elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
         else
         {
@@ -307,7 +310,7 @@ function VerifyVariableSchedule_Update($columns)
         $cp_RET=  DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods  cp LEFT JOIN course_period_var cpv ON (cp.course_period_id=cpv.course_period_id) WHERE (secondary_teacher_id IN ($all_teacher) OR teacher_id IN ($all_teacher)){$mp_append_sql}{$days_append_sql} AND cpv.PERIOD_ID='".$per_id."' AND cpv.DAYS='".$columns['SELECT_DAYS']."' AND cpv.ROOM_ID='".$columns['ROOM_ID']."' AND cp.COURSE_PERIOD_ID!={$_REQUEST['cp_id']}"));
         if($cp_RET)
             return "Teacher Not Available";
-         elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+         elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
         else 
             return true;
@@ -342,7 +345,8 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
         $start_date=$cp_det_RET['BEGIN_DATE'];
         $end_date=$cp_det_RET['END_DATE'];
      $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-      
+     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+
     if($sec=='cpv')
     {
         if($edit)
@@ -377,7 +381,7 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
         $cp_RET=  DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods  cp LEFT JOIN course_period_var cpv ON (cp.course_period_id=cpv.course_period_id) WHERE (secondary_teacher_id IN ($all_teacher) OR teacher_id IN ($all_teacher)){$mp_append_sql}{$days_append_sql}{$cp_id}"));
         if($cp_RET)
             return 'Teacher Not Available';
-         elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+         elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
         else
         {
@@ -428,7 +432,7 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
             $cp_RET=  DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods  cp LEFT JOIN course_period_var cpv ON (cp.course_period_id=cpv.course_period_id) WHERE (secondary_teacher_id IN ($all_teacher) OR teacher_id IN ($all_teacher)){$mp_append_sql}{$days_append_sql}{$cp_id}"));
             if($cp_RET)
                 return 'Teacher Not Available';
-              elseif(strtotime($min_start_dt_chk_qr[1]['START_DATE'])> strtotime($start_date))
+              elseif(strtotime($min_start_dt_chk_pr[1]['START_DATE'])> strtotime($start_date))
         return 'Teacher\'s start date cannot be after course period\'s start date.';
             else
             {

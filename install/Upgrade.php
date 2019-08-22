@@ -285,12 +285,41 @@ $_SESSION['mod'] = 'upgrade';
                                     
                                      $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.2'),
-('date', 'April 22, 2019'),
-('build', '20190422001'),
+('version', '7.3'),
+('date', 'August 05, 2019'),
+('build', '20190805001'),
 ('update', '0'),
-('last_updated', 'April 22, 2019');";
+('last_updated', 'August 05, 2019');";
                                     $dbconn->query($app_insert);
+                                    
+$dbconn->query('CREATE TABLE `api_info` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
+ `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
+$stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+    $extra_tab = array();
+    //$fetch1 = $stu_info->fetch_assoc();
+
+    while ($fetch = $stu_info->fetch_assoc()) {
+           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+           $fetchlang=$stu_lang->fetch_assoc();
+           if(count($fetchlang)>0)
+            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+           else
+           {
+                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                $fetchlang=$stu_lang->fetch_assoc();
+                if(count($fetchlang)>0)
+                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+           }
+    }
+                                
+$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+
+
                                    header('Location: Step5.php');
                                    $_SESSION['mod'] = 'upgrade';
                                     exit; 

@@ -780,7 +780,7 @@ if (!$_REQUEST['modfunc']) {
         $m_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
                                    sa.TYPE=\'Mail\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\'  AND sa.SYEAR=\'' . UserSyear() . '\' AND sa.SCHOOL_ID=\'' . UserSchool() . '\' '));
         $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
-        
+
         if (count($sec_par_id) > 0) {
             $s_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
@@ -801,7 +801,7 @@ if (!$_REQUEST['modfunc']) {
             $s_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
         } else {
             $s_addr = DBGet(DBQuery('SELECT ID AS ADDRESS_ID from student_address WHERE STUDENT_ID=' . UserStudentID() . ' AND TYPE=\'Secondary\' '));
-            }
+        }
         echo "<INPUT type=hidden name=address_id value=$_REQUEST[address_id]>";
 
         if ($_REQUEST['address_id'] != '0' && $_REQUEST['address_id'] !== 'old') {
@@ -985,10 +985,9 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Cell/Mobile Phone</label><div class="col-md-8">' . TextInput($p_addr[1]['CELL_PHONE'], 'values[people][PRIMARY][CELL_PHONE]', '', 'id=pri_cphone') . '</div></div></div>';
             echo'<input type=hidden id=hidden_primary name=hidden_primary>';
             if ($p_addr[1]['CONTACT_ID'] == '') {
-                // label removed // jit <span class=text-danger>*</span>
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email</label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,0) ') . '<p id="email_1" class="help-block"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Emaill</label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,0) ') . '<p id="email_1" class="help-block"></p></div></div></div>';
             } else {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,' . $p_addr[1]['CONTACT_ID'] . ') ') . '<p class="help-block" id="email_1"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email</label><div class="col-md-8">' . TextInput($p_addr[1]['EMAIL'], 'values[people][PRIMARY][EMAIL]', '', 'autocomplete=off id=pri_email onkeyup=peoplecheck_email(this,1,' . $p_addr[1]['CONTACT_ID'] . ') ') . '<p class="help-block" id="email_1"></p></div></div></div>';
             }
             echo '</div>'; //.row
 
@@ -1188,8 +1187,7 @@ if (!$_REQUEST['modfunc']) {
 
             if ($h_addr[1]['ADDRESS_ID'] == 0) {
                 echo '<div class="row">';
-                // label removed * //jit
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();" >Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">Add New Address</label></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div class="col-md-8"><label class="radio-inline"><input type="radio" id="rss" name="r6" value="Y" onClick="sec_hidediv();">&nbsp;Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="rsn" name="r6" value="N" onClick="sec_showdiv();">&nbsp;Add New Address</label></div></div></div>';
                 echo '</div>'; //.row                
             }
 
@@ -1838,7 +1836,11 @@ function _makeAutoSelect($column, $table, $opt, $values = '', $options = array()
 
 function _makeAutoSelectInputX($value, $column, $table, $opt, $title, $select, $id = '', $div = true) {
     $extra = 'id=' . "values[$table][$opt]" . ($id ? "[$id]" : '') . "[$column]";
+    
     $extra = "id=" . "values[$table][$opt]" . "[$column]";
+    if($opt == 'SECONDARY'){
+    $extra .= " onchange=addseccheck_button();";
+    }
     if ($column == 'CITY' || $column == 'MAIL_CITY')
         $options = 'maxlength=60';
     if ($column == 'STATE' || $column == 'MAIL_STATE')

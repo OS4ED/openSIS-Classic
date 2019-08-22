@@ -589,6 +589,10 @@ function cleanModal(id)
 {
     var obj = document.getElementById(id);
     obj.innerHTML = '';
+    
+    if(document.getElementById('conf_div1')){
+       document.getElementById('conf_div1').innerHTML = ''; 
+    }
 }
 function cpPasteField(title,course_period_id)
 { 
@@ -658,4 +662,13 @@ function checkAllDtMod(elem,name)
             }
         }
     }
+}
+
+function addseccheck_button(){
+    if (document.getElementById('values[people][SECONDARY][RELATIONSHIP]').value != ''){
+        document.getElementById('rss').checked=true;
+    }else{
+       document.getElementById('rss').checked=false; 
+    }
+
 }

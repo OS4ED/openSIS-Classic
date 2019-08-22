@@ -42,40 +42,66 @@ if(User('PROFILE')=='admin'&& isset($_REQUEST['action']) && $_REQUEST['action']=
 	$mysql_username=$DatabaseUsername;
         $mysql_password=$DatabasePassword;
         $mysql_port=$DatabasePort;
+        
+        
+        $print_form = 0;
+    $date_time = date("m-d-Y");
+    $Export_FileName = 'opensis_databackup/'.$mysql_database . 'Backup' . $date_time . '.sql';
+    $dbconn = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database, $mysql_port);
+    if ($dbconn->connect_errno != 0)
+        exit($dbconn->error);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
+        $row = $result->fetch_assoc();
+        $mysql_dir1 = substr($row['Value'], 0, 2);
+        $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
+        $sql_path="\\".$sql_path_arr[1].'\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
+        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
+//        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
+    }
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($mysql_password == '')
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username  $mysql_database > $Export_FileName");
+        else
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
+    }
+    else {
+        exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
+    }
 	//$mysql_password=$_REQUEST['mysql_password'];
         
-		_mysql_test($mysql_host,$mysql_database, $mysql_username, $mysql_password,$mysql_port);
-		
-			$print_form=0;
-			
-                        $date_time=date("m-d-Y");
-                    ;
-                        $Export_FileName=$mysql_database.'_'.$date_time ;
-
-
-			$myfile = fopen($Export_FileName.".sql", "w");
-                        fclose($myfile);
-         unset($myfile);
-			                        $f_content= "-- Server version:". mysqli_get_server_info()."\n";
-                        $f_content= "-- PHP Version: ".phpversion()."\n\n";
-                        $f_content.= 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";';
-
-                        $f_content.= "\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n";
-                        $f_content.= "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n";
-                        $f_content.= "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n";
-                        $f_content.= "/*!40101 SET NAMES utf8 */;\n\n";
-
-                        $f_content.= "--\n";
-                        $f_content.= "-- Database: `$mysql_database`\n";
-                        $f_content.= "--\n\n";
-                        $f_content.= "-- --------------------------------------------------------\n\n";
-
-
-
-			$f_content.=_mysqldump($mysql_database) or die('not working');
-                        $myfile = fopen($Export_FileName.".sql", "w") or die('not working');
-                        fwrite($myfile, $f_content) or die('not working');
-                        fclose($myfile) or die('not working');
+//		_mysql_test($mysql_host,$mysql_database, $mysql_username, $mysql_password,$mysql_port);
+//		
+//			$print_form=0;
+//			
+//                        $date_time=date("m-d-Y");
+//                    ;
+//                        $Export_FileName=$mysql_database.'_'.$date_time ;
+//
+//
+//			$myfile = fopen($Export_FileName.".sql", "w");
+//                        fclose($myfile);
+//         unset($myfile);
+//			                        $f_content= "-- Server version:". mysqli_get_server_info()."\n";
+//                        $f_content= "-- PHP Version: ".phpversion()."\n\n";
+//                        $f_content.= 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";';
+//
+//                        $f_content.= "\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n";
+//                        $f_content.= "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n";
+//                        $f_content.= "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n";
+//                        $f_content.= "/*!40101 SET NAMES utf8 */;\n\n";
+//
+//                        $f_content.= "--\n";
+//                        $f_content.= "-- Database: `$mysql_database`\n";
+//                        $f_content.= "--\n\n";
+//                        $f_content.= "-- --------------------------------------------------------\n\n";
+//
+//
+//
+//			$f_content.=_mysqldump($mysql_database) or die('not working');
+//                        $myfile = fopen($Export_FileName.".sql", "w") or die('not working');
+//                        fwrite($myfile, $f_content) or die('not working');
+//                        fclose($myfile) or die('not working');
                         echo 'File Saved';
 			
 		

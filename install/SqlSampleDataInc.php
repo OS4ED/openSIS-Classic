@@ -2933,21 +2933,21 @@ $dbconn = new mysqli($_SESSION['host'],$_SESSION['username'],$_SESSION['password
 (26, 3, 17, 3, NULL, 12, 'Assignment 3', '2018-01-12', '2018-01-25', 25, NULL, 2, '2018-01-23 12:32:42', NULL),
 (27, 3, 17, 3, NULL, 12, 'Assignment 2', '2018-01-02', '2018-01-31', 100, NULL, 2, '2018-01-23 12:32:54', NULL);");
  
-        
-        $dbconn->query("INSERT INTO `msg_inbox` (`mail_id`, `to_user`, `from_user`, `mail_Subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `isdraft`, `istrash`, `to_multiple_users`, `to_cc`, `to_cc_multiple`, `to_bcc`, `to_bcc_multiple`, `mail_read_unread`, `last_updated`, `updated_by`) VALUES
-(1, 'teacher', 'os4ed', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:07:18', NULL, NULL, NULL, 'richard,kim', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:07:18', NULL),
-(2, 'student', 'os4ed', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2018-01-23 13:08:10', NULL, NULL, NULL, 'student', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:08:10', NULL),
-(3, 'os4ed', 'teacher', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:47:44', NULL, NULL, NULL, 'os4ed', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:47:44', NULL),
-(4, 'teacher', 'student', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2018-01-23 13:50:37', NULL, NULL, NULL, 'teacher', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:50:37', NULL);
-");
- 
-        
-        $dbconn->query("INSERT INTO `msg_outbox` (`mail_id`, `from_user`, `to_user`, `mail_subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `istrash`, `to_cc`, `to_bcc`, `to_grpName`, `last_updated`, `updated_by`) VALUES
-(1, 'os4ed', 'teacher', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:07:18', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:07:18', NULL),
-(2, 'os4ed', 'student', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2018-01-23 13:08:10', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:08:10', NULL),
-(3, 'teacher', 'os4ed', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:47:44', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:47:44', NULL),
-(4, 'student', 'teacher', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2018-01-23 13:50:37', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:50:37', NULL);
-");
+//        
+//        $dbconn->query("INSERT INTO `msg_inbox` (`mail_id`, `to_user`, `from_user`, `mail_Subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `isdraft`, `istrash`, `to_multiple_users`, `to_cc`, `to_cc_multiple`, `to_bcc`, `to_bcc_multiple`, `mail_read_unread`, `last_updated`, `updated_by`) VALUES
+//(1, 'teacher', 'os4ed', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:07:18', NULL, NULL, NULL, 'richard,kim', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:07:18', NULL),
+//(2, 'student', 'os4ed', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2018-01-23 13:08:10', NULL, NULL, NULL, 'student', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:08:10', NULL),
+//(3, 'os4ed', 'teacher', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:47:44', NULL, NULL, NULL, 'os4ed', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:47:44', NULL),
+//(4, 'teacher', 'student', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2018-01-23 13:50:37', NULL, NULL, NULL, 'teacher', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:50:37', NULL);
+//");
+// 
+//        
+//        $dbconn->query("INSERT INTO `msg_outbox` (`mail_id`, `from_user`, `to_user`, `mail_subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `istrash`, `to_cc`, `to_bcc`, `to_grpName`, `last_updated`, `updated_by`) VALUES
+//(1, 'os4ed', 'teacher', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:07:18', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:07:18', NULL),
+//(2, 'os4ed', 'student', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2018-01-23 13:08:10', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:08:10', NULL),
+//(3, 'teacher', 'os4ed', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2018-01-23 13:47:44', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:47:44', NULL),
+//(4, 'student', 'teacher', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2018-01-23 13:50:37', NULL, NULL, NULL, NULL, NULL, '2018-01-23 13:50:37', NULL);
+//");
 
 ?>
 

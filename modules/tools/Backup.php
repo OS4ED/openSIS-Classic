@@ -54,7 +54,7 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
         $row = $result->fetch_assoc();
         $mysql_dir1 = substr($row['Value'], 0, 2);
         $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
-        $sql_path="\\".$sql_path_arr[1].'8\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
+        $sql_path="\\".$sql_path_arr[1].'\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
         $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
 //        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
     }

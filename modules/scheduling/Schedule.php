@@ -870,7 +870,7 @@ if ($_REQUEST['del'] == 'true') {
         else
             $schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect_red', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
         //$schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect_red', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate_red', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
-        $link['add']['link'] = "javascript:void(0) data-toggle='modal' data-target='#modal_default_cp_calc' onclick='cleanModal(\"course_modal_cp\");cleanModal(\"cp_modal_cp\");'";
+        $link['add']['link'] = "javascript:void(0) data-toggle='modal' data-target='#modal_default_cp_calc' onclick='cleanModal(\"course_modal_cp\");cleanModal(\"cp_modal_cp\");cleanTempData();'";
 //        $link['add']['link'] = "javascript:void(0) data-toggle='modal' data-target='#modal_default' onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course&ses=1\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' ";
         $link['add']['title'] = "Add a Course";
 

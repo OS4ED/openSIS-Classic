@@ -1023,7 +1023,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                     $go = true;
                                     $att = 0;
                                 }
-                                if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id)) {
+                                if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id) && $value!='') {
                                     if($msgFlag=='')
                                     {
                                     $assoc_err = "<font color=red><b>Cannot Modify this course period as it has association.</b></font>";
