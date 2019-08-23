@@ -35,10 +35,10 @@ $text = "
 
 INSERT INTO `app` (`name`, `value`) VALUES
 ('version', '7.3'),
-('date', 'August 05, 2019'),
-('build', '20190805001'),
+('date', 'August 23, 2019'),
+('build', '20190823001'),
 ('update', '0'),
-('last_updated', 'August 05, 2019');
+('last_updated', 'August 23, 2019');
 
 --
 -- Dumping data for table `address`

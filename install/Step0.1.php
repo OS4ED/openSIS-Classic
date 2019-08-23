@@ -69,7 +69,7 @@ if(page && page!="index.php"){
                                                     <div class="text-center">
                                                         <img src="assets/images/warning.svg" width="50" />
                                                     </div><br/>
-                                                    <p>Please be advised that only openSIS-CE version 6.3 and above can be upgraded to the latest version using this installer. If you are running version 6.3 or above, click Continue to upgrade, otherwise click Go Back and try the New Installation.</p>
+                                                    <p>Please be advised that only openSIS-CE version 7.1 and above can be upgraded to the latest version using this installer. If you are running version 7.1 or above, click Continue to upgrade, otherwise click Go Back and try the New Installation.</p>
                                                     
                                                     <p class="text-danger"><b>Please Note:</b> Remember to backup your current database and keep it in a safe place
                                                         before attempting an upgrade. OS4ED will not be responsible for data

@@ -431,7 +431,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $pri_person_id = $id[1]['AUTO_INCREMENT'];
                     }
                     $sec_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['EMAIL']) . '\''));
-                    // if(count($sec_people_exists)>0)
+                    
+                        if($_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']=='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']=='')
+                        {
+                            $sec_pep_exists = 'Y';
+                        }
+// if(count($sec_people_exists)>0)
                     if ($_REQUEST['hidden_secondary'] != '') {
                         $sec_person_id = $_REQUEST['hidden_secondary'];
                         $sec_pep_exists = 'Y';
@@ -454,7 +459,6 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 }
                 $go = 'false';
                 $log_go = false;
-
                 foreach ($val as $col => $col_v) {
                     if ($table == 'student_address') {
                         if ($col != 'ID' && $col_v != '') {
@@ -506,11 +510,25 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     if ($ind == 'HOME' || $ind == 'MAIL')
                         $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id,' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool() . ',' . $field_vals . ',' . $ind_n . ') ';
                     if (($ind == 'PRIMARY') || ($ind == 'SECONDARY') || ($ind == 'OTHER'))
-                        $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id,' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool() . ',' . $field_vals . ',' . $ind_n . ') ';
+                    {
+                       if($fields!='' && substr($fields,0,1)!=',')
+                                $fields=','.$fields;
+                        if($field_vals!='' && substr($field_vals,0,1)!=',')
+                           $field_vals=','.$field_vals; 
+                        if($ind == 'SECONDARY' && $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']!='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']!='')
+                        {
+                             $go = 'true';
+                              $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool()  . $field_vals . ',' . $ind_n . ') ';
+                        }
+                                
+                        if($ind != 'SECONDARY')
+                            $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool()  . $field_vals . ',' . $ind_n . ') ';
+                    }
                 }
                 if ($table == 'people') {
-                    $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'student_id,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
+                    
                     if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N')) {
+                        $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'student_id,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
                         $peo_fields_ar = explode(',', $peo_fields);
                         if (!in_array('PROFILE_ID', $peo_fields_ar)) {
                             $sql_peo = 'INSERT INTO people (CURRENT_SCHOOL_ID,profile,profile_id,' . $peo_fields . ') VALUES (' . UserSchool() . ',\'parent\',4,' . $peo_field_vals . ')';
@@ -520,6 +538,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     }
                 }
                 if ($go == 'true' & $qry != '')
+                    
                     DBQuery($qry);
 
                 if ($log_go) {

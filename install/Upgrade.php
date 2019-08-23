@@ -71,11 +71,11 @@
                                     $mysql_dir1 = substr($row['Value'], 0, 2);
                                     $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
                                 }
-                                $q1 = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 1</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                //$q1 = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 1</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                 $q2r = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 2</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                 $q2 = $q2r->fetch_assoc();
-                                $v = $q2['value'];
+                                 $v = $q2['value'];
                                 if ($v == '5.0') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
@@ -84,7 +84,7 @@
                                         'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
-                                } elseif ($v == '5.1') {
+                                } else if ($v == '5.1') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
@@ -92,7 +92,7 @@
                                         'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
-                                } elseif ($v == '5.2') {
+                                } else if ($v == '5.2') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
@@ -100,7 +100,7 @@
                                         'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
-                                } elseif ($v == '5.3') {
+                                } else if ($v == '5.3') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
@@ -108,7 +108,7 @@
                                         'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
-                                } elseif ($v == '5.4') {
+                                } else if ($v == '5.4') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
@@ -116,7 +116,7 @@
                                         'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
-                                } elseif ($v == '6.0') {
+                                } else if ($v == '6.0') {
                                     $dbconn->query('DELETE FROM custom_fields WHERE system_field=\'Y\' ') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 3</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                     $dbconn->query('TRUNCATE app') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 4</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
@@ -195,7 +195,9 @@
                                     $dbconn->query($app_insert);
                                     header('Location: Step5.php');
                                     exit;
-                                } else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v='7.0') {
+                                } 
+                                
+                                else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
 ('version', '7.2'),
@@ -206,7 +208,7 @@
                                     $dbconn->query($app_insert);
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
-                                    $dbconn->query('CREATE TABLE `user_file_upload` (
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
@@ -224,7 +226,7 @@
   `filepath` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1');
-                                    $dbconn->query('CREATE TABLE `device_info` (
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `device_info` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
@@ -232,20 +234,20 @@
   `device_token` longtext CHARACTER SET utf8 NOT NULL,
   `device_id` longtext CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
- $dbconn->query('CREATE TABLE `filters` (
+ $dbconn->query('CREATE TABLE IF NOT EXISTS `filters` (
   `filter_id` int(11) NOT NULL,
   `filter_name` varchar(255) DEFAULT NULL,
   `school_id` int(11) DEFAULT \'0\',
   `show_to` int(11) NOT NULL DEFAULT \'0\'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
-                                    $dbconn->query('CREATE TABLE `filter_fields` (
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `filter_fields` (
   `filter_field_id` int(11) NOT NULL,
   `filter_id` int(11) DEFAULT NULL,
   `filter_column` varchar(255) DEFAULT NULL,
   `filter_value` longtext
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
                                     
-                                   $dbconn->query('CREATE TABLE `api_info` (
+                                   $dbconn->query('CREATE TABLE IF NOT EXISTS `api_info` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
  `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -286,10 +288,10 @@ $_SESSION['mod'] = 'upgrade';
                                      $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
 ('version', '7.3'),
-('date', 'August 05, 2019'),
-('build', '20190805001'),
+('date', 'August 23, 2019'),
+('build', '20190823001'),
 ('update', '0'),
-('last_updated', 'August 05, 2019');";
+('last_updated', 'August 23, 2019');";
                                     $dbconn->query($app_insert);
                                     
 $dbconn->query('CREATE TABLE `api_info` (
@@ -319,9 +321,45 @@ $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or di
                                 
 $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
 
-
+$_SESSION['mod'] = 'upgrade';
                                    header('Location: Step5.php');
-                                   $_SESSION['mod'] = 'upgrade';
+                                   //$_SESSION['mod'] = 'upgrade';
+                                    exit; 
+                                }
+                                else if ($v == '7.2')
+                                {
+                                    
+                                     $dbconn->query('TRUNCATE app');
+                                   $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
+                                    ('version', '7.3'),
+                                    ('date', 'August 23, 2019'),
+                                    ('build', '20190823001'),
+                                    ('update', '0'),
+                                    ('last_updated', 'August 23, 2019');";
+                                    $dbconn->query($app_insert)or die($dbconn->error);
+                                    $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+   
+
+    while ($fetch = $stu_info->fetch_assoc()) {
+           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+           $fetchlang=$stu_lang->fetch_assoc();
+           if(count($fetchlang)>0)
+            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+           else
+           {
+                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                $fetchlang=$stu_lang->fetch_assoc();
+                if(count($fetchlang)>0)
+                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+           }
+    }
+                                
+$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+
+                                    $_SESSION['mod'] = 'upgrade';
+                                   header('Location: Step5.php');
+                                   //$_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
                                 

@@ -217,7 +217,7 @@ else {
 
     if (count($result_staff) > 0) {
         foreach ($result_staff as $row) {
-            $str = strtolower($row['LAST_NAME'] . ' ' . $row['FIRST_NAME'] . ',' . $row['USERNAME']);
+            $str = ucfirst(trim($row['LAST_NAME'])) . ', ' . ucfirst(trim($row['FIRST_NAME'])) . ' - ' . ucfirst(trim($row['USERNAME']));
             if (trim($row['USERNAME'] != ""))
                 echo '<li><a id="search' . $row['STAFF_ID'] . '" onclick="a(\'' . $row['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
         }
@@ -227,7 +227,7 @@ else {
 
     if (count($result_student) > 0 && count($tmp_stu_arr) > 0) {
         foreach ($result_student as $row_student) {
-            $str = strtolower($row_student['LAST_NAME'] . ' ' . $row_student['FIRST_NAME'] . ',' . $row_student['USERNAME']);
+            $str = ucfirst(trim($row_student['LAST_NAME'])) . ', ' . ucfirst(trim($row_student['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_student['USERNAME']));
             if (trim($row_student['USERNAME'] != ""))
                 echo '<li><a id="search' . $row_student['STUDENT_ID'] . '" onclick="a(\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
         }
@@ -236,7 +236,7 @@ else {
 
     if (count($result_people) > 0 && count($tmp_p_arr) > 0) {
         foreach ($result_people as $row_people) {
-            $str = strtolower($row_people['LAST_NAME'] . ' ' . $row_people['FIRST_NAME'] . ',' . $row_people['USERNAME']);
+            $str = ucfirst(trim($row_people['LAST_NAME'])) . ', ' . ucfirst(trim($row_people['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_people['USERNAME']));
             if (trim($row_people['USERNAME'] != ""))
                 echo '<li><a id="search' . $row_people['STAFF_ID'] . '" onclick="a(\'' . $row_people['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
         }
@@ -263,7 +263,7 @@ if ($str2 != "") {
 
         if (count($result_staff) > 0) {
             foreach ($result_staff as $row) {
-                $str = strtolower($row['LAST_NAME'] . ' ' . $row['FIRST_NAME'] . ',' . $row['USERNAME']);
+                $str = ucfirst(trim($row['LAST_NAME'])) . ', ' . ucfirst(trim($row['FIRST_NAME'])) . ' - ' . ucfirst(trim($row['USERNAME']));
                 $newpos = $lastpos + 1;
                 if (trim($row['USERNAME'] != ""))
                     echo '<li><a id="search' . $row['STAFF_ID'] . '" onclick="b(\'' . $newpos . '\',\'' . $row['USERNAME'] . '\',\'' . $block_id . '\');">' . $str . '</a></li>';
@@ -274,7 +274,7 @@ if ($str2 != "") {
 
         if (count($result_student) > 0 && count($tmp_stu_arr) > 0) {
             foreach ($result_student as $row_student) {
-                $str = strtolower($row_student['LAST_NAME'] . ' ' . $row_student['FIRST_NAME'] . ',' . $row_student['USERNAME']);
+                $str = ucfirst(trim($row_student['LAST_NAME'])) . ', ' . ucfirst(trim($row_student['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_student['USERNAME']));
                 $newpos = $lastpos + 1;
                 if (trim($row_student['USERNAME'] != ""))
                     echo '<li><a id="search' . $row_student['STUDENT_ID'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
@@ -284,7 +284,7 @@ if ($str2 != "") {
 
         if (count($result_people) > 0 && count($tmp_p_arr) > 0) {
             foreach ($result_people as $row_people) {
-                $str = strtolower($row_people['LAST_NAME'] . ' ' . $row_people['FIRST_NAME'] . ',' . $row_people['USERNAME']);
+                $str = ucfirst(trim($row_people['LAST_NAME'])) . ', ' . ucfirst(trim($row_people['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_people['USERNAME']));
                 $newpos = $lastpos + 1;
                 if (trim($row_people['USERNAME'] != ""))
                     echo '<li><a id="search' . $row_people['STUDENT_ID'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_people['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
