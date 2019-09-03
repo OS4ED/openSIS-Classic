@@ -211,12 +211,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $err = " Already a period is created with same title or shortname.";
                     break;
                 } elseif ($columns['START_TIME']) {
-                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
-                    $sql_end_ex_count = DBGET(DBQuery($sql_end_ex));
-                    if (count($sql_end_ex_count) > 0) {
-                        $err = " End time of a period cannot be same with another period start time.";
-                        break;
-                    } else {
+//                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
+//                    $sql_end_ex_count = DBGET(DBQuery($sql_end_ex));
+//                    if (count($sql_end_ex_count) > 0) {
+//                        $err = " End time of a period cannot be same with another period start time.";
+//                        break;
+//                    } else {
 
                         $sql = 'INSERT INTO school_periods ';
                         $fields = 'SCHOOL_ID,SYEAR,';
@@ -260,7 +260,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $res_up = DBQuery($sql_up);
 
                         # -------------------------------------------------------------------------- #
-                    }
+                    //}
                 }
             }
         }
