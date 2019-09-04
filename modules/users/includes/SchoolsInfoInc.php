@@ -73,7 +73,7 @@ if ($_REQUEST['teacher_view'] != 'y') {
                 $schools_start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . $school['SCHOOL_ID'] . ' AND SYEAR=' . UserSyear()));
                 $schools_start_date = $schools_start_date[1]['START_DATE'];
 
-                $schools_each_staff[1]['START_DATE'] = date('d-m-Y', strtotime($schools_each_staff[1]['START_DATE']));
+                // $schools_each_staff[1]['START_DATE'] = date('d-m-Y', strtotime($schools_each_staff[1]['START_DATE']));
                 if ($schools_each_staff[1]['START_DATE'] > $end_date && $end_date != '') {
                     $error = 'end_date';
                 }
@@ -86,6 +86,8 @@ if ($_REQUEST['teacher_view'] != 'y') {
                     $update = 'false';
                     unset($sql_up);
                     foreach ($_REQUEST['values']['SCHOOLS'] as $index => $value) {
+                        if($value!='Y' && $value!='N' && $value!='')
+                        $value = 'Y';
                         if ($index == $school['SCHOOL_ID'] && $value == 'Y') {
                             $update = 'go';
                         }

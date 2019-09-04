@@ -30,8 +30,7 @@ include('../../RedirectModulesInc.php');
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
-
-
+        
         $extra['DATE'] = GetMP();
         if ($extra['DATE'] == 'Custom') {
             if (UserMP() != '') {
@@ -187,11 +186,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
 
                     $RET = GetStuList($extra);
-
+                    
                     $list_attr = DBGet(DBQuery("SHOW COLUMNS FROM `students` "));
                     foreach ($list_attr as $data) {
 
                         $list_attr_val[] = strtoupper($data['FIELD']);
+                        
                     }
 
 
@@ -238,7 +238,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     $date = DBDate();
 
-                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
 
                     if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
@@ -412,8 +412,8 @@ function mySearch($extra) {
     }
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
-
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+     
     if ($stu_schedule_qr[1]['TOT'] > 0) {
         echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.") . '</div>';
     } else {
@@ -457,7 +457,7 @@ function GetPeriodOcc($cp_id) {
 function _make_no_student($value) {
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ((ss.START_DATE<=\'' . $date . '\' AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL)))AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND (ssm.START_DATE IS NOT NULL AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))'));
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
     return $stu_schedule_qr[1]['TOT'];
 }
 
