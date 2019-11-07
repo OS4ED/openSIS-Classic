@@ -502,7 +502,7 @@ function makeCheckboxInput($value, $name) {
         $yes = 'Yes';
     else
         $no = 'No';
-    if ($name == 'GPA_CAL')
+    if ($THIS_RET['GPA_CAL'] == NULL)   //
         return CheckboxInput($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), $yes, $no, false);
     else
         return '<input type=hidden name=values[' . $id . '][' . $name . '] value="' . $value . '" />' . CheckboxInput($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), $yes, $no, false);

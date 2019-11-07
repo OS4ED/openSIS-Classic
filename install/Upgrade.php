@@ -200,11 +200,11 @@
                                 else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.2'),
-('date', 'April 22, 2019'),
-('build', '20190422001'),
+('version', '7.3'),
+('date', 'August 23, 2019'),
+('build', '20190823001'),
 ('update', '0'),
-('last_updated', 'April 22, 2019');";
+('last_updated', 'August 23, 2019');";
                                     $dbconn->query($app_insert);
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
