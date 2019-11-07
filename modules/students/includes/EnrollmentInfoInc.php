@@ -267,16 +267,16 @@ echo '</div>'; //.row
 
 echo '<hr class="no-margin-bottom"/>';
 
-$enrol_id=$_REQUEST['enrollment_id'];
-if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_REQUEST['values']['student_enrollment'][$enrol_id]['END_DATE']!='') {
+if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
 
-    
+
     $sql_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 
     $enroll_id = $sql_enroll_id[1]['M_ID'];
 
     $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND ID=\'' . $enroll_id . '\''));
 
+    // print_r($_REQUEST);
     if ($end_date[1]['END_DATE']) {
         $end_date = $end_date[1]['END_DATE'];
         DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');

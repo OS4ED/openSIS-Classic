@@ -68,7 +68,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 break;
             }
             if ($id != 'new') {
-                $exist_pr = DBGet(DBQuery('SELECT * FROM  school_periods WHERE period_id=\'' . $id . '\''));
+                $exist_pr = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE period_id=\'' . $id . '\''));
                 if (isset($_REQUEST['values'][$id]['TITLE']) && $_REQUEST['values'][$id]['TITLE'] != '' || isset($_REQUEST['values'][$id]['SHORT_NAME']) && $_REQUEST['values'][$id]['SHORT_NAME'] != '') {
 
                     $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' and period_id<>\'' . $id . '\'';
@@ -93,7 +93,6 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             //  echo '<pre>';
             //  print_r($columns);
             //  echo '</pre>';
-            if((isset($_REQUEST['values'][$id]['TITLE']) && $_REQUEST['values'][$id]['TITLE'] != $exist_pr[1]['TITLE']) || (isset($_REQUEST['values'][$id]['SHORT_NAME']) && $_REQUEST['values'][$id]['SHORT_NAME'] != $exist_pr[1]['SHORT_NAME']) || (isset($_REQUEST['values'][$id]['SHORT_ORDER']) && $_REQUEST['values'][$id]['SHORT_ORDER'] != $exist_pr[1]['SHORT_ORDER']) || (isset($_REQUEST['values'][$id]['START_TIME']) && strtotime($_REQUEST['values'][$id]['START_TIME']) != strtotime($exist_pr[1]['START_TIME'])) || (isset($_REQUEST['values'][$id]['END_TIME']) && strtotime($_REQUEST['values'][$id]['END_TIME']) != strtotime($exist_pr[1]['END_TIME'])) || (isset($_REQUEST['values'][$id]['IGNORE_SCHEDULING']) && $_REQUEST['values'][$id]['IGNORE_SCHEDULING'] != $exist_pr[1]['IGNORE_SCHEDULING']) || (isset($_REQUEST['values'][$id]['ATTENDANCE']) && $_REQUEST['values'][$id]['ATTENDANCE'] != $exist_pr[1]['ATTENDANCE'])){
                 $sql = 'UPDATE school_periods SET ';
                 $title_change = '';
                 foreach ($columns as $column => $value) {
@@ -196,8 +195,6 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $res_length_update = DBQuery($sql_length_update);
 
                 # --------------------------- Length Update End --------------------------- #
-                }
-            
             }
             else {
 

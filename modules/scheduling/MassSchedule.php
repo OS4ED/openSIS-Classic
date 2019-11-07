@@ -742,8 +742,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     
-        Search_GroupSchedule('student_id', $extra);
-//      Search('student_id', $extra);
+    Search_GroupSchedule('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
             echo '<div class="text-right">' . SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" ') . '</div>';
