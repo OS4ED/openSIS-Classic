@@ -1822,7 +1822,7 @@ function validate_cp_other_fields()
             if (inputs[i].type == "checkbox")
             {
 
-                if (inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][U]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][M]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][T]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][W]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][H]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][F]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][S]")
+                if (inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][M]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][T]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][W]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][H]" || inputs[i].name == "tables[course_period_var][" + cp_id + "][DAYS][F]")
                 {
                     no_checkbox = no_checkbox + 1;
                     if (inputs[i].checked)

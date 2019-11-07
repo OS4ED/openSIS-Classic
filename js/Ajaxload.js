@@ -2359,7 +2359,3 @@ function TransferredOutModalCallback(data) {
     $('#modal_default_transferred_out').modal('show');
     $("#modal-res").html(data);
 }
-function massScheduleCourseToAdd()
-{
-    document.getElementById('course_div').innerHTML='';
-}

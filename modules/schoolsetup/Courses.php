@@ -526,7 +526,6 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             if ($up_day) {
 
                                 DBQuery($days_upsql);
-                                unset($days_upsql);
                             }
                         }
                     } else {

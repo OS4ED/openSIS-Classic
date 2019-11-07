@@ -102,7 +102,6 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     }
 }
 else {
-    echo '<script>massScheduleCourseToAdd();</script>;';
     if (!$_REQUEST['next_modname'])
         $_REQUEST['next_modname'] = 'students/Student.php';
 
@@ -111,15 +110,6 @@ else {
         if (!($_REQUEST['expanded_view'] == 'true' || $_REQUEST['addr'] || $extra['addr']))
             $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\')' . $extra['FROM'];
         $extra['group'] = array('ADDRESS_ID');
-    }
-    if ($_SESSION['MassSchedule.php']['course_period_id'] != '') {
-       if($_REQUEST['modname'] !='scheduling/PrintSchedules.php')
-       {
-            $extra['FROM'] .=',schedule sr '; 
-                 $extra['WHERE'] .=' AND sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id'; 
-       }
-       $extra['WHERE'] .= ' AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\'';
-        unset($_SESSION['MassSchedule.php']['course_period_id']);
     }
     $extra['SELECT'] .= ' ,ssm.SECTION_ID';
     if (count($extra['functions']) > 0)

@@ -46,7 +46,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods'
             $subject_id = DBGet(DBQuery('SELECT SUBJECT_ID FROM courses WHERE COURSE_ID=' . $val['COURSE_ID']));
 //        $html.= '<tr><td><a href=javascript:void(0); onclick="selectCpModal(\'course_div\',\''.$val['TITLE'].'\');">'.$val['TITLE'].'</a></td></tr>';
 //        $html.= '<tr><td><a href="Modules.php?modname=scheduling/MassSchedule.php&subject_id='.$subject_id[1]['SUBJECT_ID'].'&course_id='.$val['COURSE_ID'].'&modfunc=choose_course&course_period_id='.$val['COURSE_PERIOD_ID'].'" >'.$val['TITLE'].'</a></td></tr>';
-            $html.= '<tr><td><a href=javascript:void(0); onclick="MassScheduleSessionSet(\'' . str_replace("'","\'",$val['TITLE']) . '\',\'' . $subject_id[1]['SUBJECT_ID'] . '\',\'' . $val['COURSE_ID'] . '\',\'' . $val['COURSE_PERIOD_ID'] . '\');">' . $val['TITLE'].' - '.$val['SHORT_NAME'] . '</a></td></tr>';
+            $html.= '<tr><td><a href=javascript:void(0); onclick="MassScheduleSessionSet(\'' . $val['TITLE'] . '\',\'' . $subject_id[1]['SUBJECT_ID'] . '\',\'' . $val['COURSE_ID'] . '\',\'' . $val['COURSE_PERIOD_ID'] . '\');">' . $val['TITLE'].' - '.$val['SHORT_NAME'] . '</a></td></tr>';
         }
         $html.='</tbody>';
         $html.='</table>';
