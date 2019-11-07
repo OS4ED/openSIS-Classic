@@ -542,10 +542,15 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     DBQuery($qry);
 
                 if ($log_go) {
+                    if($sql_sjp!=''){
                     DBQuery($sql_sjp);
-
-                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N'))
+                    unset($sql_sjp);
+                    }
+                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N')){
                         DBQuery($sql_peo);
+                        unset($sql_peo);
+                    }
+                    
                 }
 
                 if ($table == 'people' && $ind == 'PRIMARY' && $type['PRIMARY']['USER_NAME'] != '' && $pri_pep_exists == 'N') {

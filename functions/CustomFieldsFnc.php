@@ -203,9 +203,9 @@ function CustomFields($location,$table_arr='',$exp=0)
 						$_REQUEST['cust_end'][$field_name] = $value;
 						$value = $temp;
 					}
-					$string .= ' and s.'.$column_name.' BETWEEN '.date('Y-m-d',strtotime($value)).' AND \''.date('Y-m-d',strtotime($_REQUEST['cust_end'][$field_name])).'\' ';
+					$string .= ' and s.'.$column_name.' BETWEEN \''.date('Y-m-d',strtotime($value)).'\' AND \''.date('Y-m-d',strtotime($_REQUEST['cust_end'][$field_name])).'\' ';
 					if($fields[$id][1]['TYPE']=='date')
-						$_openSIS['SearchTerms'] .= '<font color=gray><b>'.$fields[$id][1]['TITLE'].' between: </b></font>'.ProperDate($value).' &amp; '.ProperDate($_REQUEST['cust_end'][$field_name]).'<BR>';
+						$_openSIS['SearchTerms'] .= '<font color=gray><b>'.$fields[$id][1]['TITLE'].' between: </b></font>'.date('M/d/Y',strtotime($value)).' &amp; '.date('M/d/Y',strtotime($_REQUEST['cust_end'][$field_name])).'<BR>';
 					else
 						$_openSIS['SearchTerms'] .= '<font color=gray><b>'.$fields[$id][1]['TITLE'].' between: </b></font>'.$value.' &amp; '.$_REQUEST['cust_end'][$field_name].'<BR>';
 				}
