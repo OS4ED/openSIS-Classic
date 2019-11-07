@@ -239,13 +239,14 @@ if ($_REQUEST['values']['SCHOOL_IDS']) {
 $select_RET = DBGet(DBQuery("SELECT STAFF_ID FROM staff_school_info where STAFF_ID='" . UserStaffID() . "'"));
 $select = $select_RET[1]['STAFF_ID'];
 
-$_REQUEST['staff_school']['PASSWORD'];
+//$_REQUEST['staff_school']['PASSWORD'];
+if(isset($_REQUEST['staff_school']['PASSWORD']))
 $password = md5($_REQUEST['staff_school']['PASSWORD']);
-$sql = DBGet(DBQuery('SELECT PASSWORD FROM login_authentication WHERE PASSWORD=\'' . $password . '\'' . (UserStaffID() != '' ? ' AND USER_ID!=' . UserStaffID() . ' AND PROFILE_ID IN (SELECT id FROM user_profiles WHERE profile=\'teacher\')' : '')));
-$number = count($sql);
-if ($number != 0) {
-    echo '<div class="alert bg-danger alert-styled-left">Invalid password</div>';
-}
+//$sql = DBGet(DBQuery('SELECT PASSWORD FROM login_authentication WHERE PASSWORD=\'' . $password . '\'' . (UserStaffID() != '' ? ' AND USER_ID!=' . UserStaffID() . ' AND PROFILE_ID IN (SELECT id FROM user_profiles WHERE profile=\'teacher\')' : '')));
+//$number = count($sql);
+//if ($number != 0) {
+//    echo '<div class="alert bg-danger alert-styled-left">Invalid password</div>';
+//}
 
 
 if ($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE'] == '1') {

@@ -387,7 +387,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                         foreach ($chk_assoc_cp as $chk_assoc_cp_k => $chk_assoc_cp_v) {
 
                             $new_title = $chk_assoc_cp_v['SHORT_NAME'] . '-' . $new_tec_name;
-                            $update_cp_title = DBQuery('UPDATE  course_periods SET TITLE=\'' . $new_title . '\' WHERE  course_period_id=' . $chk_assoc_cp_v['COURSE_PERIOD_ID']);
+                            $update_cp_title = DBQuery('UPDATE  course_periods SET TITLE=\'' . singleQuoteReplace('', '',$new_title) . '\' WHERE  course_period_id=' . $chk_assoc_cp_v['COURSE_PERIOD_ID']);
 
                             unset($new_title);
                         }

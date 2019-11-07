@@ -117,9 +117,9 @@ if ($_REQUEST['modfunc'] == 'save') {
              * Create Credits and GPA Columns
              */
             if ($_REQUEST['template'] == 'two')
-                $totallines = 45;
+                $totallines = 1000;
             else
-                $totallines = 200;
+                $totallines = 1000;
             $linesleft = $totallines;
             $tcolumns = array(0 => array(), 1 => array());
             $colnum = 0;
@@ -159,40 +159,45 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     $cred_attempted = 0;
                     $cred_earned = 0;
+                    $credit_attempt = 0;
+                    $credit_earn = 0;
                     $cred_earned_fy = 0;
                     $cred_earned_sem = 0;
                     $cred_earned_qr = 0;
+                    $unweighted_or_not = 0;
                     $total_QP_value = 0;
                     $total_QP_value_fy = 0;
                     $total_QP_value_qr = 0;
                     $totqp = 0;
-
+                        
                     foreach ($tsection as $trec) {
                         if ($trec['GP_VALUE'])
                             $gp_val = $trec['GP_VALUE'];
                         else
-                            $gp_val = $trec['WEIGHTING'];
-                        $gradeletter = $trec['GRADE_LETTER'];
+                        $gp_val = $trec['WEIGHTING'];
+                    $gradeletter = $trec['GRADE_LETTER'];
+                        
                         if ($trec['COURSE_PERIOD_ID'] != '') {
                             $grd_scl = DBGet(DBQuery('SELECT GRADE_SCALE_ID FROM course_periods WHERE course_period_id=\'' . $trec['COURSE_PERIOD_ID'] . '\''));
                             if ($grd_scl[1]['GRADE_SCALE_ID'] != '') {
-
+       
                                 $grade_scl_gpa = DBGet(DBQuery('SELECT GPA_CAL FROM report_card_grade_scales WHERE ID=' . $grd_scl[1]['GRADE_SCALE_ID']));
+         
                                 if ($grade_scl_gpa[1]['GPA_CAL'] == 'Y')
                                     $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-                                else
+			 else
                                     $QP_value = 0.00;
-                            }
+			 }
                             else {
                                 $trec['CREDIT_EARNED'] = $trec['CREDIT_ATTEMPTED'];
                                 $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-                            }
+         }
                         } else {
                             if ($trec['GPA_CAL'] == 'Y')
                                 $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-                            else
+        else 
                                 $QP_value = 0.00;
-                        }
+        }
                         if ($trec['COURSE_PERIOD_ID']) {
                             $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
                             if ($mp_id[1]['MARKING_PERIOD_ID'] != '')
@@ -200,44 +205,62 @@ if ($_REQUEST['modfunc'] == 'save') {
                             else {
                                 $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM student_report_card_grades WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
                                 $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id[1]['MARKING_PERIOD_ID']));
-                            }
+       }
                             $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $trec['MP_ID']));
                         } else {
                             $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $trec['MP_ID']));
                             $get_mp_tp[1]['MP_TYPE'] = $get_mp_tp_m[1]['MP_TYPE'];
-                        }
+           }
                         $course_html[$colnum] .= '<tr>';
                         $course_html[$colnum] .= '<td>' . $trec['COURSE_NAME'] . '</td>';
                         $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $trec['CREDIT_ATTEMPTED']) . '</td>';
                         $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $trec['CREDIT_EARNED']) . '</td>';
                         $course_html[$colnum] .= '<td class="bg-grey f-s-16 text-center"><b>' . $gradeletter . '</b></td>';
-                        $course_html[$colnum] .= '<td>' . sprintf("%01.2f", ($trec['CREDIT_EARNED'] * $gp_val)) . '</td>';
-                        $totqp = ($totqp + ($trec['CREDIT_EARNED'] * $gp_val));
-                        $tot_qp = ($tot_qp + ($trec['CREDIT_EARNED'] * $gp_val));
-                        $qtr_gpa = $trec['GPA'];
-
-
-                        $cred_attempted += $trec['CREDIT_ATTEMPTED'];
-                        $cred_earned += $trec['CREDIT_EARNED'];
-
+                        $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $QP_value) . '</td>';
+                        $totqp = ($totqp + $QP_value);
+                        $tot_qp = ($tot_qp + $QP_value);
+           
+                                      $qtr_gpa = $trec['GPA'];
+                                       
+                        $credit_attempt += $trec['CREDIT_ATTEMPTED'];
+                                        
+                        if ($trec['COURSE_PERIOD_ID']=='' && $trec['GPA_CAL'] == 'Y'){
+                                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                        }else if($trec['COURSE_PERIOD_ID']!= '' && $grade_scl_gpa[1]['GPA_CAL'] == 'Y'){
+                                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                        }else{
+                        $cred_attempted += 0.00;
+                                      }
+                                        
+                        if ($trec['COURSE_PERIOD_ID']=='' && $trec['GPA_CAL'] == 'Y'){
+                                            $cred_earned += $trec['CREDIT_EARNED'];
+                        }else if($trec['COURSE_PERIOD_ID']!= '' && $grade_scl_gpa[1]['GPA_CAL'] == 'Y'){
+                                            $cred_earned += $trec['CREDIT_EARNED'];
+                        }else{
+                        $cred_earned += 0.00;
+                                        }
+                                            
+                        $credit_earn += $trec['CREDIT_EARNED'];
 
                         if ($get_mp_tp[1]['MP_TYPE'] == 'year' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                            $total_QP_value_fy += $QP_value;
-                            $cred_earned_fy += $trec['CREDIT_EARNED'];
-                        }
+                $total_QP_value_fy += $QP_value;
+                $cred_earned_fy += $trec['CREDIT_EARNED'];
+                }
                         if ($get_mp_tp[1]['MP_TYPE'] == 'semester' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                            $total_QP_value += $QP_value;
-                            $cred_earned_sem += $trec['CREDIT_EARNED'];
-                        }
+                $total_QP_value += $QP_value;
+                $cred_earned_sem += $trec['CREDIT_EARNED'];
+                }
                         if ($get_mp_tp[1]['MP_TYPE'] == 'quarter' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                            $total_QP_value_qr += $QP_value;
-                            $cred_earned_qr += $trec['CREDIT_EARNED'];
-                        }
-                    }
+                $total_QP_value_qr += $QP_value;
+                $cred_earned_qr += $trec['CREDIT_EARNED'];
+                }
+                }
 
                     $course_html[$colnum] .= '</tbody>';
                     $crd_ernd+=$cred_earned;
+
                     $total_credit_earned = $total_credit_earned + $cred_earned;
+                    $total_credit_earn = $total_credit_earn +  $credit_earn;
 
                     $total_QP_transcript = $total_QP_transcript + $total_QP_value;
                     $total_QP_transcript_fy = $total_QP_transcript_fy + $total_QP_value_fy;
@@ -245,16 +268,19 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $total_CGPA_earned = $total_CGPA_earned + $cred_earned_sem;
                     $total_CGPA_earned_fy = $total_CGPA_earned_fy + $cred_earned_fy;
                     $total_CGPA_earned_qr = $total_CGPA_earned_qr + $cred_earned_qr;
+                    
                     $total_CGPA_attemted = $total_CGPA_attemted + $cred_attempted;
+                    $total_CGPA_attemp = $total_CGPA_attemp + $credit_attempt;
+                   
                     $total_CGPA = $total_CGPA + ($total_QP_value / $qtr_gpa);
 
                     $course_html[$colnum] .= '<tfoot>';
                     $course_html[$colnum] .= '<tr>';
                     $course_html[$colnum] .= '<td colspan="5">';
-                    if($cred_attempted!=0)
-                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' .sprintf("%01.2f", ($totqp / $cred_attempted)) . '</p>';
+                    if($credit_attempt!=0)
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $credit_attempt) . ' / Credit Earned: ' . sprintf("%01.2f", $credit_earn) . ' / GPA: ' .(($totqp!=0 && $cred_attempted!=0)?($unweighted_or_not>0?sprintf("%01.2f",($totqp/$cred_attempted)):sprintf("%01.2f",($totqp/$cred_attempted))):'0') . '</p>';
                     else
-                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $cred_attempted) . ' / Credit Earned: ' . sprintf("%01.2f", $cred_earned) . ' / GPA: ' .sprintf("%01.2f", 0) . '</p>';    
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $credit_attempt) . ' / Credit Earned: ' . sprintf("%01.2f", $credit_earn) . ' / GPA: ' .sprintf("%01.2f", 0.00) . '</p>';    
                     $course_html[$colnum] .= '</td>';
                     $course_html[$colnum] .= '</tr>';
                     $course_html[$colnum] .= '</tfoot>';
@@ -304,11 +330,11 @@ if ($_REQUEST['modfunc'] == 'save') {
                             </tr>
                             <tr>
                                 <td class="p-r-30">Total Credit Attempted</td>
-                                <td><?php echo sprintf("%01.2f", $total_CGPA_attemted); ?></td>
+                                <td><?php echo sprintf("%01.2f", $total_CGPA_attemp); ?></td>
                             </tr>
                             <tr>
                                 <td class="p-r-30">Total Credit Earned</td>
-                                <td><?php echo sprintf("%01.2f", $total_credit_earned); ?></td>
+                                <td><?php echo sprintf("%01.2f", $total_credit_earn); ?></td>
                             </tr>
                         </table>
                     </div>
