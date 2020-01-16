@@ -1222,6 +1222,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                 //echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
             }
 
+            echo '<div class="panel-body">';
             echo '<div class="table-responsive">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
@@ -1480,6 +1481,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
             echo '</TBODY>';
             echo "</TABLE>";
             echo '</div>'; //.table-responsive
+            echo '</div>'; //.panel-body
             // END PRINT THE LIST ---
         }
         if ($result_count == 0) {

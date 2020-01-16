@@ -44,7 +44,7 @@ if($insert=='true')
     if($varified===true)
     {
         $course[MP]=($course[MARKING_PERIOD_ID]!=''?$course[MP]:'FY');
-        $qr=DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID ='.UserStudentID().' AND SCHOOL_ID='.UserSchool().' AND SYEAR='.  UserSyear().''));;
+        $qr=DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID ='.UserStudentID().' AND SCHOOL_ID='.UserSchool().' AND SYEAR='.  UserSyear().' AND ID=(SELECT max(id) FROM student_enrollment WHERE STUDENT_ID ='.UserStudentID().' AND SCHOOL_ID='.UserSchool().' AND SYEAR='.  UserSyear().')'));
        if($qr[1]['END_DATE']=='')
        {
         if($course[MARKING_PERIOD_ID]!='')

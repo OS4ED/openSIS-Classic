@@ -490,9 +490,9 @@ if (!$mp_id) {
             $extra_sql = 'SELECT COUNT(*) AS day_exist FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'';
             $extra_ret = DBGET(DBQuery($extra_sql));
             if (isset($extra_ret[1]['DAY_EXIST']) && $extra_ret[1]['DAY_EXIST'] == 0)
-                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a school holiday</div>';
+                echo '<div class="panel-body p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a school holiday</div>';
             else
-                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
+                echo '<div class="panel-body p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
         }
     }
 }

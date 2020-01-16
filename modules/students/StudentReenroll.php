@@ -36,10 +36,24 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         BackPrompt('The date you entered is not valid');
     }
     if ($_REQUEST['student']) {
+
+        // $selecteds  =   explode(",", $_REQUEST['student']);
+
+        $req_stu    =   array();
+
+        // foreach($selecteds as $this_stu)
+        foreach($_REQUEST['student'] as $this_stu)
+        {
+            $req_stu[$this_stu] .= 'Y';
+        }
+
+
         $count = 0;
-         $start_date=date('Y-m-d',strtotime($start_date));
+        $start_date=date('Y-m-d',strtotime($start_date));
         $id_array = array();
-        foreach ($_REQUEST['student'] as $student_id => $yes) {
+        
+        // foreach ($_REQUEST['student'] as $student_id => $yes) {
+        foreach($req_stu as $student_id => $yes) {
             $next_grade = DBGet(DBQuery('SELECT NEXT_GRADE_ID FROM school_gradelevels WHERE ID=\'' . $_REQUEST['grade_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
             if ($next_grade[1]['NEXT_GRADE_ID'] != '')
                 $rolling_ret = 1;
@@ -84,6 +98,8 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 
     echo '<INPUT TYPE=hidden name=cal_id value=' . $calendar[1]["CALENDAR_ID"] . '>';
 
+    echo '<input id="selected_students" name="student" type="hidden" val="">';
+
     echo '<div class="row">';
     echo '<div class="col-lg-6">';
     echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Start Date <span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(DBDate('mysql'), 'start', 1) . '</div></div>';
@@ -112,15 +128,16 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 }
 
 if ($enroll_msg)
-    DrawHeader('<IMG SRC=assets/check.gif>' . $enroll_msg);
+    DrawHeader('<IMG SRC=assets/check.gif> ' . $enroll_msg);
 if ($err)
-    DrawHeader('<IMG SRC=assets/warning_button.gif>' . $err);
+    DrawHeader('<IMG SRC=assets/warning_button.gif> ' . $err);
 
 if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ',Concat(NULL) AS CHECKBOX ';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT id=re_enroll_toggle type=checkbox value=Y name=controller onchange="checkAllReEn();"><A>');
     $extra['new'] = true;
     $extra['GROUP'] = "STUDENT_ID";
     $extra['WHERE'] = ' AND  ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM student_enrollment WHERE SYEAR =\'' . UserSyear() . '\' AND END_DATE IS NULL)';
@@ -137,10 +154,36 @@ if (!$_REQUEST['modfunc']) {
     }
 }
 
-function _makeChooseCheckbox() {
+// function _makeChooseCheckbox() {
+//     global $THIS_RET;
+
+//     return "<INPUT class=re_enroll type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+// }
+
+function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<input class=re_enroll name=student[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
+
+
+echo "<script language=\"JavaScript\" type=\"text/javascript\">
+    function checkAllReEn()
+    {
+        var arrMarkMail =   document.getElementsByClassName('re_enroll');
+
+        for (var i = 0; i < arrMarkMail.length; i++)
+        {
+            if(window.$('#re_enroll_toggle').is(':checked'))
+            {
+                arrMarkMail[i].checked = true;
+            }
+            else
+            {
+                arrMarkMail[i].checked = false;
+            }
+        }
+    }
+</script>";
 
 ?>

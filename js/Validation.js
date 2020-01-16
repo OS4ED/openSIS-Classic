@@ -2674,50 +2674,74 @@ function pass_check()
 
 function reenroll()
 {
-    if (document.getElementById("monthSelect1").value == '' || document.getElementById("daySelect1").value == '' || document.getElementById("yearSelect1").value == '')
+    if (document.getElementById("monthSelect_date_1").value == '' || document.getElementById("daySelect_date_1").value == '' || document.getElementById("yearSelect_date_1").value == '')
     {
         document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Enter a Proper Date</div>';
+        window.scrollTo({top: 0, behavior: 'smooth'});
         return false;
     }
     if (document.getElementById("grade_id").value == '')
     {
         document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Select a Grade Level</div>';
+        window.scrollTo({top: 0, behavior: 'smooth'});
         return false;
     }
     if (document.getElementById("en_code").value == '')
     {
         document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please Select an Enrollment Code</div>';
+        window.scrollTo({top: 0, behavior: 'smooth'});
         return false;
     } else
     {
-        var x = document.getElementById("sav").elements.length;
+        // var x = document.getElementById("sav").elements.length;
         var counter = 0;
-        for (var i = 0; i <= x; i++)
-        {
-            if (document.getElementById("sav").elements[i])
-            {
-                var type = document.getElementById("sav").elements[i].type;
-                if (type == "checkbox")
-                {
-                    if (document.getElementById("sav").elements[i])
-                    {
-                        if (document.getElementById("sav").elements[i].name && document.getElementById("sav").elements[i].name != '')
-                        {
-                            if (document.getElementById("sav").elements[i].checked == true)
-                                counter++;
-                        }
+        // for (var i = 0; i <= x; i++)
+        // {
+        //     if (document.getElementById("sav").elements[i])
+        //     {
+        //         var type = document.getElementById("sav").elements[i].type;
+        //         if (type == "checkbox")
+        //         {
+        //             if (document.getElementById("sav").elements[i])
+        //             {
+        //                 if (document.getElementById("sav").elements[i].name && document.getElementById("sav").elements[i].name != '')
+        //                 {
+        //                     if (document.getElementById("sav").elements[i].checked == true)
+        //                         counter++;
+        //                 }
 
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
+
+        window.$("input[class='re_enroll']:checked").each( function () {
+            counter++;
+        });
+
+        var checkedValue = [];
+
+        // checkedValue = $('.re_enroll:checked').val();
+
+        window.$('.re_enroll:checked').each(function() {
+            checkedValue.push(window.$(this).val());
+        });
+
+        window.$("#selected_students").val(checkedValue);
+
+        console.log('Total Checked: '+counter);
+        console.log('Checked IDs: '+checkedValue);
+
         if (counter == 0)
         {
             document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a student</div>';
+            window.scrollTo({top: 0, behavior: 'smooth'});
             return false;
         } else
         {
             return true;
+
+            // document.getElementById('sav').submit();
         }
     }
 }

@@ -2132,3 +2132,5 @@ CREATE TABLE `user_file_upload` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL;
+
+ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL;

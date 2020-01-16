@@ -78,8 +78,8 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
 
 if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
     db_start();
-    $_REQUEST['USERNAME'] = mysqli_real_escape_string($connection, $_REQUEST['USERNAME']);
-    $_REQUEST['PASSWORD'] = mysqli_real_escape_string($connection, $_REQUEST['PASSWORD']);
+    // $_REQUEST['USERNAME'] = mysqli_real_escape_string($connection, optional_param('USERNAME', '', PARAM_RAW));
+    // $_REQUEST['PASSWORD'] = mysqli_real_escape_string($connection, optional_param('PASSWORD', '', PARAM_RAW));
     # --------------------------- Seat Count Update Start ------------------------------------------ #
 //    $course_name = DBGet(DBQuery("SELECT DISTINCT(COURSE_PERIOD_ID)FROM schedule WHERE  END_DATE <'".mysqli_real_escape_string($connection,date("Y-m-d"))."' AND  DROPPED =  '".mysqli_real_escape_string($connection,'N')."' "));
 //
@@ -96,7 +96,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     # ---------------------------- Seat Count Update End ------------------------------------------- #
 
 
-    $username = optional_param('USERNAME', '', PARAM_RAW);
+    $username = mysqli_real_escape_string($connection,optional_param('USERNAME', '', PARAM_RAW));
     if($_REQUEST['remember']) 
       {
       $cName='remember_me_name';
@@ -110,9 +110,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
       setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
       } 
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
-        $password = str_replace("\'", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
-    $password = str_replace("&", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
-    $password = str_replace("\\", "", md5(optional_param('PASSWORD', '', PARAM_RAW)));
+        $password = str_replace("\'", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("&", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("\\", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
 
     $login_uniform = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));
 

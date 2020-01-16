@@ -1152,11 +1152,7 @@ INSERT INTO `ethnicity` (`ethnicity_id`, `ethnicity_name`, `sort_order`, `last_u
 (8, 'Middle Eastern', 8, '0000-00-00 00:00:00', NULL),
 (9, 'African', 9, '0000-00-00 00:00:00', NULL),
 (10, 'Mixed Race', 10, '0000-00-00 00:00:00', NULL),
-(11, 'Other', 11, '0000-00-00 00:00:00', NULL),
-(12, 'Black', 12, '0000-00-00 00:00:00', NULL),
-(13, 'White', 13, '0000-00-00 00:00:00', NULL),
-(14, 'African', 14, '0000-00-00 00:00:00', NULL),
-(15, 'Indigenous', 15, '2013-05-31 08:50:54', NULL);
+(11, 'Other', 11, '0000-00-00 00:00:00', NULL);
 
 
 
@@ -2553,18 +2549,18 @@ INSERT INTO `staff_school_relationship` (`staff_id`, `school_id`, `syear`, `last
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity`, `common_name`, `social_security`, `birthdate`, `language_id`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
-(1, 'Smith', 'Steve', NULL, NULL, 'Male', 'White, Non-Hispanic', 'Steve', NULL, '2013-02-07', 1, '2023-05-26', '108583954', NULL, '404-903-5443', NULL, '2019-08-04 22:37:17', NULL),
+INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity_id`, `common_name`, `social_security`, `birthdate`, `language_id`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
+(1, 'Smith', 'Steve', NULL, NULL, 'Male', 1, 'Steve', NULL, '2013-02-07', 1, '2023-05-26', '108583954', NULL, '404-903-5443', NULL, '2019-08-04 22:37:17', NULL),
 (2, 'Anderson', 'Daniel', NULL, NULL, 'Male', NULL, NULL, NULL, '2003-09-02', 1, '2023-05-29', '466639635', NULL, '706-853-9164', NULL, '2019-08-05 00:02:40', NULL),
 (3, 'Aponte', 'Justin', NULL, NULL, 'Male', NULL, NULL, NULL, '2002-03-12', 1, '2022-05-29', '332284656', NULL, '404-758-2922', NULL, '2019-08-05 00:02:41', NULL),
-(4, 'Davis', 'Julie', NULL, NULL, 'Female', 'White, Non-Hispanic', NULL, NULL, '2001-08-06', 1, '2021-05-29', '820463327', NULL, '585-534-4859', NULL, '2019-08-05 00:02:42', NULL),
-(5, 'Holmes', 'Javier', NULL, NULL, 'Male', 'Hispanic', NULL, NULL, '2002-01-18', 16, '2022-05-29', '225394032', NULL, '678-347-7936', NULL, '2019-08-05 00:02:42', NULL),
-(6, 'Loafer', 'Roman', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2001-02-25', 1, '2021-05-29', '746807925', NULL, '470-555-3381', NULL, '2019-08-05 00:02:43', NULL),
-(7, 'Paiva', 'Laura', NULL, NULL, 'Female', 'Black, Non-Hispanic', NULL, NULL, '2001-06-08', 1, '2021-05-29', '221861771', NULL, '770-314-6805', NULL, '2019-08-05 00:02:43', NULL),
-(8, 'Parker', 'James', NULL, NULL, 'Male', 'Mixed Race', NULL, NULL, '2002-04-24', 1, '2022-05-29', '855687829', NULL, '404-346-8762', NULL, '2019-08-05 00:02:44', NULL),
-(9, 'Rodger', 'Mark', NULL, NULL, 'Male', 'White, Non-Hispanic', NULL, NULL, '2003-11-05', 1, '2023-05-29', '417462729', NULL, '404-951-2489', NULL, '2019-08-05 00:02:45', NULL),
-(10, 'Wallace', 'Luna', NULL, NULL, 'Female', 'Hispanic', NULL, NULL, '2003-01-03', 16, '2023-05-29', '217656496', NULL, '770-842-3743', NULL, '2019-08-05 00:02:45', NULL),
-(11, 'Parker', 'Colin', NULL, NULL, 'Male', 'Pacific Islander', NULL, NULL, '2002-03-21', NULL, '2022-05-29', '487552403', NULL, '678-810-2209', NULL, '2019-08-05 00:13:02', NULL);
+(4, 'Davis', 'Julie', NULL, NULL, 'Female', 1, NULL, NULL, '2001-08-06', 1, '2021-05-29', '820463327', NULL, '585-534-4859', NULL, '2019-08-05 00:02:42', NULL),
+(5, 'Holmes', 'Javier', NULL, NULL, 'Male', 3, NULL, NULL, '2002-01-18', 16, '2022-05-29', '225394032', NULL, '678-347-7936', NULL, '2019-08-05 00:02:42', NULL),
+(6, 'Loafer', 'Roman', NULL, NULL, 'Male', 1, NULL, NULL, '2001-02-25', 1, '2021-05-29', '746807925', NULL, '470-555-3381', NULL, '2019-08-05 00:02:43', NULL),
+(7, 'Paiva', 'Laura', NULL, NULL, 'Female', 2, NULL, NULL, '2001-06-08', 1, '2021-05-29', '221861771', NULL, '770-314-6805', NULL, '2019-08-05 00:02:43', NULL),
+(8, 'Parker', 'James', NULL, NULL, 'Male', 10, NULL, NULL, '2002-04-24', 1, '2022-05-29', '855687829', NULL, '404-346-8762', NULL, '2019-08-05 00:02:44', NULL),
+(9, 'Rodger', 'Mark', NULL, NULL, 'Male', 1, NULL, NULL, '2003-11-05', 1, '2023-05-29', '417462729', NULL, '404-951-2489', NULL, '2019-08-05 00:02:45', NULL),
+(10, 'Wallace', 'Luna', NULL, NULL, 'Female', 3, NULL, NULL, '2003-01-03', 16, '2023-05-29', '217656496', NULL, '770-842-3743', NULL, '2019-08-05 00:02:45', NULL),
+(11, 'Parker', 'Colin', NULL, NULL, 'Male', 5, NULL, NULL, '2002-03-21', NULL, '2022-05-29', '487552403', NULL, '678-810-2209', NULL, '2019-08-05 00:13:02', NULL);
 
 --
 -- Dumping data for table `students_join_people`

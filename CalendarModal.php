@@ -1,5 +1,6 @@
 <?php
-
+include("functions/ParamLibFnc.php");
+require_once("Data.php");
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
@@ -10,8 +11,8 @@ include 'Warehouse.php';
  */
 
 //----------------------- modal for event start---------------------//
-
-
+$connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+$_REQUEST['event_id'] = mysqli_real_escape_string($connection,optional_param('event_id', '', PARAM_DATA));
 if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST[assignment_id])) {
     if ($_REQUEST['event_id'] != 'new' && isset($_REQUEST['event_id'])) {
         $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,SCHOOL_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));

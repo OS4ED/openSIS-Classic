@@ -129,6 +129,8 @@ switch (User('PROFILE')) {
     case 'admin':
         DrawBC($welcome . ' | Role : ' . $title1);
 
+
+
 //        $user_agent = explode('/', $_SERVER['HTTP_USER_AGENT']);
 //        if ($user_agent[0] == 'Mozilla') {
 //            $update_notify = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\' AND program=\'UPDATENOTIFY\' AND title=\'display\' LIMIT 0, 1'));
@@ -142,6 +144,20 @@ switch (User('PROFILE')) {
 //                    curl_setopt($ch, CURLOPT_HEADER, 0);
 //
 //
+
+
+$update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\'  AND program=\'UPDATENOTIFY\' AND title=\'display_school\' LIMIT 0, 1'));
+        if ($update_notify_s[1]['VALUE'] == 'Y') {
+            $cal_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_calendars WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+            $mp_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM marking_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+            $att_code_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM attendance_codes WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+            $grade_scale_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM report_card_grade_scales WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+            $enroll_code_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM student_enrollment_codes WHERE SYEAR=' . UserSyear()));
+            $grade_level_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_gradelevels WHERE SCHOOL_ID=' . UserSchool()));
+            $periods_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+            $rooms_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM rooms WHERE SCHOOL_ID=' . UserSchool()));
+
+
 //                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 //
 //
@@ -163,17 +179,7 @@ switch (User('PROFILE')) {
 //            }
 //        }
 
-        $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\'  AND program=\'UPDATENOTIFY\' AND title=\'display_school\' LIMIT 0, 1'));
-        if ($update_notify_s[1]['VALUE'] == 'Y') {
-            $cal_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_calendars WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-            $mp_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM marking_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-            $att_code_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM attendance_codes WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-            $grade_scale_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM report_card_grade_scales WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-            $enroll_code_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM student_enrollment_codes WHERE SYEAR=' . UserSyear()));
-            $grade_level_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_gradelevels WHERE SCHOOL_ID=' . UserSchool()));
-            $periods_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-            $rooms_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM rooms WHERE SCHOOL_ID=' . UserSchool()));
-
+        
 
             if ($cal_setup[1]['REC'] == 0 || $mp_setup[1]['REC'] < 1 || $att_code_setup[1]['REC'] == 0 || $grade_scale_setup[1]['REC'] == 0 || $enroll_code_setup[1]['REC'] == 0 || $grade_level_setup[1]['REC'] == 0 || $periods_setup[1]['REC'] == 0 || $rooms_setup[1]['REC'] == 0) {
                 $width = 0;
@@ -375,7 +381,13 @@ switch (User('PROFILE')) {
                                         AND (pn.published_profiles like\'%all%\' OR pn.school_id IN(' . UserSchool() . '))
                                         AND (' . (User('PROFILE_ID') == '' ? ' FIND_IN_SET(\'admin\', pn.PUBLISHED_PROFILES)>0' : ' FIND_IN_SET(' . User('PROFILE_ID') . ',pn.PUBLISHED_PROFILES)>0)') .
                         'ORDER BY pn.SORT_ORDER,pn.LAST_UPDATED DESC'), array('LAST_UPDATED' => 'ProperDate', 'CONTENT' => '_nl2br'));
-        if (count($notes_RET)) {
+      
+      
+                        if (count($notes_RET)) {
+            echo '<div class="panel panel-default">';
+            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
+            echo '</div>';
+        }
             
 //            echo '<div class="panel panel-default">';
 //            echo '<div class="panel-heading">';
@@ -395,12 +407,6 @@ switch (User('PROFILE')) {
 //            echo '<p class="text-grey-700"><i class="icon-calendar3 text-primary"></i> Posted on Mar/6/2018 &nbsp; &nbsp; <i class="icon-users text-primary"></i> Visible to All School</p>';
 //            echo '</div>'; //.panel-body
 //            echo '</div>';
-
-            echo '<div class="panel panel-default">';
-            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
-            echo '</div>';
-        }
-
 //        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE AS INDEX_DATE,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
 //                FROM calendar_events ce,calendar_events_visibility cev,schools s
 //                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
@@ -451,12 +457,13 @@ switch (User('PROFILE')) {
 
         # ------------------------------------ Original Raw Query Start ------------------------------------------------ #
 
-        if (Preferences('HIDE_ALERTS') != 'Y') {
+
             //echo 'SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.  UserSyear().'\' AND SCHOOL_DATE<\''.date('Y-m-d').'\' LIMIT 0,1 ';
             //echo 'SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.  UserSyear().'\' AND SCHOOL_DATE<\''.date('Y-m-d').'\' ORDER BY SCHOOL_DATE LIMIT 0,1 ';
 //                   $RET=DBGet(DBQuery('SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.  UserSyear().'\' AND SCHOOL_DATE<\''.date('Y-m-d').'\' ORDER BY SCHOOL_DATE LIMIT 0,1 '));
             // echo 'SELECT mi.SCHOOL_ID,mi.SCHOOL_DATE,mi.COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID WHERE mi.SCHOOL_ID=\''.UserSchool().'\' AND mi.SYEAR=\''.  UserSyear().'\' AND mi.SCHOOL_DATE<\''.date('Y-m-d').'\' ORDER BY mi.SCHOOL_DATE AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)';
             //echo 'SELECT mi.SCHOOL_ID,mi.SCHOOL_DATE,mi.COURSE_PERIOD_ID,mi.TEACHER_ID,mi.SECONDARY_TEACHER_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID and mi.SCHOOL_ID=\''.UserSchool().'\' AND mi.SYEAR=\''.  UserSyear().'\' AND mi.SCHOOL_DATE<\''.date('Y-m-d').'\' ORDER BY mi.SCHOOL_DATE AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)';
+            if (Preferences('HIDE_ALERTS') != 'Y') {
             $RET = DBGet(DBQuery('SELECT mi.SCHOOL_ID,mi.SCHOOL_DATE,mi.COURSE_PERIOD_ID,mi.TEACHER_ID,mi.SECONDARY_TEACHER_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID and mi.SCHOOL_ID=\'' . UserSchool() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND mi.SCHOOL_DATE<\'' . date('Y-m-d') . '\'  AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)'));
 
             if (count($RET)) {
@@ -521,7 +528,15 @@ switch (User('PROFILE')) {
             ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
-
+        
+        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
+                FROM calendar_events ce,calendar_events_visibility cev,schools s
+                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
+                    AND ce.SYEAR=\'' . UserSyear() . '\'
+                    AND ce.school_id IN(' . UserSchool() . ')
+                    AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
+                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'teacher\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
+                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
 
 //        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
 //                FROM calendar_events ce,calendar_events_visibility cev,schools s
@@ -532,14 +547,7 @@ switch (User('PROFILE')) {
 //                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'teacher\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
 //                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
         
-        $events_RET = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
-                FROM calendar_events ce,calendar_events_visibility cev,schools s
-                WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 
-                    AND ce.SYEAR=\'' . UserSyear() . '\'
-                    AND ce.school_id IN(' . UserSchool() . ')
-                    AND s.ID=ce.SCHOOL_ID AND ce.CALENDAR_ID=cev.CALENDAR_ID 
-                    AND ' . (User('PROFILE_ID') == '' ? 'cev.PROFILE=\'teacher\'' : 'cev.PROFILE_ID=' . User('PROFILE_ID')) . ' 
-                    ORDER BY ce.SCHOOL_DATE,s.TITLE'), array('SCHOOL_DATE' => 'ProperDate', 'DESCRIPTION' => 'makeDescription'));
+
         $events_RET1 = DBGet(DBQuery('SELECT ce.TITLE,ce.DESCRIPTION,ce.SCHOOL_DATE,s.TITLE AS SCHOOL 
                 FROM calendar_events ce,schools s
                 WHERE ce.SCHOOL_DATE BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY 

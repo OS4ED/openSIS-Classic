@@ -1115,7 +1115,7 @@ if(!$_REQUEST['modfunc'])
             }
         }
         if ($err_msg) {
-            echo "<div class=\"text-danger\">" . $err_msg . "</div>";
+            echo "<div class=\"alert alert-danger alert-bordered\">" . $err_msg . "</div>";
 
             unset($err_msg);
         }

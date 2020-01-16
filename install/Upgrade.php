@@ -276,6 +276,7 @@ $dbconn->query('ALTER TABLE `filter_fields` ADD PRIMARY KEY (`filter_field_id`)'
 $dbconn->query('ALTER TABLE `filters` MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;');
 $dbconn->query('ALTER TABLE `filter_fields` MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1');
 $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
 $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -320,6 +321,7 @@ $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or di
     }
                                 
 $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
 $_SESSION['mod'] = 'upgrade';
                                    header('Location: Step5.php');
@@ -356,6 +358,7 @@ $_SESSION['mod'] = 'upgrade';
     }
                                 
 $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
                                     $_SESSION['mod'] = 'upgrade';
                                    header('Location: Step5.php');

@@ -2158,22 +2158,362 @@ function chooseCpModalError(err)
 
 function parentLookup(address_id)
 {
+    var ADDR_PRIM_L1        =   document.getElementById('values[student_address][HOME][STREET_ADDRESS_1]');
+    if(ADDR_PRIM_L1)
+    {
+        ADDR_PRIM_L1        =   ADDR_PRIM_L1.value;
+    }
+    else
+    {
+        ADDR_PRIM_L1        =   "";
+    }
+
+    var ADDR_PRIM_L2        =   document.getElementById('values[student_address][HOME][STREET_ADDRESS_2]');
+    if(ADDR_PRIM_L2)
+    {
+        ADDR_PRIM_L2        =   ADDR_PRIM_L2.value;
+    }
+    else
+    {
+        ADDR_PRIM_L2        =   "";
+    }
+
+    var ADDR_PRIM_CITY      =   document.getElementById('values[student_address][HOME][CITY]');
+    if(ADDR_PRIM_CITY)
+    {
+        ADDR_PRIM_CITY      =   ADDR_PRIM_CITY.value;
+    }
+    else
+    {
+        ADDR_PRIM_CITY      =   "";
+    }
+
+    var ADDR_PRIM_STATE     =   document.getElementById('values[student_address][HOME][STATE]');
+    if(ADDR_PRIM_STATE)
+    {
+        ADDR_PRIM_STATE     =   ADDR_PRIM_STATE.value;
+    }
+    else
+    {
+        ADDR_PRIM_STATE     =   "";
+    }
+
+    var ADDR_PRIM_ZIP       =   document.getElementById('values[student_address][HOME][ZIPCODE]');
+    if(ADDR_PRIM_ZIP)
+    {
+        ADDR_PRIM_ZIP       =   ADDR_PRIM_ZIP.value;
+    }
+    else
+    {
+        ADDR_PRIM_ZIP       =   "";
+    }
+
+    var ADDR_PRIM_BUSNO     =   document.getElementById('values[student_address][HOME][BUS_NO]');
+    if(ADDR_PRIM_BUSNO)
+    {
+        ADDR_PRIM_BUSNO     =   ADDR_PRIM_BUSNO.value;
+    }
+    else
+    {
+        ADDR_PRIM_BUSNO     =   "";
+    }
+
+    var ADDR_SAME_HOME      =   document.getElementById('r4');
+
+    if(ADDR_SAME_HOME)
+    {
+        ADDR_SAME_HOME      =   ADDR_SAME_HOME.value;
+    }
+    else
+    {
+        ADDR_SAME_HOME      =   "";
+    }
+
+    // alert(ADDR_SAME_HOME);
+
+    if($('input[name="values[student_address][HOME][BUS_PICKUP]"]:checked').length > 0)
+    {
+        var ADDR_PRIM_BPU   =   "Y";
+    }
+    else
+    {
+        var ADDR_PRIM_BPU   =   "N";
+    }
+
+    if($('input[name="values[student_address][HOME][BUS_DROPOFF]"]:checked').length > 0)
+    {
+        var ADDR_PRIM_BDO   =   "Y";
+    }
+    else
+    {
+        var ADDR_PRIM_BDO   =   "N";
+    }
 
 
-    var USERINFO_FIRST_NAME = document.getElementById('USERINFO_FIRST_NAME').value;
+    var ADDR_MAIL_L1        =   document.getElementById('values[student_address][MAIL][STREET_ADDRESS_1]');
+    if(ADDR_MAIL_L1)
+    {
+        ADDR_MAIL_L1        =   ADDR_MAIL_L1.value;
+    }
+    else
+    {
+        ADDR_MAIL_L1        =   "";
+    }
 
-    var USERINFO_LAST_NAME = document.getElementById('USERINFO_LAST_NAME').value;
+    var ADDR_MAIL_L2        =   document.getElementById('values[student_address][MAIL][STREET_ADDRESS_2]');
+    if(ADDR_MAIL_L2)
+    {
+        ADDR_MAIL_L2        =   ADDR_MAIL_L2.value;
+    }
+    else
+    {
+        ADDR_MAIL_L2        =   "";
+    }
 
-    var USERINFO_EMAIL = document.getElementById('USERINFO_EMAIL').value;
-    var USERINFO_MOBILE = document.getElementById('USERINFO_MOBILE').value;
-    var USERINFO_SADD = document.getElementById('USERINFO_SADD').value;
-    var USERINFO_CITY = document.getElementById('USERINFO_CITY').value;
-    var USERINFO_STATE = document.getElementById('USERINFO_STATE').value;
-    var USERINFO_ZIP = document.getElementById('USERINFO_ZIP').value;
-    var p_type = document.getElementById('p_type').value;
-    var other_p_erson_id = document.getElementById('other_p_erson_id').value;
+    var ADDR_MAIL_CITY      =   document.getElementById('values[student_address][MAIL][CITY]');
+    if(ADDR_MAIL_CITY)
+    {
+        ADDR_MAIL_CITY      =   ADDR_MAIL_CITY.value;
+    }
+    else
+    {
+        ADDR_MAIL_CITY      =   "";
+    }
+
+    var ADDR_MAIL_STATE     =   document.getElementById('values[student_address][MAIL][STATE]');
+    if(ADDR_MAIL_STATE)
+    {
+        ADDR_MAIL_STATE     =   ADDR_MAIL_STATE.value;
+    }
+    else
+    {
+        ADDR_MAIL_STATE     =   "";
+    }
+
+    var ADDR_MAIL_ZIP       =   document.getElementById('values[student_address][MAIL][ZIPCODE]');
+    if(ADDR_MAIL_ZIP)
+    {
+        ADDR_MAIL_ZIP       =   ADDR_MAIL_ZIP.value;
+    }
+    else
+    {
+        ADDR_MAIL_ZIP       =   "";
+    }
+
+    if($('#same_addr').is(':checked') || ADDR_SAME_HOME == 'Y')
+    {
+        var ADDR_SAME_AS    =   "Y";
+
+        // ADDR_MAIL_L1        =   ADDR_PRIM_L1;
+        // ADDR_MAIL_L2        =   ADDR_PRIM_L2;
+        // ADDR_MAIL_CITY      =   ADDR_PRIM_CITY;
+        // ADDR_MAIL_STATE     =   ADDR_PRIM_STATE;
+        // ADDR_MAIL_ZIP       =   ADDR_PRIM_ZIP;
+    }
+    else
+    {
+        var ADDR_SAME_AS    =   "N";
+    }
+
+
+    // FOR PRIMARY CONTACTS
+    var ADDR_CONT_RSHIP     =   document.getElementById('values[people][PRIMARY][RELATIONSHIP]');
+    if(ADDR_CONT_RSHIP)
+    {
+        ADDR_CONT_RSHIP     =   ADDR_CONT_RSHIP.value;
+    }
+    else
+    {
+        ADDR_CONT_RSHIP     =   "";
+    }
+
+    var ADDR_CONT_FIRST     =   document.getElementById('values[people][PRIMARY][FIRST_NAME]');
+    if(ADDR_CONT_FIRST)
+    {
+        ADDR_CONT_FIRST     =   ADDR_CONT_FIRST.value;
+    }
+    else
+    {
+        ADDR_CONT_FIRST     =   "";
+    }
+
+    var ADDR_CONT_LAST      =   document.getElementById('values[people][PRIMARY][LAST_NAME]');
+    if(ADDR_CONT_LAST)
+    {
+        ADDR_CONT_LAST      =   ADDR_CONT_LAST.value;
+    }
+    else
+    {
+        ADDR_CONT_LAST      =   "";
+    }
+
+    var ADDR_CONT_HOME      =   document.getElementById('values[people][PRIMARY][HOME_PHONE]');
+    if(ADDR_CONT_HOME)
+    {
+        ADDR_CONT_HOME      =   ADDR_CONT_HOME.value;
+    }
+    else
+    {
+        ADDR_CONT_HOME      =   "";
+    }
+
+    var ADDR_CONT_WORK      =   document.getElementById('values[people][PRIMARY][WORK_PHONE]');
+    if(ADDR_CONT_WORK)
+    {
+        ADDR_CONT_WORK      =   ADDR_CONT_WORK.value;
+    }
+    else
+    {
+        ADDR_CONT_WORK      =   "";
+    }
+
+    var ADDR_CONT_CELL      =   document.getElementById('values[people][PRIMARY][CELL_PHONE]');
+    if(ADDR_CONT_CELL)
+    {
+        ADDR_CONT_CELL      =   ADDR_CONT_CELL.value;
+    }
+    else
+    {
+        ADDR_CONT_CELL      =   "";
+    }
+
+    var ADDR_CONT_MAIL      =   document.getElementById('values[people][PRIMARY][EMAIL]');
+    if(ADDR_CONT_MAIL)
+    {
+        ADDR_CONT_MAIL      =   ADDR_CONT_MAIL.value;
+    }
+    else
+    {
+        ADDR_CONT_MAIL      =   "";
+    }
+
+    var ADDR_CONT_PORTAL    =   document.getElementById('portal_1');
+    if(ADDR_CONT_PORTAL)
+    {
+        ADDR_CONT_PORTAL    =   ADDR_CONT_PORTAL.value;
+    }
+    else
+    {
+        ADDR_CONT_PORTAL    =   "";
+    }
+
+    var ADDR_CONT_USRN      =   document.getElementById('values[people][PRIMARY][USER_NAME]');
+    if(ADDR_CONT_USRN)
+    {
+        ADDR_CONT_USRN      =   ADDR_CONT_USRN.value;
+    }
+    else
+    {
+        ADDR_CONT_USRN      =   "";
+    }
+
+    var ADDR_CONT_PSWD      =   document.getElementById('values[people][PRIMARY][PASSWORD]');
+    if(ADDR_CONT_PSWD)
+    {
+        ADDR_CONT_PSWD      =   ADDR_CONT_PSWD.value;
+    }
+    else
+    {
+        ADDR_CONT_PSWD      =   "";
+    }
+
+    if($('#rps').is(':checked'))
+    {
+        var ADDR_CONT_SAHA  =   "Y";
+    }
+    else
+    {
+        var ADDR_CONT_SAHA  =   "N";
+    }
+
+    if($('#rpn').is(':checked'))
+    {
+        var ADDR_CONT_ADNA  =   "Y";
+    }
+    else
+    {
+        var ADDR_CONT_ADNA  =   "N";
+    }
+
+    var ADDR_CONT_LIN1      =   document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_1]');
+    if(ADDR_CONT_LIN1)
+    {
+        ADDR_CONT_LIN1      =   ADDR_CONT_LIN1.value;
+    }
+    else
+    {
+        ADDR_CONT_LIN1      =   "";
+    }
+
+    var ADDR_CONT_LIN2      =   document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_2]');
+    if(ADDR_CONT_LIN2)
+    {
+        ADDR_CONT_LIN2      =   ADDR_CONT_LIN2.value;
+    }
+    else
+    {
+        ADDR_CONT_LIN2      =   "";
+    }
+
+    var ADDR_CONT_CITY      =   document.getElementById('values[student_address][PRIMARY][CITY]');
+    if(ADDR_CONT_CITY)
+    {
+        ADDR_CONT_CITY      =   ADDR_CONT_CITY.value;
+    }
+    else
+    {
+        ADDR_CONT_CITY      =   "";
+    }
+
+    var ADDR_CONT_STAT      =   document.getElementById('values[student_address][PRIMARY][STATE]');
+    if(ADDR_CONT_STAT)
+    {
+        ADDR_CONT_STAT      =   ADDR_CONT_STAT.value;
+    }
+    else
+    {
+        ADDR_CONT_STAT      =   "";
+    }
+
+    var ADDR_CONT_ZIP       =   document.getElementById('values[student_address][PRIMARY][ZIPCODE]');
+    if(ADDR_CONT_ZIP)
+    {
+        ADDR_CONT_ZIP       =   ADDR_CONT_ZIP.value;
+    }
+    else
+    {
+        ADDR_CONT_ZIP       =   "";
+    }
+
+
+    var USERINFO_FIRST_NAME =   document.getElementById('USERINFO_FIRST_NAME').value;
+    var USERINFO_LAST_NAME  =   document.getElementById('USERINFO_LAST_NAME').value;
+    var USERINFO_EMAIL      =   document.getElementById('USERINFO_EMAIL').value;
+    var USERINFO_MOBILE     =   document.getElementById('USERINFO_MOBILE').value;
+    var USERINFO_SADD       =   document.getElementById('USERINFO_SADD').value;
+    var USERINFO_CITY       =   document.getElementById('USERINFO_CITY').value;
+    var USERINFO_STATE      =   document.getElementById('USERINFO_STATE').value;
+    var USERINFO_ZIP        =   document.getElementById('USERINFO_ZIP').value;
+    var p_type              =   document.getElementById('p_type').value;
+    var other_p_erson_id    =   document.getElementById('other_p_erson_id').value;
+
+    // alert(ADDR_PRIM_BPU);
+    
+    $.ajax({
+        url     :   "HoldAddressFields.php",
+        type    :   "post",
+        data    :   { ADDR_PRIM_L1, ADDR_PRIM_L2, ADDR_PRIM_CITY, ADDR_PRIM_STATE, ADDR_PRIM_ZIP, ADDR_PRIM_BUSNO, ADDR_SAME_HOME, ADDR_PRIM_BPU, ADDR_PRIM_BDO, ADDR_SAME_AS, ADDR_MAIL_L1, ADDR_MAIL_L2, ADDR_MAIL_CITY, ADDR_MAIL_STATE, ADDR_MAIL_ZIP, ADDR_CONT_RSHIP, ADDR_CONT_FIRST, ADDR_CONT_LAST, ADDR_CONT_HOME, ADDR_CONT_WORK, ADDR_CONT_CELL, ADDR_CONT_MAIL, ADDR_CONT_PORTAL, ADDR_CONT_USRN, ADDR_CONT_PSWD, ADDR_CONT_SAHA, ADDR_CONT_ADNA, ADDR_CONT_LIN1, ADDR_CONT_LIN2, ADDR_CONT_CITY, ADDR_CONT_STAT, ADDR_CONT_ZIP },
+        success :   function(sculz)
+        {
+            console.log("ADDRESS STORED IN SESSION");
+
+            // alert(sculz);
+        }
+    })
+
     ajax_call('ParentLookup.php?USERINFO_FIRST_NAME=' + USERINFO_FIRST_NAME + '&USERINFO_LAST_NAME=' + USERINFO_LAST_NAME + '&USERINFO_EMAIL=' + USERINFO_EMAIL + '&USERINFO_MOBILE=' + USERINFO_MOBILE + '&USERINFO_SADD=' + USERINFO_SADD + '&USERINFO_CITY=' + USERINFO_CITY + '&USERINFO_STATE=' + USERINFO_STATE + '&USERINFO_ZIP=' + USERINFO_ZIP + '&address_id=' + address_id + '&p_type=' + p_type + '&other_p_erson_id=' + other_p_erson_id, parentLookupCallback, chooseCpModalError);
 }
+
 function modal_parenttype(type, other_p_erson_id = '')
 {
 
@@ -2182,6 +2522,7 @@ function modal_parenttype(type, other_p_erson_id = '')
 
     $("#p_type").val(type);
 }
+
 function parentLookupCallback(data)
 {
 
@@ -2194,20 +2535,67 @@ function parentLookupCallback(data)
 
 function SelectedParent(address_id, type, other_p_erson_id = '')
 {
-
     var selected_staff = document.querySelector('input[name="staff"]:checked').value;
     //ajax_call('modules/students/.php?id=' + id+'&table_name='+table, SelectedParentCallback, chooseCpModalError);
 
+    // if(type == 'primary')
+    // {
+    //     var typex   =   "PRIMARY";
+    // }
+    // if(type == 'secondary')
+    // {
+    //     var typex   =   "SECONDARY";
+    // }
 
-
-    $("#modal_default_lookup").hide();
+    $("#modal_default_lookup").modal('toggle');
+    
     if (type == 'other')
         window.location.href = 'Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type=' + type + '&nfunc=status&ajax=true&button=Select&con_info=old&add_id=' + other_p_erson_id + '&address_id=' + address_id + '&staff=' + selected_staff + '&person_id=' + other_p_erson_id;
     else
         window.location.href = 'Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type=' + type + '&nfunc=status&ajax=true&button=Select&add_id=&address_id=' + address_id + '&staff=' + selected_staff;
 
+    // var detailsOfSelectedContact    =   selectedContact(selected_staff);
 
+    // if(type == 'primary' || type == "secondary")
+    // {
+    //     $.ajax({
+    //         url     :   "KnowContactDetails.php",
+    //         type    :   "post",
+    //         data    :   { selected_staff },
+    //         success :   function(reponz)
+    //         {
+    //             // alert(reponz);
+    //             var recallContact   =   JSON.parse(reponz);
+
+    //             // alert(recallContact.FIRST_NAME);
+
+    //             // $("#values[people][PRIMARY][RELATIONSHIP]").val();
+
+    //             $("#values[people]["+typex+"][FIRST_NAME]").val(recallContact.FIRST_NAME);
+    //             $("#values[people]["+typex+"][LAST_NAME]").val(recallContact.LAST_NAME);
+    //             $("#values[people]["+typex+"][HOME_PHONE]").val(recallContact.HOME_PHONE);
+    //             $("#values[people]["+typex+"][WORK_PHONE]").val(recallContact.WORK_PHONE);
+    //             $("#values[people]["+typex+"][CELL_PHONE]").val(recallContact.CELL_PHONE);
+    //             $("#values[people]["+typex+"][EMAIL]").val(recallContact.EMAIL);
+    //         }
+    //     })
+    // }
+    // else
+    // {
+    //     window.location.href = 'Modules.php?modname=students/Student.php&include=AddressInc&category_id=3&func=search_select&type=' + type + '&nfunc=status&ajax=true&button=Select&con_info=old&add_id=' + other_p_erson_id + '&address_id=' + address_id + '&staff=' + selected_staff + '&person_id=' + other_p_erson_id;
+    // }
 }
+
+// function selectedContact(selected_staff)
+// {
+//     $.ajax({
+//         url     :   "KnowContactDetails.php",
+//         type    :   "post",
+//         data    :   { selected_staff },
+
+//     })
+// }
+
 function cpActionModal(title, subject_id, course_id, course_period_id)
 {
     ajax_call('CpSessionSet.php?title=' + title + '&subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id, cpActionModalCallback);

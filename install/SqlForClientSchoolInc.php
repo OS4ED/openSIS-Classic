@@ -932,11 +932,7 @@ INSERT INTO `ethnicity` (`ethnicity_id`, `ethnicity_name`, `sort_order`, `last_u
 (8, 'Middle Eastern', 8, '0000-00-00 00:00:00', NULL),
 (9, 'African', 9, '0000-00-00 00:00:00', NULL),
 (10, 'Mixed Race', 10, '0000-00-00 00:00:00', NULL),
-(11, 'Other', 11, '0000-00-00 00:00:00', NULL),
-(12, 'Black', 12, '0000-00-00 00:00:00', NULL),
-(13, 'White', 13, '0000-00-00 00:00:00', NULL),
-(14, 'African', 14, '0000-00-00 00:00:00', NULL),
-(15, 'Indigenous', 15, '2013-05-31 08:50:54', NULL);
+(11, 'Other', 11, '0000-00-00 00:00:00', NULL);
 
 
 --

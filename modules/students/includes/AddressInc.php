@@ -31,19 +31,47 @@
 include('../../../RedirectIncludes.php');
 include 'modules/students/ConfigInc.php';
 
+// echo "<pre>";
+// print_r($_REQUEST);
+// print_r($_SESSION['HOLD_ADDR_DATA']);
+// echo die();
+
+
+// if($_REQUEST['address_id'] == 'new')
+// {
+//     // $addr_type_set  =   array("Home Address", "Mail", "Primary", "Secondary");
+
+//     $bln_addr_chk   =   DBGet(DBQuery('SELECT * FROM student_address WHERE student_id = '.UserStudentID().' AND school_id = '.UserSchool().' AND type = "Home Address"'));
+
+//     $count_check    =   count($bln_addr_chk);
+
+//     // echo $count_check; echo die();
+
+//     if($count_check == 0)
+//     {
+//         DBQuery('INSERT INTO student_address (student_id, syear, school_id, street_address_1, street_address_2, city, state, zipcode, bus_pickup, bus_dropoff, bus_no, type, people_id, last_updated, updated_by) VALUES
+// ('.UserStudentID().', '.UserSyear().', '.UserSchool().', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "Home Address", NULL, CURRENT_TIMESTAMP, NULL);');
+//     }
+// }
+
 echo '<div id="modal_default_lookup" class="modal fade">
                 <div class="modal-dialog">
                     <div class="modal-content">';
 echo ' <input type=hidden id=p_type >';
 echo ' <input type=hidden id=other_p_erson_id >';
-if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search') {
-    if ($_REQUEST['button'] == 'Find' || $_REQUEST['nfunc'] == 'status') {
+
+if (clean_param($_REQUEST['func'], PARAM_NOTAGS) == 'search')
+{
+    if ($_REQUEST['button'] == 'Find' || $_REQUEST['nfunc'] == 'status')
+    {
         if ($_REQUEST['add_id'] == 'new')
             echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
         else
             echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST[modname] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $_REQUEST['add_id'] . '&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
     }
-}else {
+}
+else
+{
     if ($_REQUEST['add_id'] == 'new')
         echo "<FORM class=\"form-horizontal\" name=popform id=popform action=ForWindow.php?modname=$_REQUEST[modname]&modfunc=lookup&type=" . $_REQUEST['type'] . "&func=search&ajax=" . $_REQUEST['ajax'] . "&add_id=new&address_id=" . $_REQUEST['address_id'] . " METHOD=POST>";
     else
@@ -76,7 +104,7 @@ echo '<div class="form-group"><label class="control-label col-xs-4">Street Addre
 echo '<div class="form-group"><label class="control-label col-xs-4">City</label><div class="col-xs-8">' . TextInput('', 'USERINFO_CITY', '', 'class=form-control', true) . '</div></div>';
 echo '<div class="form-group"><label class="control-label col-xs-4">State</label><div class="col-xs-8">' . TextInput('', 'USERINFO_STATE', '', 'class=form-control', true) . '</div></div>';
 echo '<div class="form-group"><label class="control-label col-xs-4">Zip</label><div class="col-xs-8">' . TextInput('', 'USERINFO_ZIP', '', 'class=form-control', true) . '</div></div>';
-echo '<div class="modal-footer" id="parent-modal-footer"><INPUT  class="btn btn-primary" javascript:void(0); name=button value=Find onclick="parentLookup(\'' . $_REQUEST['address_id'] . '\')">&nbsp; &nbsp;<INPUT type=submit class="btn btn-default" name=button value=Cancel></div>';
+echo '<div class="modal-footer" id="parent-modal-footer"><INPUT type="button" class="btn btn-primary" javascript:void(0); name=button value=Find onclick="parentLookup(\'' . $_REQUEST['address_id'] . '\')">&nbsp; &nbsp;<INPUT type=submit class="btn btn-default" name=button value=Cancel></div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -91,32 +119,48 @@ echo '</form>';
 echo '</div>
                 </div>
         </div>';
-if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
 
-    if ($_REQUEST['r7'] == 'Y') {
+
+    // echo "<pre>";
+    // print_r($_REQUEST);
+    // echo die();
+        
+if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']))
+{
+    if ($_REQUEST['r7'] == 'Y')
+    {
         $get_home_add = DBGet(DBQuery('SELECT street_address_1,street_address_2,city,state,zipcode,bus_pickup,bus_dropoff,bus_no FROM student_address WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID= \'' . UserSchool() . '\' AND TYPE=\'Home Address\' '));
-        if (count($get_home_add) > 0) {
-            foreach ($get_home_add[1] as $gh_i => $gh_d) {
+        
+        if (count($get_home_add) > 0)
+        {
+            foreach ($get_home_add[1] as $gh_i => $gh_d)
+            {
                 if ($gh_d != '')
                     $_REQUEST['values']['student_address']['OTHER'][$gh_i] = $gh_d;
             }
         }
-        else {
+        else
+        {
             echo "<script>show_home_error();</script>";
             unset($_REQUEST['values']);
         }
     }
+    
 
-    if ($_REQUEST['r4'] == 'Y') {
+    if ($_REQUEST['r4'] == 'Y')
+    {
         $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2'];
         $_REQUEST['values']['student_address']['MAIL']['CITY'] = $_REQUEST['values']['student_address']['HOME']['CITY'];
         $_REQUEST['values']['student_address']['MAIL']['ZIPCODE'] = $_REQUEST['values']['student_address']['HOME']['ZIPCODE'];
         $_REQUEST['values']['student_address']['MAIL']['STATE'] = $_REQUEST['values']['student_address']['HOME']['STATE'];
     }
-    if ($_REQUEST['same_addr'] == 'Y') {
 
+
+    if ($_REQUEST['same_addr'] == 'Y')
+    {
         $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
+        
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']) && $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']!='')
@@ -128,7 +172,9 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2']) && $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2']!='') {
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'];
-        } else {
+        }
+        else
+        {
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $address_details[1]['STREET'];
         }
         if (isset($_REQUEST['values']['student_address']['HOME']['CITY']) && !isset($_REQUEST['values']['student_address']['MAIL']['CITY']))
@@ -152,10 +198,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         else
             $_REQUEST['values']['student_address']['MAIL']['STATE'] = $address_details[1]['STATE'];
     }
-
-    if ($_REQUEST['sec_addr'] == 'Y') {
-
+    
+    
+    if ($_REQUEST['sec_addr'] == 'Y')
+    {
         $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
+        
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']) && $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']!='')
@@ -191,8 +239,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         else
             $_REQUEST['values']['student_address']['SECONDARY']['STATE'] = $address_details[1]['STATE'];
     }
-    if ($_REQUEST['prim_addr'] == 'Y') {
 
+
+    if ($_REQUEST['prim_addr'] == 'Y')
+    {
         $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
@@ -230,7 +280,9 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $_REQUEST['values']['student_address']['PRIMARY']['STATE'] = $address_details[1]['STATE'];
     }
 
-    if ($_REQUEST['r6'] == 'Y') {
+
+    if ($_REQUEST['r6'] == 'Y')
+    {
         $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2'];
         $_REQUEST['values']['student_address']['SECONDARY']['CITY'] = $_REQUEST['values']['student_address']['HOME']['CITY'];
@@ -238,7 +290,9 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         $_REQUEST['values']['student_address']['SECONDARY']['STATE'] = $_REQUEST['values']['student_address']['HOME']['STATE'];
     }
 
-    if ($_REQUEST['r5'] == 'Y') {
+
+    if ($_REQUEST['r5'] == 'Y')
+    {
         $_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         $_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2'];
         $_REQUEST['values']['student_address']['PRIMARY']['CITY'] = $_REQUEST['values']['student_address']['HOME']['CITY'];
@@ -246,159 +300,292 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         $_REQUEST['values']['student_address']['PRIMARY']['STATE'] = $_REQUEST['values']['student_address']['HOME']['STATE'];
     }
 
-    foreach ($_REQUEST['values'] as $table => $type) {
-        foreach ($type as $ind => $val) {
-            if ($val['ID'] != 'new') {
-                $go = 'false';
-                $cond_go = 'false';
 
-                if ($val['PROFILE_ID'] != '') {
+    // echo "<pre>";
+    // $_REQUEST['values'] =   array_splice($_REQUEST['values'], 1, 1);
+    // print_r($_REQUEST);
+    // echo die();
+
+    foreach ($_REQUEST['values'] as $table => $type)
+    {
+        foreach ($type as $ind => $val)
+        {
+            if ($val['ID'] != 'new')
+            {
+                $go         = 'false';
+                $cond_go    = 'false';
+
+                if ($val['PROFILE_ID'] != '')
+                {
                     $staff_info_sql = "SELECT PROFILE_ID FROM people WHERE STAFF_ID=" . $val['ID'];
-                    $staff_info = DBGet(DBQuery($staff_info_sql));
-                    $staff_prof_id = $staff_info[1]['PROFILE_ID'];
+                    $staff_info     = DBGet(DBQuery($staff_info_sql));
+                    $staff_prof_id  = $staff_info[1]['PROFILE_ID'];
 
-                    $update_sql = 'UPDATE login_authentication SET PROFILE_ID =\'' . $val['PROFILE_ID'] . '\' WHERE USER_ID = ' . $val['ID'] . ' AND PROFILE_ID = ' . $staff_prof_id;
+                    $update_sql     = 'UPDATE login_authentication SET PROFILE_ID =\'' . $val['PROFILE_ID'] . '\' WHERE USER_ID = ' . $val['ID'] . ' AND PROFILE_ID = ' . $staff_prof_id;
+                    
                     DBQuery($update_sql);
                 }
-                foreach ($val as $col => $col_v) {
 
-                    if ($col != 'ID') {
-                        if ($col == 'PASSWORD' && $col_v != '') {
+                
+                foreach ($val as $col => $col_v)
+                {
+                    if ($col != 'ID')
+                    {
+                        if ($col == 'PASSWORD' && $col_v != '')
+                        {
                             $password = md5(singleQuoteReplace('', '', $col_v));
-                        } elseif ($col == 'USER_NAME' && $col_v != '') {
-                            $user_name_val = singleQuoteReplace('', '', $col_v);
-                        } elseif ($col == 'RELATIONSHIP' && $col_v != '')
-                            $rel_stu[] = $col . '=\'' . singleQuoteReplace('', '', $col_v) . '\'';
-                        elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'Y')
-                            $rel_stu[] = 'IS_EMERGENCY=\'' . singleQuoteReplace('', '', $col_v) . '\'';
-                        elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'N')
-                            $rel_stu[] = 'IS_EMERGENCY=NULL';
-                        else {
-                            if ($col != 'USER_NAME' && $col != 'RELATIONSHIP' && $col != 'PASSWORD' && $col != 'IS_EMERGENCY' && $col != 'IS_EMERGENCY_HIDDEN')
-                                $set_arr[] = $col . "='" . singleQuoteReplace('', '', $col_v) . "'";
                         }
+                        elseif ($col == 'USER_NAME' && $col_v != '')
+                        {
+                            $user_name_val = singleQuoteReplace('', '', $col_v);
+                        }
+                        elseif ($col == 'RELATIONSHIP' && $col_v != '')
+                        {
+                            $rel_stu[] = $col . '=\'' . singleQuoteReplace('', '', $col_v) . '\'';
+                        }
+                        elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'Y')
+                        {
+                            $rel_stu[] = 'IS_EMERGENCY=\'' . singleQuoteReplace('', '', $col_v) . '\'';
+                        }
+                        elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'N')
+                        {
+                            $rel_stu[] = 'IS_EMERGENCY=NULL';
+                        }
+                        else
+                        {
+                            if ($col != 'USER_NAME' && $col != 'RELATIONSHIP' && $col != 'PASSWORD' && $col != 'IS_EMERGENCY' && $col != 'IS_EMERGENCY_HIDDEN')
+                            {
+                                $set_arr[] = $col . "='" . singleQuoteReplace('', '', $col_v) . "'";
+                            }
+                        }
+                        
                         $go = 'true';
                     }
 
-                    if ($col == 'ID' && $col_v != '') {
-                        if ($table == 'people') {
+                    if ($col == 'ID' && $col_v != '')
+                    {
+                        if ($table == 'people')
+                        {
                             $where = 'STAFF_ID=' . $col_v;
 
-                            if ($ind == 'PRIMARY') {
-                                if ($_REQUEST['selected_pri_parent'] != '' && $col_v != $_REQUEST['selected_pri_parent']) {
+                            if ($ind == 'PRIMARY')
+                            {
+                                if ($_REQUEST['selected_pri_parent'] != '' && $col_v != $_REQUEST['selected_pri_parent'])
+                                {
                                     $rel_stu[] = 'PERSON_ID=\'' . $_REQUEST['selected_pri_parent'] . '\'';
                                 }
+                                
                                 $pri_up_pl_id = $col_v;
                             }
-                            if ($ind == 'SECONDARY') {
-                                if ($_REQUEST['selected_sec_parent'] != '' && $col_v != $_REQUEST['selected_sec_parent']) {
+                            
+                            if ($ind == 'SECONDARY')
+                            {
+                                if ($_REQUEST['selected_sec_parent'] != '' && $col_v != $_REQUEST['selected_sec_parent'])
+                                {
                                     $rel_stu[] = 'PERSON_ID=\'' . $_REQUEST['selected_sec_parent'] . '\'';
                                 }
+                                
                                 $sec_up_pl_id = $col_v;
                             }
-                            if ($ind == 'OTHER') {
-                                if ($_REQUEST['selected_oth_parent'] != '' && $col_v != $_REQUEST['selected_oth_parent']) {
+                            
+                            if ($ind == 'OTHER')
+                            {
+                                if ($_REQUEST['selected_oth_parent'] != '' && $col_v != $_REQUEST['selected_oth_parent'])
+                                {
                                     $rel_stu[] = 'PERSON_ID=\'' . $_REQUEST['selected_oth_parent'] . '\'';
                                 }
+                                
                                 $oth_up_pl_id = $col_v;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             $where = ' ID=' . $col_v;
                         }
+                        
                         $cond_go = 'true';
                     }
                 }
 
-
                 $set_arr = implode(',', $set_arr);
                 $rel_stu = implode(',', $rel_stu);
-                if ($set_arr != '') {
-                    if ($table == 'student_address') {
+                
+                if ($set_arr != '')
+                {
+                    if ($table == 'student_address')
+                    {
 
                         if (strpos($set_arr, 'BUS_PICKUP') == '')
                             $set_arr .= ',BUS_PICKUP=NULL';
                         if (strpos($set_arr, 'BUS_DROPOFF') == '')
                             $set_arr .= ',BUS_DROPOFF=NULL';
                     }
-                    if ($table == 'people') {
+                    
+                    if ($table == 'people')
+                    {
                         if (strpos($set_arr, 'CUSTODY') == '')
                             $set_arr .= ',CUSTODY=NULL';
                     }
 
                     $qry = 'UPDATE ' . $table . ' SET ' . $set_arr . ' WHERE ' . $where;
                 }
+
+
                 //codes to be inserted
                 if ($qry != '')
                     DBQuery($qry);
-                if ($ind == 'PRIMARY' && $rel_stu != '') {
+
+                if ($ind == 'PRIMARY' && $rel_stu != '')
+                {
                     DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Primary\' AND PERSON_ID=' . $pri_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
                 }
-                if ($ind == 'SECONDARY' && $rel_stu != '') {
+
+                if ($ind == 'SECONDARY' && $rel_stu != '')
+                {
                     DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Secondary\' AND PERSON_ID=' . $sec_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
                 }
-                if ($ind == 'OTHER' && $rel_stu != '') {
+                
+                if ($ind == 'OTHER' && $rel_stu != '')
+                {
                     DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Other\' AND PERSON_ID=' . $oth_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
                 }
-                if ($table == 'people' && $ind == 'PRIMARY') {
-                    if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '') {
 
+
+                if ($table == 'people' && $ind == 'PRIMARY')
+                {
+                    if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '')
+                    {
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
+                        
                         $num_user = DBGet($res_user_chk);
                         $num_pass = DBGet($res_pass_chk);
 
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+                        
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0)
+                            {
+                                // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
+
+                                $pri_exst_chk   =   DBQuery('SELECT * FROM login_authentication WHERE USER_ID = "'.$pri_up_pl_id.'" AND PROFILE_ID = "4"');
+
+                                $get_pri_chk    =   count(DBGet($pri_exst_chk));
 
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
-                            } else {
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                if($get_pri_chk > 0)
+                                {
+                                    DBQuery('UPDATE login_authentication SET USERNAME = "'.$user_name_val.'", PASSWORD = "'.$password.'" WHERE USER_ID = "'.$pri_up_pl_id.'" AND PROFILE_ID = "4"');
+                                }
+                                else
+                                {
+                                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
+                                }
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                            else
+                            {
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                            }
+                        }
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
-                if ($table == 'people' && $ind == 'SECONDARY') {
-                    if (clean_param($_REQUEST['secondary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '') {
+
+
+
+                if ($table == 'people' && $ind == 'SECONDARY')
+                {
+                    if (clean_param($_REQUEST['secondary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '')
+                    {
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
                         $num_user = DBGet($res_user_chk);
+                        
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
                         $num_pass = DBGet($res_pass_chk);
 
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+                        
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0)
+                            {
+                                // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
-                            } else {
+                                $sec_exst_chk   =   DBQuery('SELECT * FROM login_authentication WHERE USER_ID = "'.$sec_up_pl_id.'" AND PROFILE_ID = "4"');
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                $get_sec_chk    =   count(DBGet($sec_exst_chk));
+
+
+                                if($get_sec_chk > 0)
+                                {
+                                    DBQuery('UPDATE login_authentication SET USERNAME = "'.$user_name_val.'", PASSWORD = "'.$password.'" WHERE USER_ID = "'.$sec_up_pl_id.'" AND PROFILE_ID = "4"');
+                                }
+                                else
+                                {
+                                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
+                                }
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                            else
+                            {
+
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                            }
+                        }
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
-                if ($table == 'people' && $ind == 'OTHER') {
-                    if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '') {
+
+
+                if ($table == 'people' && $ind == 'OTHER')
+                {
+                    if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '')
+                    {
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
                         $num_user = DBGet($res_user_chk);
+                        
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
                         $num_pass = DBGet($res_pass_chk);
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+                        
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
-                            } else {
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0)
+                            {
+                                // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                $oth_exst_chk   =   DBQuery('SELECT * FROM login_authentication WHERE USER_ID = "'.$oth_up_pl_id.'" AND PROFILE_ID = "4"');
+
+                                $get_oth_chk    =   count(DBGet($oth_exst_chk));
+
+
+                                if($get_sec_chk > 0)
+                                {
+                                    DBQuery('UPDATE login_authentication SET USERNAME = "'.$user_name_val.'", PASSWORD = "'.$password.'" WHERE USER_ID = "'.$oth_up_pl_id.'" AND PROFILE_ID = "4"');
+                                }
+                                else
+                                {
+                                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_up_pl_id . ',\'' . $user_name_val . '\',\'' . $password . '\',4)');
+                                }
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                            else
+                            {
+
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                            }
+                        }
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
+
+
                 unset($set_arr);
                 unset($where);
                 unset($col);
@@ -410,58 +597,85 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 unset($rel_stu);
 
                 $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ''));
-                foreach ($get_person_ids as $gpi => $gpd) {
+
+                foreach ($get_person_ids as $gpi => $gpd)
+                {
                     if ($gpd['EMERGENCY_TYPE'] != 'Other')
                         DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND STUDENT_ID=' . UserStudentID());
                 }
             }
-            else {
+            else
+            {
                 $pri_pep_exists = 'N';
                 $sec_pep_exists = 'N';
                 $oth_pep_exists = 'N';
-                if ($ind == 'PRIMARY' || $ind == 'SECONDARY') {
-                    $pri_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['LAST_NAME']) . '\' AND EMAIL=\'' . $_REQUEST['values']['people']['PRIMARY']['EMAIL'] . '\''));
-//                    if(count($pri_people_exists)>0)
-                    if ($_REQUEST['hidden_primary'] != '') {
 
+
+                if ($ind == 'PRIMARY' || $ind == 'SECONDARY')
+                {
+                    $pri_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['LAST_NAME']) . '\' AND EMAIL=\'' . $_REQUEST['values']['people']['PRIMARY']['EMAIL'] . '\''));
+                    //  if(count($pri_people_exists)>0)
+
+                    if ($_REQUEST['hidden_primary'] != '')
+                    {
                         $pri_person_id = $_REQUEST['hidden_primary'];
                         $pri_pep_exists = 'Y';
-                    } else {
+                    }
+                    else
+                    {
                         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'people'"));
                         $pri_person_id = $id[1]['AUTO_INCREMENT'];
                     }
+
+
                     $sec_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['EMAIL']) . '\''));
                     
-                        if($_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']=='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']=='')
-                        {
-                            $sec_pep_exists = 'Y';
-                        }
+                    if($_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']=='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']=='')
+                    {
+                        $sec_pep_exists = 'X';
+                    }
+
 // if(count($sec_people_exists)>0)
-                    if ($_REQUEST['hidden_secondary'] != '') {
+                    if ($_REQUEST['hidden_secondary'] != '')
+                    {
                         $sec_person_id = $_REQUEST['hidden_secondary'];
                         $sec_pep_exists = 'Y';
-                    } else {
+                    }
+                    else 
+                    {
                         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'people'"));
                         $sec_person_id = $id[1]['AUTO_INCREMENT'];
                     }
                 }
-                if ($ind == 'OTHER' && $table == 'people') {
+
+                if ($ind == 'OTHER' && $table == 'people')
+                {
                     $oth_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['EMAIL']) . '\''));
 //                    if(count($oth_people_exists)>0)
 //                    {
-                    if ($_REQUEST['hidden_other'] != '') {
+                    
+                    if ($_REQUEST['hidden_other'] != '')
+                    {
                         $oth_person_id = $_REQUEST['hidden_other'];
                         $oth_pep_exists = 'Y';
-                    } else {
+                    }
+                    else
+                    {
                         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'people'"));
                         $oth_person_id = $id[1]['AUTO_INCREMENT'];
                     }
                 }
-                $go = 'false';
+                
+                $go     = 'false';
                 $log_go = false;
-                foreach ($val as $col => $col_v) {
-                    if ($table == 'student_address') {
-                        if ($col != 'ID' && $col_v != '') {
+
+                
+                foreach ($val as $col => $col_v)
+                {
+                    if ($table == 'student_address')
+                    {
+                        if ($col != 'ID' && $col_v != '')
+                        {
                             $fields[] = $col;
 
                             $field_vals[] = "'" . singleQuoteReplace('', '', $col_v) . "'";
@@ -469,13 +683,20 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             $go = 'true';
                         }
                     }
-                    if ($table == 'people') {
-                        if ($col != 'ID' && $col_v != '') {
-                            if ($col == 'RELATIONSHIP' || $col == 'IS_EMERGENCY') {
+                    
+                    if ($table == 'people')
+                    {
+                        if ($col != 'ID' && $col_v != '')
+                        {
+                            if ($col == 'RELATIONSHIP' || $col == 'IS_EMERGENCY')
+                            {
                                 $sjp_field .= $col . ',';
                                 $sjp_value .= "'" . $col_v . "',";
-                            } else {
-                                if ($col != 'PASSWORD' && $col != 'USER_NAME' && $col != 'IS_EMERGENCY_HIDDEN') {
+                            }
+                            else
+                            {
+                                if ($col != 'PASSWORD' && $col != 'USER_NAME' && $col != 'IS_EMERGENCY_HIDDEN')
+                                {
                                     $peo_fields[] = $col;
                                     $peo_field_vals[] = "'" . singleQuoteReplace('', '', $col_v) . "'";
                                     $log_go = true;
@@ -484,11 +705,15 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         }
                     }
                 }
-                $fields = implode(',', $fields);
-                $field_vals = implode(',', $field_vals);
-                $peo_fields = implode(',', $peo_fields);
+                
+                $fields         = implode(',', $fields);
+                $field_vals     = implode(',', $field_vals);
+                $peo_fields     = implode(',', $peo_fields);
                 $peo_field_vals = implode(',', $peo_field_vals);
-                if ($table == 'student_address') {
+
+                
+                if ($table == 'student_address')
+                {
                     if ($ind == 'PRIMARY' || $ind == 'SECONDARY' || $ind == 'OTHER')
                         $type_n = 'type,people_id';
                     else
@@ -506,62 +731,111 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $ind_n = "'Mail'";
 
 
-                if ($table == 'student_address') {
+                if ($table == 'student_address')
+                {
                     if ($ind == 'HOME' || $ind == 'MAIL')
+                    // if ($ind == 'MAIL')
+                    {
                         $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id,' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool() . ',' . $field_vals . ',' . $ind_n . ') ';
+                    }
                     if (($ind == 'PRIMARY') || ($ind == 'SECONDARY') || ($ind == 'OTHER'))
                     {
-                       if($fields!='' && substr($fields,0,1)!=',')
+                        if($fields!='' && substr($fields,0,1)!=',')
                                 $fields=','.$fields;
                         if($field_vals!='' && substr($field_vals,0,1)!=',')
                            $field_vals=','.$field_vals; 
                         if($ind == 'SECONDARY' && $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']!='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']!='')
                         {
-                             $go = 'true';
-                              $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool()  . $field_vals . ',' . $ind_n . ') ';
+                            $go = 'true';
+                            $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool()  . $field_vals . ',' . $ind_n . ') ';
                         }
                                 
                         if($ind != 'SECONDARY')
                             $qry = 'INSERT INTO ' . $table . ' (student_id,syear,school_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserSchool()  . $field_vals . ',' . $ind_n . ') ';
                     }
                 }
-                if ($table == 'people') {
-                    
-                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N')) {
+                
+                if ($table == 'people')
+                {
+                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N'))
+                    {
                         $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'student_id,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
+                        
+
                         $peo_fields_ar = explode(',', $peo_fields);
-                        if (!in_array('PROFILE_ID', $peo_fields_ar)) {
+                        
+                        if (!in_array('PROFILE_ID', $peo_fields_ar))
+                        {
                             $sql_peo = 'INSERT INTO people (CURRENT_SCHOOL_ID,profile,profile_id,' . $peo_fields . ') VALUES (' . UserSchool() . ',\'parent\',4,' . $peo_field_vals . ')';
-                        } else {
+                        }
+                        else
+                        {
                             $sql_peo = 'INSERT INTO people (CURRENT_SCHOOL_ID,profile,' . $peo_fields . ') VALUES (' . UserSchool() . ',\'parent\',' . $peo_field_vals . ')';
                         }
                     }
+                    else if (($ind == 'PRIMARY' && $pri_pep_exists == 'Y') || ($ind == 'SECONDARY' && $sec_pep_exists == 'Y') || ($ind == 'OTHER' && $oth_pep_exists == 'Y'))
+                    {
+                        $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'student_id,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
+                    }
                 }
+
+                
                 if ($go == 'true' & $qry != '')
                     
                     DBQuery($qry);
 
-                if ($log_go) {
-                    if($sql_sjp!=''){
-                    DBQuery($sql_sjp);
-                    unset($sql_sjp);
+                if ($log_go)
+                {
+                    if($sql_sjp!='')
+                    {
+                        DBQuery($sql_sjp);
+                        unset($sql_sjp);
                     }
-                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N')){
+                    
+                    if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N'))
+                    {
                         DBQuery($sql_peo);
                         unset($sql_peo);
                     }
-                    
                 }
 
-                if ($table == 'people' && $ind == 'PRIMARY' && $type['PRIMARY']['USER_NAME'] != '' && $pri_pep_exists == 'N') {
-                    if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y') {
+
+
+                if($table == 'people' && $ind == 'PRIMARY' && $pri_pep_exists == 'N')
+                {
+                    // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
+
+                    $pri_prof_id    =   4;
+
+                    if($type['PRIMARY']['PASSWORD'] == '')
+                    {
+                        $parent_auth_pwd    =   '';
+                    }
+                    else
+                    {
+                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                    }
+
+
+                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $pri_prof_id . ')');
+                }
+
+
+                if ($table == 'people' && $ind == 'PRIMARY' && $type['PRIMARY']['USER_NAME'] != '' && $pri_pep_exists == 'N')
+                {
+                    if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y')
+                    {
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['PRIMARY']['PASSWORD']) . '\'');
                         $num_pass = DBGet($res_pass_chk);
+                        
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['PRIMARY']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
 
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0) 
+                            {
                                 if ($_REQUEST['values']['people']['PRIMARY']['PROFILE_ID'] != '')
                                     $pri_prof_id = $_REQUEST['values']['people']['PRIMARY']['PROFILE_ID'];
                                 else
@@ -569,25 +843,52 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                                 DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . md5($type['PRIMARY']['PASSWORD']) . '\',' . $pri_prof_id . ')');
                             }
-                            else {
+                            else
+                            {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                        } 
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
-                if ($table == 'people' && $ind == 'SECONDARY' && $sec_pep_exists == 'N') {
 
-                    if (clean_param($_REQUEST['secondary_portal'], PARAM_ALPHAMOD) == 'Y' && $type['SECONDARY']['USER_NAME'] != '') {
+                if ($table == 'people' && $ind == 'SECONDARY' && $sec_pep_exists == 'N')
+                {
+
+                    // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
+
+                    $sec_prof_id    =   4;
+
+                    if($type['PRIMARY']['PASSWORD'] == '')
+                    {
+                        $parent_auth_pwd    =   '';
+                    }
+                    else
+                    {
+                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                    }
+
+                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $sec_prof_id . ')');
+
+
+
+                    if (clean_param($_REQUEST['secondary_portal'], PARAM_ALPHAMOD) == 'Y' && $type['SECONDARY']['USER_NAME'] != '')
+                    {
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['SECONDARY']['PASSWORD']) . '\'');
                         $num_pass = DBGet($res_pass_chk);
 
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['SECONDARY']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+                        
+
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0)
+                            {
                                 if ($_REQUEST['values']['people']['SECONDARY']['PROFILE_ID'] != '')
                                     $sec_prof_id = $_REQUEST['values']['people']['SECONDARY']['PROFILE_ID'];
                                 else
@@ -595,23 +896,52 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                                 DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['SECONDARY']['USER_NAME'] . '\',\'' . md5($type['SECONDARY']['PASSWORD']) . '\',' . $sec_prof_id . ')');
                             }
-                            else {
+                            else
+                            {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                        }
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
-                if ($table == 'people' && $ind == 'OTHER' && $oth_pep_exists == 'N') {
-                    if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $type['OTHER']['USER_NAME'] != '') {
+
+
+                if ($table == 'people' && $ind == 'OTHER' && $oth_pep_exists == 'N')
+                {
+
+                    // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
+
+                    $oth_prof_id    =   4;
+
+                    if($type['PRIMARY']['PASSWORD'] == '')
+                    {
+                        $parent_auth_pwd    =   '';
+                    }
+                    else
+                    {
+                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                    }
+
+                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $oth_prof_id . ')');
+
+
+                    if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $type['OTHER']['USER_NAME'] != '')
+                    {
                         $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['OTHER']['PASSWORD']) . '\'');
                         $num_pass = DBGet($res_pass_chk);
+                        
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['OTHER']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
-                        if (count($num_user) == 0) {
-                            if (count($num_pass) == 0) {
+                        
+
+                        if (count($num_user) == 0)
+                        {
+                            if (count($num_pass) == 0)
+                            {
                                 if ($_REQUEST['values']['people']['OTHER']['PROFILE_ID'] != '')
                                     $oth_prof_id = $_REQUEST['values']['people']['OTHER']['PROFILE_ID'];
                                 else
@@ -619,12 +949,15 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                                 DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['OTHER']['USER_NAME'] . '\',\'' . md5($type['OTHER']['PASSWORD']) . '\',' . $oth_prof_id . ')');
                             }
-                            else {
+                            else
+                            {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists.</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
                             }
-                        } else {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists.</b></font>';</script>";
+                        }
+                        else
+                        {
+                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
                         }
                     }
                 }
@@ -643,8 +976,11 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 unset($type_n);
                 unset($ind_n);
                 unset($go);
+                
                 $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ''));
-                foreach ($get_person_ids as $gpi => $gpd) {
+                
+                foreach ($get_person_ids as $gpi => $gpd)
+                {
                     if ($gpd['EMERGENCY_TYPE'] != 'Other')
                         DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND STUDENT_ID=' . UserStudentID());
                 }
@@ -673,8 +1009,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
     }
 }
 
-if (!$_REQUEST['modfunc']) {
+if (!$_REQUEST['modfunc']) 
+{
     $addres_id = DBGet(DBQuery('SELECT ID AS ADDRESS_ID FROM student_address WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TYPE=\'Home Address\' '));
+
+
     if (count($addres_id) == 1 && $addres_id[1]['ADDRESS_ID'] != '')
         $_REQUEST['address_id'] = $addres_id[1]['ADDRESS_ID'];
 
@@ -685,14 +1024,17 @@ if (!$_REQUEST['modfunc']) {
     ############################################################################################
 
     $style = '';
-    if ($_REQUEST['person_id'] == 'new') {
+
+    if ($_REQUEST['person_id'] == 'new')
+    {
         if ($_REQUEST['address_id'] != 'new')
             echo '<li class="list-group-item" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=' . $_REQUEST['address_id'] . '\';" >';
         else
             echo '<li class="list-group-item" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=new\';" >';
         echo '<A style="cursor:pointer"><b>Student\'s Address </b>';
     }
-    else {
+    else
+    {
         if ($_REQUEST['person_id'] == $contact['PERSON_ID'])
             $active = 'active';
         elseif ($_REQUEST['person_id'] != $contact['PERSON_ID'])
@@ -703,15 +1045,20 @@ if (!$_REQUEST['modfunc']) {
         echo '<a href="javascript:void(0);" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=$_REQUEST[address_id]\';">';
         echo 'Student\'s Address';
     }
+
     echo '</a>' . (($active != '') ? '<span class="text-slate pull-right"><i class="icon-arrow-right13"></i></span>' : '');
     echo '</li>';
 
 
 
     $contacts_RET = DBGet(DBQuery('SELECT PERSON_ID,RELATIONSHIP AS STUDENT_RELATION FROM students_join_people WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND EMERGENCY_TYPE=\'Other\' ORDER BY STUDENT_RELATION'));
+
     $i = 1;
-    if (count($contacts_RET)) {
-        foreach ($contacts_RET as $contact) {
+
+    if (count($contacts_RET))
+    {
+        foreach ($contacts_RET as $contact)
+        {
             $THIS_RET = $contact;
 
             $style .= ' ';
@@ -745,9 +1092,12 @@ if (!$_REQUEST['modfunc']) {
             echo '</li>';
         }
     }
+
     ############################################################################################	
     // New Address
-    if (AllowEdit()) {
+    
+    if (AllowEdit())
+    {
         /* if ($_REQUEST['address_id'] !== 'new' && $_REQUEST['address_id'] !== 'old') {
 
           echo '<TABLE width=100%><TR><TD>';
@@ -764,11 +1114,16 @@ if (!$_REQUEST['modfunc']) {
           } */
 
         $check_address = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM students_join_people WHERE STUDENT_ID=' . UserStudentID()));
-        if ($check_address[1]['REC_EX'] > 1) {
-            if (clean_param($_REQUEST['person_id'], PARAM_ALPHAMOD) == 'new') {
+        
+        if ($check_address[1]['REC_EX'] > 1)
+        {
+            if (clean_param($_REQUEST['person_id'], PARAM_ALPHAMOD) == 'new')
+            {
                 echo '<li class="list-group-item active"><a href="javascript:void(0);" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=' . $_REQUEST['address_id'] . '&person_id=new&con_info=old\';">';
                 echo '<i class="icon-plus2"></i> Add New Contact</A><li>';
-            } else {
+            }
+            else
+            {
                 echo '<li class="list-group-item"><a href="javascript:void(0);" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=' . $_REQUEST['address_id'] . '&person_id=new&con_info=old\';">';
                 echo '<i class="icon-plus2"></i> Add New Contact</A></li>';
             }
@@ -778,12 +1133,17 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>';
     echo '<div class="col-md-12">';
 
-    if (isset($_REQUEST['address_id']) && $_REQUEST['con_info'] != 'old') {
+    if (isset($_REQUEST['address_id']) && $_REQUEST['con_info'] != 'old')
+    {
         $h_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
                                    sa.TYPE=\'Home Address\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\' AND sa.SCHOOL_ID=\'' . UserSchool() . '\' '));
 
+
         $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
-        if (count($pri_par_id) > 0) {
+
+
+        if (count($pri_par_id) > 0)
+        {
             $p_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
             $p_addr[1]['RELATIONSHIP'] = $pri_par_id[1]['RELATIONSHIP'];
@@ -791,7 +1151,8 @@ if (!$_REQUEST['modfunc']) {
             $primary_user_profs_ids_arr = array();
             $primary_user_profs_ids = DBGet(DBQuery('SELECT id FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
 
-            foreach ($primary_user_profs_ids as $k => $v) {
+            foreach ($primary_user_profs_ids as $k => $v)
+            {
                 $primary_user_profs_ids_arr[] = $primary_user_profs_ids[$k]['ID'];
             }
 
@@ -801,11 +1162,14 @@ if (!$_REQUEST['modfunc']) {
             $p_addr[1]['USER_NAME'] = $p_log_addr[1]['USER_NAME'];
             $p_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
         }
+        
         $m_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
                                    sa.TYPE=\'Mail\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\'  AND sa.SYEAR=\'' . UserSyear() . '\' AND sa.SCHOOL_ID=\'' . UserSchool() . '\' '));
+        
         $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
 
-        if (count($sec_par_id) > 0) {
+        if (count($sec_par_id) > 0)
+        {
             $s_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
 
@@ -814,7 +1178,9 @@ if (!$_REQUEST['modfunc']) {
 
             $s_user_profs_ids_arr = array();
             $s_user_profs_ids = DBGet(DBQuery('SELECT id FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
-            foreach ($s_user_profs_ids as $k => $v) {
+
+            foreach ($s_user_profs_ids as $k => $v)
+            {
                 $s_user_profs_ids_arr[] = $s_user_profs_ids[$k]['ID'];
             }
 
@@ -823,12 +1189,16 @@ if (!$_REQUEST['modfunc']) {
             $p_log_addr = DBGet(DBQuery('SELECT USERNAME AS USER_NAME ,PASSWORD FROM login_authentication WHERE USER_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND PROFILE_ID in (' . $s_user_profs_id . ')'));
             $s_addr[1]['USER_NAME'] = $p_log_addr[1]['USER_NAME'];
             $s_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
-        } else {
+        } 
+        else
+        {
             $s_addr = DBGet(DBQuery('SELECT ID AS ADDRESS_ID from student_address WHERE STUDENT_ID=' . UserStudentID() . ' AND TYPE=\'Secondary\' '));
         }
+        
         echo "<INPUT type=hidden name=address_id value=$_REQUEST[address_id]>";
 
-        if ($_REQUEST['address_id'] != '0' && $_REQUEST['address_id'] !== 'old') {
+        if ($_REQUEST['address_id'] != '0' && $_REQUEST['address_id'] !== 'old')
+        {
 
 
             $profiles_options = DBGet(DBQuery('SELECT PROFILE ,TITLE, ID FROM user_profiles WHERE profile = \'parent\' ORDER BY ID'));
@@ -860,7 +1230,8 @@ if (!$_REQUEST['modfunc']) {
             if ($s_addr[1]['CUSTODY'] == 'N')
                 unset($s_addr[1]['CUSTODY']);
 
-            //hidden fields//
+
+            // HIDDEN FIELDS //
             if ($h_addr[1]['ADDRESS_ID'] != '')
                 echo '<input type=hidden name="values[student_address][HOME][ID]" id=pri_person_id value=' . $h_addr[1]['ADDRESS_ID'] . ' />';
             else
@@ -897,31 +1268,35 @@ if (!$_REQUEST['modfunc']) {
 
 
             echo '<FIELDSET><h5 class="text-primary">Student\'s Home Address ';
-            if ($h_addr[1]['ADDRESS_ID'] != '0') {
+            if ($h_addr[1]['ADDRESS_ID'] != '0')
+            {
                 $display_address = urlencode($h_addr[1]['ADDRESS'] . ', ' . ($h_addr[1]['CITY'] ? ' ' . $h_addr[1]['CITY'] . ', ' : '') . $h_addr[1]['STATE'] . ($h_addr[1]['ZIPCODE'] ? ' ' . $h_addr[1]['ZIPCODE'] : ''));
+
                 $link = 'http://google.com/maps?q=' . $display_address;
+
                 echo '<A class="btn bg-primary btn-xs btn-labeled pull-right" HREF="javascript:void(0);" onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</A>';
             }
+
             echo '</h5>';
             echo '<hr/>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Address Line 1 <span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($h_addr[1]['ADDRESS'], 'values[student_address][HOME][STREET_ADDRESS_1]', '', '') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Address Line 1 <span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($h_addr[1]['ADDRESS'], 'values[student_address][HOME][STREET_ADDRESS_1]', '', '') . '</div></div></div>';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Address Line 2</label><div class="col-md-8">' . TextInput($h_addr[1]['STREET'], 'values[student_address][HOME][STREET_ADDRESS_2]', '', '') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">City <span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($h_addr[1]['CITY'], 'values[student_address][HOME][CITY]', '', '') . '</div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">State <span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($h_addr[1]['STATE'], 'values[student_address][HOME][STATE]', '', '') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">City <span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($h_addr[1]['CITY'], 'values[student_address][HOME][CITY]', '', '') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">State <span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($h_addr[1]['STATE'], 'values[student_address][HOME][STATE]', '', '') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Zip/Postal Code <span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($h_addr[1]['ZIPCODE'], 'values[student_address][HOME][ZIPCODE]', '', '') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Zip/Postal Code <span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($h_addr[1]['ZIPCODE'], 'values[student_address][HOME][ZIPCODE]', '', '') . '</div></div></div>';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Bus No</label><div class="col-md-8">' . TextInput($h_addr[1]['BUS_NO'], 'values[student_address][HOME][BUS_NO]', '', 'class=cell_small') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">School Bus Pick-up</label><div class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_PICKUP'], 'values[student_address][HOME][BUS_PICKUP]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">School Bus Drop-off</label><div class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_DROPOFF'], 'values[student_address][HOME][BUS_DROPOFF]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">School Bus Pick-up</label><div id="PUT_BPU" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_PICKUP'], 'values[student_address][HOME][BUS_PICKUP]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">School Bus Drop-off</label><div id="PUT_BDO" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_DROPOFF'], 'values[student_address][HOME][BUS_DROPOFF]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '</FIELDSET>';
@@ -932,30 +1307,61 @@ if (!$_REQUEST['modfunc']) {
 
 
 
-            if ($m_addr[1]['ADDRESS_ID'] != '' && $h_addr[1]['ADDRESS_ID'] != '') {
+            if ($m_addr[1]['ADDRESS_ID'] != '' && $h_addr[1]['ADDRESS_ID'] != '')
+            {
                 $extra_sql = '';
+
                 if ($m_addr[1]['STREET'] != '')
                     $extra_sql = 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $m_addr[1]['STREET']) . '\' ';
                 else
-                    $extra_sql = 'AND STREET_ADDRESS_2 is NULL ';
-                $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                    $extra_sql      = 'AND STREET_ADDRESS_2 is NULL ';
+                    $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                
                 if ($s_mail_address[1]['TOTAL'] != 0)
+                {
                     $m_checked = " CHECKED=CHECKED ";
+                }
                 else
+                {
                     $m_checked = " ";
+                }
             }
 
             echo '<div class="row">';
             if ($h_addr[1]['ADDRESS_ID'] != 0)
+            {
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $m_checked . ' id="same_addr" name="same_addr" set_check_value value="Y">&nbsp;Same as Home Address &nbsp;</label></div></div></div></div>';
-            if ($h_addr[1]['ADDRESS_ID'] == 0)
-                echo '<div class="form-group"><div class="col-md-12"><label class="radio-inline"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>&nbsp;Same as Home Address</label><label class="radio-inline"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">&nbsp;Add New Address</label></div></div>';
-            echo '</div>';
+            }
+
+            if(isset($_SESSION['HOLD_ADDR_DATA']))
+            {
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_SAME_HOME'] == 'Y')
+                {
+                    $same_as_home_y =   " checked=checked ";
+                    $same_as_home_n =   " ";
+                }
+                else
+                {
+                    $same_as_home_y =   " ";
+                    $same_as_home_n =   " checked=checked ";
+                }
+            }
 
             if ($h_addr[1]['ADDRESS_ID'] == 0)
+            {
+                echo '<div class="form-group"><div class="col-md-12"><label class="radio-inline"><input type="radio" id="r4" name="r4" '.$same_as_home_y.' value="Y" onClick="hidediv();" checked>&nbsp;Same as Home Address</label><label class="radio-inline"><input type="radio" id="r4" name="r4" '.$same_as_home_n.'  value="N" onClick="showdiv();">&nbsp;Add New Address</label></div></div>';
+            }
+            echo '</div>';
+
+
+            if ($h_addr[1]['ADDRESS_ID'] == 0)
+            {
                 echo '<div id="hideShow" style="display:none">';
+            }
             else
-                echo '<div id="hideShow">';
+            {
+                echo '<div id="hideShow">'; 
+            }
 
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Address Line 1</label><div class="col-md-8">' . TextInput($m_addr[1]['ADDRESS'], 'values[student_address][MAIL][STREET_ADDRESS_1]', '', '') . '</div></div></div>';
@@ -982,22 +1388,27 @@ if (!$_REQUEST['modfunc']) {
 
             $prim_relation_options = _makeAutoSelect('RELATIONSHIP', 'students_join_people', 'PRIMARY', $p_addr['RELATIONSHIP'], $relation_options);
 
-            if (User('PROFILE') != 'teacher') {
+            if (User('PROFILE') != 'teacher')
+            {
                 echo '<div class="row">';
-                if (User('PROFILE') == 'student' || User('PROFILE') == 'parent') {
-                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '</div></div></div>';
-                } else {
-                    // echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=primary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
-                    // echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal" data-target="#modal_default_lookup" name=lookup class=btn btn-primary value=Lookup onclick=(\'modal_default_lookup\');></span></div></div></div></div>';
+                if (User('PROFILE') == 'student' || User('PROFILE') == 'parent')
+                {
+                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '</div></div></div>';
+                } 
+                else
+                {
+                    // echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=primary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
+                    // echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal" data-target="#modal_default_lookup" name=lookup class=btn btn-primary value=Lookup onclick=(\'modal_default_lookup\');></span></div></div></div></div>';
 //                    javascript:void(0) data-toggle='modal' data-target='#modal_default'
-                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'primary\');></span></div></div></div></div>';
+                    echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($p_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'PRIMARY', '', $prim_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'primary\');></span></div></div></div></div>';
                 }
+
                 echo '</div>';
             }
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($p_addr[1]['FIRST_NAME'], 'values[people][PRIMARY][FIRST_NAME]', '', 'id=pri_fname') . '</div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($p_addr[1]['LAST_NAME'], 'values[people][PRIMARY][LAST_NAME]', '', 'id=pri_lname') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($p_addr[1]['FIRST_NAME'], 'values[people][PRIMARY][FIRST_NAME]', '', 'id=pri_fname') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($p_addr[1]['LAST_NAME'], 'values[people][PRIMARY][LAST_NAME]', '', 'id=pri_lname') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
@@ -1019,13 +1430,18 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Custody of Student</label><div class="col-md-8">' . CheckboxInputMod($p_addr[1]['CUSTODY'], 'values[people][PRIMARY][CUSTODY]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
             echo '</div>'; //.row
 
-            if ($p_addr[1]['USER_NAME'] == '') {
+            if ($p_addr[1]['USER_NAME'] == '')
+            {
                 $portal_check = '';
                 $style = 'style="display:none"';
-            } else {
+            }
+            else
+            {
                 $portal_check = 'checked="checked"';
                 $style = '';
             }
+
+            
             if (User('PROFILE_ID') == 3 || User('PROFILE') == 'teacher')
                 $student_disable_all = 'disabled';
             echo '<input type=hidden name=prim_custody value="' . $p_addr[1]['CUSTODY'] . '" />';
@@ -1136,7 +1552,7 @@ if (!$_REQUEST['modfunc']) {
                     echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '</div></div></div>';
                 } else {
                     //echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=secondary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
-//                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal" data-target="#modal_default_lookup" name=lookup class=btn btn-primary value=Lookup onclick=(\'modal_default_lookup\');></span></div></div></div></div>';
+//                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal" data-target="#modal_default_lookup" name=lookup class=btn btn-primary value=Lookup onclick=(\'modal_default_lookup\');></span></div></div></div></div>';
 //                
                     echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($s_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'SECONDARY', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'secondary\');></span></div></div></div></div>';
                 }
@@ -1168,10 +1584,13 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Custody of Student</label><div class="col-md-8">' . CheckboxInputMod($s_addr[1]['CUSTODY'], 'values[people][SECONDARY][CUSTODY]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
             echo '</div>'; //.row
 
-            if ($s_addr[1]['USER_NAME'] == '') {
+            if ($s_addr[1]['USER_NAME'] == '') 
+            {
                 $portal_check = '';
                 $style = 'style="display:none"';
-            } else {
+            } 
+            else 
+            {
                 $portal_check = 'checked="checked"';
                 $style = '';
             }
@@ -1273,15 +1692,19 @@ if (!$_REQUEST['modfunc']) {
 
 $parent_user_profs = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
 
-foreach ($parent_user_profs as $parent_user_profs_value) {
+foreach ($parent_user_profs as $parent_user_profs_value)
+{
     $parent_user_prof_options[$parent_user_profs_value['ID']] = $parent_user_profs_value['TITLE'];
 }
 
-if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
+if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old')
+{
     echo "<INPUT type=hidden name=person_id value=$_REQUEST[person_id]>";
 
-    if ($_REQUEST['person_id'] != 'old') {
-        if ($_REQUEST['person_id'] != 'new') {
+    if ($_REQUEST['person_id'] != 'old')
+    {
+        if ($_REQUEST['person_id'] != 'new')
+        {
             $other_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND PERSON_ID=' . $_REQUEST['person_id'] . ' AND EMERGENCY_TYPE=\'Other\''));
 
             $o_addr = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
@@ -1342,10 +1765,10 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
 //            echo '<div class="row">';
 //            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $o_addr[1]['PERSON_ID'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
 //            echo '</div>'; //.row
-            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'other\',\'' . $o_addr[1][PERSON_ID] . '\');></span></div></div></div></div>';
+            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=Lookup onclick=modal_parenttype(\'other\',\'' . $o_addr[1][PERSON_ID] . '\');></span></div></div></div></div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger>*</span></label><div class="col-md-8"><DIV id=person_f_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', '')) . '","person_f_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['FIRST_NAME'] . '</div></DIV></div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger>*</span></label><div class="col-md-8"><DIV id=person_l_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', '')) . '","person_l_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['LAST_NAME'] . '</div></DIV></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger> *</span></label><div class="col-md-8"><DIV id=person_f_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', '')) . '","person_f_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['FIRST_NAME'] . '</div></DIV></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger> *</span></label><div class="col-md-8"><DIV id=person_l_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', '')) . '","person_l_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['LAST_NAME'] . '</div></DIV></div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
@@ -1356,9 +1779,9 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Mobile Phone</label><div class="col-md-8">' . TextInput($o_addr[1]['CELL_PHONE'], 'values[people][OTHER][CELL_PHONE]', '', '') . '</div></div></div>';
             if ($o_addr[1]['PERSON_ID'] == '') {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off onkeyup=peoplecheck_email(this,2,0) ') . '<p id="email_2" class="help-block"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off onkeyup=peoplecheck_email(this,2,0) ') . '<p id="email_2" class="help-block"></p></div></div></div>';
             } else {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off onkeyup=peoplecheck_email(this,2,' . $o_addr[1]['PERSON_ID'] . ') ') . '<p id="email_2" class="help-block"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off onkeyup=peoplecheck_email(this,2,' . $o_addr[1]['PERSON_ID'] . ') ') . '<p id="email_2" class="help-block"></p></div></div></div>';
             }
             echo '</div>'; //.row
 
@@ -1438,7 +1861,9 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Bus No</label><div class="col-md-8">' . TextInput($o_addr[1]['BUS_NO'], 'values[student_address][OTHER][BUS_NO]', '', 'class=cell_small') . '</div></div></div>';
             echo '</div>'; //.row
-        } else {
+        }
+        else 
+        {
 
             $extra = "id=" . "'values[people][OTHER][RELATIONSHIP]'";
 
@@ -1448,14 +1873,14 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
 
             if (User('PROFILE') != 'teacher') {
 //                echo '<div class="row">';
-//                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
+//                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type="button" name="lookup" class="btn btn-primary" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
 //                echo '</div>'; //.row
-                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger>*</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type=button  data-toggle="modal" class=btn btn-primary  name=lookup  value=Lookup onclick=modal_parenttype(\'other\',\'new\');></span></div></div></div></div>';
+                echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">Relationship to Student<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . SelectInput($o_addr[1]['RELATIONSHIP'], 'values[people][OTHER][RELATIONSHIP]', '', $relation_options, 'N/A', $extra) . '<span class="input-group-btn"><input type=button  data-toggle="modal" class=btn btn-primary  name=lookup  value=Lookup onclick=modal_parenttype(\'other\',\'new\');></span></div></div></div></div>';
             }
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger>*</span></label><div class="col-md-8">' . _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', 'id=oth_fname') . '</div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger>*</span></label><div class="col-md-8">' . _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', 'id=oth_lname') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">First Name<span class=text-danger> *</span></label><div class="col-md-8">' . _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', 'id=oth_fname') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Last Name<span class=text-danger> *</span></label><div class="col-md-8">' . _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', 'id=oth_lname') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '<div class="row">';
@@ -1466,9 +1891,9 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Mobile Phone</label><div class="col-md-8">' . TextInput($o_addr[1]['CELL_PHONE'], 'values[people][OTHER][CELL_PHONE]', '', 'id=oth_cphone') . '</div></div></div>';
             if ($o_addr[1]['PERSON_ID'] == '') {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off id=oth_email onkeyup=peoplecheck_email(this,2,0); ') . '<p class="help-block" id="email_2"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off id=oth_email onkeyup=peoplecheck_email(this,2,0); ') . '<p class="help-block" id="email_2"></p></div></div></div>';
             } else {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger>*</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off id=oth_email onkeyup=peoplecheck_email(this,2,' . $o_addr[1]['PERSON_ID'] . ') ') . '<p class="help-block" id="email_2"></p></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Email<span class=text-danger> *</span></label><div class="col-md-8">' . TextInput($o_addr[1]['EMAIL'], 'values[people][OTHER][EMAIL]', '', 'autocomplete=off id=oth_email onkeyup=peoplecheck_email(this,2,' . $o_addr[1]['PERSON_ID'] . ') ') . '<p class="help-block" id="email_2"></p></div></div></div>';
             }
             echo '</div>'; //.row
 
@@ -1517,7 +1942,7 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '<div id="portal_hidden_div_2" ></div>';
 
             echo '<div class="row">';
-            echo '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-md-2">Address<span class=text-danger>*</span></label><div class="col-md-10"><label class="radio-inline"><input type="radio" id="ros" name="r7" value="Y" onClick="addn_hidediv();" checked>Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="ron" name="r7" value="N" onClick="addn_showdiv();">Add New Address</label></div></div></div>';
+            echo '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-md-2">Address<span class=text-danger> *</span></label><div class="col-md-10"><label class="radio-inline"><input type="radio" id="ros" name="r7" value="Y" onClick="addn_hidediv();" checked>Same as Student\'s Home Address</label><label class="radio-inline"><input type="radio" id="ron" name="r7" value="N" onClick="addn_showdiv();">Add New Address</label></div></div></div>';
             echo '</div>'; //.row
 
             echo '<div id="addn_hideShow" style="display:none" class="well">';
@@ -1559,11 +1984,34 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
 echo '</div>'; //.col-md-8
 echo '</div>'; //.row
 
-if ($_REQUEST['nfunc'] == 'status') {
+if ($_REQUEST['nfunc'] == 'status')
+{
+    if ($_REQUEST['button'] == 'Select')
+    {
+        // echo "<pre>";
+        // print_r($_SESSION["HOLD_ADDR_DATA"]);
+        // echo die();
 
-    if ($_REQUEST['button'] == 'Select') {
+        if(isset($_SESSION["HOLD_ADDR_DATA"]))
+        {
+            echo '<SCRIPT language=javascript>document.getElementById(\'values[student_address][HOME][STREET_ADDRESS_1]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'] . '\';document.getElementById(\'values[student_address][HOME][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'] . '\';document.getElementById(\'values[student_address][HOME][CITY]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'] . '\';document.getElementById(\'values[student_address][HOME][STATE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'] . '\';document.getElementById(\'values[student_address][HOME][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'] . '\';document.getElementById(\'values[student_address][HOME][BUS_NO]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BUSNO'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_1]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L1'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L2'] . '\';document.getElementById(\'values[student_address][MAIL][CITY]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_CITY'] .'\';document.getElementById(\'values[student_address][MAIL][STATE]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_STATE'] .'\';document.getElementById(\'values[student_address][MAIL][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_ZIP'] . '\';</script>';
+            
+            // echo '<SCRIPT language=javascript>var BPU = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BPU'].'";var BDO = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BDO'].'";if(BPU == "Y"){ $("#divvalues[student_address][HOME][BUS_PICKUP]:first-child").trigger("click"); document.getElementById("values[student_address][HOME][BUS_PICKUP]").checked=true; }else{ document.getElementById("values[student_address][HOME][BUS_PICKUP]").checked=false; } if(BDO == "Y"){ $("#divvalues[student_address][HOME][BUS_DROPOFF]:first-child").trigger("click"); document.getElementById("values[student_address][HOME][BUS_DROPOFF]").checked=true; }else{ document.getElementById("values[student_address][HOME][BUS_DROPOFF]").checked=false; } </SCRIPT>';
+            
+            echo '<SCRIPT language=javascript>var BPU = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BPU'].'";var BDO = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BDO'].'";if(BPU == "Y"){ $("#PUT_BPU").html(""); $("#PUT_BPU").html('. CheckboxInputMod('Y', 'values[student_address][HOME][BUS_PICKUP]', '', 'CHECKED', '', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') .'); }else{ $("#PUT_BPU").html(""); $("#PUT_BPU").html('. CheckboxInputMod('N', 'values[student_address][HOME][BUS_PICKUP]', '', '', '', '<i class="icon-checkbox-unchecked"></i>', '<i class="icon-checkbox-checked"></i>') .'); } if(BDO == "Y"){ $("#PUT_BDO").html(""); $("#PUT_BDO").html('. CheckboxInputMod('Y', 'values[student_address][HOME][BUS_DROPOFF]', '', 'CHECKED', '', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') .'); }else{ $("#PUT_BDO").html(""); $("#PUT_BDO").html('. CheckboxInputMod('N', 'values[student_address][HOME][BUS_DROPOFF]', '', '', '', '<i class="icon-checkbox-unchecked"></i>', '<i class="icon-checkbox-checked"></i>') .'); } </SCRIPT>';
 
-        $sel_staff = $_REQUEST['staff'];
+            echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_RSHIP'] . '\';document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_FIRST'] . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LAST'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_HOME'] . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_WORK'] . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CELL'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_MAIL'] . '\';document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_USRN'] . '\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PSWD'] . '\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').setAttribute("type", "password");document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_1]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1'] . '\';document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_2]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2'] . '\';document.getElementById(\'values[student_address][PRIMARY][CITY]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY'] . '\';document.getElementById(\'values[student_address][PRIMARY][STATE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT'] . '\';document.getElementById(\'values[student_address][PRIMARY][ZIPCODE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP'] . '\';</SCRIPT>';
+
+            echo '<SCRIPT language=javascript>var USR_CHK_PORTAL = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PORTAL'] . '; alert(USR_CHK_PORTAL); if(USR_CHK_PORTAL = "Y"){ document.getElementById("portal_1").checked = true; document.getElementById("portal_div_1").style.display = "block"; }else{ document.getElementById("portal_1").checked = false; document.getElementById("portal_div_1").style.display = "none"; }</SCRIPT>';
+
+            echo '<SCRIPT language=javascript>var SSHA = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_SAHA'] .'; var ADNA = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ADNA'] .'; if(SSHA = "Y"){ document.getElementById("rps").checked = true; }else{ document.getElementById("rps").checked = false; } if(ADNA = "Y"){ document.getElementById("rpn").checked = true; }else{ document.getElementById("rpn").checked = false; }</SCRIPT>';
+        }
+
+        // // DESTROYING THE SESSION ADDRESS DATA //
+        // unset($_SESSION["HOLD_ADDR_DATA"]); 
+
+
+        $sel_staff   = $_REQUEST['staff'];
 
         $people_info = DBGet(DBQuery('SELECT * FROM people WHERE STAFF_ID=' . $sel_staff));
         $people_info = $people_info[1];
@@ -1572,73 +2020,102 @@ if ($_REQUEST['nfunc'] == 'status') {
             $people_info[$pi] = str_replace("'", "\'", $pd);
         unset($pi);
         unset($pd);
+
+        
         $parent_type = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE PERSON_ID=' . $sel_staff));
+        
         $parent_type = $parent_type[1]['RELATIONSHIP'];
+        
         $options_RET = DBGet(DBQuery('SELECT DISTINCT RELATIONSHIP FROM students_join_people'));
 
         $relation_options = array('Father' => 'Father', 'Mother' => 'Mother', 'Step Mother' => 'Step Mother', 'Step Father' => 'Step Father', 'Grandmother' => 'Grandmother', 'Grandfather' => 'Grandfather', 'Legal Guardian' => 'Legal Guardian', 'Other Family Member' => 'Other Family Member', '---' => '---');
-        foreach ($options_RET as $k => $v) {
+
+        foreach ($options_RET as $k => $v) 
+        {
             $key = $parent_type;
         }
 
         $options['---'] = '---';
-        foreach ($relation_options as $k => $v) {
+
+        foreach ($relation_options as $k => $v)
+        {
             if ($v == $parent_type)
+            {
                 $option .= '<option selected>' . $v . '</option>';
-            else {
+            }
+            else
+            {
                 $option .= '<option>' . $v . '</option>';
             }
         }
 
         $parent_prof_options_arr = DBGet(DBQuery('SELECT id,profile,title FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
 
-        foreach ($parent_prof_options_arr as $i => $j) {
+        foreach ($parent_prof_options_arr as $i => $j)
+        {
             $s_user_profs_ids_arr[] = $parent_prof_options_arr[$i]['ID'];
         }
 
         $s_user_profs_id = implode(',', $s_user_profs_ids_arr);
 
         $people_address = DBGet(DBQuery('SELECT * FROM student_address WHERE PEOPLE_ID=' . $sel_staff));
+        
         $people_address = $people_address[1];
+        
         foreach ($people_address as $pi => $pd)
             $people_address[$pi] = str_replace("'", "\'", $pd);
         unset($pi);
         unset($pd);
 
         $people_loginfo = DBGet(DBQuery('SELECT * FROM login_authentication WHERE USER_ID=' . $sel_staff . ' AND PROFILE_ID in (' . $s_user_profs_id . ')'));
+        
         $people_loginfo = $people_loginfo[1];
 
         $parent_prof_options['---'] = '---';
-        foreach ($parent_prof_options_arr as $pnm_arr) {
+
+
+        foreach ($parent_prof_options_arr as $pnm_arr)
+        {
             if ($people_loginfo['PROFILE_ID'] == $pnm_arr['ID'])
                 $parent_prof_options .= '<option selected value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
             else
                 $parent_prof_options .= '<option value=' . $pnm_arr['ID'] . '>' . $pnm_arr['TITLE'] . '</option>';
         }
 
-
         $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX,sa.id as address_id FROM  students_join_people sp,student_address sa WHERE sp.student_id=sa.student_id and UPPER(sp.EMERGENCY_TYPE)=\'' . strtoupper($_REQUEST['type']) . '\' AND sp.STUDENT_ID=' . $_REQUEST['student_id']));
-        if ($check_rec[1]['REC_EX'] == 0) {
-            $_REQUEST['address_id'] = 'new';
-        } else
-            $_REQUEST['address_id'] = $check_rec[1]['ADDRESS_ID'];
-        if ($_REQUEST['type'] == 'primary') {
-//                                
 
-            if ($people_loginfo['USERNAME'] != '') {
+
+        if ($check_rec[1]['REC_EX'] == 0)
+        {
+            $_REQUEST['address_id'] = 'new';
+        }
+        else
+        {
+            $_REQUEST['address_id'] = $check_rec[1]['ADDRESS_ID'];
+        }
+
+        
+        if ($_REQUEST['type'] == 'primary')
+        {
+            if ($people_loginfo['USERNAME'] != '')
+            {
                 if ($_REQUEST['address_id'] == 'new')
+                {
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_1\').style.display=\'block\';document.getElementById(\'portal_1\').checked=true;document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'pri_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
-                else {
+                }
+                else 
+                {
 //alert(document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'mmmmm\');
                     echo '<SCRIPT language=javascript>'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME] name=values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] name=values[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][LAST_NAME] name=values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][EMAIL] name=values[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
@@ -1652,27 +2129,30 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var pwd=document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); '
                     . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
                     . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                    . 'document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else {document.getElementById(\'uname1\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd1\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
+                    . 'document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else {document.getElementById(\'uname1\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd1\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
 //                                   .'</script>';
                 }
-            } else {
+            }
+            else
+            {
 //                                    echo '<script>alert(\'okkk\')</script>';
                 if ($_REQUEST['address_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_1\').checked=false;document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\';document.getElementById(\'portal_div_1\').style.display=\'none\';</script>';
-                else {
-
+                else
+                {
                     echo '<SCRIPT language=javascript></script>';
 
                     echo '<SCRIPT language=javascript>';
 
-                    echo 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][LAST_NAME]  name = values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE]  class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+                    echo 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][LAST_NAME]  name = values[people][PRIMARY][LAST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,1,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE]  class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
@@ -1685,26 +2165,31 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var portal=document.getElementById(\'portal_1\'); if(portal!=null) { document.getElementById(\'portal_1\').checked=false;'
                     . 'document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';'
                     . 'document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\'; document.getElementById(\'portal_div_1\').style.display=\'none\';} else { var chk1=document.getElementById(\'checked_1\');  if(chk1!=null) chk1.innerHTML=\'<input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" /> \' ; 
-                                  var uname1=document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
-                                  var pwd1=document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';document.getElementById(\'portal_div_1\').style.display=none;} </script>';
+                                  var uname1=document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT class=form-control type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
+                                  var pwd1=document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT class=form-control type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';document.getElementById(\'portal_div_1\').style.display=none;} </script>';
 
 //                                                .'</script>';
                 }
             }
-        } elseif ($_REQUEST['type'] == 'secondary') {
-            if ($people_loginfo['USERNAME'] != '') {
+        }
+        elseif ($_REQUEST['type'] == 'secondary') 
+        {
+            if ($people_loginfo['USERNAME'] != '')
+            {
                 if ($_REQUEST['address_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'sec_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';</script>';
-                else {
+                else
+                {
                     echo '<SCRIPT language=javascript>'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL] name= values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][EMAIL] name= values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][CELL_PHONE] name=[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
                     . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
@@ -1717,21 +2202,25 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var pwd=document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); '
                     . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
                     . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                    . 'document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else { document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
+                    . 'document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else { document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][SECONDARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=sec_prof_id name=values[people][SECONDARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
                 }
-            } else {
+            }
+            else
+            {
                 if ($_REQUEST['address_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][SECONDARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'none\';document.getElementById(\'portal_2\').checked=false;document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';</script>';
-                else {
-                    echo '<SCRIPT language=javascript>alert(\'ok\');'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT>\';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
-                    . 'document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][EMAIL]  name=values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=values[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
+                else
+                {
+                    echo '<SCRIPT language=javascript>;'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] />' . $option . '</SELECT>\';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][EMAIL]  name=values[people][SECONDARY][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][SECONDARY][CELL_PHONE] name=values[people][SECONDARY][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
                     . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
@@ -1743,25 +2232,29 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var portal=document.getElementById(\'portal_2\'); if(portal!=null) { document.getElementById(\'portal_2\').checked=false;'
                     . 'document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';'
                     . 'document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
-                                  var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
-                                   var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
+                                  var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT class=form-control type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
+                                   var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT class=form-control type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
                 }
             }
-        } else {
-            if ($people_loginfo['USERNAME'] != '') {
-
+        }
+        else
+        {
+            if ($people_loginfo['USERNAME'] != '')
+            {
                 if ($_REQUEST['add_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'hidden_other\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';var pwd=document.getElementById(\'values[people][OTHER][PASSWORD]\'); var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';pwd.parentNode.replaceChild(pwd2,pwd);document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';document.getElementById(\'addn_hideShow\').style.display =\'block\';document.getElementById(\'ron\').checked=true;document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';document.getElementById(\'portal_2\').checked=true;document.getElementById(\'portal_div_2\').style.display=\'block\';document.getElementById(\'other_username\').value=\'' . $people_loginfo['USERNAME'] . '\';document.getElementById(\'other_password\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'oth_prof_id\').value=\'' . $people_loginfo['PROFILE_ID'] . '\';window.close();</script>';
-                else {
+                else
+                {
                     echo '<SCRIPT language=javascript>'
-                    . 'document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT> \';'
-                    . 'document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                    . 'document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                    . 'document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL] name= values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control class=form-control id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT> \';'
+                    . 'document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text class=form-control id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+                    . 'document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text class=form-control id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+                    . 'document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][OTHER][EMAIL] name= values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][OTHER][CELL_PHONE] name=[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'inputvalues[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
@@ -1774,24 +2267,28 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var pwd=document.getElementById(\'values[people][OTHER][PASSWORD]\'); '
                     . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
                     . 'pwd.parentNode.replaceChild(pwd2,pwd);'
-                    . 'document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } else { document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; }</script>';
+                    . 'document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } else { document.getElementById(\'uname2\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd2\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][OTHER][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=oth_prof_id name=values[people][OTHER][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; }</script>';
                 }
-            } else {
+            }
+            else
+            {
                 if ($_REQUEST['add_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][OTHER][RELATIONSHIP]\').selectedIndex=\'' . $key . '\';document.getElementById(\'values[people][OTHER][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][OTHER][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][OTHER][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'values[people][OTHER][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][OTHER][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'none\';document.getElementById(\'portal_2\').checked=false;document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\';document.getElementById(\'addn_hideShow\').style.display =\'block\';document.getElementById(\'ron\').checked=true;document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_1]\').value=\'' . $people_address['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][OTHER][STREET_ADDRESS_2]\').value=\'' . $people_address['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][OTHER][CITY]\').value=\'' . $people_address['CITY'] . '\';document.getElementById(\'values[student_address][OTHER][STATE]\').value=\'' . $people_address['STATE'] . '\';document.getElementById(\'values[student_address][OTHER][ZIPCODE]\').value=\'' . $people_address['ZIPCODE'] . '\';' . ($people_address['BUS_PICKUP'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_PICKUP]\').checked=true;' : '') . ($people_address['BUS_DROPOFF'] == 'Y' ? 'document.getElementById(\'values[student_address][OTHER][BUS_DROPOFF]\').checked=true;' : '') . 'document.getElementById(\'oth_busno\').value=\'' . $people_address['BUS_NO'] . '\';window.close();</script>';
-                else {
+                else
+                {
                     echo '<SCRIPT language=javascript>'
-                    . 'document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT>\';'
-                    . 'document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                    . 'document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
-                    . 'document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][EMAIL]  name=values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
-                    . 'var workphone=document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var homephone=document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
-                    . 'var cellphone=document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT type=text id=inputvalues[people][OTHER][CELL_PHONE] name=values[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
+                    . 'document.getElementById(\'divvalues[people][OTHER][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][OTHER][RELATIONSHIP] name=values[people][OTHER][RELATIONSHIP] />' . $option . '</SELECT>\';'
+                    . 'document.getElementById(\'person_f_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT class=form-control type=text id=inputvalues[people][OTHER][FIRST_NAME] name=values[people][OTHER][FIRST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+                    . 'document.getElementById(\'person_l_' . $_REQUEST['add_id'] . '\').innerHTML=\'<table><tr><td><INPUT class=form-control type=text id=inputvalues[people][OTHER][LAST_NAME] name=values[people][OTHER][LAST_NAME] class=cell_medium size=2 /></td></tr></table>\';'
+                    . 'document.getElementById(\'divvalues[people][OTHER][EMAIL]\').innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][OTHER][EMAIL]  name=values[people][OTHER][EMAIL] class=cell_medium size=2 onkeyup="peoplecheck_email(this,2,0);"/> \';'
+                    . 'var workphone=document.getElementById(\'divvalues[people][OTHER][WORK_PHONE]\'); if(workphone!=null) workphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][OTHER][WORK_PHONE] name=values[people][OTHER][WORK_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var homephone=document.getElementById(\'divvalues[people][OTHER][HOME_PHONE]\'); if(homephone!=null) homephone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][OTHER][HOME_PHONE] name=values[people][OTHER][HOME_PHONE] class=cell_medium size=2 /> \';'
+                    . 'var cellphone=document.getElementById(\'divvalues[people][OTHER][CELL_PHONE]\'); if(cellphone!=null) cellphone.innerHTML=\'<INPUT class=form-control type=text id=inputvalues[people][OTHER][CELL_PHONE] name=values[people][OTHER][CELL_PHONE] class=cell_medium size=2 /> \';'
                     . 'var chk2=document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ;'
-                    . 'var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text id=values[people][OTHER][USER_NAME] class=cell_medium size=2 /> \' ;'
-                    . 'var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=text id=values[people][OTHER][PASSWORD] class=cell_medium size=2  /> \' '
+                    . 'var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT class=form-control type=text id=values[people][OTHER][USER_NAME] class=cell_medium size=2 /> \' ;'
+                    . 'var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT class=form-control type=text id=values[people][OTHER][PASSWORD] class=cell_medium size=2  /> \' '
                     . '</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_oth_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'values[people][OTHER][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
@@ -1803,14 +2300,20 @@ if ($_REQUEST['nfunc'] == 'status') {
                     . 'var portal=document.getElementById(\'portal_2\'); if(portal!=null) { document.getElementById(\'portal_2\').checked=false;'
                     . 'document.getElementById(\'values[people][OTHER][USER_NAME]\').value=\'\';'
                     . 'document.getElementById(\'values[people][OTHER][PASSWORD]\').value=\'\'; document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="other_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
-                                  var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT type=text name=values[people][OTHER][USER_NAME] id=values[people][OTHER][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" size=2 /><div id="ajax_output_2"></div> \' ;
-                                   var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT type=password name=values[people][OTHER][PASSWORD] id=values[people][OTHER][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"/><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
+                                  var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT class=form-control type=text name=values[people][OTHER][USER_NAME] id=values[people][OTHER][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" size=2 /><div id="ajax_output_2"></div> \' ;
+                                   var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT class=form-control type=password name=values[people][OTHER][PASSWORD] id=values[people][OTHER][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"/><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
                 }
             }
         }
+
+        // DESTROYING THE SESSION ADDRESS DATA //
+        unset($_SESSION["HOLD_ADDR_DATA"]); 
+        
         echo '<SCRIPT language=javascript>window.close();</script>';
     }
-    if ($_REQUEST['button'] == 'Cancel') {
+    
+    if ($_REQUEST['button'] == 'Cancel')
+    {
         echo '<SCRIPT language=javascript>window.close();</script>';
     }
 }

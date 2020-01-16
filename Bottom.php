@@ -26,6 +26,8 @@
 #
 #***************************************************************************************
 error_reporting(0);
+include("functions/ParamLibFnc.php");
+require_once("Data.php");
 include "./Warehouse.php";
 $url=validateQueryString(curPageURL());
 if($url===FALSE)
@@ -35,12 +37,16 @@ if($url===FALSE)
 
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='print')
 {
+     $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 	$_REQUEST = $_SESSION['_REQUEST_vars'];
 	$_REQUEST['_openSIS_PDF'] = true;
+        $_REQUEST['_openSIS_PDF'] = mysqli_real_escape_string($connection,optional_param('_openSIS_PDF', '', PARAM_RAW));
+        $_REQUEST['modname'] = mysqli_real_escape_string($connection,optional_param('modname', '', PARAM_RAW));
+        $_REQUEST['failed_login'] = mysqli_real_escape_string($connection,optional_param('failed_login', '', PARAM_RAW));
 	if(strpos($_REQUEST['modname'],'?')!==false)
-		$modname = substr($_REQUEST['modname'],0,strpos($_REQUEST['modname'],'?'));
+		$modname = substr(mysqli_real_escape_string($connection,optional_param('modname', '', PARAM_RAW)),0,strpos(mysqli_real_escape_string($connection,optional_param('modname', '', PARAM_RAW)),'?'));
 	else
-		$modname = $_REQUEST['modname'];
+		$modname = mysqli_real_escape_string($connection,optional_param('modname', '', PARAM_RAW));
 	ob_start();
 	include('modules/'.$modname);
 	if($htmldocPath)
