@@ -530,7 +530,7 @@ function GetStuListAttn(& $extra) {
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
             $extra['columns_after'] = array('CONTACT_INFO' => '<IMG SRC=assets/down_phone_button.gif border=0>', 'gender' => 'Gender', 'ethnicity' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
-            $select = ',s.STUDENT_ID AS CONTACT_INFO,s.GENDER,s.ETHNICITY,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE';
+            $select = ',s.STUDENT_ID AS CONTACT_INFO,s.GENDER,s.ETHNICITY_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE';
             $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Mail\')  ' . $extra['FROM'];
 
             $functions['CONTACT_INFO'] = 'makeContactInfo';

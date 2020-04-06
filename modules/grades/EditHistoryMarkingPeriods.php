@@ -40,10 +40,20 @@ if ($_REQUEST['modfunc'] == 'update') {
     }
     foreach ($_REQUEST['values'] as $id => $columns) {
         if ($id != 'new') {
+
             $sql = 'UPDATE history_marking_periods SET ';
 
             foreach ($columns as $column => $value)
-                $sql .= $column . '=\'' . str_replace("\'", "''", trim($value)) . '\',';
+            {
+                if($column == 'POST_END_DATE')
+                {
+                    $sql .= $column . '=\'' . date("Y-m-d", strtotime($value)) . '\',';
+                }
+                else
+                {
+                    $sql .= $column . '=\'' . str_replace("\'", "''", trim($value)) . '\',';
+                }
+            }
 
             if ($_REQUEST['tab_id'] != 'new')
                 $sql = substr($sql, 0, -1) . ' WHERE MARKING_PERIOD_ID=\'' . $id . '\'';
@@ -52,6 +62,7 @@ if ($_REQUEST['modfunc'] == 'update') {
             DBQuery($sql);
         }
         else {
+
             DBQuery('INSERT INTO marking_period_id_generator (id)VALUES (NULL)');
             $id_RET = DBGet(DBQuery('SELECT  max(id) AS ID from marking_period_id_generator'));
             $MARKING_PERIOD_ID_VALUE = $id_RET[1]['ID'];
@@ -63,7 +74,16 @@ if ($_REQUEST['modfunc'] == 'update') {
             foreach ($columns as $column => $value)
                 if ($value) {
                     $fields .= $column . ',';
-                    $values .= '\'' . str_replace("\'", "''", $value) . '\',';
+
+                    if($column == 'POST_END_DATE')
+                    {
+                        $values .= '\'' . date("Y-m-d", strtotime($value)) . '\',';
+                    }
+                    else
+                    {
+                        $values .= '\'' . str_replace("\'", "''", $value) . '\',';
+                    }
+
                     $go = true;
                 }
             $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';

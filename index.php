@@ -32,6 +32,9 @@ include_once("functions/ParamLibFnc.php");
 require_once("functions/PragRepFnc.php");
 include_once("RemoveBackup.php");
 
+$index_commit_in    =   "";
+$index_commit_out   =   "";
+
 $url = validateQueryString(curPageURL());
 if ($url === FALSE) {
     header('Location: index.php');
@@ -52,7 +55,7 @@ if (isset($_GET['ins']))
 if ($install == 'comp') {
     if (is_dir('install')) {
         $dir = 'install/'; // IMPORTANT: with '/' at the end
-        $remove_directory = delete_directory($dir);
+        // $remove_directory = delete_directory($dir);
     }
 }
 
@@ -70,29 +73,29 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
         header("Location:register.php");
 }
 
-//$_REQUEST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_REQUEST['USERNAME']);
-//if (isset($_POST['USERNAME']))
-    //$_POST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_POST['USERNAME']);
-//if (isset($_GET['USERNAME']))
-    //$_GET['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_GET['USERNAME']);
+// $_REQUEST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_REQUEST['USERNAME']);
+// if (isset($_POST['USERNAME']))
+//     $_POST['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_POST['USERNAME']);
+// if (isset($_GET['USERNAME']))
+//     $_GET['USERNAME'] = par_rep('/[^A-Za-z0-9\-]/', '', $_GET['USERNAME']);
 
 if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
     db_start();
     // $_REQUEST['USERNAME'] = mysqli_real_escape_string($connection, optional_param('USERNAME', '', PARAM_RAW));
     // $_REQUEST['PASSWORD'] = mysqli_real_escape_string($connection, optional_param('PASSWORD', '', PARAM_RAW));
     # --------------------------- Seat Count Update Start ------------------------------------------ #
-//    $course_name = DBGet(DBQuery("SELECT DISTINCT(COURSE_PERIOD_ID)FROM schedule WHERE  END_DATE <'".mysqli_real_escape_string($connection,date("Y-m-d"))."' AND  DROPPED =  '".mysqli_real_escape_string($connection,'N')."' "));
-//
-//         foreach($course_name as $column=>$value)
-//         {
-//             $course_count = DBGet(DBQuery("SELECT *  FROM schedule WHERE  COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND  END_DATE <'".date("Y-m-d")."'AND  DROPPED =  'N' "));
-//              for($i=1;$i<=count($course_count);$i++)
-//                    {
-//                        DBQuery("CALL SEAT_FILL()");
-//                        DBQuery("UPDATE course_periods SET filled_seats=filled_seats-1 WHERE COURSE_PERIOD_ID IN (SELECT COURSE_PERIOD_ID FROM schedule WHERE end_date IS NOT NULL AND END_DATE  <'".date("Y-m-d")."' AND  DROPPED='N' AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."')");
-//			DBQuery(" UPDATE schedule SET  DROPPED='Y' WHERE END_DATE  IS NOT NULL AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND END_DATE  <'".date("Y-m-d")."'AND   DROPPED =  'N' AND  STUDENT_ID='".$course_count[$i][STUDENT_ID]."'");
-//                    }
-//         }
+   // $course_name = DBGet(DBQuery("SELECT DISTINCT(COURSE_PERIOD_ID)FROM schedule WHERE  END_DATE <'".mysqli_real_escape_string($connection,date("Y-m-d"))."' AND  DROPPED =  '".mysqli_real_escape_string($connection,'N')."' "));
+
+   //      foreach($course_name as $column=>$value)
+   //      {
+   //          $course_count = DBGet(DBQuery("SELECT *  FROM schedule WHERE  COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND  END_DATE <'".date("Y-m-d")."'AND  DROPPED =  'N' "));
+   //           for($i=1;$i<=count($course_count);$i++)
+   //                 {
+   //                     DBQuery("CALL SEAT_FILL()");
+   //                     DBQuery("UPDATE course_periods SET filled_seats=filled_seats-1 WHERE COURSE_PERIOD_ID IN (SELECT COURSE_PERIOD_ID FROM schedule WHERE end_date IS NOT NULL AND END_DATE  <'".date("Y-m-d")."' AND  DROPPED='N' AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."')");
+			// DBQuery(" UPDATE schedule SET  DROPPED='Y' WHERE END_DATE  IS NOT NULL AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND END_DATE  <'".date("Y-m-d")."'AND   DROPPED =  'N' AND  STUDENT_ID='".$course_count[$i][STUDENT_ID]."'");
+   //                 }
+   //      }
     # ---------------------------- Seat Count Update End ------------------------------------------- #
 
 
@@ -292,7 +295,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                         $error[] = " Incorrect username or password. Please try again.";
                     }
                 } else {
-                    $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));  // Uid and Password Checking
+                    $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));  
+                    // Uid and Password Checking
 
                     if ($admin_RET) {
                         $login_RET = DBGet(DBQuery("SELECT PROFILE,s.STAFF_ID,CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,PROFILE_ID,IS_DISABLE FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR=(SELECT MAX(SYEAR) FROM staff_school_relationship WHERE STAFF_ID=" . $admin_RET[1]['STAFF_ID'] . ") AND s.STAFF_ID=" . $admin_RET[1]['STAFF_ID']));
@@ -482,8 +486,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $days = (strtotime($date1) - strtotime($date2)) / (60 * 60 * 24);
         if ($activity && $activity != 0 && $days > $activity && ($check_profile_id != 1 && $check_profile_id != 0) && $last_login) {
 
-//                  $check_enrollment=DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID='.$student_RET[1]['STUDENT_ID'].' AND END_DATE<\''.date('Y-m-d').'\' ORDER BY ID DESC LIMIT 0,1'));
-//		  if($check_enrollment[1]['REC_EX']==0)  
+    //              $check_enrollment=DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID='.$student_RET[1]['STUDENT_ID'].' AND END_DATE<\''.date('Y-m-d').'\' ORDER BY ID DESC LIMIT 0,1'));
+		  // if($check_enrollment[1]['REC_EX']==0)  
             DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE STUDENT_ID='" . $student_RET[1]['STUDENT_ID'] . "' ");
 
             session_destroy();
@@ -564,7 +568,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 if ($get_det[1]['FILLED_SEATS'] != $total_sch_rec[1]['TOT_REC']) {
                     if ($get_det[1]['FILLED_SEATS'] != $total_sch_rec[1]['TOT_REC'])
                         DBQuery('UPDATE course_periods SET FILLED_SEATS=' . $total_sch_rec[1]['TOT_REC'] . ' WHERE COURSE_PERIOD_ID=' . $value['COURSE_PERIOD_ID']);
-//                    echo $value['COURSE_PERIOD_ID'].'----'.$get_det[1]['TOTAL_SEATS'].'----'.$get_det[1]['FILLED_SEATS'].'----'.$total_sch_rec[1]['TOT_REC'].'<br><br>';
+                   // echo $value['COURSE_PERIOD_ID'].'----'.$get_det[1]['TOTAL_SEATS'].'----'.$get_det[1]['FILLED_SEATS'].'----'.$total_sch_rec[1]['TOT_REC'].'<br><br>';
                 }
             }
             DBQuery('UPDATE program_config SET VALUE=\'' . date('Y-m-d') . '\' WHERE  TITLE=\'LAST_UPDATE\' AND PROGRAM=\'SeatFill\'  AND SYEAR=' . UserSyear());

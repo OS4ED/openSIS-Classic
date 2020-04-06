@@ -86,14 +86,10 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             # ---   Advanced Search Start ---------------------------------------------------------- #
           
-            $qr = DBQuery("SELECT ethnicity_name FROM ethnicity where ethnicity_id>15");
-$res = DBGet($qr);
-$ethnic_option = array('White, Non-Hispanic' => 'White, Non-Hispanic', 'Black, Non-Hispanic' => 'Black, Non-Hispanic', 'Hispanic' => 'Hispanic', 'American Indian or Native Alaskan' => 'American Indian or Native Alaskan', 'Pacific Islander' => 'Pacific Islander', 'Asian' => 'Asian', 'Indian' => 'Indian', 'Middle Eastern' => 'Middle Eastern', 'African' => 'African', 'Mixed Race' => 'Mixed Race', 'White British' => 'White British', 'Asian' => 'Asian', 'Black' => 'Black', 'Chinese' => 'Chinese', 'Other' => 'Other');
-foreach ($res as $v) {
-    $ethnic_option[$v['ETHNICITY_NAME']] = $v['ETHNICITY_NAME'];
-}
-          $language_option = array('English' => 'English', 'Arabic' => 'Arabic', 'Bengali' => 'Bengali', 'Chinese' => 'Chinese', 'French' => 'French', 'German' => 'German', 'Haitian Creole' => 'Haitian Creole', 'Hindi' => 'Hindi', 'Italian' => 'Italian', 'Japanese' => 'Japanese', 'Korean' => 'Korean', 'Malay' => 'Malay', 'Polish' => 'Polish', 'Portuguese' => 'Portuguese', 'Russian' => 'Russian', 'Somali' => 'Somali', 'Spanish' => 'Spanish', 'Thai' => 'Thai', 'Turkish' => 'Turkish', 'Urdu' => 'Urdu', 'Vietnamese' => 'Vietnamese');
-  
+$ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
+$ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
+$language=DBGet(DBQuery('SELECT * FROM language'));
+$language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_NAME'],$language[2]['LANGUAGE_ID'] => $language[2]['LANGUAGE_NAME'], $language[3]['LANGUAGE_ID'] => $language[3]['LANGUAGE_NAME'], $language[4]['LANGUAGE_ID'] => $language[4]['LANGUAGE_NAME'],$language[5]['LANGUAGE_ID'] => $language[5]['LANGUAGE_NAME'],$language[6]['LANGUAGE_ID'] => $language[6]['LANGUAGE_NAME'], $language[7]['LANGUAGE_ID'] => $language[7]['LANGUAGE_NAME'],$language[8]['LANGUAGE_ID'] => $language[8]['LANGUAGE_NAME'], $language[9]['LANGUAGE_ID'] => $language[9]['LANGUAGE_NAME'], $language[10]['LANGUAGE_ID'] => $language[10]['LANGUAGE_NAME'],$language[11]['LANGUAGE_ID'] => $language[11]['LANGUAGE_NAME'], $language[12]['LANGUAGE_ID'] => $language[12]['LANGUAGE_NAME'], $language[13]['LANGUAGE_ID'] => $language[13]['LANGUAGE_NAME'], $language[14]['LANGUAGE_ID'] => $language[14]['LANGUAGE_NAME'], $language[15]['LANGUAGE_ID'] => $language[15]['LANGUAGE_NAME'], $language[16]['LANGUAGE_ID'] => $language[16]['LANGUAGE_NAME'], $language[17]['LANGUAGE_ID'] => $language[17]['LANGUAGE_NAME'],$language[18]['LANGUAGE_ID'] => $language[18]['LANGUAGE_NAME'], $language[19]['LANGUAGE_ID'] => $language[19]['LANGUAGE_NAME'], $language[20]['LANGUAGE_ID'] => $language[20]['LANGUAGE_NAME']);
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
 
@@ -124,14 +120,14 @@ foreach ($res as $v) {
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8">'.SelectInput('', 'GENDER', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') .'</div></div>';
             echo '</div>'; //.col-md-6
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8">' . SelectInput('', 'ETHNICITY', '', $ethnic_option, 'N/A', '') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8">' . SelectInput('', 'ETHNICITY_ID', '', $ethnic_option, 'N/A', '') . '</div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
                         
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8">' . SelectInput('', 'LANGUAGE', '', $language_option, 'N/A', '') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8">' . SelectInput('', 'LANGUAGE_ID', '', $language_option, 'N/A', '') . '</div></div>';
             echo '</div>'; //.col-md-6
             echo '<div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Email </label><div class="col-lg-8"><input type=text name="email" size=30 placeholder="Email" class="form-control"></div></div>';

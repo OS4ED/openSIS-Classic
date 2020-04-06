@@ -34,29 +34,14 @@ include 'modules/students/ConfigInc.php';
 // echo "<pre>";
 // print_r($_REQUEST);
 // print_r($_SESSION['HOLD_ADDR_DATA']);
+// print_r($_SESSION['SELECTED_PARENT']);
+// echo "</pre>";
 // echo die();
 
 
-// if($_REQUEST['address_id'] == 'new')
-// {
-//     // $addr_type_set  =   array("Home Address", "Mail", "Primary", "Secondary");
-
-//     $bln_addr_chk   =   DBGet(DBQuery('SELECT * FROM student_address WHERE student_id = '.UserStudentID().' AND school_id = '.UserSchool().' AND type = "Home Address"'));
-
-//     $count_check    =   count($bln_addr_chk);
-
-//     // echo $count_check; echo die();
-
-//     if($count_check == 0)
-//     {
-//         DBQuery('INSERT INTO student_address (student_id, syear, school_id, street_address_1, street_address_2, city, state, zipcode, bus_pickup, bus_dropoff, bus_no, type, people_id, last_updated, updated_by) VALUES
-// ('.UserStudentID().', '.UserSyear().', '.UserSchool().', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "Home Address", NULL, CURRENT_TIMESTAMP, NULL);');
-//     }
-// }
-
 echo '<div id="modal_default_lookup" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">';
+            <div class="modal-dialog">
+                <div class="modal-content">';
 echo ' <input type=hidden id=p_type >';
 echo ' <input type=hidden id=other_p_erson_id >';
 
@@ -80,9 +65,9 @@ else
 
 
 echo '<div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                            <h5 class="modal-title">Lookup</h5>
-                        </div>';
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h5 class="modal-title">Lookup</h5>
+        </div>';
 
 echo '<div class="modal-body">';
 echo'<div id="modal-res">';
@@ -90,12 +75,12 @@ echo'<div id="modal-res">';
 
 
 $x = 'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=primary&ajax=' . $_REQUEST['ajax'] . '&address_id=' . $_REQUEST['address_id'] . '\'';
-//            echo '<script>cleanModal(\'parent_res\');</script>';
+//  echo '<script>cleanModal(\'parent_res\');</script>';
 echo '<div id=parent_res>';
 echo '<h4 class="text-center">Search for an existing portal user (parent/guardian) <br/> to associate with this student.</h4>';
 echo '<p class="text-danger text-center">Fill out one or more fields to look up an individual.</p>';
 
-//echo '<div class=>';
+//  echo '<div class=>';
 echo '<div class="form-group"><label class="control-label col-xs-4">First Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_FIRST_NAME', '', 'class=form-control', true) . '</div></div>';
 echo '<div class="form-group"><label class="control-label col-xs-4">Last Name</label><div class="col-xs-8">' . TextInput('', 'USERINFO_LAST_NAME', '', 'class=form-control', true) . '</div></div>';
 echo '<div class="form-group"><label class="control-label col-xs-4">Email</label><div class="col-xs-8">' . TextInput('', 'USERINFO_EMAIL', '', 'class=form-control', true) . '</div></div>';
@@ -117,7 +102,7 @@ echo '</div>';
 
 echo '</form>';
 echo '</div>
-                </div>
+            </div>
         </div>';
 
 
@@ -304,6 +289,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
     // echo "<pre>";
     // $_REQUEST['values'] =   array_splice($_REQUEST['values'], 1, 1);
     // print_r($_REQUEST);
+    // print_r($_SESSION['SELECTED_PARENT']);
     // echo die();
 
     foreach ($_REQUEST['values'] as $table => $type)
@@ -409,12 +395,19 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                 $set_arr = implode(',', $set_arr);
                 $rel_stu = implode(',', $rel_stu);
+
+                // print_r($set_arr);
+                // echo "<br>";
+                // print_r($rel_stu);
+                // echo "<br>";
+                // print_r($where);
+
+                // echo die;
                 
                 if ($set_arr != '')
                 {
                     if ($table == 'student_address')
                     {
-
                         if (strpos($set_arr, 'BUS_PICKUP') == '')
                             $set_arr .= ',BUS_PICKUP=NULL';
                         if (strpos($set_arr, 'BUS_DROPOFF') == '')
@@ -431,9 +424,41 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 }
 
 
-                //codes to be inserted
+                // codes to be inserted
                 if ($qry != '')
-                    DBQuery($qry);
+                {
+                    // COMMENTED OUT FOR SECTION WISE CHECKINGS
+                    // DBQuery($qry);
+
+                    if($table == 'student_address')
+                    {
+                        DBQuery($qry);
+                    }
+
+                    if($table == 'people')
+                    {
+                        if($ind == 'PRIMARY')
+                        {
+                            if($_SESSION['SELECTED_PARENT']['exist_primary'] == $_SESSION['SELECTED_PARENT']['new_primary'])
+                            {
+                                DBQuery($qry);
+                            }
+                        }
+
+                        if($ind == 'SECONDARY')
+                        {
+                            if($_SESSION['SELECTED_PARENT']['exist_secondary'] == $_SESSION['SELECTED_PARENT']['new_secondary'])
+                            {
+                                DBQuery($qry);
+                            }
+                        }
+
+                        if($ind == 'OTHER')
+                        {
+                            DBQuery($qry);
+                        }
+                    }
+                }
 
                 if ($ind == 'PRIMARY' && $rel_stu != '')
                 {
@@ -484,16 +509,15 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             }
                             else
                             {
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         }
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
-
 
 
                 if ($table == 'people' && $ind == 'SECONDARY')
@@ -530,12 +554,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             else
                             {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         }
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
@@ -575,12 +599,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             else
                             {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         }
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
@@ -635,7 +659,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $sec_pep_exists = 'X';
                     }
 
-// if(count($sec_people_exists)>0)
+                    // if(count($sec_people_exists)>0)
                     if ($_REQUEST['hidden_secondary'] != '')
                     {
                         $sec_person_id = $_REQUEST['hidden_secondary'];
@@ -651,8 +675,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 if ($ind == 'OTHER' && $table == 'people')
                 {
                     $oth_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['EMAIL']) . '\''));
-//                    if(count($oth_people_exists)>0)
-//                    {
+                    // if(count($oth_people_exists)>0)
+                    // {
                     
                     if ($_REQUEST['hidden_other'] != '')
                     {
@@ -766,7 +790,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         
                         if (!in_array('PROFILE_ID', $peo_fields_ar))
                         {
-                            $sql_peo = 'INSERT INTO people (CURRENT_SCHOOL_ID,profile,profile_id,' . $peo_fields . ') VALUES (' . UserSchool() . ',\'parent\',4,' . $peo_field_vals . ')';
+                             $sql_peo = 'INSERT INTO people (CURRENT_SCHOOL_ID,profile,profile_id,' . $peo_fields . ') VALUES (' . UserSchool() . ',\'parent\',4,' . $peo_field_vals . ')';
                         }
                         else
                         {
@@ -801,24 +825,30 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
 
 
-                if($table == 'people' && $ind == 'PRIMARY' && $pri_pep_exists == 'N')
-                {
-                    // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
+                //    if($table == 'people' && $ind == 'PRIMARY' && $pri_pep_exists == 'N')
+                //    {
+                //        // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
 
-                    $pri_prof_id    =   4;
+                //        $pri_prof_id    =   4;
 
-                    if($type['PRIMARY']['PASSWORD'] == '')
-                    {
-                        $parent_auth_pwd    =   '';
-                    }
-                    else
-                    {
-                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
-                    }
+                //        if($type['PRIMARY']['PASSWORD'] == '')
+                //        {
+                //            $parent_auth_pwd    =   '';
+                //        }
+                //        else
+                //        {
+                //            $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                //        }
+
+                //        $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['PRIMARY']['USER_NAME'] . '\'');
+                //        $num_user = DBGet($res_user_chk);
 
 
-                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $pri_prof_id . ')');
-                }
+                //        if (count($num_user) == 0)
+                //        {
+                //        DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $pri_prof_id . ')');
+                //        }
+                //    }
 
 
                 if ($table == 'people' && $ind == 'PRIMARY' && $type['PRIMARY']['USER_NAME'] != '' && $pri_pep_exists == 'N')
@@ -846,33 +876,33 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             else
                             {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         } 
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
 
-                if ($table == 'people' && $ind == 'SECONDARY' && $sec_pep_exists == 'N')
+                if ($table == 'people' && $ind == 'SECONDARY' && $type['SECONDARY']['USER_NAME']!='' && $sec_pep_exists == 'N')
                 {
 
                     // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
 
-                    $sec_prof_id    =   4;
+                    //    $sec_prof_id    =   4;
 
-                    if($type['PRIMARY']['PASSWORD'] == '')
-                    {
-                        $parent_auth_pwd    =   '';
-                    }
-                    else
-                    {
-                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
-                    }
+                    //    if($type['PRIMARY']['PASSWORD'] == '')
+                    //    {
+                    //        $parent_auth_pwd    =   '';
+                    //    }
+                    //    else
+                    //    {
+                    //        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                    //    }
 
-                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $sec_prof_id . ')');
+                    //    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['SECONDARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $sec_prof_id . ')');
 
 
 
@@ -899,34 +929,34 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             else
                             {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         }
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
 
 
-                if ($table == 'people' && $ind == 'OTHER' && $oth_pep_exists == 'N')
+                if ($table == 'people' && $ind == 'OTHER' && $type['OTHER']['USER_NAME'] != '' && $oth_pep_exists == 'N')
                 {
 
                     // ONE ENTRY WILL BE CREATED IN THE `login_authentication` TABLE AUTOMATICALLY IRRESPECTIVE OF THE PORTAL CHECK OR USERNAME EMPTY CHECK - [D: 19/12/03]
 
-                    $oth_prof_id    =   4;
+                    //    $oth_prof_id    =   4;
 
-                    if($type['PRIMARY']['PASSWORD'] == '')
-                    {
-                        $parent_auth_pwd    =   '';
-                    }
-                    else
-                    {
-                        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
-                    }
+                    //    if($type['PRIMARY']['PASSWORD'] == '')
+                    //    {
+                    //        $parent_auth_pwd    =   '';
+                    //    }
+                    //    else
+                    //    {
+                    //        $parent_auth_pwd    =   md5($type['PRIMARY']['PASSWORD']);
+                    //    }
 
-                    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $oth_prof_id . ')');
+                    //    DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . $parent_auth_pwd . '\',' . $oth_prof_id . ')');
 
 
                     if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $type['OTHER']['USER_NAME'] != '')
@@ -952,12 +982,12 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             else
                             {
 
-                                echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Password already exists!</b></font>';</script>";
+                                echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Password already exists!</b></font></div>';</script>";
                             }
                         }
                         else
                         {
-                            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Username already exists!</b></font>';</script>";
+                            echo "<script>document.getElementById('divErr').innerHTML='<div class=alert alert-danger alert-bordered><font color=red><b>Username already exists!</b></font></div>';</script>";
                         }
                     }
                 }
@@ -987,6 +1017,9 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             }
         }
     }
+
+    unset($_SESSION["SELECTED_PARENT"]);
+    session_destroy($_SESSION['SELECTED_PARENT']);
 }
 
 
@@ -1315,7 +1348,8 @@ if (!$_REQUEST['modfunc'])
                     $extra_sql = 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $m_addr[1]['STREET']) . '\' ';
                 else
                     $extra_sql      = 'AND STREET_ADDRESS_2 is NULL ';
-                    $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                    $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                    // $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
                 
                 if ($s_mail_address[1]['TOTAL'] != 0)
                 {
@@ -1333,19 +1367,19 @@ if (!$_REQUEST['modfunc'])
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $m_checked . ' id="same_addr" name="same_addr" set_check_value value="Y">&nbsp;Same as Home Address &nbsp;</label></div></div></div></div>';
             }
 
-            if(isset($_SESSION['HOLD_ADDR_DATA']))
-            {
-                if($_SESSION['HOLD_ADDR_DATA']['ADDR_SAME_HOME'] == 'Y')
-                {
-                    $same_as_home_y =   " checked=checked ";
-                    $same_as_home_n =   " ";
-                }
-                else
-                {
-                    $same_as_home_y =   " ";
-                    $same_as_home_n =   " checked=checked ";
-                }
-            }
+            //    if(isset($_SESSION['HOLD_ADDR_DATA']))
+            //    {
+            //        if($_SESSION['HOLD_ADDR_DATA']['ADDR_SAME_HOME'] == 'Y')
+            //        {
+            //            $same_as_home_y =   " checked=checked ";
+            //            $same_as_home_n =   " ";
+            //        }
+            //        else
+            //        {
+            //            $same_as_home_y =   " ";
+            //            $same_as_home_n =   " checked=checked ";
+            //        }
+            //    }
 
             if ($h_addr[1]['ADDRESS_ID'] == 0)
             {
@@ -1453,7 +1487,7 @@ if (!$_REQUEST['modfunc'])
 
             echo '<div class="row">';
             if ($portal_check == '')
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div class="col-md-8"><label class="form-control"><input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" ' . $portal_check . '/></label></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div id="divvalues_portal_1" class="col-md-8"><label class="form-control"><input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" ' . $portal_check . '/></label></div></div></div>';
             else
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div class="col-md-8"><div id="checked_1" class="form-control" disabled><i class="icon-checkbox-checked"></i></div></div></div></div>';
             echo '</div>'; //.row
@@ -1495,22 +1529,32 @@ if (!$_REQUEST['modfunc'])
 
 
             echo '<div class="row">';
-            if ($h_addr[1]['ADDRESS_ID'] != '' && $p_addr[1]['ADDRESS_ID'] != '') {
+            if ($h_addr[1]['ADDRESS_ID'] != '' && $p_addr[1]['ADDRESS_ID'] != '')
+            {
                 $extra_sql = '';
                 if ($p_addr[1]['STREET'] != '')
                     $extra_sql = 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $m_addr[1]['STREET']) . '\' ';
                 else
                     $extra_sql = 'AND STREET_ADDRESS_2 is NULL ';
 
-                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                // $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+
+                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND student_id = \''.$_REQUEST['student_id'].'\' AND TYPE=\'Home Address\' '));
 
 
                 if ($s_prim_address[1]['TOTAL'] != 0)
                     $p_checked = " CHECKED=CHECKED ";
                 else
                     $p_checked = " ";
+
                 if ($p_addr[1]['ADDRESS_ID'] != 0)
-                    echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">Same as Home Address</label></div></div></div></div>';
+                {
+                    echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div id="prim_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">Same as Home Address</label></div></div></div></div>';
+                }
+            }
+            if($h_addr[1]['ADDRESS_ID'] != 0 && $p_addr[1]['ADDRESS_ID'] == 0)
+            {
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div id="prim_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">Same as Home Address</label></div></div></div></div>';
             }
             echo '</div>'; //.row
 
@@ -1602,7 +1646,7 @@ if (!$_REQUEST['modfunc'])
 
             echo '<div class="row">';
             if ($portal_check == '') {
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div class="col-md-8"><label class="form-control"><input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" ' . $portal_check . '/></label></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div class="col-md-8"><label id="divvalues_portal_2" class="form-control"><input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" ' . $portal_check . '/></label></div></div></div>';
             } else {
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">Portal User</label><div class="col-md-8"><div id=checked_2><i class="icon-checkbox-checked"></i></div></div></div></div>';
             }
@@ -1649,12 +1693,13 @@ if (!$_REQUEST['modfunc'])
                 $s_checked = " ";
             if ($h_addr[1]['ADDRESS_ID'] != 0) {
                 echo '<div class="row">';
-                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $s_checked . ' id="sec_addr" name="sec_addr" value="Y">Same as Home Address</label></div></div></div></div>';
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">&nbsp;</label><div id="sec_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $s_checked . ' id="sec_addr" name="sec_addr" value="Y">Same as Home Address</label></div></div></div></div>';
                 echo '</div>'; //.row 
             }
 
             echo '<div class="row">';
-            echo '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-md-2">Address Line 1</label><div class="col-md-10"><div class="input-group">' . TextInput($s_addr[1]['ADDRESS'], 'values[student_address][SECONDARY][STREET_ADDRESS_1]', '', 'id=sec_address');
+            if($_REQUEST['address_id'] != 'new'){ $sec_addr_line_cls = 'input-group'; }else{ $sec_addr_line_cls = 'form-group'; }
+            echo '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-md-2">Address Line 1</label><div class="col-md-10"><div class="'.$sec_addr_line_cls.'">' . TextInput($s_addr[1]['ADDRESS'], 'values[student_address][SECONDARY][STREET_ADDRESS_1]', '', 'id=sec_address');
             if ($h_addr[1]['ADDRESS_ID'] != 0) {
                 $display_address = urlencode($s_addr[1]['ADDRESS'] . ', ' . ($s_addr[1]['CITY'] ? ' ' . $s_addr[1]['CITY'] . ', ' : '') . $s_addr[1]['STATE'] . ($s_addr[1]['ZIPCODE'] ? ' ' . $s_addr[1]['ZIPCODE'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
@@ -1984,31 +2029,45 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old')
 echo '</div>'; //.col-md-8
 echo '</div>'; //.row
 
+
+session_destroy($_SESSION['SELECTED_PARENT']);
+
+// SETTING THE SELECTED PARENT ARRAY
+$_SESSION['SELECTED_PARENT']    =   array(
+    "exist_primary"     =>  $p_addr[1][CONTACT_ID],
+    "exist_secondary"   =>  $s_addr[1][CONTACT_ID],
+    "new_primary"       =>  $p_addr[1][CONTACT_ID],
+    "new_secondary"     =>  $s_addr[1][CONTACT_ID]
+);
+
+
 if ($_REQUEST['nfunc'] == 'status')
 {
     if ($_REQUEST['button'] == 'Select')
     {
-        // echo "<pre>";
-        // print_r($_SESSION["HOLD_ADDR_DATA"]);
-        // echo die();
-
         if(isset($_SESSION["HOLD_ADDR_DATA"]))
         {
-            echo '<SCRIPT language=javascript>document.getElementById(\'values[student_address][HOME][STREET_ADDRESS_1]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'] . '\';document.getElementById(\'values[student_address][HOME][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'] . '\';document.getElementById(\'values[student_address][HOME][CITY]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'] . '\';document.getElementById(\'values[student_address][HOME][STATE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'] . '\';document.getElementById(\'values[student_address][HOME][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'] . '\';document.getElementById(\'values[student_address][HOME][BUS_NO]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BUSNO'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_1]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L1'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L2'] . '\';document.getElementById(\'values[student_address][MAIL][CITY]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_CITY'] .'\';document.getElementById(\'values[student_address][MAIL][STATE]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_STATE'] .'\';document.getElementById(\'values[student_address][MAIL][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_ZIP'] . '\';</script>';
+            echo '<SCRIPT language=javascript>document.getElementById("values[student_address][HOME][STREET_ADDRESS_1]").value="' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'] . '";document.getElementById(\'values[student_address][HOME][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'] . '\';document.getElementById(\'values[student_address][HOME][CITY]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'] . '\';document.getElementById(\'values[student_address][HOME][STATE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'] . '\';document.getElementById(\'values[student_address][HOME][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'] . '\';document.getElementById(\'values[student_address][HOME][BUS_NO]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BUSNO'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_1]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L1'] . '\';document.getElementById(\'values[student_address][MAIL][STREET_ADDRESS_2]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_L2'] . '\';document.getElementById(\'values[student_address][MAIL][CITY]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_CITY'] .'\';document.getElementById(\'values[student_address][MAIL][STATE]\').value=\''. $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_STATE'] .'\';document.getElementById(\'values[student_address][MAIL][ZIPCODE]\').value=\'' . $_SESSION['HOLD_ADDR_DATA']['ADDR_MAIL_ZIP'] . '\';</script>';
+
+            if($_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BPU'] == 'Y')
+            {
+                echo '<SCRIPT language=javascript>document.getElementById(\'divvalues[student_address][HOME][BUS_PICKUP]\').innerHTML="<input type=\'checkbox\' checked onclick=\'set_check_value(this,\'values[student_address][HOME][BUS_PICKUP]\');\' id=\'values[student_address][HOME][BUS_PICKUP]\' name=\'values[student_address][HOME][BUS_PICKUP]\' value=\'Y\'>";</script>';
+            }
             
-            // echo '<SCRIPT language=javascript>var BPU = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BPU'].'";var BDO = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BDO'].'";if(BPU == "Y"){ $("#divvalues[student_address][HOME][BUS_PICKUP]:first-child").trigger("click"); document.getElementById("values[student_address][HOME][BUS_PICKUP]").checked=true; }else{ document.getElementById("values[student_address][HOME][BUS_PICKUP]").checked=false; } if(BDO == "Y"){ $("#divvalues[student_address][HOME][BUS_DROPOFF]:first-child").trigger("click"); document.getElementById("values[student_address][HOME][BUS_DROPOFF]").checked=true; }else{ document.getElementById("values[student_address][HOME][BUS_DROPOFF]").checked=false; } </SCRIPT>';
-            
-            echo '<SCRIPT language=javascript>var BPU = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BPU'].'";var BDO = "'.$_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BDO'].'";if(BPU == "Y"){ $("#PUT_BPU").html(""); $("#PUT_BPU").html('. CheckboxInputMod('Y', 'values[student_address][HOME][BUS_PICKUP]', '', 'CHECKED', '', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') .'); }else{ $("#PUT_BPU").html(""); $("#PUT_BPU").html('. CheckboxInputMod('N', 'values[student_address][HOME][BUS_PICKUP]', '', '', '', '<i class="icon-checkbox-unchecked"></i>', '<i class="icon-checkbox-checked"></i>') .'); } if(BDO == "Y"){ $("#PUT_BDO").html(""); $("#PUT_BDO").html('. CheckboxInputMod('Y', 'values[student_address][HOME][BUS_DROPOFF]', '', 'CHECKED', '', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') .'); }else{ $("#PUT_BDO").html(""); $("#PUT_BDO").html('. CheckboxInputMod('N', 'values[student_address][HOME][BUS_DROPOFF]', '', '', '', '<i class="icon-checkbox-unchecked"></i>', '<i class="icon-checkbox-checked"></i>') .'); } </SCRIPT>';
+            if($_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_BDO'] == 'Y')
+            {
+                echo '<SCRIPT language=javascript>document.getElementById(\'divvalues[student_address][HOME][BUS_DROPOFF]\').innerHTML="<input type=\'checkbox\' checked onclick=\'set_check_value(this,\'values[student_address][HOME][BUS_DROPOFF]\');\' id=\'values[student_address][HOME][BUS_DROPOFF]\' name=\'values[student_address][HOME][BUS_DROPOFF]\' value=\'Y\'>";</script>';
+            }
 
             echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_RSHIP'] . '\';document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_FIRST'] . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LAST'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_HOME'] . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_WORK'] . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CELL'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_MAIL'] . '\';document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_USRN'] . '\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PSWD'] . '\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').setAttribute("type", "password");document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_1]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1'] . '\';document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_2]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2'] . '\';document.getElementById(\'values[student_address][PRIMARY][CITY]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY'] . '\';document.getElementById(\'values[student_address][PRIMARY][STATE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT'] . '\';document.getElementById(\'values[student_address][PRIMARY][ZIPCODE]\').value=\'' .  $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP'] . '\';</SCRIPT>';
 
-            echo '<SCRIPT language=javascript>var USR_CHK_PORTAL = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PORTAL'] . '; alert(USR_CHK_PORTAL); if(USR_CHK_PORTAL = "Y"){ document.getElementById("portal_1").checked = true; document.getElementById("portal_div_1").style.display = "block"; }else{ document.getElementById("portal_1").checked = false; document.getElementById("portal_div_1").style.display = "none"; }</SCRIPT>';
+            if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PORTAL'] == 'Y')
+            {
+                echo '<SCRIPT language=javascript>document.getElementById(\'divvalues_portal_1\').innerHTML="<input type=\'checkbox\' checked name=\'primary_portal\' value=\'Y\' id=\'portal_1\' onclick=\'portal_toggle(1);\' width=\'25\'>"; document.getElementById("portal_div_1").style.display = "block";</script>';
+            }
 
-            echo '<SCRIPT language=javascript>var SSHA = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_SAHA'] .'; var ADNA = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ADNA'] .'; if(SSHA = "Y"){ document.getElementById("rps").checked = true; }else{ document.getElementById("rps").checked = false; } if(ADNA = "Y"){ document.getElementById("rpn").checked = true; }else{ document.getElementById("rpn").checked = false; }</SCRIPT>';
+            // echo '<SCRIPT language=javascript>var USR_CHK_PORTAL = '. $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PORTAL'] . '; alert(USR_CHK_PORTAL); if(USR_CHK_PORTAL = "Y"){ document.getElementById("portal_1").checked = true; document.getElementById("portal_div_1").style.display = "block"; }else{ document.getElementById("portal_1").checked = false; document.getElementById("portal_div_1").style.display = "none"; }</SCRIPT>';
         }
-
-        // // DESTROYING THE SESSION ADDRESS DATA //
-        // unset($_SESSION["HOLD_ADDR_DATA"]); 
 
 
         $sel_staff   = $_REQUEST['staff'];
@@ -2097,6 +2156,148 @@ if ($_REQUEST['nfunc'] == 'status')
         
         if ($_REQUEST['type'] == 'primary')
         {
+            $pick_selected_prim_cont_addr   =   DBGet(DBQuery("SELECT street_address_1, street_address_2, city, state, zipcode FROM student_address WHERE people_id = ".$sel_staff));
+
+            if($_REQUEST['address_id'] != 'new')
+            {
+                $prim_cont_match_stu_addr       =   DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_MATCHES FROM student_address WHERE street_address_1 = \''.addslashes($pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1']).'\' AND street_address_2 = \''.addslashes($pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2']).'\' AND city = \''.addslashes($pick_selected_prim_cont_addr[1]['CITY']).'\' AND state = \''.addslashes($pick_selected_prim_cont_addr[1]['STATE']).'\' AND zipcode = \''.addslashes($pick_selected_prim_cont_addr[1]['ZIPCODE']).'\' AND student_id = \''.$_REQUEST['student_id'].'\' AND type = \'Home Address\''));
+
+                if(count($prim_cont_match_stu_addr[1]['TOTAL_MATCHES']) != 0)
+                {
+                    echo '<script language=javascript>document.getElementById(\'prim_same_as\').innerHTML="<div id=\'check_addr\'><label class=\'checkbox-inline\'><input class=\'styled\' type=\'checkbox\' checked=\'checked\' id=\'prim_addr\' name=\'prim_addr\' value=\'Y\'>Same as Home Address</label></div>";</script>';
+
+                    echo '<SCRIPT language=javascript>var prim_addr_line_1 = document.getElementById("divvalues[student_address][PRIMARY][STREET_ADDRESS_1]"); if(prim_addr_line_1){ prim_addr_line_1.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STREET_ADDRESS_1]\' name=\'values[student_address][PRIMARY][STREET_ADDRESS_1]\' value=\''.$pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1'].'\' size=\'15\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1'] . '\'; } var prim_addr_line_2 = document.getElementById("divvalues[student_address][PRIMARY][STREET_ADDRESS_2]"); if(prim_addr_line_2){ prim_addr_line_2.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STREET_ADDRESS_2]\' name=\'values[student_address][PRIMARY][STREET_ADDRESS_2]\' value=\''.$pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2'] . '\'; } var prim_city = document.getElementById("divvalues[student_address][PRIMARY][CITY]"); if(prim_city){ prim_city.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][CITY]\' name=\'values[student_address][PRIMARY][CITY]\' value=\''.$pick_selected_prim_cont_addr[1]['CITY'].'\' size=\'7\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][CITY]\').value=\'' . $pick_selected_prim_cont_addr[1]['CITY'] . '\'; } var prim_state = document.getElementById("divvalues[student_address][PRIMARY][STATE]"); if(prim_state){ prim_state.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STATE]\' name=\'values[student_address][PRIMARY][STATE]\' value=\''.$pick_selected_prim_cont_addr[1]['STATE'].'\' size=\'11\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STATE]\').value=\'' . $pick_selected_prim_cont_addr[1]['STATE'] . '\'; } var prim_zip = document.getElementById("divvalues[student_address][PRIMARY][ZIPCODE]"); if(prim_zip){ prim_zip.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][ZIPCODE]\' name=\'values[student_address][PRIMARY][ZIPCODE]\' value=\''.$pick_selected_prim_cont_addr[1]['ZIPCODE'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][ZIPCODE]\').value=\'' . $pick_selected_prim_cont_addr[1]['ZIPCODE'] . '\'; }
+                    </script>';
+                }
+                else
+                {
+                    echo '<SCRIPT language=javascript>var prim_addr_line_1 = document.getElementById("divvalues[student_address][PRIMARY][STREET_ADDRESS_1]"); if(prim_addr_line_1){ prim_addr_line_1.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STREET_ADDRESS_1]\' name=\'values[student_address][PRIMARY][STREET_ADDRESS_1]\' value=\''.$pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1'].'\' size=\'15\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1'] . '\'; } var prim_addr_line_2 = document.getElementById("divvalues[student_address][PRIMARY][STREET_ADDRESS_2]"); if(prim_addr_line_2){ prim_addr_line_2.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STREET_ADDRESS_2]\' name=\'values[student_address][PRIMARY][STREET_ADDRESS_2]\' value=\''.$pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2'] . '\'; } var prim_city = document.getElementById("divvalues[student_address][PRIMARY][CITY]"); if(prim_city){ prim_city.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][CITY]\' name=\'values[student_address][PRIMARY][CITY]\' value=\''.$pick_selected_prim_cont_addr[1]['CITY'].'\' size=\'7\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][CITY]\').value=\'' . $pick_selected_prim_cont_addr[1]['CITY'] . '\'; } var prim_state = document.getElementById("divvalues[student_address][PRIMARY][STATE]"); if(prim_state){ prim_state.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][STATE]\' name=\'values[student_address][PRIMARY][STATE]\' value=\''.$pick_selected_prim_cont_addr[1]['STATE'].'\' size=\'11\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][STATE]\').value=\'' . $pick_selected_prim_cont_addr[1]['STATE'] . '\'; } var prim_zip = document.getElementById("divvalues[student_address][PRIMARY][ZIPCODE]"); if(prim_zip){ prim_zip.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][PRIMARY][ZIPCODE]\' name=\'values[student_address][PRIMARY][ZIPCODE]\' value=\''.$pick_selected_prim_cont_addr[1]['ZIPCODE'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][PRIMARY][ZIPCODE]\').value=\'' . $pick_selected_prim_cont_addr[1]['ZIPCODE'] . '\'; }
+                    </script>';
+                }
+            }
+            else
+            {
+                if($pick_selected_prim_cont_addr[1]['street_address_1'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'] && $pick_selected_prim_cont_addr[1]['street_address_2'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'] && $pick_selected_prim_cont_addr[1]['city'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'] && $pick_selected_prim_cont_addr[1]['state'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'] && $pick_selected_prim_cont_addr[1]['zipcode'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'])
+                {
+                    echo "<script language=javascript>window.$('#rps').attr('checked','checked');document.getElementById('prim_hideShow').style.display='none';</script>";
+                }
+                else
+                {
+                    echo "<script language=javascript>window.$('#rpn').attr('checked','checked');document.getElementById('prim_hideShow').style.display='block';</script>";
+
+                    echo '<SCRIPT language=javascript>document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][PRIMARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_prim_cont_addr[1]['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][PRIMARY][CITY]\').value=\'' . $pick_selected_prim_cont_addr[1]['CITY'] . '\';document.getElementById(\'values[student_address][PRIMARY][STATE]\').value=\'' . $pick_selected_prim_cont_addr[1]['STATE'] . '\';document.getElementById(\'values[student_address][PRIMARY][ZIPCODE]\').value=\'' . $pick_selected_prim_cont_addr[1]['ZIPCODE'] . '\';</script>';
+                }
+            }
+
+            $_SESSION['SELECTED_PARENT']["new_primary"] =  $sel_staff;
+
+            if(isset($_SESSION['HOLD_ADDR_DATA']))
+            {
+                // echo "<script language=javascript>alert('".$sel_staff."');</script>";
+
+                echo "<script language=javascript>document.getElementById('hidden_secondary').value='".$_SESSION['HOLD_ADDR_DATA']['SELECTED_SECONDARY']."';</script>";
+
+                //    if($_SESSION['HOLD_ADDR_DATA']['ADDR_SAME_HOME'] == "N")
+                //    {
+                //        echo "<script language=javascript>document.getElementById('hideShow').style.display='block';</script>";
+                //    }
+                //    else
+                //    {
+                //        echo "<script language=javascript>document.getElementById('hideShow').style.display='none';</script>";
+                //    }
+
+                if($_SESSION['HOLD_ADDR_DATA']['CHK_HOME_ADDR_SECN'] == "Y")
+                {
+                    $_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN1']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'];
+                    $_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN2']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'];
+                    $_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CITY']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'];
+                    $_SESSION['HOLD_ADDR_DATA']['SECN_CONT_STAT']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'];
+                    $_SESSION['HOLD_ADDR_DATA']['SECN_CONT_ZIP']    =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'];
+ 
+                    echo '<script language=javascript>document.getElementById(\'sec_same_as\').innerHTML="<div id=\'check_addr\'><label class=\'checkbox-inline\'><input class=\'styled\' type=\'checkbox\' checked=\'checked\' id=\'sec_addr\' name=\'sec_addr\' value=\'Y\'>Same as Home Address</label></div>";</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_RSHIP'] != "")
+                {
+                    echo "<script language=javascript> var div_val_rship = document.getElementById('divvalues[people][SECONDARY][RELATIONSHIP]'); if(div_val_rship){ div_val_rship.innerHTML = '<INPUT class=form-control type=text class=form-control id=values[people][SECONDARY][RELATIONSHIP] name=values[people][SECONDARY][RELATIONSHIP] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_RSHIP']." />'; } else { document.getElementById('values[people][SECONDARY][RELATIONSHIP]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_RSHIP']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_FIRST'] != "")
+                {
+                    echo "<script language=javascript> var div_val_f_name = document.getElementById('divvalues[people][SECONDARY][FIRST_NAME]'); if(div_val_f_name){ div_val_f_name.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][FIRST_NAME] name=values[people][SECONDARY][FIRST_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_FIRST']." />'; } else { document.getElementById('values[people][SECONDARY][FIRST_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_FIRST']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LAST'] != "")
+                {
+                    echo "<script language=javascript> var div_val_l_name = document.getElementById('divvalues[people][SECONDARY][LAST_NAME]'); if(div_val_l_name){ div_val_l_name.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][LAST_NAME] name=values[people][SECONDARY][LAST_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LAST']." />'; } else { document.getElementById('values[people][SECONDARY][LAST_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LAST']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_HOME'] != "")
+                {
+                    echo "<script language=javascript> var div_val_home_ph = document.getElementById('divvalues[people][SECONDARY][HOME_PHONE]'); if(div_val_home_ph){ div_val_home_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][HOME_PHONE] name=values[people][SECONDARY][HOME_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_HOME']." />'; } else { document.getElementById('values[people][SECONDARY][HOME_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_HOME']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_WORK'] != "")
+                {
+                    echo "<script language=javascript> var div_val_work_ph = document.getElementById('divvalues[people][SECONDARY][WORK_PHONE]'); if(div_val_work_ph){ div_val_work_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][WORK_PHONE] name=values[people][SECONDARY][WORK_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_WORK']." />'; } else { document.getElementById('values[people][SECONDARY][WORK_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_WORK']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CELL'] != "")
+                {
+                    echo "<script language=javascript> var div_val_cell_ph = document.getElementById('divvalues[people][SECONDARY][CELL_PHONE]'); if(div_val_cell_ph){ div_val_cell_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][CELL_PHONE] name=values[people][SECONDARY][CELL_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CELL']." />'; } else { document.getElementById('values[people][SECONDARY][CELL_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CELL']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_MAIL'] != "")
+                {
+                    echo "<script language=javascript> var div_val_email = document.getElementById('divvalues[people][SECONDARY][EMAIL]'); if(div_val_email){ div_val_email.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][EMAIL] name=values[people][SECONDARY][EMAIL] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_MAIL']." />'; } else { document.getElementById('values[people][SECONDARY][EMAIL]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_MAIL']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CUSTODY'] == "Y")
+                {
+                    echo '<script language=javascript>document.getElementById(\'divvalues[people][SECONDARY][CUSTODY]\').innerHTML="<input type=\'checkbox\' checked onclick=\'set_check_value(this,\'values[people][SECONDARY][CUSTODY]\');\' id=\'values[people][SECONDARY][CUSTODY]\' name=\'values[people][SECONDARY][CUSTODY]\' value=\'Y\'>"</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN1'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_ln1 = document.getElementById('divvalues[student_address][SECONDARY][STREET_ADDRESS_1]'); if(div_val_addr_ln1){ div_val_addr_ln1.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][SECONDARY][STREET_ADDRESS_1] name=values[student_address][SECONDARY][STREET_ADDRESS_1] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN1']." />'; } else { document.getElementById('values[student_address][SECONDARY][STREET_ADDRESS_1]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN1']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN2'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_ln2 = document.getElementById('divvalues[student_address][SECONDARY][STREET_ADDRESS_2]'); if(div_val_addr_ln2){ div_val_addr_ln2.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][SECONDARY][STREET_ADDRESS_2] name=values[student_address][SECONDARY][STREET_ADDRESS_2] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN2']." />'; } else { document.getElementById('values[student_address][SECONDARY][STREET_ADDRESS_2]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_LIN2']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CITY'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_city = document.getElementById('divvalues[student_address][SECONDARY][CITY]'); if(div_val_addr_city){ div_val_addr_city.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][SECONDARY][CITY] name=values[student_address][SECONDARY][CITY] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CITY']." />'; } else { document.getElementById('values[student_address][SECONDARY][CITY]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_CITY']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_STAT'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_state = document.getElementById('divvalues[student_address][SECONDARY][STATE]'); if(div_val_addr_state){ div_val_addr_state.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][SECONDARY][STATE] name=values[student_address][SECONDARY][STATE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_STAT']." />'; } else { document.getElementById('values[student_address][SECONDARY][STATE]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_STAT']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_ZIP'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_zip = document.getElementById('divvalues[student_address][SECONDARY][ZIPCODE]'); if(div_val_addr_zip){ div_val_addr_zip.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][SECONDARY][ZIPCODE] name=values[student_address][SECONDARY][ZIPCODE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_ZIP']." />'; } else { document.getElementById('values[student_address][SECONDARY][ZIPCODE]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_ZIP']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_PORTAL'] == 'Y')
+                {
+                    echo '<SCRIPT language=javascript>document.getElementById(\'divvalues_portal_2\').innerHTML="<input type=\'checkbox\' checked name=\'secondary_portal\' value=\'Y\' id=\'portal_2\' onclick=\'portal_toggle(2);\' width=\'25\'>"; document.getElementById("portal_div_2").style.display = "block";</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_USRN'] != "")
+                {
+                    echo "<script language=javascript> var div_val_usern = document.getElementById('divvalues[people][SECONDARY][USER_NAME]'); if(div_val_usern){ div_val_usern.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][SECONDARY][USER_NAME] name=values[people][SECONDARY][USER_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_USRN']." />'; } else { document.getElementById('values[people][SECONDARY][USER_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_USRN']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['SECN_CONT_PSWD'] != "")
+                {
+                    echo "<script language=javascript> var div_val_pwd = document.getElementById('divvalues[people][SECONDARY][PASSWORD]'); if(div_val_pwd){ div_val_pwd.innerHTML = '<INPUT class=form-control type=password class=form-control id=inputvalues[people][SECONDARY][PASSWORD] name=values[people][SECONDARY][PASSWORD] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_PSWD']." />'; } else { document.getElementById('values[people][SECONDARY][PASSWORD]').value = '".$_SESSION['HOLD_ADDR_DATA']['SECN_CONT_PSWD']."'; } </script>";
+                }
+            }
+            
             if ($people_loginfo['USERNAME'] != '')
             {
                 if ($_REQUEST['address_id'] == 'new')
@@ -2105,7 +2306,8 @@ if ($_REQUEST['nfunc'] == 'status')
                 }
                 else 
                 {
-//alert(document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'mmmmm\');
+                    // echo '<SCRIPT language=javascript>alert("'.$sel_staff.'");</script>';
+
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'divvalues[people][PRIMARY][RELATIONSHIP]\').innerHTML=\'<SELECT class=form-control id=inputvalues[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] />' . $option . '</SELECT> \';'
                     . 'document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\').innerHTML=\'<INPUT type=text class=form-control id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=cell_medium size=2 /> \';'
@@ -2119,23 +2321,21 @@ if ($_REQUEST['nfunc'] == 'status')
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
-                    . 'var home_phone=document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                    . 'var work_phone=document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                    . 'var cell_phone=document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                    . 'var portal=document.getElementById(\'portal_1\'); if(portal!=null) { document.getElementById(\'portal_1\').checked=true;document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
+                    . 'var ex_prim_f_name = document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\'); if(ex_prim_f_name){ ex_prim_f_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][FIRST_NAME]\' name=\'values[people][PRIMARY][FIRST_NAME]\' value=\'' . $people_info['FIRST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\'; }'
+                    . 'var ex_prim_l_name = document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\'); if(ex_prim_l_name){ ex_prim_l_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][LAST_NAME]\' name=\'values[people][PRIMARY][LAST_NAME]\' value=\'' . $people_info['LAST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\'; }'
+                    . 'var ex_prim_eml = document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\'); if(ex_prim_eml){ ex_prim_eml.innerHTML = "<INPUT type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][EMAIL]\' name=\'values[people][PRIMARY][EMAIL]\' value=\''.$people_info['EMAIL'].'\' class=\'cell_medium\' size=\'2\' onkeyup=\'peoplecheck_email(this,1,'.$sel_staff.');\'/>"; }else{ document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\'; }'
+                    . 'var ex_home_phone = document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(ex_home_phone){ ex_home_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][HOME_PHONE]\' name=\'values[people][PRIMARY][HOME_PHONE]\' value=\'' . $people_info['HOME_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\'; }'
+                    . 'var ex_work_phone = document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(ex_work_phone){ ex_work_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][WORK_PHONE]\' name=\'values[people][PRIMARY][WORK_PHONE]\' value=\'' . $people_info['WORK_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\'; }'
+                    . 'var ex_cell_phone = document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(ex_cell_phone){ ex_cell_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][CELL_PHONE]\' name=\'values[people][PRIMARY][CELL_PHONE]\' value=\'' . $people_info['CELL_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\'; }'
+                    . 'var portal=document.getElementById(\'portal_1\'); if(portal!=null) { document.getElementById(\'portal_1\').checked=true; document.getElementById("portal_div_1").style.display="block"; document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
                     . 'var pwd=document.getElementById(\'values[people][PRIMARY][PASSWORD]\'); '
                     . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
                     . 'pwd.parentNode.replaceChild(pwd2,pwd);'
                     . 'document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'' . $people_loginfo['PASSWORD'] . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \';} else {document.getElementById(\'uname1\').innerHTML=\'' . $people_loginfo['USERNAME'] . '\'; document.getElementById(\'pwd1\').innerHTML=\'' . str_repeat('*', strlen($people_loginfo['PASSWORD'])) . '\';document.getElementById(\'divvalues[people][PRIMARY][PROFILE_ID]\').innerHTML=\'<SELECT class=form-control id=pri_prof_id name=values[people][PRIMARY][PROFILE_ID] />' . $parent_prof_options . '</SELECT> \'; } </script>';
-//                                   .'</script>';
                 }
             }
             else
             {
-//                                    echo '<script>alert(\'okkk\')</script>';
                 if ($_REQUEST['address_id'] == 'new')
                     echo '<SCRIPT language=javascript>document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][RELATIONSHIP]\').value=\'' . $key . '\';document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\';document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\';document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_1\').checked=false;document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\';document.getElementById(\'portal_div_1\').style.display=\'none\';</script>';
                 else
@@ -2156,24 +2356,180 @@ if ($_REQUEST['nfunc'] == 'status')
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_pri_parent\').value=' . $sel_staff . ';'
                     . 'document.getElementById(\'hidden_primary\').value=\'' . $sel_staff . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
-                    . 'var home_phone=document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                    . 'var work_phone=document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                    . 'var cell_phone=document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                    . 'var portal=document.getElementById(\'portal_1\'); if(portal!=null) { document.getElementById(\'portal_1\').checked=false;'
+                    // . 'document.getElementById(\'inputvalues[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+                    // . 'document.getElementById(\'inputvalues[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+                    // . 'document.getElementById(\'inputvalues[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\';'
+                    // . 'var home_phone=document.getElementById(\'inputvalues[people][PRIMARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+                    // . 'var work_phone=document.getElementById(\'inputvalues[people][PRIMARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+                    // . 'var cell_phone=document.getElementById(\'inputvalues[people][PRIMARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+                    . 'var ex_prim_f_name = document.getElementById(\'divvalues[people][PRIMARY][FIRST_NAME]\'); if(ex_prim_f_name){ ex_prim_f_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][FIRST_NAME]\' name=\'values[people][PRIMARY][FIRST_NAME]\' value=\'' . $people_info['FIRST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\'; }'
+                    . 'var ex_prim_l_name = document.getElementById(\'divvalues[people][PRIMARY][LAST_NAME]\'); if(ex_prim_l_name){ ex_prim_l_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][LAST_NAME]\' name=\'values[people][PRIMARY][LAST_NAME]\' value=\'' . $people_info['LAST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\'; }'
+                    . 'var ex_prim_eml = document.getElementById(\'divvalues[people][PRIMARY][EMAIL]\'); if(ex_prim_eml){ ex_prim_eml.innerHTML = "<INPUT type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][EMAIL]\' name=\'values[people][PRIMARY][EMAIL]\' value=\''.$people_info['EMAIL'].'\' class=\'cell_medium\' size=\'2\' onkeyup=\'peoplecheck_email(this,1,0);\'/>"; }else{ document.getElementById(\'values[people][PRIMARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\'; }'
+                    . 'var ex_home_phone = document.getElementById(\'divvalues[people][PRIMARY][HOME_PHONE]\'); if(ex_home_phone){ ex_home_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][HOME_PHONE]\' name=\'values[people][PRIMARY][HOME_PHONE]\' value=\'' . $people_info['HOME_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\'; }'
+                    . 'var ex_work_phone = document.getElementById(\'divvalues[people][PRIMARY][WORK_PHONE]\'); if(ex_work_phone){ ex_work_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][WORK_PHONE]\' name=\'values[people][PRIMARY][WORK_PHONE]\' value=\'' . $people_info['WORK_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\'; }'
+                    . 'var ex_cell_phone = document.getElementById(\'divvalues[people][PRIMARY][CELL_PHONE]\'); if(ex_cell_phone){ ex_cell_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][PRIMARY][CELL_PHONE]\' name=\'values[people][PRIMARY][CELL_PHONE]\' value=\'' . $people_info['CELL_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][PRIMARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\'; }'	
+                    . 'var portal = document.getElementById(\'portal_1\'); if(portal!=null) { document.getElementById(\'portal_1\').checked=false;'
                     . 'document.getElementById(\'values[people][PRIMARY][USER_NAME]\').value=\'\';'
                     . 'document.getElementById(\'values[people][PRIMARY][PASSWORD]\').value=\'\'; document.getElementById(\'portal_div_1\').style.display=\'none\';} else { var chk1=document.getElementById(\'checked_1\');  if(chk1!=null) chk1.innerHTML=\'<input type="checkbox" width="25" name="primary_portal" value="Y" id="portal_1" onClick="portal_toggle(1);" /> \' ; 
-                                  var uname1=document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT class=form-control type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
-                                  var pwd1=document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT class=form-control type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';document.getElementById(\'portal_div_1\').style.display=none;} </script>';
-
-//                                                .'</script>';
+                    var uname1=document.getElementById(\'uname1\'); if(uname1!=null) uname1.innerHTML=\'<INPUT class=form-control type=text name=values[people][PRIMARY][USER_NAME] id=values[people][PRIMARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,1);" name=values[people][PRIMARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_1"></div> \' ;
+                    var pwd1=document.getElementById(\'pwd1\'); if(pwd1!=null) pwd1.innerHTML=\'<INPUT class=form-control type=password name=values[people][PRIMARY][PASSWORD] id=values[people][PRIMARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,1);"  /><span id="passwordStrength1"></span> \';document.getElementById(\'portal_div_1\').style.display=none;} </script>';
                 }
             }
         }
         elseif ($_REQUEST['type'] == 'secondary') 
         {
+            $pick_selected_secn_cont_addr   =   DBGet(DBQuery("SELECT street_address_1, street_address_2, city, state, zipcode FROM student_address WHERE people_id = ".$sel_staff));
+
+            if($_REQUEST['address_id'] != 'new')
+            {
+                $secn_cont_match_stu_addr       =   DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_MATCHES FROM student_address WHERE street_address_1 = \''.addslashes($pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1']).'\' AND street_address_2 = \''.addslashes($pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2']).'\' AND city = \''.addslashes($pick_selected_secn_cont_addr[1]['CITY']).'\' AND state = \''.addslashes($pick_selected_secn_cont_addr[1]['STATE']).'\' AND zipcode = \''.addslashes($pick_selected_secn_cont_addr[1]['ZIPCODE']).'\' AND student_id = \''.$_REQUEST['student_id'].'\' AND type = \'Home Address\''));
+
+                if(count($secn_cont_match_stu_addr[1]['TOTAL_MATCHES']) != 0)
+                {
+                    echo '<script language=javascript>document.getElementById(\'sec_same_as\').innerHTML="<div id=\'check_addr\'><label class=\'checkbox-inline\'><input class=\'styled\' type=\'checkbox\' checked=\'checked\' id=\'sec_addr\' name=\'sec_addr\' value=\'Y\'>Same as Home Address</label></div>";</script>';
+
+                    echo '<SCRIPT language=javascript>var sec_addr_line_1 = document.getElementById("divvalues[student_address][SECONDARY][STREET_ADDRESS_1]"); if(sec_addr_line_1){ sec_addr_line_1.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STREET_ADDRESS_1]\' name=\'values[student_address][SECONDARY][STREET_ADDRESS_1]\' value=\''.$pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'].'\' size=\'15\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'] . '\'; } var sec_addr_line_2 = document.getElementById("divvalues[student_address][SECONDARY][STREET_ADDRESS_2]"); if(sec_addr_line_2){ sec_addr_line_2.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STREET_ADDRESS_2]\' name=\'values[student_address][SECONDARY][STREET_ADDRESS_2]\' value=\''.$pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'] . '\'; } var sec_city = document.getElementById("divvalues[student_address][SECONDARY][CITY]"); if(sec_city){ sec_city.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][CITY]\' name=\'values[student_address][SECONDARY][CITY]\' value=\''.$pick_selected_secn_cont_addr[1]['CITY'].'\' size=\'7\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][CITY]\').value=\'' . $pick_selected_secn_cont_addr[1]['CITY'] . '\'; } var sec_state = document.getElementById("divvalues[student_address][SECONDARY][STATE]"); if(sec_state){ sec_state.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STATE]\' name=\'values[student_address][SECONDARY][STATE]\' value=\''.$pick_selected_secn_cont_addr[1]['STATE'].'\' size=\'11\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STATE]\').value=\'' . $pick_selected_secn_cont_addr[1]['STATE'] . '\'; } var sec_zip = document.getElementById("divvalues[student_address][SECONDARY][ZIPCODE]"); if(sec_zip){ sec_zip.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][ZIPCODE]\' name=\'values[student_address][SECONDARY][ZIPCODE]\' value=\''.$pick_selected_secn_cont_addr[1]['ZIPCODE'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][ZIPCODE]\').value=\'' . $pick_selected_secn_cont_addr[1]['ZIPCODE'] . '\'; }
+                    </script>';
+                }
+                else
+                {
+                    echo '<SCRIPT language=javascript>var sec_addr_line_1 = document.getElementById("divvalues[student_address][SECONDARY][STREET_ADDRESS_1]"); if(sec_addr_line_1){ sec_addr_line_1.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STREET_ADDRESS_1]\' name=\'values[student_address][SECONDARY][STREET_ADDRESS_1]\' value=\''.$pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'].'\' size=\'15\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'] . '\'; } var sec_addr_line_2 = document.getElementById("divvalues[student_address][SECONDARY][STREET_ADDRESS_2]"); if(sec_addr_line_2){ sec_addr_line_2.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STREET_ADDRESS_2]\' name=\'values[student_address][SECONDARY][STREET_ADDRESS_2]\' value=\''.$pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'] . '\'; } var sec_city = document.getElementById("divvalues[student_address][SECONDARY][CITY]"); if(sec_city){ sec_city.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][CITY]\' name=\'values[student_address][SECONDARY][CITY]\' value=\''.$pick_selected_secn_cont_addr[1]['CITY'].'\' size=\'7\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][CITY]\').value=\'' . $pick_selected_secn_cont_addr[1]['CITY'] . '\'; } var sec_state = document.getElementById("divvalues[student_address][SECONDARY][STATE]"); if(sec_state){ sec_state.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][STATE]\' name=\'values[student_address][SECONDARY][STATE]\' value=\''.$pick_selected_secn_cont_addr[1]['STATE'].'\' size=\'11\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][STATE]\').value=\'' . $pick_selected_secn_cont_addr[1]['STATE'] . '\'; } var sec_zip = document.getElementById("divvalues[student_address][SECONDARY][ZIPCODE]"); if(sec_zip){ sec_zip.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[student_address][SECONDARY][ZIPCODE]\' name=\'values[student_address][SECONDARY][ZIPCODE]\' value=\''.$pick_selected_secn_cont_addr[1]['ZIPCODE'].'\' size=\'6\'>"; }else{ document.getElementById(\'values[student_address][SECONDARY][ZIPCODE]\').value=\'' . $pick_selected_secn_cont_addr[1]['ZIPCODE'] . '\'; }
+                    </script>';
+                }
+            }
+            else
+            {
+                if($pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'] && $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'] && $pick_selected_secn_cont_addr[1]['CITY'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'] && $pick_selected_secn_cont_addr[1]['STATE'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'] && $pick_selected_secn_cont_addr[1]['ZIPCODE'] == $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'])
+                {
+                    echo "<script language=javascript>window.$('#rss').attr('checked','checked');document.getElementById('sec_hideShow').style.display='none';</script>";
+                }
+                else
+                {
+                    echo "<script language=javascript>window.$('#rsn').attr('checked','checked');document.getElementById('sec_hideShow').style.display='block';</script>";
+
+                    echo '<SCRIPT language=javascript>document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_1]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_1'] . '\';document.getElementById(\'values[student_address][SECONDARY][STREET_ADDRESS_2]\').value=\'' . $pick_selected_secn_cont_addr[1]['STREET_ADDRESS_2'] . '\';document.getElementById(\'values[student_address][SECONDARY][CITY]\').value=\'' . $pick_selected_secn_cont_addr[1]['CITY'] . '\';document.getElementById(\'values[student_address][SECONDARY][STATE]\').value=\'' . $pick_selected_secn_cont_addr[1]['STATE'] . '\';document.getElementById(\'values[student_address][SECONDARY][ZIPCODE]\').value=\'' . $pick_selected_secn_cont_addr[1]['ZIPCODE'] . '\';</script>';
+                }
+            }
+
+
+            $_SESSION['SELECTED_PARENT']["new_secondary"]   =  $sel_staff;
+
+
+            if(isset($_SESSION['HOLD_ADDR_DATA']))
+            {
+                echo "<script language=javascript>document.getElementById('hidden_primary').value='".$_SESSION['HOLD_ADDR_DATA']['SELECTED_PRIMARY']."';</script>";
+
+                //    if($_SESSION['HOLD_ADDR_DATA']['ADDR_SAME_HOME'] == "N")
+                //    {
+                //        echo "<script language=javascript>document.getElementById('hideShow').style.display='block';</script>";
+                //    }
+                //    else
+                //    {
+                //        echo "<script language=javascript>document.getElementById('hideShow').style.display='none';</script>";
+                //    }
+
+                if($_SESSION['HOLD_ADDR_DATA']['CHK_HOME_ADDR_PRIM'] == "Y")
+                {
+                    $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L1'];
+                    $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_L2'];
+                    $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_CITY'];
+                    $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT']   =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_STATE'];
+                    $_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP']    =   $_SESSION['HOLD_ADDR_DATA']['ADDR_PRIM_ZIP'];
+                    
+                    echo '<script language=javascript>document.getElementById(\'prim_same_as\').innerHTML="<div id=\'check_addr\'><label class=\'checkbox-inline\'><input class=\'styled\' type=\'checkbox\' checked=\'checked\' id=\'prim_addr\' name=\'prim_addr\' value=\'Y\'>Same as Home Address</label></div>";</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_RSHIP'] != "")
+                {
+                    echo "<script language=javascript> var div_val_rship = document.getElementById('divvalues[people][PRIMARY][RELATIONSHIP]'); if(div_val_rship){ div_val_rship.innerHTML = '<INPUT class=form-control type=text class=form-control id=values[people][PRIMARY][RELATIONSHIP] name=values[people][PRIMARY][RELATIONSHIP] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_RSHIP']." />'; } else { document.getElementById('values[people][PRIMARY][RELATIONSHIP]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_RSHIP']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_FIRST'] != "")
+                {
+                    echo "<script language=javascript> var div_val_f_name = document.getElementById('divvalues[people][PRIMARY][FIRST_NAME]'); if(div_val_f_name){ div_val_f_name.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][FIRST_NAME] name=values[people][PRIMARY][FIRST_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_FIRST']." />'; } else { document.getElementById('values[people][PRIMARY][FIRST_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_FIRST']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LAST'] != "")
+                {
+                    echo "<script language=javascript> var div_val_l_name = document.getElementById('divvalues[people][PRIMARY][LAST_NAME]'); if(div_val_l_name){ div_val_l_name.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][LAST_NAME] name=values[people][PRIMARY][LAST_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LAST']." />'; } else { document.getElementById('values[people][PRIMARY][LAST_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LAST']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_HOME'] != "")
+                {
+                    echo "<script language=javascript> var div_val_home_ph = document.getElementById('divvalues[people][PRIMARY][HOME_PHONE]'); if(div_val_home_ph){ div_val_home_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][HOME_PHONE] name=values[people][PRIMARY][HOME_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_HOME']." />'; } else { document.getElementById('values[people][PRIMARY][HOME_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_HOME']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_WORK'] != "")
+                {
+                    echo "<script language=javascript> var div_val_work_ph = document.getElementById('divvalues[people][PRIMARY][WORK_PHONE]'); if(div_val_work_ph){ div_val_work_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][WORK_PHONE] name=values[people][PRIMARY][WORK_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_WORK']." />'; } else { document.getElementById('values[people][PRIMARY][WORK_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_WORK']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CELL'] != "")
+                {
+                    echo "<script language=javascript> var div_val_cell_ph = document.getElementById('divvalues[people][PRIMARY][CELL_PHONE]'); if(div_val_cell_ph){ div_val_cell_ph.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][CELL_PHONE] name=values[people][PRIMARY][CELL_PHONE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CELL']." />'; } else { document.getElementById('values[people][PRIMARY][CELL_PHONE]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CELL']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_MAIL'] != "")
+                {
+                    echo "<script language=javascript> var div_val_email = document.getElementById('divvalues[people][PRIMARY][EMAIL]'); if(div_val_email){ div_val_email.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][EMAIL] name=values[people][PRIMARY][EMAIL] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_MAIL']." />'; } else { document.getElementById('values[people][PRIMARY][EMAIL]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_MAIL']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CUSTODY'] == "Y")
+                {
+                    echo '<script language=javascript>document.getElementById(\'divvalues[people][PRIMARY][CUSTODY]\').innerHTML="<input type=\'checkbox\' checked onclick=\'set_check_value(this,\'values[people][PRIMARY][CUSTODY]\');\' id=\'values[people][PRIMARY][CUSTODY]\' name=\'values[people][PRIMARY][CUSTODY]\' value=\'Y\'>"</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_ln1 = document.getElementById('divvalues[student_address][PRIMARY][STREET_ADDRESS_1]'); if(div_val_addr_ln1){ div_val_addr_ln1.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][PRIMARY][STREET_ADDRESS_1] name=values[student_address][PRIMARY][STREET_ADDRESS_1] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1']." />'; } else { document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_1]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN1']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_ln2 = document.getElementById('divvalues[student_address][PRIMARY][STREET_ADDRESS_2]'); if(div_val_addr_ln2){ div_val_addr_ln2.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][PRIMARY][STREET_ADDRESS_2] name=values[student_address][PRIMARY][STREET_ADDRESS_2] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2']." />'; } else { document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_2]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_LIN2']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_city = document.getElementById('divvalues[student_address][PRIMARY][CITY]'); if(div_val_addr_city){ div_val_addr_city.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][PRIMARY][CITY] name=values[student_address][PRIMARY][CITY] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY']." />'; } else { document.getElementById('values[student_address][PRIMARY][CITY]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_CITY']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_state = document.getElementById('divvalues[student_address][PRIMARY][STATE]'); if(div_val_addr_state){ div_val_addr_state.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][PRIMARY][STATE] name=values[student_address][PRIMARY][STATE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT']." />'; } else { document.getElementById('values[student_address][PRIMARY][STATE]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_STAT']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP'] != "")
+                {
+                    echo "<script language=javascript> var div_val_addr_zip = document.getElementById('divvalues[student_address][PRIMARY][ZIPCODE]'); if(div_val_addr_zip){ div_val_addr_zip.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[student_address][PRIMARY][ZIPCODE] name=values[student_address][PRIMARY][ZIPCODE] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP']." />'; } else { document.getElementById('values[student_address][PRIMARY][ZIPCODE]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ZIP']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PORTAL'] == 'Y')
+                {
+                    echo '<SCRIPT language=javascript>document.getElementById(\'divvalues_portal_1\').innerHTML="<input type=\'checkbox\' checked name=\'primary_portal\' value=\'Y\' id=\'portal_1\' onclick=\'portal_toggle(1);\' width=\'25\'>"; document.getElementById("portal_div_1").style.display = "block";</script>';
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_USRN'] != "")
+                {
+                    echo "<script language=javascript> var div_val_usern = document.getElementById('divvalues[people][PRIMARY][USER_NAME]'); if(div_val_usern){ div_val_usern.innerHTML = '<INPUT class=form-control type=text class=form-control id=inputvalues[people][PRIMARY][USER_NAME] name=values[people][PRIMARY][USER_NAME] class=form-control size=12 type=text value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_USRN']." />'; } else { document.getElementById('values[people][PRIMARY][USER_NAME]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_USRN']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PSWD'] != "")
+                {
+                    echo "<script language=javascript> var div_val_pwd = document.getElementById('divvalues[people][PRIMARY][PASSWORD]'); if(div_val_pwd){ div_val_pwd.innerHTML = '<INPUT class=form-control type=password class=form-control id=inputvalues[people][PRIMARY][PASSWORD] name=values[people][PRIMARY][PASSWORD] class=form-control size=12 type=password value=".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PSWD']." />'; } else { document.getElementById('values[people][PRIMARY][PASSWORD]').value = '".$_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_PSWD']."'; } </script>";
+                }
+
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_SAHA'] == "Y")
+                {
+                    echo '<SCRIPT language=javascript>window.$("#rps").attr("checked","checked");document.getElementById("prim_hideShow").style.display="none";</SCRIPT>';
+                }
+                
+                if($_SESSION['HOLD_ADDR_DATA']['ADDR_CONT_ADNA'] == "Y")
+                {
+                    echo '<SCRIPT language=javascript>window.$("#rpn").attr("checked","checked");document.getElementById("prim_hideShow").style.display="block";</SCRIPT>';
+                }
+            }
+
             if ($people_loginfo['USERNAME'] != '')
             {
                 if ($_REQUEST['address_id'] == 'new')
@@ -2192,12 +2548,19 @@ if ($_REQUEST['nfunc'] == 'status')
 
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
-                    . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                    . 'var home_phone=document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                    . 'var work_phone=document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                    . 'var cell_phone=document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
-                    . 'var sec_email=document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=document.getElementById(\'values[people][SECONDARY][EMAIL]\');   sec_email.value=\'' . $people_info['EMAIL'] . '\';document.getElementById(\'portal_div_2\').style.display=\'block\';'
+                    // . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+                    // . 'document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+                    // . 'var home_phone=document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+                    // . 'var work_phone=document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+                    // . 'var cell_phone=document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+                    // . 'var sec_email=document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=document.getElementById(\'values[people][SECONDARY][EMAIL]\');   sec_email.value=\'' . $people_info['EMAIL'] . '\';'
+                    . 'var ex_sec_f_name = document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\'); if(ex_sec_f_name){ ex_sec_f_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][FIRST_NAME]\' name=\'values[people][SECONDARY][FIRST_NAME]\' value=\'' . $people_info['FIRST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\'; }'
+                    . 'var ex_sec_l_name = document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\'); if(ex_sec_l_name){ ex_sec_l_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][LAST_NAME]\' name=\'values[people][SECONDARY][LAST_NAME]\' value=\'' . $people_info['LAST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\'; }'
+                    . 'var ex_sec_eml = document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\'); if(ex_sec_eml){ ex_sec_eml.innerHTML = "<INPUT type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][EMAIL]\' name=\'values[people][SECONDARY][EMAIL]\' value=\''.$people_info['EMAIL'].'\' class=\'cell_medium\' size=\'2\' onkeyup=\'peoplecheck_email(this,2,'.$sel_staff.');\'/>"; }else{ document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\'; }'
+                    . 'var ex_sec_home_phone = document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(ex_sec_home_phone){ ex_sec_home_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][HOME_PHONE]\' name=\'values[people][SECONDARY][HOME_PHONE]\' value=\'' . $people_info['HOME_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\'; }'
+                    . 'var ex_sec_work_phone = document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(ex_sec_work_phone){ ex_sec_work_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][WORK_PHONE]\' name=\'values[people][SECONDARY][WORK_PHONE]\' value=\'' . $people_info['WORK_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\'; }'
+                    . 'var ex_sec_cell_phone = document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(ex_sec_cell_phone){ ex_sec_cell_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][CELL_PHONE]\' name=\'values[people][SECONDARY][CELL_PHONE]\' value=\'' . $people_info['CELL_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\'; }'	
+                    . 'document.getElementById(\'portal_div_2\').style.display=\'block\';'
                     . 'var portal=document.getElementById(\'portal_2\'); if(portal!=null) { document.getElementById(\'portal_2\').checked=true;document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'' . $people_loginfo['USERNAME'] . '\';'
                     . 'var pwd=document.getElementById(\'values[people][SECONDARY][PASSWORD]\'); '
                     . 'var pwd2= pwd.cloneNode(false);pwd2.type=\'password\';'
@@ -2223,17 +2586,23 @@ if ($_REQUEST['nfunc'] == 'status')
 
                     echo '<SCRIPT language=javascript>'
                     . 'document.getElementById(\'selected_sec_parent\').value=' . $sel_staff . ';' . 'document.getElementById(\'hidden_secondary\').value=\'' . $sel_staff . '\';'
-                    . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
-                    . 'document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
-                    . 'var sec_email=document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=document.getElementById(\'values[people][SECONDARY][EMAIL]\'); sec_email.value=\'' . $people_info['EMAIL'] . '\';'
-                    . 'var home_phone=document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
-                    . 'var work_phone=document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
-                    . 'var cell_phone=document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+                    // . 'document.getElementById(\'inputvalues[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\';'
+                    // . 'document.getElementById(\'inputvalues[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\';'
+                    // . 'var sec_email=document.getElementById(\'inputvalues[people][SECONDARY][EMAIL]\'); if(sec_email==null) sec_email=document.getElementById(\'values[people][SECONDARY][EMAIL]\'); sec_email.value=\'' . $people_info['EMAIL'] . '\';'
+                    // . 'var home_phone=document.getElementById(\'inputvalues[people][SECONDARY][HOME_PHONE]\'); if(home_phone==null) home_phone=document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\');  home_phone.value=\'' . $people_info['HOME_PHONE'] . '\';'
+                    // . 'var work_phone=document.getElementById(\'inputvalues[people][SECONDARY][WORK_PHONE]\'); if(work_phone==null) work_phone=document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\');  work_phone.value=\'' . $people_info['WORK_PHONE'] . '\';'
+                    // . 'var cell_phone=document.getElementById(\'inputvalues[people][SECONDARY][CELL_PHONE]\'); if(cell_phone==null) cell_phone=document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\');  cell_phone.value=\'' . $people_info['CELL_PHONE'] . '\';'
+                    . 'var ex_sec_f_name = document.getElementById(\'divvalues[people][SECONDARY][FIRST_NAME]\'); if(ex_sec_f_name){ ex_sec_f_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][FIRST_NAME]\' name=\'values[people][SECONDARY][FIRST_NAME]\' value=\'' . $people_info['FIRST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][FIRST_NAME]\').value=\'' . $people_info['FIRST_NAME'] . '\'; }'
+                    . 'var ex_sec_l_name = document.getElementById(\'divvalues[people][SECONDARY][LAST_NAME]\'); if(ex_sec_l_name){ ex_sec_l_name.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][LAST_NAME]\' name=\'values[people][SECONDARY][LAST_NAME]\' value=\'' . $people_info['LAST_NAME'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][LAST_NAME]\').value=\'' . $people_info['LAST_NAME'] . '\'; }'
+                    . 'var ex_sec_eml = document.getElementById(\'divvalues[people][SECONDARY][EMAIL]\'); if(ex_sec_eml){ ex_sec_eml.innerHTML = "<INPUT type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][EMAIL]\' name=\'values[people][SECONDARY][EMAIL]\' value=\''.$people_info['EMAIL'].'\' class=\'cell_medium\' size=\'2\' onkeyup=\'peoplecheck_email(this,2,'.$sel_staff.');\'/>"; }else{ document.getElementById(\'values[people][SECONDARY][EMAIL]\').value=\'' . $people_info['EMAIL'] . '\'; }'
+                    . 'var ex_sec_home_phone = document.getElementById(\'divvalues[people][SECONDARY][HOME_PHONE]\'); if(ex_sec_home_phone){ ex_sec_home_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][HOME_PHONE]\' name=\'values[people][SECONDARY][HOME_PHONE]\' value=\'' . $people_info['HOME_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][HOME_PHONE]\').value=\'' . $people_info['HOME_PHONE'] . '\'; }'
+                    . 'var ex_sec_work_phone = document.getElementById(\'divvalues[people][SECONDARY][WORK_PHONE]\'); if(ex_sec_work_phone){ ex_sec_work_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][WORK_PHONE]\' name=\'values[people][SECONDARY][WORK_PHONE]\' value=\'' . $people_info['WORK_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][WORK_PHONE]\').value=\'' . $people_info['WORK_PHONE'] . '\'; }'
+                    . 'var ex_sec_cell_phone = document.getElementById(\'divvalues[people][SECONDARY][CELL_PHONE]\'); if(ex_sec_cell_phone){ ex_sec_cell_phone.innerHTML = "<input type=\'text\' class=\'form-control\' id=\'inputvalues[people][SECONDARY][CELL_PHONE]\' name=\'values[people][SECONDARY][CELL_PHONE]\' value=\'' . $people_info['CELL_PHONE'] . '\' size=\'12\'>"; }else{ document.getElementById(\'values[people][SECONDARY][CELL_PHONE]\').value=\'' . $people_info['CELL_PHONE'] . '\'; }'
                     . 'var portal=document.getElementById(\'portal_2\'); if(portal!=null) { document.getElementById(\'portal_2\').checked=false;'
                     . 'document.getElementById(\'values[people][SECONDARY][USER_NAME]\').value=\'\';'
                     . 'document.getElementById(\'values[people][SECONDARY][PASSWORD]\').value=\'\';document.getElementById(\'portal_div_2\').style.display=\'none\';} else { var chk2=document.getElementById(\'checked_2\'); if(chk2!=null) chk2.innerHTML=\'<input type="checkbox" name="secondary_portal" value="Y" id="portal_2" onClick="portal_toggle(2);" /> \' ; 
-                                  var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT class=form-control type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
-                                   var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT class=form-control type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
+                    var uname2=document.getElementById(\'uname2\'); if(uname2!=null) uname2.innerHTML=\'<INPUT class=form-control type=text name=values[people][SECONDARY][USER_NAME] id=values[people][SECONDARY][USER_NAME] class=cell_medium onblur="usercheck_init_mod(this,2);" name=values[people][SECONDARY][USER_NAME] class=cell_medium size=2 /><div id="ajax_output_2"></div> \' ;
+                    var pwd2=document.getElementById(\'pwd2\'); if(pwd2!=null) pwd2.innerHTML=\'<INPUT class=form-control type=password name=values[people][SECONDARY][PASSWORD] id=values[people][SECONDARY][PASSWORD] class=cell_medium onkeyup="passwordStrengthMod(this.value,1);" onblur="validate_password_mod(this.value,2);"  /><span id="passwordStrength2"></span> \';document.getElementById(\'portal_div_2\').style.display=\'none\'; }</script>';
                 }
             }
         }
@@ -2307,7 +2676,8 @@ if ($_REQUEST['nfunc'] == 'status')
         }
 
         // DESTROYING THE SESSION ADDRESS DATA //
-        unset($_SESSION["HOLD_ADDR_DATA"]); 
+        unset($_SESSION["HOLD_ADDR_DATA"]);
+        session_destroy($_SESSION["HOLD_ADDR_DATA"]);
         
         echo '<SCRIPT language=javascript>window.close();</script>';
     }

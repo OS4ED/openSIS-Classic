@@ -70,7 +70,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
 
-                $sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language AS LANG, birthdate AS BDATE  FROM students WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('BDATE' => 'ProperDate'));
+                $sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity_id AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language_id AS LANG, birthdate AS BDATE  FROM students WHERE STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('BDATE' => 'ProperDate'));
 
                 $sql_student = $sql_student[1];
 
@@ -113,7 +113,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "<tr><td>Gender:</td>";
                     echo "<td>" . $sql_student['GENDER'] . "</td></tr>";
                     echo "<tr><td>Ethnicity:</td>";
-                    echo "<td>" . $sql_student['ETHNICITY'] . "</td></tr>";
+                    $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=".$sql_student['ETHNICITY']));
+                    echo "<td>" . $sql_ethinicity[1]['ETHNICITY_NAME'] . "</td></tr>";
                     if ($sql_student['COM_NAME'] != '') {
                         echo "<tr><td>Common Name:</td>";
                         echo "<td>" . $sql_student['COM_NAME'] . "</td></tr>";
@@ -126,7 +127,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "<td>" . $bir_dt . "</td></tr>";
                     if ($sql_student['LANG'] != '') {
                         echo "<tr><td>Language Spoken:</td>";
-                        echo "<td>" . $sql_student['LANG'] . "</td></tr>";
+                        $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=".$sql_student['LANG']));
+                        echo "<td>" . $sql_language[1]['LANGUAGE_NAME'] . "</td></tr>";
                         echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                     }
 

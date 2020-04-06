@@ -337,7 +337,7 @@ if (!$_REQUEST['modfunc']) {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
 
 
-        $extra['extra_header_left'] = '<p>Avery Label 15660, 18660, 28660, 5630, 5660, 8660, 5620, 8620 compatible</p>';
+//        $extra['extra_header_left'] = '<p>Avery Label 15660, 18660, 28660, 5630, 5660, 8660, 5620, 8620 compatible</p>';
 
         //$extra['extra_header_left'] .= '<div class="row">';
         //$extra['extra_header_left'] .= '<div class="col-md-6">';
@@ -415,7 +415,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['SELECT'] .= ",s.STUDENT_ID AS CHECKBOX";
     $extra['link'] = array('FULL_NAME' => false);
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 

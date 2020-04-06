@@ -1240,7 +1240,15 @@ if (!$_REQUEST['_openSIS_PDF']) {
                 } else {
                     $extra_sql = "";
                 }
-                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM ". GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' AND ". $extra_sql ." ORDER BY START_DATE DESC LIMIT 1"));
+                if($extra_sql == "")
+                {
+                    $this_sql = "";
+                }
+                else
+                {
+                    $this_sql = "AND ".$extra_sql;
+                }
+                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM ". GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' ". $this_sql ." ORDER BY START_DATE DESC LIMIT 1"));
                 
                 $cp_mp = DBGet(DBQuery("SELECT MP FROM course_periods WHERE COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
             }

@@ -96,7 +96,18 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                                                     else
                                                     {
 			$sql = 'UPDATE portal_notes SET ';
-                           $sql.='SCHOOL_ID='.UserSchool().', ';
+           	// $sql.='SCHOOL_ID='.UserSchool().', ';
+
+           	$profiles_ext = explode(",", $columns["PUBLISHED_PROFILES"]);
+
+    		if($profiles_ext[1] == 'all')
+    		{
+    			$sql.='SCHOOL_ID = NULL, ';
+    		}
+    		else
+    		{
+    			$sql.='SCHOOL_ID='.UserSchool().', ';
+    		}
                             
 //                        }
 #################### code differ for windows and Linux machine ########################
@@ -263,31 +274,52 @@ $portal_id=implode(',',$portal_id_arr);
 	echo '</div></FORM>';
 }
 
-function _makeTextInput($value,$name, $options = '')
-{
-        global $THIS_RET;
-        if($THIS_RET['ID'])
-            $id = $THIS_RET['ID'];
+// function _makeTextInput($value,$name, $options = '')
+// {
+//         global $THIS_RET;
+//         if($THIS_RET['ID'])
+//             $id = $THIS_RET['ID'];
+//         else
+//             $id = 'new';
+
+//         if($name!='TITLE')
+//             $extra = 'size=5 maxlength=10 class=form-control ';
+//         else 
+
+//             $extra = 'class=form-control ';
+//         if($name=='SORT_ORDER')
+//         {
+//             if($name=='SORT_ORDER')
+//             {
+//                 if($id == 'new' || $THIS_RET['SORT_ORDER']=='')
+//                     $extra .= ' onkeydown="return numberOnly(event);" ';
+//                 else
+//                     $extra .= ' onkeydown="return numberOnly(event);" ';
+//             }
+//         }
+//         $extra .= ' '.$options;        
+//         return TextInput($name=='TITLE' && $THIS_RET['EXPIRED']?array($value,'<FONT class=red>'.$value.'</FONT>'):$value,"values[$id][$name]",'',$extra);
+// }
+
+function _makeTextInput($value, $name) {
+    global $THIS_RET;
+    if ($THIS_RET['ID'])
+        $id = $THIS_RET['ID'];
+    else
+        $id = 'new';
+    if ($name == 'TITLE' && $id == 'new')
+        $extra = 'id=title';
+    if ($name == 'SHORT_NAME')
+        $extra = 'size=5 maxlength=5 class=form-control';
+    if ($name == 'SORT_ORDER') {
+        if ($id == 'new' || $THIS_RET['SORT_ORDER'] == '')
+            $extra = 'size=5 maxlength=5 class=form-control onkeydown="return numberOnly(event);"';
         else
-            $id = 'new';
+            $extra = 'size=5 maxlength=5 class=form-control onkeydown=\"return numberOnly(event);\"';
+    }
 
-        if($name!='TITLE')
-            $extra = 'size=5 maxlength=10 class=form-control ';
-        else 
-
-            $extra = 'class=form-control ';
-        if($name=='SORT_ORDER')
-        {
-            if($name=='SORT_ORDER')
-            {
-                if($id == 'new' || $THIS_RET['SORT_ORDER']=='')
-                    $extra .= ' onkeydown="return numberOnly(event);" ';
-                else
-                    $extra .= ' onkeydown="return numberOnly(event);" ';
-            }
-        }
-        $extra .= ' '.$options;        
-        return TextInput($name=='TITLE' && $THIS_RET['EXPIRED']?array($value,'<FONT class=red>'.$value.'</FONT>'):$value,"values[$id][$name]",'',$extra);
+    // return TextInput($value, 'values[' . $id . '][' . $name . ']', '', $extra);
+    return TextInputPortal($name=='TITLE' && $THIS_RET['EXPIRED']?array($value,'<FONT class=red>'.$value.'</FONT>'):$value,"values[$id][$name]",'',$extra);
 }
 
 function _makeContentInput($value,$name, $options = '')
@@ -298,7 +330,7 @@ function _makeContentInput($value,$name, $options = '')
 	else
 		$id = 'new';
 
-	return TextareaInput($value,"values[$id][$name]",'','rows=16 cols=55 '.$options);
+	return TextAreaInputPortal($value,"values[$id][$name]",'','rows=16 cols=55 '.$options);
 }
 
 function _makePublishing($value,$name)

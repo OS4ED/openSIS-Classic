@@ -32,23 +32,26 @@ while (!UserSyear()) {
     session_write_close();
     session_start();
 }
+
+$this_portal_toggle = "";
+
 $current_hour = date('H');
 $welcome .= 'User : ' . User('NAME');
-//if ($_SESSION['LAST_LOGIN'])
+// if ($_SESSION['LAST_LOGIN'])
 //    $welcome .= ' | Last login : ' . ProperDate(substr($_SESSION['LAST_LOGIN'], 0, 10)) . ' at ' . substr($_SESSION['LAST_LOGIN'], 10);
-//if ($_SESSION['FAILED_LOGIN'])
+// if ($_SESSION['FAILED_LOGIN'])
 //    $welcome .= ' | <span class=red >' . $_SESSION['FAILED_LOGIN'] . '</b> failed login attempts</span>';
 
-//----------------------------------------Update Missing Attendance_________________________________-
+// ----------------------------------------Update Missing Attendance_________________________________-
 
-//$det=DBGet(DBQuery('SELECT count(1) as REC_EX,STUDENT_ID,course_period_id FROM `schedule` GROUP By STUDENT_ID,course_period_id having count(1)>1'));
-//foreach($det as $dt){
+// $det=DBGet(DBQuery('SELECT count(1) as REC_EX,STUDENT_ID,course_period_id FROM `schedule` GROUP By STUDENT_ID,course_period_id having count(1)>1'));
+// foreach($det as $dt){
 //    $limit=$dt['REC_EX']-1;
 //    $ids=DBGet(DBQuery('SELECT * FROM schedule WHERE COURSE_PERIOD_ID='.$dt['COURSE_PERIOD_ID'].' AND STUDENT_ID='.$dt['STUDENT_ID'].' LIMIT 0,'.$limit));
 //    foreach($ids as $id_d){
 //        echo 'DELETE FROM schedule WHERE ID='.$id_d['ID'].';<br>';
 //    }
-//}
+// }
 
 echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">Please wait.</span> Compiling missing attendance data. Do not click anywhere.</div>
 <div id="resp"></div>';

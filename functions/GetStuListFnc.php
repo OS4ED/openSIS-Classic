@@ -60,7 +60,7 @@ function GetStuList(& $extra) {
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
             $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
-            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
+            $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
 
             $extra['FROM'] = ' LEFT OUTER JOIN student_address sa ON (ssm.STUDENT_ID=sa.STUDENT_ID AND sa.TYPE=\'Home Address\' ) ' . $extra['FROM'];
             $functions['CONTACT_INFO'] = 'makeContactInfo';
@@ -722,15 +722,15 @@ function appendSQL($sql, & $extra) {
         $sql .= ' AND LOWER(s.GENDER) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['GENDER']))) . '%\' ';
         }
     
-               if ($_REQUEST['ETHNICITY']) {
-        $sql .= ' AND LOWER(s.ETHNICITY) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['ETHNICITY']))) . '%\' ';
+               if ($_REQUEST['ETHNICITY_ID']) {
+        $sql .= ' AND LOWER(s.ETHNICITY_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['ETHNICITY_ID']))) . '%\' ';
         }
               if ($_REQUEST['common_name']) {
         $sql .= ' AND LOWER(s.common_name) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['common_name']))) . '%\' ';
         }
         
-                      if ($_REQUEST['LANGUAGE']) {
-        $sql .= ' AND LOWER(s.LANGUAGE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['LANGUAGE']))) . '%\' ';
+                      if ($_REQUEST['LANGUAGE_ID']) {
+        $sql .= ' AND LOWER(s.LANGUAGE_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['LANGUAGE_ID']))) . '%\' ';
         }
         
                              if ($_REQUEST['email']) {
@@ -1026,7 +1026,7 @@ function GetStuList_Absence_Summary(& $extra) {
             $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
 
-            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE ';
+            $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE ';
             $extra['FROM'] = '  LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Home Address\') ' . $extra['FROM'];
             $functions['CONTACT_INFO'] = 'makeContactInfo';
             // if gender is converted to codeds type

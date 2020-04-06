@@ -39,7 +39,24 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 //            }
         }
     }
+
     if (count($_REQUEST['values']) && count($_REQUEST['student'])) {
+        
+        if(!isset($_REQUEST['values']['is_disable']))
+        {
+            $_REQUEST['values']['is_disable'] = '';
+        }
+
+        if(isset($_REQUEST['values']['birthdate']) && $_REQUEST['values']['birthdate'] == '--')
+        {
+            $_REQUEST['values']['birthdate'] = '';
+        }
+
+        if(isset($_REQUEST['values']['estimated_grad_date']) && $_REQUEST['values']['estimated_grad_date'] == '--')
+        {
+            $_REQUEST['values']['estimated_grad_date'] = '';
+        }
+
         if ($_REQUEST['values']['NEXT_SCHOOL'] != '') {
             $next_school = $_REQUEST['values']['NEXT_SCHOOL'];
             unset($_REQUEST['values']['NEXT_SCHOOL']);
@@ -85,6 +102,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         foreach ($_REQUEST['values'] as $field => $value) {
 
             $arr = explode('[', $field);
+
             if ($arr[0] == 'language_id') {
                 if (isset($value) && trim($value) != '') {
                     $value = paramlib_validation($field, $value);
@@ -93,13 +111,22 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     $update .= ',' . $field . "='$lng_id'";  
                 }
             }
-           elseif (($arr[0] != 'medical_info')&&($arr[0] != 'language_id')) {
+            elseif (($arr[0] != 'medical_info') && ($arr[0] != 'language_id') && ($arr[0] != 'Password')) {
                 if (isset($value) && trim($value) != '') {
                     $value = paramlib_validation($field, $value);
                     $update .= ',' . $field . "='$value'";
                     $values_count++;
                 }
-            } else {
+            }
+            elseif($arr[0] == 'Password')
+            {
+                if (isset($value) && trim($value) != '') {
+                    $value_la = paramlib_validation($field, $value);
+                    $update_la .= ',' . $field . "='$value'";
+                    $values_count++;
+                }
+            }
+            else {
                 $value = paramlib_validation($field, $value);
 
                 $fields.=',' . $arr[1];
@@ -112,6 +139,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $values = explode(',', $values);
         $medical_student_id = explode(',', $students);
         $check_student_avail = DBGet(DBQuery('SELECT student_id from medical_info where SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
+
 
         foreach ($check_student_avail as $stu_key => $stu_id) {
             foreach ($stu_id as $stu_id_k => $stu_id_v)
@@ -130,7 +158,25 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
         if ($values_count && $students_count)
             if (trim($update) != '')
+            {
                 DBQuery('UPDATE students SET ' . substr($update, 1) . ' WHERE STUDENT_ID IN (' . substr($students, 1) . ')');
+
+                if(isset($_REQUEST['values']['Password']) && trim($_REQUEST['values']['Password']) != '')
+                {
+                    $stu_pwd = md5($_REQUEST['values']['Password']);
+
+                    DBQuery('UPDATE `login_authentication` SET `password` = "'.$stu_pwd.'" WHERE `user_id` IN (' . substr($students, 1) . ') AND `profile_id` = "3"');
+                }
+            }
+            else if(trim($update_la) != '')
+            {
+                if(isset($_REQUEST['values']['Password']) && trim($_REQUEST['values']['Password']) != '')
+                {
+                    $stu_pwd = md5($_REQUEST['values']['Password']);
+
+                    DBQuery('UPDATE `login_authentication` SET `password` = "'.$stu_pwd.'" WHERE `user_id` IN (' . substr($students, 1) . ') AND `profile_id` = "3"');
+                }
+            }
             else {
                 foreach ($students_m_id as $stu_k => $stu_id) {
 
@@ -293,12 +339,13 @@ if (!$_REQUEST['modfunc']) {
         }
         
         if ($_REQUEST[category_id] == 1 || $_REQUEST[category_id] == '') {
-            $arr = array('First Name','Middle Name','Last Name','Estimated Grad. Date','Ethnicity', 'Common Name','Date of Birth', 'Gender', 'Language', 'Email', 'Phone');
+            $arr = array('First Name','Middle Name','Last Name','Estimated Grad. Date','Ethnicity', 'Common Name','Date of Birth', 'Gender', 'Language', 'Email', 'Phone', 'Password', 'Is Disable');
 
             foreach ($arr as $v_g) {
-                if ($v_g == 'Common Name' || $v_g == 'First Name' || $v_g == 'Middle Name' || $v_g == 'Last Name') {
+                if ($v_g == 'Common Name' || $v_g == 'First Name' || $v_g == 'Middle Name' || $v_g == 'Last Name' || $v_g == 'Is Disable') {
                     $v_g = str_replace(' ','_',strtolower($v_g));
                 }
+
                  if($v_g=='Estimated Grad. Date' || $v_g=='Date of Birth')
                  {
                      if($v_g=='Estimated Grad. Date')
@@ -314,8 +361,32 @@ if (!$_REQUEST['modfunc']) {
                     array_push($fields, '<div class=form-group><label class="control-label col-lg-4 text-right">' .$v_g.'</label><div class="col-lg-8">'. _makeDateInput($nm,$cn) . '</div></div>');
                  }
             else
-                if($v_g == 'Gender')
+                if($v_g == 'Gender'){
                      array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Gender</label><div class="col-lg-8">' . _makeSelectInput($v_g,array('Male' => 'Male', 'Female' => 'Female')) . '</div></div>');
+                }
+                else if($v_g == 'Ethnicity'){
+                    $ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
+					foreach($ethnicity as $key =>$value)
+						{
+							$ethnic_option[$value['ETHNICITY_ID']]=$value['ETHNICITY_NAME'];
+						}
+                   // $ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
+                     $v_g=$v_g._ID;
+                    array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Ethnicity</label><div class="col-lg-8">' . _makeSelectInput($v_g,$ethnic_option) . '</div></div>');  
+                }    
+                else if($v_g == 'Language'){
+                    $language=DBGet(DBQuery('SELECT * FROM language'));
+					foreach($language as $key =>$value)
+					{
+						$language_option[$value['LANGUAGE_ID']]=$value['LANGUAGE_NAME'];
+					}
+                    $v_g=$v_g._ID;
+                    array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Language</label><div class="col-lg-8">' . _makeSelectInput($v_g,$language_option) . '</div></div>');
+                }
+                else if($v_g == 'is_disable')
+                {
+                    array_push($fields, '<div class="form-group">' . _makeCustomCheckbox($v_g, 'Disable Student') . '</div>');
+                }
                 else
                     array_push($fields, '<div class="form-group">' . _makeTextInput($v_g) . '</div>');
             }
@@ -329,9 +400,9 @@ if (!$_REQUEST['modfunc']) {
                     $options[$value['ID']] = $value['NAME'];
             }
 
-//        echo _makeSelectInput('SECTION_ID',$options);
+            // echo _makeSelectInput('SECTION_ID',$options);
             array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8">' . _makeSelectInput('SECTION_ID', $options) . '</div></div>');
-//        echo'</div>'; 
+            // echo'</div>'; 
 
 
             $grade_level_RET = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER ASC'));
@@ -678,6 +749,30 @@ function _makeSelectInput($column, $options) {
 
 function _makeCheckboxInput($column, $name) {
     return CheckboxInputSwitch('', 'values[' . $column . ']', $name, '', true, 'Yes', 'No', '', 'switch-success');
+}
+
+function _makeCustomCheckbox($identifier, $title)
+{
+    if(trim($identifier) != '' && trim($title) != '')
+    {
+        $identifier = str_replace("values[", "", $identifier);
+        $identifier = str_replace("]", "", $identifier);
+        $identifier = str_replace(" ", "", $identifier);
+
+        $returnshape = '';
+
+        $returnshape .= '<label for="values['.$identifier.']" class="control-label text-right col-lg-4">'.$title.'</label>';
+
+        // $returnshape .= '<div class="col-lg-8"><input style="margin: 10px auto;" type="checkbox" id="values['.$identifier.']" name="values['.$identifier.']" size="25" value="Y"></div>';
+
+        $returnshape .= CheckboxInputSwitch('', 'values['.$identifier.']', '', '', false, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'id="values['.$identifier.']"', ' switch-danger');
+
+        return $returnshape;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 ?>

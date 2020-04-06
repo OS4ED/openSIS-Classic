@@ -198,6 +198,38 @@ function TextInput($value, $name, $title = '', $options = '', $div = true, $divO
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
         $value1 = is_array($value) ? $value[1] : $value;
         $value = is_array($value) ? $value[0] : $value;
+        $dgei = 'document.getElementById(\"input$name\").focus();';
+
+        if (strpos($options, 'size') === false && $value != '')
+            $options .= ' size=' . strlen($value);
+        elseif (strpos($options, 'size') === false)
+            $options .= ' size=10';
+
+        if (strstr($value, '\\') != '')
+            $div = false;
+        if ((trim(str_replace("","",$value)) == '' || trim($div) == false))
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
+        else {
+
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div " . $divOptions . " onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+        }
+    } else {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        return ($title != '' ? '<label class="control-label text-right col-lg-4">' . $title . '</label><div class="col-lg-8">' : '') . '<div class="form-control" disabled=disabled>' . (((is_array($value) ? $value[1] : $value) != '') ? (is_array($value) ? $value[1] : $value) : '-') . '</div>' . ($title != '' ? '</div>' : '');
+    }
+}
+
+function TextInputPortal($value, $name, $title = '', $options = '', $div = true, $divOptions = '') {
+    $original_title = $title;
+    $title = str_replace('*', '', $original_title);
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    // mab - support array style $option values
+    if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+        $value1 = is_array($value) ? $value[1] : $value;
+        $value = is_array($value) ? $value[0] : $value;
 
         if (strpos($options, 'size') === false && $value != '')
             $options .= ' size=' . strlen($value);
@@ -211,7 +243,7 @@ function TextInput($value, $name, $title = '', $options = '', $div = true, $divO
             return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<INPUT class=\"form-control\" type=text id=$name name=$name " . (($value || $value === '0') ? "value=\"$value\"" : '') . " $options>" . (($title != '') ? '</div>' : '');
         else {
 
-            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div " . $divOptions . " onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . $value . '</div></DIV>' . (($title != '') ? '</div>' : '');
+            return (($title != '') ? '<label for="' . $name . '" class="control-label text-right col-lg-4">' . str_replace('*', '<span class="text-danger">*</span>', $original_title) . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div " . $divOptions . " onclick='javascript:addHTML(\"<INPUT type=text class=form-control id=input$name name=$name " . (($value || $value === '0') ? "value=\\\"" . str_replace('"', '&rdquo;', $value) . "\\\"" : '') . " $options>\",\"div$name\",true); document.getElementById(\"input$name\").focus();' readonly=\"readonly\" class=\"form-control\">" . str_replace("\n", '\n', str_replace('"', '\"', addcslashes(str_replace("\r", '', (string)$value), "\0..\37'\\"))) . '</div></DIV>' . (($title != '') ? '</div>' : '');
         }
     } else {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
@@ -367,6 +399,29 @@ function TextAreaInput($value, $name, $title = '', $options = '', $div = true) {
             return (($title != '') ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<TEXTAREA class=form-control id=$name name=$name $options>$value</TEXTAREA>" . (($title != '') ? "</div>" : "");
         else
             return ($title != '' ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div class='form-control' readonly='readonly' onclick='javascript:addHTML(\"<TEXTAREA class=form-control id=textarea$name name=$name $options>" . str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value)) . "</TEXTAREA>" . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
+//            return ($title != '' ? '<label class="control-label col-lg-4" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA class=form-control placeholder=$title id=textarea$name name=$name $options>" . ereg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
+    } else
+        return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+}
+
+function TextAreaInputPortal($value, $name, $title = '', $options = '', $div = true) {
+    if (Preferences('HIDDEN') != 'Y')
+        $div = false;
+
+    if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
+        $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
+
+        if (strpos($options, 'cols') === false)
+            $options .= ' cols=30';
+        if (strpos($options, 'rows') === false)
+            $options .= ' rows=4';
+        $rows = substr($options, strpos($options, 'rows') + 5, 2) * 1;
+        $cols = substr($options, strpos($options, 'cols') + 5, 2) * 1;
+
+        if ($value == '' || $div == false)
+            return (($title != '') ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<TEXTAREA class=form-control id=$name name=$name $options>$value</TEXTAREA>" . (($title != '') ? "</div>" : "");
+        else
+            return ($title != '' ? '<label class="control-label col-lg-4 text-right" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div class='form-control' readonly='readonly' onclick='javascript:addHTML(\"<TEXTAREA class=form-control id=textarea$name name=$name $options>" . str_replace("\n", '\n', str_replace('"', '\"', addcslashes(str_replace("\r", '', (string)$value), "\0..\37'\\"))) . "</TEXTAREA>" . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
 //            return ($title != '' ? '<label class="control-label col-lg-4" for="' . $name . '">' . $title . '</label><div class="col-lg-8">' : '') . "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA class=form-control placeholder=$title id=textarea$name name=$name $options>" . ereg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV>' . nl2br($value) . '</DIV>' : '<DIV>' . nl2br($value) . '</DIV>') . '</div></DIV>' . (($title != '') ? "</div>" : "");
     } else
         return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');

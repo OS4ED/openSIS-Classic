@@ -2222,7 +2222,14 @@ function parentLookup(address_id)
 
     if(ADDR_SAME_HOME)
     {
-        ADDR_SAME_HOME      =   ADDR_SAME_HOME.value;
+        if(ADDR_SAME_HOME.getAttribute("checked") == "checked")
+        {
+            ADDR_SAME_HOME      =   "Y";
+        }
+        else
+        {
+            ADDR_SAME_HOME      =   "N";
+        }
     }
     else
     {
@@ -2318,9 +2325,14 @@ function parentLookup(address_id)
 
     // FOR PRIMARY CONTACTS
     var ADDR_CONT_RSHIP     =   document.getElementById('values[people][PRIMARY][RELATIONSHIP]');
+    var ADDR_CONT_RSHIP_X   =   document.getElementById('inputvalues[people][PRIMARY][RELATIONSHIP]');
     if(ADDR_CONT_RSHIP)
     {
         ADDR_CONT_RSHIP     =   ADDR_CONT_RSHIP.value;
+    }
+    else if(ADDR_CONT_RSHIP_X)
+    {
+        ADDR_CONT_RSHIP     =   ADDR_CONT_RSHIP_X.value;
     }
     else
     {
@@ -2328,9 +2340,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_FIRST     =   document.getElementById('values[people][PRIMARY][FIRST_NAME]');
+    var ADDR_CONT_FIRST_X   =   document.getElementById('inputvalues[people][PRIMARY][FIRST_NAME]');
     if(ADDR_CONT_FIRST)
     {
         ADDR_CONT_FIRST     =   ADDR_CONT_FIRST.value;
+    }
+    else if(ADDR_CONT_FIRST_X)
+    {
+        ADDR_CONT_FIRST     =   ADDR_CONT_FIRST_X.value;
     }
     else
     {
@@ -2338,9 +2355,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_LAST      =   document.getElementById('values[people][PRIMARY][LAST_NAME]');
+    var ADDR_CONT_LAST_X    =   document.getElementById('inputvalues[people][PRIMARY][LAST_NAME]');
     if(ADDR_CONT_LAST)
     {
         ADDR_CONT_LAST      =   ADDR_CONT_LAST.value;
+    }
+    else if(ADDR_CONT_LAST_X)
+    {
+        ADDR_CONT_LAST      =   ADDR_CONT_LAST_X.value;
     }
     else
     {
@@ -2348,9 +2370,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_HOME      =   document.getElementById('values[people][PRIMARY][HOME_PHONE]');
+    var ADDR_CONT_HOME_X    =   document.getElementById('inputvalues[people][PRIMARY][HOME_PHONE]');
     if(ADDR_CONT_HOME)
     {
         ADDR_CONT_HOME      =   ADDR_CONT_HOME.value;
+    }
+    else if(ADDR_CONT_HOME_X)
+    {
+        ADDR_CONT_HOME      =   ADDR_CONT_HOME_X.value;
     }
     else
     {
@@ -2358,9 +2385,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_WORK      =   document.getElementById('values[people][PRIMARY][WORK_PHONE]');
+    var ADDR_CONT_WORK_X    =   document.getElementById('inputvalues[people][PRIMARY][WORK_PHONE]');
     if(ADDR_CONT_WORK)
     {
         ADDR_CONT_WORK      =   ADDR_CONT_WORK.value;
+    }
+    else if(ADDR_CONT_WORK_X)
+    {
+        ADDR_CONT_WORK      =   ADDR_CONT_WORK_X.value;
     }
     else
     {
@@ -2368,9 +2400,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_CELL      =   document.getElementById('values[people][PRIMARY][CELL_PHONE]');
+    var ADDR_CONT_CELL_X    =   document.getElementById('inputvalues[people][PRIMARY][CELL_PHONE]');
     if(ADDR_CONT_CELL)
     {
         ADDR_CONT_CELL      =   ADDR_CONT_CELL.value;
+    }
+    else if(ADDR_CONT_CELL_X)
+    {
+        ADDR_CONT_CELL      =   ADDR_CONT_CELL_X.value;
     }
     else
     {
@@ -2378,19 +2415,49 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_MAIL      =   document.getElementById('values[people][PRIMARY][EMAIL]');
+    var ADDR_CONT_MAIL_X    =   document.getElementById('inputvalues[people][PRIMARY][EMAIL]');
     if(ADDR_CONT_MAIL)
     {
         ADDR_CONT_MAIL      =   ADDR_CONT_MAIL.value;
+    }
+    else if(ADDR_CONT_MAIL_X)
+    {
+        ADDR_CONT_MAIL      =   ADDR_CONT_MAIL_X.value;
     }
     else
     {
         ADDR_CONT_MAIL      =   "";
     }
 
+    var ADDR_CONT_CUSTODY   =   document.getElementById('values[people][PRIMARY][CUSTODY]');
+    if(ADDR_CONT_CUSTODY)
+    {
+        // if($("#values[people][PRIMARY][CUSTODY]").is(':checked'))
+        if(ADDR_CONT_CUSTODY.value == "Y")
+        {
+            ADDR_CONT_CUSTODY   =   "Y";
+        }
+        else
+        {
+            ADDR_CONT_CUSTODY   =   "N";
+        }
+    }
+    else
+    {
+        ADDR_CONT_CUSTODY   =   "N";
+    }
+
     var ADDR_CONT_PORTAL    =   document.getElementById('portal_1');
     if(ADDR_CONT_PORTAL)
     {
-        ADDR_CONT_PORTAL    =   ADDR_CONT_PORTAL.value;
+        if(ADDR_CONT_PORTAL.checked == true)
+        {
+            ADDR_CONT_PORTAL    =   "Y";
+        }
+        else
+        {
+            ADDR_CONT_PORTAL    =   "N";
+        }
     }
     else
     {
@@ -2398,9 +2465,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_USRN      =   document.getElementById('values[people][PRIMARY][USER_NAME]');
+    var ADDR_CONT_USRN_X    =   document.getElementById('inputvalues[people][PRIMARY][USER_NAME]');
     if(ADDR_CONT_USRN)
     {
         ADDR_CONT_USRN      =   ADDR_CONT_USRN.value;
+    }
+    else if(ADDR_CONT_USRN_X)
+    {
+        ADDR_CONT_USRN      =   ADDR_CONT_USRN_X.value;
     }
     else
     {
@@ -2408,9 +2480,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_PSWD      =   document.getElementById('values[people][PRIMARY][PASSWORD]');
+    var ADDR_CONT_PSWD_X      =   document.getElementById('inputvalues[people][PRIMARY][PASSWORD]');
     if(ADDR_CONT_PSWD)
     {
         ADDR_CONT_PSWD      =   ADDR_CONT_PSWD.value;
+    }
+    else if(ADDR_CONT_PSWD_X)
+    {
+        ADDR_CONT_PSWD      =   ADDR_CONT_PSWD_X.value;  
     }
     else
     {
@@ -2436,9 +2513,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_LIN1      =   document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_1]');
+    var ADDR_CONT_LIN1_X    =   document.getElementById('inputvalues[student_address][PRIMARY][STREET_ADDRESS_1]');
     if(ADDR_CONT_LIN1)
     {
         ADDR_CONT_LIN1      =   ADDR_CONT_LIN1.value;
+    }
+    else if(ADDR_CONT_LIN1_X)
+    {
+        ADDR_CONT_LIN1      =   ADDR_CONT_LIN1_X.value;
     }
     else
     {
@@ -2446,9 +2528,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_LIN2      =   document.getElementById('values[student_address][PRIMARY][STREET_ADDRESS_2]');
+    var ADDR_CONT_LIN2_X    =   document.getElementById('inputvalues[student_address][PRIMARY][STREET_ADDRESS_2]');
     if(ADDR_CONT_LIN2)
     {
         ADDR_CONT_LIN2      =   ADDR_CONT_LIN2.value;
+    }
+    else if(ADDR_CONT_LIN2_X)
+    {
+        ADDR_CONT_LIN2      =   ADDR_CONT_LIN2_X.value;
     }
     else
     {
@@ -2456,9 +2543,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_CITY      =   document.getElementById('values[student_address][PRIMARY][CITY]');
+    var ADDR_CONT_CITY_X    =   document.getElementById('inputvalues[student_address][PRIMARY][CITY]');
     if(ADDR_CONT_CITY)
     {
         ADDR_CONT_CITY      =   ADDR_CONT_CITY.value;
+    }
+    else if(ADDR_CONT_CITY_X)
+    {
+        ADDR_CONT_CITY      =   ADDR_CONT_CITY_X.value;
     }
     else
     {
@@ -2466,9 +2558,14 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_STAT      =   document.getElementById('values[student_address][PRIMARY][STATE]');
+    var ADDR_CONT_STAT_X    =   document.getElementById('inputvalues[student_address][PRIMARY][STATE]');
     if(ADDR_CONT_STAT)
     {
         ADDR_CONT_STAT      =   ADDR_CONT_STAT.value;
+    }
+    else if(ADDR_CONT_STAT_X)
+    {
+        ADDR_CONT_STAT      =   ADDR_CONT_STAT_X.value;
     }
     else
     {
@@ -2476,15 +2573,300 @@ function parentLookup(address_id)
     }
 
     var ADDR_CONT_ZIP       =   document.getElementById('values[student_address][PRIMARY][ZIPCODE]');
+    var ADDR_CONT_ZIP_X     =   document.getElementById('inputvalues[student_address][PRIMARY][ZIPCODE]');
     if(ADDR_CONT_ZIP)
     {
         ADDR_CONT_ZIP       =   ADDR_CONT_ZIP.value;
+    }
+    else if(ADDR_CONT_ZIP_X)
+    {
+        ADDR_CONT_ZIP       =   ADDR_CONT_ZIP_X.value;
     }
     else
     {
         ADDR_CONT_ZIP       =   "";
     }
 
+    var CHK_HOME_ADDR_PRIM  =   document.getElementById("uniform-prim_addr");
+    if(CHK_HOME_ADDR_PRIM)
+    {
+        var F_E_CHK_HAP         =   CHK_HOME_ADDR_PRIM.getElementsByTagName("span");
+        if(F_E_CHK_HAP[0].className == "checked")
+        {
+            CHK_HOME_ADDR_PRIM  =   "Y";
+        }
+        else
+        {
+            CHK_HOME_ADDR_PRIM  =   "N";
+        }
+    }
+if (document.getElementById("hidden_primary")){
+    var SELECTED_PRIMARY    =   document.getElementById("hidden_primary").value;
+}
+
+
+    // FOR SECONDARY CONTACTS
+    var SECN_CONT_RSHIP     =   document.getElementById('values[people][SECONDARY][RELATIONSHIP]');
+    var SECN_CONT_RSHIP_X   =   document.getElementById('inputvalues[people][SECONDARY][RELATIONSHIP]');
+    if(SECN_CONT_RSHIP)
+    {
+        SECN_CONT_RSHIP     =   SECN_CONT_RSHIP.value;
+    }
+    else if(SECN_CONT_RSHIP_X)
+    {
+        SECN_CONT_RSHIP     =   SECN_CONT_RSHIP_X.value;
+    }
+    else
+    {
+        SECN_CONT_RSHIP     =   "";
+    }
+
+    var SECN_CONT_FIRST     =   document.getElementById('values[people][SECONDARY][FIRST_NAME]');
+    var SECN_CONT_FIRST_X   =   document.getElementById('inputvalues[people][SECONDARY][FIRST_NAME]');
+    if(SECN_CONT_FIRST)
+    {
+        SECN_CONT_FIRST     =   SECN_CONT_FIRST.value;
+    }
+    else if(SECN_CONT_FIRST_X)
+    {
+        SECN_CONT_FIRST     =   SECN_CONT_FIRST_X.value;
+    }
+    else
+    {
+        SECN_CONT_FIRST     =   "";
+    }
+
+    var SECN_CONT_LAST      =   document.getElementById('values[people][SECONDARY][LAST_NAME]');
+    var SECN_CONT_LAST_X    =   document.getElementById('inputvalues[people][SECONDARY][LAST_NAME]');
+    if(SECN_CONT_LAST)
+    {
+        SECN_CONT_LAST      =   SECN_CONT_LAST.value;
+    }
+    else if(SECN_CONT_LAST_X)
+    {
+        SECN_CONT_LAST      =   SECN_CONT_LAST_X.value;
+    }
+    else
+    {
+        SECN_CONT_LAST      =   "";
+    }
+
+    var SECN_CONT_HOME      =   document.getElementById('values[people][SECONDARY][HOME_PHONE]');
+    var SECN_CONT_HOME_X    =   document.getElementById('inputvalues[people][SECONDARY][HOME_PHONE]');
+    if(SECN_CONT_HOME)
+    {
+        SECN_CONT_HOME      =   SECN_CONT_HOME.value;
+    }
+    else if(SECN_CONT_HOME_X)
+    {
+        SECN_CONT_HOME      =   SECN_CONT_HOME_X.value;
+    }
+    else
+    {
+        SECN_CONT_HOME      =   "";
+    }
+
+    var SECN_CONT_WORK      =   document.getElementById('values[people][SECONDARY][WORK_PHONE]');
+    var SECN_CONT_WORK_X    =   document.getElementById('inputvalues[people][SECONDARY][WORK_PHONE]');
+    if(SECN_CONT_WORK)
+    {
+        SECN_CONT_WORK      =   SECN_CONT_WORK.value;
+    }
+    else if(SECN_CONT_WORK_X)
+    {
+        SECN_CONT_WORK      =   SECN_CONT_WORK_X.value;
+    }
+    else
+    {
+        SECN_CONT_WORK      =   "";
+    }
+
+    var SECN_CONT_CELL      =   document.getElementById('values[people][SECONDARY][CELL_PHONE]');
+    var SECN_CONT_CELL_X    =   document.getElementById('inputvalues[people][SECONDARY][CELL_PHONE]');
+    if(SECN_CONT_CELL)
+    {
+        SECN_CONT_CELL      =   SECN_CONT_CELL.value;
+    }
+    else if(SECN_CONT_CELL_X)
+    {
+        SECN_CONT_CELL      =   SECN_CONT_CELL_X.value;
+    }
+    else
+    {
+        SECN_CONT_CELL      =   "";
+    }
+
+    var SECN_CONT_MAIL      =   document.getElementById('values[people][SECONDARY][EMAIL]');
+    var SECN_CONT_MAIL_X    =   document.getElementById('inputvalues[people][SECONDARY][EMAIL]');
+    if(SECN_CONT_MAIL)
+    {
+        SECN_CONT_MAIL      =   SECN_CONT_MAIL.value;
+    }
+    else if(SECN_CONT_MAIL_X)
+    {
+        SECN_CONT_MAIL      =   SECN_CONT_MAIL_X.value;
+    }
+    else
+    {
+        SECN_CONT_MAIL      =   "";
+    }
+
+    var SECN_CONT_CUSTODY   =   document.getElementById('values[people][SECONDARY][CUSTODY]');
+    if(SECN_CONT_CUSTODY)
+    {
+        // if($("#values[people][SECONDARY][CUSTODY]").is(':checked'))
+        if(SECN_CONT_CUSTODY.value == "Y")
+        {
+            SECN_CONT_CUSTODY   =   "Y";
+        }
+        else
+        {
+            SECN_CONT_CUSTODY   =   "N";
+        }
+    }
+    else
+    {
+        SECN_CONT_CUSTODY   =   "N";
+    }
+
+    var SECN_CONT_PORTAL    =   document.getElementById('portal_2');
+    if(SECN_CONT_PORTAL)
+    {
+        if(SECN_CONT_PORTAL.checked == true)
+        {
+            SECN_CONT_PORTAL    =   "Y";
+        }
+        else
+        {
+            SECN_CONT_PORTAL    =   "N";
+        }
+    }
+    else
+    {
+        SECN_CONT_PORTAL    =   "";
+    }
+
+    var SECN_CONT_USRN      =   document.getElementById('values[people][SECONDARY][USER_NAME]');
+    var SECN_CONT_USRN_X    =   document.getElementById('inputvalues[people][SECONDARY][USER_NAME]');
+    if(SECN_CONT_USRN)
+    {
+        SECN_CONT_USRN      =   SECN_CONT_USRN.value;
+    }
+    else if(SECN_CONT_USRN_X)
+    {
+        SECN_CONT_USRN      =   SECN_CONT_USRN_X.value;
+    }
+    else
+    {
+        SECN_CONT_USRN      =   "";
+    }
+
+    var SECN_CONT_PSWD      =   document.getElementById('values[people][SECONDARY][PASSWORD]');
+    var SECN_CONT_PSWD_X    =   document.getElementById('inputvalues[people][SECONDARY][PASSWORD]');
+    if(SECN_CONT_PSWD)
+    {
+        SECN_CONT_PSWD      =   SECN_CONT_PSWD.value;
+    }
+    else if(SECN_CONT_PSWD_X)
+    {
+        SECN_CONT_PSWD      =   SECN_CONT_PSWD_X.value;
+    }
+    else
+    {
+        SECN_CONT_PSWD      =   "";
+    }
+
+    var SECN_CONT_LIN1      =   document.getElementById('values[student_address][SECONDARY][STREET_ADDRESS_1]');
+    var SECN_CONT_LIN1_X    =   document.getElementById('inputvalues[student_address][SECONDARY][STREET_ADDRESS_1]');
+    if(SECN_CONT_LIN1)
+    {
+        SECN_CONT_LIN1      =   SECN_CONT_LIN1.value;
+    }
+    else if(SECN_CONT_LIN1_X)
+    {
+        SECN_CONT_LIN1      =   SECN_CONT_LIN1_X.value;
+    }
+    else
+    {
+        SECN_CONT_LIN1      =   "";
+    }
+
+    var SECN_CONT_LIN2      =   document.getElementById('values[student_address][SECONDARY][STREET_ADDRESS_2]');
+    var SECN_CONT_LIN2_X    =   document.getElementById('inputvalues[student_address][SECONDARY][STREET_ADDRESS_2]');
+    if(SECN_CONT_LIN2)
+    {
+        SECN_CONT_LIN2      =   SECN_CONT_LIN2.value;
+    }
+    else if(SECN_CONT_LIN2_X)
+    {
+        SECN_CONT_LIN2      =   SECN_CONT_LIN2_X.value;
+    }
+    else
+    {
+        SECN_CONT_LIN2      =   "";
+    }
+
+    var SECN_CONT_CITY      =   document.getElementById('values[student_address][SECONDARY][CITY]');
+    var SECN_CONT_CITY_X    =   document.getElementById('inputvalues[student_address][SECONDARY][CITY]');
+    if(SECN_CONT_CITY)
+    {
+        SECN_CONT_CITY      =   SECN_CONT_CITY.value;
+    }
+    else if(SECN_CONT_CITY_X)
+    {
+        SECN_CONT_CITY      =   SECN_CONT_CITY_X.value;
+    }
+    else
+    {
+        SECN_CONT_CITY      =   "";
+    }
+
+    var SECN_CONT_STAT      =   document.getElementById('values[student_address][SECONDARY][STATE]');
+    var SECN_CONT_STAT_X    =   document.getElementById('inputvalues[student_address][SECONDARY][STATE]');
+    if(SECN_CONT_STAT)
+    {
+        SECN_CONT_STAT      =   SECN_CONT_STAT.value;
+    }
+    else if(SECN_CONT_STAT_X)
+    {
+        SECN_CONT_STAT      =   SECN_CONT_STAT_X.value;
+    }
+    else
+    {
+        SECN_CONT_STAT      =   "";
+    }
+
+    var SECN_CONT_ZIP       =   document.getElementById('values[student_address][SECONDARY][ZIPCODE]');
+    var SECN_CONT_ZIP_X     =   document.getElementById('inputvalues[student_address][SECONDARY][ZIPCODE]');
+    if(SECN_CONT_ZIP)
+    {
+        SECN_CONT_ZIP       =   SECN_CONT_ZIP.value;
+    }
+    else if(SECN_CONT_ZIP_X)
+    {
+        SECN_CONT_ZIP       =   SECN_CONT_ZIP_X.value;
+    }
+    else
+    {
+        SECN_CONT_ZIP       =   "";
+    }
+
+    var CHK_HOME_ADDR_SECN  =   document.getElementById("uniform-sec_addr");
+    if(CHK_HOME_ADDR_SECN)
+    {
+        var F_E_CHK_HAS         =   CHK_HOME_ADDR_SECN.getElementsByTagName("span");
+        if(F_E_CHK_HAS[0].className == "checked")
+        {
+            CHK_HOME_ADDR_SECN  =   "Y";
+        }
+        else
+        {
+            CHK_HOME_ADDR_SECN  =   "N";
+        }
+    }
+if(document.getElementById("hidden_secondary")){
+    var SELECTED_SECONDARY  =   document.getElementById("hidden_secondary").value;
+    }
 
     var USERINFO_FIRST_NAME =   document.getElementById('USERINFO_FIRST_NAME').value;
     var USERINFO_LAST_NAME  =   document.getElementById('USERINFO_LAST_NAME').value;
@@ -2502,7 +2884,7 @@ function parentLookup(address_id)
     $.ajax({
         url     :   "HoldAddressFields.php",
         type    :   "post",
-        data    :   { ADDR_PRIM_L1, ADDR_PRIM_L2, ADDR_PRIM_CITY, ADDR_PRIM_STATE, ADDR_PRIM_ZIP, ADDR_PRIM_BUSNO, ADDR_SAME_HOME, ADDR_PRIM_BPU, ADDR_PRIM_BDO, ADDR_SAME_AS, ADDR_MAIL_L1, ADDR_MAIL_L2, ADDR_MAIL_CITY, ADDR_MAIL_STATE, ADDR_MAIL_ZIP, ADDR_CONT_RSHIP, ADDR_CONT_FIRST, ADDR_CONT_LAST, ADDR_CONT_HOME, ADDR_CONT_WORK, ADDR_CONT_CELL, ADDR_CONT_MAIL, ADDR_CONT_PORTAL, ADDR_CONT_USRN, ADDR_CONT_PSWD, ADDR_CONT_SAHA, ADDR_CONT_ADNA, ADDR_CONT_LIN1, ADDR_CONT_LIN2, ADDR_CONT_CITY, ADDR_CONT_STAT, ADDR_CONT_ZIP },
+        data    :   { ADDR_PRIM_L1, ADDR_PRIM_L2, ADDR_PRIM_CITY, ADDR_PRIM_STATE, ADDR_PRIM_ZIP, ADDR_PRIM_BUSNO, ADDR_SAME_HOME, ADDR_PRIM_BPU, ADDR_PRIM_BDO, ADDR_SAME_AS, ADDR_MAIL_L1, ADDR_MAIL_L2, ADDR_MAIL_CITY, ADDR_MAIL_STATE, ADDR_MAIL_ZIP, ADDR_CONT_RSHIP, ADDR_CONT_FIRST, ADDR_CONT_LAST, ADDR_CONT_HOME, ADDR_CONT_WORK, ADDR_CONT_CELL, ADDR_CONT_MAIL, ADDR_CONT_CUSTODY, ADDR_CONT_PORTAL, ADDR_CONT_USRN, ADDR_CONT_PSWD, ADDR_CONT_SAHA, ADDR_CONT_ADNA, ADDR_CONT_LIN1, ADDR_CONT_LIN2, ADDR_CONT_CITY, ADDR_CONT_STAT, ADDR_CONT_ZIP, CHK_HOME_ADDR_PRIM, SECN_CONT_RSHIP, SECN_CONT_FIRST, SECN_CONT_LAST, SECN_CONT_HOME, SECN_CONT_WORK, SECN_CONT_CELL, SECN_CONT_MAIL, SECN_CONT_CUSTODY, SECN_CONT_PORTAL, SECN_CONT_USRN, SECN_CONT_PSWD, SECN_CONT_LIN1, SECN_CONT_LIN2, SECN_CONT_CITY, SECN_CONT_STAT, SECN_CONT_ZIP, CHK_HOME_ADDR_SECN, SELECTED_PRIMARY, SELECTED_SECONDARY },
         success :   function(sculz)
         {
             console.log("ADDRESS STORED IN SESSION");

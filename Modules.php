@@ -64,7 +64,7 @@ if (count($filelist) > 3) {
     }
 }
 echo "<noscript><META http-equiv=REFRESH content='0;url=EnableJavascript.php' /></noscript>";
-//echo "<script type='text/javascript'>	
+// echo "<script type='text/javascript'>	
 //        function init(param,param2) {        
 //            calendar.set('date_'+param);
 //            if(param2==2)
@@ -74,9 +74,12 @@ echo "<noscript><META http-equiv=REFRESH content='0;url=EnableJavascript.php' />
 //            }
 //            document.getElementById('date_'+param).click();
 //        }		
-//</script>";
+// </script>";
 
 error_reporting(1);
+
+$module_commit_in   =   "";
+$module_commit_out  =   "";
 
 $start_time = time();
 include 'Warehouse.php';
@@ -100,7 +103,6 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<link href="assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/core.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/bootstrap-datepicker/css/bootstrap-datepicker.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
-//    echo '<link href="assets/js/plugins/pickers/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/js/plugins/pickers/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/components.css?v=1.1" rel="stylesheet" type="text/css">';
     echo '<link href="assets/css/colors.css?v=' . rand(0000, 99999) . '" rel="stylesheet" type="text/css">';
@@ -456,7 +458,7 @@ if (User('PROFILE') == 'teacher') {
             $ret_increment++;
         }
     }
-//    print_r($RET);
+   // print_r($RET);
     if (!UserCourse()) {
         $_SESSION['UserCourse'] = $RET[1]['COURSE_ID'];
     }
@@ -539,19 +541,19 @@ if (User('PROFILE') != 'parent') {
       $user_picture = '<a href="javascript:void(0)"><IMG src="data:image/jpeg;base64,'. base64_encode($img_info) . '" class="img-circle img-responsive"></a>';
     else
         $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-//    if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
-//        if (UserStudentID())
-//            $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
-//        if (UserID())
-//            $picture_path = $UserPicturesPath . UserID() . '.JPG';
-//        if (file_exists($picture_path)) {
-//            $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
-//        } else {
-//            $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-//        }
-//    } else {
-//        $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-//    }
+   // if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
+   //     if (UserStudentID())
+   //         $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
+   //     if (UserID())
+   //         $picture_path = $UserPicturesPath . UserID() . '.JPG';
+   //     if (file_exists($picture_path)) {
+   //         $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
+   //     } else {
+   //         $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+   //     }
+   // } else {
+   //     $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+   // }
 }
 
 //$user_picture .= '<input type="file" name=""  />';

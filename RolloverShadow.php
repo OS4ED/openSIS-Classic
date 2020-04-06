@@ -85,7 +85,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                     break;
 
 		case 'school_years':
-                        
+                       $rollover_shadow_school_yr= "";
 			DBQuery('DELETE FROM school_progress_periods WHERE SYEAR=\''.$next_syear.'\' AND SCHOOL_ID=\''.UserSchool().'\'');
 			DBQuery('DELETE FROM school_quarters WHERE SYEAR=\''.$next_syear.'\' AND SCHOOL_ID=\''.UserSchool().'\'');
 			DBQuery('DELETE FROM school_semesters WHERE SYEAR=\''.$next_syear.'\' AND SCHOOL_ID=\''.UserSchool().'\'');
@@ -161,6 +161,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                     break;
 
 		case 'courses':
+         $rollover_shadow_course= "";
                     DBQuery('DELETE FROM courses WHERE SYEAR=\''.$next_syear.'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                     DBQuery('INSERT INTO courses (SYEAR,SUBJECT_ID,SCHOOL_ID,GRADE_LEVEL,TITLE,SHORT_NAME,ROLLOVER_ID) SELECT SYEAR+1,(SELECT SUBJECT_ID FROM course_subjects s WHERE s.SYEAR=c.SYEAR+1 AND s.ROLLOVER_ID=c.SUBJECT_ID),SCHOOL_ID,GRADE_LEVEL,TITLE,SHORT_NAME,COURSE_ID FROM courses c WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                     $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
@@ -169,7 +170,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                     break;
                    
                     case 'course_periods':
-
+                     $rollover_shadow_course_periods= "";
 
 			
 

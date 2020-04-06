@@ -148,7 +148,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 # ---------------- Sql Including Comment ------------------------------- #
 
-                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserSchool() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
+                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity_id AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language_id AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserSchool() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
 
 
                 $sql = $sql[1];
@@ -275,9 +275,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                (select ZIPCODE FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ZIPCODE,
                NULL AS CUSTODY
                FROM students s,student_address sa WHERE sa.STUDENT_ID=' . UserStudentID() . ' AND s.STUDENT_ID=sa.STUDENT_ID AND sa.TYPE=\'Home Address\'
-               ORDER BY ADDRESS ASC,CUSTODY ASC,STUDENT_RELATION';
+               ORDER BY ADDRESS ASC,CUSTODY ASC,STUDENT_RELATION ' ;
                     $addresses_RET = DBGet(DBQuery($addr_sql));
                     $address_previous = "x";
+                    if($addresses_RET[1]['ADDRESS']=='' && $addresses_RET[2]['ADDRESS']!='' || $addresses_RET[2]['ADDRESS']!=$addresses_RET[1]['ADDRESS']){
+                        unset ($addresses_RET[1]);
+                    }
                     foreach ($addresses_RET as $address) {
                         $address_current = $address['ADDRESS'];
                         if ($address_current != $address_previous) {
@@ -314,11 +317,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                             echo "</table>";
                             echo "</td></tr>";
                             echo "<tr><td valign=top>";
-
+                            
                             foreach ($address_categories_RET as $categories) {
                                 if (!$categories[1]['RESIDENCE'] && !$categories[1]['MAILING'] && !$categories[1]['BUS'] || $categories[1]['RESIDENCE'] == 'Y' && $address['RESIDENCE'] == 'Y' || $categories[1]['MAILING'] == 'Y' && $address['MAILING'] == 'Y' || $categories[1]['BUS'] == 'Y' && ($address['BUS_PICKUP'] == 'Y' || $address['BUS_DROPOFF'] == 'Y'))
                                     printCustom($categories, $address);
                             }
+                          
 
                             echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Primary Emergency Contact</td></tr>";
                             $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
@@ -326,28 +330,29 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                             $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE,sjp.RELATIONSHIP as PRIM_STUDENT_RELATION,p.home_phone as PRIM_HOME_PHONE,p.work_phone as PRIM_WORK_PHONE,p.cell_phone as PRIM_CELL_PHONE FROM  student_address sa,people p,students_join_people sjp WHERE  sa.PEOPLE_ID=p.STAFF_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
                             $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.type as SA_TYPE,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE,sjp.RELATIONSHIP as SEC_STUDENT_RELATION,sjp.EMERGENCY_TYPE,p.home_phone as SEC_HOME_PHONE,p.work_phone as SEC_WORK_PHONE,p.cell_phone as SEC_CELL_PHONE  FROM student_address sa,people p,students_join_people sjp WHERE p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
+                            
                             $st_ja_pe = DBGet(DBQuery('select * from students_join_people where  STUDENT_ID=\'' . UserStudentID() . '\' and EMERGENCY_TYPE=\'Secondary\''));
                             $contacts_RET[1] = $Stu_prim_address[1];
                             foreach ($Stu_sec_address[1] as $ind => $col)
                                 $contacts_RET[1][$ind] = $col;
-
-
-                            foreach ($contacts_RET as $contact) {
+                            
+//                            print_r($contacts_RET);
+                            foreach ($contacts_RET as $contact)  {
 
 
                                 echo "<tr><td width=45% style='font-weight:bold'>Relation :</td><td width=55%>" . $contact['PRIM_STUDENT_RELATION'] . "</td></tr>";
 
                                 echo "<tr><td style='font-weight:bold'>First Name :</td><td>" . $contact['PRI_FIRST_NAME'] . "</td></tr>";
                                 echo "<tr><td style='font-weight:bold'>Last Name :</td><td>" . $contact['PRI_LAST_NAME'] . "</td></tr>";
-                                if ($contact['HOME_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['HOME_PHONE'] . "</td></tr>";
-                                }
-                                if ($contact['WORK_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['WORK_PHONE'] . "</td></tr>";
-                                }
-                                if ($contact['MOBILE_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['MOBILE_PHONE'] . "</td></tr>";
-                                }
+//                                if ($contact['HOME_PHONE'] != '') {
+//                                    echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['HOME_PHONE'] . "</td></tr>";
+//                                }
+//                                if ($contact['WORK_PHONE'] != '') {
+//                                    echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['WORK_PHONE'] . "</td></tr>";
+//                                }
+//                                if ($contact['MOBILE_PHONE'] != '') {
+//                                    echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['MOBILE_PHONE'] . "</td></tr>";
+//                                }
                                 if ($contact['EMAIL'] != '') {
                                     echo "<tr><td style='font-weight:bold'>Email :</td><td>" . $contact['EMAIL'] . "</td></tr>";
                                 }
@@ -393,15 +398,15 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         echo "<tr><td style='font-weight:bold'>First Name :</td><td>" . $contact['SEC_FIRST_NAME'] . "</td></tr>";
                                     if ($contact['SEC_LAST_NAME'] != '')
                                         echo "<tr><td style='font-weight:bold'>Last Name :</td><td>" . $contact['SEC_LAST_NAME'] . "</td></tr>";
-                                    if ($contact['SEC_HOME_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
-                                    }
-                                    if ($contact['SEC_WORK_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
-                                    }
-                                    if ($contact['SEC_MOBILE_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['SEC_MOBILE_PHONE'] . "</td></tr>";
-                                    }
+//                                    if ($contact['SEC_HOME_PHONE'] != '') {
+//                                        echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
+//                                    }
+//                                    if ($contact['SEC_WORK_PHONE'] != '') {
+//                                        echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
+//                                    }
+//                                    if ($contact['SEC_MOBILE_PHONE'] != '') {
+//                                        echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['SEC_MOBILE_PHONE'] . "</td></tr>";
+//                                    }
                                     if ($contact['SEC_EMAIL'] != '') {
                                         echo "<tr><td style='font-weight:bold'>Email :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
                                     }
@@ -502,7 +507,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         printCustom($categories, $contact);
                             }
                         }
-                        $address_previous = $address_current;
+                        $address_previous = $address_current;                        
                     }
 
 
@@ -916,7 +921,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 

@@ -47,7 +47,7 @@ if (!$extra['functions'])
     $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSectionVal');
 if ($_REQUEST['search_modfunc'] == 'list') {
     if (!$fields_list) {
-        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'GENDER'=>'Gender','STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade','SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'ETHNICITY_ID' =>'Ethnicity','LANGUAGE_ID'=>'Language','NAME_SUFFIX' => 'Suffix', 'GENDER'=>'Gender','STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade','SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
         if ($extra['field_names'])
             $fields_list += $extra['field_names'];
 
@@ -125,7 +125,22 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
             }
         }
         $RET = GetStuList($extra);
-
+//        echo '<pre>';
+//        print_r($RET);
+//        echo $RET[1]['ETHNICITY_ID'];
+//        exit;
+        $i=1;
+        foreach ($RET as $value) {
+            if($RET[$i]['LANGUAGE_ID'] != ''){
+            $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=".$RET[$i]['LANGUAGE_ID']));
+            $RET[$i]['LANGUAGE_ID']=$sql_language[1]['LANGUAGE_NAME'];
+            }
+             if($RET[$i]['ETHNICITY_ID'] != ''){
+            $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=".$RET[$i]['ETHNICITY_ID']));
+            $RET[$i]['ETHNICITY_ID']= $sql_ethinicity[1]['ETHNICITY_NAME'];
+            }
+            $i=$i+1;
+        }
         $list_attr = DBGet(DBQuery("SHOW COLUMNS FROM `students` "));
         foreach ($list_attr as $data) {
 
@@ -184,7 +199,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
 else {
     if (!$fields_list) {
         if (AllowUse('students/Student.php&category_id=1'))
-            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix','GENDER' => 'Gender', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'PHONE' => 'Phone');
+            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'ETHNICITY_ID' =>'Ethnicity','LANGUAGE_ID'=>'Language', 'NAME_SUFFIX' => 'Suffix','GENDER' => 'Gender', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'PHONE' => 'Phone');
         if (AllowUse('students/Student.php&category_id=3')) {
             $fields_list['Address'] = array('ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode');
         }
@@ -210,10 +225,13 @@ else {
             }
             foreach ($custom_RET1[$category['ID']] as $field) {
                 $fields_list[$category['TITLE']]['CUSTOM_' . $field['ID']] = $field['TITLE'];
+                if($fields_list['General Info'] !=''){
+                    $fields_list['General']+=$fields_list['General Info'];
+                }
             }
         }
     }
-
+    unset($fields_list['General Info']);
     $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''.($_REQUEST['period_id']!=''?" AND PERIOD_ID=".$_REQUEST['period_id']."":"").' ORDER BY SORT_ORDER'));
     foreach ($periods_RET as $period)
         $fields_list['Schedule']['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'] . ' Teacher - Room';

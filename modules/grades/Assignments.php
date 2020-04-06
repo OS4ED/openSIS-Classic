@@ -464,7 +464,7 @@ $grade_assign_qr=  DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   student
                 }
                     else
                         DBQuery ($sql);
-            DBQuery('UPDATE gradebook_assignments SET UNGRADED=2 WHERE ASSIGNMENT_ID IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NULL OR POINTS=\'\') OR ASSIGNMENT_ID NOT IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NOT NULL OR POINTS!=\'\')');
+//            DBQuery('UPDATE gradebook_assignments SET UNGRADED=2 WHERE ASSIGNMENT_ID IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NULL OR POINTS=\'\') OR ASSIGNMENT_ID NOT IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NOT NULL OR POINTS!=\'\')');
         }
                 if($msg)
                 {
@@ -570,15 +570,15 @@ if(!$_REQUEST['modfunc'] && $course_id)
     $QI = DBQuery($sql);
         
     $types_RET = DBGet($QI);
-        $counter_i=count($types_RET);
-        $others=DBGet(DBQuery('SELECT * FROM gradebook_assignments WHERE COURSE_ID='.UserCourse().' AND COURSE_PERIOD_ID!='.UserCoursePeriod()));
-        foreach($others as $o)
-        {
-            $counter_i++;
-            $gat=DBGet(DBQuery('SELECT * FROM gradebook_assignment_types WHERE ASSIGNMENT_TYPE_ID='.$o['ASSIGNMENT_TYPE_ID']));
-            $types_RET[$counter_i]['ASSIGNMENT_TYPE_ID']=$gat[1]['ASSIGNMENT_TYPE_ID'];
-            $types_RET[$counter_i]['TITLE']=$gat[1]['TITLE'];
-        }
+//        $counter_i=count($types_RET);
+//        $others=DBGet(DBQuery('SELECT * FROM gradebook_assignments WHERE COURSE_ID='.UserCourse().' AND COURSE_PERIOD_ID!='.UserCoursePeriod()));
+//        foreach($others as $o)
+//        {
+//            $counter_i++;
+//            $gat=DBGet(DBQuery('SELECT * FROM gradebook_assignment_types WHERE ASSIGNMENT_TYPE_ID='.$o['ASSIGNMENT_TYPE_ID']));
+//            $types_RET[$counter_i]['ASSIGNMENT_TYPE_ID']=$gat[1]['ASSIGNMENT_TYPE_ID'];
+//            $types_RET[$counter_i]['TITLE']=$gat[1]['TITLE'];
+//        }
 	if($_REQUEST['assignment_id']!='new' && $_REQUEST['assignment_type_id']!='new')
         {
 		$delete_button = "<INPUT type=button value=Delete class='btn btn-danger' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&assignment_type_id=$_REQUEST[assignment_type_id]&assignment_id=$_REQUEST[assignment_id]\"'> &nbsp;";

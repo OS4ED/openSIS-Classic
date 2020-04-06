@@ -947,8 +947,8 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
           
             $check_type=DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID='.$_REQUEST['marking_period_id']));                                        
                                    
-            $parent_qr=  DBGet(DBQuery('select start_date,end_date from marking_periods where marking_period_id='.$parent_id.''));
-	$child_qr=  DBGet(DBQuery('select min(start_date) as start_date,max(end_date) as end_date from marking_periods where parent_id='.$parent_id.''));
+            $parent_qr=  DBGet(DBQuery('select start_date,end_date from marking_periods where marking_period_id="'.$parent_id.'"'));
+	$child_qr=  DBGet(DBQuery('select min(start_date) as start_date,max(end_date) as end_date from marking_periods where parent_id="'.$parent_id.'"'));
 //          if($check_type[1]['MP_TYPE']!='year' && strtotime($parent_qr[1]['START_DATE'])==strtotime($child_qr[1]['START_DATE']) && strtotime($parent_qr[1]['END_DATE'])==strtotime($child_qr[1]['END_DATE']))
 //          {
 //           

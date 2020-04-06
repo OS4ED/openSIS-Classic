@@ -76,12 +76,13 @@ if (trim($_REQUEST['custom_date']) == 'Y') {
     $_SESSION['total_prg'] = $_REQUEST['total_prg'];
 }
 if ($rolled == 0) {
-    //============================
+    
     $tables = array('staff' => 'Staff', 'school_periods' => 'School Periods', 'school_years' => 'Marking Periods', 'school_calendars' => 'Calendars', 'report_card_grade_scales' => 'Report Card Grade Codes', 'course_subjects' => 'Subjects', 'courses' => 'Courses', 'course_periods' => 'Course Periods', 'student_enrollment' => 'Students', 'report_card_comments' => 'Report Card Comment Codes', 'honor_roll' => 'Honor Roll Setup', 'attendance_codes' => 'Attendance Codes', 'student_enrollment_codes' => 'Student Enrollment Codes');
     $no_school_tables = array('student_enrollment_codes' => true, 'staff' => true);
     $required = array('staff' => true, 'school_years' => true, 'student_enrollment' => true, 'student_enrollment_codes' => true);
     $i = 0;
     $j = 0;
+    $rollover_rolled=5;
     foreach ($tables as $table => $name) {
         if ($i == 0 && $j == 0) {
             $table_list .= '<div class="row">';
@@ -99,6 +100,7 @@ if ($rolled == 0) {
     //$table_list .= '<hr/>';
     //
     //===============================
+    $rolledover_table=11;
     if (Prompt_rollover('Confirm Rollover', 'Are you sure you want to roll the data for ' . $cur_session . ' to the next school year?', $table_list)) {
         echo "<script type='text/javascript'>back_before_roll();</script>";
     }
