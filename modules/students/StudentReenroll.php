@@ -128,9 +128,15 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 }
 
 if ($enroll_msg)
-    DrawHeader('<IMG SRC=assets/check.gif> ' . $enroll_msg);
+{
+    // DrawHeader('<IMG SRC=assets/check.gif> ' . $enroll_msg);
+    echo '<div class="alert alert-success alert-styled-left alert-bordered">'. $enroll_msg .'</div>';
+}
 if ($err)
-    DrawHeader('<IMG SRC=assets/warning_button.gif> ' . $err);
+{
+    // DrawHeader('<IMG SRC=assets/warning_button.gif> ' . $err);
+    echo '<div class="alert alert-danger alert-styled-left alert-bordered">'. $err .'</div>';
+}
 
 if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
