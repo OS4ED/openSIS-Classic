@@ -44,7 +44,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM  FROM course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\') AS ROOM';
             }
             else {
-
                 if ($_REQUEST['teacher'])
                     $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp,school_periods p,schedule ss,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND st.STAFF_ID=cp.TEACHER_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS TEACHER';
                 if ($_REQUEST['room'])
@@ -195,11 +194,11 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
 
-
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onClick="checkAllDtMod(this,\'st_arr\')"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod2(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
@@ -248,7 +247,10 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title) {
     //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+    // return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'/>";
+
+    return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 ?>

@@ -768,7 +768,7 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Username <span class=text-danger>*</span></label><div class="col-lg-8">';
             if (!$this_school_mod['USERNAME']) {
-                echo TextInput('', 'USERNAME', '', 'size=20 maxlength=50 onblur="usercheck_init_staff(this)"');
+                echo TextInput('', 'USERNAME', '', 'size=20 maxlength=50 onkeyup="usercheck_init_staff_2(this)" onblur="usercheck_init_staff(this)"');
                 echo '<span id="ajax_output_st"></span><input type=hidden id=usr_err_check value=0>';
             } else {
                 echo NoInput($this_school_mod['USERNAME'], '', '', 'onkeyup="usercheck_init(this)"') . '<div id="ajax_output"></div>';
@@ -787,6 +787,15 @@ if (!$_REQUEST['modfunc']) {
             echo "<span id='passwordStrength'></span></div></div>";
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
+
+            if($this_school_mod['USERNAME'] && $this_school_mod['USERNAME'] != '')
+            {
+                echo '<input id="staff_username_flag" type="hidden" value="1">';
+            }
+            else
+            {
+                echo '<input id="staff_username_flag" type="hidden" value="0">';
+            }
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';

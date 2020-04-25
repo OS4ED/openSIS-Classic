@@ -358,7 +358,7 @@ if (User('PROFILE') != 'teacher') {
 
     //===================================================================================================
 
-    //For Marking Period
+    // For Marking Period
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>
                         <INPUT type=hidden name=modcat value='' id=modcat_input>";
 
@@ -386,10 +386,10 @@ if (User('PROFILE') != 'teacher') {
             echo "<OPTION value=$quarter[MARKING_PERIOD_ID]" . (UserMP() == $quarter['MARKING_PERIOD_ID'] ? ' SELECTED' : '') . ">" . $quarter['TITLE'] . "</OPTION>";
     }
     echo "</SELECT>";
-    //Marking Period
+    // Marking Period
 
     echo '</FORM></div></li>';
-}##################Porfile Not Teacher End##########################################
+}################## Porfile Not Teacher End ##########################################
 
 if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
@@ -458,7 +458,7 @@ if (User('PROFILE') == 'teacher') {
             $ret_increment++;
         }
     }
-   // print_r($RET);
+   
     if (!UserCourse()) {
         $_SESSION['UserCourse'] = $RET[1]['COURSE_ID'];
     }

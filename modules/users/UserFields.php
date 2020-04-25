@@ -227,7 +227,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
         if ($has_assigned > 0) {
             UnableDeletePromptMod('Cannot delete becauses this people field is associated.');
         } else {
-            if (DeletePromptMod('staff field')) {
+            if (DeletePromptMod('parent field')) {
                 $id = clean_param($_REQUEST['id'], PARAM_INT);
                 DBQuery('DELETE FROM people_fields WHERE ID=\'' . $id . '\'');
                 DBQuery('ALTER TABLE people DROP COLUMN CUSTOM_' . $id . '');
@@ -241,7 +241,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
         if ($has_assigned > 0) {
             UnableDeletePromptMod('Cannot delete becauses this people field category is associated.');
         } else {
-            if (DeletePromptMod('staff field category and all fields in the category')) {
+            if (DeletePromptMod('parent field category')) {
                 $fields = DBGet(DBQuery('SELECT ID FROM people_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\''));
                 foreach ($fields as $field) {
                     DBQuery('DELETE FROM people_fields WHERE ID=\'' . $field[ID] . '\'');

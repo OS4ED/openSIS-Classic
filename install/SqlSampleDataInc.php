@@ -52,13 +52,13 @@ SET time_zone = '+00:00';
 --
 -- Dumping data for table `app`
 --
-
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.3'),
-('date', 'August 23, 2019'),
-('build', '20190823001'),
+('version', '7.4'),
+('date', 'April 25, 2020'),
+('build', '20200425001'),
 ('update', '0'),
-('last_updated', 'August 23, 2019');
+('last_updated', 'April 25, 2020');
+
 
 --
 -- Dumping data for table `attendance_calendar`

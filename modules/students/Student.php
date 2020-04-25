@@ -1824,7 +1824,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     }
 
                     if (isset($_REQUEST['goal_id']) && $_REQUEST['goal_id'] != 'new' && !isset($_REQUEST['progress_id']))
-                        $buttons = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_student_student();"');
+                        $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary pull-right" onclick="formcheck_student_student();"');
                     else {
                         if ($_REQUEST['student_id'] != 'new') {
 
@@ -1833,15 +1833,15 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $enrollment_info = DBGet(DBQuery('SELECT ENROLLMENT_CODE FROM student_enrollment WHERE STUDENT_ID=' . $student_id));
                             $enrollment_code = $enrollment_info[1]['ENROLLMENT_CODE'];
                             if ($_REQUEST['category_id'] == 1 && $enrollment_code == NULL)
-                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
                             else
-                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
                         }
                         else {
                             if ($_REQUEST['category_id'] == 1)
-                                $buttons = SubmitButton('Save & Next', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save & Next', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
                             else
-                                $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
                         }
                     }
                     echo PopTable('footer',$buttons);

@@ -70,7 +70,7 @@ if ($_REQUEST['course_period_id'] == 'new') {
     }
 }
 if ($_REQUEST['course_period_id'] != 'new') {
-    if ($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SCHEDULE_TYPE'] == 'FIXED') { // echo 'sss';
+    if ($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['SCHEDULE_TYPE'] == 'FIXED') { 
         if ($_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'] != '')
             $total_seats = $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'];
         else {
@@ -369,7 +369,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
     if ($_REQUEST['tables']['parent_id'])
         $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['PARENT_ID'] = $_REQUEST['tables']['parent_id'];
-    //===================================For custom range==========================
+    //================================ For Custom Range ========================
 
     if ($_REQUEST['month_begin'] && $_REQUEST['day_begin'] && $_REQUEST['year_begin']) {
         while (!VerifyDate($begin = $_REQUEST['day_begin'] . '-' . $_REQUEST['month_begin'] . '-' . $_REQUEST['year_begin']))

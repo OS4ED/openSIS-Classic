@@ -75,6 +75,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
     $table = trim($_REQUEST['table']);
         $err=false;
         $f=0;
+
 	foreach($_REQUEST['tables'] as $id=>$columns)
 	{
 		if($table=='gradebook_assignment_types' && substr($programconfig['WEIGHT'],0,1)=='Y' && $columns['FINAL_GRADE_PERCENT']!='')
@@ -189,10 +190,11 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                         }
                     }
 
-                                if((($column=='ASSIGNED_DATE'&& $value!='' && $due_date_sql[1]['ASSIGNED_DATE']!=$value) ||($column=='DUE_DATE'&& $value!='' && $due_date_sql[1]['DUE_DATE']!=$value) ) && $table=='gradebook_assignments')
-                                {
+                    if((($column=='ASSIGNED_DATE'&& $value!='' && $due_date_sql[1]['ASSIGNED_DATE']!=$value) ||($column=='DUE_DATE'&& $value!='' && $due_date_sql[1]['DUE_DATE']!=$value) ) && $table=='gradebook_assignments')
+                    {
 
-$grade_assign_qr=  DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS TOT FROM   student_report_card_grades WHERE  COURSE_PERIOD_ID='.$course_period_id.' and marking_period_id='.UserMP().''));
+                        // $grade_assign_qr = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS TOT FROM   student_report_card_grades WHERE  COURSE_PERIOD_ID='.$course_period_id.' and marking_period_id='.UserMP().''));
+                        $grade_assign_qr = DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   gradebook_grades WHERE ASSIGNMENT_ID = '".$_REQUEST['assignment_id']."'"));
                         if($grade_assign_qr[1]['TOT']>0)
                         {
                             $f=1;
@@ -201,10 +203,11 @@ $grade_assign_qr=  DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS TOT FROM   student
                     }
 
 
-                                     if($column=='POINTS' && $value!='' && $table=='gradebook_assignments')
-                                {
+                    if($column=='POINTS' && $value!='' && $table=='gradebook_assignments')
+                    {
 
-$grade_assign_qr=  DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   student_report_card_grades WHERE COURSE_PERIOD_ID='$course_period_id'"));
+                        // $grade_assign_qr = DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   student_report_card_grades WHERE COURSE_PERIOD_ID='$course_period_id'"));
+                        $grade_assign_qr = DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS TOT FROM   gradebook_grades WHERE ASSIGNMENT_ID = '".$_REQUEST['assignment_id']."'"));
                         if($grade_assign_qr[1]['TOT']>0)
                         {
                             $f=1;

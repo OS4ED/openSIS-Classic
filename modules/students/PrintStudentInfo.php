@@ -278,6 +278,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                ORDER BY ADDRESS ASC,CUSTODY ASC,STUDENT_RELATION ' ;
                     $addresses_RET = DBGet(DBQuery($addr_sql));
                     $address_previous = "x";
+
                     if($addresses_RET[1]['ADDRESS']=='' && $addresses_RET[2]['ADDRESS']!='' || $addresses_RET[2]['ADDRESS']!=$addresses_RET[1]['ADDRESS']){
                         unset ($addresses_RET[1]);
                     }
@@ -513,7 +514,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     $contacts_RET2 = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.CUSTODY,sjp.EMERGENCY_TYPE AS EMERGENCY,sjp.RELATIONSHIP AS STUDENT_RELATION FROM people p,students_join_people sjp WHERE p.STAFF_ID=sjp.PERSON_ID AND sjp.STUDENT_ID=' . UserStudentID()));
                     foreach ($contacts_RET2 as $contact) {
-                        echo '<B>' . $contact['FIRST_NAME'] . ' ' . ($contact['MIDDLE_NAME'] ? $contact['MIDDLE_NAME'] . ' ' : '') . $contact['LAST_NAME'] . ($contact['STUDENT_RELATION'] ? ': ' . $contact['STUDENT_RELATION'] : '') . ' &nbsp;</B>';
+                        // echo '<B>' . $contact['FIRST_NAME'] . ' ' . ($contact['MIDDLE_NAME'] ? $contact['MIDDLE_NAME'] . ' ' : '') . $contact['LAST_NAME'] . ($contact['STUDENT_RELATION'] ? ': ' . $contact['STUDENT_RELATION'] : '') . ' &nbsp;</B>';
 
 
                         foreach ($people_categories_RET as $categories)

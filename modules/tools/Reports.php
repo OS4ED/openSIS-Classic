@@ -103,13 +103,15 @@ if ($_REQUEST['func'] == 'Basic') {
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
-//    echo '<div id="d"><TABLE align=center cellpadding=5 cellspacing=5>';
-//    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_schools . ' &nbsp </td></tr>';
-//    echo '<tr><td><b>Number of Students</b></td><td>:</td><td>&nbsp ' . $num_students . ' &nbsp </td><td> &nbsp Male : ' . $male . ' &nbsp| &nbspFemale : ' . $female . '</td></tr>';
-//    echo '<tr><td><b>Number of Teachers</b></td><td>:</td><td colspan=2>&nbsp ' . $num_teacher . '</td></tr>';
-//    echo '<tr><td><b>Number of Staff</b></td><td>:</td><td colspan=2>&nbsp ' . $num_staff . '</td></tr>';
-//    echo '<tr><td><b>Number of Parents</b></td><td>:</td><td colspan=2>&nbsp ' . $num_parent . '</td></tr>';
-//    echo '</TABLE></div>';
+
+    //    echo '<div id="d"><TABLE align=center cellpadding=5 cellspacing=5>';
+    //    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_schools . ' &nbsp </td></tr>';
+    //    echo '<tr><td><b>Number of Students</b></td><td>:</td><td>&nbsp ' . $num_students . ' &nbsp </td><td> &nbsp Male : ' . $male . ' &nbsp| &nbspFemale : ' . $female . '</td></tr>';
+    //    echo '<tr><td><b>Number of Teachers</b></td><td>:</td><td colspan=2>&nbsp ' . $num_teacher . '</td></tr>';
+    //    echo '<tr><td><b>Number of Staff</b></td><td>:</td><td colspan=2>&nbsp ' . $num_staff . '</td></tr>';
+    //    echo '<tr><td><b>Number of Parents</b></td><td>:</td><td colspan=2>&nbsp ' . $num_parent . '</td></tr>';
+    //    echo '</TABLE></div>';
+
     echo '</div>';
     echo '</div>';//.tabbable
     echo '</div>';//.panel
@@ -177,8 +179,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
                 }
             }
             echo '<br>';
-            // print_r($arr);print_r($arr);
-            // echo 'SELECT ID,' . $columns . ' FROM schools';
+            
             $get_school_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM schools'));
 
             echo '<br>';

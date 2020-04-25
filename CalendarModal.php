@@ -36,6 +36,9 @@ echo '<div class="modal-body">';
 
 echo '<div id=err_message ></div>';
 
+echo '<div class="form-group">';
+echo '<label class="control-label">Date : '.$_REQUEST['school_date'].'&nbsp;</label>';
+echo '</div>';
 
 if ($RET[1]['TITLE'] == '') {
     echo '<div class="form-group">';

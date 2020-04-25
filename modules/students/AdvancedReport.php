@@ -67,7 +67,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     $extra['search'] .= '<div class="form-group"><label>Include courses active as of</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
     include('modules/miscellaneous/Export.php');
-    echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></CENTER>';
+    echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Selected Fields\' class="btn btn-primary"></CENTER>';
     echo "</FORM>";
 }
 $modal_flag = 1;
@@ -158,7 +158,8 @@ if (!$_REQUEST['modfunc']) {
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.STUDENT_ID,' checked>') AS CHECKBOX";
 
-        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+        // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod2(this,\'st_arr\');"><A>');
         $extra['options']['search'] = false;
 
 
@@ -230,8 +231,10 @@ if (!$_REQUEST['modfunc']) {
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
-//    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    // return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+    return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 ?>

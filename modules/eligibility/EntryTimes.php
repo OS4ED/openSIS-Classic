@@ -113,21 +113,29 @@ echo '<div class="col-md-6 col-md-offset-3">';
 echo "<FORM name=F1 id=F1 class=form-horizontal action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 PopTable('header', 'Allow Extracurricular Posting');
 echo '<div>';
+
+
 if (count($start_end_RET)) {
     $start_value = $days[$arr['START_DAY']] . ', ' . $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
     $end_value = $days[$arr['END_DAY']] . ', ' . $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
     $start_time = $START_HOUR . ':' . str_pad($arr['START_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $START_M;
     $end_time = $END_HOUR . ':' . str_pad($arr['END_MINUTE'], 2, 0, STR_PAD_LEFT) . ' ' . $END_M;
+
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">From :</label>';
-    echo '<div class="col-md-10"><div class="form-inline">' . SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($start_time, 'values[START_TIME]', '', NULL) . '</div></div>';
+    echo '<div class="col-md-10"><div class="form-inline"><div class="row"><div class= col-sm-3>' . SelectInput($arr['START_DAY'], 'values[START_DAY]', '', $day_options,false, '') . '</div> &nbsp; <div class= col-sm-4>'. TextInput_time($start_time, 'values[START_TIME]', '', NULL) . '</div></div></div></div>';
     echo '</div>'; //form-group
+
     echo '<div class="form-group"><label class="control-label col-md-2 text-right">To :</label>';
-    echo '<div class="col-md-10"><div class="form-inline">' . SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div>';
+    // echo '<div class="col-md-10"><div class="form-inline">' . SelectInput($arr['END_DAY'], 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div>';
+    echo '<div class="col-md-10"><div class="form-inline"><div class="row"><div class= col-sm-3>' . SelectInput($arr['END_DAY'], 'values[END_DAY]','', $day_options,false, '') . '</div> &nbsp; <div class= col-sm-4>'. TextInput_time($end_time, 'values[END_TIME]', '', NULL) . '</div></div></div></div>';
     echo '</div>';
 } else {
-    echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-3">From</label>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' &nbsp; '. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div></div>';
-    echo '<div class="form-group"><div class="col-md-4"><div class="form-inline"><label class="control-label col-md-2">To</label>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' &nbsp; ' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-md-2 text-right">From :</label><div class="col-md-10"><div class="form-inline"><div class="row"><div class= col-sm-3>' . SelectInput($START_DAY, 'values[START_DAY]', '', $day_options, false, '', false) . ' </div> &nbsp; <div class= col-sm-4>'. TextInput_time('', 'values[START_TIME]', '', NULL) . '</div></div></div></div></div>';
+
+    echo '<div class="form-group"><label class="control-label col-md-2 text-right">To :</label><div class="col-md-10"><div class="form-inline"><div class="row"><div class= col-sm-3>' . SelectInput($END_DAY, 'values[END_DAY]', '', $day_options, false, '', false) . ' </div> &nbsp; <div class= col-sm-4>' . TextInput_time('', 'values[END_TIME]', '', NULL)  . '</div></div></div></div></div>';
 }
+
+
 $btn = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_eligibility_entrytimes();"');
 echo '</div>';
 PopTable('footer',  $btn);

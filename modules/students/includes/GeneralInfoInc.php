@@ -357,6 +357,16 @@ echo '</div>'; //.col-md-6
 echo '</div>'; //.row
 
 
+if($student['USERNAME'] && $student['USERNAME'] != '')
+{
+    echo '<input id="stu_username_flag" type="hidden" value="1">';
+}
+else
+{
+    echo '<input id="stu_username_flag" type="hidden" value="0">';
+}
+
+
 echo '<div class="row">';
 if ($_REQUEST['student_id'] != 'new') {
     echo '<div class="col-lg-6">';
