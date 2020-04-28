@@ -1132,11 +1132,6 @@ INSERT INTO `eligibility_activities` (`id`, `syear`, `school_id`, `title`, `star
 INSERT INTO `eligibility_completed` (`staff_id`, `school_date`, `period_id`, `last_updated`, `updated_by`) VALUES
 (3, '2020-01-23', 3, '2020-01-23 13:38:48', NULL);
 
-
---
--- Dumping data for table `custom_fields`
---
-
 --
 -- Dumping data for table `ethnicity`
 --
@@ -1153,12 +1148,6 @@ INSERT INTO `ethnicity` (`ethnicity_id`, `ethnicity_name`, `sort_order`, `last_u
 (9, 'African', 9, '0000-00-00 00:00:00', NULL),
 (10, 'Mixed Race', 10, '0000-00-00 00:00:00', NULL),
 (11, 'Other', 11, '0000-00-00 00:00:00', NULL);
-
-
-
---
--- Dumping data for table `gradebook_assignments`
---
 
 
 
@@ -1581,17 +1570,6 @@ INSERT INTO `missing_attendance` (`school_id`, `syear`, `school_date`, `course_p
 (1, '2019', '2019-08-20', 9, 4, 3, NULL, '2019-08-20 04:00:05', NULL),
 (1, '2019', '2019-08-20', 12, 3, 6, NULL, '2019-08-20 04:00:05', NULL);
 
---
--- Dumping data for table `msg_inbox`
---
-
-
---
--- Dumping data for table `msg_outbox`
---
-
-
-
 
 --
 -- Dumping data for table `people`
@@ -1708,12 +1686,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('4', 'scheduling/StudentScheduleReport.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('3', 'grades/ParentProgressReports.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('3', 'scheduling/StudentScheduleReport.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/Fee.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/Balance_Report.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/DailyTransactions.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/Fee.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/Balance_Report.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/DailyTransactions.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/PortalNotes.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/MarkingPeriods.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/Calendar.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -1814,17 +1786,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('5', 'eligibility/TeacherCompletion.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'eligibility/Activities.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'eligibility/EntryTimes.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('5', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/LogDetails.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/DeleteLog.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/Rollover.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -1951,17 +1912,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('1', 'users/User.php&category_id=2', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'grades/HonorRollSetup.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'grades/AdminProgressReports.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Staff.php&staff_id=new', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Exceptions_staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -2111,17 +2061,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('0', 'users/User.php&category_id=2', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'grades/HonorRollSetup.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'grades/AdminProgressReports.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Staff.php&staff_id=new', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Exceptions_staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),

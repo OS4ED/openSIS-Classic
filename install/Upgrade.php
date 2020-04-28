@@ -200,11 +200,11 @@
                                 else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.3'),
-('date', 'August 23, 2019'),
-('build', '20190823001'),
-('update', '0'),
-('last_updated', 'August 23, 2019');";
+                                        ('version', '7.4'),
+                                        ('date', 'April 25, 2020'),
+                                        ('build', '20200425001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert);
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
@@ -288,11 +288,11 @@ $_SESSION['mod'] = 'upgrade';
                                     
                                      $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.3'),
-('date', 'August 23, 2019'),
-('build', '20190823001'),
-('update', '0'),
-('last_updated', 'August 23, 2019');";
+                                        ('version', '7.4'),
+                                        ('date', 'April 25, 2020'),
+                                        ('build', '20200425001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert);
                                     
 $dbconn->query('CREATE TABLE `api_info` (
@@ -333,11 +333,11 @@ $_SESSION['mod'] = 'upgrade';
                                     
                                      $dbconn->query('TRUNCATE app');
                                    $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                    ('version', '7.3'),
-                                    ('date', 'August 23, 2019'),
-                                    ('build', '20190823001'),
+                                    ('version', '7.4'),
+                                    ('date', 'April 25, 2020'),
+                                    ('build', '20200425001'),
                                     ('update', '0'),
-                                    ('last_updated', 'August 23, 2019');";
+                                    ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
    
@@ -363,6 +363,22 @@ $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11)
                                     $_SESSION['mod'] = 'upgrade';
                                    header('Location: Step5.php');
                                    //$_SESSION['mod'] = 'upgrade';
+                                    exit; 
+                                }
+                                else if ($v == '7.3')
+                                {
+                                    $dbconn->query('TRUNCATE app');
+                                    $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
+                                        ('version', '7.4'),
+                                        ('date', 'April 25, 2020'),
+                                        ('build', '20200425001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'April 25, 2020');";
+                                    $dbconn->query($app_insert)or die($dbconn->error);
+
+                                    $_SESSION['mod'] = 'upgrade';
+                                    header('Location: Step5.php');
+                                    //$_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
                                 

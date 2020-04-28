@@ -40,87 +40,6 @@ INSERT INTO `app` (`name`, `value`) VALUES
 ('update', '0'),
 ('last_updated', 'April 25, 2020');
 
---
--- Dumping data for table `address`
---
-
-
---
--- Dumping data for table `attendance_calendar`
---
-
-
---
--- Dumping data for table `school_calendars`
---
-
-
---
--- Dumping data for table `attendance_codes`
---
-
-
-
---
--- Dumping data for table `config`
---
-
-
---
--- Dumping data for table `courses`
---
-
-
---
--- Dumping data for table `course_periods`
---
-
-
---
--- Dumping data for table `course_subjects`
---
-
-
---
--- Dumping data for table `custom_fields`
---
-
-
-
---
--- Dumping data for table `eligibility`
---
-
-
---
--- Dumping data for table `eligibility_activities`
---
-
-
---
--- Dumping data for table `eligibility_completed`
---
-
-
---
--- Dumping data for table `gradebook_assignments`
---
-
-
---
--- Dumping data for table `gradebook_assignment_types`
---
-
-
---
--- Dumping data for table `gradebook_grades`
---
-
-
---
--- Dumping data for table `portal_notes`
---
-
 
 --
 -- Dumping data for table `profile_exceptions`
@@ -214,12 +133,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('4', 'scheduling/StudentScheduleReport.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('3', 'grades/ParentProgressReports.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('3', 'scheduling/StudentScheduleReport.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/Fee.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/Balance_Report.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('3', 'Billing/DailyTransactions.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/Fee.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/Balance_Report.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('4', 'Billing/DailyTransactions.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/PortalNotes.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/MarkingPeriods.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'schoolsetup/Calendar.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -320,17 +233,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('5', 'eligibility/TeacherCompletion.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'eligibility/Activities.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
 ('5', 'eligibility/EntryTimes.php', 'Y', NULL, '2019-07-28 15:26:33', NULL),
-('5', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('5', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/LogDetails.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/DeleteLog.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('5', 'tools/Rollover.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -457,17 +359,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('1', 'users/User.php&category_id=2', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'grades/HonorRollSetup.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'grades/AdminProgressReports.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('1', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Staff.php&staff_id=new', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('1', 'users/Exceptions_staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -617,17 +508,6 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('0', 'users/User.php&category_id=2', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'grades/HonorRollSetup.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'grades/AdminProgressReports.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/LedgerCard.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/Balance_Report.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/DailyTransactions.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/PaymentHistory.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/Fee.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/StudentPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/MassAssignFees.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/MassAssignPayments.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp_FeeType.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
-('0', 'Billing/SetUp_PayPal.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Staff.php&staff_id=new', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
 ('0', 'users/Exceptions_staff.php', 'Y', 'Y', '2019-07-28 15:26:33', NULL),
@@ -683,76 +563,32 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 --
 
 INSERT INTO `program_config` (`syear`, `school_id`, `program`, `title`, `value`, `last_updated`, `updated_by`) VALUES
-('2019', NULL, 'Currency', 'US Dollar (USD)', '1', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'British Pound (GBP)', '2', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Euro (EUR)', '3', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Canadian Dollar (CAD)', '4', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Australian Dollar (AUD)', '5', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Brazilian Real (BRL)', '6', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Chinese Yuan Renminbi (CNY)', '7', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Danish Krone (DKK)', '8', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Japanese Yen (JPY)', '9', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Indian Rupee (INR)', '10', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Indonesian Rupiah (IDR)', '11', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Korean Won  (KRW)', '12', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Malaysian Ringit (MYR)', '13', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Mexican Peso (MXN)', '14', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'New Zealand Dollar (NZD)', '15', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Norwegian Krone  (NOK)', '16', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Pakistan Rupee  (PKR)', '17', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Philippino Peso (PHP)', '18', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Saudi Riyal (SAR)', '19', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Singapore Dollar (SGD)', '20', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'South African Rand  (ZAR)', '21', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Swedish Krona  (SEK)', '22', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Swiss Franc  (CHF)', '23', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Thai Bhat  (THB)', '24', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'Turkish Lira  (TRY)', '25', '2019-07-28 15:26:33', NULL),
-('2019', NULL, 'Currency', 'United Arab Emirates Dirham (AED)', '26', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'MissingAttendance', 'LAST_UPDATE', '2019-08-20', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'START_DAY', '1', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'START_HOUR', '8', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'START_MINUTE', '00', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'START_M', 'AM', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'END_DAY', '5', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'END_HOUR', '16', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'END_MINUTE', '00', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'END_M', 'PM', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display', 'Y', '2019-05-14 18:56:51', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display_school', 'Y', '2019-05-14 18:56:51', NULL),
-('2019', '1', 'SeatFill', 'LAST_UPDATE', '2019-07-14', '2019-07-28 15:26:33', NULL),
-('2019', '1', 'eligibility', 'START_DAY', '1', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'START_HOUR', '8', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'START_MINUTE', '00', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'START_M', 'AM', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'END_DAY', '5', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'END_HOUR', '16', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'END_MINUTE', '00', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'eligibility', 'END_M', 'PM', '2019-07-14 22:30:31', NULL),
-('2019', '1', 'MissingAttendance', 'LAST_UPDATE', '2019-08-20', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'START_DAY', '1', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'START_HOUR', '8', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'START_MINUTE', '00', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'START_M', 'AM', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'END_DAY', '5', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'END_HOUR', '16', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'END_MINUTE', '00', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'eligibility', 'END_M', 'PM', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display', 'Y', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display_school', 'Y', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'SeatFill', 'LAST_UPDATE', '2020-02-02', '2020-01-22 09:18:02', NULL),
-('2019', '1', 'MissingAttendance', 'LAST_UPDATE', '2019-08-20', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'START_DAY', '1', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'START_HOUR', '8', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'START_MINUTE', '00', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'START_M', 'AM', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'END_DAY', '5', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'END_HOUR', '16', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'END_MINUTE', '00', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'eligibility', 'END_M', 'PM', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display', 'Y', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'UPDATENOTIFY', 'display_school', 'Y', '2019-08-04 17:15:17', NULL),
-('2019', '1', 'SeatFill', 'LAST_UPDATE', '2019-08-20', '2019-08-04 17:15:17', NULL);
+('".$_SESSION['syear']."', NULL, 'Currency', 'US Dollar (USD)', '1', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'British Pound (GBP)', '2', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Euro (EUR)', '3', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Canadian Dollar (CAD)', '4', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Australian Dollar (AUD)', '5', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Brazilian Real (BRL)', '6', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Chinese Yuan Renminbi (CNY)', '7', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Danish Krone (DKK)', '8', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Japanese Yen (JPY)', '9', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Indian Rupee (INR)', '10', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Indonesian Rupiah (IDR)', '11', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Korean Won  (KRW)', '12', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Malaysian Ringit (MYR)', '13', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Mexican Peso (MXN)', '14', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'New Zealand Dollar (NZD)', '15', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Norwegian Krone  (NOK)', '16', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Pakistan Rupee  (PKR)', '17', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Philippino Peso (PHP)', '18', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Saudi Riyal (SAR)', '19', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Singapore Dollar (SGD)', '20', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'South African Rand  (ZAR)', '21', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Swedish Krona  (SEK)', '22', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Swiss Franc  (CHF)', '23', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Thai Bhat  (THB)', '24', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'Turkish Lira  (TRY)', '25', '2019-07-28 15:26:33', NULL),
+('".$_SESSION['syear']."', NULL, 'Currency', 'United Arab Emirates Dirham (AED)', '26', '2019-07-28 15:26:33', NULL);
 
 INSERT INTO `program_config` (`syear`, `school_id`, `program`, `title`, `value`) VALUES
 ('".$_SESSION['syear']."',1, 'MissingAttendance', 'LAST_UPDATE','".date('Y-m-d',  strtotime($_SESSION['user_school_beg_date']))."'),
@@ -780,25 +616,6 @@ INSERT INTO `program_user_config` (`user_id`, `school_id`, `program`, `title`, `
 ('1', NULL, 'Preferences', 'HIDDEN', 'Y', '2019-07-28 09:56:33', NULL),
 ('1', NULL, 'Preferences', 'CURRENCY', '1', '2019-07-28 09:56:33', NULL),
 ('1', NULL, 'Preferences', 'HIDE_ALERTS', 'N', '2019-07-28 09:56:33', NULL);
-
---
--- Dumping data for table `report_card_comments`
---
-
-
---
--- Dumping data for table `report_card_grades`
---
-
-
---
--- Dumping data for table `report_card_grade_scales`
---
-
-
---
--- Dumping data for table `schedule`
---
 
 
 --
@@ -832,33 +649,6 @@ INSERT INTO `system_preference` (`id`, `school_id`, `full_day_minute`, `half_day
 
 INSERT INTO `login_message` (`id`, `message`, `display`) VALUES
 (1, 'This is a restricted network. Use of this network, its equipment, and resources is monitored at all times and requires explicit permission from the network administrator. If you do not have this permission in writing, you are violating the regulations of this network and can and will be prosecuted to the fullest extent of law. By continuing into this system, you are acknowledging that you are aware of and agree to these terms.', 'Y');
-
---
--- Dumping data for table `school_gradelevels`
---
-
-
---
--- Dumping data for table `school_periods`
---
-
-
-
-
---
--- Dumping data for table `school_progress_periods`
---
-
-
---
--- Dumping data for table `school_quarters`
---
-
-
-
---
--- Dumping data for table `school_semesters`
---
 
 
 
@@ -960,29 +750,6 @@ INSERT INTO `language` (`language_id`, `language_name`, `sort_order`, `last_upda
 (18, 'Turkish', 18, '2019-07-28 15:26:33', NULL),
 (19, 'Urdu', 19, '2019-07-28 15:26:33', NULL),
 (20, 'Vietnamese', 20, '2019-07-28 15:26:33', NULL);
-
-
---
--- Dumping data for table `students`
---
-
-
-
-
---
--- Dumping data for table `students_join_users`
---
-
-
---
--- Dumping data for table `student_eligibility_activities`
---
-
-
---
--- Dumping data for table `student_enrollment`
---
-
 
 
 --
