@@ -94,7 +94,7 @@ if ($category == 'student') {
                 $check_query_alt_id = array();
                 $check_query_username = array();
                 $check_exist = 0;
-             
+
                 foreach ($students as $students_v) {
 
                     if ($arr_v[$array_index[$students_v]] != '') {
@@ -104,65 +104,73 @@ if ($category == 'student') {
              
                             
                         }elseif($students_v == 'LANGUAGE_ID'){
-                            $lang_id= DBGet(DBQuery('SELECT language_id FROM `language` WHERE LANGUAGE_NAME =\''. $arr_v[$array_index[$students_v]] . '\''));
-                            $student_values[] = $lang_id[1]['LANGUAGE_ID'];
+                            if(is_numeric($arr_v[$array_index[$students_v]]))
+                            {
+                                $student_values[] = "'".$arr_v[$array_index[$students_v]]."'";
+                            }
+                            else
+                            {
+                                $lang_id= DBGet(DBQuery('SELECT language_id FROM `language` WHERE LANGUAGE_NAME =\''. $arr_v[$array_index[$students_v]] . '\''));
+                                $student_values[] = "'".$lang_id[1]['LANGUAGE_ID']."'";
+                            }
                         }elseif($students_v == 'ETHNICITY_ID'){
-                            $lang_id= DBGet(DBQuery('SELECT ethnicity_id FROM `ethnicity` WHERE ethnicity_name =\''. $arr_v[$array_index[$students_v]] . '\''));
-                            $student_values[] = $lang_id[1]['ETHNICITY_ID'];
-                           
+                            if(is_numeric($arr_v[$array_index[$students_v]]))
+                            {
+                                $student_values[] = "'".$arr_v[$array_index[$students_v]]."'";
+                            }
+                            else
+                            {
+                                $lang_id= DBGet(DBQuery('SELECT ethnicity_id FROM `ethnicity` WHERE ethnicity_name =\''. $arr_v[$array_index[$students_v]] . '\''));
+                                $student_values[] = "'".$lang_id[1]['ETHNICITY_ID']."'";
+                            }
                         }
                         else {
                             $student_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
                         }
-                         if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' )
+                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' )
                             
                              $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
 
-                         if ($students_v == 'ALT_ID')
+                        if ($students_v == 'ALT_ID')
                             $check_query_alt_id[]= $students_v . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
 
-                        }
-     
+                    }
                 }
           
                 foreach ($login_authentication as $username) {
-
                     if ($arr_v[$array_index[$username]] != '') {
-
-                         if ($username == 'USERNAME')
+                        if ($username == 'USERNAME')
                             $check_query_username[]= $username . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$username]]) ). "'";
-
-                        }
-                    
-                    
-                   
+                    }
                 }
                 
                 
                 if (count($check_query) > 0) {
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query)));
                     $check_exist = $check_exist[1]['REC_EXISTS'];
-                if ($check_exist != 0){
-                    $err_msg[0]= 'duplicate student';
-                }
+
+                    if ($check_exist != 0){
+                        $err_msg[0]= 'duplicate student';
+                    }
                 }
                 
                 if (count($check_query_alt_id) > 0) {
                     $check_exist_al= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" ",$check_query_alt_id)));
                     $check_exist_alt= $check_exist_al[1]['REC_EXISTS'];
                 
-                if ($check_exist_alt != 0){
-                $err_msg[1]= 'duplicate alternet id';
+                    if ($check_exist_alt != 0){
+                        $err_msg[1]= 'duplicate alternet id';
+                    }
                 }
-                }
-                  if (count($check_query_username) > 0) {
+
+                if (count($check_query_username) > 0) {
                     $check_exist_al_username= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username)));
                     $check_exist_alt_username= $check_exist_al_username[1]['REC_EXISTS'];
                 
-                  if ($check_exist_alt_username != 0){
-                    $err_msg[2]= 'duplicate username';
-                  }
-                  }
+                    if ($check_exist_alt_username != 0){
+                        $err_msg[2]= 'duplicate username';
+                    }
+                }
                 
                 if ( $check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
                     DBQuery('INSERT INTO students (' . implode(',', $student_columns) . ') VALUES (' . implode(',', $student_values) . ')');

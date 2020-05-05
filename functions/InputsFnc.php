@@ -433,7 +433,6 @@ function TextAreaInputInputFinalGrade($value, $name, $title = '', $options = '',
 
     if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
         $value = str_replace("'", '&#39;', str_replace('"', '&rdquo;', $value));
-
         if (strpos($options, 'cols') === false)
             $options .= ' cols=30';
         if (strpos($options, 'rows') === false)
@@ -441,12 +440,15 @@ function TextAreaInputInputFinalGrade($value, $name, $title = '', $options = '',
         $rows = substr($options, strpos($options, 'rows') + 5, 2) * 1;
         $cols = substr($options, strpos($options, 'cols') + 5, 2) * 1;
 
+        //htmlspecialchars: Convert special characters to HTML entities
+        $value=htmlspecialchars($value);
+        
         if ($value == '' || $div == false)
-            return "<TEXTAREA class='form-control' name=$name $options>$value</TEXTAREA>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+            return "<TEXTAREA class='form-control' name=$name $options>".htmlspecialchars_decode($value)."</TEXTAREA>" . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
         else
-            return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA id=textarea$name name=$name $options>" . preg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'><TABLE class=LO_field ><TR><TD>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV style="overflow:auto; height:' . (15 * $rows) . 'px; width:' . ($cols * 10) . '; padding-right: 16px;">' . nl2br($value) . '</DIV>' : '<DIV style="overflow:auto; width:300; padding-right: 16px;">' . nl2br($value) . '</DIV>') . '</TD></TR></TABLE>' . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . '</div></DIV>';
+            return "<DIV id='div$name'><div onclick='javascript:addHTML(\"<TEXTAREA class=form-control id=textarea$name name=$name $options>" . preg_replace("[\n\r]", '\u000D\u000A', str_replace("\r\n", '\u000D\u000A', str_replace("'", "&#39;", $value))) . "</TEXTAREA>" . ($title != '' ? "<BR><small>" . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . "</small>" : '') . "\",\"div$name\",true); document.getElementById(\"textarea$name\").value=unescape(document.getElementById(\"textarea$name\").value);'><TABLE class=LO_field ><TR><TD>" . ((substr_count($value, "\r\n") > $rows) ? '<DIV style="overflow:auto; height:' . (15 * $rows) . 'px; width:' . ($cols * 10) . '; padding-right: 16px;">' . nl2br(htmlspecialchars_decode($value)) . '</DIV>' : '<DIV style="overflow:auto; width:300; padding-right: 16px;">' . nl2br(htmlspecialchars_decode($value)) . '</DIV>') . '</TD></TR></TABLE>' . ($title != '' ? '<BR><small>' . str_replace("'", '&#39;', (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '')) . '</small>' : '') . '</div></DIV>';
     } else
-        return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
+        return ((($value) != '') ? nl2br(($value)) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
 function CheckboxInput($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
@@ -1037,7 +1039,6 @@ function DateInputAY($value, $name, $counter = 1, $div_visibility = false) {
                  * Old Calendar Style
                  * init(' . $counter . ',2);
                  */
-
                 return '<div id="date_div_' . $counter . '" class="fake_datepicker" onClick="$(\'#original_date_' . $counter . '\').show(); $(\'#date_div_' . $counter . '\').hide();">' . (($title != '') ? '<label class="control-label col-md-4 text-right">' . $title . '</label><div class="col-md-8">' : '') . '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input type="text" readonly="readonly" data-calid="' . $counter . '" class="form-control" value="' . ProperDateAY($value) . '" /></div>' . (($title != '') ? '</div>' : '') . '</div>'
                         //. '<div id="date_div_' . $counter . '" class="fake_datepicker" onClick="$(\'#original_date_' . $counter . '\').show(); $(\'#date_div_' . $counter . '\').hide();" style="display: inline" >' . (($title != '') ? '<label class="control-label col-md-4 text-right">' . $title . '</label><div class="col-md-8">' : '') . '<div class="input-group"><span class="input-group-addon"><i class="icon-calendar22"></i></span><input type="text" readonly="readonly" data-calid="'.$counter.'" class="form-control" value="' .$value. '" /></div>' . (($title != '') ? '</div>' : '') . '</div>'
                         . '<div class="input-group datepicker-group" id="original_date_' . $counter . '" ' . $show . '  style="display:none;">'

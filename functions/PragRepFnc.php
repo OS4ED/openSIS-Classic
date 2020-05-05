@@ -20,7 +20,6 @@ function par_spt($pattern='',$sub='')
 function par_rep_cb($match='',$exp='',$sub='')  
 {
     return preg_replace_callback($match,$exp,$sub);
-} 
-
+}
 ?>
 

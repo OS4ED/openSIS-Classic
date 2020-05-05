@@ -206,79 +206,118 @@
                                         ('update', '0'),
                                         ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert);
-                                    $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
-                                    $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
-                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
-   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` int(11) NOT NULL,
-  `profile_id` int(11) NOT NULL,
-  `school_id` int(11) NOT NULL,
-  `syear` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `size` int(11) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `content` longblob NOT NULL,
-  `file_info` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1');
-                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `keyval` varchar(100) NOT NULL,
-  `filepath` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1');
-                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `device_info` (
-  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `profile_id` int(11) NOT NULL,
-  `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `device_token` longtext CHARACTER SET utf8 NOT NULL,
-  `device_id` longtext CHARACTER SET utf8 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1');
- $dbconn->query('CREATE TABLE IF NOT EXISTS `filters` (
-  `filter_id` int(11) NOT NULL,
-  `filter_name` varchar(255) DEFAULT NULL,
-  `school_id` int(11) DEFAULT \'0\',
-  `show_to` int(11) NOT NULL DEFAULT \'0\'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1');
-                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `filter_fields` (
-  `filter_field_id` int(11) NOT NULL,
-  `filter_id` int(11) DEFAULT NULL,
-  `filter_column` varchar(255) DEFAULT NULL,
-  `filter_value` longtext
-) ENGINE=InnoDB DEFAULT CHARSET=latin1');
                                     
-                                   $dbconn->query('CREATE TABLE IF NOT EXISTS `api_info` (
- `id` int(11) NOT NULL AUTO_INCREMENT,
- `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
- `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
- PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
+                                    $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
+
+                                    $dbconn->query('ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`');
+
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
+                                       `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                      `user_id` int(11) NOT NULL,
+                                      `profile_id` int(11) NOT NULL,
+                                      `school_id` int(11) NOT NULL,
+                                      `syear` int(11) NOT NULL,
+                                      `name` varchar(255) NOT NULL,
+                                      `size` int(11) NOT NULL,
+                                      `type` varchar(255) NOT NULL,
+                                      `content` longblob NOT NULL,
+                                      `file_info` varchar(255) NOT NULL
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `temp_message_filepath_ws` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `keyval` varchar(100) NOT NULL,
+                                      `filepath` varchar(255) NOT NULL,
+                                      PRIMARY KEY (`id`)
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1');
+
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `device_info` (
+                                      `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                      `user_id` int(11) NOT NULL,
+                                      `profile_id` int(11) NOT NULL,
+                                      `device_type` varchar(255) CHARACTER SET utf8 NOT NULL,
+                                      `device_token` longtext CHARACTER SET utf8 NOT NULL,
+                                      `device_id` longtext CHARACTER SET utf8 NOT NULL
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `filters` (
+                                      `filter_id` int(11) NOT NULL,
+                                      `filter_name` varchar(255) DEFAULT NULL,
+                                      `school_id` int(11) DEFAULT \'0\',
+                                      `show_to` int(11) NOT NULL DEFAULT \'0\'
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `filter_fields` (
+                                      `filter_field_id` int(11) NOT NULL,
+                                      `filter_id` int(11) DEFAULT NULL,
+                                      `filter_column` varchar(255) DEFAULT NULL,
+                                      `filter_value` longtext
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+                                    
+                                    $dbconn->query('CREATE TABLE IF NOT EXISTS `api_info` (
+                                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                                     `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
+                                     `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
+                                     PRIMARY KEY (`id`)
+                                    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
+
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
-                                $extra_tab = array();
-                                //$fetch1 = $stu_info->fetch_assoc();
+                                    $extra_tab = array();
+                                    //$fetch1 = $stu_info->fetch_assoc();
 
-                                while ($fetch = $stu_info->fetch_assoc()) {
-                                       $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-                                       $fetchlang=$stu_lang->fetch_assoc();
-                                       if(count($fetchlang)>0)
-                                        $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-                                       else
-                                       {
-                                            $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
-                                            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-                                            $fetchlang=$stu_lang->fetch_assoc();
-                                            if(count($fetchlang)>0)
-                                              $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-                                       }
-                                }
-$dbconn->query('ALTER TABLE `filters` ADD PRIMARY KEY (`filter_id`)');
-$dbconn->query('ALTER TABLE `filter_fields` ADD PRIMARY KEY (`filter_field_id`)');
-$dbconn->query('ALTER TABLE `filters` MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;');
-$dbconn->query('ALTER TABLE `filter_fields` MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1');
-$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
-$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+                                    while ($fetch = $stu_info->fetch_assoc()) {
+                                           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                           $fetchlang=$stu_lang->fetch_assoc();
+                                           if(count($fetchlang)>0)
+                                            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           else
+                                           {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           }
+                                    }
 
-$_SESSION['mod'] = 'upgrade';
+
+                                    $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                    while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                    {
+                                        $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                        $fetchethn = $stu_ethn->fetch_assoc();
+                                        
+                                        if(count($fetchethn) > 0)
+                                        {
+                                            $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                        }
+                                        else
+                                        {
+                                            $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+                                    
+
+                                    $dbconn->query('ALTER TABLE `filters` ADD PRIMARY KEY (`filter_id`)');
+                                    $dbconn->query('ALTER TABLE `filter_fields` ADD PRIMARY KEY (`filter_field_id`)');
+                                    $dbconn->query('ALTER TABLE `filters` MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;');
+                                    $dbconn->query('ALTER TABLE `filter_fields` MODIFY `filter_field_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+
+                                    
+                                    $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     exit;
                                 }
@@ -286,7 +325,7 @@ $_SESSION['mod'] = 'upgrade';
                                 else if ($v == '7.1')
                                 {
                                     
-                                     $dbconn->query('TRUNCATE app');
+                                    $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
                                         ('version', '7.4'),
                                         ('date', 'April 25, 2020'),
@@ -295,74 +334,134 @@ $_SESSION['mod'] = 'upgrade';
                                         ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert);
                                     
-$dbconn->query('CREATE TABLE `api_info` (
- `id` int(11) NOT NULL AUTO_INCREMENT,
- `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
- `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
- PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
-$stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
-    $extra_tab = array();
-    //$fetch1 = $stu_info->fetch_assoc();
+                                    $dbconn->query('CREATE TABLE `api_info` (
+                                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                                     `api_key` varchar(255) CHARACTER SET utf8 NOT NULL,
+                                     `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
+                                     PRIMARY KEY (`id`)
+                                    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
 
-    while ($fetch = $stu_info->fetch_assoc()) {
-           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-           $fetchlang=$stu_lang->fetch_assoc();
-           if(count($fetchlang)>0)
-            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-           else
-           {
-                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
-                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-                $fetchlang=$stu_lang->fetch_assoc();
-                if(count($fetchlang)>0)
-                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-           }
-    }
+                                    $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+                                    $extra_tab = array();
+                                    // $fetch1 = $stu_info->fetch_assoc();
+
+                                    while ($fetch = $stu_info->fetch_assoc()) {
+                                           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                           $fetchlang=$stu_lang->fetch_assoc();
+                                           if(count($fetchlang)>0)
+                                            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           else
+                                           {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           }
+                                    }
+
+
+                                    $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                    while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                    {
+                                        $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                        $fetchethn = $stu_ethn->fetch_assoc();
+                                        
+                                        if(count($fetchethn) > 0)
+                                        {
+                                            $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                        }
+                                        else
+                                        {
+                                            $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+
                                 
-$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
-$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
-$_SESSION['mod'] = 'upgrade';
-                                   header('Location: Step5.php');
-                                   //$_SESSION['mod'] = 'upgrade';
+                                    $_SESSION['mod'] = 'upgrade';
+                                    header('Location: Step5.php');
+                                    // $_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
                                 else if ($v == '7.2')
                                 {
                                     
-                                     $dbconn->query('TRUNCATE app');
-                                   $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
+                                    $dbconn->query('TRUNCATE app');
+                                    $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
                                     ('version', '7.4'),
                                     ('date', 'April 25, 2020'),
                                     ('build', '20200425001'),
                                     ('update', '0'),
                                     ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
+
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
    
 
-    while ($fetch = $stu_info->fetch_assoc()) {
-           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-           $fetchlang=$stu_lang->fetch_assoc();
-           if(count($fetchlang)>0)
-            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-           else
-           {
-                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
-                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
-                $fetchlang=$stu_lang->fetch_assoc();
-                if(count($fetchlang)>0)
-                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
-           }
-    }
+                                    while ($fetch = $stu_info->fetch_assoc()) {
+                                           $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                           $fetchlang=$stu_lang->fetch_assoc();
+                                           if(count($fetchlang)>0)
+                                            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           else
+                                           {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                           }
+                                    }
+
+
+                                    $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                    while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                    {
+                                        $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                        $fetchethn = $stu_ethn->fetch_assoc();
+                                        
+                                        if(count($fetchethn) > 0)
+                                        {
+                                            $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                        }
+                                        else
+                                        {
+                                            $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+
                                 
-$dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
-$dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
                                     $_SESSION['mod'] = 'upgrade';
-                                   header('Location: Step5.php');
-                                   //$_SESSION['mod'] = 'upgrade';
+                                    header('Location: Step5.php');
+                                    // $_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
                                 else if ($v == '7.3')
@@ -376,9 +475,78 @@ $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11)
                                         ('last_updated', 'April 25, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
+                                    ### for Language - Start ###
+
+                                    $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
+
+                                    $check_language_arr = $check_language->fetch_assoc();
+
+                                    if(count($check_language_arr) > 0)
+                                    {
+                                        $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+       
+                                        while ($fetch = $stu_info->fetch_assoc()) {
+                                            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                            $fetchlang=$stu_lang->fetch_assoc();
+                                            if(count($fetchlang)>0)
+                                                $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                    $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+
+                                    ### for Language - End ###
+
+                                    ### for Ethnicity - Start ###
+
+                                    $check_ethnicity = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'ethnicity'") or die($dbconn->error);
+
+                                    $check_ethnicity_arr = $check_ethnicity->fetch_assoc();
+
+                                    if(count($check_ethnicity_arr) > 0)
+                                    {
+                                        $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                        while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                        {
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+                                            
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $fetchethn = $stu_ethn->fetch_assoc();
+
+                                                if(count($fetchethn) > 0)
+                                                {
+                                                    $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    ### for Ethnicity - End ###
+
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
-                                    //$_SESSION['mod'] = 'upgrade';
+                                    // $_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
                                 

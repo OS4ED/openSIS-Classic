@@ -28,6 +28,12 @@
 #***************************************************************************************
 include_once("fckeditor/fckeditor.php");
 //PopTable('header', 'Compose Message');
+if(isset($_SESSION['BODY_EMPTY']) && $_SESSION['BODY_EMPTY']!='')
+{
+    // echo '<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
+    echo '<div class="alert alert-danger alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Message body cannot be empty</div>';
+    unset($_SESSION['BODY_EMPTY']);
+}
 echo '<div class="panel">';
 echo '<div class="tabbable">';
 echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom">';

@@ -189,7 +189,6 @@ $date_counter = 1;
 unset($THIS_RET);
 $RET = DBGet(DBQuery('SELECT e.DROP_CODE as DC,e.SYEAR, s.FIRST_NAME,s.LAST_NAME,s.GENDER, e.ID,e.GRADE_ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e,students s WHERE e.STUDENT_ID=\'' . UserStudentID() . '\'  AND e.STUDENT_ID=s.STUDENT_ID ORDER BY e.START_DATE'), $functions);
 
-
 if (count($RET)) {
     $date_counter = $date_counter + 1;
     foreach ($RET as $in => $value) {
@@ -242,7 +241,16 @@ if ($_REQUEST['student_id'] != 'new') {
     if ($id != 'new')
         $next_school = $RET[count($RET)]['NEXT_SCHOOL'];
     if ($id != 'new')
-        $calendar = $RET[count($RET)]['CALENDAR_ID'];
+    {
+        // $calendar = $RET[count($RET)]['CALENDAR_ID'];
+        foreach($RET as $one_set)
+        {
+            if($one_set['SYEAR'] == UserSyear())
+            {
+                $calendar = $one_set['CALENDAR_ID'];
+            }
+        }
+    }
     $div = true;
 }
 else {

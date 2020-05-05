@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-
+  //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
     echo'<div class="alert bg-success alert-styled-left">Message deleted sucessfully</div>';
 }
@@ -663,7 +663,18 @@ function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBC
     $subject = singleQuoteReplace('', '', $subject);
     $grpName = str_replace("'", "\'", $grpName);
     $attachment = str_replace("'", "\'", $attachment);
+
+    if($mailBody=="")
+    {
+        $_SESSION['BODY_EMPTY']='1';
+        echo '<script>window.location="Modules.php?modname=messaging/Compose.php"
+        </script>';
+        return false;  
+    }
+    else if($mailBody!="")
+    {
     $inbox_query = DBQuery('INSERT INTO msg_inbox(to_user,from_user,mail_Subject,mail_body,isdraft,mail_attachment,to_multiple_users,to_cc_multiple,to_cc,to_bcc,to_bcc_multiple,mail_datetime) VALUES(\'' . $to . '\',\'' . $userName . '\',\'' . $subject . '\',\'' . $mailBody . '\',\'' . $isdraft . '\',\'' . $attachment . '\',\'' . $to . '\',\'' . $toCC . '\',\'' . $toCC . '\',\'' . $toBCCs . '\',\'' . $toBCCs . '\',now())');
+    }
     if ($grpName == 'false')
         $outbox_query = DBQuery('INSERT INTO msg_outbox(to_user,from_user,mail_Subject,mail_body,mail_attachment,to_cc,to_bcc,mail_datetime) VALUES(\'' . $to . '\',\'' . $userName . '\',\'' . $subject . '\',\'' . $mailBody . '\',\'' . $attachment . '\',\'' . $toCC . '\',\'' . $toBCCs . '\',NOW())');
     else {

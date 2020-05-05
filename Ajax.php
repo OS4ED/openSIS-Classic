@@ -105,12 +105,36 @@ $title_set = '';
 if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'student' && substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 5) != 'Atten' && substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 5) != 'users' && clean_param($_REQUEST['modname'], PARAM_NOTAGS) != 'students/AddUsers.php' && $_REQUEST['modname']!= 'tools/Backup.php' && (substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 10) != 'attendance' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/StudentSummary.php' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/DailySummary.php' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/AddAbsences.php')) {
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
+
+    $allow_buffer_list = array(
+        // For Students
+        'students/Student.php', 
+        // For Scheduling
+        'scheduling/Schedule.php', 
+        'scheduling/ViewSchedule.php', 
+        'scheduling/Requests.php', 
+        // For Grades
+        'grades/EditReportCardGrades.php', 
+        'grades/HistoricalReportCardGrades.php', 
+        // For Eligibility
+        'eligibility/Student.php'
+    );
+    // echo "<pre>";print_r($_REQUEST);echo "</pre>";
+    
     if ($count_student_RET[1]['NUM'] > 1) {
         $title_set = 'y';
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+
+        if(in_array($_REQUEST['modname'], $allow_buffer_list))
+        {
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        }
     } else if ($count_student_RET[1]['NUM'] == 1) {
         $title_set = 'y';
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+
+        if(in_array($_REQUEST['modname'], $allow_buffer_list))
+        {
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        }
     }
 }
 $title_set_staff = '';
