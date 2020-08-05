@@ -31,6 +31,7 @@ include("functions/ParamLibFnc.php");
 include("Data.php");
 include("functions/DbGetFnc.php");
 require_once("functions/PragRepFnc.php");
+include("AuthCryp.php");
 
 function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
@@ -246,6 +247,7 @@ function db_show_error($sql, $failnote, $additional = '') {
     die();
 }
 
+
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 if ($_REQUEST['pass_type_form'] == 'password') {
     if ($_REQUEST['pass_user_type'] == 'pass_student') {
@@ -401,12 +403,15 @@ if ($_REQUEST['user_type_form'] == 'username') {
 if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
     $get_vals = explode(",", $_REQUEST['user_info']);
     $flag = 'submited_value';
+    
+    $get_vals[0] = cryptor($get_vals[0], 'DEC', '');
+    $get_vals[1] = cryptor($get_vals[1], 'DEC', '');
 
-    $get_info = DBGet(DBQuery('SELECT COUNT(*) AS EX_REC FROM login_authentication WHERE user_id!=' . $get_vals[0] . ' AND profile_id!=' . $get_vals[1] . ' AND password=\'' . md5($_REQUEST['ver_pass']) . '\' '));
+    $get_info = DBGet(DBQuery('SELECT COUNT(*) AS EX_REC FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' AND password=\'' . md5($_REQUEST['ver_pass']) . '\' '));
     if ($get_info[1]['EX_REC'] > 0) {
         $_SESSION['err_msg_mod'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
     } else {
-        DBQuery('UPDATE login_authentication SET password=\'' . md5($_REQUEST['ver_pass']) . '\' WHERE user_id=' . $get_vals[0] . ' AND profile_id=' . $get_vals[1] . ' ');
+        DBQuery('UPDATE login_authentication SET password=\'' . md5($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
         $_SESSION['conf_msg'] = '<font color="red" ><b>Password updated successfully.</b></font>';
         echo'<script>window.location.href="index.php"</script>';
     }
@@ -495,17 +500,17 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
                         <form name="f1" method="post" class="text-left" action="">
 
                             <?php if ($flag == 'stu_pass') { ?>
-                                <input type="hidden" name="user_info" value="<?php echo $stu_info[1]['STUDENT_ID'] . ',3,' . $_REQUEST['uname']; ?>"/>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($stu_info[1]['STUDENT_ID'], 'ENC', '') . ',' . cryptor('3', 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
                                 <?php
                             }
                             if ($flag == 'stf_pass') {
                                 ?>
-                                <input type="hidden" name="user_info" value="<?php echo $stf_info[1]['STAFF_ID'] . ',' . $stf_info[1]['PROFILE_ID'] . ',' . $_REQUEST['uname']; ?>"/>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($stf_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($stf_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
                                 <?php
                             }
                             if ($flag == 'par_pass') {
                                 ?>
-                                <input type="hidden" name="user_info" value="<?php echo $par_info[1]['STAFF_ID'] . ',' . $par_info[1]['PROFILE_ID'] . ',' . $_REQUEST['uname']; ?>"/>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($par_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($par_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
                                 <?php
                             }
                             if ($flag == 'submited_value') {

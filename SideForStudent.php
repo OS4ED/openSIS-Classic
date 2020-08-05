@@ -30,7 +30,7 @@ unset($_SESSION['student_id']);
 unset($_SESSION['students_order']);
 unset($_SESSION['_REQUEST_vars']);
 unset($_SESSION['_REQUEST_vars']);
-echo "<script>window.location.href='Modules.php?modname=".strip_tags(trim($_REQUEST['modname']))."&ajax=true';</script>";
+echo "<script>window.location.href='Modules.php?modname=".strip_tags(urlencode(trim($_REQUEST['modname'])))."&ajax=true';</script>";
 
 
 ?>
