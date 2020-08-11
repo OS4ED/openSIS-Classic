@@ -147,6 +147,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear. '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
                 DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear . '\',\'UPDATENOTIFY\',\'display_school\',"Y")');
                 $_SESSION['UserSchool'] = $id;
+
+                $chk_stu_enrollment_codes_exist = DBGet(DBQuery('SELECT COUNT(*) AS STU_ENR_COUNT FROM `student_enrollment_codes` WHERE `syear` = \''.$syear.'\''));
+                if($chk_stu_enrollment_codes_exist[1]['STU_ENR_COUNT'] == 0)
+                {
+                    DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$syear.'\', \'Transferred out\', \'TRAN\', \'TrnD\')');
+                    DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$syear.'\', \'Transferred in\', \'TRAN\', \'TrnE\')');
+                    DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$syear.'\', \'Rolled over\', \'ROLL\', \'Roll\')');
+                    DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$syear.'\', \'Dropped Out\', \'DROP\', \'Drop\')');
+                    DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$syear.'\', \'New\', \'NEW\', \'Add\')');
+                }
+
                 unset($_REQUEST['new_school']);
             }
 echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).' method=POST>';
@@ -318,26 +329,36 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
 
         if($_REQUEST['new_school']=='true')
         {
-        $get_this_school_date=DBGet(DBQuery('SELECT * FROM school_years where SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));  
-        
-        echo '<div class="row">';
-        echo '<div class="col-md-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Start Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
-        echo '</div>'; //.col-md-6
-        
-        echo '<div class="col-md-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">End Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
-        echo '</div>'; //.col-md-6
-        echo '</div>'; //.row  
+            $get_this_school_date=DBGet(DBQuery('SELECT * FROM school_years where SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool()));  
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Start Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
+            echo '</div>'; //.col-md-6
+            
+            echo '<div class="col-md-6">';
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">End Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row  
         }
+
+        if($_REQUEST['new_school'] == 'true')
+        {
+            echo '<input id="h1" type="hidden" value="">';
+        }
+        else
+        {
+            echo '<input id="h1" type="hidden" value="'. UserSchool() .'">';
+        }
+
         $btns = '';
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             //echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school(this);'></div>";
             } else {
 
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school();'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school(this);'></div>";
             }
         }
 

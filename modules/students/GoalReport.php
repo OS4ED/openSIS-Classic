@@ -28,6 +28,11 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////New Datepicker/////////////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
@@ -113,7 +118,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "<tr><td>Gender:</td>";
                     echo "<td>" . $sql_student['GENDER'] . "</td></tr>";
                     echo "<tr><td>Ethnicity:</td>";
-                    $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=".$sql_student['ETHNICITY']));
+                    $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id='".$sql_student['ETHNICITY']."'"));
                     echo "<td>" . $sql_ethinicity[1]['ETHNICITY_NAME'] . "</td></tr>";
                     if ($sql_student['COM_NAME'] != '') {
                         echo "<tr><td>Common Name:</td>";
@@ -127,7 +132,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "<td>" . $bir_dt . "</td></tr>";
                     if ($sql_student['LANG'] != '') {
                         echo "<tr><td>Language Spoken:</td>";
-                        $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=".$sql_student['LANG']));
+                        $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id='".$sql_student['LANG']."'"));
                         echo "<td>" . $sql_language[1]['LANGUAGE_NAME'] . "</td></tr>";
                         echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                     }
@@ -189,7 +194,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
     if ($error == 'Y')
         BackPrompt('No goals and progress were found.');
-    unset($_SESSION['student_id']);
+    // unset($_SESSION['student_id']);
     $_REQUEST['modfunc'] = true;
 }
 
@@ -221,6 +226,10 @@ if (!$_REQUEST['modfunc']) {
 
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;

@@ -1967,3 +1967,17 @@ UNION
         people.first_name AS relation_first_name,  people.last_name AS relation_last_name,stp.addn_address AS address1, stp.addn_street AS address2,addn_city AS city,addn_state AS state,addn_zipcode AS zip,addn_work_phone AS work_phone,addn_home_phone AS home_phone,addn_mobile_phone AS cell_phone,
         stp.addn_email AS email_id,'3' AS sort
     FROM people,students_join_people stp ,students st  WHERE   people.person_id=stp.person_id  AND   st.student_id=stp.student_id;
+
+
+
+
+
+ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`);
+
+ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`);
+
+ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`);
+
+ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT 'Student Info -> search all';
+
+ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT 'Student Info -> search all';

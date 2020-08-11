@@ -47,6 +47,7 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
         }
         $html.='</tbody>';
         $html.='</table>';
+        $html .= '<div id="request_div" style="display:none;"></div>';
     }
 }
 

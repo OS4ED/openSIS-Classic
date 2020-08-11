@@ -175,7 +175,7 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
         if (!$requests_RET)
             echo '';
         else
-            echo '<br/>' . SubmitButton('Update', '', 'class="btn btn-primary" onclick=\'formload_ajax("up");\'');
+            echo '<br/>' . SubmitButton('Update', '', 'class="btn btn-primary" onclick=\'formload_ajax("up");self_disable(this); \'');
         echo '</div>';
         echo '</FORM>';
     }

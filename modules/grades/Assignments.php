@@ -503,8 +503,12 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
          if($_REQUEST['assignment_type_id'] && !$_REQUEST['assignment_id'])
         {   
          $table ='assignment type';
-         $data=DBGet(DBQuery('select id from student_report_card_grades where course_period_id=(select course_period_id from  gradebook_assignment_types where assignment_type_id='.$_REQUEST['assignment_type_id'].')'));
-         if(count($data)>0)
+        
+        //   $data=DBGet(DBQuery('select id from student_report_card_grades where course_period_id=(select course_period_id from  gradebook_assignment_types where assignment_type_id='.$_REQUEST['assignment_type_id'].')'));
+        
+         $data=DBGet(DBQuery('select id from student_report_card_grades where course_period_id=(select course_period_id from  gradebook_assignments where assignment_type_id='.$_REQUEST['assignment_type_id'].')'));
+         
+        if(count($data)>0)
              UnableDeletePromptMod('Gradebook Assignment Type cannot be deleted because assignments are created in this assignment type.','','modfunc=&assignment_type_id='.$_REQUEST['assignment_type_id']);
         else
         {
@@ -636,7 +640,7 @@ if(!$_REQUEST['modfunc'] && $course_id)
             echo "&assignment_id=new";
         echo "&table=gradebook_assignments method=POST>";
         echo '<div class="panel panel-default">';
-        DrawHeader($title, $delete_button . '<INPUT type=submit class="btn btn-primary" value=Save onclick="formcheck_assignments();">');
+        DrawHeader($title, $delete_button . '<INPUT type=submit id="setupAssgnTypeBtnOne" class="btn btn-primary" value=Save onclick="formcheck_assignments(this);">');
         echo '<div class="panel-body">';
         echo "<INPUT type=hidden name=type_id value='$_REQUEST[assignment_id]' id=type_id>";
         $header .= '<div class="row">';
@@ -670,8 +674,11 @@ if(!$_REQUEST['modfunc'] && $course_id)
             echo "&assignment_type_id=$_REQUEST[assignment_type_id]";
         echo " method=POST>";
         echo '<div class="panel panel-default">';
-        DrawHeader($title, $delete_button . '<INPUT type=submit class="btn btn-primary" value=Save onclick="formcheck_assignments();">');
+        DrawHeader($title, $delete_button . '<INPUT type=submit id="setupAssgnTypeBtnTwo" class="btn btn-primary" value=Save onclick="formcheck_assignments(this);">');
         echo '<div class="panel-body">';
+
+        echo "<INPUT type=hidden name=type_id value='$_REQUEST[assignment_id]' id=type_id>";
+
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['assignment_type_id'] . '][TITLE]', 'Title', 'size=36') . '</div></div>';
 

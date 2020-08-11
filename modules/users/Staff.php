@@ -839,33 +839,33 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
 
             if ($_REQUEST['staff_id'] != 'new') {
                 if ($_REQUEST['category_id'] == 1 && ($username == '' || $password == '' || $this_school['JOINING_DATE'] == '')) {
-                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
+                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 }
                 if ($_REQUEST['category_id'] == 1 && $username != '' && $password != '' && $this_school['JOINING_DATE'] != '') {
-                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
+                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 }
                 if ($_REQUEST['category_id'] != 1) {
                     $btn_flag=1;
                     if(User('PROFILE')=='admin' && $_REQUEST['modname']=='users/Staff.php' && isset($_REQUEST['include']) && $_REQUEST['include']=='ScheduleInc')
                     $btn_flag=0;
                     if($btn_flag==1)
-                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
+                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 }
             } else {
                 if ($_REQUEST['category_id'] != 3) {
-                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
+                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 } else {
                     if ($_SESSION[staff_school_chkbox_id] != '') {
-                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION[staff_school_chkbox_id] . ');"') . '</div></div>';
+                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION[staff_school_chkbox_id] . ', this);"') . '</div></div>';
                     } else
-                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
+                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                     unset($_SESSION[staff_school_chkbox_id]);
                 }
             }
         }
         elseif (User('PROFILE') == 'teacher') {
             if ($_REQUEST['include'] != 'ScheduleInc' && $_REQUEST['include'] != 'SchoolsInfoInc')
-                echo '<div class="panel-footer"><div class="heading-elements">'.SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"').'</div></div>';
+                echo '<div class="panel-footer"><div class="heading-elements">'.SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"').'</div></div>';
         }
         echo '</FORM>';
     }

@@ -775,6 +775,11 @@ INSERT INTO `student_field_categories` (`id`, `title`, `sort_order`, `include`, 
 (6, 'Enrollment Info', '6', NULL, '2019-07-28 15:26:33', NULL),
 (7, 'Files', '7', NULL, '2019-07-28 15:26:33', NULL);
 
+
+
+
+
+
 --
 -- Dumping data for table `user_profiles`
 --

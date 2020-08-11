@@ -1,6 +1,5 @@
 <?php
 
-
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -27,32 +26,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
-$requested = $_REQUEST;
-
-if(isset($_REQUEST['calling']))
-{
-	if(function_exists($_REQUEST['calling']))
-	{
-		// $requested_params = $_REQUEST['telling'];
-		// $return_params = array();
-
-		// foreach($requested_params as $one_param_key => $one_param_val)
-		// {
-		// 	$encoded_string = $_REQUEST['calling']($one_param_val, $_REQUEST['motive'], $_REQUEST['jsc']);
-
-		// 	$repack = array(
-		// 		$one_param_key => $encoded_string
-		// 	);
-
-		// 	// $return_params[$one_param_key] = $encoded_string;
-		// 	// echo $encoded_string.'<br/>';
-		// 	array_push($return_params, $repack);
-		// }
-
-		$encoded_string = $_REQUEST['calling']($_REQUEST['telling'], $_REQUEST['motive'], $_REQUEST['jsc']);
-	}
-}
 
 function dataCreator($char = '', $type = '')
 {

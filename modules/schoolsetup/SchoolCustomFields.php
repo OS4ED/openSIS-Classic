@@ -351,7 +351,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($system_wide, 'SYSTEM_WIDE', 'System Wide','', false, 'Yes','No', '', 'switch-success') . '</div></div>';
    
     $header .= '</div>';
-    $header .= '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary heading-btn pull-right ml-10" onclick="formcheck_schoolfields();"') . $delete_button . '</div></div>';
+    $header .= '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'id="setupSchoolFieldsBtn" class="btn btn-primary heading-btn pull-right ml-10" onclick="formcheck_schoolfields(this);"') . $delete_button . '</div></div>';
     $header .= '</div>'; //.panel
 
     DrawHeaderHome($header);

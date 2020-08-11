@@ -192,7 +192,7 @@ if (!$_REQUEST['modfunc']) {
     if (count($report_card_comments) > 0)
         $report_card_comments = implode(',', $report_card_comments);
     echo "<FORM name=F1 id=F1 class=\"m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id] method=POST>";
-    DrawHeader('Report Card Comments', '<div class="form-inline"><div class="form-group">' . $course_select . ' &nbsp; ' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_grade_comment();"') . '</div></div>');
+    DrawHeader('Report Card Comments', '<div class="form-inline"><div class="form-group">' . $course_select . ' &nbsp; ' . SubmitButton('Save', '', 'id="gradeCommentBtnOne" class="btn btn-primary" onclick="formcheck_grade_comment(this);"') . '</div></div>');
     echo '<input type="hidden" name="comment_ids" id="comment_ids" value="' . $report_card_comments . '">';
     echo '<hr class="no-margin"/>';
 
@@ -206,7 +206,7 @@ if (!$_REQUEST['modfunc']) {
     echo "</div>"; //.tab-content
 
     echo '</div>'; //.panel-body
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_grade_comment();"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="gradeCommentBtnTwo" class="btn btn-primary" onclick="formcheck_grade_comment(this);"') . '</div>';
     echo '</FORM>';
 }
 

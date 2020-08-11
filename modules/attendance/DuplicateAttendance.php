@@ -319,7 +319,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             echo '</div>'; //.table-responsive
             echo '</div>'; //.tabbable
             echo '</div>'; //.panel
-            echo '<br><input type=submit class="btn btn-primary" name=submit value=Delete>';
+            echo '<br><input type=submit class="btn btn-primary" name=submit onclick="self_disable(this);" value=Delete>';
         }
 
         echo "</form>";

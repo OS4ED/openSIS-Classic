@@ -236,9 +236,17 @@ if ($_REQUEST['modfunc'] == 'save') {
                     else {
                         $cr_pr_id = 0;
                     }
-                    $date = DBDate();
+                    
+                    if(isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y')
+                    {
+                        $date = DBDate();
+                    }
+                    else
+                    {
+                        $date = date("Y-m-d");
+                    }
 
-                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>="' . $date . '" OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ("' . $date . '"<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND ("' . $date . '"<=ss.END_DATE OR ss.END_DATE IS NULL)'));
 
                     if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
@@ -322,7 +330,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.row
 
         echo '<div>';
-        echo Buttons('Submit', 'Reset');
+        echo Buttons('Submit', 'Reset', 'onclick="self_disable(this);"');
         echo '</div>';
         PopTable('footer');
         echo '</FORM>';
@@ -429,7 +437,7 @@ function mySearch($extra) {
     echo '</div>';
 
     if (count($course_periods_RET) != 0)
-        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Create Class Lists for Selected Course Periods\'></div>';
+        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print Class Lists for Selected Course Periods\'></div>';
     echo "</FORM>";
 }
 

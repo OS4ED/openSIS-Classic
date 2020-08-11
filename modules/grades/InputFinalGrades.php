@@ -115,6 +115,9 @@ else
         $commentsB_select += array($id => array($comment[1]['SORT_ORDER'] . ' - ' . substr($comment[1]['TITLE'], 0, 19) . (strlen($comment[1]['TITLE']) > 20 ? '...' : ''), $comment[1]['TITLE']));
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
+
+    $_SESSION['GGG_FLAG'] = 1;
+
     if ($_REQUEST['mp']) {
         $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . $course_period_id . '\''), array(), array('TITLE'));
 
@@ -1082,10 +1085,10 @@ if ($cp_type != 'custom') {
                 $mps_select .= "<OPTION value=" . $pro . (($pro == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($pro) . "</OPTION>";
         }
 
-//if($_REQUEST['mp']==UserMP() && GetMP(UserMP(),'POST_START_DATE') && ($time>=strtotime(GetMP(UserMP(),'POST_START_DATE')) && $time<=strtotime(GetMP(UserMP(),'POST_END_DATE'))))
-//	$allow_edit = true;
-//$mps_select .= "<OPTION value=".UserMP().((UserMP()==$_REQUEST['mp'])?' SELECTED':'').">".GetMP(UserMP())."</OPTION>";
-//$mps_select .= "<OPTION value='E'".UserMP().((UserMP()=='E'.$_REQUEST['mp'])?' SELECTED':'').">".GetMP("'E'".UserMP())."</OPTION>";
+    //if($_REQUEST['mp']==UserMP() && GetMP(UserMP(),'POST_START_DATE') && ($time>=strtotime(GetMP(UserMP(),'POST_START_DATE')) && $time<=strtotime(GetMP(UserMP(),'POST_END_DATE'))))
+    //	$allow_edit = true;
+    //$mps_select .= "<OPTION value=".UserMP().((UserMP()==$_REQUEST['mp'])?' SELECTED':'').">".GetMP(UserMP())."</OPTION>";
+    //$mps_select .= "<OPTION value='E'".UserMP().((UserMP()=='E'.$_REQUEST['mp'])?' SELECTED':'').">".GetMP("'E'".UserMP())."</OPTION>";
 
 
     if (($_REQUEST['mp'] == $qtr || $_REQUEST['mp'] == 'E' . $qtr) && GetMP($qtr, 'POST_START_DATE') && ($time >= strtotime(GetMP($qtr, 'POST_START_DATE')) && $time <= strtotime(GetMP($qtr, 'POST_END_DATE'))))
@@ -1113,7 +1116,7 @@ if ($cp_type != 'custom') {
 }
 else {
 
-//   if(GetMP($full_year_mp[1]['MARKING_PERIOD_ID'],'DOES_GRADES')=='Y')
+    // if(GetMP($full_year_mp[1]['MARKING_PERIOD_ID'],'DOES_GRADES')=='Y')
     $mps_select .= "<OPTION value=" . $full_year_mp[1]['MARKING_PERIOD_ID'] . (($full_year_mp[1]['MARKING_PERIOD_ID'] == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($full_year_mp[1]['MARKING_PERIOD_ID']) . "</OPTION>";
     if (GetMP($full_year_mp[1]['MARKING_PERIOD_ID'], 'DOES_EXAM') == 'Y')
         $mps_select .= "<OPTION value=E" . $full_year_mp[1]['MARKING_PERIOD_ID'] . (('E' . $full_year_mp[1]['MARKING_PERIOD_ID'] == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($full_year_mp[1]['MARKING_PERIOD_ID']) . " Exam</OPTION>";
@@ -1162,6 +1165,8 @@ $extra['functions'] += array('COMMENT' => '_makeComment');
 
 $stu_RET = GetStuList($extra);
 
+// echo "<pre>";print_r($import_RET);echo "</pre>";
+
 echo "<FORM class=\"no-margin\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 
 if (!$_REQUEST['_openSIS_PDF']) {
@@ -1194,7 +1199,7 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
     echo '<div class="form-group"><div class="form-inline">';
     if (count($stu_RET) != 0) {
-        echo $mps_select . ' &nbsp; ' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary"').' &nbsp; &nbsp; ';
+        echo $mps_select . ' &nbsp; ' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"').' &nbsp; &nbsp; ';
         echo '<input type=hidden name=period value="' . strip_tags(trim($_REQUEST['period'])) . '" />';
     }
     echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label>';
@@ -1298,12 +1303,36 @@ if (substr($_REQUEST['mp'], 0, 1) != 'E' && GetMP($_REQUEST['mp'], 'DOES_COMMENT
     $columns += array('COMMENT' => 'Comment');
 }
 
+
+if(isset($_SESSION['GGG_FLAG']) && $_SESSION['GGG_FLAG'] == 1)
+{
+    foreach($stu_RET as $one_ret_key => $one_ret)
+    {
+        if(isset($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT']) && $import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT'] != '')
+        {
+            $this_letter_grade = "<b>". _makeLetterGrade(($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT']/100)) ."</b>";
+        }
+        else
+        {
+            $this_letter_grade = "";
+        }
+
+        $stu_RET[$one_ret_key]['REPORT_CARD_GRADE'] = $this_letter_grade;
+    }
+
+    $_SESSION['GGG_FLAG'] = '';
+    unset($_SESSION['GGG_FLAG']);
+}
+
+
+// echo "<pre>";print_r($stu_RET);echo "</pre>";
+
 ListOutput($stu_RET, $columns, 'Student', 'Students', false, false, array('yscroll' => true));
 
 
 
 if (count($stu_RET) != 0) {
-    echo '<div class="panel-footer">' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary"') . '</div>';
+    echo '<div class="panel-footer">' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body

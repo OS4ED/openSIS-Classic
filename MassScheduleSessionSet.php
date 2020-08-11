@@ -29,13 +29,17 @@ session_start();
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
+// include('functions/SqlSecurityFnc.php');
+
 if($_REQUEST['title'])
 {
+    $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
+    
     if($_REQUEST['course_period_id'])
     {
     $_SESSION['MassSchedule.php']['course_period_id']=$_REQUEST['course_period_id'];
-    $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$_REQUEST['course_period_id']));
-    $marking_period= DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$_REQUEST['course_period_id']));
+    $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));
+    $marking_period= DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));
     if($marking_period[1]['MARKING_PERIOD_ID']==''){
         $get_syear_mpid=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));
         $marking_period=$get_syear_mpid;

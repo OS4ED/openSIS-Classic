@@ -291,9 +291,9 @@ if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
     echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label></div></div>';
 else {
     if (!$_REQUEST['student_id']) {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
+        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
     } else {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
+        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
     }
 }
 if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
@@ -303,7 +303,7 @@ echo '<hr class="no-margin-bottom"/>';
 ListOutput($stu_RET, $LO_columns, $item, $items, $link, array(), $options);
 
 if (count($assignments_RET) != 0)
-    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</CENTER>' : '';
+    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER>' : '';
 echo '</FORM>';
 
 echo '</div>'; //.panel-body

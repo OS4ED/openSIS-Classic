@@ -964,6 +964,30 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
             }
         }
     }
+    
+
+    ##### REMOVE FILES FROM ROOT - START #####
+
+    $check_backups = DBGet(DBQuery("SELECT * FROM `program_config` WHERE `program` = 'DB_BACKUP'"));
+
+    if(!empty($check_backups))
+    {
+        foreach($check_backups as $each_backups)
+        {
+            $filename = $each_backups['TITLE'].'.sql';
+
+            if(file_exists($filename))
+            {
+                unlink($filename);
+
+                DBQuery("DELETE FROM `program_config` WHERE `program` = 'DB_BACKUP' AND `value` = '".$each_backups['VALUE']."'");
+            }
+        }
+    }
+
+    ##### REMOVE FILES FROM ROOT - END #####
+    
+
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'ParentLookup.php')
@@ -975,6 +999,8 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/UploadUserPhoto.php?modfunc=edit')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'students/Upload.php')
+        $allowed = true;
+    if (optional_param('modname', '', PARAM_NOTAGS) == 'students/StudentFilters.php')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'students/Upload.php?modfunc=edit')
         $allowed = true;

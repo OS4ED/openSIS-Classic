@@ -32,6 +32,7 @@ include("Data.php");
 include("functions/DbGetFnc.php");
 require_once("functions/PragRepFnc.php");
 include("AuthCryp.php");
+include('functions/SqlSecurityFnc.php');
 
 function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
@@ -247,6 +248,12 @@ function db_show_error($sql, $failnote, $additional = '') {
     die();
 }
 
+$uname = sqlSecurityFilterChk($_REQUEST['uname']);
+$password_stn_id = sqlSecurityFilterChk($_REQUEST['password_stn_id']);
+$password_stf_email = sqlSecurityFilterChk($_REQUEST['password_stf_email']);
+$pass = sqlSecurityFilterChk($_REQUEST['pass']);
+$username_stn_id = sqlSecurityFilterChk($_REQUEST['username_stn_id']);
+$username_stf_email = sqlSecurityFilterChk($_REQUEST['username_stf_email']);
 
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 if ($_REQUEST['pass_type_form'] == 'password') {
@@ -266,7 +273,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
         if ($_REQUEST['password_stn_id'] != '' && $_REQUEST['uname'] != '' && $_REQUEST['month_password_dob'] != '' && $_REQUEST['day_password_dob'] != '' && $_REQUEST['year_password_dob'] != '') {
             $stu_dob = $_REQUEST['year_password_dob'] . '-' . $_REQUEST['month_password_dob'] . '-' . $_REQUEST['day_password_dob'];
-            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.USERNAME=\'' . $_REQUEST['uname'] . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $_REQUEST['password_stn_id'] . ' AND la.PROFILE_ID=3'));
+            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.USERNAME=\'' . $uname . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $password_stn_id . ' AND la.PROFILE_ID=3'));
 
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -290,7 +297,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
         if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
 
-            $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la  WHERE la.USER_ID=s.STAFF_ID AND la.USERNAME=\'' . $_REQUEST['uname'] . '\' AND s.EMAIL=\'' . $_REQUEST['password_stf_email'] . '\' AND la.PROFILE_ID IN (SELECT ID FROM user_profiles WHERE ID NOT IN (0,3,4))'));
+            $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la  WHERE la.USER_ID=s.STAFF_ID AND la.USERNAME=\'' . $uname . '\' AND s.EMAIL=\'' . $password_stf_email . '\' AND la.PROFILE_ID IN (SELECT ID FROM user_profiles WHERE ID NOT IN (0,3,4))'));
 
             if ($stf_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -312,7 +319,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
         if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
 
-            $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la  WHERE la.USER_ID=p.STAFF_ID AND la.USERNAME=\'' . $_REQUEST['uname'] . '\' AND p.EMAIL=\'' . $_REQUEST['password_stf_email'] . '\' AND la.PROFILE_ID = 4'));
+            $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la  WHERE la.USER_ID=p.STAFF_ID AND la.USERNAME=\'' . $uname . '\' AND p.EMAIL=\'' . $password_stf_email . '\' AND la.PROFILE_ID = 4'));
 
             if ($par_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -340,13 +347,13 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
         if ($_REQUEST['username_stn_id'] != '' && $_REQUEST['pass'] != '' && $_REQUEST['month_username_dob'] != '' && $_REQUEST['day_username_dob'] != '' && $_REQUEST['year_username_dob'] != '') {
             $stu_dob = $_REQUEST['year_username_dob'] . '-' . $_REQUEST['month_username_dob'] . '-' . $_REQUEST['day_username_dob'];
-            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $_REQUEST['username_stn_id'] . ''));
+            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $username_stn_id . ''));
 
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
-                $get_uname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $_REQUEST['username_stn_id'] . ' AND PROFILE_ID=3'));
+                $get_uname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $username_stn_id . ' AND PROFILE_ID=3'));
                 $_SESSION['fill_username'] = $get_uname[1]['USERNAME'];
                 echo'<script>window.location.href="index.php"</script>';
             }
@@ -364,7 +371,7 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
-            $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.EMAIL=\'' . $_REQUEST['username_stf_email'] . '\''));
+            $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.EMAIL=\'' . $username_stf_email . '\''));
 
             if ($stf_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -387,7 +394,7 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
-            $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND p.EMAIL=\'' . $_REQUEST['username_stf_email'] . '\' '));
+            $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND p.EMAIL=\'' . $username_stf_email . '\' '));
 
             if ($par_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -565,4 +572,3 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
         </section>
     </body>
 </html>
-

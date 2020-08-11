@@ -181,7 +181,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     }
     echo '<div class="panel panel-default">';
     ListOutput($schedule_RET, $columns, 'Course', 'Courses');
-    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('UPDATE', '', 'class="btn btn-primary heading-btn pull-right"') . '</div></div>';
+    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('UPDATE', '', 'class="btn btn-primary heading-btn pull-right" onclick="self_disable(this);"') . '</div></div>';
     echo '</div>';
     echo '</FORM>';
 } else {
@@ -365,7 +365,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 
     Search('student_id', $extra);
 
-    echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('UPDATE', 'admin_update', 'class="btn btn-primary"') . '</div>';
+    echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('UPDATE', 'admin_update', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 
 
     echo "</FORM>";

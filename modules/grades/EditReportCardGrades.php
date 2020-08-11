@@ -361,7 +361,7 @@ if (UserStudentID()) {
             echo SubmitButton('Remove Marking Period', 'removemp', 'class="btn btn-primary"');
             echo '&nbsp;';
         }
-        echo SubmitButton('Save', '', 'class="btn btn-primary"');
+        echo SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"');
 
         echo '</div>';
 

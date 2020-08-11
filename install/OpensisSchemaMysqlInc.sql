@@ -2134,3 +2134,14 @@ CREATE TABLE `user_file_upload` (
 ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL;
 
 ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL;
+
+
+ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`);
+
+ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`);
+
+ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`);
+
+ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT 'Student Info -> search all';
+
+ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT 'Student Info -> search all';

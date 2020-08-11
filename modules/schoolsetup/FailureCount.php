@@ -52,6 +52,6 @@ echo '<div class="form-group"><label class="control-label text-uppercase"><b>No.
 //if ($_REQUEST['page_display']) {
 //    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //}
-echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_failure_count();"');
+echo SubmitButton('Save', '', 'id="setupFailBtn" class="btn btn-primary pull-right" onclick="formcheck_failure_count(this);"');
 
 echo '</FORM>';

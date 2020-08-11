@@ -178,7 +178,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     
     echo '<div class="panel-footer"><div class="heading-elements">';
     echo '<input type=hidden id=counter value=1 />';
-    echo '<button type="submit" name=button id=button class="btn btn-primary heading-btn pull-right" VALUE="Send" onClick="validate_email();">Send <i class="icon-paperplane"></i></button>';
+    echo '<button type="submit" name=button id=button class="btn btn-primary heading-btn pull-right" VALUE="Send" onClick="validate_email(this);">Send <i class="icon-paperplane"></i></button>';
     echo '</div></div>';
     
 }

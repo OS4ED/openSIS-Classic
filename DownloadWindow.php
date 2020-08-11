@@ -28,9 +28,13 @@
 include('RedirectRootInc.php'); 
 include 'Warehouse.php';
 include 'Data.php';
+// include('functions/SqlSecurityFnc.php');
+
+$down_id = sqlSecurityFilter($_REQUEST['down_id']);
+
 if(isset($_REQUEST['down_id']) && $_REQUEST['down_id']!='')
 {
-    $downfile_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID='.$_REQUEST['down_id'].''));
+    $downfile_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID='.$down_id.''));
         header("Cache-Control: public");
         header("Pragma: ");
         header("Expires: 0"); 

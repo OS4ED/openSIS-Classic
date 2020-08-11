@@ -27,30 +27,41 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && AllowEdit()) {
-    foreach ($_REQUEST['values'] as $id => $columns) {
+if(clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && AllowEdit()) 
+{
+    $mflag=0;
+    foreach ($_REQUEST['values'] as $id => $columns) 
+    {
         $title = '';
-        if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {
+        if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) 
+        {
             ##############################################################################################################
-            if ($id != 'new') {
-
+            if($id != 'new') 
+            {
                 $sql = "UPDATE rooms SET ";
 
-                foreach ($columns as $column => $value) {
-                    if ($column == 'TITLE') {
+                foreach ($columns as $column => $value) 
+                {
+                    if ($column == 'TITLE') 
+                    {
                         $title = $value;
                     }
 
                     if ($column != 'SORT_ORDER')
                         $value = trim(paramlib_validation($column, $value));
-                    if ($column == 'CAPACITY') {
+                    if ($column == 'CAPACITY') 
+                    {
                         $assoc_check = DBGet(DBQuery('SELECT DISTINCT cp.COURSE_PERIOD_ID,cp.TOTAL_SEATS,cp.FILLED_SEATS FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=' . $id));
-                        if (count($assoc_check) == 0) {
+                        if (count($assoc_check) == 0) 
+                        {
                             $sql .= $column . '=\'' . singleQuoteReplace("'", "''", $value) . ' \',';
-                        } else {
+                        } 
+                        else 
+                        {
                             $total_seat = array();
                             $go_tot_seat = 'n';
-                            foreach ($assoc_check as $ai => $ad) {
+                            foreach ($assoc_check as $ai => $ad) 
+                            {
                                 if ($ad['FILLED_SEATS'] <= $value)
                                     $go_tot_seat = 'y';
                                 else {
@@ -60,12 +71,16 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                             }
                             unset($ai);
                             unset($ad);
-                            if ($go_tot_seat == 'y') {
+                            if ($go_tot_seat == 'y') 
+                            {
                                 $sql .= $column . '=\'' . str_replace("'", "''", $value) . ' \',';
-                                foreach ($assoc_check as $ai => $ad) {
+                                foreach ($assoc_check as $ai => $ad) 
+                                {
                                     DBQuery('UPDATE course_periods SET TOTAL_SEATS=' . $value . ' WHERE COURSE_PERIOD_ID=' . $ad['COURSE_PERIOD_ID']);
                                 }
-                            } else{                                
+                            } 
+                            else
+                            {                                
                                 echo '<div class="alert bg-danger alert-styled-left">';
                                 echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
                                 echo 'Cannot change room capacity as it has association.';
@@ -75,7 +90,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     }
                     if ($column != 'CAPACITY' && $column != 'SORT_ORDER')
                         $sql .= $column . '=\'' . singleQuoteReplace("'", "''", $value) . ' \',';
-                    if ($column == 'SORT_ORDER') {
+                    if ($column == 'SORT_ORDER') 
+                    {
                         $srt_odr = singleQuoteReplace("'", "''", $value);
                         $validate_srt_odr = DBGet(DBQuery('SELECT *  FROM rooms WHERE  SORT_ORDER=\'' . $srt_odr . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
                         $sql .= $column . ($value != '' ? '=\'' . singleQuoteReplace("'", "''", $value) . ' \',' : '=NULL,');
@@ -87,14 +103,18 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $sql = str_replace('&#039;', "", $sql);
                 $sql = str_replace('&lt;', "", $sql);
                 $sql = str_replace('&gt;', "", $sql);
+                //echo $sql;
+                //echo 'SELECT *  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'';
                 $validate_title = DBGet(DBQuery('SELECT *  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 
 
-                if (count($validate_title) != 0) {
-                    echo '<div class="alert bg-danger alert-styled-left">';
+                if(count($validate_title) != 0) 
+                {
+                    $mflag=1;
+                    /*echo '<div class="alert alert-info">';
                     echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                    echo 'Unable to save data, because title already exists.';
-                    echo '</div>';
+                    echo 'Room with similar title already exists.';
+                    echo '</div>';*/
 //                } else if (isset($validate_srt_odr) && count($validate_srt_odr) != 0) {
 //                    $samedata = DBGet(DBQuery("select SORT_ORDER from rooms  WHERE room_id='$id'"));
 //                    $samedata = $samedata[1]['SORT_ORDER'];
@@ -105,21 +125,26 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 //                        echo '</div>';
 //                    }
                  
-                }else {
+                }
+                //else {
 
                     DBQuery($sql);
-                }
+                //}
             } else {
-                $sql = "INSERT INTO rooms ";
+                $sql1 = "INSERT INTO rooms ";
                 $fields = 'SCHOOL_ID,';
                 $values = "'" . UserSchool() . "',";
                 $go = 0;
-                foreach ($columns as $column => $value) {
-                    if ($column == 'TITLE') {
+                foreach ($columns as $column => $value) 
+                {
+                    if ($column == 'TITLE') 
+                    {
                         $title = $value;
                     }
-                    if ($column == 'SORT_ORDER') {
-                        if ($value != '') {
+                    if($column == 'SORT_ORDER') 
+                    {
+                        if ($value != '') 
+                        {
                             $value = trim(paramlib_validation($column, $value));
 
 //                            $validate_srtodr = DBGet(DBQuery('SELECT count(*) as NO  FROM rooms WHERE  SORT_ORDER=\'' . $value . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -135,31 +160,44 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                                 $go = true;
 //                            }
                         }
-                    } else {
+                    } 
+                    else 
+                    {
                         $value = trim(paramlib_validation($column, $value));
                         $fields .= $column . ',';
                         $values .= '\'' . singleQuoteReplace("'", "''", $value) . ' \',';
                         $go = true;
                     }
                 }
-                $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+                $sql1 .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
 
                 $validate_title = DBGet(DBQuery('SELECT TITLE  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 
 
-                if (count($validate_title) != 0) {
-                    echo '<div class="alert bg-danger alert-styled-left">';
+                if(count($validate_title) != 0) 
+                {
+                    $mflag=1;
+                    /*echo '<div class="alert alert-info">';
                     echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                    echo 'Unable to save data, because title already exists.';
-                    echo '</div>';
-                } else {
+                    echo 'Room with similar title already exists.';
+                    echo '</div>';*/
+                } 
+                //else {
 
                     if ($go)
-                        DBQuery($sql);
-                }
+                        DBQuery($sql1);
+                //}
             }
         }
+    }
+
+    if($mflag == 1)
+    {
+        echo '<div class="alert alert-warning">';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo 'Rooms found with similar title.';
+        echo '</div>';
     }
 }
 
@@ -206,7 +244,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     }
     echo "<input type=hidden id=count_room value=$count_room />";
     ListOutputPeriod($rooms_RET, $columns, 'Room', 'Rooms', $link);
-    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="return formcheck_rooms();"') . '</div>';
+    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'id="setupRoomsBtn" class="btn btn-primary" onclick="return formcheck_rooms(this);"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

@@ -345,9 +345,9 @@ if ($_REQUEST['del'] == 'true') {
                 $count_start_date++;
                 $flag = 0;
                 $mark_id = $columns['MARKING_PERIOD_ID'];
-                $schdl_is_exist_qry = DBGet(DBQuery('SELECT COUNT(*) AS ROWS FROM schedule WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''));
+                $schdl_is_exist_qry = DBGet(DBQuery('SELECT COUNT(*) AS ROWSE FROM schedule WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''));
 
-                if ($schdl_is_exist_qry[1]['ROWS'] > 1) {
+                if ($schdl_is_exist_qry[1]['ROWSE'] > 1) {
                     $schdl_drop_status = DBGet(DBQuery('SELECT DROPPED FROM schedule WHERE ID=\'' . $columns['SCHEDULE_ID'] . '\''));
                     if ($schdl_drop_status[1]['DROPPED'] == 'N') {
                         $drooped_end_date = DBGet(DBQuery('SELECT END_DATE FROM schedule WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\' AND DROPPED=\'Y\' ORDER BY END_DATE'));
@@ -806,10 +806,26 @@ if ($_REQUEST['del'] == 'true') {
 
         ###################################################################3
 
+        $time = strtotime($date);
+        $newformat = date('Y-m-d',$time);
+        
         echo '<div class="row">';
         echo '<div class="col-md-3">';
-        echo '<div class="form-group"><label class="control-label">Date</label>' . PrepareDateSchedule($date, '_date', false, array('submit' => true)) . '</div>';
+        echo '<div class="form-group" id="filter"><label class="control-label">Date</label>' . PrepareDateSchedule($newformat, '_date', false, array('submit' => true)) . '</div>';
         echo '</div>'; //col-md-3
+
+        ?>
+            <script>
+                $("#filter :input").change(function(e) {
+                    const date = e.target.value.split("-")
+                    const markingPeriodId = $("#marking_period_id").val();
+                    const location='Modules.php?modname=<?php echo $_REQUEST['modname'] ?>&marking_period_id=' + markingPeriodId + '&month_date='+date[1]+'&day_date='+date[2]+'&year_date='+date[0];
+                    // console.log(location)
+                    window.location=location
+                    // +'&month_date=8&day_date=12&year_date=2020'
+                });
+            </script>
+        <?php
 
         echo '<div class="col-md-3">';
         echo '<div class="form-group"><label class="control-label">Marking Period</label>' . $mp . '</div>';
@@ -820,7 +836,7 @@ if ($_REQUEST['del'] == 'true') {
         echo '</div>'; //.col-md-3
         echo '</div>'; //.row
 
-        echo '<div class="form-group">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");\'') . '</div>';
+        echo '<div class="form-group">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
 
 
         $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -946,7 +962,7 @@ if ($_REQUEST['del'] == 'true') {
             echo '';
         else {
             echo '<div class="panel-footer no-padding-bottom">' . ProgramLinkforExport('scheduling/PrintSchedules.php', '<b><i class="icon-printer4"></i></b>Print Schedule', '&modfunc=save&st_arr[]=' . UserStudentID() . '&mp_id=' . $mp_id . '&include_inactive=' . $_REQUEST['include_inactive'] . '&_openSIS_PDF=true', ' target=_blank class="btn btn-success btn-labeled"') . ' &nbsp; ';
-            echo SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");\'') . '</div>';
+            echo SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
         }
 
         echo '</FORM>';

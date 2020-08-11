@@ -54,6 +54,6 @@ echo '<div class="form-group"><label class="control-label text-uppercase"><b>Max
 //if ($_REQUEST['page_display']) {
 //    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //}
-echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
+echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
 echo '</FORM>';

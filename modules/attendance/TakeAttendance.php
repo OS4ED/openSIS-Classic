@@ -418,7 +418,7 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
         echo '<div class="panel-body">';
         echo '<div class="form-inline">';
@@ -431,7 +431,7 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
         DrawHeader('<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 4) . '</div>' . $btnGo . $date_note . '</div>');
     }
@@ -481,7 +481,7 @@ if (!$mp_id) {
         echo '<div class="panel-footer">';
         echo '<div class="heading-elements text-right p-r-20">';
         if (count($stu_RET) > 0 && count($course_RET) > 0) {
-            echo SubmitButton('Save', '', 'class="btn btn-primary"');
+            echo SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"');
         }
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer

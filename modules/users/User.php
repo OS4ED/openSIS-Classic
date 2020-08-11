@@ -419,7 +419,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
         $sql = 'SELECT count(s.ID) as schools FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
         $school_admin = DBGet(DBQuery($sql));
-        $submit_btn = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ');"');
+        $submit_btn = SubmitButton('Save', '', 'id="saveUserBtn" class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ', this);"');
 
         PopTable('footer', $submit_btn);
         echo '</FORM>';

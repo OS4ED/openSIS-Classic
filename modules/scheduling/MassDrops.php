@@ -112,7 +112,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="checkbox checkbox-switch switch-success"><label><INPUT type=checkbox name=include_inactive value=Y /><span></span>Include advance schedule</label></div>';
         echo '<DIV id=cp_detail></DIV>';
         //echo '<div class="panel-footer">';
-        $btn = "<div class=\"m-l-20\"><INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop();formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' ></div>";
+        $btn = "<div class=\"m-l-20\"><INPUT type=SUBMIT class='btn btn-primary' id=submit value='Submit' onclick='return formcheck_mass_drop(this);formload_ajax(\"search\");'> &nbsp;<INPUT type=RESET class='btn btn-default' value='Reset' onclick='document.getElementById(\"course_div\").innerHTML =\"\";document.getElementById(\"cp_detail\").innerHTML =\"\";' ></div>";
         //echo '</div>';     
         PopTable('footer', $btn);
         echo '</FORM>';
@@ -163,7 +163,7 @@ if (!$_REQUEST['modfunc']) {
 
         if (count($students_RET) > 0) {
             //echo '<div class="panel-footer"><div class="heading-elements"><span class="heading-text no-margin-top">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" onclick=\'formload_ajax("ww");\'') . '</span></div></div>';
-            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" ') . '</div>';
+            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Drop Course for Selected Students', '', 'class="btn btn-primary" onclick="self_disable(this);" ') . '</div>';
             echo '</div>';
             echo "</FORM>";
         }

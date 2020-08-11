@@ -335,7 +335,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         echo "<input type=hidden id=count name=count value=$maxPeriodId />";
     } else
         echo "<input type=hidden id=count name=count value=$count />";
-    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_school_setup_periods();"') . '</div>';
+    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'id="setupPeriodsBtn" class="btn btn-primary" onclick="formcheck_school_setup_periods(this);"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

@@ -283,9 +283,9 @@ if (!$_REQUEST['modfunc']) {
 
 
     if ($_REQUEST['tab'] == 'display_options')
-        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save ></div></div>";
+        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick=\"self_disable(this);\" ></div></div>";
     else
-        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT type=submit class=\"btn btn-primary\" value=Save onclick='return pass_check();'></div>";
+        echo "<div class=\"panel-footer p-b-0 text-right\"><INPUT id=\"listingStuBtn\" type=submit class=\"btn btn-primary\" value=Save onclick='return pass_check(this);'></div>";
     PopTable('footer');
     echo '</FORM>';
 }

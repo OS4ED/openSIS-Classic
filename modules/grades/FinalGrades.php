@@ -28,6 +28,12 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 require_once('modules/grades/DeletePromptX.fnc.php');
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
     if (($dp = DeletePromptX('final grade'))) {
         DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
@@ -365,6 +371,10 @@ if (!$_REQUEST['modfunc']) {
 
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
      $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
@@ -400,7 +410,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         //if ($_SESSION['count_stu'] != 0) {
-            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
+            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
         //}
     }
     Search('student_id', $extra, 'true');

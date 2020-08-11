@@ -28,6 +28,13 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 //print_r($_REQUEST);
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+    $_REQUEST['stuid'] = $_SESSION['student_id'];
+    $_REQUEST['sql_save_session'] = 'true';
+}
+
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['st_arr'])) {
 
@@ -35,6 +42,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             $_REQUEST['_search_all_schools'] = 'Y';
         }
+        
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
         $extra['WHERE'] = " AND s.STUDENT_ID IN ($st_list)";
 
@@ -54,7 +62,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
         $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room');
 
-        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
+        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,cpv.COURSE_PERIOD_DATE,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
         $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,school_periods sp,rooms r ';
 
 //        if($_REQUEST['include_inactive']!='Y')
@@ -72,7 +80,15 @@ if ($_REQUEST['modfunc'] == 'save') {
         if ((isset($_REQUEST['date1']) && $_REQUEST['date1'] != '')) {
             $extra['WHERE'] .= ' AND POSITION(\'' . get_db_day(date('l', strtotime($_REQUEST['date1']))) . '\' IN cpv.days)>0 AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL)';
         }
-        $extra['WHERE'] .= ' AND sr.END_DATE>=\'' . date('Y-m-d') . '\' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
+
+        if(isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y')
+        {
+            $extra['WHERE'] .= ' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
+        }
+        else
+        {
+            $extra['WHERE'] .= ' AND sr.END_DATE>=\'' . date('Y-m-d') . '\' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
+        }
 
 //        if($_REQUEST['include_inactive']!='Y')
 //        {
@@ -116,6 +132,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                     unset($time);
                     $RET[$ri][$rdi]['DURATION'] = $get_det[1]['DURATION'];
                     $RET[$ri][$rdi]['ROOM'] = $get_det[1]['ROOM'];
+                }elseif ($rdd['SCHEDULE_TYPE'] == 'BLOCKED'){
+                    $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room', 'COURSE_PERIOD_DATE' => 'Date');
+                    $RET[$ri][$rdi]['COURSE_PERIOD_DATE'] = ProperDate($RET[$ri][$rdi]['COURSE_PERIOD_DATE']);
                 }
 //                else
 //                {  
@@ -250,7 +269,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students"></div>';
+            echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value="Print Schedules for Selected Students"></div>';
         echo "</FORM>";
     }
 }

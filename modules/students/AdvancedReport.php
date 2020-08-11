@@ -26,6 +26,24 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+// if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+// {
+//     if(clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call')
+//     {
+//         $_REQUEST['search_modfunc'] = '';
+//     }
+//     else if(clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save')
+//     {
+//         $_REQUEST['search_modfunc'] = 'list';
+//     }
+//     else
+//     {
+//         $_REQUEST['search_modfunc'] = 'search_mod';
+//     }
+// }
+if(isset($_SESSION['student_id'])){
+    $_REQUEST['stuid'] = $_SESSION['student_id'];
+}
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_SESSION['st_arr'])) {
@@ -43,8 +61,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         include('modules/miscellaneous/Export.php');
     }
 }
-if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
-    $_SESSION['st_arr'] = $_REQUEST['st_arr'];
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call' || isset($_SESSION['student_id'])) {
+    if(isset($_SESSION['student_id'])){
+        $_SESSION['st_arr'] = Array("0" => $_SESSION['student_id']);
+    }else{
+        $_SESSION['st_arr'] = $_REQUEST['st_arr'];
+    }
+    
     echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&head_html=Student+Advanced+Report&modfunc=save&search_modfunc=list&_openSIS_PDF=true&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools] onsubmit=document.forms[0].relation.value=document.getElementById(\"relation\").value; method=POST target=_blank>";
     echo '<DIV id=fields_div></DIV>';
     echo '<INPUT type=hidden name=relation>';
@@ -67,7 +90,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     $extra['search'] .= '<div class="form-group"><label>Include courses active as of</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
     include('modules/miscellaneous/Export.php');
-    echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Selected Fields\' class="btn btn-primary"></CENTER>';
+    echo '<BR><CENTER><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></CENTER>';
     echo "</FORM>";
 }
 $modal_flag = 1;

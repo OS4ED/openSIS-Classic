@@ -49,7 +49,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     echo '<div class="panel-body">';
     include('modules/miscellaneous/UserExport.php');
     echo '</div>';
-    echo '<div class="panel-footer text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
+    echo '<div class="panel-footer text-right"><div class="heading-elements"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div></div>';
     echo '</div>';
     echo "</FORM>";
 }
@@ -74,12 +74,15 @@ if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
         if ($_REQUEST['_search_all_schools'])
             echo '<INPUT type=hidden name=_search_all_schools value=' . strip_tags(trim($_REQUEST['_search_all_schools'])) . '>';
         
+        echo '<div class="panel panel-default">';
         SearchStaff('staff_id', $extra);
         
         if ($_SESSION['count_stf'] != '0') {
             unset($_SESSION['count_stf']);
-            echo '<div class="text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
+            echo '<div class="panel-footer text-right"><div class="heading-elements"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary" onclick="self_disable(this);"></div></div>';
         }
+
+        echo '</div>';
         
         echo "</FORM>";
     } else {

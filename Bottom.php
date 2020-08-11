@@ -29,6 +29,8 @@ error_reporting(0);
 include("functions/ParamLibFnc.php");
 require_once("Data.php");
 include "./Warehouse.php";
+// include('functions/SqlSecurityFnc.php');
+
 $url=validateQueryString(curPageURL());
 if($url===FALSE)
  {
@@ -48,7 +50,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='print')
 	else
 		$modname = mysqli_real_escape_string($connection,optional_param('modname', '', PARAM_RAW));
 	ob_start();
-	include('modules/'.$modname);
+	include('modules/'.sqlSecurityFilter($modname));
 	if($htmldocPath)
 	{
 		if($htmldocAssetsPath)

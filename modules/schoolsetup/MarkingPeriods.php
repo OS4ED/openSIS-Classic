@@ -1181,11 +1181,11 @@ if(!$_REQUEST['modfunc'])
         
         echo '<div>';
         if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM) == 'new'){
-           echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit value=Save class="btn btn-primary" onclick="return formcheck_school_setup_marking();"></div>' : '';
+           echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit value=Save id="setupMPBtn" class="btn btn-primary" onclick="return formcheck_school_setup_marking(this);"></div>' : '';
         }elseif ($_REQUEST['mp_term'] != 'FY'){
-            echo AllowEdit() ? '<hr/><div class="text-right">'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary"></div>' : '';
+            echo AllowEdit() ? '<hr/><div class="text-right">'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary" onclick="self_disable(this);"></div>' : '';
         }else{
-            echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary" /></div>' : '';
+            echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary" onclick="self_disable(this);" /></div>' : '';
         }
         echo '</div>';
         

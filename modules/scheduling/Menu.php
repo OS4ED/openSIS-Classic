@@ -34,6 +34,7 @@ $menu['scheduling']['admin'] = array(
 						'scheduling/MassRequests.php'=>'Group Requests',
 						'scheduling/MassDrops.php'=>'Group Drops',
 						1=>'Reports',
+						// 'scheduling/SchoolwideScheduleReport.php'=>'Schoolwide Schedule Report',
 						'scheduling/PrintSchedules.php'=>'Print Schedules',
 						'scheduling/PrintClassLists.php'=>'Print Class Lists',
 						'scheduling/PrintClassPictures.php'=>'Print Class Pictures',
@@ -49,8 +50,8 @@ $menu['scheduling']['admin'] = array(
 					);
 
 $menu['scheduling']['teacher'] = array(
-						'scheduling/Schedule.php'=>'Schedule',
-                                                'scheduling/ViewSchedule.php'=>'View Schedule',
+						// 'scheduling/Schedule.php'=>'Schedule',
+                        'scheduling/ViewSchedule.php'=>'View Schedule',
 						1=>'Reports',
 						'scheduling/PrintSchedules.php'=>'Print Schedules',
 						'scheduling/PrintClassLists.php'=>'Print Class Lists',

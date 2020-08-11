@@ -28,8 +28,11 @@
 	include('RedirectRootInc.php'); 
 	include'ConfigInc.php';
 	include 'Warehouse.php';
-			 $flag = $_GET['u'];
-	  $usr = substr($flag, -4);
+	// include('functions/SqlSecurityFnc.php');
+
+	$stfid = sqlSecurityFilter($_GET['stfid']);
+	$flag = $_GET['u'];
+	$usr = substr($flag, -4);
 	
 	// ------------------------ For Unique Checking ---------------------------------- //
 	$un = substr($flag, 0, -4);
@@ -38,7 +41,7 @@
          switch ($_GET['validate'])
         {
             case 'pass':
-                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".$_GET['stfid']."' AND profile_id=0");
+                        $res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".$stfid."' AND profile_id=0");
                         $num_pass = $res_pass_chk->num_rows;
                         if($num_pass==0)
                         {

@@ -101,7 +101,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo "<INPUT TYPE=SUBMIT name=button id=button class=\"btn btn-primary pull-right\" onclick='return formcheck_halfday_fullday();'  VALUE='Save'>";
+    echo "<INPUT TYPE=SUBMIT name=button id=button class=\"btn btn-primary pull-right\" onclick='return formcheck_halfday_fullday(this);'  VALUE='Save'>";
     PopTable('footer');
     echo "</FORM>";
     
@@ -221,7 +221,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 //        if ($_REQUEST['page_display']) {
 //            echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //        }
-        echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
+        echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
         echo '</div>';
         echo '</FORM>';
         echo '</div>';
@@ -270,7 +270,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
+    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
     echo '</FORM>';
 
@@ -320,7 +320,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right"');
+    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
     echo '</FORM>';
 

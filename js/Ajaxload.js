@@ -3268,3 +3268,17 @@ function massScheduleCourseToAdd()
 {
     document.getElementById('course_div').innerHTML='';
 }
+
+function getSchoolScheduleReport(this_INC)
+{
+    if(this_DATE != '')
+    {
+        var this_DATE = document.getElementById("week_date_"+this_INC).value;
+
+        document.getElementById("take_date").value = this_DATE;
+
+        document.getElementById("ssrfrm").submit();
+    }
+
+    console.log(this_DATE);
+}

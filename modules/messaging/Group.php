@@ -171,7 +171,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
     ListOutputMessagingGroups($member_list, $columns, 'Member', 'Members', '', array(), array('search' => false, 'save' => false), '', $custom_header);
     echo '</div>';
     if (isset($userName)) {
-        echo '<div class="panel-footer text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=Save></div>';
+        echo '<div class="panel-footer text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=Save onclick="self_disable(this);" ></div>';
     }
     echo '</div>'; //.panel
     //PopTable('footer', $btn);
@@ -253,7 +253,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
     echo '</div>'; //.row
 
     echo '</div>'; //.panel-body    
-    echo "<div class=\"panel-footer text-right p-r-20\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit'> &nbsp; <INPUT type=RESET class='btn btn-default' value='Reset'></div>";
+    echo "<div class=\"panel-footer text-right p-r-20\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick='self_disable(this);' > &nbsp; <INPUT type=RESET class='btn btn-default' value='Reset'></div>";
 
     echo '</div>'; //.panel
     /*     * ******************for Back to user************************** */
@@ -592,7 +592,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
     }
 
     echo '<br/>';
-    echo "<INPUT TYPE=SUBMIT name=button id=button class='btn btn-primary' VALUE='Add Members' onclick='return mail_group_chk();'/>";
+    echo "<INPUT TYPE=SUBMIT name=button id=button class='btn btn-primary' VALUE='Add Members' onclick='return mail_group_chk(this);'/>";
     echo "</FORM>";
     PopTable('footer');
 }
@@ -623,7 +623,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group') {
         echo '</div>'; //.row
 
         echo '<hr/>';
-        echo '<INPUT TYPE=SUBMIT name=button id=button class="btn btn-primary" VALUE="Add Group" onclick="return mail_group_chk();"/>';
+        echo '<INPUT TYPE=SUBMIT name=button id=button class="btn btn-primary" VALUE="Add Group" onclick="return mail_group_chk(this);"/>';
 
         echo "</FORM>";
 
@@ -660,7 +660,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group') {
 
         echo '<hr/>';
 
-        echo '<INPUT TYPE=SUBMIT name=button id=button class="btn btn-primary" VALUE="Add Group" onclick="return mail_group_chk();" />';
+        echo '<INPUT TYPE=SUBMIT name=button id=button class="btn btn-primary" VALUE="Add Group" onclick="return mail_group_chk(this);" />';
 
         $lastName = $_REQUEST['last'];
         $firstName = $_REQUEST['first'];

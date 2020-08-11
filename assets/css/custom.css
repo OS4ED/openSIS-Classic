@@ -348,6 +348,39 @@ ul[id*="select2-period-"] {
     z-index: 2;
 }
 
+
+/* Schoolwide Schedule Reports - Start */
+.table-black-bg{
+    background: #414141;
+    color: #fff;
+}
+.table-sky-blue-bg{
+    background: #cfe2f3;
+}
+.table-sky-bg{
+    background: #ccfffc;
+}
+.table-pink-bg{
+    background: #f4cccc;
+}
+.table-green-bg{
+    background: #d9ead3;
+}
+#schedule-markup tr th, #schedule-markup tr td{
+    border: 1px solid #414141;
+    padding: 0px 7px;
+}
+.stu_age_holder {
+    position: relative;
+}
+.stu_age {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+/* Schoolwide Schedule Reports - End */
+
+
 @media (max-width: 768px) {
     #navbar-mobile .form-group, #navbar-mobile form {
         margin-left: 0;

@@ -105,7 +105,7 @@ if (!$_REQUEST['modfunc']) {
     $count = count($LO_ret);
     echo '</div>';
     echo '</div>';
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_honor_roll();"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="setupHonorBtn" class="btn btn-primary" onclick="formcheck_honor_roll(this);"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

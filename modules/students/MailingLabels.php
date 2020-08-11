@@ -31,6 +31,11 @@ $max_cols = 3;
 $max_rows = 10;
 $to_family = 'To the parents of:';
 
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_REQUEST['st_arr'])) {
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
@@ -413,6 +418,10 @@ if (!$_REQUEST['modfunc']) {
 
 
     $extra['SELECT'] .= ",s.STUDENT_ID AS CHECKBOX";
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
     $extra['link'] = array('FULL_NAME' => false);
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
@@ -421,7 +430,7 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
+        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Labels for Selected Students\'></div>';
         echo "</FORM>";
     }
 

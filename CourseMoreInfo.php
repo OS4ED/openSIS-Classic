@@ -29,6 +29,10 @@
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
+// include('functions/SqlSecurityFnc.php');
+
+$id = sqlSecurityFilter($_REQUEST['id']);
+
  $sql = 'SELECT
                                 s.COURSE_ID,s.COURSE_PERIOD_ID,
                                 s.MARKING_PERIOD_ID,s.START_DATE,s.END_DATE,s.MODIFIED_DATE,s.MODIFIED_BY,
@@ -44,7 +48,7 @@ include 'Warehouse.php';
                                  AND r.ROOM_ID=cpv.ROOM_ID
                                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
                                 AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
-                                AND s.ID=' . $_REQUEST[id] . '  GROUP BY cp.COURSE_PERIOD_ID';
+                                AND s.ID=' . $id . '  GROUP BY cp.COURSE_PERIOD_ID';
 
         $QI = DBQuery($sql);
         $schedule_RET = DBGet($QI, array('TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPA', 'DAYS' => '_makeDays', 'SCHEDULER_LOCK' => '_makeViewLock', 'START_DATE' => '_makeViewDate', 'END_DATE' => '_makeViewDate', 'MODIFIED_DATE' => '_makeViewDate'));
@@ -52,6 +56,24 @@ include 'Warehouse.php';
         $options = array('search' => false, 'count' => false, 'save' => false, 'sort' => false);
         ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link, '', $options);
         
-//        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
+        function _makeViewDate($value, $column) {
+                if ($value)
+                    return ProperDate($value);
+                else
+                    return '<center>n/a</center>';
+            }
+            
+        //        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
+
+        function _makeViewLock($value, $column) {
+            global $THIS_RET;
+        
+            if ($value == 'Y')
+                $img = 'locked';
+            else
+                $img = 'unlocked';
+        
+            return '<IMG SRC=assets/' . $img . '.gif >';
+        }
 ?>
 

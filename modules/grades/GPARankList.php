@@ -27,6 +27,12 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 DrawBC("Gradebook > " . ProgramTitle());
 if (!$_REQUEST['LO_sort']) {
     $_REQUEST['LO_sort'] = "CUM_RANK";
@@ -149,6 +155,10 @@ if (!$_REQUEST['list_gpa']) {
 }
 if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
      $extra['WHERE'] .= ' AND sgc.STUDENT_ID=\''. UserStudentID().'\'';
+else if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+}
 $extra['columns_after'] = array('GPA' => 'GPA', 'UNWEIGHTED_GPA' => 'Unweighted GPA', 'WEIGHTED_GPA' => 'Weighted GPA', 'CLASS_RANK' => 'Class Rank');
 $extra['link']['FULL_NAME'] = false;
 $extra['new'] = true;

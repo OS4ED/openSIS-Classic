@@ -231,7 +231,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         unset($_SESSION['_REQUEST_vars']['values']);
     }
     else {
-        ShowErr('<div class="alert bg-warning alert-styled-left">You must choose at least one field and one student.</div>');
+        ShowErr('You must choose at least one field and one student.');
         for_error();
     }
 }

@@ -54,7 +54,7 @@ if ($_REQUEST['modfunc'] == 'search') {
     if (User('PROFILE') == 'admin'){
         echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div>';
     }
-    $btn = '<div class="p-l-20">' . Buttons('Submit') . '</div>';
+    $btn = '<div class="p-l-20">' . Buttons('Submit','','onclick="self_disable(this);"') . '</div>';
     PopTable('footer', $btn);
     echo '</FORM>';
 }

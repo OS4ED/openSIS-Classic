@@ -28,6 +28,7 @@
 include("functions/ParamLibFnc.php");
 //include("functions/UrlFnc.php");
 include('RedirectRootInc.php');
+// include('functions/SqlSecurityFnc.php');
 //$url=validateQueryString(curPageURL());
 //if($url===FALSE)
 // {
@@ -75,7 +76,7 @@ if(optional_param('modname','',PARAM_NOTAGS))
 
 	
 		if(optional_param('LO_save','',PARAM_INT)!='1' && !isset($_REQUEST['_openSIS_PDF']) && (strpos(optional_param($modname,'',PARAM_NOTAGS),'miscellaneous/')===false || $modname=='miscellaneous/Registration.php' || $modname=='miscellaneous/Export.php' || $modname=='miscellaneous/Portal.php'))
-		$_SESSION['_REQUEST_vars'] = $_REQUEST;
+		$_SESSION['_REQUEST_vars'] = sqlSecurityFilter($_REQUEST);
                  $_SESSION['_REQUEST_vars'][]=str_replace('+'," ",$_REQUEST['head_html']);
 
 	$allowed = false;

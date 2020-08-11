@@ -125,7 +125,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $id_arr = 0;
     echo '<input type=hidden id=id_arr value="' . $id_arr . '" />';
     echo '<hr class="no-margin" />';
-    echo '<div class="panel-body text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onClick=formcheck_enrollment_code();') . '</div>';
+    echo '<div class="panel-body text-right">' . SubmitButton('Save', '', 'id="setupEncCodeBtn" class="btn btn-primary" onClick=formcheck_enrollment_code(this);') . '</div>';
     echo '</div>'; //.panel
     echo '</FORM>';
 }

@@ -722,7 +722,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAllDtMod(this,\'student\');"><A>');
     $extra['new'] = true;
 
@@ -742,11 +742,12 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     
-        Search_GroupSchedule('student_id', $extra);
-//      Search('student_id', $extra);
+    Search_GroupSchedule('student_id', $extra);
+    // Search('student_id', $extra);
+
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right">' . SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" ') . '</div>';
+            echo '<div class="text-right">' . SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" onclick="self_disable(this);" ') . '</div>';
 
         echo "</FORM>";
     }

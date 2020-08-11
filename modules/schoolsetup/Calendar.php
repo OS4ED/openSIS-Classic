@@ -811,7 +811,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body">';
         echo '<div class="form-inline">';
-        DrawHeaderHome('<div class="inline-block">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => date("m", $time), 'Y' => date("y", $time), 'submit' => true, 'view' => 'month')) . '</div>' . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"') : ''));
+        DrawHeaderHome('<div class="inline-block">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => date("m", $time), 'Y' => date("y", $time), 'submit' => true, 'view' => 'month')) . '</div>' . ' <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=list_events&calendar_id=' . $_REQUEST['calendar_id'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' class="btn btn-default m-l-5">List Events</A>', (User('PROFILE') == 'admin' ? SubmitButton('Save', '', 'class="btn btn-primary m-l-5"  onclick="self_disable(this);"') : ''));
         echo '</div>'; //.form-inline
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
@@ -942,7 +942,7 @@ if (!$_REQUEST['modfunc']) {
         echo "</div>"; //.table-responsive
 
         if (User('PROFILE') == 'admin') {
-            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+            echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
         }
         echo "</div>";
     }

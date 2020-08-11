@@ -91,12 +91,18 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 
                     
             $qry='UPDATE school_gradelevel_sections SET ';
+
             if($vd['NAME']!='')
-            $qry.=' NAME=\''.str_replace("'","''",$vd['NAME']).'\',';
+                $qry.=' NAME=\''.str_replace("'","''",$vd['NAME']).'\',';
+            
             if($vd['SORT_ORDER']!='')
-            $qry.=' SORT_ORDER=\''.$vd['SORT_ORDER'].'\',';
+                $qry.=' SORT_ORDER=\''.$vd['SORT_ORDER'].'\',';
+            
+            if($vd['SORT_ORDER']=='')
+                $qry.=' SORT_ORDER=\''.$vd['SORT_ORDER'].'\',';
+
             $qry=substr($qry,0,-1);
-            $qry.='WHERE ID='.$vi;
+            $qry.=' WHERE ID='.$vi;
             if($go=1)        
             DBQuery($qry);
                 
@@ -148,7 +154,7 @@ if($_REQUEST['modfunc']!='remove')
     echo '<hr class="no-margin"/>';
     echo '<div class="panel-body text-right">';
 	echo '<input type=hidden value="'.implode('_',$section_ids).'" id="get_ids" />' ;
-    echo '<INPUT class="btn btn-primary" type=submit value=Save>';
+    echo '<INPUT class="btn btn-primary" type=submit value=Save onclick="self_disable(this)">';
     echo '</div>'; //.panel-footer
     echo '</div>'; //.panel
 	echo '</FORM>';

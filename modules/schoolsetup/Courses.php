@@ -2348,7 +2348,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
     } elseif (clean_param($_REQUEST['course_id'], PARAM_ALPHANUM)) {
         $grade_level_RET = DBGet(DBQuery("SELECT ID,TITLE FROM school_gradelevels WHERE school_id='" . UserSchool() . "'"));
         if ($_REQUEST['course_id'] != 'new') {
-            $sql = "SELECT c.TITLE,sg.TITLE AS GRADE_LEVEL_TITLE,c.SHORT_NAME,GRADE_LEVEL
+            $sql = "SELECT c.TITLE, sg.TITLE AS GRADE_LEVEL_TITLE,c.SHORT_NAME,GRADE_LEVEL
 						FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id
 						WHERE COURSE_ID='$_REQUEST[course_id]'";
             $QI = DBQuery($sql);
@@ -2370,7 +2370,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         echo "<FORM name=F3 id=F3 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id] method=POST>";
         echo '<div class="panel-heading">
                 <h6 class="panel-title">' . $title . '</h6>
-                <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="return formcheck_Timetable_course_F3();"') . '</div>
+                <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'id="setupCourseBtn" class="btn btn-primary" onclick="return formcheck_Timetable_course_F3(this);"') . '</div>
             </div>';
         echo '<hr class="no-margin"/>';
         echo '<div class="panel-body">';
@@ -2397,6 +2397,13 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Subject :</label><div class="col-md-8">' . SelectInput($RET['SUBJECT_ID'] ? $RET['SUBJECT_ID'] : $_REQUEST['subject_id'], 'tables[courses][' . $_REQUEST['course_id'] . '][SUBJECT_ID]', '', $options, false) . '</div></div>';
         $header .= '</div>'; //.col-md-4
         $header .= '</div>'; //.row
+
+        // $header .= '<div class="row">';
+        // $header .= '<div class="col-lg-8">';
+        // $header .= '<div class="form-group"><label class="col-md-2 control-label text-right">Description :</label><div class="col-md-9">' . TextareaInput($RET['DESCRIPTION'], 'tables[courses][' . $_REQUEST['course_id'] . '][DESCRIPTION]', '', 'size=44 class=form-control') . '</div></div>';
+        // $header .= '</div>'; //.col-md-4
+        // $header .= '</div>'; //.row
+
         DrawHeaderHome($header);
         echo '</div>'; //.panel-body
         echo '</FORM>';
@@ -2419,7 +2426,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         echo "<FORM name=F4 id=F4 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id] method=POST>";
         echo '<div class="panel-heading">
                 <h6 class="panel-title">' . $title . '</h6>
-                <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_Timetable_course_F4();"') . '</div>
+                <div class="heading-elements">' . $delete_button . SubmitButton('Save', '', 'id="setupSubjectBtn" class="btn btn-primary" onclick="formcheck_Timetable_course_F4(this);"') . '</div>
             </div>';
         echo '<hr class="no-margin"/>';
 

@@ -171,7 +171,7 @@ $grade_id=implode(',',$grade_id_arr);
         echo '<input type="hidden" name="h1" id="h1" value="'.$grade_id.'">';
 	ListOutput($grades_RET,$columns,'Grade Level','Grade Levels',$link, true, array('search'=>false));
 	if(AllowEdit()){
-            echo '<hr class="no-margin"/><div class="panel-body text-right"><INPUT class="btn btn-primary" type=submit value=Save onclick="formcheck_school_setup_grade_levels();"></div>';
+            echo '<hr class="no-margin"/><div class="panel-body text-right"><INPUT id="setupGradeLvlBtn" class="btn btn-primary" type=submit value=Save onclick="formcheck_school_setup_grade_levels(this);"></div>';
         }
         echo '</div>';
 	echo '</FORM>';

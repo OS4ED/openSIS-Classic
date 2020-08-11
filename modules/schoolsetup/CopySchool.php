@@ -100,6 +100,16 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             foreach ($_REQUEST['tables'] as $table => $value)
                 _rollover($table);
             DBQuery("UPDATE school_years SET ROLLOVER_ID = NULL WHERE SCHOOL_ID='$id'");
+
+            $chk_stu_enrollment_codes_exist = DBGet(DBQuery('SELECT COUNT(*) AS STU_ENR_COUNT FROM `student_enrollment_codes` WHERE `syear` = \''.$new_sch_syear.'\''));
+            if($chk_stu_enrollment_codes_exist[1]['STU_ENR_COUNT'] == 0)
+            {
+                DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$new_sch_syear.'\', \'Transferred out\', \'TRAN\', \'TrnD\')');
+                DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$new_sch_syear.'\', \'Transferred in\', \'TRAN\', \'TrnE\')');
+                DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$new_sch_syear.'\', \'Rolled over\', \'ROLL\', \'Roll\')');
+                DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$new_sch_syear.'\', \'Dropped Out\', \'DROP\', \'Drop\')');
+                DBQuery('INSERT INTO `student_enrollment_codes` (`syear`, `title`, `short_name`, `type`) VALUES (\''.$new_sch_syear.'\', \'New\', \'NEW\', \'Add\')');
+            }
         }
         echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';

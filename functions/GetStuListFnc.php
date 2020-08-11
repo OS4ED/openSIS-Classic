@@ -254,7 +254,17 @@ switch (User('PROFILE')) {
             if(stripos($extra['FROM'], "student_enrollment ssm") === false)
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';          
+            {
+                // DDDDD
+                if(isset($_SESSION['student_id']) && $_REQUEST['modfunc'] == 'save')
+                {
+                    $sql .= $extra['FROM']. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';
+                }
+                else
+                {
+                    $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';
+                }
+            }
             else
             $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID  ';
 //            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
@@ -267,8 +277,10 @@ switch (User('PROFILE')) {
                 $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
                 }
                 if (!$_REQUEST['include_inactive'])
+                {
                     //$sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ((ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
-                $sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
+                    $sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
+                }
                 if ($_REQUEST['address_group'])
                     $extra['columns_after']['CHILD'] = 'Parent';
                 if (UserSchool() && $_REQUEST['_search_all_schools'] != 'Y')
@@ -291,8 +303,11 @@ switch (User('PROFILE')) {
                     $sql .= ' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\'';
                 }
             }
-            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-            $extra['GROUP']='s.STUDENT_ID';
+            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list' && $_REQUEST['modfunc'] != 'save')
+           {
+                $extra['GROUP']='s.STUDENT_ID';
+           }
+           
             break;
 
         case 'teacher':

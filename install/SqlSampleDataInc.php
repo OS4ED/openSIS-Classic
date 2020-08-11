@@ -2823,6 +2823,8 @@ INSERT INTO `system_preference`  (`id`, `school_id`, `full_day_minute`, `half_da
 
 
 
+
+
 --
 -- Dumping data for table `user_profiles`
 --

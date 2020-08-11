@@ -27,10 +27,19 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+// include('../../functions/SqlSecurityFnc.php');
+
 define('LANG_RECORDS_ADDED_CONFIRMATION', 'Absence records were added for the selected students.');
 define('LANG_CHOOSE_STUDENT_ERROR', 'You must choose at least one period and one student.');
 define('LANG_ABSENCE_CODE', 'Absence Code');
 define('LANG_ABSENCE_REASON', 'Absence Reason');
+
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 //print_r($_REQUEST);
 if (!$_REQUEST['month'])
     $_REQUEST['month'] = date("m");
@@ -43,6 +52,8 @@ else
 
 
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
+
+    $_REQUEST['student'] = sqlSecurityFilter($_REQUEST['student']);
 
     if (count($_REQUEST['period']) && count($_REQUEST['student']) && count($_REQUEST['dates'])) {
         $not_taken_arr = array();
@@ -146,6 +157,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
         unset($_REQUEST['modfunc']);
         $array_diff = array_diff($not_taken_arr, $taken_arr);
         $error_note = '';
+
         if (count($array_diff) == 0)
             $note = LANG_RECORDS_ADDED_CONFIRMATION;
         if (count($array_diff) > 0 && count($taken_arr) == 0) {
@@ -175,14 +187,19 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 if (!$_REQUEST['modfunc']) {
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",NULL AS CHECKBOX";
-
-    if (optional_param('search_modfunc', '', PARAM_NOTAGS) == 'list') {
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
+    // if (optional_param('search_modfunc', '', PARAM_NOTAGS) == 'list') {
+    if ($_REQUEST['search_modfunc'] == 'list') {
+        if ($note)
+            echo "<div class='alert alert-success alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;&nbsp;&nbsp;</a>".$note."</div>";
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save  METHOD=POST name=addAbsences>";
 
         //PopTable_wo_header('header');
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
-
         echo '<div class="row">';
         echo '<div class="col-lg-12">';
 
@@ -340,8 +357,9 @@ if (!$_REQUEST['modfunc']) {
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
     $extra['new'] = true;
     
-    if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
-        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(Save, '', 'class="btn btn-primary"') . '</div>';
+    // if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
+    if ($_REQUEST['search_modfunc'] == 'list')   
+        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(Save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 
     Search('student_id', $extra);
 

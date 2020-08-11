@@ -119,11 +119,12 @@ if ($_REQUEST['values']) {
         unset($_SESSION['_REQUEST_vars']['values']);
     }
     else {
-        echo '<div class="text-danger">Total must be 100%!</div>';
+        echo '<div class="alert alert-danger alert-styled-left alert-bordered">Total must be <span class="text-bold">100%</span>!</div>';
     }
 }
 
 $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND school_id=\'' . UserSchool() . '\' AND PROGRAM=\'Gradebook\' AND value like "%_' . UserCoursePeriod() . '%"'), array(), array('TITLE'));
+
 if (count($config_RET)) {
     foreach ($config_RET as $title => $value)
         if (substr($title, 0, 3) == 'SEM' || substr($title, 0, 2) == 'FY' || substr($title, 0, 1) == 'Q') {
@@ -224,14 +225,28 @@ if (count($grades) > 0) {
 
 $quarters_dt = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,SEMESTER_ID,DOES_GRADES,DOES_EXAM FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
 $quarters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,SEMESTER_ID,DOES_GRADES,DOES_EXAM FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
+
 if ($quarters)
+{
     $semesters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,DOES_GRADES,DOES_EXAM FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+}
 else
-    $semesters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID, DOES_GRADES, NULL  AS DOES_EXAM FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+{
+    // $semesters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID, DOES_GRADES, NULL  AS DOES_EXAM FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+    $semesters = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,DOES_GRADES,DOES_EXAM FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+}
+
 if ($semesters)
+{
     $year = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,DOES_GRADES,DOES_EXAM FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+}
 else
-    $year = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,NULL AS DOES_GRADES,NULL AS DOES_EXAM FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+{
+    // $year = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,NULL AS DOES_GRADES,NULL AS DOES_EXAM FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+    $year = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,DOES_GRADES,DOES_EXAM FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+}
+
+// echo "<pre>";print_r($year);echo "</pre>";
 
 echo '<fieldset>';
 echo '<h5 class="text-primary">Final Grading Percentages</h5>';
@@ -243,8 +258,8 @@ if ($quarters_dt) {
 
         if ($qtrs['DOES_GRADES'] == 'Y') {
 
-            $table = '<TABLE width=100% class="table table-bordered table-striped">';
-            $table .= '<TR><TD rowspan=2 valign="middle" style="width: 150px;"><div style="width: 150px; white-space: nowrap;">' . $qtrs['TITLE'] . '</div></TD>';
+            $table = '<TABLE width=100% class="table table-bordered table-striped"><tbody>';
+            $table .= '<TR style="font-weight:bold;"><TD rowspan=2 valign="middle" style="width: 150px;vertical-align: middle;"><div style="width: 150px; white-space: nowrap;">' . $qtrs['TITLE'] . '</div></TD>';
             $table .= '<TD>' . $qtrs['TITLE'] . '</TD>';
 
             if ($qtrs['DOES_EXAM'] == 'Y') {
@@ -261,7 +276,7 @@ if ($quarters_dt) {
                 $total += $programconfig['Q-E' . $qtrs['MARKING_PERIOD_ID']];
             }
             if ($total != 100)
-                $table .= '<TD style="width: 150px;"><div class="text-danger" style="width: 150px; white-space: nowrap;">Total not 100%!</div></TD>';
+                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger" style="width: 150px; white-space: nowrap;">Total not 100%!</div></TD>';
             $table .= '</TR>';
             $table .= '</tbody></TABLE>';
             echo $table;
@@ -270,35 +285,82 @@ if ($quarters_dt) {
 }
 
 
-if ($quarters) {
+// if ($quarters) {
+if ($semesters) {
     foreach ($semesters as $sem)
         if ($sem['DOES_GRADES'] == 'Y') {
-            $table = '<TABLE class="table table-bordered table-striped">';
-            $table .= '<TR><TD rowspan=2 valign=middle style="width: 150px;">' . $sem['TITLE'] . '</TD>';
-            foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
-                $table .= '<TD>' . $qtr['TITLE'] . '</TD>';
+            $table = '<TABLE class="table table-bordered table-striped"><tbody>';
+            $table .= '<TR style="font-weight:bold;"><TD rowspan=2 valign=middle style="width: 150px;vertical-align: middle;">' . $sem['TITLE'] . '</TD>';
+            
+            if(empty(!$quarters))
+            {
+                foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
+                {
+                    if($qtr['DOES_GRADES'] == 'Y')
+                    {
+                        $table .= '<TD>' . $qtr['TITLE'] . '</TD>';
+                    }
+                }
+            }
+            else
+            {
+                if ($sem['DOES_GRADES'] == 'Y')
+                    $table .= '<TD>' . $sem['TITLE'] . '</TD>';
+            }
+            
+
             if ($sem['DOES_EXAM'] == 'Y')
                 $table .= '<TD>' . $sem['TITLE'] . ' Exam</TD>';
+            
             $table .= '</TR><TR>';
             $total = 0;
-            foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
-                $table .= '<TD><INPUT class="form-control" type=text name=values[SEM-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['SEM-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-                $total += $programconfig['SEM-' . $qtr['MARKING_PERIOD_ID']];
+            
+            
+            if(empty(!$quarters))
+            {
+                foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
+                    if($qtr['DOES_GRADES'] == 'Y')
+                    {
+                        $table .= '<TD><INPUT class="form-control" type=text name=values[SEM-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['SEM-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+                        $total += $programconfig['SEM-' . $qtr['MARKING_PERIOD_ID']];
+                    }
+                }
             }
+            else
+            {
+                if ($sem['DOES_GRADES'] == 'Y') {
+                    $table .= '<TD><INPUT class="form-control" type=text name=values[SEM-' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['SEM-' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+                    $total += $programconfig['SEM-' . $sem['MARKING_PERIOD_ID']];
+                }
+            }
+            
+
             if ($sem['DOES_EXAM'] == 'Y') {
                 $table .= '<TD><INPUT class="form-control" type=text name=values[SEM-E' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['SEM-E' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
                 $total += $programconfig['SEM-E' . $sem['MARKING_PERIOD_ID']];
             }
+            
             if ($total != 100)
-                $table .= '<TD style="width: 150px;"><div class="text-danger">Total not 100%!</div></TD>';
+                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">Total not 100%!</div></TD>';
             $table .= '</TR>';
             $table .= '</tbody></TABLE>';
             echo $table;
         }
 }
+
+
 if ($year[1]['DOES_GRADES'] == 'Y') {
-    $table = '<TABLE class="table table-bordered table-striped">';
-    $table .= '<TR><TD rowspan=2 valign=middle style="white-space:nowrap; width: 150px;">' . $year[1]['TITLE'] . '</TD>';
+    if(!empty($semesters) && $year[1]['DOES_EXAM'] == '')
+    {
+        $year_tab_style = "display:none";
+    }
+    else
+    {
+        $year_tab_style = "";
+    }
+
+    $table = '<TABLE style="'.$year_tab_style.'" class="table table-bordered table-striped"><tbody>';
+    $table .= '<TR style="font-weight:bold;"><TD rowspan=2 valign=middle style="white-space:nowrap; width: 150px;vertical-align: middle;">' . $year[1]['TITLE'] . '</TD>';
 //    foreach ($semesters as $sem) {
 //        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
 ////            $table .= '<TD style="white-space:nowrap">' . $qtr['TITLE'] . '</TD>';
@@ -307,37 +369,42 @@ if ($year[1]['DOES_GRADES'] == 'Y') {
 ////        if ($sem['DOES_EXAM'] == 'Y')
 ////            $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . ' Exam</TD>';
 //    }
+    
     if (!empty($semesters)) {
         foreach ($semesters as $sem) {
-//		foreach($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
-//			$table .= '<TD style="white-space:nowrap">'.$qtr['TITLE'].'</TD>';
+		// foreach($quarters[$sem['MARKING_PERIOD_ID']] as $qtr)
+		// 	$table .= '<TD style="white-space:nowrap">'.$qtr['TITLE'].'</TD>';
             if ($sem['DOES_GRADES'] == 'Y')
                 $table .= '<TD style="white-space:nowrap">' . $sem['TITLE'] . '</TD>';
-//		if($sem['DOES_EXAM']=='Y')
-//			$table .= '<TD style="white-space:nowrap">'.$sem['TITLE'].' Exam</TD>';
+		// if($sem['DOES_EXAM']=='Y')
+		// 	$table .= '<TD style="white-space:nowrap">'.$sem['TITLE'].' Exam</TD>';
         }
     }
     else {
         $table .= '<TD style="white-space:nowrap">' . $year[1]['TITLE'] . '</TD>';
     }
+
+
     if ($year[1]['DOES_EXAM'] == 'Y')
         $table .= '<TD>' . $year[1]['TITLE'] . ' Exam</TD>';
+    
     $table .= '</TR><TR>';
     $total = 0;
-//    foreach ($semesters as $sem) {
-//        foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
-//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-//            $total += $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']];
-//        }
-//        if ($sem['DOES_GRADES'] == 'Y') {
-//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-//            $total += $programconfig['FY-' . $sem['MARKING_PERIOD_ID']];
-//        }
-//        if ($sem['DOES_EXAM'] == 'Y') {
-//            $table .= '<TD><INPUT class="form-control" type=text name=values[FY-E' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
-//            $total += $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']];
-//        }
-//    }
+    
+    // foreach ($semesters as $sem) {
+    //     foreach ($quarters[$sem['MARKING_PERIOD_ID']] as $qtr) {
+    //         $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $qtr['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+    //         $total += $programconfig['FY-' . $qtr['MARKING_PERIOD_ID']];
+    //     }
+    //     if ($sem['DOES_GRADES'] == 'Y') {
+    //         $table .= '<TD><INPUT class="form-control" type=text name=values[FY-' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+    //         $total += $programconfig['FY-' . $sem['MARKING_PERIOD_ID']];
+    //     }
+    //     if ($sem['DOES_EXAM'] == 'Y') {
+    //         $table .= '<TD><INPUT class="form-control" type=text name=values[FY-E' . $sem['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+    //         $total += $programconfig['FY-E' . $sem['MARKING_PERIOD_ID']];
+    //     }
+    // }
 
     if (!empty($semesters)) {
         foreach ($semesters as $sem) {
@@ -362,22 +429,21 @@ if ($year[1]['DOES_GRADES'] == 'Y') {
     }
 
 
-
-
     if ($year[1]['DOES_EXAM'] == 'Y') {
-        $table .= '<TD><INPUT type=text name=values[FY-E' . $year[1]['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $year[1]['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
+        $table .= '<TD><INPUT type=text class="form-control" name=values[FY-E' . $year[1]['MARKING_PERIOD_ID'] . '] value="' . $programconfig['FY-E' . $year[1]['MARKING_PERIOD_ID']] . '" size=3 maxlength=3></TD>';
         $total += $programconfig['FY-E' . $year[1]['MARKING_PERIOD_ID']];
     }
+
     if ($total != 100)
-        $table .= '<TD style="white-space:nowrap; width: 150px;"><div class="text-danger">Total not 100%!</div></TD>';
+        $table .= '<TD style="white-space:nowrap; width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">Total not 100%!</div></TD>';
     $table .= '</TR>';
-    $table .= '</TABLE>';
+    $table .= '</tbody></TABLE>';
     echo $table;
 }
 
 echo '</div></fieldset>';
 
-echo '<br/><INPUT type=submit value=Save class="btn btn-primary">';
+echo '<br/><INPUT type=submit value=Save class="btn btn-primary" onclick="self_disable(this);">';
 PopTable('footer');
 echo '</FORM>';
 ?>

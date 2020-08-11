@@ -210,19 +210,19 @@ if ($_REQUEST['modfunc'] != 'remove') {
                 echo '<div class="pt-15">' . button('edit', 'Edit category title', "Modules.php?modname=$_REQUEST[modname]&modfunc=edit&table=$_REQUEST[table]") . ' &nbsp;';
                 echo button('remove', 'Delete this category', "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&table=$_REQUEST[table]") . '</div>';
             }
-            echo '<hr/>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"');
+            echo '<hr/>' . SubmitButton('Save', '', 'id="setupAttnCodeBtnOne" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
             echo PopTable('footer');
         } else {
 
             PopTable_wo_header_attn_code('header', $tabs);
             ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' => false, 'search' => false), '', false, false);
-            $btn =  SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"');
+            $btn =  SubmitButton('Save', '', 'id="setupAttnCodeBtnTwo" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
             PopTable('footer', $btn);
         }
     } elseif ($_REQUEST['table'] == 'new' && $_REQUEST['modfunc'] != 'edit') {
         $_openSIS['selected_tab'] = "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]";
         echo PopTable('header', $tabs);
-        echo '<div class="form-group"><label class="control-label col-md-2">New Category Title</label><div class="col-md-3"><INPUT type=text placeholder="New Category Title" id=new_category_title name=new_category_title class="form-control"></div><div class="col-md-6">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_category();"') . '</div></div>';
+        echo '<div class="form-group"><label class="control-label col-md-2">New Category Title</label><div class="col-md-3"><INPUT type=text placeholder="New Category Title" id=new_category_title name=new_category_title class="form-control"></div><div class="col-md-6">' . SubmitButton('Save', '', 'id="setupAttnCodeBtnThr" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</div></div>';
         echo PopTable('footer');
     } elseif ($_REQUEST['table'] !== 'new' && $_REQUEST['modfunc'] == 'edit') {
         $code_cat = DBGet(DBQuery('SELECT TITLE FROM attendance_code_categories WHERE id=' . $_REQUEST['table']));
@@ -231,7 +231,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         echo PopTable('header', $tabs);
         echo '<CENTER>Category Title <INPUT type=text id=new_category_title name=new_category_title value="' . $code_cat . '"></CENTER>';
         echo '<input type=hidden name=cat_edit_id value=' . $_REQUEST['table'] . ' />';
-        echo '<BR><CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_category();"') . '</CENTER>';
+        echo '<BR><CENTER>' . SubmitButton('Save', '', 'id="setupAttnCodeBtnFou" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</CENTER>';
         echo PopTable('footer');
     }
     echo '</FORM>';

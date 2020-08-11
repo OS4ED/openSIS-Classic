@@ -107,7 +107,7 @@ if (User('PROFILE') == 'admin') {
         echo '</div>'; //.row
         
         echo '<hr class="m-b-15"/>';
-        echo "<div class=\"text-right\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick='formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'></div>";
+        echo "<div class=\"text-right\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick=\"self_disable(this);\"> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'></div>";
 
         /********************for Back to user************************** */
         echo '<input type=hidden name=sql_save_session_staf value=true />';

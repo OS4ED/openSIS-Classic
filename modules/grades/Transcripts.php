@@ -26,6 +26,12 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 $schoolinfo = DBGET(DBQUERY('SELECT * FROM schools WHERE ID = ' . UserSchool()));
 $schoolinfo = $schoolinfo[1];
 $tsyear = UserSyear();
@@ -485,6 +491,10 @@ if (!$_REQUEST['modfunc']) {
     }
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');

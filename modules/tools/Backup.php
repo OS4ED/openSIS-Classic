@@ -56,7 +56,7 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
         $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
         $sql_path="\\".$sql_path_arr[1].'\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
         $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
-//        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
+        // $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
     }
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         if ($pass == '')
@@ -67,14 +67,30 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
     else {
         exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
     }
-    $content = file_get_contents($Export_FileName);
+    // $content = file_get_contents($Export_FileName);
+
+    $fair_date = date("Y-m-d");
+
+    $same_dt_chck = DBGet(DBQuery("SELECT COUNT(*) AS TODAY_BACKUP FROM `program_config` WHERE `program` = 'DB_BACKUP' AND `value` = '".$fair_date."'"));
+
+    if($same_dt_chck[1]['TODAY_BACKUP'] == 0)
+    {
+        $program_entry = "INSERT INTO `program_config` (`syear`, `school_id`, `program`, `title`, `value`) VALUES('".UserSyear()."', '".UserSchool()."', 'DB_BACKUP', '".str_replace(".sql", "", $Export_FileName)."', '".$fair_date."')";
+
+        if($program_entry)
+        {
+            DBQuery($program_entry);
+        }
+    }
+
     $fname = $Export_FileName;
-    unlink($Export_FileName);
-    header('Content-Type: application/octet-stream');
-    header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" . $fname . "\"");
-    //$content= file_get_contents($Export_FileName);
-    echo $content;
+    header('Location: '.$Export_FileName);
+    // unlink($Export_FileName);
+    // header('Content-Type: application/octet-stream');
+    // header("Content-Transfer-Encoding: Binary");
+    // header("Content-disposition: attachment; filename=\"" . $fname . "\"");
+    // //$content= file_get_contents($Export_FileName);
+    // echo $content;
     exit;
 }
 if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {

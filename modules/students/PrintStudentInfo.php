@@ -27,6 +27,12 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 if (!$_REQUEST['modfunc']) {
 echo '<div id="modal_default" class="modal fade">';
 echo '<div class="modal-dialog modal-lg">';
@@ -886,7 +892,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             BackPrompt('No Students were found.');
     } else
         BackPrompt('You must choose at least one student.');
-    unset($_SESSION['student_id']);
+    // unset($_SESSION['student_id']);
 
     $_REQUEST['modfunc'] = true;
 }
@@ -922,6 +928,10 @@ if (!$_REQUEST['modfunc']) {
 
     $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;

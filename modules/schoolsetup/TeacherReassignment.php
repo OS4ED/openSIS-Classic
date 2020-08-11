@@ -138,7 +138,7 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
             echo '<div class="panel panel-default">';
             echo '<div class="panel-heading">
                         <h6 class="panel-title">' . $title . '</h6>
-                        <div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_teacher_reassignment();"') . '</div>
+                        <div class="heading-elements">' . SubmitButton('Save', '', 'id="teacherReassnBtn" class="btn btn-primary" onclick="formcheck_teacher_reassignment(this);"') . '</div>
                 </div>';
             $header .= '<div class="panel-body">';
             $header .= '<div class="row">';

@@ -605,14 +605,14 @@ function cpPasteField(title,course_period_id)
    $('.modal-backdrop').remove();
 }
 function requestPasteField(title,course_id)
-{ 
-   
+{
     var obj = document.getElementById('request_div');
     var field = title+'<INPUT type=hidden name=request_course_id value='+course_id+'>';
-//    var obj_hidden = document.getElementById('hidden_tag_cp_id');
+    // var obj_hidden = document.getElementById('hidden_tag_cp_id');
     obj.innerHTML =field ;
-   $('#modal_default_request').modal('hide');
-   $('.modal-backdrop').remove();
+    $('#course_div').text(title);
+    $('#modal_default_request').modal('hide');
+    $('.modal-backdrop').remove();
 }
 function checkChecked(id1,id2)
 {
@@ -696,4 +696,8 @@ function addseccheck_button(){
        document.getElementById('rss').checked=false; 
     }
 
+}
+function hide_filter_modal()
+{
+    window.$('#modal_filter_edit').modal('toggle');
 }

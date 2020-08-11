@@ -270,7 +270,7 @@ $portal_id=implode(',',$portal_id_arr);
 	ListOutput($notes_RET,$columns,'Note','Notes',$link);
         $count_note=count($notes_RET);
 
-	echo '<div class="panel-footer"><div class="col-md-12 text-right">'.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_school_setup_portalnotes();"').'</div></div>';
+	echo '<div class="panel-footer"><div class="col-md-12 text-right">'.SubmitButton('Save','','id="savePortalBtn" class="btn btn-primary" onclick="formcheck_school_setup_portalnotes(this);"').'</div></div>';
 	echo '</div></FORM>';
 }
 

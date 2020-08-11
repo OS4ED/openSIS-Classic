@@ -354,7 +354,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel panel-default">';
 
-        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_studentField_F1();"')); //'<INPUT type=submit value=Save>');
+        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="setupStuFieldsBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F1(this);"')); //'<INPUT type=submit value=Save>');
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=f_id value="' . $_REQUEST['id'] . '"/>';
 
@@ -423,7 +423,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel panel-default">';
         if ($_REQUEST[category_id] > 7 || $_REQUEST['category_id'] == 'new')
-            DrawHeader($title, $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_studentField_F2();"'));
+            DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="setupStuCatBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F2(this);"'));
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';

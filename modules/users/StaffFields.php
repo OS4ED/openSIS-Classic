@@ -269,7 +269,7 @@ if (!$_REQUEST['modfunc']) {
         echo "&table=STAFF_FIELDS method=POST>";
         echo '<div class="panel panel-default">';
 
-        DrawHeader($title, $delete_button . ' &nbsp; ' . SubmitButton('Save', '', 'class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F1();"'));
+        DrawHeader($title, $delete_button . ' &nbsp; ' . SubmitButton('Save', '', 'id="staffFieldsBtn" class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F1(this);"'));
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=f_id value="' . $_REQUEST['id'] . '"/>';
@@ -323,7 +323,7 @@ if (!$_REQUEST['modfunc']) {
             echo "&category_id=$_REQUEST[category_id]";
         echo " method=POST>";
         echo '<div class="panel panel-default">';
-        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_user_stafffields_F2();"'));
+        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="staffFieldsCatBtn" class="btn btn-primary" onclick="formcheck_user_stafffields_F2(this);"'));
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';

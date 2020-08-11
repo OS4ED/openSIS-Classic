@@ -102,7 +102,7 @@ if ($_REQUEST['modfunc'] == 'remove') {
 
 if (!$_REQUEST['modfunc']) {
     echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
-    DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary"'));
+    DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"'));
     echo '<hr class="no-margin"/>';
 
     $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY POST_END_DATE';
@@ -132,7 +132,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel-body no-padding">';
     ListOutput($LO_ret, $LO_columns, 'History Marking Period', 'History Marking Periods', $link, array(), array('count' => true, 'download' => false, 'search' => false));
     echo '</div>';
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
     echo '</FORM>';
 }
 

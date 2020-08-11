@@ -83,7 +83,22 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
     $extra['new'] = true;
     $extra['pdf'] = 'true';
+       
+
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
+
     Search('student_id', $extra);
+       
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        echo '<script>$("#search input[name=stuid]").val('.$_SESSION['student_id'].');</script>';
+        echo '<script>document.getElementById("search").submit();</script>';
+        echo '<script>$("#search input[name=stuid]").val("");</script>';
+    }
+
     echo '<div id="modal_default" class="modal fade">';
     echo '<div class="modal-dialog modal-lg">';
     echo '<div class="modal-content">';
@@ -156,6 +171,12 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
     echo '</div>'; //.modal-dialog
     echo '</div>'; //.modal
 } else {
+    
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
+
     $RET = GetStuList($extra);
 
     if (count($RET)) {
@@ -220,6 +241,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
             }
         }
         PDFStop($handle);
+        
     } else
         BackPrompt('No Students were found.');
 }

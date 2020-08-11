@@ -27,6 +27,12 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include '_makeLetterGrade.fnc.php';
+
+if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+{
+    $_REQUEST['search_modfunc'] = 'list';
+}
+
 $course_period_id = UserCoursePeriod();
 $course_id = DBGet(DBQuery('SELECT cp.COURSE_ID,c.TITLE FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\''.$course_period_id.'\''));
 $course_title = $course_id[1]['TITLE'];
@@ -310,7 +316,11 @@ if(!$_REQUEST['modfunc'])
 	}
 
 	$extra['link'] = array('FULL_NAME'=>false);
-	$extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
 //	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
         $extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');

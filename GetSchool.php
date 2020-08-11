@@ -25,21 +25,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-	include('RedirectRootInc.php'); 
-	include'ConfigInc.php';
-        include("Warehouse.php");
-		$marking_period = $_GET['u'];
-                $get_schoolname = DBGet(DBQuery("SELECT school_name FROM  history_marking_periods  WHERE marking_period_id = $marking_period"));
-        if($get_schoolname[1]['school_name'])
-            echo $get_schoolname[1]['school_name'];
-        else
-        {
-             $get_schoolid = DBGet(DBQuery("SELECT school_id FROM  marking_periods  WHERE marking_period_id = $marking_period"));
-             if($get_schoolid[1]['school_id'])
-             {
-                $get_schoolid = DBGet(DBQuery("SELECT title FROM  schools  WHERE id = $get_schoolid[1][school_id]")); 
-                 echo $get_schoolid[1]['title'];
-             }
-        }
+include('RedirectRootInc.php'); 
+include'ConfigInc.php';
+include("Warehouse.php");
+// include('functions/SqlSecurityFnc.php');
+
+$marking_period = sqlSecurityFilter($_GET['u']);
+        $get_schoolname = DBGet(DBQuery("SELECT school_name FROM  history_marking_periods  WHERE marking_period_id = $marking_period"));
+if($get_schoolname[1]['school_name'])
+    echo $get_schoolname[1]['school_name'];
+else
+{
+     $get_schoolid = DBGet(DBQuery("SELECT school_id FROM  marking_periods  WHERE marking_period_id = $marking_period"));
+     if($get_schoolid[1]['school_id'])
+     {
+        $get_schoolid = DBGet(DBQuery("SELECT title FROM  schools  WHERE id = $get_schoolid[1][school_id]")); 
+         echo $get_schoolid[1]['title'];
+     }
+}
 
 ?>

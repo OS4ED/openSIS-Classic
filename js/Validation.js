@@ -1,9 +1,11 @@
 
 
-function formcheck_school_setup_school()
+function formcheck_school_setup_school(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("school");
+    var frmvalidator = new Validator("school", this_button_id);
+
     frmvalidator.addValidation("values[TITLE]", "req", "Please enter the title");
     frmvalidator.addValidation("values[TITLE]", "maxlen=50", "Max length for title is 50 characters");
 //	
@@ -17,10 +19,10 @@ function formcheck_school_setup_school()
     frmvalidator.addValidation("values[STATE]", "maxlen=100", "Max length for state is 100 characters");
 
     //frmvalidator.addValidation("values[ZIPCODE]", "req", "Please enter zipcode");
-//    frmvalidator.addValidation("values[ZIPCODE]", "numeric", "Zip allows only numeric value");
+    // frmvalidator.addValidation("values[ZIPCODE]", "numeric", "Zip allows only numeric value");
 
     //frmvalidator.addValidation("values[PHONE]", "req", "Please enter phone Number");
-//    frmvalidator.addValidation("values[PHONE]", "numeric", "Phone number allows number only");
+    // frmvalidator.addValidation("values[PHONE]", "numeric", "Phone number allows number only");
 
     //frmvalidator.addValidation("values[PRINCIPAL]", "req", "Please enter principal name");
     frmvalidator.addValidation("values[PRINCIPAL]", "maxlen=100", "Max length for state is 100 characters");
@@ -48,7 +50,7 @@ function formcheck_school_setup_school()
         frmvalidator.addValidation("inputvalues[STATE]", "maxlen=100", "Max length for state is 100 characters");
 
         frmvalidator.addValidation("inputvalues[ZIPCODE]", "req", "Please enter zipcode ");
-//        frmvalidator.addValidation("inputvalues[ZIPCODE]", "numeric", "Zip allows only numeric value");
+        // frmvalidator.addValidation("inputvalues[ZIPCODE]", "numeric", "Zip allows only numeric value");
 
         frmvalidator.addValidation("inputvalues[PHONE]", "req", "Please enter phone number");
         //frmvalidator.addValidation("inputvalues[PHONE]", "numeric", "Phone number allows number only");
@@ -115,11 +117,11 @@ function formcheck_history_mp()
 
 
 }
-function formcheck_school_setup_portalnotes()
+function formcheck_school_setup_portalnotes(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-
-    var frmvalidator = new Validator("F2");
+    var frmvalidator = new Validator("F2", this_button_id);
 
 
 
@@ -169,34 +171,52 @@ function formcheck_school_setup_portalnotes()
 
 }
 
-function formcheck_student_advnc_srch()
+function formcheck_student_advnc_srch(this_DET)
 {
+    var this_button_id = this_DET.id;
 
     var day_to = $('day_to_birthdate');
     var month_to = $('month_to_birthdate');
     var day_from = $('day_from_birthdate');
     var month_from = $('month_from_birthdate');
+
     if (!day_to.value && !month_to.value && !day_from.value && !month_from.value) {
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = true;
+        }, 50);
+
         return true;
     }
     if (!day_to.value || !month_to.value || !day_from.value || !month_from.value)
     {
         strError = "Please provide birthday to day, to month, from day, from month.";
         document.getElementById('divErr').innerHTML = "<div class=\"alert alert-danger no-border\"><i class=\"fa fa-info-circle\"></i> " + strError + "</div>";
+
+        document.getElementById(this_button_id).disabled = false;
+
         return false;
     }
     strError = "To date must be equal to or greater than from date.";
 
     if (month_from.value > month_to.value) {
         document.getElementById('divErr').innerHTML = "<div class=\"alert alert-danger no-border\"><i class=\"fa fa-info-circle\"></i> " + strError + "</div>";
+        
+        document.getElementById(this_button_id).disabled = false;
+
         return false;
     } else if (month_from.value == month_to.value && day_from.value > day_to.value) {
         document.getElementById('divErr').innerHTML = "<div class=\"alert alert-danger no-border\"><i class=\"fa fa-info-circle\"></i> " + strError + "</div>";
+
+        document.getElementById(this_button_id).disabled = false;
+
         return false;
     }
+
+    setTimeout(function() {
+        document.getElementById(this_button_id).disabled = true;
+    }, 50);
+
     return true;
-
-
 }
 
 function ValidateDate_Portal_Notes()
@@ -284,9 +304,13 @@ function ValidateDate_Portal_Notes()
 
 
 
-function formcheck_school_setup_marking() {
+function formcheck_school_setup_marking(this_DET) {
 
-    var frmvalidator = new Validator("marking_period");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("marking_period", this_button_id);
+
+
     frmvalidator.addValidation("tables[new][TITLE]", "req", "Please enter the title");
     frmvalidator.addValidation("tables[new][TITLE]", "maxlen=50", "Max length for title is 50 characters");
 
@@ -524,9 +548,12 @@ function ValidateDate_Marking_Periods()
 
 
 
-function formcheck_school_setup_copyschool()
+function formcheck_school_setup_copyschool(this_DET)
 {
-    var frmvalidator = new Validator("prompt_form");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("prompt_form", this_button_id);
+
     frmvalidator.addValidation("title", "req_copy_school", "Please enter the new school's title");
     frmvalidator.addValidation("title", "maxlen=100", "Max length for title is 100 characters");
 }
@@ -558,9 +585,12 @@ function formcheck_school_specific_standards()
     }
 }
 
-function formcheck_school_setup_calender()
+function formcheck_school_setup_calender(this_DET)
 {
-    var frmvalidator = new Validator("prompt_form");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("prompt_form", this_button_id);
+
     frmvalidator.addValidation("title", "req", "Please enter the title");
     frmvalidator.addValidation("title", "maxlen=100", "Max length for title is 100");
     frmvalidator.setAddnlValidationFunction("ValidateDate_SchoolSetup_calender");
@@ -838,10 +868,12 @@ function formcheck_staff_staff(staff_school_chkbox_id)
 
 }
 
-function formcheck_school_setup_periods()
+function formcheck_school_setup_periods_older(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("F1");
+    var frmvalidator = new Validator("F1", this_button_id);
+
     if ((document.getElementById('values[new][SHORT_NAME]') && document.getElementById('values[new][SHORT_NAME]').value != '') ||
             (document.getElementById('values[new][SORT_ORDER]') && document.getElementById('values[new][SORT_ORDER]').value != ''))
     {
@@ -907,10 +939,77 @@ function formcheck_school_setup_periods()
     }
 }
 
-
-function formcheck_school_setup_grade_levels()
+function formcheck_school_setup_periods(this_DET)
 {
-    var frmvalidator = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
+
+    if ((document.getElementById('values[new][SHORT_NAME]') && document.getElementById('values[new][SHORT_NAME]').value != '') ||
+            (document.getElementById('values[new][SORT_ORDER]') && document.getElementById('values[new][SORT_ORDER]').value != ''))
+    {
+        frmvalidator.addValidation("values[new][TITLE]", "req", "Title cannot be blank");
+    }
+
+    if ((document.getElementsByName('values[new][START_TIME]') && document.getElementsByName('values[new][START_TIME]')[0].value != ''))
+    {
+        frmvalidator.addValidation("values[new][TITLE]", "req", "Title cannot be blank");
+    }
+
+    if ((document.getElementsByName('values[new][END_TIME]') && document.getElementsByName('values[new][END_TIME]')[0].value != ''))
+    {
+        frmvalidator.addValidation("values[new][TITLE]", "req", "Title cannot be blank");
+    }
+
+    if (document.getElementById('values[new][TITLE]') && document.getElementById('values[new][TITLE]').value != '')
+    {
+
+        frmvalidator.addValidation("values[new][TITLE]", "maxlen=50", "Max length for title is 50 characters");
+        frmvalidator.addValidation("values[new][SHORT_NAME]", "req", "Short name cannot be blank");
+        frmvalidator.addValidation("values[new][SHORT_NAME]", "maxlen=50", "Max length for short name is 50 characters");
+
+
+        frmvalidator.addValidation("values[new][SORT_ORDER]", "num", "Sort order allows only numeric value");
+        frmvalidator.addValidation("values[new][SORT_ORDER]", "maxlen=5", "Max length for sort order is 5 digits");
+
+        frmvalidator.addValidation("values[new][START_TIME]", "req", "Please select start time");
+
+        frmvalidator.addValidation("values[new][END_TIME]", "req", "Please select end time");
+    }
+
+    var periods_id = document.getElementById("h1").value;
+
+    if (periods_id != '')
+    {
+        var id = periods_id;
+        var ar = id.split(',');
+
+        for (i = 0; i <= ar.length - 1; i++)
+        {
+
+
+
+            if (document.getElementById('inputvalues[' + ar[i] + '][TITLE]'))
+            {
+                frmvalidator.addValidation("values[" + ar[i] + "][TITLE]", "req", "Title cannot be blank");
+                frmvalidator.addValidation("values[" + ar[i] + "][TITLE]", "maxlen=50", "Max length for title is 50 characters");
+            }
+            frmvalidator.addValidation("values[" + ar[i] + "][SHORT_NAME]", "req", "Short name cannot be blank");
+            frmvalidator.addValidation("values[" + ar[i] + "][START_TIME]", "req", "Please select start time");
+
+            frmvalidator.addValidation("values[" + ar[i] + "][END_TIME]", "req", "Please select end time");
+        }
+
+
+    }
+}
+
+
+function formcheck_school_setup_grade_levels(this_DET)
+{
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
 
     if ((document.getElementById('values[new][SHORT_NAME]') && document.getElementById('values[new][SHORT_NAME]').value != '') ||
             (document.getElementById('values[new][SORT_ORDER]') && document.getElementById('values[new][SORT_ORDER]').value != ''))
@@ -962,7 +1061,7 @@ function formcheck_school_setup_grade_levels()
 }
 
 
-function formcheck_student_student()
+function formcheck_student_student(this_DET)
 {
 //    if (document.getElementById('email_1') && document.getElementById('email_1').innerHTML == 'Email already taken')
 //    {
@@ -975,7 +1074,10 @@ function formcheck_student_student()
 //        if (document.getElementsByName('values[people][OTHER][EMAIL]')[0])
 //            document.getElementsByName('values[people][OTHER][EMAIL]')[0].value = '';
 //    }
-    var frmvalidator = new Validator("student");
+
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("student", this_button_id);
 
 
     frmvalidator.addValidation("values[student_address][HOME][STREET_ADDRESS_1]", "req", "Please enter address");
@@ -1351,9 +1453,12 @@ function studentcheck_unmatch(err) {
 
 
 
-function formcheck_student_studentField_F2()
+function formcheck_student_studentField_F2(this_DET)
 {
-    var frmvalidator = new Validator("F2");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F2", this_button_id);
+
     var t_id = document.getElementById('t_id').value;
     frmvalidator.addValidation("tables[" + t_id + "][TITLE]", "req", "Please enter the title");
     frmvalidator.addValidation("tables[" + t_id + "][TITLE]", "maxlen=50", "Max length for title is 50");
@@ -1366,9 +1471,12 @@ function formcheck_student_studentField_F2()
 
 
 
-function formcheck_student_studentField_F1()
+function formcheck_student_studentField_F1(this_DET)
 {
-    var frmvalidator = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
+
     var f_id = document.getElementById('f_id').value;
     frmvalidator.addValidation("tables[" + f_id + "][TITLE]", "req", "Please enter the field name");
 
@@ -1552,9 +1660,12 @@ function school_check(staff_school_chkbox_id)
 
 /////////////////////////////////////////  User Fields Start  //////////////////////////////////////////////////////////
 
-function formcheck_user_userfields_F2()
+function formcheck_user_userfields_F2(this_DET)
 {
-    var frmvalidator = new Validator("F2");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F2", this_button_id);
+
     var t_id = document.getElementById('t_id').value;
     frmvalidator.addValidation("tables[" + t_id + "][TITLE]", "req", "Please enter the title");
 
@@ -1563,9 +1674,12 @@ function formcheck_user_userfields_F2()
     frmvalidator.addValidation("tables[" + t_id + "][SORT_ORDER]", "num", "Sort Order allows only numeric value");
     frmvalidator.addValidation("tables[" + t_id + "][SORT_ORDER]", "ma", "Sort Order  must be greater than 2");
 }
-function formcheck_user_stafffields_F2()
+function formcheck_user_stafffields_F2(this_DET)
 {
-    var frmvalidator = new Validator("F2");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F2", this_button_id);
+
     var t_id = document.getElementById('t_id').value;
     frmvalidator.addValidation("tables[" + t_id + "][TITLE]", "req", "Please enter the title");
 
@@ -1574,9 +1688,12 @@ function formcheck_user_stafffields_F2()
     frmvalidator.addValidation("tables[" + t_id + "][SORT_ORDER]", "num", "Sort Order allows only numeric value");
     frmvalidator.addValidation("tables[" + t_id + "][SORT_ORDER]", "ma1", "Sort Order  must be greater than 5");
 }
-function formcheck_user_userfields_F1()
+function formcheck_user_userfields_F1(this_DET)
 {
-    var frmvalidator1 = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator1 = new Validator("F1", this_button_id);
+
     var f_id = document.getElementById('f_id').value;
 
     frmvalidator1.addValidation("tables[" + f_id + "][TITLE]", "req", "Please enter the field Name");
@@ -1587,9 +1704,11 @@ function formcheck_user_userfields_F1()
 
 }
 
-function formcheck_schoolfields()
+function formcheck_schoolfields(this_DET)
 {
-    var frmvalidator1 = new Validator("SF1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator1 = new Validator("SF1", this_button_id);
 
 
     if (document.getElementById('custom'))
@@ -1691,9 +1810,12 @@ function formcheck_scheduling_course_F2()
     }
 }
 
-function validate_course_period()
+function validate_course_period(this_DET = false)
 {
+    // var this_button_id = this_DET.id;
+
     var frmvalidator = new Validator("F2");
+
     var hidden_cp_id = document.getElementById("hidden_cp_id").value;
 
     if (hidden_cp_id != 'new')
@@ -1855,11 +1977,13 @@ function validate_cp_other_fields()
 //////////////////////////////////////// Grade Start ///////////////////////////////////////////////////////
 
 
-function formcheck_grade_grade()
+function formcheck_grade_grade(this_DET)
 {
+    var this_button_id = this_DET.id;
+
     var grade_id = document.getElementById("h1").value;
 
-    var frmvalidator = new Validator("F1");
+    var frmvalidator = new Validator("F1", this_button_id);
 
     if (document.getElementById('values[new][GP_SCALE]')) {
         if ((document.getElementById('values[new][GP_SCALE]') && document.getElementById('values[new][GP_SCALE]').value != '') ||
@@ -1906,8 +2030,8 @@ function formcheck_grade_grade()
         {
             frmvalidator.addValidation("values[new][GP_SCALE]", "req", "Scale value cannot be blank");
 
-//            frmvalidator.addValidation("values[new][GP_SCALE]", "num", "Please enter numeric value");
-frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter decimal value");
+            // frmvalidator.addValidation("values[new][GP_SCALE]", "num", "Please enter numeric value");
+            frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter decimal value");
         }
     }
     var grade_id = document.getElementById("h1").value;
@@ -1957,9 +2081,11 @@ frmvalidator.addValidation("values[new][GP_SCALE]", "dec", "Please enter decimal
 
 
 }
-function formcheck_honor_roll()
+function formcheck_honor_roll(this_DET)
 {
-    var frmvalidator = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
 
     var honor_id = document.getElementById("h1").value;
 
@@ -1989,10 +2115,11 @@ function formcheck_honor_roll()
 
 //////////////////////////////////////// Report Card Comment Start ///////////////////////////////////////////////////////
 
-function formcheck_grade_comment()
+function formcheck_grade_comment(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("F1");
+    var frmvalidator = new Validator("F1", this_button_id);
 
 
 
@@ -2222,29 +2349,45 @@ function ValidateTime_eligibility_entrytimes()
 
 ///////////////////////////////////////// Entry Times End //////////////////////////////////////////////////
 
-function formcheck_mass_drop()
+function formcheck_mass_drop(this_DET)
 {
+    var this_button_id = this_DET.id;
+
     if (document.getElementById("course_div").innerHTML == '')
     {
         alert("Please choose a course period to drop");
+
+        document.getElementById(this_button_id).disabled = false;
+        
         return false;
     } else
+    {
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = true;
+        }, 50);
+
         return true;
+    }
 }
 
 
 
-function formcheck_attendance_category()
+function formcheck_attendance_category(this_DET)
 {
-    var frmvalidator = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
+    
     frmvalidator.addValidation("new_category_title", "req", "Please enter attendance category Name");
     frmvalidator.addValidation("new_category_title", "maxlen=50", "Max length for category name is 50");
     frmvalidator.addValidation("new_category_title", "alphanumeric", "Attendance category Name allows only alphanumeric value");
 }
 
 
-function formcheck_attendance_codes()
+function formcheck_attendance_codes(this_DET)
 {
+    var this_button_id = this_DET.id;
+
     var frmvalidator = new Validator("F1");
 
     var attandance_id = document.getElementById("h1").value;
@@ -2345,19 +2488,24 @@ function formcheck_attendance_codes_extra()
 
     return true;
 }
-function formcheck_failure_count()
+function formcheck_failure_count(this_DET)
 {
-    var frmvalidator = new Validator("failure");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("failure", this_button_id);
+
     frmvalidator.addValidation("failure[FAIL_COUNT]", "req", "Please enter count");
     frmvalidator.addValidation("failure[FAIL_COUNT]", "num", "Count allows only numeric value");
     frmvalidator.addValidation("failure[FAIL_COUNT]", "maxlen=5", "Max length for count order is 5 digits");
 
 }
 //-------------------------------------------------assignments Title Validation Starts---------------------------------------------
-function formcheck_assignments()
+function formcheck_assignments(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("F3");
+    var frmvalidator = new Validator("F3", this_button_id);
+
     var type_id = document.getElementById("type_id").value;
 
     if (type_id.trim() == '')
@@ -2652,24 +2800,47 @@ function passwordMatch()
     }
 
 }
-function pass_check()
+function pass_check(this_DET)
 {
-    if (document.getElementById("new_pass").value == document.getElementById("ver_pass").value)
-    {
-        var new_pass = document.getElementById("new_pass").value;
+    var this_button_id = this_DET.id;
 
-        if (new_pass.length <= 7 || (new_pass.length > 7 && !new_pass.match((/\d+/))) || (new_pass.length > 7 && !new_pass.match((/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))))
+    var new_pass = document.getElementById("new_pass");
+
+    if(new_pass)
+    {
+        if (document.getElementById("new_pass").value == document.getElementById("ver_pass").value)
         {
-            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Password must be minimum 8 characters long with at least one capital, one numeric and one special character</div>';
+            var new_pass = document.getElementById("new_pass").value;
+
+            if (new_pass.length <= 7 || (new_pass.length > 7 && !new_pass.match((/\d+/))) || (new_pass.length > 7 && !new_pass.match((/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))))
+            {
+                document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Password must be minimum 8 characters long with at least one capital, one numeric and one special character</div>';
+
+                document.getElementById(this_button_id).disabled = false;
+
+                return false;
+            }
+
+            setTimeout(function() {
+                document.getElementById(this_button_id).disabled = true;
+            }, 50);
+
+            return true;
+        } else
+        {
+            document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New Password Mismatch</div>';    //jit
+
+            document.getElementById(this_button_id).disabled = false;
+
             return false;
         }
-
-        return true;
-    } else
-    {
-        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New Password Mismatch</div>';    //jit
-        return false;
     }
+
+    setTimeout(function() {
+        document.getElementById(this_button_id).disabled = true;
+    }, 50);
+
+    return true;
 }
 
 function reenroll()
@@ -2768,10 +2939,11 @@ function sel_staff_val()
         return true;
     }
 }
-function formcheck_add_staff(staff_school_chkbox_id)
+function formcheck_add_staff(staff_school_chkbox_id, this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("staff");
+    var frmvalidator = new Validator("staff", this_button_id);
 
     //frmvalidator.addValidation("staff[TITLE]", "req", "Please select the salutation");
     frmvalidator.addValidation("staff[FIRST_NAME]", "req", "Please enter the first name");
@@ -2856,11 +3028,11 @@ function formcheck_add_staff(staff_school_chkbox_id)
     if (staff_school_chkbox_id != 0 && staff_school_chkbox_id != '')
         return school_check(staff_school_chkbox_id);
 }
-function formcheck_user_user_mod()
+function formcheck_user_user_mod(staff_school_chkbox_id = false, this_DET)
 {
+    var this_button_id = this_DET.id;
 
-
-    var frmvalidator = new Validator("staff");
+    var frmvalidator = new Validator("staff", this_button_id);
 
     frmvalidator.addValidation("people[FIRST_NAME]", "req", "Please enter the first name");
     frmvalidator.addValidation("people[FIRST_NAME]", "maxlen=100", "Max length for first name is 100 characters");
@@ -2870,11 +3042,11 @@ function formcheck_user_user_mod()
 
     frmvalidator.addValidation("people[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
 
-//    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
-     //frmvalidator.addValidation("people[EMAIL]", "req", "Please enter the email");
+    // frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
+    // frmvalidator.addValidation("people[EMAIL]", "req", "Please enter the email");
 
 
-    frmvalidator.addValidation("student_addres[ADDRESS]", "req", "Please enter the address");
+    frmvalidator.addValidation("student_addres[STREET_ADDRESS_1]", "req", "Please enter the address");
     frmvalidator.addValidation("student_addres[CITY]", "req", "Please enter the city");
     frmvalidator.addValidation("student_addres[STATE]", "req", "Please enter the state");
     frmvalidator.addValidation("student_addres[ZIPCODE]", "req", "Please enter the zipcode");
@@ -2936,8 +3108,10 @@ function validate_group_schedule()
     }
 }
 
-function validate_group_request()
+function validate_group_request(this_DET)
 {
+    var this_button_id = this_DET.id;
+
     var x = document.getElementById("qq").elements.length;
     var counter = 0;
     for (var i = 0; i <= x; i++)
@@ -2962,20 +3136,33 @@ function validate_group_request()
     if (counter == 0)
     {
         document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Please select a student</div>';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+
+        document.getElementById(this_button_id).disabled = false;
+
         return false;
     } else
     {
-        formload_ajax("qq");
+        // formload_ajax("qq");
+
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = true;
+        }, 50);
+
+        return true;
     }
 }
-function formcheck_rooms()
+function formcheck_rooms(this_DET)
 {
-    var frmvalidator = new Validator("F1");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F1", this_button_id);
+
     var count_room = document.getElementById("count_room").value.trim();
 
     if (document.getElementById('values[new][TITLE]').value != '' || document.getElementById('values[new][CAPACITY]').value != '' || document.getElementById('values[new][DESCRIPTION]').value != '' || document.getElementById('values[new][SORT_ORDER]').value != '')
     {
-        frmvalidator.addValidation("values[new][TITLE]", "req", "Please enter the title");
+        frmvalidator.addValidation("values[new][TITLE]", "reqmod", "Please enter the title");
         frmvalidator.addValidation("values[new][CAPACITY]", "req", "Please enter the capacity");
         frmvalidator.addValidation("values[new][DESCRIPTION]", "maxlen=100", "Max length for DESCRIPTION is 100 characters");
         frmvalidator.addValidation("values[new][CAPACITY]", "num", "Capacity allows only numeric value");
@@ -2994,7 +3181,7 @@ function formcheck_rooms()
 
         for (i = 0; i <= ar.length - 1; i++)
         {
-            frmvalidator.addValidation("inputvalues[" + ar[i] + "][TITLE]", "req", "Please enter the title");
+            frmvalidator.addValidation("inputvalues[" + ar[i] + "][TITLE]", "reqmod", "Please enter the title");
             frmvalidator.addValidation("inputvalues[" + ar[i] + "][CAPACITY]", "req", "Please enter the capacity");
             frmvalidator.addValidation("inputvalues[" + ar[i] + "][DESCRIPTION]", "maxlen=100", "Max length for DESCRIPTION is 100 characters");
             frmvalidator.addValidation("inputvalues[" + ar[i] + "][CAPACITY]", "num", "Capacity allows only numeric value");
@@ -3028,9 +3215,12 @@ function fill_rooms(option, id)
     document.getElementById("room_iv").value = new_res;
 
 }
-function formcheck_Timetable_course_F4()
+function formcheck_Timetable_course_F4(this_DET)
 {
-    var frmvalidator = new Validator("F4");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F4", this_button_id);
+
     var subject_id = document.getElementById('subject_id_div').value;
     if (subject_id == 'new')
     {
@@ -3044,17 +3234,23 @@ function formcheck_Timetable_course_F4()
     }
 
 }
-function formcheck_halfday_fullday()
+function formcheck_halfday_fullday(this_DET)
 {
-    var frmvalidator = new Validator("sys_pref");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("sys_pref", this_button_id);
+
     frmvalidator.addValidation("inputvalues[FULL_DAY_MINUTE]", "maxlen=10", "Max length for full day minute is 10 digits");
     frmvalidator.addValidation("inputvalues[HALF_DAY_MINUTE]", "maxlen=10", "Max length for half day minute is 10 digits");
     frmvalidator.addValidation("inputvalues[FULL_DAY_MINUTE]", "num", "Full day minute allows only numeric value");
     frmvalidator.addValidation("inputvalues[HALF_DAY_MINUTE]", "num", "Half day minute allows only numeric value");
 }
-function formcheck_Timetable_course_F3()
+function formcheck_Timetable_course_F3(this_DET)
 {
-    var frmvalidator = new Validator("F3");
+    var this_button_id = this_DET.id;
+
+    var frmvalidator = new Validator("F3", this_button_id);
+
     var course_id = document.getElementById('course_id_div').value;
     if (course_id == 'new')
     {
@@ -3079,10 +3275,12 @@ function mail_group_chk()
     frmvalidator.addValidation("txtGrpName", "maxlen=100", "Max length for group name is 100 characters");
 }
 
-function formcheck_enrollment_code()
+function formcheck_enrollment_code(this_DET)
 {
+    var this_button_id = this_DET.id;
 
-    var frmvalidator = new Validator("F1");
+    var frmvalidator = new Validator("F1", this_button_id);
+
     var sn = document.getElementById("values[new][SHORT_NAME]").value;
     var t = document.getElementsByName("values[new][TYPE]")[0].value;
 
@@ -3376,39 +3574,137 @@ function toggleDisableStu(event)
 function setFilterValues()
 {
     
-    var ids = ["last", "first", "stuid","altid","addr","grade","section","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments"];
+    var ids = ["last", "first", "stuid","altid","addr","grade","section","mp_comment","GENDER","ETHNICITY_ID","LANGUAGE_ID","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments"];
     
     
-     for (var i = 0; i < ids.length; i++) {
-          if (document.getElementById(ids[i]))
-          {
-               document.getElementById(ids[i]+'_hidden').value='';
-               if(document.getElementById(ids[i]).value!='')
-                   document.getElementById(ids[i]+'_hidden').value = document.getElementById(ids[i]).value;
-          }
-     }
+    for (var i = 0; i < ids.length; i++) {
+        if (document.getElementById(ids[i]))
+        {
+            document.getElementById(ids[i]+'_hidden').value='';
+            if(document.getElementById(ids[i]).value!='')
+                document.getElementById(ids[i]+'_hidden').value = document.getElementById(ids[i]).value;
+        }
+    }
      
      
-     var ids1 = ["address_group","_search_all_schools","include_inactive"];
+    var ids1 = ["address_group","_search_all_schools","include_inactive"];
     
     
-     for (var j = 0; j < ids1.length; j++) {
-          if (document.getElementById(ids1[j]))
-          {
-              document.getElementById(ids1[j]+'_hidden').innerHTML ='';
-               if(document.getElementById(ids1[j]).checked===true)
-                   document.getElementById(ids1[j]+'_hidden').innerHTML ='<input type="hidden" name="'+ids1[j]+'" value="Y"/>';
-          }
-     }
+    for (var j = 0; j < ids1.length; j++) {
+        if (document.getElementById(ids1[j]))
+        {
+            document.getElementById(ids1[j]+'_hidden').innerHTML ='';
+            if(document.getElementById(ids1[j]).checked===true)
+                document.getElementById(ids1[j]+'_hidden').innerHTML ='<input type="hidden" name="'+ids1[j]+'" value="Y"/>';
+        }
+    }
 
+
+    var custom_field_ids = document.getElementById("each_custom_fields_ids").value;
+
+    if(custom_field_ids != '')
+    {
+        var cf_ids_arr = custom_field_ids.split(', ');
+
+        for(var k = 0; k < custom_field_ids.length; k++)
+        {
+            var this_element = document.getElementsByName('cust['+cf_ids_arr[k]+']')[0];
+            
+            console.log(this_element.type);
+
+            var this_element_type = this_element.type;
+
+            if(this_element)
+            {
+                document.getElementById('custom_'+cf_ids_arr[k]+'_hidden').value = '';
+
+                if(this_element_type == 'checkbox' || this_element_type == 'radio')
+                {
+                    if(this_element.checked === true)
+                    {
+                        document.getElementById('custom_'+cf_ids_arr[k]+'_hidden').value = 'Y';
+                    }
+                }
+                else
+                {
+                    if(this_element.value != '')
+                    {
+                        document.getElementById('custom_'+cf_ids_arr[k]+'_hidden').value = this_element.value;
+                    }
+                }
+            }
+        }
+    }
+
+    console.log(custom_field_ids);
 }
-function validate_filter()
+function validate_filter(filter_name)
 {
+    var filterName=document.getElementById('filter_name').value;
+
     if(document.getElementById('filter_name').value =='')
     {
-        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>Please enter a valid filter name.</div>';
+        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> &nbsp; Please enter a valid filter name.</div>';
+        return false;
+    }
+    else if(filter_name.includes(filterName) == true)
+    {
+        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> &nbsp; This filter name already exists.</div>';
         return false;
     }
     else
+    {
         return true;
+    }
+}
+
+function save_student_filters()
+{
+    var this_button_id = "saveFilterBtn";
+
+    var filterName = document.getElementById('filter_name').value;
+    var otherFilterNames = document.getElementById('other_filter_names').value;
+
+
+    if(document.getElementById('filter_name').value =='')
+    {
+        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> &nbsp; Please enter a valid filter name</div>';
+
+        document.getElementById('filter_name').focus();
+
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = false;
+        }, 50);
+
+        return false;
+    }
+    else if(otherFilterNames.includes(filterName) == true)
+    {
+        document.getElementById('error_modal_filter').innerHTML ='<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> &nbsp; This filter name already exists</div>';
+
+        document.getElementById('filter_name').focus();
+
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = false;
+        }, 50);
+
+        return false;
+    }
+    else
+    {
+        setTimeout(function() {
+            document.getElementById(this_button_id).disabled = true;
+        }, 50);
+
+        return true;
+    }
+}
+
+function self_disable(this_DET)
+{
+    /* Directl triggering "self disable" when on button click no JS validation is occuring. */
+
+    setTimeout(function() {
+        this_DET.setAttribute("disabled", true);
+    }, 50);
 }

@@ -36,7 +36,11 @@ if (Preferences('SEARCH') != 'Y' && !$extra['force_search'])
 if ($extra['skip_search'] == 'Y')
     $_REQUEST['search_modfunc'] = 'list';
 
-if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
+    // echo "<pre>";
+    // print_r($_REQUEST);
+// if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
+if (($_REQUEST['search_modfunc'] == 'search_fnc' && !$_SESSION['student_id']) || (!$_REQUEST['search_modfunc'] && !$_SESSION['student_id']) || $_REQUEST['modname'] == 'students/Letters.php') 
+{
     if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
         unset($_SESSION['student_id']);
 //        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -188,9 +192,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             $extra_footer = '<div class="text-right">';
             $extra_footer .= '<a id="addiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-10"><i class="icon-cog"></i> Advanced Search</a>';
             if ($extra['pdf'] != true)
-                $extra_footer .= "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                $extra_footer .= "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch(this);formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             else
-                $extra_footer .= "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                $extra_footer .= "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch(this);'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             $extra_footer .= '</div>';
 
             PopTable('footer', $extra['footer'] . $extra_footer);
@@ -220,6 +224,187 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '</FORM>';
             break;
     }
+}
+else if($_REQUEST['search_modfunc'] == 'search_mod')
+{
+    // $_REQUEST['expanded_view'] = 'false';
+
+    $allow_buffer_list = array("students/AdvancedReport.php");
+
+    if (!$_REQUEST['next_modname'])
+        $_REQUEST['next_modname'] = 'students/Student.php';
+
+
+    if(in_array($_REQUEST['modname'], $allow_buffer_list) && isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        if ($extra['pdf'] != true) {
+            echo "<FORM name=search class=\"no-margin-bottom form-horizontal\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=call&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        } else {
+            echo "<FORM name=search class=\"no-margin-bottom form-horizontal\" id=search action=ForExport.php?modname=$_REQUEST[modname]&modfunc=call&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
+        }
+
+        $extra['SELECT'] = ' ,s.STUDENT_ID AS CHECKBOX ,ssm.SECTION_ID';
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+        $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox', 'SECTION_ID' => '_make_sections');
+    }
+    else if($_REQUEST['modname'] == 'scheduling/UnfilledRequests.php' && isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['SELECT'] .= ' ,ssm.SECTION_ID';
+        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
+    }
+
+    // echo "<pre>";print_r($extra);echo "</pre>";
+    $students_RET = GetStuList($extra);
+
+    if ($extra['array_function'] && function_exists($extra['array_function']))
+        $students_RET = $extra['array_function']($students_RET);
+
+    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
+
+    if(in_array($_REQUEST['modname'], $allow_buffer_list) && isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $extra['link'] = array('FULL_NAME' => '');
+        $name_link = array();
+        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod2(this,\'st_arr\');"><A>');
+    }
+    else if($_REQUEST['modname'] == 'scheduling/UnfilledRequests.php' && isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+    {
+        $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
+        $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    }
+
+    if (is_array($extra['link']))
+        $link = $extra['link'] + $name_link;
+    else
+        $link = $name_link;
+    if (is_array($extra['columns_before'])) {
+        $columns = $extra['columns_before'] + $LO_columns;
+        $LO_columns = $columns;
+    }
+
+    if (is_array($extra['columns_after']))
+        $columns = $LO_columns + $extra['columns_after'];
+    if (!$extra['columns_before'] && !$extra['columns_after'])
+        $columns = $LO_columns;
+
+    if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+        if ($_REQUEST['modname'] != 'attendance/Administration.php')
+            echo '<div class="panel panel-default">';
+
+        $tmp_REQUEST = $_REQUEST;
+        unset($tmp_REQUEST['expanded_view']);
+
+        // echo "a-".$_REQUEST['expanded_view']."<br>";
+        // echo "b-".UserStudentID()."<br>";
+        // echo "c-".count($students_RET)."<br>";
+
+        if ($_REQUEST['expanded_view'] != 'true' && UserStudentID() && count($students_RET) != 0) {
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> Expanded View</A>", $extra['header_right']);
+            DrawHeader(str_replace('<BR>', '', substr($_openSIS['SearchTerms'], 0, -4)));
+        } elseif (UserStudentID() && count($students_RET) != 0) {
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false><i class=\"icon-square-up-left\"></i> Original View</A>", $extra['header_right']);
+            DrawHeader(str_replace('<BR>', '', substr($_openSIS['Search'], 0, -4)));
+        }
+        DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
+        if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
+            $_SESSION['List_PHP_SELF'] = PreparePHP_SELF($_SESSION['_REQUEST_vars']);
+            //echo '<script language=JavaScript>parent.help.location.reload();</script>';
+        }
+
+        if (!$extra['singular'] || !$extra['plural']) {
+            $extra['singular'] = 'Student';
+            $extra['plural'] = 'Students';
+        }
+
+        echo "<div id='students'>";
+        if ($_REQUEST['_search_all_schools'] == 'Y' && $_REQUEST['modname'] == 'scheduling/PrintSchedules.php')
+            echo '<INPUT type=hidden name="_search_all_schools" value="Y">';
+
+
+        if ($_REQUEST['modname'] == 'scheduling/Schedule.php' && $extra['singular'] == 'Request') {
+            echo '<div class="panel-body">';
+            if (count($students_RET) > 0) {
+                echo '<div class="table-responsive">';
+            }
+            echo '<div id="hidden_checkboxes"></div>';
+            $check_all_arr = array();
+            foreach ($students_RET as $xy) {
+                $check_all_arr[] = $xy['STUDENT_ID'];
+            }
+            $check_all_stu_list = implode(',', $check_all_arr);
+            echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
+            echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+            ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            if (count($students_RET) > 0) {
+                echo '</div>'; //.table-responsive
+            }
+            echo '</div>'; //.panel-body
+        } else {
+            if (User('PROFILE') == 'student' || User('PROFILE') == 'parent') {
+                echo '<input type=hidden name=st_arr[] value=' . UserStudentID() . '>';
+            }
+            echo '<div class="panel-body">';
+            $stu_ids_for_hidden = array();
+            if (count($students_RET) > 0) {
+                echo '<div class="table-responsive">';
+            }
+            echo '<div id="hidden_checkboxes"></div>';
+            $check_all_arr = array();
+            foreach ($students_RET as $xy) {
+                $check_all_arr[] = $xy['STUDENT_ID'];
+            }
+            $check_all_stu_list = implode(',', $check_all_arr);
+            echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
+            echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+            ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            if (count($students_RET) > 0) {
+                echo '</div>'; //.table-responsive
+            }
+            echo '</div>'; //.panel-body
+
+            if(in_array($_REQUEST['modname'], $allow_buffer_list) && isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+            {
+                unset($_REQUEST['search_modfunc']);
+                echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\'Create Report for Selected Students\' class="btn btn-primary"></div>';
+            }
+        }
+
+        echo '</div>'; //#students
+        echo $extra['footer'];
+        if ($_REQUEST['modname'] != 'attendance/Administration.php')
+            echo "</div>"; //.panel
+    } elseif (count($students_RET) == 1) {
+
+        if (count($link['FULL_NAME']['variables'])) {
+            foreach ($link['FULL_NAME']['variables'] as $var => $val)
+                $_REQUEST[$var] = $students_RET['1'][$val];
+        }
+        if (!is_array($students_RET[1]['STUDENT_ID'])) {
+            $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
+
+
+
+            if (User('PROFILE') == 'admin')
+                $_SESSION['UserSchool'] = $students_RET[1]['LIST_SCHOOL_ID'];
+            if (User('PROFILE') == 'teacher')
+                $_SESSION['UserSchool'] = $students_RET[1]['SCHOOL_ID'];
+
+
+           // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            unset($_REQUEST['search_modfunc']);
+        }
+        if ($_REQUEST['modname'] != $_REQUEST['next_modname']) {
+            $modname = $_REQUEST['next_modname'];
+            if (strpos($modname, '?'))
+                $modname = substr($_REQUEST['next_modname'], 0, strpos($_REQUEST['next_modname'], '?'));
+            if (strpos($modname, '&'))
+                $modname = substr($_REQUEST['next_modname'], 0, strpos($_REQUEST['next_modname'], '&'));
+            if ($_REQUEST['modname'])
+                $_REQUEST['modname'] = $modname;
+            include('modules/' . $modname);
+        }
+    } else
+        BackPrompt('No Students were found.');
 }
 else {
     if (!$_REQUEST['next_modname'])

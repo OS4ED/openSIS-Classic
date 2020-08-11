@@ -70,9 +70,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<hr>';
             echo '<div class="text-right">';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
             echo '</div>';
             echo '</FORM>';
 

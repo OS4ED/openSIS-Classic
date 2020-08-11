@@ -84,12 +84,18 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
 
 
-            # ---   Advanced Search Start ---------------------------------------------------------- #
+            # --------   Advanced Search Start   -------- #
           
-$ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
-$ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
-$language=DBGet(DBQuery('SELECT * FROM language'));
-$language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_NAME'],$language[2]['LANGUAGE_ID'] => $language[2]['LANGUAGE_NAME'], $language[3]['LANGUAGE_ID'] => $language[3]['LANGUAGE_NAME'], $language[4]['LANGUAGE_ID'] => $language[4]['LANGUAGE_NAME'],$language[5]['LANGUAGE_ID'] => $language[5]['LANGUAGE_NAME'],$language[6]['LANGUAGE_ID'] => $language[6]['LANGUAGE_NAME'], $language[7]['LANGUAGE_ID'] => $language[7]['LANGUAGE_NAME'],$language[8]['LANGUAGE_ID'] => $language[8]['LANGUAGE_NAME'], $language[9]['LANGUAGE_ID'] => $language[9]['LANGUAGE_NAME'], $language[10]['LANGUAGE_ID'] => $language[10]['LANGUAGE_NAME'],$language[11]['LANGUAGE_ID'] => $language[11]['LANGUAGE_NAME'], $language[12]['LANGUAGE_ID'] => $language[12]['LANGUAGE_NAME'], $language[13]['LANGUAGE_ID'] => $language[13]['LANGUAGE_NAME'], $language[14]['LANGUAGE_ID'] => $language[14]['LANGUAGE_NAME'], $language[15]['LANGUAGE_ID'] => $language[15]['LANGUAGE_NAME'], $language[16]['LANGUAGE_ID'] => $language[16]['LANGUAGE_NAME'], $language[17]['LANGUAGE_ID'] => $language[17]['LANGUAGE_NAME'],$language[18]['LANGUAGE_ID'] => $language[18]['LANGUAGE_NAME'], $language[19]['LANGUAGE_ID'] => $language[19]['LANGUAGE_NAME'], $language[20]['LANGUAGE_ID'] => $language[20]['LANGUAGE_NAME']);
+            $ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
+
+            $ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
+            
+            $language=DBGet(DBQuery('SELECT * FROM language'));
+            
+            $language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_NAME'],$language[2]['LANGUAGE_ID'] => $language[2]['LANGUAGE_NAME'], $language[3]['LANGUAGE_ID'] => $language[3]['LANGUAGE_NAME'], $language[4]['LANGUAGE_ID'] => $language[4]['LANGUAGE_NAME'],$language[5]['LANGUAGE_ID'] => $language[5]['LANGUAGE_NAME'],$language[6]['LANGUAGE_ID'] => $language[6]['LANGUAGE_NAME'], $language[7]['LANGUAGE_ID'] => $language[7]['LANGUAGE_NAME'],$language[8]['LANGUAGE_ID'] => $language[8]['LANGUAGE_NAME'], $language[9]['LANGUAGE_ID'] => $language[9]['LANGUAGE_NAME'], $language[10]['LANGUAGE_ID'] => $language[10]['LANGUAGE_NAME'],$language[11]['LANGUAGE_ID'] => $language[11]['LANGUAGE_NAME'], $language[12]['LANGUAGE_ID'] => $language[12]['LANGUAGE_NAME'], $language[13]['LANGUAGE_ID'] => $language[13]['LANGUAGE_NAME'], $language[14]['LANGUAGE_ID'] => $language[14]['LANGUAGE_NAME'], $language[15]['LANGUAGE_ID'] => $language[15]['LANGUAGE_NAME'], $language[16]['LANGUAGE_ID'] => $language[16]['LANGUAGE_NAME'], $language[17]['LANGUAGE_ID'] => $language[17]['LANGUAGE_NAME'],$language[18]['LANGUAGE_ID'] => $language[18]['LANGUAGE_NAME'], $language[19]['LANGUAGE_ID'] => $language[19]['LANGUAGE_NAME'], $language[20]['LANGUAGE_ID'] => $language[20]['LANGUAGE_NAME']);
+
+
+
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
 
@@ -98,12 +104,16 @@ $language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_N
             echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div();"><i class="icon-cancel-square"></i> Close Advanced Search</a></div>';
             echo '<br/>';
             
-                        echo '<div class="row">';
+            echo '<div class="row">';
             echo '<div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
-             echo '</div>'; //.row
-////////////////////////extra search field start///////////////////////////
+            echo '</div>'; //.row
+
+            Search('student_advanced_fields');
+            
+            //////////////////////// extra search field start ///////////////////////////
+            
             echo '<h5 class="text-primary">General Information</h5>';     
              
             echo '<div class="row">';
@@ -148,7 +158,8 @@ $language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_N
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Username </label><div class="col-lg-8"><input type=text name="username" size=30 placeholder="Username" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
-            ////////////////////////extra search field end///////////////////////////
+            
+            //////////////////////// extra search field end ///////////////////////////
 
             echo '<h5 class="text-primary">Birthday Search</h5>';
             echo '<div class="row">';
@@ -432,9 +443,9 @@ $language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_N
             echo '<div class="text-right">';
             echo '<a id="addiv" href="javascript:void(0);" class="text-pink m-r-15" onclick="show_search_div();"><i class="icon-cog"></i> Advanced Search</a>';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                echo "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch(this);formload_ajax(\"search\");'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch();'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
+                echo "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary m-r-10\" value='Submit' onclick='return formcheck_student_advnc_srch(this);'><INPUT type=RESET class=\"btn btn-default\" value='Reset'>&nbsp; &nbsp; ";
 
             echo '</div>';
 
@@ -473,29 +484,85 @@ else {
     
     
     if($_REQUEST['filter_form']=='Y' && $_REQUEST['filter_name']!='')
+    {
+        $filter_id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'filters'"));
+        $filter_id= $filter_id[1]['AUTO_INCREMENT'];
+
+        DBQuery('INSERT INTO filters (FILTER_NAME'.($_REQUEST['filter_all_school']=='Y'?'':',SCHOOL_ID').($_REQUEST['filter_public']=='Y'?'':',SHOW_TO').') VALUES (\''.singleQuoteReplace("","",$_REQUEST['filter_name']).'\''.($_REQUEST['filter_all_school']=='Y'?'':','.UserSchool()).($_REQUEST['filter_public']=='Y'?'':','.UserID()).')');
+
+
+        $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","GENDER","ETHNICITY_ID","LANGUAGE_ID","_search_all_schools","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
+
+        $cust_filters = array();
+
+        if(isset($_REQUEST['each_custom_fields_ids']) && $_REQUEST['each_custom_fields_ids'] != '')
         {
+            $res_cfs = explode(", ", $_REQUEST['each_custom_fields_ids']);
 
-            $filter_id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'filters'"));
-            $filter_id= $filter_id[1]['AUTO_INCREMENT'];
-            DBQuery('INSERT INTO filters (FILTER_NAME'.($_REQUEST['filter_all_school']=='Y'?'':',SCHOOL_ID').($_REQUEST['filter_public']=='Y'?'':',SHOW_TO').') VALUES (\''.singleQuoteReplace("","",$_REQUEST['filter_name']).'\''.($_REQUEST['filter_all_school']=='Y'?'':','.UserSchool()).($_REQUEST['filter_public']=='Y'?'':','.UserID()).')');
-
-
-            $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","_search_all_schools","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
-            foreach($filters as $filter_columns)
+            foreach($res_cfs as $one_cf)
             {
-                if($_REQUEST[$filter_columns]!='')
-                DBQuery('INSERT INTO filter_fields (FILTER_ID,FILTER_COLUMN,FILTER_VALUE) VALUES ('.$filter_id.',\''.$filter_columns.'\',\''.$_REQUEST[$filter_columns].'\')');
-            }
-            $_REQUEST['filter']=$filter_id;
-        }
-        if($_REQUEST['filter']!='')
-        {
-            $get_filters=DBGet(DBQuery('SELECT * FROM filter_fields WHERE FILTER_ID='.$_REQUEST['filter']));
-            foreach($get_filters as $get_results)
-            {
-                $_REQUEST[$get_results['FILTER_COLUMN']]=$get_results['FILTER_VALUE'];
+                array_push($cust_filters, $one_cf);
             }
         }
+
+        // echo "<pre>";print_r($_REQUEST);echo "</pre>";
+        // die;
+
+        foreach($filters as $filter_columns)
+        {
+            if($_REQUEST[$filter_columns]!='')
+            DBQuery('INSERT INTO filter_fields (FILTER_ID,FILTER_COLUMN,FILTER_VALUE) VALUES ('.$filter_id.',\''.$filter_columns.'\',\''.$_REQUEST[$filter_columns].'\')');
+        }
+
+        if(!empty($cust_filters))
+        {
+            foreach($cust_filters as $cust_filters_columns)
+            {
+                if(isset($_REQUEST['cust']) && $_REQUEST['cust'][$cust_filters_columns] != '')
+                {
+                    // $cf_column = 'cust['.$cust_filters_columns.']';
+
+                    DBQuery('INSERT INTO filter_fields (FILTER_ID,FILTER_COLUMN,FILTER_VALUE) VALUES ('.$filter_id.',\''.$cust_filters_columns.'\',\''.$_REQUEST['cust'][$cust_filters_columns].'\')');
+                }
+            }
+        }
+
+        $_REQUEST['filter']=$filter_id;
+    }
+
+    // echo "<pre>";print_r($_REQUEST);echo "</pre>";
+
+    if($_REQUEST['filter']!='')
+    {
+        $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","GENDER","ETHNICITY_ID","LANGUAGE_ID","_search_all_schools","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
+
+        foreach($filters as $one_f)
+        {
+            $_REQUEST[$one_f] = '';
+        }
+
+        if(isset($_REQUEST['cust']) && !empty($_REQUEST['cust']))
+        {
+            foreach($_REQUEST['cust'] as $one_cfk => $one_cfv)
+            {
+                $_REQUEST['cust'][$one_cfk] = '';
+            }
+        }
+
+        $get_filters=DBGet(DBQuery('SELECT * FROM filter_fields WHERE FILTER_ID='.$_REQUEST['filter']));
+        foreach($get_filters as $get_results)
+        {
+            $_REQUEST[$get_results['FILTER_COLUMN']] = $get_results['FILTER_VALUE'];
+
+            if(strpos($get_results['FILTER_COLUMN'], 'CUSTOM') !== false)
+            {
+                $_REQUEST['cust'][$get_results['FILTER_COLUMN']] = $get_results['FILTER_VALUE'];
+            }
+        }
+    }
+
+    // echo "<pre>";print_r($_REQUEST);echo "</pre>";
+
     if (!$_REQUEST['next_modname'])
         $_REQUEST['next_modname'] = 'students/Student.php';
 
@@ -564,6 +631,7 @@ else {
         $columns = $LO_columns;
 
     if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+        // Form for Filter Students Start
         echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
         echo '<input type=hidden name=filter_form value=Y />';
         echo '<div class="panel">';
@@ -678,6 +746,11 @@ else {
         echo '</div>'; //.table-responsive
 
             # ---   Advanced Filter Start ---------------------------------------------------------- #
+            $ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
+            $ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
+            $language=DBGet(DBQuery('SELECT * FROM language'));
+            $language_option = array($language[1]['LANGUAGE_ID'] => $language[1]['LANGUAGE_NAME'],$language[2]['LANGUAGE_ID'] => $language[2]['LANGUAGE_NAME'], $language[3]['LANGUAGE_ID'] => $language[3]['LANGUAGE_NAME'], $language[4]['LANGUAGE_ID'] => $language[4]['LANGUAGE_NAME'],$language[5]['LANGUAGE_ID'] => $language[5]['LANGUAGE_NAME'],$language[6]['LANGUAGE_ID'] => $language[6]['LANGUAGE_NAME'], $language[7]['LANGUAGE_ID'] => $language[7]['LANGUAGE_NAME'],$language[8]['LANGUAGE_ID'] => $language[8]['LANGUAGE_NAME'], $language[9]['LANGUAGE_ID'] => $language[9]['LANGUAGE_NAME'], $language[10]['LANGUAGE_ID'] => $language[10]['LANGUAGE_NAME'],$language[11]['LANGUAGE_ID'] => $language[11]['LANGUAGE_NAME'], $language[12]['LANGUAGE_ID'] => $language[12]['LANGUAGE_NAME'], $language[13]['LANGUAGE_ID'] => $language[13]['LANGUAGE_NAME'], $language[14]['LANGUAGE_ID'] => $language[14]['LANGUAGE_NAME'], $language[15]['LANGUAGE_ID'] => $language[15]['LANGUAGE_NAME'], $language[16]['LANGUAGE_ID'] => $language[16]['LANGUAGE_NAME'], $language[17]['LANGUAGE_ID'] => $language[17]['LANGUAGE_NAME'],$language[18]['LANGUAGE_ID'] => $language[18]['LANGUAGE_NAME'], $language[19]['LANGUAGE_ID'] => $language[19]['LANGUAGE_NAME'], $language[20]['LANGUAGE_ID'] => $language[20]['LANGUAGE_NAME']);
+           
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
 
@@ -694,6 +767,88 @@ else {
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text id="mp_comment" name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
+
+            Search('student_fields');
+
+            // Search('student_advanced_fields');
+
+            if(isset($_REQUEST['cust']) && !empty($_REQUEST['cust']))
+            {
+                foreach($_REQUEST['cust'] as $single_cfk => $single_cfv)
+                {
+                    $keep_elem = '';
+
+                    $keep_elem = 'cust['.$single_cfk.']';
+
+                    echo '<script>document.getElementsByName("'.$keep_elem.'")[0].value = "'.$single_cfv.'";</script>';
+                }
+            }
+
+
+            echo '<h5 class="text-primary">General Information</h5>';     
+             
+            // echo '<div class="row">';
+            // echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Middle Name </label><div class="col-lg-8"><input type=text name="middle_name" size=30 placeholder="Middle Name" class="form-control"></div></div>';
+            // echo '</div>'; //.col-md-6
+            // echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Common Name </label><div class="col-lg-8"><input type=text name="common_name" size=30 placeholder="Common Name" class="form-control"></div></div>';
+            // echo '</div>'; //.col-md-6
+            // echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8">'.SelectInput($_REQUEST['GENDER'], 'GENDER', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') .'</div></div>';
+            $gender_array = array('Male' => 'Male', 'Female' => 'Female');
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8"><select class="form-control" id="GENDER" name="GENDER"><option value="">N/A</option>';
+            foreach($gender_array as $one_gender){
+                $gend_selected = '';
+                if($_REQUEST['GENDER'] == $one_gender){ $gend_selected = 'selected'; }
+                echo '<option '.$gend_selected.' value="'.$one_gender.'">'.$one_gender.'</option>';
+            }
+            echo '</select></div></div>';
+            echo '</div>'; //.col-md-6
+
+
+            echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8">' . SelectInput($_REQUEST['ETHNICITY_ID'], 'ETHNICITY_ID', '', $ethnic_option, 'N/A', '') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8"><select class="form-control" id="ETHNICITY_ID" name="ETHNICITY_ID"><option value="">N/A</option>';
+            foreach($ethnic_option as $ethn_key => $one_ethnicity){
+                $ethn_selected = '';
+                if($_REQUEST['ETHNICITY_ID'] == $ethn_key){ $ethn_selected = 'selected'; }
+                echo '<option '.$ethn_selected.' value="'.$ethn_key.'">'.$one_ethnicity.'</option>';
+            }
+            echo '</select></div></div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+                        
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8">' . SelectInput($_REQUEST['LANGUAGE_ID'], 'LANGUAGE_ID', '', $language_option, 'N/A', '') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8"><select class="form-control" id="LANGUAGE_ID" name="LANGUAGE_ID"><option value="">N/A</option>';
+            foreach($language_option as $lang_key => $one_language){
+                $lang_selected = '';
+                if($_REQUEST['LANGUAGE_ID'] == $lang_key){ $lang_selected = 'selected'; }
+                echo '<option '.$lang_selected.' value="'.$lang_key.'">'.$one_language.'</option>';
+            }
+            echo '</select></div></div>';
+            echo '</div>'; //.col-md-6
+            // echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Email </label><div class="col-lg-8"><input type=text name="email" size=30 placeholder="Email" class="form-control"></div></div>';
+            // echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            // echo '<div class="row">';
+            // echo '<div class="col-md-6">';
+            // echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Phone </label><div class="col-lg-8"><input type=text name="phone" size=30 placeholder="phone" class="form-control"></div></div>';
+            // echo '</div>'; //.col-md-6
+
+            // echo '</div>'; //.row
+
+
+
+
 
             echo '<h5 class="text-primary">Birthday Search</h5>';
             echo '<div class="row">';
@@ -823,7 +978,7 @@ else {
         
         echo '<div class="row">';
         echo '<div class="col-sm-6 col-md-6 col-lg-6">';
-        echo '<input type="submit" class="btn btn-primary" value="Apply Filter" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET">';
+        echo '<input type="submit" class="btn btn-primary" value="Apply Filter" onclick="self_disable(this);" /> &nbsp; <input class="btn btn-default" value="Reset" type="RESET">';
         echo '<a id="addiv1" href="javascript:void(0);" class="text-pink" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> Advanced Filter</a>';
         echo '</div>';
         echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
@@ -833,14 +988,80 @@ else {
         foreach ($filters as $value)
         echo '<option value='.$value['FILTER_ID'].' '.($_REQUEST['filter']==$value['FILTER_ID']?'SELECTED':'').' >'.$value['FILTER_NAME'].'</option>';
         echo '</select></div>';
+        
+        if(!empty($filters))
+        {
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_filter_edit" class="text-pink display-inline-block" onClick=""><i class="fa fa-filter"></i> Edit Filters</a>';
+        }
+        
         echo '</div>';
         echo '</div>';
         
         echo '</div>'; //.panel-footer
         echo '</div>'; //.panel
         echo '</form>';
+
+
         
+        //////////////Modal For Editing Filter/////////////////
+        echo '<div id="modal_filter_edit" class="modal fade">';
+        echo '<div class="modal-dialog modal-md">';
+        echo '<div class="modal-content">';
+        echo '<div class="modal-header">';
+        echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+        echo '<h5 class="modal-title">Edit Filter</h5>';
+        echo '</div>';
+ 
+        echo "<form class='form-horizontal m-b-0' method=POST>";
+
+        echo '<div class="modal-body">';
+        echo '<div id="conf_div"></div>';
+
+        // if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove' && $_REQUEST['filter_id']!='') {
+        //         if (DeletePrompt_Filter('filter')) {
+        //             $filter_id = paramlib_validation($colmn = FILTER_ID, $_REQUEST['filter_id']);
+        //             DBQuery('DELETE FROM filters WHERE FILTER_ID=\'' . $filter_id . '\'');
+        //             DBQuery('DELETE FROM filter_fields WHERE FILTER_ID=\'' . $filter_id . '\'');
+        //             unset($_REQUEST['modfunc']);
+        //         }
+        // }
+
+        if ($_REQUEST['modfunc'] != 'remove') {
         
+            $sql = 'SELECT FILTER_ID, FILTER_NAME,NULL AS REMOVE_LINK,NULL AS MODIFY_LINK FROM filters WHERE SCHOOL_ID IN ('.UserSchool().',0) AND SHOW_TO IN ('. UserID().',0)';
+            $F = DBQuery($sql);
+
+            $filters_RET = DBGet($F);
+            
+            $columns2 = array('REMOVE_LINK' => '','FILTER_NAME' => 'Filter Name','MODIFY_LINK' => '');
+
+            $filter_counter=1;
+            foreach($filters_RET as $key)
+            {
+                $filter_remove_link='<a class="btn btn-primary btn-icon btn-xs legitRipple" href="Modules.php?modname=students/StudentFilters.php&amp;modfunc=remove&amp;filter_id='.$key['FILTER_ID'].'" onclick="hide_filter_modal();"><i class="icon-cross2 "></i></a>';
+
+                $filter_modify_link='<a class="btn btn-primary btn-xs display-inline-block" href="Modules.php?modname=students/StudentFilters.php&amp;modfunc=filter_edit&amp;filter_id='.$key['FILTER_ID'].'" onClick="hide_filter_modal()">Edit</a>';
+
+                $filters_RET[$filter_counter]['REMOVE_LINK'] = $filter_remove_link; 
+                $filters_RET[$filter_counter]['MODIFY_LINK'] = $filter_modify_link; 
+                $filter_counter++;
+            }
+
+            // echo "<pre>"; print_r($filters_RET); echo "</pre>";
+            ListOutput($filters_RET, $columns2, 'Filter', 'Filters', false, array(), array('search' => false));
+        }
+        
+        echo '</div>'; //.modal-body
+        // echo '<div class="modal-footer text-center">';
+        // echo '<input type="submit" class="btn btn-primary display-inline-block" value="Save">';
+        // echo '</div>'; //.modal-footer
+        echo '</form>';
+        
+        echo '</div>'; //.modal-content
+        echo '</div>'; //.modal-dialog
+        echo '</div>'; //.modal
+        //////////////End of Modal/////////////////////////
+
         
         //////////////Modal For Filter Save////////////////////
         echo '<div id="modal_default_filter" class="modal fade">';
@@ -851,8 +1072,11 @@ else {
         echo '<h5 class="modal-title">Save Current Filter</h5>';
         echo '</div>';
  
-        echo "<form onSubmit='return validate_filter();' class='form-horizontal m-b-0' action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
-//        echo '<form class="form-horizontal m-b-0"  method="post" action="Modules.php?modname='.$_REQUEST[modname].'&modfunc='.$_REQUEST[modfunc].'&search_modfunc=list&next_modname='.$_REQUEST[next_modname]. $extra['action'].">';
+        $filter_modal=DBGet(DBQuery('SELECT FILTER_NAME FROM filters WHERE SCHOOL_ID IN ('.UserSchool().',0) AND SHOW_TO IN ('. UserID().',0)'));
+        $filter_name = json_encode(array_column($filter_modal, 'FILTER_NAME'));
+        
+        echo "<form onSubmit='return validate_filter($filter_name);' class='form-horizontal m-b-0' action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        // echo '<form class="form-horizontal m-b-0"  method="post" action="Modules.php?modname='.$_REQUEST[modname].'&modfunc='.$_REQUEST[modfunc].'&search_modfunc=list&next_modname='.$_REQUEST[next_modname]. $extra['action'].">';
         echo '<div class="modal-body">';
         echo '<div id="conf_div"></div>';
         
@@ -870,6 +1094,10 @@ else {
         echo  '<input type="hidden" id="addr_hidden" name="addr"/>';
         echo  '<input type="hidden" id="grade_hidden" name="grade"/>';
         echo  '<input type="hidden" id="section_hidden" name="section"/>';
+
+        echo  '<input type="hidden" id="GENDER_hidden" name="GENDER"/>';
+        echo  '<input type="hidden" id="ETHNICITY_ID_hidden" name="ETHNICITY_ID"/>';
+        echo  '<input type="hidden" id="LANGUAGE_ID_hidden" name="LANGUAGE_ID"/>';
         
         echo '<div id="address_group_hidden"></div>';
         echo '<div id="_search_all_schools_hidden"></div>';
@@ -889,6 +1117,51 @@ else {
         echo  '<input type="hidden" id="med_vist_comments_hidden" name="med_vist_comments"/>';
         
         echo '<input type="hidden" name="filter_form" value="Y" />';
+
+        $searchable_fields = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME,cf.TYPE,cf.TITLE,cf.SELECT_OPTIONS FROM program_user_config puc,custom_fields cf WHERE puc.TITLE=cf.ID AND puc.PROGRAM='StudentFieldsSearchable' AND puc.USER_ID='" . User('STAFF_ID') . "' AND puc.VALUE='Y' ORDER BY cf.SORT_ORDER,cf.TITLE"));
+
+        $nonsearchable_fields = DBGet(DBQuery("SELECT CONCAT('CUSTOM_',cf.ID) AS COLUMN_NAME, cf.TYPE, cf.TITLE, cf.SELECT_OPTIONS FROM custom_fields cf LEFT JOIN program_user_config puc ON puc.TITLE = cf.ID WHERE puc.TITLE IS NULL"));
+
+        // echo "<pre>";print_r($searchable_fields);echo "</pre>";
+        // echo "<pre>";print_r($nonsearchable_fields);echo "</pre>";
+
+        $each_custom_fields = '';
+
+        foreach($searchable_fields as $one_searchable)
+        {
+            if($one_searchable['TYPE'] != 'textarea')
+            {
+                echo '<input type="hidden" id="custom_'.$one_searchable['COLUMN_NAME'].'_hidden" name="cust['.$one_searchable['COLUMN_NAME'].']"/>';
+
+                if($each_custom_fields == '')
+                {
+                    $each_custom_fields .= $one_searchable['COLUMN_NAME'];
+                }
+                else
+                {
+                    $each_custom_fields .= ', '.$one_searchable['COLUMN_NAME'];
+                }
+            }
+        }
+
+        // foreach($nonsearchable_fields as $one_nonsearchable)
+        // {
+        //     if($one_nonsearchable['TYPE'] != 'textarea')
+        //     {
+        //         echo '<input type="hidden" id="custom_'.$one_nonsearchable['COLUMN_NAME'].'_hidden" name="cust['.$one_nonsearchable['COLUMN_NAME'].']"/>';
+
+        //         if($each_custom_fields == '')
+        //         {
+        //             $each_custom_fields .= $one_nonsearchable['COLUMN_NAME'];
+        //         }
+        //         else
+        //         {
+        //             $each_custom_fields .= ', '.$one_nonsearchable['COLUMN_NAME'];
+        //         }
+        //     }
+        // }
+
+        echo '<input id="each_custom_fields_ids" name="each_custom_fields_ids" type="hidden" value="'.$each_custom_fields.'">';
         
         echo '<div class="form-group">';        
         echo '<label class="control-label text-right col-lg-4">Make Public</label>';
@@ -942,6 +1215,8 @@ else {
         ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
         echo "</div>"; //.table-responsive
         echo "</div>"; //.panel.panel-default
+
+        // form for filter student ends
     }
     elseif (count($students_RET) == 1) {
         if (count($link['FULL_NAME']['variables'])) {

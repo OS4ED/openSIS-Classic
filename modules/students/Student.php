@@ -1271,6 +1271,23 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         else
                             $_REQUEST['values']['student_enrollment']['new']['START_DATE'] = '';
 
+
+                        ##### Student Enrollment modifications - starts #####
+                        if(isset($_REQUEST['values']['student_enrollment']['new']['START_DATE']) && $_REQUEST['values']['student_enrollment']['new']['START_DATE'] == '')
+                        {
+                            $this_school_dates = DBGet(DBQuery("SELECT `start_date` FROM `school_years` WHERE `syear` = '".UserSyear()."' AND `school_id` = '".UserSchool()."'"));
+
+                            if($this_school_dates[1]['START_DATE'] > date('Y-m-d'))
+                            {
+                                $_REQUEST['values']['student_enrollment']['new']['START_DATE'] = date('d-m-Y', strtotime($this_school_dates[1]['START_DATE']));
+                            }
+                            else
+                            {
+                                $_REQUEST['values']['student_enrollment']['new']['START_DATE'] = date('d-m-Y');
+                            }
+                        }
+                        ##### Student Enrollment modifications - ends #####
+
                         foreach ($_REQUEST['values']['student_enrollment']['new'] as $column => $value) {
                             if ($value) {
                                 $value = paramlib_validation($column, $value);
@@ -1287,7 +1304,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 $fields .= $column . ',';
                             }
                         }
+                        
                         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+                        
                         if (!$error) {
                             if ($un_chl_res != 'exist' && $pass_chl_res != 'exist' && $day_valid != false) {
 
@@ -1824,7 +1843,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     }
 
                     if (isset($_REQUEST['goal_id']) && $_REQUEST['goal_id'] != 'new' && !isset($_REQUEST['progress_id']))
-                        $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary pull-right" onclick="formcheck_student_student();"');
+                        $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary pull-right" onclick="formcheck_student_student(this);"');
                     else {
                         if ($_REQUEST['student_id'] != 'new') {
 
@@ -1833,15 +1852,15 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $enrollment_info = DBGet(DBQuery('SELECT ENROLLMENT_CODE FROM student_enrollment WHERE STUDENT_ID=' . $student_id));
                             $enrollment_code = $enrollment_info[1]['ENROLLMENT_CODE'];
                             if ($_REQUEST['category_id'] == 1 && $enrollment_code == NULL)
-                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student(this);"');
                             else
-                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student(this);"');
                         }
                         else {
                             if ($_REQUEST['category_id'] == 1)
-                                $buttons = SubmitButton('Save & Next', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save & Next', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student(this);"');
                             else
-                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student();"');
+                                $buttons = SubmitButton('Save', '', 'id="mod_student_btn" class="btn btn-primary" onclick="formcheck_student_student(this);"');
                         }
                     }
                     echo PopTable('footer',$buttons);

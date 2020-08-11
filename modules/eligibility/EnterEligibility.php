@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+echo '<div class="panel">';
+echo '<div class="panel-default">';
 echo '<div class="panel-body">';
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));
 if (count($start_end_RET)) {
@@ -195,7 +197,7 @@ else {
         echo '<div class="col-md-6">';
         echo '<h5 class="m-t-5">' . ProgramTitle() . '</h5>';
         echo '</div>';
-        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">Use Gradebook Grades</A> &nbsp; <INPUT type=submit class="btn btn-primary" value=Save></div>';
+        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">Use Gradebook Grades</A> &nbsp; <INPUT type=submit class="btn btn-primary" value=Save onclick="self_disable(this);"></div>';
         echo '</div>';
         echo '<hr class="m-t-15 m-b-0" />';
     }
@@ -203,10 +205,12 @@ else {
     $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
     ListOutput($stu_RET, $LO_columns, 'Student', 'Students');
     if (count($stu_RET) != 0)
-        echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value=Save></CENTER>';
+        echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value=Save onclick="self_disable(this);"></CENTER>';
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body
+echo '</div>';
+echo '</div>';
 
 function makeRadio($value, $title) {
 

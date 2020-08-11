@@ -136,7 +136,7 @@ function Prompt_Calender($title = 'Confirm', $question = '', $message = '', $pdf
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         PopTable('header', $title);
          $req_mod_name = strip_tags(trim($_REQUEST[modname]));
-        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender();'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
+        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit id=\"setupCalendarBtn\" class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender(this);'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
@@ -154,7 +154,7 @@ function Prompt_Copy_School($title = 'Confirm', $question = '', $message = '', $
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', $title);
-        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_copyschool();'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=schoolsetup/Calendar.php\");'></div></FORM>";
+        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit id=\"copySchoolBtn\" class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_copyschool(this);'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=schoolsetup/Calendar.php\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
