@@ -200,11 +200,11 @@
                                 else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.5'),
+                                        ('date', 'August 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'August 11, 2020');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
@@ -342,11 +342,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.5'),
+                                        ('date', 'August 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'August 11, 2020');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('CREATE TABLE `api_info` (
@@ -431,11 +431,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                    ('version', '7.4'),
-                                    ('date', 'April 25, 2020'),
-                                    ('build', '20200425001'),
+                                    ('version', '7.5'),
+                                    ('date', 'August 11, 2020'),
+                                    ('build', '20200811001'),
                                     ('update', '0'),
-                                    ('last_updated', 'April 25, 2020');";
+                                    ('last_updated', 'August 11, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
@@ -511,11 +511,110 @@
                                 {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.5'),
+                                        ('date', 'August 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'August 11, 2020');";
+                                    $dbconn->query($app_insert)or die($dbconn->error);
+
+                                    ### for Language - Start ###
+
+                                    $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
+
+                                    $check_language_arr = $check_language->fetch_assoc();
+
+                                    if(count($check_language_arr) > 0)
+                                    {
+                                        $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+       
+                                        while ($fetch = $stu_info->fetch_assoc()) {
+                                            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                            $fetchlang=$stu_lang->fetch_assoc();
+                                            if(count($fetchlang)>0)
+                                                $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                    $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+
+                                    ### for Language - End ###
+
+                                    ### for Ethnicity - Start ###
+
+                                    $check_ethnicity = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'ethnicity'") or die($dbconn->error);
+
+                                    $check_ethnicity_arr = $check_ethnicity->fetch_assoc();
+
+                                    if(count($check_ethnicity_arr) > 0)
+                                    {
+                                        $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                        while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                        {
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+                                            
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $fetchethn = $stu_ethn->fetch_assoc();
+
+                                                if(count($fetchethn) > 0)
+                                                {
+                                                    $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    ### for Ethnicity - End ###
+
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
+
+                                    $_SESSION['mod'] = 'upgrade';
+                                    header('Location: Step5.php');
+                                    // $_SESSION['mod'] = 'upgrade';
+                                    exit; 
+                                }
+                                else if ($v == '7.4')
+                                {
+                                    $dbconn->query('TRUNCATE app');
+                                    $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
+                                        ('version', '7.5'),
+                                        ('date', 'August 11, 2020'),
+                                        ('build', '20200811001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'August 11, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     ### for Language - Start ###

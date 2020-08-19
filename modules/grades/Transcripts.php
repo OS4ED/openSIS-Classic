@@ -370,8 +370,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                         </div>
                     <?php } ?>
                 </div>-->
-
-                <div class="text-right m-t-40">
+                
+                <?php
+                if($_SESSION['PROFILE'] != 'student')
+                echo'<div class="text-right m-t-40">
                     <table width="100%">
                         <tr>
                             <td>
@@ -390,7 +392,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             </td>
                         </tr>
                     </table>
-                </div>
+                </div>'; ?>
                 <div style="page-break-before: always;">&nbsp;</div>
 
 
