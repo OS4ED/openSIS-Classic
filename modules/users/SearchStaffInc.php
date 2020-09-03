@@ -27,13 +27,25 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
+{
+    ##### To come back in teacher programs with only teachers list #####
+    // echo '<pre>';print_r($_SESSION);echo '</pre>';
+
+    if(empty($_SESSION['staf_search']) && !empty($_SESSION['staf_search_hold']))
+    {
+        $_SESSION['staf_search']['sql'] = $_SESSION['staf_search_hold'];
+    }
+}
+
 if (User('PROFILE') == 'admin') {
 
     if (($_REQUEST['modfunc'] == 'search_fnc' || !$_REQUEST['modfunc']) && !$_REQUEST['search_modfunc']) {
 
         if ($_SESSION['staff_id']) {
             unset($_SESSION['staff_id']);
-//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
         }
 
         echo '<div class="row">';
@@ -133,27 +145,33 @@ if (User('PROFILE') == 'admin') {
         
         if($_REQUEST['_search_all_schools']=='Y')
         {
-        $extra['SELECT'].=',s.STAFF_ID as STF_ID';    
-        $extra['functions']=array('STF_ID'=>makeStaffAllSchool);    
+            $extra['SELECT'].=',s.STAFF_ID as STF_ID';    
+            $extra['functions']=array('STF_ID'=>makeStaffAllSchool);    
         }
-//        else
-//        {
+        // else
+        // {
         $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';    
         $extra['functions']=array('CATEGORY'=>StaffCategory);
-//        }
+        // }
+
+        if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
+        {
+            $extra['WHERE'] .= ' AND s.PROFILE_ID NOT IN(0,1) '; 
+        }
+
 		$staff_RET = GetUserStaffList($extra);
-      if($_REQUEST['_dis_user']=='Y')        
-      {
-        $last_log_sql='SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
+        if($_REQUEST['_dis_user']=='Y')        
+        {
+            $last_log_sql='SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
 					s.PROFILE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID,\' \' as LAST_LOGIN FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE
 					((s.PROFILE_ID!=4 AND s.PROFILE_ID!=3) OR s.PROFILE_ID IS NULL) AND '.($_REQUEST['first']?' UPPER(s.FIRST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['first'])).'%\' AND ':'').($_REQUEST['last']?' UPPER(s.LAST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['last'])).'%\' AND ':'').' ssr.SYEAR=\''.UserSyear().'\'  AND s.STAFF_ID NOT IN (SELECT USER_ID FROM login_authentication WHERE PROFILE_ID NOT IN (3,4)) '.($_REQUEST['username']?' AND s.STAFF_ID IN (SELECT USER_ID FROM login_authentication WHERE UPPER(USERNAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['username'])).'%\' AND PROFILE_ID NOT IN (3,4)) ':'');
-                $last_log=DBGet(DBQuery($last_log_sql));
-                
-                foreach($last_log as $li=>$ld)
-                {
-                    $staff_RET[]=$ld;
-                }
-      }
+            $last_log=DBGet(DBQuery($last_log_sql));
+            
+            foreach($last_log as $li=>$ld)
+            {
+                $staff_RET[]=$ld;
+            }
+        }
                 
                 $_SESSION['count_stf'] =  count($staff_RET);
         if ($extra['profile']) {

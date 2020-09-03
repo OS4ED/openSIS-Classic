@@ -380,6 +380,14 @@ ul[id*="select2-period-"] {
 }
 /* Schoolwide Schedule Reports - End */
 
+.btn-undo {
+    background-color: #fff;
+    padding: 6px 8px;
+    border: 1px solid;
+    border-radius: 3px;
+    border-color: inherit;
+}
+
 
 @media (max-width: 768px) {
     #navbar-mobile .form-group, #navbar-mobile form {

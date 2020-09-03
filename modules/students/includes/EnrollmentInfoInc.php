@@ -201,12 +201,11 @@ if (count($RET)) {
             $get_SEC = '';
         $RET[$in]['START_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['START_DATE'])) : _makeEnrollmentDates('START_DATE', $date_counter, $value));
         $date_counter = $date_counter + 1;
-//                        if($RET[$in]['END_DATE']!='')
-
-        $RET[$in]['END_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['END_DATE'])) : _makeEnrollmentDates('END_DATE', $date_counter, $value));
-//                  else {
-//                  $RET[$in]['END_DATE']=='0000-00-00';    
-//                  }
+        // if($RET[$in]['END_DATE']!='')
+            $RET[$in]['END_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['END_DATE'])) : _makeEnrollmentDates('END_DATE', $date_counter, $value));
+        // else {
+            //   $RET[$in]['END_DATE']='0000-00-00';    
+        // }
 //                      $date_counter=$date_counter+1;
     }
 }
@@ -230,6 +229,15 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM s
 if (count($calendars_RET)) {
     foreach ($calendars_RET as $calendar)
         $calendar_options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
+}
+
+$get_latest_enrollment = DBGet(DBQuery('SELECT * FROM `student_enrollment` WHERE `id` = (SELECT MAX(`id`) FROM `student_enrollment` WHERE `student_id` = \''.UserStudentID().'\')'));
+
+if($get_latest_enrollment[1]['SCHOOL_ID'] != UserSchool() && $get_latest_enrollment[1]['CALENDAR_ID'] != '')
+{
+    $get_calendar = DBGet(DBQuery('SELECT * FROM `school_calendars` WHERE `calendar_id` = \''.$get_latest_enrollment[1]['CALENDAR_ID'].'\''));
+
+    $calendar_options[$get_calendar[1]['CALENDAR_ID']] = $get_calendar[1]['TITLE'];
 }
 
 if ($_REQUEST['student_id'] != 'new') {

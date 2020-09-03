@@ -41,7 +41,7 @@ if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['subject_id']) {
 if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
     PopTable('header', 'Search');
     echo "<FORM name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&course_modfunc=search method=POST>";
-    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . strip_tags(trim($_REQUEST['search_term'])) . '"></TD><TD><INPUT type=submit class="btn btn-primary" value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . strip_tags(trim($_REQUEST['search_term'])) . '"></TD><TD><INPUT type=submit class="btn btn-primary m-l-10" value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
     echo '</FORM>';
     PopTable('footer');
 
@@ -52,19 +52,29 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
 
         echo '<div class="row">';
         echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID');
         ListOutput($subjects_RET, array('TITLE' => 'Subject'), 'Subject', 'Subjects', $link, array(), array('search' => false, 'save' => false));
-        echo '</div><div class="col-md-4">';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+
+        echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID');
         ListOutput($courses_RET, array('TITLE' => 'Course'), 'Course', 'Courses', $link, array(), array('search' => false, 'save' => false));
-        echo '</div><div class="col-md-4">';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+
+        echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID', 'course_period_id' => 'COURSE_PERIOD_ID');
         ListOutput($periods_RET, array('TITLE' => 'Course Period'), 'Course Period', 'Course Periods', $link, array(), array('search' => false, 'save' => false));
-        echo '</div>';
-        echo '</div>';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+        echo '</div>'; //.row
     }
 }
 
@@ -128,17 +138,23 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
             $RET = DBGet($QI);
             $RET = $RET[1];
             $title = $RET['TITLE'];
+
+            $status_bar = '';
+
             if ($undo_possible == true)
-                $title .='<div class="alert bg-success alert-styled-left">
+                $status_bar .='<div class="alert alert-success alert-styled-left">
                             <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-                            Teacher Re-Assignment Done <a href="#" onclick="load_link(\'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&action=undo\')" class="alert-link">Undo</a>
+                            Teacher Re-Assignment Done <a href="#" onclick="load_link(\'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&action=undo\')" class="btn-undo alert-link m-l-20">Undo</a>
                         </div>';
+
             echo "<FORM name=F2 id=F2 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&subject_id=" . strip_tags(trim($_REQUEST[subject_id])) . "&course_id=" . strip_tags(trim($_REQUEST[course_id])) . "&course_period_id=" . strip_tags(trim($_REQUEST[course_period_id])) . " method=POST>";
+
+            echo $status_bar;
 
             echo '<div class="panel panel-default">';
             echo '<div class="panel-heading">
                         <h6 class="panel-title">' . $title . '</h6>
-                        <div class="heading-elements">' . SubmitButton('Save', '', 'id="teacherReassnBtn" class="btn btn-primary" onclick="formcheck_teacher_reassignment(this);"') . '</div>
+                        <div class="heading-elements">' . SubmitButton('Save', '', 'id="teacherReassnBtn" class="btn btn-primary" onclick="formcheck_teacher_reassignment(this);self_disable(this);"') . '</div>
                 </div>';
             $header .= '<div class="panel-body">';
             $header .= '<div class="row">';

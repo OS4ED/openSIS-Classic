@@ -51,7 +51,7 @@ if ($_POST['button'] == 'Clear & Exit') {
             $id = $cpv_id;
         }
         //PopTableforWindow('header', $title);
-        echo "<FORM class=form-horizontal name=popform id=popform action=ForWindow.php?modname=schoolsetup/Courses.php&meet_date=$meet_date&modfunc=detail&mode=$_REQUEST['mode']&subject_id=$subject_id&course_id=$course_id&course_period_id=$cp_id&calendar_id=$calendar_id METHOD=POST>";
+        echo "<FORM class=form-horizontal name=popform id=popform action=ForWindow.php?modname=schoolsetup/Courses.php&meet_date=" . $meet_date . "&modfunc=detail&mode=" . $_REQUEST['mode'] . "&subject_id=" . $subject_id . "&course_id=" . $course_id . "&course_period_id=" . $cp_id . "&calendar_id=" . $calendar_id . " METHOD=POST>";
         echo '<div class="panel">';
         echo '<div class="tabbable">';
         echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a href="javascript:void(0);">Add Class</a></li></ul>';
@@ -66,7 +66,7 @@ if ($_POST['button'] == 'Clear & Exit') {
             unset($cpblocked_RET);
         if ($id != '')
             echo "<input type=hidden name=cpv_id value='$id' />";
-        echo '<div class="form-group"><label class="control-label text-right col-lg-4">Date</label><div class="col-lg-8">' . ProperDate($meet_date) . '</div></div>';
+        echo '<div class="form-group"><label class="control-label text-right col-lg-4">Date</label><div class="col-lg-8 m-t-10">' . ProperDate($meet_date) . '</div></div>';
         echo '<div class="form-group"><label class="control-label text-right col-lg-4">Period</label><div class="col-lg-8">' . SelectInputModal($cpblocked_RET['PERIOD_ID'], 'values[PERIOD_ID]', '', $periods, 'N/A', 'id=' . $date . '_period class=form-control onchange="formcheck_periods_F2(' . $date . ');"') . '</div></div>';
         echo '<input type="hidden" id="hidden_period_block" value="' . $cpblocked_RET['PERIOD_ID'] . '" />';
         echo '<div class="form-group"><label class="control-label text-right col-lg-4">Room</label><div class="col-lg-8">' . SelectInputModal($cpblocked_RET['ROOM_ID'], 'values[ROOM_ID]', '', $rooms, 'N/A', 'id=' . $date . '_room ') . '</div></div>';

@@ -162,8 +162,8 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             unset($_REQUEST['button']);
             unset($_SESSION['_REQUEST_vars']['button']);
         } else {
-            echo '<div align=center>There is only one school in the system so student cannot be transfered to any other school<br /><br>
-                   <input type=button class="btn btn-default" value=Close onclick=\'window.close();\'></div>
+            echo '<div align=center class="m-15">There is only one school in the system so student cannot be transfered to any other school<br /><br>
+                   <input type=button class="btn btn-default" value=Close onclick=\'closeThisModal("modal_default_transferred_out");\'></div>
                     </form>';
 //            PopTableWindow('footer');
 

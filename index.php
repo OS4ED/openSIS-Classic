@@ -55,7 +55,7 @@ if (isset($_GET['ins']))
 if ($install == 'comp') {
     if (is_dir('install')) {
         $dir = 'install/'; // IMPORTANT: with '/' at the end
-        // $remove_directory = delete_directory($dir);
+        $remove_directory = delete_directory($dir);
     }
 }
 

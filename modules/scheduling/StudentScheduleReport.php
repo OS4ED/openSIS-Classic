@@ -192,8 +192,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     echo "<td rowspan='" . $no_record . "'>" . $day . "</td>";
                                 }
                             }
-                            echo "<td>" . $sch['START_TIME'] . "</td>";
-                            echo "<td>" . $sch['END_TIME'] . "</td>";
+                            echo "<td>" . substr($sch['START_TIME'],0,5) . "</td>";
+                            echo "<td>" . substr($sch['END_TIME'],0,5) . "</td>";
                             echo "<td>" . $sch['CP_TITLE'] . "</td>";
                             echo "<td>" . $sch['TITLE'] . "</td>";
                             echo "<td>" . $sch['ROOM'] . "</td></tr>";
@@ -376,8 +376,8 @@ if (!$_REQUEST['modfunc']) {
                                 echo "<th class='info' rowspan='" . $no_record . "'>" . $day . "</th>";
                             }
                         }
-                        echo "<td>" . $sch['START_TIME'] . "</td>";
-                        echo "<td>" . $sch['END_TIME'] . "</td>";
+                        echo "<td>" . substr($sch['START_TIME'],0,5) . "</td>";
+                        echo "<td>" . substr($sch['END_TIME'],0,5) . "</td>";
                         echo "<td>" . $sch['CP_TITLE'] . "</td>";
                         echo "<td>" . $sch['TITLE'] . "</td>";
                         echo "<td>" . $sch['ROOM'] . "</td></tr>";

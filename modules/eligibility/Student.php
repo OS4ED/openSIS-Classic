@@ -151,11 +151,17 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
     if (!$_REQUEST['start_date']) {
         $start_time = $start;
         $start_date = strtoupper(date('d-M-y', $start_time));
-        $end_date = strtoupper(date('d-M-y', $end));
+        if(isset($end))
+        {
+            $end_date = strtoupper(date('d-M-y', $end));
+        }
+        else{
+            $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 6));
+        }
     } else {
         $start_time = $_REQUEST['start_date'];
         $start_date = strtoupper(date('d-M-y', $start_time));
-        $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 7));
+        $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 6));
     }
 
     $sql = 'SELECT max(unix_timestamp(END_DATE)) as END_DATE FROM eligibility_activities WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'';
@@ -224,9 +230,11 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
     echo '</FORM>';
 
     echo '</div><div class="col-md-6">';
-   $RET = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower'));
+   $sql= 'SELECT e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
+//    echo $sql;
+   $RET = DBGet(DBQuery($sql), array('ELIGIBILITY_CODE' => '_makeLower'));
     $columns = array('COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade');
-    ListOutputNew($RET, $columns, 'Course', 'Courses');
+    ListOutputNew_mod($RET, $columns, 'Course', 'Courses');
 
 
     echo '</div>'; //.col-md-6

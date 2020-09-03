@@ -308,7 +308,7 @@ if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['subject_id']) {
 if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
     PopTable('header', 'Search');
     echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search method=POST>";
-    echo '<TABLE><TR><TD><INPUT type=text class=cell_floating name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class=btn_medium value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class="btn btn-primary m-l-10" value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
     echo '</FORM>';
     PopTable('footer');
 
@@ -317,19 +317,31 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
         $courses_RET = DBGet(DBQuery("SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE '%" . strtoupper($_REQUEST['search_term']) . "%' OR UPPER(SHORT_NAME) = '" . strtoupper($_REQUEST['search_term']) . "') AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
         $periods_RET = DBGet(DBQuery("SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE '%" . strtoupper($_REQUEST['search_term']) . "%' OR UPPER(cp.SHORT_NAME) = '" . strtoupper($_REQUEST['search_term']) . "') AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "'"));
 
-        echo '<TABLE><TR><TD valign=top>';
+        echo '<div class="row">';
+        echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID');
         ListOutput($subjects_RET, array('TITLE' => 'Subject'), 'Subject', 'Subjects', $link, array(), array('search' => false, 'save' => false));
-        echo '</TD><TD valign=top>';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+        
+        echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID');
         ListOutput($courses_RET, array('TITLE' => 'Course'), 'Course', 'Courses', $link, array(), array('search' => false, 'save' => false));
-        echo '</TD><TD valign=top>';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+        
+        echo '<div class="col-md-4">';
+        echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID', 'course_period_id' => 'COURSE_PERIOD_ID');
         ListOutput($periods_RET, array('TITLE' => 'Course Period'), 'Course Period', 'Course Periods', $link, array(), array('search' => false, 'save' => false));
-        echo '</TD></TR></TABLE>';
+        echo '</div>'; //.panel-white
+        echo '</div>'; //.col-md-4
+        echo '</div>'; //.row
     }
 }
 

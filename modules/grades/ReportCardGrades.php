@@ -334,7 +334,10 @@ if (!$_REQUEST['modfunc']) {
     
     echo '</div>'; //.panel-body
     
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="setupGradesBtn" class="btn  btn-primary" onclick="formcheck_grade_grade(this);"') . '</div>';
+    if(UserProfileID() != '2')
+    {
+        echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="setupGradesBtn" class="btn  btn-primary" onclick="formcheck_grade_grade(this);"') . '</div>';
+    }
     echo '</div>'; //.panel
     echo '</FORM>';
 }

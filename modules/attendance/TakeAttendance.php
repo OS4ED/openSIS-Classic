@@ -199,53 +199,72 @@ $current_Q = 'SELECT ATTENDANCE_TEACHER_CODE,STUDENT_ID,ADMIN,COMMENT FROM ' . $
 $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
 
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
-    foreach ($_REQUEST['attendance'] as $student_id => $value) {
-        if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-            if (isset($_REQUEST['comment'][$student_id])) {
-                $c = str_replace("'", "\'", $_REQUEST['comment'][$student_id]);
-                $_REQUEST['comment'][$student_id] = clean_param($c, PARAM_SPCL);
+
+    $already_attn_flag = 0;
+    
+    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (".implode(', ',array_keys($_REQUEST['attendance'])).") AND SCHOOL_DATE = '$date' AND PERIOD_ID='".UserPeriod()."'"))) > 0 ? true : false;
+    
+    $attendanceAlreadyTakenTwo = DBGet(DBQuery('SELECT * FROM `attendance_completed` WHERE SCHOOL_DATE = \''.$date.'\' AND PERIOD_ID=\''.UserPeriod().'\' AND STAFF_ID = \''.User('STAFF_ID').'\''));
+    if($attendanceAlreadyTaken && count($attendanceAlreadyTakenTwo) == 0) {
+        // print_r(ErrorMessage(array('Attendance is already taken for the students on selected day and period.'), 'note'));
+        // die;
+        $already_attn_flag++;
+    }
+
+    if($already_attn_flag == 0)
+    {
+        foreach ($_REQUEST['attendance'] as $student_id => $value) {
+            if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                if (isset($_REQUEST['comment'][$student_id])) {
+                    $c = str_replace("'", "\'", $_REQUEST['comment'][$student_id]);
+                    $_REQUEST['comment'][$student_id] = clean_param($c, PARAM_SPCL);
+                }
             }
-        }
-        if ($current_RET[$student_id]) {
+            if ($current_RET[$student_id]) {
 
-            $sql = 'UPDATE ' . $table . ' SET ATTENDANCE_TEACHER_CODE=\'' . substr($value, 5) . '\' ';
+                $sql = 'UPDATE ' . $table . ' SET ATTENDANCE_TEACHER_CODE=\'' . substr($value, 5) . '\' ';
 
-            $sql .= ',ATTENDANCE_CODE=\'' . substr($value, 5) . '\'';
-            if (isset($_REQUEST['comment'][$student_id])) {
+                $sql .= ',ATTENDANCE_CODE=\'' . substr($value, 5) . '\'';
+                if (isset($_REQUEST['comment'][$student_id])) {
+                    $cmnt = trim($_REQUEST['comment'][$student_id]);
+                    $cmnt = clean_param($cmnt, PARAM_SPCL);
+                    $sql .= ',COMMENT=\'' . str_replace("'", "\'", $cmnt) . '\'';
+                }
+                $sql .= ' WHERE SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND PERIOD_ID=\'' . UserPeriod() . '\'  AND STUDENT_ID=\'' . $student_id . '\'';
+            } else {
                 $cmnt = trim($_REQUEST['comment'][$student_id]);
                 $cmnt = clean_param($cmnt, PARAM_SPCL);
-                $sql .= ',COMMENT=\'' . str_replace("'", "\'", $cmnt) . '\'';
+
+                $sql = "INSERT INTO " . $table . " (STUDENT_ID,SCHOOL_DATE,MARKING_PERIOD_ID,PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,COMMENT" . ($table == 'lunch_period' ? ',TABLE_NAME' : '') . ") values('$student_id','$date','$mp_id','" . UserPeriod() . "','" . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . "','" . substr($value, 5) . "','" . substr($value, 5) . "','" . str_replace("'", "\'", $cmnt) . "'" . ($table == 'lunch_period' ? ",'" . optional_param('table', '', PARAM_ALPHANUM) . "'" : '') . ")";
             }
-            $sql .= ' WHERE SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND PERIOD_ID=\'' . UserPeriod() . '\'  AND STUDENT_ID=\'' . $student_id . '\'';
-        } else {
-            $cmnt = trim($_REQUEST['comment'][$student_id]);
-            $cmnt = clean_param($cmnt, PARAM_SPCL);
-
-            $sql = "INSERT INTO " . $table . " (STUDENT_ID,SCHOOL_DATE,MARKING_PERIOD_ID,PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,COMMENT" . ($table == 'lunch_period' ? ',TABLE_NAME' : '') . ") values('$student_id','$date','$mp_id','" . UserPeriod() . "','" . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . "','" . substr($value, 5) . "','" . substr($value, 5) . "','" . str_replace("'", "\'", $cmnt) . "'" . ($table == 'lunch_period' ? ",'" . optional_param('table', '', PARAM_ALPHANUM) . "'" : '') . ")";
+            DBQuery($sql);
+            if ($_REQUEST['table'] == '0')
+                UpdateAttendanceDaily($student_id, $date);
         }
-        DBQuery($sql);
-        if ($_REQUEST['table'] == '0')
-            UpdateAttendanceDaily($student_id, $date);
-    }
-    if ($_REQUEST['table'] == '0') {
-        // echo 'SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\''.User('STAFF_ID').'\' OR SUBSTITUTE_STAFF_ID=\''.  User('STAFF_ID').'\') AND SCHOOL_DATE=\''.date('Y-m-d',strtotime($date)).'\' AND PERIOD_ID=\''.UserPeriod().'\' ';
-        $RET = DBGet(DBQuery('SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\'' . User('STAFF_ID') . '\' OR SUBSTITUTE_STAFF_ID=\'' . User('STAFF_ID') . '\') AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' and course_period_id=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
-        if (!count($RET)) {
-            $teacher_type = DBGet(DBQuery('SELECT TEACHER_ID,SECONDARY_TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
-            $secondary_teacher_id = $teacher_type[1]['SECONDARY_TEACHER_ID'];
-            $teacher_id = $teacher_type[1]['TEACHER_ID'];
-            if ($secondary_teacher_id == User('STAFF_ID'))
-                DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID,IS_TAKEN_BY_SUBSTITUTE_STAFF) values(\'' . $teacher_type[1]['TEACHER_ID'] . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\',\'Y\')');
-            elseif ($teacher_id == User('STAFF_ID'))
-                DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID) values(\'' . $teacher_type[1]['TEACHER_ID'] . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\')');
-            else
-                DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID) values(\'' . User('STAFF_ID') . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\')');
+        if ($_REQUEST['table'] == '0') {
+            // echo 'SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\''.User('STAFF_ID').'\' OR SUBSTITUTE_STAFF_ID=\''.  User('STAFF_ID').'\') AND SCHOOL_DATE=\''.date('Y-m-d',strtotime($date)).'\' AND PERIOD_ID=\''.UserPeriod().'\' ';
+            $RET = DBGet(DBQuery('SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\'' . User('STAFF_ID') . '\' OR SUBSTITUTE_STAFF_ID=\'' . User('STAFF_ID') . '\') AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' and course_period_id=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
+            if (!count($RET)) {
+                $teacher_type = DBGet(DBQuery('SELECT TEACHER_ID,SECONDARY_TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\''));
+                $secondary_teacher_id = $teacher_type[1]['SECONDARY_TEACHER_ID'];
+                $teacher_id = $teacher_type[1]['TEACHER_ID'];
+                if ($secondary_teacher_id == User('STAFF_ID'))
+                    DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID,IS_TAKEN_BY_SUBSTITUTE_STAFF) values(\'' . $teacher_type[1]['TEACHER_ID'] . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\',\'Y\')');
+                elseif ($teacher_id == User('STAFF_ID'))
+                    DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID) values(\'' . $teacher_type[1]['TEACHER_ID'] . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\')');
+                else
+                    DBQuery('INSERT INTO attendance_completed (STAFF_ID,SCHOOL_DATE,PERIOD_ID,COURSE_PERIOD_ID,CPV_ID,SUBSTITUTE_STAFF_ID) values(\'' . User('STAFF_ID') . '\',\'' . $date . '\',\'' . UserPeriod() . '\',\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\',\'' . CpvId() . '\',\'' . $secondary_teacher_id . '\')');
+            }
+            DBQuery('DELETE FROM missing_attendance WHERE  SCHOOL_DATE=\'' . $date . '\' AND COURSE_PERIOD_ID=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\'  AND(TEACHER_ID=\'' . User('STAFF_ID') . '\' OR SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')  AND PERIOD_ID=\'' . UserPeriod() . '\'');
         }
-        DBQuery('DELETE FROM missing_attendance WHERE  SCHOOL_DATE=\'' . $date . '\' AND COURSE_PERIOD_ID=\'' . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . '\'  AND(TEACHER_ID=\'' . User('STAFF_ID') . '\' OR SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')  AND PERIOD_ID=\'' . UserPeriod() . '\'');
-    }
 
-    $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
-    unset($_SESSION['_REQUEST_vars']['attendance']);
+        $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
+        unset($_SESSION['_REQUEST_vars']['attendance']);
+    }
+    else
+    {
+        echo '<div class="alert alert-danger alert-styled-left m-b-0">Attendance is already taken for the students on selected day and period.</div>';
+    }
 }
 
 

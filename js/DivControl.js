@@ -701,3 +701,11 @@ function hide_filter_modal()
 {
     window.$('#modal_filter_edit').modal('toggle');
 }
+
+function closeThisModal(modal_ID = false)
+{
+    if(modal_ID != '')
+    {
+        window.$('#'+modal_ID).modal('toggle');
+    }
+}
