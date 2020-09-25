@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("users > " . ProgramTitle());
+DrawBC(""._users." > " . ProgramTitle());
 include 'Menu.php';
 if (is_numeric(clean_param($_REQUEST['profile_id'], PARAM_INT))) {
     $exceptions_RET = DBGet(DBQuery('SELECT PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT FROM profile_exceptions WHERE PROFILE_ID=\'' . $_REQUEST[profile_id] . '\''), array(), array('MODNAME'));
@@ -53,8 +53,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
             unset($_REQUEST['profile_id']);
         } else {
             echo '<BR>';
-            PopTable('header', 'Alert Message');
-            echo "<CENTER><h4>Cannot delete because profile is associated with staff.</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='window.location=\"Modules.php?modname=$_REQUEST[modname] \"'></FORM></CENTER>";
+            PopTable('header',  _alertMessage);
+            echo "<CENTER><h4>Cannot delete because profile is associated with staff.</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=$_REQUEST[modname] \"'></FORM></CENTER>";
             PopTable('footer');
             return false;
         }
@@ -129,14 +129,14 @@ if (clean_param($_REQUEST['new_profile_title'], PARAM_NOTAGS) && AllowEdit()) {
 
 if ($_REQUEST['modfunc'] != 'delete') {
 
-    PopTable('header', 'Permissions');
+    PopTable('header',  _permissions);
     echo "<FORM class=\"form-horizontal\" name=pref_form id=pref_form action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&profile_id=$_REQUEST[profile_id] method=POST>";
-    echo '<p class="text-muted">Select the programs that users of this profile can use and which programs those users can use to save information.</p>';
+    echo '<p class="text-muted">'._selectTheProgramsThatUsersOfThisProfileCanUseAndWhichProgramsThoseUsersCanUseToSaveInformation.'.</p>';
 
     echo '<div class="row"><div class="col-md-3">';
     
     if (AllowEdit()) {
-        echo '<a  href="javascript:void(0);" class="btn btn-success btn-block m-b-15" onclick="$(\'#new_id_content\').toggle();"><i class="icon-plus3"></i> Add a User Profile</a>';
+        echo '<a  href="javascript:void(0);" class="btn btn-success btn-block m-b-15" onclick="$(\'#new_id_content\').toggle();"><i class="icon-plus3"></i> '._addAUserProfile.'</a>';
     }
     echo '<table class="table bg-primary">';
     $style = '';
@@ -145,7 +145,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
     if (User('PROFILE_ID') == 1)
         $where_ex = ' WHERE ID<>0 ';
     $profiles_RET = DBGet(DBQuery('SELECT ID,TITLE,PROFILE,IF(ID=4,-1,ID) as ORDER_ID FROM user_profiles ' . $where_ex . ' ORDER BY ORDER_ID'), array(), array('PROFILE', 'ID'));
-    echo '<thead><tr><th colspan=3 class="text-uppercase">Profiles</th></tr></thead>';
+    echo '<thead><tr><th colspan=3 class="text-uppercase">'._profiles.'</th></tr></thead>';
     echo '<tbody>';
     foreach (array('admin', 'teacher', 'parent', 'student') as $profiles) {
         foreach ($profiles_RET[$profiles] as $id => $profile) {
@@ -154,6 +154,31 @@ if ($_REQUEST['modfunc'] != 'delete') {
 		
             else
                 echo '<TR><TD width=20 align=right class="p-10">' . (AllowEdit() && $id > 4 && $id != 0 ? '<a href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=delete&profile_id='.$id.'" class="btn btn-default btn-xs p-5"><i class="icon-cross2"></i></a>' : '') . '</TD><TD onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&profile_id=' . $id . '\';">';
+                
+            if($profile[1]['TITLE'] == "Super Administrator")
+            {
+            $profile[1]['TITLE'] = _superAdministrator;
+            
+            }elseif($profile[1]['TITLE'] == "Administrator")
+            {
+                $profile[1]['TITLE'] = _administrator;
+                
+            }elseif($profile[1]['TITLE'] == "Teacher")
+            {
+                $profile[1]['TITLE'] = _teacher;
+                
+            }elseif($profile[1]['TITLE'] == "Student")
+            {
+                $profile[1]['TITLE'] = _student;
+                    
+            }elseif($profile[1]['TITLE'] == "Parent"){
+                        $profile[1]['TITLE'] = _parent;
+                        
+            }elseif($profile[1]['TITLE'] == "Admin Asst")
+            {
+            $profile[1]['TITLE'] = _adminAsst;
+                        
+            }
             echo '<a href="javascript:void(0);" class="text-white">' . ($id > 4 ? '' : '<b>') . $profile[1]['TITLE'] . ($id > 4 ? '' : '</b>') . '</a>';
             echo '</TD>';
             echo '<TD><A href="javascript:void(0);" class="text-white"><i class="fa fa-caret-right"></i></A></TD>';
@@ -165,7 +190,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
 
 //	    if (AllowEdit()) {
 //		echo '<TR id=new_tr><TD colspan=3' . $style1 . '>';
-//		echo '<a href="javascript:void(0)" onclick="document.getElementById(\'selected_tr\').onmouseover=\'this.style.backgroundColor=' . Preferences('HIGHLIGHT') . '; this.style.color=\'white\'; document.getElementById(\'selected_tr\').onmouseout=this.style.cssText=\'background-color:transparent; color:black;\'; document.getElementById(\'selected_tr\').style.cssText=\'background-color:transparent; color:black;\'; changeHTML({\'new_id_div\':\'new_id_content\'},[\'main_div\']);document.getElementById(\'new_tr\').onmouseover=\'\';document.getElementById(\'new_tr\').onmouseout=\'\';this.onclick=\'\';">Add a User Profile</a>';
+//		echo '<a href="javascript:void(0)" onclick="document.getElementById(\'selected_tr\').onmouseover=\'this.style.backgroundColor=' . Preferences('HIGHLIGHT') . '; this.style.color=\'white\'; document.getElementById(\'selected_tr\').onmouseout=this.style.cssText=\'background-color:transparent; color:black;\'; document.getElementById(\'selected_tr\').style.cssText=\'background-color:transparent; color:black;\'; changeHTML({\'new_id_div\':\'new_id_content\'},[\'main_div\']);document.getElementById(\'new_tr\').onmouseover=\'\';document.getElementById(\'new_tr\').onmouseout=\'\';this.onclick=\'\';">'._addAUserProfile.'</a>';
 //		echo '</TD>';
 //
 //		echo '</TR>';
@@ -185,10 +210,10 @@ if ($_REQUEST['modfunc'] != 'delete') {
     
     echo '<DIV id=new_id_content style="display:none;"><div class="row"><div class="col-md-8 col-md-offset-2">';
     echo '<div class="panel panel-default">';
-    echo '<div class="panel-heading"><h4 class="panel-title">Add a User Profile</h4></div>';
+    echo '<div class="panel-heading"><h4 class="panel-title">'._addAUserProfile.'</h4></div>';
     echo '<div class="panel-body">';
     echo '<div class="form-group">';
-    echo '<label class="control-label col-md-3 text-right">Title </label>';
+    echo '<label class="control-label col-md-3 text-right">'._title.' </label>';
     echo '<div class="col-md-9">';
     echo '<INPUT type=text name=new_profile_title maxlength=20 class="form-control">';
     echo '</div>';
@@ -199,7 +224,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
     echo '<SELECT name=new_profile_type class=form-control><OPTION value=admin>Administrator<OPTION value=teacher>Teacher<OPTION value=parent>Parent</SELECT>';
     echo '</div>';
     echo '</div>';
-    echo '<div class="text-right"><input type=submit value=save class="btn btn-primary" onclick="self_disable(this);"></div>';
+    echo '<div class="text-right"><input type=submit value='._save.' class="btn btn-primary" onclick="self_disable(this);"></div>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div></div></DIV>';
@@ -208,26 +233,39 @@ if ($_REQUEST['modfunc'] != 'delete') {
     if ($_REQUEST['profile_id'] != '') {
 
         echo '<TABLE class="table">';
-        echo '<thead><TR><TD colspan=5 class="text-uppercase"><b>Permissions</b></TD></TR></thead>';
+        echo '<thead><TR><TD colspan=5 class="text-uppercase"><b>'._permissions.'</b></TD></TR></thead>';
         foreach ($menuprof as $modcat => $profiles) {
             $values = $profiles[$xprofile];
             if ($modcat == 'eligibility')
                 $modcat = 'Extracurricular';
             echo '<TR><TD valign=top class="bg-primary">';
-            echo "<b>" . ucwords(str_replace('_', ' ', $modcat)) . "</b></TD><TD width=3 class=\"bg-primary\">&nbsp;</TD>";
+            $modname = $modcat;
+            switch ($modcat) {
+                case 'schoolsetup':
+                    $modname = 'schoolSetup';
+                    break;
+                
+                case 'Extracurricular':
+                    $modname = 'extracurricular';
+                    break;
+
+                default:
+                    break;
+            }
+            echo "<b>" . ucwords(str_replace('_', ' ', constant("_".$modname))) . "</b></TD><TD width=3 class=\"bg-primary\">&nbsp;</TD>";
             if ($modcat == 'Extracurricular')
-                echo "<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;'><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_use_eligibility onclick='checkAll(this.form,this.form.can_use_eligibility.checked,\"can_use[eligibility\");'>" : '') . "<span></span>Can Use</label></td>";
+                echo "<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;'><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_use_eligibility onclick='checkAll(this.form,this.form.can_use_eligibility.checked,\"can_use[eligibility\");'>" : '') . "<span></span>"._canUse."</label></td>";
             else
-                echo "<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;'><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_use_$modcat onclick='checkAll(this.form,this.form.can_use_$modcat.checked,\"can_use[$modcat\");'>" : '') . "<span></span>Can Use</label></td>";
+                echo "<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;'><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_use_$modcat onclick='checkAll(this.form,this.form.can_use_$modcat.checked,\"can_use[$modcat\");'>" : '') . "<span></span>"._canUse."</label></td>";
             $profile_id = $_REQUEST['profile_id'];
             $sql_profile = "SELECT PROFILE FROM user_profiles WHERE ID='$profile_id'";
             $res = DBGet(DBQuery($sql_profile));
 
             if (($xprofile == 'admin' || $modcat == 'students') && $_REQUEST['profile_id'] != 4 && $res[1]['PROFILE'] != 'parent') {
                 if ($modcat == 'Extracurricular')
-                    echo"<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;' ><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_edit_eligibility onclick='checkAll(this.form,this.form.can_edit_eligibility.checked,\"can_edit[eligibility\");'>" : '') . "<span></span>Can Edit</label></td>";
+                    echo"<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;' ><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_edit_eligibility onclick='checkAll(this.form,this.form.can_edit_eligibility.checked,\"can_edit[eligibility\");'>" : '') . "<span></span>"._canEdit."</label></td>";
                 else
-                    echo"<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;' ><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_edit_$modcat onclick='checkAll(this.form,this.form.can_edit_$modcat.checked,\"can_edit[$modcat\");'>" : '') . "<span></span>Can Edit</label></td>";
+                    echo"<td class=\"bg-primary\" style='white-space: nowrap; padding-top:2px; padding-bottom: 2px;' ><label class=\"checkbox checkbox-inline checkbox-switch switch-warning switch-xs\">" . (AllowEdit() ? "<INPUT type=checkbox name=can_edit_$modcat onclick='checkAll(this.form,this.form.can_edit_$modcat.checked,\"can_edit[$modcat\");'>" : '') . "<span></span>"._canEdit."</label></td>";
             } else
                 echo"<td class=\"bg-primary\"></td>";
             echo "<td class=\"bg-primary\"></td></TR>";
@@ -348,7 +386,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
         }
         echo '</TABLE>';
 
-        echo '<div class="panel-footer text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
+        echo '<div class="panel-footer text-right">' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
     }
     echo '</DIV>';
 

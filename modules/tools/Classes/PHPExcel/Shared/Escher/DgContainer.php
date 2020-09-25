@@ -48,7 +48,7 @@ class PHPExcel_Shared_Escher_DgContainer
 	 */
 	private $_lastSpId;
 
-	private $_spgrContainer = null;
+	private $_spgrContainer = _null;
 
 	public function getDgId()
 	{

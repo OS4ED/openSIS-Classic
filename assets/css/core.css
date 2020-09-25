@@ -5059,6 +5059,9 @@ ul.dropdown-menu .dropdown-content-heading:first-child {
     float: left;
     margin-right: 0;
   }
+  .breadcrumb-line .breadcrumb:dir(rtl) {
+    float: right;
+  }
 }
 @media (max-width: 768px) {
   .breadcrumb-line {

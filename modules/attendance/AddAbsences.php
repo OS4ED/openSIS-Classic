@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-// include('../../functions/SqlSecurityFnc.php');
+include('lang/language.php');
 
 define('LANG_RECORDS_ADDED_CONFIRMATION', 'Absence records were added for the selected students.');
 define('LANG_CHOOSE_STUDENT_ERROR', 'You must choose at least one period and one student.');
@@ -185,7 +185,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
 
 if (!$_REQUEST['modfunc']) {
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",NULL AS CHECKBOX";
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -204,7 +204,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="col-lg-12">';
 
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-2">Add absence to periods</label>';
+        echo '<label class="control-label col-lg-2">'._addAbsenceToPeriods.'</label>';
         echo '<div class="col-lg-10">';
 
         $periods_RET = DBGet(DBQuery('SELECT SHORT_NAME,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND EXISTS (SELECT * FROM course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=school_periods.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'' . 'Y' . '\') ORDER BY SORT_ORDER'));
@@ -216,7 +216,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-3">Absence code</label>';
+        echo '<label class="control-label col-lg-3">'._absenceCode.'</label>';
         echo '<div class="col-lg-9">';
         echo '<SELECT class="form-control" name=absence_code>';
         $codes_RET = DBGet(DBQuery('SELECT TITLE,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=0'));
@@ -229,7 +229,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-3">Absence reason</label>';
+        echo '<label class="control-label col-lg-3">'._absenceReason.'</label>';
         echo '<div class="col-lg-9">';
         echo '<INPUT type=text name=absence_reason class="form-control">';
         echo '</div>'; //.col-lg-8
@@ -247,7 +247,7 @@ if (!$_REQUEST['modfunc']) {
 
         $months=array("01"=>'January',"02"=>'February',"03"=>'March',"04"=>'April',"05"=>'May',"06"=>'June',"07"=>'July',"08"=>'August',"09"=>'September',"10"=>'October',"11"=>'November',"12"=>'December');
         $time = mktime(0, 0, 0, $_REQUEST['month'] * 1, 1, substr($_REQUEST['year'], 2));
-//        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' => true)) . '</div></div></div>';
+//        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' =>true)) . '</div></div></div>';
         
         
         $date = $_REQUEST['year'].'-'.$_REQUEST['month'].'-1';
@@ -258,7 +258,7 @@ if (!$_REQUEST['modfunc']) {
         
         echo '<div class="row m-b-15">';
         echo '<div class="col-xs-2 col-md-4 text-left">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> <span class="hidden-xs">PREV MONTH</span></a>';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> <span class="hidden-xs">'._prevMonth.'</span></a>';
         echo '</div>';
         echo '<div class="col-xs-8 col-md-4 text-center">';
         echo '<div class="form-inline">';
@@ -283,7 +283,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.form-inline
         echo '</div>'; //.col-md-4
         echo '<div class="col-xs-2 col-md-4 text-right">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'"><span class="hidden-xs">NEXT MONTH</span> <i class="icon-arrow-right8 position-right"></i></a>';
+        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'"><span class="hidden-xs">'._nextMonth.'</span> <i class="icon-arrow-right8 position-right"></i></a>';
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
         
@@ -294,7 +294,7 @@ if (!$_REQUEST['modfunc']) {
             $last--;
         
         echo '<div class="table-responsive"><table class="table table-bordered table-condensed" width="100%"><thead><tr>';
-        echo '<th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead><tbody><tr>';
+        echo '<th>'._sun.'</th><th>'._mon.'</th><th>'._tue.'</th><th>'._wed.'</th><th>'._thu.'</th><th>'._fri.'</th><th>'._sat.'</th></tr></thead><tbody><tr>';
         $calendar_RET = DBGet(DBQuery('SELECT SCHOOL_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND MINUTES!=0 AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\''), array(), array('SCHOOL_DATE'));
         for ($i = 1; $i <= $skip; $i++)
             echo '<td class="alpha-grey"></td>';
@@ -359,7 +359,7 @@ if (!$_REQUEST['modfunc']) {
     
     // if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
     if ($_REQUEST['search_modfunc'] == 'list')   
-        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(Save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
+        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 
     Search('student_id', $extra);
 
@@ -373,7 +373,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -384,7 +384,7 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' found.</h6>';
     if (count($subjects_RET) > 0) {
         echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
         foreach ($subjects_RET as $val) {

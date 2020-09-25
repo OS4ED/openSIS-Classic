@@ -81,7 +81,7 @@ class PHPExcel_Worksheet_MemoryDrawing extends PHPExcel_Worksheet_BaseDrawing im
     public function __construct()
     {
     	// Initialise values
-    	$this->_imageResource		= null;
+    	$this->_imageResource		= _null;
     	$this->_renderingFunction 	= self::RENDERING_DEFAULT;
     	$this->_mimeType			= self::MIMETYPE_DEFAULT;
     	$this->_uniqueName			= md5(rand(0, 9999). time() . rand(0, 9999));

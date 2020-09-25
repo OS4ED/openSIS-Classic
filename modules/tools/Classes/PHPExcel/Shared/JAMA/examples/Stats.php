@@ -126,7 +126,7 @@ class Base {/*{{{*/
      * @access  private
      * @var array
      */
-    public $_data = null;
+    public $_data = _null;
 
     /**
      * Expanded data set. Only set when cummulative data
@@ -135,7 +135,7 @@ class Base {/*{{{*/
      * @access  private
      * @var array
      */
-    public $_dataExpanded = null;
+    public $_dataExpanded = _null;
 
     /**
      * Flag for data type, one of STATS_DATA_SIMPLE or
@@ -144,7 +144,7 @@ class Base {/*{{{*/
      * @access  private
      * @var int
      */
-    public $_dataOption = null;
+    public $_dataOption = _null;
 
     /**
      * Flag for null handling options. One of STATS_REJECT_NULL,
@@ -190,9 +190,9 @@ class Base {/*{{{*/
         if (!is_array($arr)) {
             return PEAR::raiseError('invalid data, an array of numeric data was expected');
         }
-        $this->_data = null;
-        $this->_dataExpanded = null;
-        $this->_dataOption = null;
+        $this->_data = _null;
+        $this->_dataExpanded = _null;
+        $this->_dataOption = _null;
         $this->_calculatedValues = array();
         if ($opt == STATS_DATA_SIMPLE) {
             $this->_dataOption = $opt;

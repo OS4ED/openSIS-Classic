@@ -21,9 +21,9 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods'
     $coursePeriods_RET = DBGet($QI);
     $html = 'cp_modal_cp||';
 
-    $html .= '<h6>' . count($coursePeriods_RET) . ((count($coursePeriods_RET) == 1) ? ' Period was' : ' Periods were') . ' found.</h6>';
+    $html .= '<h6>' . count($coursePeriods_RET) . ((count($coursePeriods_RET) == 1) ? ' '._periodWas.'' : ' '._periodsWere.'') . ' '._found.'.</h6>';
 
-    $html .= '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>&nbsp;</th><th>Course Periods</th><th>Available Seats</th></tr></thead>';
+    $html .= '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>&nbsp;</th><th>'._coursePeriods.'</th><th>'._availableSeats.'</th></tr></thead>';
     $html .= '<tbody>';
     foreach ($coursePeriods_RET as $val) {
         $html .= '<tr><td><input type="checkbox" id="course_' . $val['COURSE_PERIOD_ID'] . '" name="course_periods[' . $val['COURSE_PERIOD_ID'] . ']" value=' . $val['COURSE_PERIOD_ID'] . ' onchange="verify_schedule(this);"></td><td><a href=javascript:void(0); onclick="grab_coursePeriod(' . $val['COURSE_PERIOD_ID'] . ',\'course_periods\',\'subject_id\')">' . $val['TITLE'] . ' - ' . $val['SHORT_NAME'] . '</a></td><td>' . $val['AVAILABLE_SEATS'] . '</td></tr>';
@@ -41,8 +41,8 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html = 'course_modal_cp||';
-    $html .= '<h6>' . count($courses_RET) . ((count($courses_RET) == 1) ? ' Course was' : ' Courses were') . ' found.</h6>';
-    $html .= '<table  class="table table-bordered"><thead><tr class="alpha-grey"><th>Course</th></tr></thead>';
+    $html .= '<h6>' . count($courses_RET) . ((count($courses_RET) == 1) ? ' '._courseWas.'' : ' '._coursesWere.'') . ' '._found.'.</h6>';
+    $html .= '<table  class="table table-bordered"><thead><tr class="alpha-grey"><th>'._course.'</th></tr></thead>';
     $html .= '<tbody>';
     foreach ($courses_RET as $val) {
 

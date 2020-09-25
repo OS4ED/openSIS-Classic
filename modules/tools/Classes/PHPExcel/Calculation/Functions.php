@@ -428,7 +428,7 @@ class PHPExcel_Calculation_Functions {
 
 
 	/**
-	 *	LOGICAL_FALSE
+	 *	LOGICALfalse
 	 *
 	 *	Returns the boolean FALSE.
 	 *
@@ -439,13 +439,13 @@ class PHPExcel_Calculation_Functions {
 	 *	@category Logical Functions
 	 *	@return	boolean		False
 	 */
-	public static function LOGICAL_FALSE() {
+	public static function LOGICALfalse() {
 		return False;
-	}	//	function LOGICAL_FALSE()
+	}	//	function LOGICALfalse()
 
 
 	/**
-	 *	LOGICAL_TRUE
+	 *	LOGICALtrue
 	 *
 	 *	Returns the boolean TRUE.
 	 *
@@ -456,9 +456,9 @@ class PHPExcel_Calculation_Functions {
 	 *	@category Logical Functions
 	 *	@return	boolean		True
 	 */
-	public static function LOGICAL_TRUE() {
+	public static function LOGICALtrue() {
 		return True;
-	}	//	function LOGICAL_TRUE()
+	}	//	function LOGICALtrue()
 
 
 	/**
@@ -596,7 +596,7 @@ class PHPExcel_Calculation_Functions {
 	 *	ATAN2
 	 *
 	 *	This function calculates the arc tangent of the two variables x and y. It is similar to
-	 *		calculating the arc tangent of y ÷ x, except that the signs of both arguments are used
+	 *		calculating the arc tangent of y ï¿½ x, except that the signs of both arguments are used
 	 *		to determine the quadrant of the result.
 	 *	The arctangent is the angle from the x-axis to a line containing the origin (0, 0) and a
 	 *		point with coordinates (xCoordinate, yCoordinate). The angle is given in radians between
@@ -725,7 +725,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function PRODUCT() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -764,7 +764,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function QUOTIENT() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -804,7 +804,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MIN() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -840,7 +840,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MINA() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -882,7 +882,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MINIF($aArgs,$condition,$sumArgs = array()) {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aArgs = self::flattenArray($aArgs);
 		$sumArgs = self::flattenArray($sumArgs);
@@ -963,7 +963,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MAX() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -999,7 +999,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MAXA() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArray(func_get_args());
@@ -1054,7 +1054,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function MAXIF($aArgs,$condition,$sumArgs = array()) {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aArgs = self::flattenArray($aArgs);
 		$sumArgs = self::flattenArray($sumArgs);
@@ -1430,7 +1430,7 @@ class PHPExcel_Calculation_Functions {
 	 */
 	public static function AVERAGEA() {
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		// Loop through arguments
 		$aArgs = self::flattenArrayIndexed(func_get_args());
@@ -1642,7 +1642,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGE($aArgs);
 		if ($aMean != self::$_errorCodes['divisionbyzero']) {
@@ -1692,7 +1692,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGE($aArgs);
 		if ($aMean != self::$_errorCodes['divisionbyzero']) {
@@ -1863,7 +1863,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGE($aArgs);
 		if (!is_null($aMean)) {
@@ -1910,7 +1910,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGEA($aArgs);
 		if (!is_null($aMean)) {
@@ -1962,7 +1962,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGE($aArgs);
 		if (!is_null($aMean)) {
@@ -2009,7 +2009,7 @@ class PHPExcel_Calculation_Functions {
 		$aArgs = self::flattenArrayIndexed(func_get_args());
 
 		// Return value
-		$returnValue = null;
+		$returnValue = _null;
 
 		$aMean = self::AVERAGEA($aArgs);
 		if (!is_null($aMean)) {
@@ -3784,7 +3784,7 @@ class PHPExcel_Calculation_Functions {
 		$p_minus = $p - 1.0;
 		$h = 1.0 - $sum_pq * $x / $p_plus;
 		if (abs($h) < XMININ) {
-			$h = XMININ;
+			$h = _XMININ;
 		}
 		$h = 1.0 / $h;
 		$frac = $h;
@@ -3796,24 +3796,24 @@ class PHPExcel_Calculation_Functions {
 			$d = $m * ($q - $m) * $x / ( ($p_minus + $m2) * ($p + $m2));
 			$h = 1.0 + $d * $h;
 			if (abs($h) < XMININ) {
-				$h = XMININ;
+				$h = _XMININ;
 			}
 			$h = 1.0 / $h;
 			$c = 1.0 + $d / $c;
 			if (abs($c) < XMININ) {
-				$c = XMININ;
+				$c = _XMININ;
 			}
 			$frac *= $h * $c;
 			// odd index for d
 			$d = -($p + $m) * ($sum_pq + $m) * $x / (($p + $m2) * ($p_plus + $m2));
 			$h = 1.0 + $d * $h;
 			if (abs($h) < XMININ) {
-				$h = XMININ;
+				$h = _XMININ;
 			}
 			$h = 1.0 / $h;
 			$c = 1.0 + $d / $c;
 			if (abs($c) < XMININ) {
-				$c = XMININ;
+				$c = _XMININ;
 			}
 			$delta = $h * $c;
 			$frac *= $delta;
@@ -5500,7 +5500,7 @@ class PHPExcel_Calculation_Functions {
 	}	//	function TRIMSPACES()
 
 
-	private static $_invalidChars = Null;
+	private static $_invalidChars = _Null;
 
 	/**
 	 *	TRIMNONPRINTABLE
@@ -8851,7 +8851,7 @@ class PHPExcel_Calculation_Functions {
 	/**
 	 * GESTEP
 	 *
-	 * Returns 1 if number = step; returns 0 (zero) otherwise
+	 * Returns 1 if number = _step; returns 0 (zero) otherwise
 	 *
 	 * @param	float		$number
 	 * @param	float		$step
@@ -10991,7 +10991,7 @@ class PHPExcel_Calculation_Functions {
 		}
 
 		$cellAddress1 = $cellAddress;
-		$cellAddress2 = NULL;
+		$cellAddress2 = _NULL;
 		if (strpos($cellAddress,':') !== false) {
 			list($cellAddress1,$cellAddress2) = explode(':',$cellAddress);
 		}
@@ -11049,7 +11049,7 @@ class PHPExcel_Calculation_Functions {
 			return self::$_errorCodes['reference'];
 		}
 
-		$sheetName = null;
+		$sheetName = _null;
 		if (strpos($cellAddress,"!")) {
 			list($sheetName,$cellAddress) = explode("!",$cellAddress);
 		}

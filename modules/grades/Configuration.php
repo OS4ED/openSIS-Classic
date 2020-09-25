@@ -119,7 +119,7 @@ if ($_REQUEST['values']) {
         unset($_SESSION['_REQUEST_vars']['values']);
     }
     else {
-        echo '<div class="alert alert-danger alert-styled-left alert-bordered">Total must be <span class="text-bold">100%</span>!</div>';
+        echo '<div class="alert alert-danger alert-styled-left alert-bordered">'._totalMustBe.' <span class="text-bold">100%</span>!</div>';
     }
 }
 
@@ -141,50 +141,50 @@ if (count($config_RET)) {
 if (UserCoursePeriod() != '')
     $grades = DBGet(DBQuery('SELECT cp.TITLE AS CP_TITLE,c.TITLE AS COURSE_TITLE,cp.COURSE_PERIOD_ID,rcg.TITLE,rcg.ID FROM report_card_grades rcg,course_periods cp,course_period_var cpv,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND cp.SCHOOL_ID=rcg.SCHOOL_ID AND cp.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND cp.SYEAR=rcg.SYEAR AND cp.SYEAR=\'' . UserSyear() . '\' AND rcg.GRADE_SCALE_ID=cp.GRADE_SCALE_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND DOES_BREAKOFF=\'Y\' GROUP BY cp.COURSE_PERIOD_ID,rcg.ID ORDER BY rcg.BREAK_OFF IS NOT NULL DESC,rcg.BREAK_OFF DESC,rcg.SORT_ORDER '), array(), array('COURSE_PERIOD_ID'));
 echo "<FORM class=form-horizontal action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
-PopTable('header', 'Configuration');
+PopTable('header',  _configuration);
 
 echo '<fieldset>';
-echo '<h5 class="text-primary">General</h5>';
+echo '<h5 class="text-primary">'._general.'</h5>';
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<h6><b>Score Rounding</b></h6>';
+echo '<h6><b>'._scoreRounding.'</b></h6>';
 echo '<div class="mb-20">';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=UP' . (($programconfig['ROUNDING'] == 'UP') ? ' CHECKED' : '') . '>Up</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=DOWN' . (($programconfig['ROUNDING'] == 'DOWN') ? ' CHECKED' : '') . '>Down</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=NORMAL' . (($programconfig['ROUNDING'] == 'NORMAL') ? ' CHECKED' : '') . '>Normal</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=\'\'' . (($programconfig['ROUNDING'] == '') ? ' CHECKED' : '') . '>None</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=UP' . (($programconfig['ROUNDING'] == 'UP') ? ' CHECKED' : '') . '>'._up.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=DOWN' . (($programconfig['ROUNDING'] == 'DOWN') ? ' CHECKED' : '') . '>'._down.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=NORMAL' . (($programconfig['ROUNDING'] == 'NORMAL') ? ' CHECKED' : '') . '>'._normal.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ROUNDING] value=\'\'' . (($programconfig['ROUNDING'] == '') ? ' CHECKED' : '') . '>'._none.'</label>';
 echo '</div>';
 
 if (!$programconfig['ASSIGNMENT_SORTING'])
     $programconfig['ASSIGNMENT_SORTING'] = 'ASSIGNMENT_ID';
 
-echo '<h6><b>Assignment Sorting</b></h6>';
+echo '<h6><b>'._assignmentSorting.'</b></h6>';
 echo '<div class="mb-20">';
-echo '<label class="radio-inline"><input type=radio name=values[ASSIGNMENT_SORTING] value=ASSIGNMENT_ID' . (($programconfig['ASSIGNMENT_SORTING'] == 'ASSIGNMENT_ID') ? ' CHECKED' : '') . '>Newest First</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=DUE_DATE' . (($programconfig['ASSIGNMENT_SORTING'] == 'DUE_DATE') ? ' CHECKED' : '') . '>Due Date</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=ASSIGNED_DATE' . (($programconfig['ASSIGNMENT_SORTING'] == 'ASSIGNED_DATE') ? ' CHECKED' : '') . '>Assigned Date</label>';
-echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=UNGRADED' . (($programconfig['ASSIGNMENT_SORTING'] == 'UNGRADED') ? ' CHECKED' : '') . '>Ungraded</label>';
+echo '<label class="radio-inline"><input type=radio name=values[ASSIGNMENT_SORTING] value=ASSIGNMENT_ID' . (($programconfig['ASSIGNMENT_SORTING'] == 'ASSIGNMENT_ID') ? ' CHECKED' : '') . '>'._newestFirst.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=DUE_DATE' . (($programconfig['ASSIGNMENT_SORTING'] == 'DUE_DATE') ? ' CHECKED' : '') . '>'._dueDate.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=ASSIGNED_DATE' . (($programconfig['ASSIGNMENT_SORTING'] == 'ASSIGNED_DATE') ? ' CHECKED' : '') . '>'._assignedDate.'</label>';
+echo '<label class="radio-inline"><INPUT type=radio name=values[ASSIGNMENT_SORTING] value=UNGRADED' . (($programconfig['ASSIGNMENT_SORTING'] == 'UNGRADED') ? ' CHECKED' : '') . '>'._ungraded.'</label>';
 echo '</div>';
 
 echo '<div>';
-echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[WEIGHT] value=Y' . (($programconfig['WEIGHT'] == 'Y') ? ' CHECKED' : '') . '>Weight grades</label>';
-echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[DEFAULT_ASSIGNED] value=Y' . (($programconfig['DEFAULT_ASSIGNED'] == 'Y') ? ' CHECKED' : '') . '>Assigned Date defaults to today</label>';
+echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[WEIGHT] value=Y' . (($programconfig['WEIGHT'] == 'Y') ? ' CHECKED' : '') . '>'._weightGrades.'</label>';
+echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[DEFAULT_ASSIGNED] value=Y' . (($programconfig['DEFAULT_ASSIGNED'] == 'Y') ? ' CHECKED' : '') . '>'._assignedDateDefaultsToToday.'</label>';
 echo '</div>';
 echo '<div class="mb-20">';
-echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[DEFAULT_DUE] value=Y' . (($programconfig['DEFAULT_DUE'] == 'Y') ? ' CHECKED' : '') . '>Due Date defaults to today</label>';
-echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[ELIGIBILITY_CUMULITIVE] value=Y' . (($programconfig['ELIGIBILITY_CUMULITIVE'] == 'Y') ? ' CHECKED' : '') . '>Calulate Extracurricular using Cumulative Semester grades</label>';
+echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[DEFAULT_DUE] value=Y' . (($programconfig['DEFAULT_DUE'] == 'Y') ? ' CHECKED' : '') . '>'._dueDateDefaultsToToday.'</label>';
+echo '<label class="checkbox-inline"><INPUT type=checkbox name=values[ELIGIBILITY_CUMULITIVE] value=Y' . (($programconfig['ELIGIBILITY_CUMULITIVE'] == 'Y') ? ' CHECKED' : '') . '>'._calulateExtracurricularUsingCumulativeSemesterGrades.'</label>';
 echo '</div>';
 
 echo '</div>'; //.col-md-6
 echo '<div class="col-md-6">';
 
 echo '<div class="form-group">';
-echo '<div class="col-md-2"><INPUT class="form-control" type=text name=values[ANOMALOUS_MAX] value="' . ($programconfig['ANOMALOUS_MAX'] != '' ? $programconfig['ANOMALOUS_MAX'] : '100') . '" size=3 maxlength=3></div><label class="col-md-10 control-label">% Allowed maximum percent in Anomalous grades</label>';
+echo '<div class="col-md-2"><INPUT class="form-control" type=text name=values[ANOMALOUS_MAX] value="' . ($programconfig['ANOMALOUS_MAX'] != '' ? $programconfig['ANOMALOUS_MAX'] : '100') . '" size=3 maxlength=3></div><label class="col-md-10 control-label">% '._allowedMaximumPercentInAnomalousGrades.'</label>';
 echo '</div>'; //.form-group
 
 echo '<div class="form-group">';
-echo '<div class="col-md-2"><INPUT class="form-control" type=text name=values[LATENCY] value="' . round($programconfig['LATENCY']) . '" size=3 maxlength=3></div><label class="col-md-10 control-label">Days until ungraded assignment grade appears in Parent/Student gradebook views</label>';
+echo '<div class="col-md-2"><INPUT class="form-control" type=text name=values[LATENCY] value="' . round($programconfig['LATENCY']) . '" size=3 maxlength=3></div><label class="col-md-10 control-label">'._daysUntilUngradedAssignmentGradeAppearsInParentStudentGradebookViews.'</label>';
 echo '</div>'; //.form-group
 
 
@@ -193,7 +193,7 @@ if ($commentsA_select) {
     echo '<div class="col-md-2"><SELECT class="form-control" name=values[COMMENT_A]><OPTION value="">N/A';
     foreach ($commentsA_select as $key => $val)
         echo '<OPTION value="' . $key . '"' . ($key == $programconfig['COMMENT_A'] ? ' SELECTED' : '') . '>' . $val[0];
-    echo '</SELECT></div><label class="col-md-10 control-label">Default comment code</label>';
+    echo '</SELECT></div><label class="col-md-10 control-label">'._defaultCommentCode.'</label>';
     echo '</div>'; //.form-group
 }
 echo '</div>'; //.col-md-6
@@ -203,7 +203,7 @@ echo '</fieldset>';
 
 if (count($grades) > 0) {
     echo '<fieldset>';
-    echo '<legend><b>Score Breakoff Points</b></legend>';
+    echo '<legend><b>'._scoreBreakoffPoints.'</b></legend>';
     echo '<TABLE cellspacing=1><TR><TD>';
     foreach ($grades as $course_period_id => $cp_grades) {
         $table = '<TABLE>';
@@ -249,7 +249,7 @@ else
 // echo "<pre>";print_r($year);echo "</pre>";
 
 echo '<fieldset>';
-echo '<h5 class="text-primary">Final Grading Percentages</h5>';
+echo '<h5 class="text-primary">'._finalGradingPercentages.'</h5>';
 echo '<div class="table-responsive">';
 
 if ($quarters_dt) {
@@ -263,7 +263,7 @@ if ($quarters_dt) {
             $table .= '<TD>' . $qtrs['TITLE'] . '</TD>';
 
             if ($qtrs['DOES_EXAM'] == 'Y') {
-                $table .= '<TD>' . $qtrs['TITLE'] . ' Exam</TD>';
+                $table .= '<TD>' . $qtrs['TITLE'] . ' '._exam.'</TD>';
             }
             $table .= '</TR><TR>';
             $total = 0;
@@ -276,7 +276,7 @@ if ($quarters_dt) {
                 $total += $programconfig['Q-E' . $qtrs['MARKING_PERIOD_ID']];
             }
             if ($total != 100)
-                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger" style="width: 150px; white-space: nowrap;">Total not 100%!</div></TD>';
+                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger" style="width: 150px; white-space: nowrap;">'._totalNot_100.'!</div></TD>';
             $table .= '</TR>';
             $table .= '</tbody></TABLE>';
             echo $table;
@@ -310,7 +310,7 @@ if ($semesters) {
             
 
             if ($sem['DOES_EXAM'] == 'Y')
-                $table .= '<TD>' . $sem['TITLE'] . ' Exam</TD>';
+                $table .= '<TD>' . $sem['TITLE'] . ' '._exam.'</TD>';
             
             $table .= '</TR><TR>';
             $total = 0;
@@ -341,7 +341,7 @@ if ($semesters) {
             }
             
             if ($total != 100)
-                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">Total not 100%!</div></TD>';
+                $table .= '<TD style="width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">'._totalNot_100.'!</div></TD>';
             $table .= '</TR>';
             $table .= '</tbody></TABLE>';
             echo $table;
@@ -386,7 +386,7 @@ if ($year[1]['DOES_GRADES'] == 'Y') {
 
 
     if ($year[1]['DOES_EXAM'] == 'Y')
-        $table .= '<TD>' . $year[1]['TITLE'] . ' Exam</TD>';
+        $table .= '<TD>' . $year[1]['TITLE'] . ' '._exam.'</TD>';
     
     $table .= '</TR><TR>';
     $total = 0;
@@ -435,7 +435,7 @@ if ($year[1]['DOES_GRADES'] == 'Y') {
     }
 
     if ($total != 100)
-        $table .= '<TD style="white-space:nowrap; width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">Total not 100%!</div></TD>';
+        $table .= '<TD style="white-space:nowrap; width: 150px;vertical-align: middle;text-align:center;"><div class="text-danger">'._totalNot_100.'!</div></TD>';
     $table .= '</TR>';
     $table .= '</tbody></TABLE>';
     echo $table;
@@ -443,7 +443,8 @@ if ($year[1]['DOES_GRADES'] == 'Y') {
 
 echo '</div></fieldset>';
 
-echo '<br/><INPUT type=submit value=Save class="btn btn-primary" onclick="self_disable(this);">';
+echo '<br/><INPUT type=submit value='._save.' class="btn btn-primary" onclick="self_disable(this);">';
 PopTable('footer');
 echo '</FORM>';
 ?>
+s

@@ -137,6 +137,21 @@ a.badge,
     -o-transition: -webkit-transform ease-in-out 0.15s;
     transition: -webkit-transform ease-in-out 0.15s;
 }
+.navbar-right:dir(rtl) {
+    float: left !important;
+}
+.navbar-header:dir(rtl) {
+    float: right;
+}
+.navbar-nav > li:dir(rtl) {
+    float: right;
+}
+.navbar-brand:dir(rtl) {
+    float: right;
+}
+.navbar-text.pull-right:dir(rtl) {
+    float: left !important;
+}
 /* ------------------------------------------------------------------------------
  *
  *  # Sidebar layouts
@@ -165,6 +180,11 @@ a.badge,
         vertical-align: top;
         width: 280px;
         padding-right: 20px;
+    }
+    .sidebar:dir(rtl) {
+        float: right;
+        padding-left: 20px;
+        padding-right: 0;
     }
 }
 .sidebar-main {
@@ -1162,6 +1182,9 @@ a.badge,
         vertical-align: top;
         width: calc(100% - 280px);
         float: right;    
+    }
+    .content-wrapper:dir(rtl) {
+        float: left;    
     }
     .sidebar-xs .content-wrapper {
         width: calc(100% - 76px);

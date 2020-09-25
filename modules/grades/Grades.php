@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("GradeBook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 echo '<div class="panel panel-default">';
 echo '<div class="panel-body">';
 include_once 'functions/MakeLetterGradeFnc.php';
@@ -68,11 +68,11 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
         if (UserStaffId() != '' && SelfStaffProfile('PROFILE') == 'admin')
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>Back to Student List</A>');
+            DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>'._backToStudentList.':</A>');
         else
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+            DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>'._backToStudentList.':</A>');
     }else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) ');
     }
 }
 ####################
@@ -82,7 +82,12 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     $_REQUEST['stuid'] = $_REQUEST['student_id'];
-    $LO_columns = array('TYPE_TITLE' => 'Category', 'TITLE' => 'Assignment', 'POINTS' => 'Points', 'LETTER_GRADE' => 'Grade', 'COMMENT' => 'Comment');
+    $LO_columns = array('TYPE_TITLE' =>_category,
+     'TITLE' =>_assignment,
+     'POINTS' =>_points,
+     'LETTER_GRADE' =>_grade,
+     'COMMENT' =>_comment,
+    );
     $item = 'Assignment';
     $items = 'Assignments';
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]";
@@ -98,14 +103,17 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS COMMENT';
     $extra['FROM'] = ',gradebook_assignments ga,gradebook_assignment_types gt';
     $extra['WHERE'] = 'AND (ga.due_date>=ssm.start_date OR ga.due_date IS NULL) AND ((ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') OR ga.COURSE_PERIOD_ID=\'' . $course_period_id . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND ga.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\' ');
+    $extra['GROUP'] = Preferences('ASSIGNMENT_SORTING', 'Gradebook');
     $extra['ORDER_BY'] = Preferences('ASSIGNMENT_SORTING', 'Gradebook') . " DESC";
     $extra['functions'] = array('POINTS' => '_makeExtraStuCols', 'LETTER_GRADE' => '_makeExtraStuCols', 'COMMENT' => '_makeExtraStuCols');
 } else {
-    $LO_columns = array('FULL_NAME' => 'Student');
+    $LO_columns = array('FULL_NAME' =>_student);
     if ($_REQUEST['assignment_id'] != 'all')
-        $LO_columns += array('STUDENT_ID' => 'Student ID');
+        $LO_columns += array('STUDENT_ID' =>_studentId);
     if ($_REQUEST['include_inactive'] == 'Y')
-        $LO_columns += array('ACTIVE' => 'School Status', 'ACTIVE_SCHEDULE' => 'Course Status');
+        $LO_columns += array('ACTIVE' =>_schoolStatus,
+         'ACTIVE_SCHEDULE' =>_courseStatus,
+        );
     $item = 'Student';
     $items = 'Students';
     $link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&assignment_id=all" . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '');
@@ -275,8 +283,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 $_SESSION['assignment_id'] = $_REQUEST['assignment_id'];
 if (!clean_param($_REQUEST['student_id'], PARAM_INT)) 
 $extra['GROUP'] = 's.STUDENT_ID';
+// echo "<pre>";
+// print_r($extra);
 $stu_RET = GetStuList($extra);
-$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>All</OPTION>';
+$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">'._totals.'</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>'._all.'</OPTION>';
 if ($_REQUEST['student_id'])
     $assignment_select .= '<OPTION value=' . $_REQUEST['assignment_id'] . ' SELECTED>' . $stu_RET[1]['FULL_NAME'] . '</OPTION>';
 foreach ($assignments_RET as $id => $assignment)
@@ -288,22 +298,22 @@ $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
 if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
-    echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label></div></div>';
+    echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label></div></div>';
 else {
     if (!$_REQUEST['student_id']) {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
+        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
     } else {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
+        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
     }
 }
 if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
-    $options = array('yscroll' => true);
+    $options = array('yscroll' =>true);
 
 echo '<hr class="no-margin-bottom"/>';
 ListOutput($stu_RET, $LO_columns, $item, $items, $link, array(), $options);
 
 if (count($assignments_RET) != 0)
-    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER>' : '';
+    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER>' : '';
 echo '</FORM>';
 
 echo '</div>'; //.panel-body
@@ -322,7 +332,7 @@ function _makeExtra($value, $column) {
                 }
                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
             } else
-                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>Excluded</font></TD><TD></TD><TD></TD></TR></TABLE>';
+                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>'._excluded.'</font></TD><TD></TD><TD></TD></TR></TABLE>';
         else {
             $student_points[$THIS_RET['ASSIGNMENT_TYPE_ID']] += $value;
             return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
@@ -401,7 +411,7 @@ function _makeExtraAssnCols($assignment_id, $column) {
                 if ($points_RET[$THIS_RET['STUDENT_ID']][1]['PARTIAL_POINTS'] != '')
                     return ($total > $max_allowed ? '<FONT color=red>' : '') . $ppercent . ($total > $max_allowed ? '</FONT>' : '') . '% &nbsp;<B>' . _makeLetterGrade($total, "", User('STAFF_ID')) . '</B>';
                 else
-                    return 'Not Graded';
+                    return ''._notGraded.'';
             }
             else {
                 $points = $current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'];
@@ -433,11 +443,11 @@ function _makeExtraAssnCols($assignment_id, $column) {
                                 $points_r = round($points_r, 2);
                             return ($THIS_RET['DUE'] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['DUE'] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['DUE'] || $points != '' ? '' : '</FONT>');
                         } else
-                            return 'Not Graded';
+                            return ''._notGraded.'';
                     } else
-                        return 'N/A&nbsp;N/A';
+                        return ''._nA.'&nbsp;'._nA.'';
                 } else
-                    return 'E/C';
+                    return ''._eC.'';
             }
             break;
         case 'COMMENT':
@@ -465,11 +475,11 @@ function _makeExtraStuCols($value, $column) {
                     if ($THIS_RET['POINTS'] != '')
                         return ($THIS_RET['DUE'] || $THIS_RET['POINTS'] != '' ? ($THIS_RET['POINTS'] > $THIS_RET['TOTAL_POINTS'] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . _makeLetterGrade($THIS_RET['POINTS'] / $THIS_RET['TOTAL_POINTS'], "", User('STAFF_ID'), "%") . '%' . ($THIS_RET['DUE'] || $THIS_RET['POINTS'] != '' ? ($THIS_RET['POINTS'] > $THIS_RET['TOTAL_POINTS'] * $max_allowed ? '</FONT>' : '') : '') . '&nbsp;<B>' . _makeLetterGrade($THIS_RET['POINTS'] / $THIS_RET['TOTAL_POINTS'], "", User('STAFF_ID'), "") . '</B>' . ($THIS_RET['DUE'] || $THIS_RET['POINTS'] != '' ? '' : '</FONT>');
                     else
-                        return 'Not Graded';
+                         return ''._notGraded.'';
+                    } else
+                        return ''._nA.'&nbsp;'._nA.'';
                 } else
-                    return 'N/A&nbsp;N/A';
-            } else
-                return 'E/C';
+                    return ''._eC.'';
 
             break;
         case 'COMMENT':
@@ -532,13 +542,13 @@ function _makeExtraCols($assignment_id, $column) {
                     return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '<BR>&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['D' . $assignment_id] || $points != '' ? '' : '</FONT>') . '</TD></TR></TABLE>';
                 } else
 //                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
-                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
+                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;'._notGraded.'</TD></TR></TABLE>';
             } else
 //                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
-                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
+                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;'._nA.'<BR>&nbsp;N/A</TD></TR></TABLE>';
         } else
 //            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
-            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) .  $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
+            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) .  $total_points[$assignment_id] . '</TD><TD>&nbsp;'._eC.'</TD></TR></TABLE>';
     }
     return 'N/A';
 }

@@ -26,6 +26,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+include('lang/language.php');
+
 if ($_REQUEST['modfunc'] == 'update') {
     if ($_REQUEST['failure']) {
         $TOTAL_COUNT = DBGet(DBQuery("SELECT COUNT(FAIL_COUNT) AS TOTAL_COUNT FROM system_preference_misc"));
@@ -48,10 +50,10 @@ $failure = $failure_RET[1];
 
 echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=FAILURE method=POST>";
 
-echo '<div class="form-group"><label class="control-label text-uppercase"><b>No. of login failures allowed before account is disabled</b></label>' . TextInput($failure['FAIL_COUNT'], 'failure[FAIL_COUNT]', '', 'class=form-control') . '</div>';
+echo '<div class="form-group"><label class="control-label text-uppercase"><b>'._noOfLoginFailuresAllowedBeforeAccountIsDisabled.'</b></label>' . TextInput($failure['FAIL_COUNT'], 'failure[FAIL_COUNT]', '', 'class=form-control') . '</div>';
 //if ($_REQUEST['page_display']) {
 //    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //}
-echo SubmitButton('Save', '', 'id="setupFailBtn" class="btn btn-primary pull-right" onclick="formcheck_failure_count(this);"');
+echo SubmitButton(_save, '', 'id="setupFailBtn" class="btn btn-primary pull-right" onclick="formcheck_failure_count(this);"');
 
 echo '</FORM>';

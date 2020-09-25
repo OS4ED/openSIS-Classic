@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include 'modules/grades/DeletePromptX.fnc.php';
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
     if (count($_REQUEST['st_arr'])) {
         $mp = $_REQUEST['mp'];
@@ -134,7 +134,14 @@ if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
             echo '<TABLE width=80%>';
             echo '<TR align=center><TD colspan=6><B>' . sprintf(('%s Honor Roll'), $school_info_RET[1]['TITLE']) . ' </B></TD></TR>';
             echo '<TR align=center><TD colspan=6>&nbsp;</TD></TR>';
-            $columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone', 'HONOR_ROLL' => 'Honor Roll');
+            $columns = array(
+             'FULL_NAME' =>_student,
+             'STUDENT_ID' =>_studentId,
+             'ALT_ID' =>_alternateId,
+             'GRADE_ID' =>_grade,
+             'PHONE' =>_phone,
+             'HONOR_ROLL' => honorRoll
+            );
             ListOutputPrint_Report($RET, $columns);
         } else {
 
@@ -146,19 +153,21 @@ if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
                 echo '<CENTER>';
                 echo '<TABLE>';
                 echo '<TR align=center><TD><FONT size=1><BR><BR><BR><BR><BR><BR><BR><BR></FONT></TD></TR>';
-                echo '<TR align=center><TD><FONT size=3>We hereby recognize</FONT></TD><TR>';
+                echo '<TR align=center><TD><FONT size=3>'._weHerebyRecognize.'</FONT></TD><TR>';
                 echo '<TR align=center ><TD ><div style="font-family:Arial; font-size:13px; padding:0px 12px 0px 12px;"><div style="font-size:18px;">' . $student['NICK_NAME'] . ' ' . $student['LAST_NAME'] . '</div></div></TD><TR>';
 
-                echo '<TR align=center><TD><FONT size=3>' . 'Who has completed all the academic<BR>requirements for<BR>' . $school_info_RET[1]['TITLE'] . ' ' . ($student['HONOR_ROLL']) . ' Honor Roll</FONT></TD><TR>';
+                echo '<TR align=center><TD><FONT size=3>' . ''._whoHasCompletedAllTheAcademic.'<BR>'._requirementsFor.'<BR>' . $school_info_RET[1]['TITLE'] . ' ' . ($student['HONOR_ROLL']) . ' '._honorRoll.'</FONT></TD><TR>';
                 echo '</TABLE>';
 
                 echo '<TABLE width=80%>';
                 echo '<TR><TD width=65%><FONT size=1><BR></TD></TR>';
-                echo '<TR><TD><FONT size=4>' . $student['TEACHER'] . '<BR></FONT><FONT size=0>Teacher</FONT></TD>';
-                echo '<TD><FONT size=3>' . $mp_RET[1]['TITLE'] . '<BR></FONT><FONT size=0>Marking Period</FONT></TD></TR>';
+                echo '<TR><TD><FONT size=4>' . $student['TEACHER'] . '<BR></FONT><FONT size=0>'._teacher.'</FONT></TD>';
+                echo '<TD><FONT size=3>' . $mp_RET[1]['TITLE'] . '<BR></FONT><FONT size=0>'._markingPeriod.'</FONT></TD>';
+                echo '</TR>';
 
-                echo '<TR><TD><FONT size=4>' . $school_info_RET[1]['PRINCIPAL'] . '<BR></FONT><FONT size=0>Principal</FONT></TD>';
-                echo '<TD><FONT size=3>' . date('F j, Y', strtotime($mp_RET[1]['END_DATE'])) . '<BR></FONT><FONT size=0>Date</FONT></TD></TR>';
+                echo '<TR><TD><FONT size=4>' . $school_info_RET[1]['PRINCIPAL'] . '<BR></FONT><FONT size=0>'._principal.'</FONT></TD>';
+                echo '<TD><FONT size=3>' . date('F j, Y', strtotime($mp_RET[1]['END_DATE'])) . '<BR></FONT><FONT size=0>'._date.'</FONT></TD>';
+                echo '</TR>';
                 echo '</TABLE>';
                 echo '</CENTER>';
                 echo "<div style=\"page-break-before: always;\"></div>";
@@ -167,7 +176,7 @@ if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
             PDFStop($handle);
         }
     } else
-        BackPrompt('You must choose at least one student');
+        BackPrompt(_youMustChooseAtLeastOneStudent);
 }
 elseif ($_REQUEST['modfunc'] == 'save') {
     echo '<font color=red>First setup the Honor Roll(grades->Setup->Honor Roll Setup)..</font>';
@@ -192,12 +201,12 @@ if (!$_REQUEST['modfunc']) {
             echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&w_course_period_id=" . strip_tags(trim($_REQUEST[w_course_period_id])) . "&_openSIS_PDF=true method=POST target=_blank>";
         else
             echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&_openSIS_PDF=true method=POST target=_blank>";
-        $extra['header_right'] = SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"');
+        $extra['header_right'] = SubmitButton(_createHonorRollForSelectedStudents, '', 'class="btn btn-primary"');
 
         $extra['extra_header_left'] = '<div>';
 
         $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio name=list value="" checked>Certificates</label>';
-        $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio name=list value=list>List</label>';
+        $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio name=list value=list>'._list.'</label>';
 
         $extra['extra_header_left'] .= '</div>';
     }
@@ -206,7 +215,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
         $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
     }
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['new'] = true;
     $extra['options']['search'] = false;
     $extra['force_search'] = true;
@@ -222,7 +231,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0) {
-            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"') . '</div>';
+            $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton(_createHonorRollForSelectedStudents, '', 'class="btn btn-primary"') . '</div>';
         }
     }
     Search('student_id', $extra);
@@ -239,7 +248,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -250,9 +259,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
@@ -349,7 +358,7 @@ function MyWidgets($item, $mp) {
                     }
                     $extra['GROUP'] .= ' s.STUDENT_ID';
                 }
-                $extra['columns_after'] = array('HONOR_ROLL' => 'Honor Roll');
+                $extra['columns_after'] = array('HONOR_ROLL' =>_honorRoll);
             } elseif ($_REQUEST['honor_roll'] == 986) {
                 if ($_REQUEST['w_course_period_id'])
                     $extra['SELECT'] .= ',(SELECT hr.TITLE FROM honor_roll hr WHERE hr.VALUE=
@@ -376,14 +385,14 @@ function MyWidgets($item, $mp) {
                                                                 and srcg.`STUDENT_ID`=ssm.STUDENT_ID) order by hr.value desc limit 1))
                                                                 FROM `student_report_card_grades` srcg,course_periods cpp WHERE srcg.MARKING_PERIOD_ID = ' . UserMp() . ' and srcg.course_period_id=cpp.course_period_id  and cpp.does_honor_roll="Y" and srcg.`STUDENT_ID`=ssm.STUDENT_ID)  AND hr.SCHOOL_ID=' . UserSchool() . ' AND hr.SYEAR=' . UserSyear() . ')AS HONOR_ROLL';
 
-                $extra['columns_after'] = array('HONOR_ROLL' => 'Honor Roll');
+                $extra['columns_after'] = array('HONOR_ROLL' =>_honorRoll);
             }
             $option = DBGet(DBQuery('SELECT TITLE,VALUE  FROM honor_roll WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  ORDER BY VALUE'));
             $options['986'] = 'All';
             foreach ($option as $option_value) {
                 $options[$option_value['VALUE']] = $option_value['TITLE'];
             }
-            $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Honor Roll</label><div class="col-lg-8">' . SelectInput("", 'honor_roll', '', $options, false, '') . '</div></div>';
+            $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._honorRoll.'</label><div class="col-lg-8">' . SelectInput("", 'honor_roll', '', $options, false, '') . '</div></div>';
             break;
     }
 }

@@ -82,7 +82,7 @@
 		// Minified version of the document.domain automatic fix script (#1919).
 		// The original script can be found at _dev/domain_fix_template.js
 		// Note: in Lasso replace \ with \\
-		$__html_reply__ = $__html_reply__ + "(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|$)/,'');if (d.length==0) break;try{document.domain=d;}catch (e){break;}}})();";
+		$__html_reply__ = $__html_reply__ + "(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|$)/,'');if (d.length==0) break;try{document.domain= _d;}catch (e){break;}}})();";
 
 		$__html_reply__ = $__html_reply__ + '\
 	window.parent.OnUploadCompleted(' + #errorNumber + ',"'

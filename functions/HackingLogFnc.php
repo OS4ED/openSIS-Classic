@@ -28,7 +28,7 @@
 
 		function HackingLog()
         {
-        echo "You're not allowed to use this program! This attempted violation has been logged and your IP address was captured.";
+        echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";
 			Warehouse('footer');
 			
 			if ($_SERVER['HTTP_X_FORWARDED_FOR']){

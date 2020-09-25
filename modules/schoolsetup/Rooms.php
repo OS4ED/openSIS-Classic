@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if(clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && AllowEdit()) 
 {
     $mflag=0;
@@ -82,8 +84,8 @@ if(clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQU
                             else
                             {                                
                                 echo '<div class="alert bg-danger alert-styled-left">';
-                                echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                                echo 'Cannot change room capacity as it has association.';
+                                echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+                                echo cannotChangeRoomCapacityAsItHasAssociation.'.';
                                 echo '</div>';
                             }
                         }
@@ -195,20 +197,20 @@ if(clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQU
     if($mflag == 1)
     {
         echo '<div class="alert alert-warning">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
         echo 'Rooms found with similar title.';
         echo '</div>';
     }
 }
 
-DrawBC("School Setup > " . ProgramTitle());
+DrawBC(""._schoolSetup." > " . ProgramTitle());
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove' && AllowEdit()) {
     $room_id = paramlib_validation($colmn = PERIOD_ID, $_REQUEST[id]);
     $has_assigned_RET = DBGet(DBQuery("SELECT COUNT(*) AS TOTAL_ASSIGNED FROM course_period_var WHERE room_id='$room_id'"));
     $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
     if ($has_assigned > 0) {
         $qs = 'Modules.php?modname=schoolsetup/Rooms.php';
-        UnableDeletePromptMod('Cannot delete because room are associated.', 'delete', $qs);
+        UnableDeletePromptMod(''._cannotDeleteBecauseRoomAreAssociated.'.', 'delete', $qs);
     } else {
         $qs = 'Modules.php?modname=schoolsetup/Rooms.php';
         if (DeletePromptMod('room', $qs)) {
@@ -230,7 +232,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     $room_ids = '';
     $room_iv = '';
     $rooms_RET = DBGet($QI, array('TITLE' => '_makeTextInput', 'CAPACITY' => '_makeIntInput', 'DESCRIPTION' => '_makeTextInput', 'SORT_ORDER' => '_makeIntInput'));
-    $columns = array('TITLE' => 'Title', 'CAPACITY' => 'Capacity', 'DESCRIPTION' => 'Description', 'SORT_ORDER' => 'Sort Order');
+    $columns = array('TITLE' =>_title, 'CAPACITY' =>_capacity, 'DESCRIPTION' =>_description, 'SORT_ORDER' =>_sortOrder);
     $link['add']['html'] = array('TITLE' => _makeTextInput('', 'TITLE'), 'CAPACITY' => _makeTextInput('', 'CAPACITY'), 'DESCRIPTION' => _makeTextInput('', 'DESCRIPTION'), 'SORT_ORDER' => _makeTextInput('', 'SORT_ORDER'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
     $link['remove']['variables'] = array('id' => 'ROOM_ID');
@@ -243,8 +245,8 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $count_room = $count_room[1]['MAXID'];
     }
     echo "<input type=hidden id=count_room value=$count_room />";
-    ListOutputPeriod($rooms_RET, $columns, 'Room', 'Rooms', $link);
-    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton('Save', '', 'id="setupRoomsBtn" class="btn btn-primary" onclick="return formcheck_rooms(this);"') . '</div>';
+    ListOutputPeriod($rooms_RET, $columns, _room, _rooms, $link);
+    echo '<hr class="no-margin"/><div class="panel-body text-right">' . SubmitButton(_save, '', 'id="setupRoomsBtn" class="btn btn-primary" onclick="return formcheck_rooms(this);"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

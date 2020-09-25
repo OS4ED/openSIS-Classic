@@ -1,19 +1,19 @@
 <?php
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -27,39 +27,39 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['messaging']['admin'] = array(
-						'messaging/Inbox.php'=>'Inbox',
-						'messaging/Compose.php'=>'Compose',
-						'messaging/SentMail.php'=>'Sent Message',
-						'messaging/Trash.php'=>'Trash', 
+						'messaging/Inbox.php'=>_inbox,
+						'messaging/Compose.php'=>_compose,
+						'messaging/SentMail.php'=>_sentMessage,
+						'messaging/Trash.php'=>_trash,
 
-                                                'messaging/Group.php'=>'Groups'		
-					);
+												'messaging/Group.php'=>_groups,
+											);
 
 $menu['messaging']['teacher'] = array(
-						'messaging/Inbox.php'=>'Inbox',
-						'messaging/Compose.php'=>'Compose',
-						'messaging/SentMail.php'=>'Sent Message',
-						'messaging/Trash.php'=>'Trash', 
-                                         
-                                                'messaging/Group.php'=>'Groups'		
-					);
+						'messaging/Inbox.php'=>_inbox,
+						'messaging/Compose.php'=>_compose,
+						'messaging/SentMail.php'=>_sentMessage,
+						'messaging/Trash.php'=>_trash,
+
+												'messaging/Group.php'=>_groups,
+											);
 
 $menu['messaging']['parent'] = array(
-						'messaging/Inbox.php'=>'Inbox',
-						'messaging/Compose.php'=>'Compose',
-						'messaging/SentMail.php'=>'Sent Message',
-						'messaging/Trash.php'=>'Trash',
-                                             
-                                                'messaging/Group.php'=>'Groups'		
-					);
+						'messaging/Inbox.php'=>_inbox,
+						'messaging/Compose.php'=>_compose,
+						'messaging/SentMail.php'=>_sentMessage,
+						'messaging/Trash.php'=>_trash,
+
+												'messaging/Group.php'=>_groups,
+											);
 $menu['messaging']['student'] = array(
-						'messaging/Inbox.php'=>'Inbox',
-						'messaging/Compose.php'=>'Compose',
-						'messaging/SentMail.php'=>'Sent Message',
-						'messaging/Trash.php'=>'Trash',
-                                           
-                                                'messaging/Group.php'=>'Groups'		
-					);
+						'messaging/Inbox.php'=>_inbox,
+						'messaging/Compose.php'=>_compose,
+						'messaging/SentMail.php'=>_sentMessage,
+						'messaging/Trash.php'=>_trash,
+
+												'messaging/Group.php'=>_groups,
+											);
 
 
 ?>

@@ -27,8 +27,10 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if ($_REQUEST['modname'] == 'scheduling/UnfilledRequests.php') {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
 } else {
     $extra['suppress_save'] = true;
 }
@@ -36,9 +38,9 @@ $extra['SELECT'] = ',c.TITLE AS COURSE,sr.SUBJECT_ID,sr.COURSE_ID,sr.WITH_TEACHE
 $extra['FROM'] = ',schedule_requests sr,courses c,student_enrollment ssm';
 $extra['WHERE'] = ' AND sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_ID=c.COURSE_ID ';
 $extra['functions'] = array('WITH_TEACHER_ID' => '_makeTeacher', 'WITH_PERIOD_ID' => '_makePeriod');
-$extra['columns_after'] = array('COURSE' => 'Course', 'AVAILABLE_SEATS' => 'Available Seats', 'SECTIONS' => 'Sections', 'WITH_TEACHER_ID' => 'Teacher', 'WITH_PERIOD_ID' => 'Period');
-$extra['singular'] = 'Request';
-$extra['plural'] = 'Requests';
+$extra['columns_after'] = array('COURSE' =>_course, 'AVAILABLE_SEATS' =>_availableSeats, 'SECTIONS' =>_sections, 'WITH_TEACHER_ID' =>_teacher, 'WITH_PERIOD_ID' =>_period);
+$extra['singular'] = _request;
+$extra['plural'] = _requests;
 if (!$extra['link']['FULL_NAME']) {
     $extra['link']['FULL_NAME']['link'] = 'Modules.php?modname=scheduling/Requests.php';
 
@@ -52,13 +54,13 @@ Search('student_id', $extra);
 function _makeTeacher($value, $column) {
     global $THIS_RET;
 
-    return ($value != '' ? 'With: ' . GetTeacher($value) . '<BR>' : '') . ($THIS_RET['NOT_TEACHER_ID'] != '' ? 'Without: ' . GetTeacher($THIS_RET['NOT_TEACHER_ID']) : '');
+    return ($value != '' ? ''._with.': ' . GetTeacher($value) . '<BR>' : '') . ($THIS_RET['NOT_TEACHER_ID'] != '' ? ''._without.': ' . GetTeacher($THIS_RET['NOT_TEACHER_ID']) : '');
 }
 
 function _makePeriod($value, $column) {
     global $THIS_RET;
 
-    return ($value != '' ? 'On: ' . GetPeriod($value) . '<BR>' : '') . ($THIS_RET['NOT_PERIOD_ID'] != '' ? 'Not on: ' . GetPeriod($THIS_RET['NOT_PERIOD_ID']) : '');
+    return ($value != '' ? ''._on.': ' . GetPeriod($value) . '<BR>' : '') . ($THIS_RET['NOT_PERIOD_ID'] != '' ? ''._notOn.': ' . GetPeriod($THIS_RET['NOT_PERIOD_ID']) : '');
 }
 
 ?>

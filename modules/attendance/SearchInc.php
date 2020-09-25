@@ -62,7 +62,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             } else if ($search_from_grade == 'true') {
                 $_SESSION['stu_search']['search_from_grade'] = 'true';
             }
-            PopTable('header', 'Find a Student');
+            PopTable('header', _findAStudent);
             if ($extra['pdf'] != true)
                 echo "<FORM class='form-horizontal' name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
@@ -83,7 +83,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<div class="row">';
             echo '<div class="col-lg-12">';
-            echo '<div class="form-group pt-15"><label class="control-label col-lg-2 text-right">Comments</label><div class="col-lg-10"><input type=text name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
+            echo '<div class="form-group pt-15"><label class="control-label col-lg-2 text-right">Comments</label><div class="col-lg-10"><input type=text name="mp_comment" size=30 placeholder="'._comments.'" class="form-control"></div></div>';
             echo '</div>'; //.col-lg-12
             echo '</div>'; //.row
 
@@ -99,17 +99,17 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">Goal and Progress</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title</label><div class="col-lg-8"><input type=text name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title</label><div class="col-lg-8"><input type=text name="goal_title" placeholder="'._goalTitle.'" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description</label><div class="col-lg-8"><input type=text name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description</label><div class="col-lg-8"><input type=text name="goal_description" placeholder="'._goalDescription.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period</label><div class="col-lg-8"><input type=text name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period</label><div class="col-lg-8"><input type=text name="progress_name" placeholder="'._progressPeriod.'" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment</label><div class="col-lg-8"><input type=text name="progress_description" placeholder="Progress Assessment" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment</label><div class="col-lg-8"><input type=text name="progress_description" placeholder="'._progressAssessment.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
@@ -118,14 +118,14 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="'._doctor.'\'s Note" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<h5 class="text-primary">Immunization</h5>';
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text name="type" size=30 placeholder="Type" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text name="type" size=30 placeholder="'._type.'" class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div>'; //.col-lg-6
@@ -133,7 +133,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="imm_comments" placeholder="'._comments.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
@@ -142,7 +142,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="Alert" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="'._alert.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
@@ -151,15 +151,15 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-lg-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="Reason" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="'._reason.'" class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="Result" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text name="result" size=30 placeholder="'._result.'" class="form-control"></div></div>';
             echo '</div><div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="Comments" size=30 class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text name="med_vist_comments" placeholder="'._comments.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-lg-6
             echo '</div>'; //.row
 
@@ -176,18 +176,18 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="row">';
             echo '<div class="col-md-12">';
             if (User('PROFILE') == 'admin') {
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Schools</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> '._groupByFamily.'</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> '._searchAllSchools.'</label>';
             }
-            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>Include Inactive students</label>';
+            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>'._includeInactiveStudents.':</label>';
             echo '</div>'; //.col-md-12
             echo '</div>'; //.row
             echo '<hr/>';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
-            echo '<a href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-l-10"><i class="icon-cog"></i> Advanced Search</a>';
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
+            echo '<a href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-l-10"><i class="icon-cog"></i> '._advancedSearch.'</a>';
             echo '</FORM>';
             // set focus to last name text box
             echo '<script type="text/javascript"><!--
@@ -198,7 +198,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
         case 'parent':
         case 'student':
-            PopTable('header', 'Search');
+            PopTable('header', _search);
             if ($extra['pdf'] != true)
                 echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
@@ -207,7 +207,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             if ($extra['search'])
                 echo $extra['search'];
 
-            echo Buttons('Submit', 'Reset');
+            echo Buttons(submit, reset);
             echo '</FORM>';
             PopTable('footer');
             break;
@@ -239,7 +239,13 @@ else {
         else
             $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
+    $LO_columns = array(
+     'FULL_NAME' =>_student,
+     'STUDENT_ID' =>_studentId,
+     'ALT_ID' =>_alternateId,
+     'GRADE_ID' =>_grade,
+     'PHONE' =>_phone,
+    );
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_REQUEST['_search_all_schools'])
@@ -264,10 +270,10 @@ else {
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);
         if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0) {
-            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true class=big_font ><i class=\"icon-square-down-right\"></i> Expanded View</A>", $extra['header_right']);
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true class=big_font ><i class=\"icon-square-down-right\"></i> "._expandedView."</A>", $extra['header_right']);
             DrawHeader(str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)));
         } elseif (!UserStudentID() && count($students_RET) != 0) {
-            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false class=big_font><i class=\"icon-square-up-left\"></i> Original View</A>", $extra['header_right']);
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false class=big_font><i class=\"icon-square-up-left\"></i> "._originalView."</A>", $extra['header_right']);
             DrawHeader(str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['Search'], 0, -4)));
         }
         DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
@@ -316,6 +322,6 @@ else {
             include('modules/' . $modname);
         }
     } else
-        BackPrompt('No students were found.');
+        BackPrompt(noStudentsWereFound.'.');
 }
 ?>

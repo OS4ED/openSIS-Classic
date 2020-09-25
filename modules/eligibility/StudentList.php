@@ -66,7 +66,7 @@ if (!$_REQUEST['start_date']) {
     $start_date = strtoupper(date('d-M-y', $start_time));
     $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 7));
 }
-DrawBC("Extracurricular > " . ProgramTitle());
+DrawBC(""._extracurricular." > " . ProgramTitle());
 if ($_REQUEST['search_modfunc'] || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
     $tmp_PHP_SELF = PreparePHP_SELF();
     echo "<FORM name=stud_list id=stud_list action=$tmp_PHP_SELF method=POST>";
@@ -85,7 +85,7 @@ if ($_REQUEST['search_modfunc'] || User('PROFILE') == 'parent' || User('PROFILE'
     echo '<div class="panel-heading">';
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="input-group"><SELECT name=start_date class=form-control>' . $date_select . '</SELECT>' . $period_select, '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value=Go onclick=\'formload_ajax("stud_list");\'></span></div>';
+    echo '<div class="input-group"><SELECT name=start_date class=form-control>' . $date_select . '</SELECT>' . $period_select, '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value='._go.' onclick=\'formload_ajax("stud_list");\'></span></div>';
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
     echo '</div>'; //.panel-heading
@@ -122,9 +122,12 @@ if (!$_REQUEST['search_modfunc'] && User('PROFILE') != 'parent' && User('PROFILE
     Search('student_id', $extra);
 } else {
     $RET = GetStuList($extra);
-    $columns = array('FULL_NAME' => 'Student', 'COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade');
+    $columns = array('FULL_NAME' =>_student,
+     'COURSE_TITLE' =>_course,
+     'ELIGIBILITY_CODE' =>_grade,
+    );
     echo '<div class="panel">';
-    ListOutput($RET, $columns, 'Student', 'Students', array(), array('STUDENT_ID' => array('FULL_NAME', 'STUDENT_ID')));
+    ListOutput($RET, $columns,  _student, _students, array(), array('STUDENT_ID' => array('FULL_NAME', 'STUDENT_ID')));
     echo '</div>';
 }
 
@@ -137,7 +140,7 @@ echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h4 class="modal-title">Choose course</h4>';
+echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -148,9 +151,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' found.<br>';
 if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }

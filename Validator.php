@@ -31,8 +31,8 @@
 	// include('functions/SqlSecurityFnc.php');
 
 	$stfid = sqlSecurityFilter($_GET['stfid']);
-	$flag = $_GET['u'];
-	$usr = substr($flag, -4);
+			 $flag = $_GET['u'];
+	  $usr = substr($flag, -4);
 	
 	// ------------------------ For Unique Checking ---------------------------------- //
 	$un = substr($flag, 0, -4);

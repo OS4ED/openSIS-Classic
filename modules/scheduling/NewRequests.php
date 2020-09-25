@@ -65,11 +65,11 @@ if($_REQUEST['modfunc']=='choose')
 									WHERE sr.SYEAR=\''.UserSyear().'\' AND sr.STUDENT_ID=\''.UserStudentID().'\' AND sr.COURSE_ID=c.COURSE_ID'),$functions);
 
 	echo "<FORM name=vary id=vary action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=verify method=POST>";
-	DrawHeader('',SubmitButton('Save','','class="btn btn-primary" onclick=\'formload_ajax("vary");\''));
+	DrawHeader('',SubmitButton(_save,'','class="btn btn-primary" onclick=\'formload_ajax("vary");\''));
 
 	$columns = array('');
-	ListOutput($requests_RET,$columns,'Request','Requests');
+	ListOutput($requests_RET,$columns,_request,_requests);
 
-	echo '<CENTER>'.SubmitButton('Save','','class="btn btn-primary" onclick=\'formload_ajax("vary");\'').'</CENTER></FORM>';
+	echo '<CENTER>'.SubmitButton(_save,'','class="btn btn-primary" onclick=\'formload_ajax("vary");\'').'</CENTER></FORM>';
 }
 ?>

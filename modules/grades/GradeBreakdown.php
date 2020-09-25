@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 
 echo '<div class="panel panel-default">';
 $i = 0;
@@ -44,7 +44,7 @@ else
 
 echo "<FORM class=\"no-margin\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST name=gd_brk_dwn id=gd_brk_dwn >";
 $mp_select = "<SELECT name=mp class=\"form-control\" onchange=\"window.location='Modules.php?modname=$_REQUEST[modname]&mp='+this.options[this.selectedIndex].value;\" ><OPTION value=" . UserMP() . ">" . GetMP(UserMP()) . "</OPTION><OPTION value=" . $sem . (($sem == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($sem) . "</OPTION><OPTION value=E" . $sem . (('E' . $sem == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($sem) . ' Exam</OPTION></SELECT>';
-DrawHeader('Grade Breakdown','<div class="form-group">'.$mp_select.'</div>');
+DrawHeader(_gradeBreakdown,'<div class="form-group">'.$mp_select.'</div>');
 echo '</FORM>';
 
 echo '<hr class="no-margin"/>';
@@ -61,12 +61,12 @@ if (count($grouped_RET)) {
     }
 }
 
-$columns = array('FULL_NAME' => 'Teacher');
+$columns = array('FULL_NAME' =>_teacher);
 foreach ($grades_RET as $grade)
     $columns[$grade['ID']] = $grade['TITLE'];
 
 echo '<div class="table-responsive">';
-ListOutput($teachers_RET, $columns, 'Teacher', 'Teachers');
+ListOutput($teachers_RET, $columns, _teacher, _teachers);
 echo '</div>'; //.table-responsive
 
 echo '</div>'; //.panel

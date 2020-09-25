@@ -64,7 +64,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	 *
 	 * @var PHPExcel_CachedObjectStorage_xxx
 	 */
-	private $_cellCollection = null;
+	private $_cellCollection = _null;
 
 	/**
 	 * Collection of row dimensions
@@ -78,7 +78,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	 *
 	 * @var PHPExcel_Worksheet_RowDimension
 	 */
-	private $_defaultRowDimension = null;
+	private $_defaultRowDimension = _null;
 
 	/**
 	 * Collection of column dimensions
@@ -92,14 +92,14 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	 *
 	 * @var PHPExcel_Worksheet_ColumnDimension
 	 */
-	private $_defaultColumnDimension = null;
+	private $_defaultColumnDimension = _null;
 
 	/**
 	 * Collection of drawings
 	 *
 	 * @var PHPExcel_Worksheet_BaseDrawing[]
 	 */
-	private $_drawingCollection = null;
+	private $_drawingCollection = _null;
 
 	/**
 	 * Worksheet title
@@ -355,10 +355,10 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 
 	public function disconnectCells() {
 		$this->_cellCollection->unsetWorksheetCells();
-		$this->_cellCollection = null;
+		$this->_cellCollection = _null;
 
 		//	detach ourself from the workbook, so that it can then delete this worksheet successfully
-		$this->_parent = null;
+		$this->_parent = _null;
 	}
 
 	/**
@@ -1063,7 +1063,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
     public function getRowDimension($pRow = 0)
     {
     	// Found
-    	$found = null;
+    	$found = _null;
 
         // Get row dimension
         if (!isset($this->_rowDimensions[$pRow])) {
@@ -2081,7 +2081,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 
 			// Loop through $source
 			$currentRow = $startRow - 1;
-			$rowData = null;
+			$rowData = _null;
 			foreach ($source as $rowData) {
 				++$currentRow;
 
@@ -2431,7 +2431,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	 */
 	public function resetTabColor()
 	{
-		$this->_tabColor = null;
+		$this->_tabColor = _null;
 		unset($this->_tabColor);
 
 		return $this;

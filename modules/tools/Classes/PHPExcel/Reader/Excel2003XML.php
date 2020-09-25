@@ -62,7 +62,7 @@ class PHPExcel_Reader_Excel2003XML implements PHPExcel_Reader_IReader
 	 *
 	 * @var array
 	 */
-	private $_loadSheetsOnly = null;
+	private $_loadSheetsOnly = _null;
 
 	/**
 	 * Sheet index to read
@@ -83,7 +83,7 @@ class PHPExcel_Reader_Excel2003XML implements PHPExcel_Reader_IReader
 	 *
 	 * @var PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 
 	/**
@@ -136,7 +136,7 @@ class PHPExcel_Reader_Excel2003XML implements PHPExcel_Reader_IReader
 	 */
 	public function setLoadAllSheets()
 	{
-		$this->_loadSheetsOnly = null;
+		$this->_loadSheetsOnly = _null;
 		return $this;
 	}
 

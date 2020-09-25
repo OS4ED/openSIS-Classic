@@ -68,14 +68,14 @@ if($_FILES['uploadfile']['name'])
 	}
                 if ($_FILES["uploadfile"]["error"] > 0)
                 {
-                        $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file. Invalied file type.</span>';
+                        $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvaliedFileType.'</span>';
                 }
                 else
                 {
                         if(!move_uploaded_file($_FILES["uploadfile"]["tmp_name"], $upload->target_path))
-                                $msg= '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file. Invalid Permission</span>';
+                                $msg= '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvalidPermission.'</span>';
                         else
-                                $msg='<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Successfully uploaded</span>';
+                                $msg='<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._successfullyUploaded.'</span>';
                 }
                 unset ($_FILES['uploadfile']);
  
@@ -85,10 +85,10 @@ if($_FILES['uploadfile']['name'])
         echo '<table width="100%" class="grid" cellpadding="4" cellspacing="1">';
         if(AllowEdit ())
         {
-        echo '<thead><tr><td colspan=2 class="subtabs">To upload additional files click browse, select file, give it a file name and click save</td></tr></thead>';
+        echo '<thead><tr><td colspan=2 class="subtabs">'._toUploadAdditionalFilesClickBrowseSelectFileGiveItAFileNameAndClickSave.'</td></tr></thead>';
         }
         else {
-        echo '<thead><tr><td colspan=2 class="subtabs">To View a certain file,click on the name of the file</td></tr></thead>';
+        echo '<thead><tr><td colspan=2 class="subtabs">'._toViewACertainFileClickOnTheNameOfTheFile.'</td></tr></thead>';
         }
 
         echo '<tr class="odd">';
@@ -100,7 +100,7 @@ if($_FILES['uploadfile']['name'])
 
          $dir=dir($dir);
          echo '<tbody>';
-         $found=false;
+         $found= false;
         $gridClass = "odd";
         while($filename=$dir->read()) {
             if($gridClass=="even")
@@ -120,7 +120,7 @@ if($_FILES['uploadfile']['name'])
 
             if($student_id_up[0]==UserStudentID())
             {
-                $found=true;
+                $found= true;
                  echo '<tr class="'.$gridClass.'">
                           <td><a href="assets/studentfiles/'.$filename.'">'.substr($filename,strpos($filename,'-')+1).'</a></td>
                           ';
@@ -142,7 +142,7 @@ if($_FILES['uploadfile']['name'])
          echo '</table>';
         if($found!=true)
         {
-            echo '<span class="alert_msg">No Files were found.</span>';
+            echo '<span class="alert_msg">'._noFilesWereFound.'</span>';
         }
 }
 

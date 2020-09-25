@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
 unset($_SESSION['student_id']);
+
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 Widgets('request');
@@ -39,13 +41,13 @@ $extra['search'] .= '</div>'; //.row
 
 $extra['force_search'] = true;
 if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
     $extra['new'] = true;
     $extra['action'] .= "&_openSIS_PDF=true&head_html=Student+Print+Request";
     $extra['pdf'] = true;
     Search('student_id', $extra);
 } else {
-    $columns = array('COURSE_TITLE' => 'Course', 'MARKING_PERIOD_ID' => 'Marking Period', 'WITH_TEACHER_ID' => 'With Teacher', 'WITH_PERIOD_ID' => 'In Period', 'NOT_TEACHER_ID' => 'Not with Teacher', 'NOT_PERIOD_ID' => 'Not in Period');
+    $columns = array('COURSE_TITLE' => ''._course.'', 'MARKING_PERIOD_ID' => ''._markingPeriod.'', 'WITH_TEACHER_ID' => ''._withTeacher.'', 'WITH_PERIOD_ID' => ''._inPeriod.'', 'NOT_TEACHER_ID' => ''._notWithTeacher.'', 'NOT_PERIOD_ID' => ''._notInPeriod.'');
     $extra['SELECT'] .= ',c.TITLE AS COURSE_TITLE,c.COURSE_ID,srp.PRIORITY,srp.MARKING_PERIOD_ID,srp.WITH_TEACHER_ID,srp.NOT_TEACHER_ID,srp.WITH_PERIOD_ID,srp.NOT_PERIOD_ID';
     $extra['FROM'] .= ',courses c,schedule_requests srp';
     $extra['WHERE'] .= ' AND ssm.STUDENT_ID=srp.STUDENT_ID AND ssm.SYEAR=srp.SYEAR AND srp.COURSE_ID = c.COURSE_ID';
@@ -61,7 +63,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
         $__DBINC_NO_SQLSHOW = true;
         $handle = PDFStart();
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Print Request</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentPrintRequest."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>"._poweredByOpenSis." openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         foreach ($RET as $student_id => $courses) {
             if ($_REQUEST['mailing_labels'] == 'Y') {
                 foreach ($courses as $address) {
@@ -71,19 +73,19 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     echo "</table >";
                     echo '<BR><BR>';
                     echo '<table border=0>';
-                    echo "<tr><td>Student ID:</td>";
+                    echo "<tr><td>"._studentID.":</td>";
                     echo "<td>" . $address[1]['STUDENT_ID'] . "</td></tr>";
-                    echo "<tr><td>Student Name:</td>";
+                    echo "<tr><td>"._studentName.":</td>";
                     echo "<td>" . $address[1]['FULL_NAME'] . "</td></tr>";
-                    echo "<tr><td>Student Grade:</td>";
+                    echo "<tr><td>"._studentGrade.":</td>";
                     echo "<td>" . $address[1]['GRADE_ID'] . "</td></tr>";
                     if ($address[1]['MAILING_LABEL'] != '') {
-                        echo "<tr><td>Student Mailling Label :</td>";
+                        echo "<tr><td>"._studentMaillingLabel." :</td>";
                         echo "<td> " . $address[1]['MAILING_LABEL'] . "</td></tr>";
                     }
                     echo'</table>';
 
-                    ListOutputPrint($address, $columns, 'Request', 'Requests', array(), array(), array('center' => false, 'print' => false));
+                    ListOutputPrint($address, $columns, _request, _requests, array(), array(), array('center' =>false, 'print' =>false));
                     echo '<!-- NEW PAGE -->';
                 }
             } else {
@@ -94,14 +96,14 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo "</table >";
                 echo '<BR><BR>';
                 echo '<table border=0>';
-                echo "<tr><td>Student ID:</td>";
+                echo "<tr><td>"._studentID.":</td>";
                 echo "<td>" . $courses[1]['STUDENT_ID'] . "</td></tr>";
-                echo "<tr><td>Student Name:</td>";
+                echo "<tr><td>"._studentName.":</td>";
                 echo "<td>" . $courses[1]['FULL_NAME'] . "</td></tr>";
-                echo "<tr><td>Student Grade:</td>";
+                echo "<tr><td>"._studentGrade.":</td>";
                 echo "<td>" . $courses[1]['GRADE_ID'] . "</td></tr>";
                 if ($address[1]['MAILING_LABEL'] != '') {
-                    echo "<tr><td>Student Mailling Label :</td>";
+                    echo "<tr><td>"._studentMaillingLabel." :</td>";
                     echo "<td> " . $courses[1]['MAILING_LABEL'] . "</td></tr>";
                 }
                 echo'</table>';
@@ -156,13 +158,13 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     }
                 }
 
-                ListOutputPrint($courses, $columns, 'Request', 'Requests', array(), array(), array('center' => false, 'print' => false));
+                ListOutputPrint($courses, $columns, _request, _requests, array(), array(), array('center' =>false, 'print' =>false));
                 echo '<!-- NEW PAGE -->';
             }
         }
         PDFStop($handle);
     } else
-        BackPrompt('No Students were found.');
+        BackPrompt(''._noStudentsWereFound.'.');
 }
 if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 echo '<div id="modal_default_request" class="modal fade">';
@@ -171,7 +173,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -182,9 +184,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectsWere.'') . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
@@ -205,17 +207,17 @@ function _makeExtra($value, $title = '') {
     global $THIS_RET;
 
     if ($THIS_RET['WITH_TEACHER_ID'])
-        $return .= 'With:&nbsp;' . GetTeacher($THIS_RET['WITH_TEACHER_ID']) . '<BR>';
+        $return .= ''._with.':&nbsp;' . GetTeacher($THIS_RET['WITH_TEACHER_ID']) . '<BR>';
     if ($THIS_RET['NOT_TEACHER_ID'])
-        $return .= 'Not With:&nbsp;' . GetTeacher($THIS_RET['NOT_TEACHER_ID']) . '<BR>';
+        $return .= ''._notWith.':&nbsp;' . GetTeacher($THIS_RET['NOT_TEACHER_ID']) . '<BR>';
     if ($THIS_RET['WITH_PERIOD_ID'])
-        $return .= 'On:&nbsp;' . GetPeriod($THIS_RET['WITH_PERIOD_ID']) . '<BR>';
+        $return .= ''._on.':&nbsp;' . GetPeriod($THIS_RET['WITH_PERIOD_ID']) . '<BR>';
     if ($THIS_RET['NOT_PERIOD_ID'])
-        $return .= 'Not On:&nbsp;' . GetPeriod($THIS_RET['NOT_PERIOD_ID']) . '<BR>';
+        $return .= ''._notOn.':&nbsp;' . GetPeriod($THIS_RET['NOT_PERIOD_ID']) . '<BR>';
     if ($THIS_RET['PRIORITY'])
-        $return .= 'Priority:&nbsp;' . $THIS_RET['PRIORITY'] . '<BR>';
+        $return .= ''._priority.':&nbsp;' . $THIS_RET['PRIORITY'] . '<BR>';
     if ($THIS_RET['MARKING_PERIOD_ID'])
-        $return .= 'Marking Period:&nbsp;' . GetMP($THIS_RET['MARKING_PERIOD_ID']) . '<BR>';
+        $return .= ''._markingPeriod.':&nbsp;' . GetMP($THIS_RET['MARKING_PERIOD_ID']) . '<BR>';
 
     return $return;
 }
@@ -225,7 +227,7 @@ function _makeMpName($value) {
         $get_name = DBGet(DBQuery('SELECT TITLE FROM marking_periods WHERE marking_period_id=' . $value));
         return $get_name[1]['TITLE'];
     } else
-        return 'Custom Course Period';
+        return ''._customCoursePeriod.'';
 }
 
 ?>

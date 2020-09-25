@@ -1,19 +1,19 @@
 <?php
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -27,48 +27,48 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['scheduling']['admin'] = array(
-						'scheduling/Schedule.php'=>'Student Schedule',
-                                                'scheduling/ViewSchedule.php'=>'View Schedule',
-						'scheduling/Requests.php'=>'Student Requests',
-						'scheduling/MassSchedule.php'=>'Group Schedule',
-						'scheduling/MassRequests.php'=>'Group Requests',
-						'scheduling/MassDrops.php'=>'Group Drops',
-						1=>'Reports',
-						// 'scheduling/SchoolwideScheduleReport.php'=>'Schoolwide Schedule Report',
-						'scheduling/PrintSchedules.php'=>'Print Schedules',
-						'scheduling/PrintClassLists.php'=>'Print Class Lists',
-						'scheduling/PrintClassPictures.php'=>'Print Class Pictures',
-						'scheduling/PrintRequests.php'=>'Print Requests',
-						'scheduling/ScheduleReport.php'=>'Schedule Report',
-						'scheduling/RequestsReport.php'=>'Requests Report',
-						'scheduling/UnfilledRequests.php'=>'Unfilled Requests',
-						'scheduling/IncompleteSchedules.php'=>'Incomplete Schedules',
-						'scheduling/AddDrop.php'=>'Add / Drop Report',
-						2=>'Setup',
+						'scheduling/Schedule.php'=>_studentSchedule,
+                                                'scheduling/ViewSchedule.php'=>_viewSchedule,
+						'scheduling/Requests.php'=>_studentRequests,
+						'scheduling/MassSchedule.php'=>_groupSchedule,
+						'scheduling/MassRequests.php'=>_groupRequests,
+						'scheduling/MassDrops.php'=>_groupDrops,
+						1=>_reports,
+						// 'scheduling/SchoolwideScheduleReport.php'=>_schoolwideScheduleReport,
+						'scheduling/PrintSchedules.php'=>_printSchedules,
+						'scheduling/PrintClassLists.php'=>_printClassLists,
+						'scheduling/PrintClassPictures.php'=>_printClassPictures,
+						'scheduling/PrintRequests.php'=>_printRequests,
+						'scheduling/ScheduleReport.php'=>_scheduleReport,
+						'scheduling/RequestsReport.php'=>_requestsReport,
+						'scheduling/UnfilledRequests.php'=>_unfilledRequests,
+						'scheduling/IncompleteSchedules.php'=>_incompleteSchedules,
+						'scheduling/AddDrop.php'=>_addDropReport,
+						2=>_setup,
 						
-						'scheduling/Scheduler.php'=>'Run Scheduler'
+						'scheduling/Scheduler.php'=>_runScheduler,
 					);
 
 $menu['scheduling']['teacher'] = array(
-						// 'scheduling/Schedule.php'=>'Schedule',
-                        'scheduling/ViewSchedule.php'=>'View Schedule',
-						1=>'Reports',
-						'scheduling/PrintSchedules.php'=>'Print Schedules',
-						'scheduling/PrintClassLists.php'=>'Print Class Lists',
-						'scheduling/PrintClassPictures.php'=>'Print Class Pictures'
+						// 'scheduling/Schedule.php'=>_schedule,
+                        'scheduling/ViewSchedule.php'=>_viewSchedule,
+						1=>_reports,
+						'scheduling/PrintSchedules.php'=>_printSchedules,
+						'scheduling/PrintClassLists.php'=>_printClassLists,
+						'scheduling/PrintClassPictures.php'=>_printClassPictures,
 					);
 
 $menu['scheduling']['parent'] = array(
-						'scheduling/ViewSchedule.php'=>'Schedule',
-						'scheduling/PrintClassPictures.php'=>'Class Pictures',
-						'scheduling/Requests.php'=>'Student Requests',
-                        'scheduling/StudentScheduleReport.php'=>'Schedule Report'
+						'scheduling/ViewSchedule.php'=>_schedule,
+						'scheduling/PrintClassPictures.php'=>_classPictures,
+						'scheduling/Requests.php'=>_studentRequests,
+                        'scheduling/StudentScheduleReport.php'=>_scheduleReport,
 					);
 
 $exceptions['scheduling'] = array(
 						'scheduling/Requests.php'=>true,
 						'scheduling/MassRequests.php'=>true,
 						'scheduling/Scheduler.php'=>true,
-                        'scheduling/StudentScheduleReport.php'=>'Schedule Report'
+                        'scheduling/StudentScheduleReport.php'=>_scheduleReport,
 					);
 ?>

@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
+include "lang/language.php";
 function Search($type, $extra = array(), $search_from_grade = '') {
     
     global $_openSIS;
@@ -143,27 +143,27 @@ function Search($type, $extra = array(), $search_from_grade = '') {
         case 'general_info':
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Last Name</label><div class="col-lg-8"><input type=text name="last" size=30 placeholder="Last Name" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._lastName.'</label><div class="col-lg-8"><input type=text name="last" size=30 placeholder="'._lastName.'" class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">First Name</label><div class="col-lg-8"><input type=text name="first" size=30 placeholder="First Name" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._firstName.'</label><div class="col-lg-8"><input type=text name="first" size=30 placeholder="'._firstName.'" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Student ID</label><div class="col-lg-8"><input type=text name="stuid" size=30 placeholder="Student ID" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._studentId.'</label><div class="col-lg-8"><input type=text name="stuid" size=30 placeholder="'._studentId.'" class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Alt ID</label><div class="col-lg-8"><input type=text name="altid" size=30 placeholder="Alt ID" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._altId.'</label><div class="col-lg-8"><input type=text name="altid" size=30 placeholder="'._altId.'" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group clearfix"><label class="control-label text-right col-lg-4">Address</label><div class="col-lg-8"><input type=text name="addr" size=30 placeholder="Address" class="form-control"></div></div>';
+            echo '<div class="form-group clearfix"><label class="control-label text-right col-lg-4">'._address.'</label><div class="col-lg-8"><input type=text name="addr" size=30 placeholder="'._address.'" class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
             $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._grade.'</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">'._grade.'</OPTION>';
 
             foreach ($list as $value)
                 echo '<OPTION value="' . $value['TITLE'] . '">' . $value[TITLE] . '</OPTION>';
@@ -175,9 +175,9 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             echo '<div class="row">';
             echo '<div class="col-md-6">';
             $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM school_gradelevel_sections WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
-            // echo '<div class="form-group"><label class="control-label col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
+            // echo '<div class="form-group"><label class="control-label col-lg-4">'._section.'</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">'._section.'</OPTION>';
             // echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._section.'</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">'._section.'</OPTION>';
 
             foreach ($list as $value)
                 echo '<OPTION value="' . $value['ID'] . '">' . $value[NAME] . '</OPTION>';
@@ -710,14 +710,14 @@ function Search_GroupSchedule($type, $extra = array()) {
             break;
 
         case 'general_info':
-            echo '<div class="form-group"><label class="control-label">Last Name</label><input type=text name="last" size=30 class="form-control"></div>';
-            echo '<div class="form-group"><label class="control-label">First Name</label><input type=text name="first" size=30 class="form-control"></div>';
-            echo '<div class="form-group"><label class="control-label">Student ID</label><input type=text name="stuid" size=30 class="form-control"></div>';
-            echo '<div class="form-group"><label class="control-label">Alt ID</label><input type=text name="altid" size=30 class="form-control"></div>';
-            echo '<div class="form-group"><label class="control-label">Address</label><input type=text name="addr" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">'._lastName.'</label><input type=text name="last" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">'._firstName.'</label><input type=text name="first" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">'._studentId.'</label><input type=text name="stuid" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">'._altId.'</label><input type=text name="altid" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">'._address.'</label><input type=text name="addr" size=30 class="form-control"></div>';
 
             $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
-            echo '<div class="form-group"><label class="control-label">Grade</label><SELECT class="form-control" name=grade><OPTION value="" class="cell_floating">Not Specified</OPTION>';
+            echo '<div class="form-group"><label class="control-label">'._grade.'</label><SELECT class="form-control" name=grade><OPTION value="" class="cell_floating">'._notSpecified.'</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
             echo '</SELECT></div>';
@@ -734,7 +734,7 @@ function Search_GroupSchedule($type, $extra = array()) {
             }
             if (count($search_fields_RET['numeric'])) {
                 foreach ($search_fields_RET['numeric'] as $column)
-                    echo "<h5>$column[TITLE]</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">Between</label><div class=\"col-xs-3\"><INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div><div class=\"col-xs-3\"><INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div></div></div>";
+                    echo "<h5>$column[TITLE]</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">"._between."</label><div class=\"col-xs-3\"><INPUT type=text name=cust_begin[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div><div class=\"col-xs-3\"><INPUT type=text name=cust_end[{$column[COLUMN_NAME]}] size=3 maxlength=11 class=\"form-control\"></div></div></div>";
             }
 
             if (count($search_fields_RET['codeds'])) {
@@ -819,7 +819,7 @@ function Search_GroupSchedule($type, $extra = array()) {
 
                 $data_counter = 1;
                 foreach ($search_fields_RET['date'] as $column) {
-                    echo "<h5>$column[TITLE]</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">Between</label><div class=\"col-xs-3\">" . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . '</div><div class="col-xs-1"></div>';
+                    echo "<h5>$column[TITLE]</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">"._between."</label><div class=\"col-xs-3\">" . DateInputAY('', '_cust_begin[' . $column['COLUMN_NAME'] . ']', $data_counter) . '</div><div class="col-xs-1"></div>';
                     $data_counter++;
                     echo "<div class=\"col-xs-3\">" . DateInputAY('', '_cust_end[' . $column['COLUMN_NAME'] . ']', $data_counter) . "</div></div></div>";
                     $data_counter++;
@@ -917,18 +917,18 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
 
         case 'general_info':
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Last Name</label><div class="col-lg-8"><input type=text name="last" placeholder="Last Name" size=30 class="form-control"></div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">First Name</label><div class="col-lg-8"><input type=text name="first" placeholder="First Name" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._lastName.'</label><div class="col-lg-8"><input type=text name="last" placeholder="'._lastName.'" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._firstName.'</label><div class="col-lg-8"><input type=text name="first" placeholder="'._firstName.'" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Student ID</label><div class="col-lg-8"><input type=text name="stuid" placeholder="Student ID" size=30 class="form-control"></div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Alt ID</label><div class="col-lg-8"><input type=text name="altid" placeholder="Alt ID" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._studentId.'</label><div class="col-lg-8"><input type=text name="stuid" placeholder="'._studentId.'" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._altId.'</label><div class="col-lg-8"><input type=text name="altid" placeholder="'._altId.'" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Address</label><div class="col-lg-8"><input type=text name="addr" placeholder="Address" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._address.'</label><div class="col-lg-8"><input type=text name="addr" placeholder="'._address.'" size=30 class="form-control"></div></div></div>';
 
             $list = DBGet(DBQuery('SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._grade.'</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">'._notSpecified.'</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
             echo '</SELECT></div></div></div>';
@@ -1161,14 +1161,14 @@ function SearchStaff($type, $extra = array()) {
             break;
 
         case 'general_info':
-            echo '<tr><td align=right width=120>Last Name</td><td><input type=text name="last" size=30 class="cell_floating"></td></tr>';
-            echo '<tr><td align=right width=120>First Name</td><td><input type=text name="first" size=30 class="cell_floating"></td></tr>';
-            echo '<tr><td align=right width=120>Student ID</td><td><input type=text name="stuid" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._lastName.'</td><td><input type=text name="last" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._firstName.'</td><td><input type=text name="first" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._studentId.'</td><td><input type=text name="stuid" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>National ID</td><td><input type=text name="altid" size=30 class="cell_floating"></td></tr>';
-            echo '<tr><td align=right width=120>Address</td><td><input type=text name="addr" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._address.'</td><td><input type=text name="addr" size=30 class="cell_floating"></td></tr>';
 
             $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM SCHOOL_GRADELEVELS WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
-            echo '<TR><TD align=right width=120>Grade</TD><TD><SELECT name=grade><OPTION value="" class="cell_floating">Not Specified</OPTION>';
+            echo '<TR><TD align=right width=120>'._grade.'</TD><TD><SELECT name=grade><OPTION value="" class="cell_floating">'._notSpecified.'</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
             echo '</SELECT></TD></TR>';
@@ -1356,8 +1356,8 @@ function stafflist($type, $extra = array()) {
         case 'general_info':
             $ethnicity_RET = DBGet(DBQuery("SELECT ETHNICITY_ID, ETHNICITY_NAME FROM ethnicity"));
 
-            echo '<tr><td align=right width=120>Last Name</td><td><input type=text name="last" size=30 class="cell_floating"></td></tr>';
-            echo '<tr><td align=right width=120>First Name</td><td><input type=text name="first" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._lastName.'</td><td><input type=text name="last" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>'._firstName.'</td><td><input type=text name="first" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>Staff ID</td><td><input type=text name="staffid" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>Gender</td><td><SELECT name=gender style="max-width:1750;"><OPTION value="">N/A</OPTION><OPTION value="Male">Male</OPTION><OPTION value="Female">Female</OPTION></SELECT></td></tr>';
             echo '<tr><td align=right width=120>Ethnicity</td><td><SELECT name=ethnicity style="max-width:1750;"><OPTION value="">N/A</OPTION>';

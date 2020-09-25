@@ -37,10 +37,10 @@ if( $_REQUEST['table_name']!='' && $_REQUEST['table_name']=='course_periods')
 
     $coursePeriods_RET = DBGet($QI);
     $html='cp_modal||';
-    $html.=count($coursePeriods_RET).((count($coursePeriods_RET)==1)?' Period was':' Periods were').' found.<br>';
+    $html.=count($coursePeriods_RET).((count($coursePeriods_RET)==1)?' '._periodWas.'':' '._periodsWere.'').' '._found.'.<br>';
     if(count($coursePeriods_RET)>0)
     {
-        $html.='<table class="table table-bordered"><tr class="bg-grey-200"><th>Course Periods</th></tr>'; 
+        $html.='<table class="table table-bordered"><tr class="bg-grey-200"><th>'._coursePeriods.'</th></tr>'; 
 
         foreach($coursePeriods_RET as $val)
         {
@@ -60,10 +60,10 @@ if( $_REQUEST['table_name']!='' && $_REQUEST['table_name']=='courses')
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html='course_modal||';
-    $html.=count($courses_RET). ((count($courses_RET)==1)?' Course was':' Courses were').' found.';
+    $html.=count($courses_RET). ((count($courses_RET)==1)?' '._courseWas.'':' '._coursesWere.'').' '._found.'.';
     if(count($courses_RET)>0)
     {
-    $html.='<table  class="table table-bordered"><tr class="bg-grey-200"><th>Course</th></tr>';
+    $html.='<table  class="table table-bordered"><tr class="bg-grey-200"><th>'._course.'</th></tr>';
     foreach($courses_RET as $val)
     {
 

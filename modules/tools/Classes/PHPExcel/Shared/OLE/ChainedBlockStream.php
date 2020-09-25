@@ -133,7 +133,7 @@ class PHPExcel_Shared_OLE_ChainedBlockStream
 	 */
 	public function stream_close()
 	{
-		$this->ole = null;
+		$this->ole = _null;
 		unset($GLOBALS['_OLE_INSTANCES']);
 	}
 

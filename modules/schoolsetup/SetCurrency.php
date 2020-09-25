@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+include('lang/language.php');
 
 if ($_REQUEST['modfunc'] == 'currenc') {
 
@@ -58,10 +59,10 @@ foreach ($values as $symbol)
 
 echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=currenc&page_display=CURRENCY method=POST>";
 
-echo '<div class="form-group"><label class="control-label text-uppercase"><b>Currency</b></label>' . SelectInput($val, 'values[CURRENCY]', '', $symbols, 'N/A') . '</div>';
+echo '<div class="form-group"><label class="control-label text-uppercase"><b>'._currency.'</b></label>' . SelectInput($val, 'values[CURRENCY]', '', $symbols, 'N/A') . '</div>';
 //if ($_REQUEST['page_display']) {
 //    echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //}
-echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
+echo SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
 echo '</FORM>';

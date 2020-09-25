@@ -66,7 +66,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='print')
 
 		$fp=@fopen($temphtml,"w+");
 		if (!$fp)
-			die("Can't open $temphtml");
+			die(""._canTOpen." $temphtml");
 		fputs($fp,'<HTML><BODY>'.$html.'</BODY></HTML>');
 		@fclose($fp);
 
@@ -95,7 +95,7 @@ else
 {
 echo "
 	<HTML>
-		<HEAD><TITLE>openSIS School Software</TITLE>
+		<HEAD><TITLE>"._openSisSchoolSoftware."</TITLE>
 		<SCRIPT>
 		size = 30;
 		function expandFrame()

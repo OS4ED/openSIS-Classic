@@ -45,7 +45,7 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
 	public function writeContentTypes(PHPExcel $pPHPExcel = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {

@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if (count($_REQUEST['mp_arr'])) {
     foreach ($_REQUEST['mp_arr'] as $mp)
         $mp_list .= ",'$mp'";
@@ -94,7 +96,7 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
             }
         }
 
-        DrawBC("Attendance > " . ProgramTitle());
+        DrawBC(""._attendance." > " . ProgramTitle());
         echo "<TABLE width=100% border=0 cellpadding=0 cellspacing=0><TR>";
         echo "<TD bgcolor=#FFFFFF style=border:1;border-style: none none solid none; align=left> &nbsp;";
         echo "<FONT size=-1><IMG SRC=assets/check.gif>";
@@ -104,7 +106,7 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
 }
 
 if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['delete'] != 'true') {
-    DrawBC("Attendance > " . ProgramTitle());
+    DrawBC(""._attendance." > " . ProgramTitle());
 
     $extra['new'] = true;
     Search('student_id', $extra);
@@ -184,7 +186,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
         Widgets('letter_grade');
         $result1 = GetStuList($extra);
 
-        DrawBC("Attendance > " . ProgramTitle());
+        DrawBC(""._attendance." > " . ProgramTitle());
         echo "$delete_message";
 
         echo "<form action=Modules.php?modname=attendance/DuplicateAttendance.php&modfunc=&search_modfunc=list&next_modname=attendance/DuplicateAttendance.php&delete=true method=POST>";
@@ -215,15 +217,15 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
 
         echo '<div class="panel">';
         echo '<div class="tabbable">';
-        echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">Student\'s List</a></li></ul>';
+        echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">'._studentsList.'</a></li></ul>';
         echo '<div class="table-responsive">';
         echo '<table class="table table-bordered table-striped"><thead>';
         echo "<tr><th><INPUT type=checkbox value=Y name=controller onclick=checkAll(this.form,this.form.controller.checked,'deletecheck');></th>";
-        echo "<th>Student (Student ID)</th>";
-        echo "<th>Course (Course Period ID)</th>";
-        echo "<th>Course Start Date</th>";
-        echo "<th>Course End Date</th>";
-        echo "<th>Attendance Date</th></tr></thead><tbody>";
+        echo "<th>"._student." ("._studentId.")</th>";
+        echo "<th>"._course." ("._coursePeriodId.")</th>";
+        echo "<th>"._course." "._startDate."</th>";
+        echo "<th>"._course." "._endDate."</th>";
+        echo "<th>"._attendanceDate."</th></tr></thead><tbody>";
 
         $URIcount = 0;
         $count = 0;
@@ -307,7 +309,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $end2 = $end;
         }
         if ($count == 0) {
-            echo '<tr class=odd><td colspan=6><span class="text-alert">No Duplicates Found</span></td></tr>';
+            echo '<tr class=odd><td colspan=6><span class="text-alert">'._noDuplicatesFound.'</span></td></tr>';
             echo '</tbody>';
             echo '</table>';
             echo '</div>'; //.table-responsive
@@ -319,13 +321,13 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             echo '</div>'; //.table-responsive
             echo '</div>'; //.tabbable
             echo '</div>'; //.panel
-            echo '<br><input type=submit class="btn btn-primary" name=submit onclick="self_disable(this);" value=Delete>';
+            echo '<br><input type=submit class="btn btn-primary" name=submit onclick="self_disable(this);" value='._delete.'>';
         }
 
         echo "</form>";
         $RET = " ";
     } else
-        BackPrompt('No Students were found.');
+        BackPrompt(noStudentsWereFound.'.');
 }
 
 function _makeTeacher($teacher, $column) {

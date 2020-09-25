@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
-DrawBC("GradeBook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 
 echo '<div class="panel panel-default">';
 echo '<div class="panel-body">';
@@ -78,7 +78,7 @@ $course_period_id = UserCoursePeriod();
 if ($course_period_id)
     $course_RET = DBGet(DBQuery('SELECT cp.COURSE_ID,c.TITLE as COURSE_NAME, cp.TITLE, cp.GRADE_SCALE_ID,CREDIT(cp.COURSE_PERIOD_ID,\'' . $_REQUEST['mp'] . '\') AS CREDITS,cp.COURSE_WEIGHT,cp.MARKING_PERIOD_ID FROM course_periods cp, courses c WHERE cp.COURSE_ID = c.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $course_period_id . '\''));  //sg              
 if (!$course_RET[1]['GRADE_SCALE_ID'] && !$_REQUEST['include_inactive']) {
-    echo '<div class="alert bg-warning alert-styled-left">You cannot enter letter grades as grade scale is not set for this course .</div>';
+    echo '<div class="alert bg-warning alert-styled-left">'._youCannotEnterLetterGradesAsGradeScaleIsNotSetForThisCourse.' .</div>';
     $not_graded = true;
     $_REQUEST['use_percents'] = true;
 }
@@ -1158,11 +1158,14 @@ if (substr($_REQUEST['mp'], 0, 1) != 'E' && GetMP($_REQUEST['mp'], 'DOES_COMMENT
 
 
 $extra['SELECT'] .= ",'' AS COMMENTS,'' AS COMMENT";
+$extra['GROUP'] .= "student_id";
 
 
 
 $extra['functions'] += array('COMMENT' => '_makeComment');
 
+// echo "<br><pre>";
+// print_r($extra);
 $stu_RET = GetStuList($extra);
 
 // echo "<pre>";print_r($import_RET);echo "</pre>";
@@ -1199,10 +1202,10 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
     echo '<div class="form-group"><div class="form-inline">';
     if (count($stu_RET) != 0) {
-        echo $mps_select . ' &nbsp; ' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"').' &nbsp; &nbsp; ';
+        echo $mps_select . ' &nbsp; ' . SubmitButton(_save, 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"').' &nbsp; &nbsp; ';
         echo '<input type=hidden name=period value="' . strip_tags(trim($_REQUEST['period'])) . '" />';
     }
-    echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label>';
+    echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label>';
     echo '</div></div>';
     $dbf = DBGet(DBQuery('SELECT DOES_BREAKOFF,GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''));
     if ($dbf[1]['DOES_BREAKOFF'] == 'Y') {
@@ -1212,32 +1215,32 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         if (count($get_details1) != count($default_details1)) {
 
-            echo '<div class="alert bg-danger alert-styled-left">Score Breakoff Points setup is incomplete,Please set Score Breakoff Points from configuration.</div>';
+            echo '<div class="alert bg-danger alert-styled-left">'._scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration.'.</div>';
         }
     }
 
     if (AllowEdit()) {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>These grades are complete.</span>' : '<span>Grade reporting is open for this marking period.</span>') . (AllowEdit() ? ' <span>You can edit these grades.</span>' : ' <span class="text-danger">Grade reporting begins on : ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span>'._gradeReportingIsOpenForThisMarkingPeriod.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting begins on : ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'not open yet') {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>These grades are complete.</span>' : '<span class="text-danger">Grade reporting is not open for this marking period.</span>') . (AllowEdit() ? ' <span>You can edit these grades.</span>' : ' <span class="text-danger">Grade reporting starts on: ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . ' and ends on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span class="text-danger">'._gradeReportingIsNotOpenForThisMarkingPeriod.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting starts on: ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . ' and ends on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'closed') {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>These grades are complete.</span>' : '<span class="text-danger">These grades are complete.</span>') . (AllowEdit() ? ' <span>You can edit these grades.</span>' : ' <span class="text-danger">Grade reporting ended for this marking period on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span class="text-danger">'._theseGradesAreComplete.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting ended for this marking period on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'not set yet') {
-        echo '<div class="alert bg-danger alert-styled-left">Grade reporting date has not set for this marking period.</div>';
+        echo '<div class="alert bg-danger alert-styled-left">'._gradeReportingDateHasNotSetForThisMarkingPeriod.'.</div>';
     }
 
     if (AllowEdit() && count($stu_RET) != 0) {
         echo '<ul class="nav nav-pills nav-xs nav-pills-bordered">';
         if ($_REQUEST['use_percents'] != 'true')
-            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=true&period=" . CpvId() . ">Assign Percents</A></li>";
+            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=true&period=" . CpvId() . ">"._assignPercents."</A></li>";
         elseif ($not_graded != true)
-            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=false&period=" . CpvId() . ">Assign Letters</A></li>";
+            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=false&period=" . CpvId() . ">"._assignLetters."</A></li>";
 
         if (substr($_REQUEST['mp'], 0, 1) != 'E') {
             if ($cp_type != 'custom')
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=$_REQUEST[mp]&use_percents=true&period=$_REQUEST[period]>Get Gradebook grades</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=$_REQUEST[mp]&use_percents=true&period=$_REQUEST[period]>"._getGradebookGrades."</A></li>";
             else
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=" . ($_REQUEST[mp] == '' ? $full_year_mp[1]['MARKING_PERIOD_ID'] : $_REQUEST[mp]) . "&custom_cp=y&use_percents=true&period=$_REQUEST[period]>Get Gradebook grades</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=" . ($_REQUEST[mp] == '' ? $full_year_mp[1]['MARKING_PERIOD_ID'] : $_REQUEST[mp]) . "&custom_cp=y&use_percents=true&period=$_REQUEST[period]>"._getGradebookGrades."</A></li>";
 
             if ($cp_type != 'custom') {
                 if (GetMP($_REQUEST['mp'], 'PA_ID') != -1) {
@@ -1261,8 +1264,8 @@ if (!$_REQUEST['_openSIS_PDF']) {
             $prev_mp = $prev_mp[1];
             
             if ($cp_mp !='FY' && $cp_type != 'custom' && $prev_mp) {
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] grades</A></li>";
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] Comments</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] "._grades."</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] "._comments."</A></li>";
             }
         }
         if ($cp_type != 'custom')
@@ -1270,7 +1273,7 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         if (substr($_REQUEST['mp'], 0, 1) == 'E')
             $bar = ' | ';
-        $gb_header .= "<li><A class=\"text-danger\" HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=clearall&mp=$_REQUEST[mp]&use_percents=$_REQUEST[use_percents]&period=$_REQUEST[period]><i class=\"fa fa-times\"></i> Clear All</A></li>";
+        $gb_header .= "<li><A class=\"text-danger\" HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=clearall&mp=$_REQUEST[mp]&use_percents=$_REQUEST[use_percents]&period=$_REQUEST[period]><i class=\"fa fa-times\"></i> "._clearAll."</A></li>";
         $gb_header .= '</ul>';
     }
     echo $gb_header;
@@ -1281,15 +1284,24 @@ else {
     DrawHeader(GetMP(UserMP()));
 }
 
-$columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID');
+$columns = array('FULL_NAME' =>_student,
+ 'STUDENT_ID' =>_studentId,
+);
 if ($_REQUEST['include_inactive'] == 'Y')
-    $columns += array('ACTIVE' => 'School Status', 'ACTIVE_SCHEDULE' => 'Course Status');
+    $columns += array('ACTIVE' =>_schoolStatus,
+     'ACTIVE_SCHEDULE' =>_courseStatus,
+    );
 if ($_REQUEST['use_percents'] != 'true')
-    $columns += array('GRADE_PERCENT' => 'Percent', 'REPORT_CARD_GRADE' => 'Assign Grade');
+    $columns += array('GRADE_PERCENT' =>_percent,
+     'REPORT_CARD_GRADE' =>_assignGrade,
+    );
 elseif ($not_graded)
-    $columns += array('GRADE_PERCENT' => 'Assign Percent');
+    $columns += array('GRADE_PERCENT' =>_assignPercent,
+);
 else
-    $columns += array('REPORT_CARD_GRADE' => 'Grade', 'GRADE_PERCENT' => 'Assign Percent');
+    $columns += array('REPORT_CARD_GRADE' =>_grade,
+     'GRADE_PERCENT' =>_assignPercent,
+    );
 
 
 
@@ -1299,8 +1311,8 @@ if (substr($_REQUEST['mp'], 0, 1) != 'E' && GetMP($_REQUEST['mp'], 'DOES_COMMENT
     for ($i = 1; $i <= $max_current_commentsB; $i++)
         $columns += array('CB' . $i => 'Comment ' . $i);
     if (count($commentsB_select) && AllowEdit() && !isset($_REQUEST['_openSIS_PDF']))
-        $columns += array('CB' . $i => 'Add Comment');
-    $columns += array('COMMENT' => 'Comment');
+        $columns += array('CB' . $i =>_addComment);
+    $columns += array('COMMENT' =>_comment);
 }
 
 
@@ -1327,12 +1339,12 @@ if(isset($_SESSION['GGG_FLAG']) && $_SESSION['GGG_FLAG'] == 1)
 
 // echo "<pre>";print_r($stu_RET);echo "</pre>";
 
-ListOutput($stu_RET, $columns, 'Student', 'Students', false, false, array('yscroll' => true));
+ListOutput($stu_RET, $columns,  _student, _students, false, false, array('yscroll' =>true));
 
 
 
 if (count($stu_RET) != 0) {
-    echo '<div class="panel-footer">' . SubmitButton('Save', 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
+    echo '<div class="panel-footer">' . SubmitButton(_save, 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body

@@ -31,14 +31,12 @@ $text = "
 -- Dumping data for table `app`
 --
 
-
-
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.5'),
-('date', 'August 11, 2020'),
+('version', '7.6'),
+('date', 'September 11, 2020'),
 ('build', '20200811001'),
 ('update', '0'),
-('last_updated', 'August 11, 2020');
+('last_updated', 'September 11, 2020');
 
 
 --
@@ -776,7 +774,13 @@ INSERT INTO `student_field_categories` (`id`, `title`, `sort_order`, `include`, 
 (7, 'Files', '7', NULL, '2019-07-28 15:26:33', NULL);
 
 
+--
+-- Adding Schoolwide Schedule Report to `profile_exceptions`
+--
 
+INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`) VALUES
+('0', 'scheduling/SchoolwideScheduleReport.php', 'Y', 'Y'),
+('1', 'scheduling/SchoolwideScheduleReport.php', 'Y', 'Y');
 
 
 

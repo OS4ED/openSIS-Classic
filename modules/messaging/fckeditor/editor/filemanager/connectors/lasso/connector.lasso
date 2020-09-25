@@ -70,7 +70,7 @@
 	);
 		$__html_reply__ = '\
 <script type="text/javascript">
-(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|$)/,\'\');if (d.length==0) break;try{document.domain=d;}catch (e){break;}}})();
+(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|$)/,\'\');if (d.length==0) break;try{document.domain= _d;}catch (e){break;}}})();
 ';
 			if($uploadResult == '0' || $uploadResult == '201');
 			$__html_reply__ = $__html_reply__ + '\

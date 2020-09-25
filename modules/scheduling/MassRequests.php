@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 
 // echo "<pre>";print_r($_REQUEST);echo "</pre>";
 // echo "<pre>";print_r($_SESSION['MassRequests.php']);echo "</pre>";
@@ -92,7 +94,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                 }
             } else {
                 $duplicate_counter++;
-                $duplicate = "<span class=red>".$duplicate_counter." Duplicate data found. Request already exists!</span>";
+                $duplicate = "<span class=red>".$duplicate_counter.""._duplicateDataRoundRequestAlreadyExists."</span>";
                 unset($_REQUEST['modfunc']);
             }
         }
@@ -103,22 +105,22 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 
             if($added_counter > 1)
             {
-                $note = "That course has been added as a request for ".$added_counter." selected students.";
+                $note = _thatCourseHasBeenAddedAsARequestFor." ".$added_counter." "._selectedStudents.".";
             }
             else
             {
-                $note = "That course has been added as a request for 1 student.";
+                $note = _thatCourseHasBeenAddedAsARequestForStudent;
             }
         }
         # -------------------  Without Period Selection Request Entry End  ------------------------------------- #
     } else {
-        ShowErr('You must choose a Course');
+        ShowErr(_youMustChooseACourse);
         unset($_SESSION['MassRequests.php']);
         for_error();
     }
 }
 if ($_REQUEST['modfunc'] != 'choose_course') {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM name=qq id=qq action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save  method=POST>";
 
@@ -128,9 +130,9 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         echo '<div class="row">';
         echo '<div class="col-md-4">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-4 text-right">Request to Add</label>';
+        echo '<label class="control-label col-lg-4 text-right">'._requestToAdd.'</label>';
         echo '<div class="col-lg-8">';
-        echo '<A HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_request" onClick="cleanModal(\"modal_default_request\");"><i class="icon-menu6 pull-right m-t-10"></i><div id=course_div class="form-control m-b-5" readonly="readonly">Choose a Course</div></a>';
+        echo '<A HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_request" onClick="cleanModal(\"modal_default_request\");"><i class="icon-menu6 pull-right m-t-10"></i><div id=course_div class="form-control m-b-5" readonly="readonly">'._chooseACourse.'</div></a>';
         echo '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-md-4
@@ -143,24 +145,24 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         //echo '</DIV>' . "<A HREF=# onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Choose a Course</A></div>";
 
 
-        echo '<div class="col-md-4"><label class="control-label">With Teacher &amp; Period</label>';
-        echo '<DIV id=WITH_TEACHER_PERIOD ><SELECT name=with_teacher_id class="form-control"><OPTION value="">Teacher - N/A</OPTION>';
+        echo '<div class="col-md-4"><label class="control-label">'._withTeacher.' &amp; '._period.'</label>';
+        echo '<DIV id=WITH_TEACHER_PERIOD ><SELECT name=with_teacher_id class="form-control"><OPTION value="">'._teacherNA.'</OPTION>';
 
         $teachers_RET = DBGet(DBQuery("SELECT s.STAFF_ID,s.LAST_NAME,s.FIRST_NAME,MIDDLE_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.CURRENT_SCHOOL_ID=ssr.SCHOOL_ID AND s.CURRENT_SCHOOL_ID LIKE '%" . UserSchool() . "%' AND ssr.SYEAR='" . UserSyear() . "' AND s.PROFILE='teacher' ORDER BY s.LAST_NAME,s.FIRST_NAME"));
         foreach ($teachers_RET as $teacher)
             echo '<OPTION value=' . $teacher['STAFF_ID'] . '>' . $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . ' ' . $teacher['MIDDLE_NAME'] . '</OPTION>';
-        echo '</SELECT><SELECT class="form-control" name=with_period_id><OPTION value="">Period - N/A</OPTION>';
+        echo '</SELECT><SELECT class="form-control" name=with_period_id><OPTION value="">'._periodNA.'</OPTION>';
         $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         foreach ($periods_RET as $period)
             echo '<OPTION value=' . $period['PERIOD_ID'] . '>' . $period['TITLE'] . '</OPTION>';
         echo '</SELECT></DIV></div>';
 
 
-        echo '<div class="col-md-4"><label class="control-label">Without Teacher &amp; Period</label>';
-        echo '<DIV ID=WITHOUT_TEACHER_PERIOD><SELECT class="form-control" name=without_teacher_id><OPTION value="">Teacher - N/A</OPTION>';
+        echo '<div class="col-md-4"><label class="control-label">'._withoutTeacher.' &amp; '._period.'</label>';
+        echo '<DIV ID=WITHOUT_TEACHER_PERIOD><SELECT class="form-control" name=without_teacher_id><OPTION value="">'._teacherNA.'</OPTION>';
         foreach ($teachers_RET as $teacher)
             echo '<OPTION value=' . $teacher['STAFF_ID'] . '>' . $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . ' ' . $teacher['MIDDLE_NAME'] . '</OPTION>';
-        echo '</SELECT><SELECT class="form-control" name=without_period_id><OPTION value="">Period - N/A</OPTION>';
+        echo '</SELECT><SELECT class="form-control" name=without_period_id><OPTION value="">'._periodNA.'</OPTION>';
         foreach ($periods_RET as $period)
             echo '<OPTION value=' . $period['PERIOD_ID'] . '>' . $period['TITLE'] . '</OPTION>';
         echo '</SELECT></DIV></div>';
@@ -182,7 +184,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] != 'list')
         unset($_SESSION['MassRequests.php']);
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",CAST(NULL AS CHAR(1)) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
@@ -206,7 +208,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right p-b-20 p-r-20">'.SubmitButton('Add Request to Selected Students', '', 'id="groupReqBtn" class="btn btn-primary" onclick=\' return validate_group_request(this);\'').'</div>';
+            echo '<div class="text-right p-b-20 p-r-20">'.SubmitButton(_addRequestToSelectedStudents, '', 'id="groupReqBtn" class="btn btn-primary" onclick=\' return validate_group_request(this);\'').'</div>';
         echo '</FORM>';
     }
 }
@@ -227,12 +229,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 
         //***WITH TEACHER_PERIOD*************************************************************
         $tp_html = '';
-        $tp_html .= '<SELECT name=with_teacher_id class=form-control><OPTION>Teacher - N/A</OPTION>';
+        $tp_html .= '<SELECT name=with_teacher_id class=form-control><OPTION>'._teacherNA.'</OPTION>';
         $corr_teachers = DBGet(DBQuery("SELECT Distinct s.FIRST_NAME,s.LAST_NAME,s.STAFF_ID AS TEACHER_ID FROM staff s,course_periods cp WHERE s.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_ID='" . $c . "'"));
         foreach ($corr_teachers as $teacher) {
             $tp_html .= '<OPTION value=' . $teacher['TEACHER_ID'] . '>' . $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . '</OPTION>';
         }
-        $tp_html .= '</SELECT><SELECT name=with_period_id class=form-control><OPTION>Period - N/A</OPTION>';
+        $tp_html .= '</SELECT><SELECT name=with_period_id class=form-control><OPTION>'._periodNA.'</OPTION>';
         $corr_periods = DBGet(DBQuery("SELECT Distinct p.TITLE,p.PERIOD_ID FROM school_periods p,course_periods cp,course_period_var cpv WHERE p.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID='" . $c . "'"));
         foreach ($corr_periods as $period) {
             $tp_html .= '<OPTION value=' . $period['PERIOD_ID'] . '>' . $period['TITLE'] . '</OPTION>';
@@ -243,12 +245,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
         //***WITH TEACHER_PERIOD**********************************************************
         //***WITHOUT TEACHER_PERIOD*******************************************************
         $tp_html_w = '';
-        $tp_html_w .= '<SELECT name=without_teacher_id class=form-control><OPTION>Teacher - N/A</OPTION>';
+        $tp_html_w .= '<SELECT name=without_teacher_id class=form-control><OPTION>'._teacherNA.'</OPTION>';
         $corr_teachers = DBGet(DBQuery("SELECT Distinct s.FIRST_NAME,s.LAST_NAME,s.STAFF_ID AS TEACHER_ID FROM staff s,course_periods cp WHERE s.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_ID='" . $c . "'"));
         foreach ($corr_teachers as $teacher) {
             $tp_html_w .= '<OPTION value=' . $teacher['TEACHER_ID'] . '>' . $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . '</OPTION>';
         }
-        $tp_html_w .= '</SELECT><SELECT name=without_period_id class=form-control><OPTION>Period - N/A</OPTION>';
+        $tp_html_w .= '</SELECT><SELECT name=without_period_id class=form-control><OPTION>'._periodNA.'</OPTION>';
         $corr_periods = DBGet(DBQuery("SELECT Distinct p.TITLE,p.PERIOD_ID FROM school_periods p,course_periods cp,course_period_var cpv WHERE p.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_ID='" . $c . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID"));
         foreach ($corr_periods as $period) {
             $tp_html_w .= '<OPTION value=' . $period['PERIOD_ID'] . '>' . $period['TITLE'] . '</OPTION>';
@@ -277,7 +279,7 @@ echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -288,9 +290,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ?  _subjectWas : _subjectsWere) . ''._found.'.<br>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>';
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>'._subject.'</th></tr>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }

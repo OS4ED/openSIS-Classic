@@ -28,8 +28,8 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include("UploadClassFnc.php");
-DrawBC("Students > " . ProgramTitle());
-PopTable('header', 'Upload Student\'s Photo');
+DrawBC(""._students." > " . ProgramTitle());
+PopTable('header', ''._uploadStudentSPhoto.'');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit') {
     if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
         echo '<div align=center><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150 class=pic></div>';
@@ -65,21 +65,21 @@ if (UserStudentID()) {
         }
 
         if ($_FILES["file"]["error"] > 0 && $upload->wrongFormat == 1) {
-            $msg = "<font color=red><b>Cannot upload file. Only jpeg, jpg, png, gif files are allowed.</b></font>";
+            $msg = "<font color=red><b>"._cannotUploadFileOnlyJpegJpgPngGifFilesAreAllowed."</b></font>";
             echo '
 	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-            echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+            echo '<div align=center>'._selectImageFile.': <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+<input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
             PopTable('footer');
         } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
-            $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+            $msg = "<font color=red><b>"._fileTooLargeMaximumUploadFileSizeLimit_10Mb."</b></font>";
             echo '
 	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-            echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+            echo '<div align=center>'._selectImageFile.': <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
+<input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-primary" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
             PopTable('footer');
         } else {
@@ -99,7 +99,7 @@ if (UserStudentID()) {
             $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 
             echo '<div class="text-center">';
-            echo '<div class="alert alert-success alert-bordered inline-block"><span class="text-semibold">Well done!</span> File Uploaded Successfully.</div>';
+            echo '<div class="alert alert-success alert-bordered inline-block"><span class="text-semibold">'._wellDone.'!</span> '._fileUploadedSuccessfully.'</div>';
             echo '</div>';
             echo '<div align=center><IMG SRC="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=250 class=pic></div><div class=break></div>';
 
@@ -110,14 +110,14 @@ if (UserStudentID()) {
         echo '
 ' . $msg . '
 <form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';
-        echo '<div align=center>Select image file: <input name="file" type="file" onchange="selectFile(this)"/><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>';
+        echo '<div align=center>'._selectImageFile.': <input name="file" type="file" onchange="selectFile(this)"/><b><span >('._maximumUploadFileSize_10Mb.')</span></b><br /><br>';
 //////////////Modal For Filter Save////////////////////
         echo '<div id="modal_crop_image" class="modal fade">';
         echo '<div class="modal-dialog">';
         echo '<div class="modal-content">';
         echo '<div class="modal-header">';
         echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-        echo '<h5 class="modal-title">Upload Photo</h5>';
+        echo '<h5 class="modal-title">'._uploadPhoto.'</h5>';
         echo '</div>';
 
         echo '<div class="modal-body">';
@@ -126,18 +126,18 @@ if (UserStudentID()) {
           
       </div>';
         echo '<input type=hidden name="imgblob" id="imgblob" value="">';
-        echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+        echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="'._upload.'">';
         echo '</div>'; //.modal-body
 
         echo '</div>'; //.modal-content
         echo '</div>'; //.modal-dialog
         echo '</div>'; //.modal
-        echo '<input type=button class="btn btn-primary" value=Cancel onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
+        echo '<input type=button class="btn btn-primary" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=students/Student.php");\'></div>
 </form>';
         PopTable('footer');
     }
 } else {
-    echo 'Please select a student first! from the <b>"Students"</b> Tab';
+    echo ''._pleaseSelectAStudentFirst.'! from the <b>"Students"</b> Tab';
     PopTable('footer');
 }
 ?>

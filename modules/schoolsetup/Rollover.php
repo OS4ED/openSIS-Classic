@@ -36,7 +36,18 @@ $_SESSION['DBP'] = $DatabasePort;
 $_SESSION['NY'] = $next_syear;
 
 
-$tables = array('staff'=>'users','school_periods'=>'School Periods','school_years'=>'Marking Periods','school_calendars'=>'Calendars','report_card_grade_scales'=>'Report Card Grade Codes','courses'=>'Courses<b>*</b>','student_enrollment'=>'Students','report_card_comments'=>'Report Card Comment Codes','eligibility_activities'=>'Eligibility Activity Codes','attendance_codes'=>'Attendance Codes','student_enrollment_codes'=>'Student Enrollment Codes');
+$tables = array('staff'=>_users,
+'school_periods'=>_schoolPeriods,
+'school_years'=>_markingPeriods,
+'school_calendars'=>_calendars,
+'report_card_grade_scales'=>_reportCardGradeCodes,
+'courses'=>_coursesBB,
+'student_enrollment'=>_students,
+'report_card_comments'=>_reportCardCommentCodes,
+'eligibility_activities'=>_eligibilityActivityCodes,
+'attendance_codes'=>_attendanceCodes,
+'student_enrollment_codes'=>_studentEnrollmentCodes,
+);
 $no_school_tables = array('student_enrollment_codes'=>true,'staff'=>true);
 
 $table_list = '<TABLE align=center>';
@@ -52,9 +63,9 @@ foreach($tables as $table=>$name)
 }
 $table_list .= '</TABLE></CENTER><CENTER>';
 
-DrawBC("School Setup > ".ProgramTitle());
+DrawBC(""._schoolSetup." > ".ProgramTitle());
 
-if(Prompt_rollover('Confirm Rollover','Are you sure you want to roll the data for '.UserSyear().'-'.(UserSyear()+1).' to the next school year?',$table_list))
+if(Prompt_rollover('Confirm Rollover',''._areYouSureYouWantToRollTheDataFor.' '.UserSyear().'-'.(UserSyear()+1).' '._toTheNextSchoolYear.'?',$table_list))
 {
 	if($_REQUEST['tables']['courses'] && ((!$_REQUEST['tables']['staff'] && $exists_RET['staff'][1]['COUNT']<1) || (!$_REQUEST['tables']['school_periods'] && $exists_RET['school_periods'][1]['COUNT']<1) || (!$_REQUEST['tables']['school_years'] && $exists_RET['school_years'][1]['COUNT']<1) || (!$_REQUEST['tables']['school_calendars'] && $exists_RET['school_calendars'][1]['COUNT']<1) || (!$_REQUEST['tables']['report_card_grade_scales'] && $exists_RET['report_card_grade_scales'][1]['COUNT']<1)))
 		BackPrompt('You must roll users, school periods, marking periods, calendars, and report card codes at the same time or before rolling courses.');

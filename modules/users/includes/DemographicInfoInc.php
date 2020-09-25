@@ -36,27 +36,27 @@ $_SESSION['staff_selected'] = $staff['STAFF_ID'];
 
 if ($_REQUEST['staff_id'] == 'new') {
     echo '<div class="form-group">';
-    echo '<div class=col-md-2><label>Salutation</label>' . SelectInput($staff['TITLE'], 'staff[TITLE]', '', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '') . '</div><div class="col-md-3"><label>First Name</label>' . TextInput($staff['FIRST_NAME'], 'staff[FIRST_NAME]', '', 'maxlength=50') . '</div><div class="col-md-3"><label>Middle Name</label>' . TextInput($staff['MIDDLE_NAME'], 'staff[MIDDLE_NAME]', '', 'maxlength=50') . '</div><div class="col-md-3"><label>Last Name</label>' . TextInput($staff['LAST_NAME'], 'staff[LAST_NAME]', '', 'maxlength=50 class=cell_floating') . '</div><div class="col-md-1"><label>Suffix</label>' . SelectInput($staff['NAME_SUFFIX'], 'staff[NAME_SUFFIX]', '', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '') . '</div>';
+    echo '<div class=col-md-2><label>'._salutation.'</label>' . SelectInput($staff['TITLE'], 'staff[TITLE]', '', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '') . '</div><div class="col-md-3"><label>'._firstName.'</label>' . TextInput($staff['FIRST_NAME'], 'staff[FIRST_NAME]', '', 'maxlength=50') . '</div><div class="col-md-3"><label>'._middleName.'</label>' . TextInput($staff['MIDDLE_NAME'], 'staff[MIDDLE_NAME]', '', 'maxlength=50') . '</div><div class="col-md-3"><label>'._lastName.'</label>' . TextInput($staff['LAST_NAME'], 'staff[LAST_NAME]', '', 'maxlength=50 class=cell_floating') . '</div><div class="col-md-1"><label>Suffix</label>' . SelectInput($staff['NAME_SUFFIX'], 'staff[NAME_SUFFIX]', '', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '') . '</div>';
     echo '</div>'; //.form-group    
 } else {
     echo '<div class="form-group" id="user_name">';
-    echo '<div onclick=\'addHTML("<div class=col-md-2><div><label for=staff[TITLE]>Salutation</label>' . str_replace('"', '\"', SelectInput($staff['TITLE'], 'staff[TITLE]', '', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '', '', false)) . '</div></div><div class=col-md-3><label for=staff[FIRST_NAME]>' . (!$staff['FIRST_NAME'] ? '<span class="text-danger">' : '') . 'First Name' . (!$staff['FIRST_NAME'] ? '</span>' : '') . '</label>' . str_replace('"', '\"', TextInput(trim($staff['FIRST_NAME']), 'staff[FIRST_NAME]', '', 'maxlength=50', false)) . '</div><div class=col-md-3><label for=staff[MIDDLE_NAME]>Middle Name</label>' . str_replace('"', '\"', TextInput($staff['MIDDLE_NAME'], 'staff[MIDDLE_NAME]', '', 'size=3 maxlength=50', false)) . '</div><div class=col-md-3><label for=staff[LAST_NAME]>' . (!$staff['LAST_NAME'] ? '<span class="text-danger">' : '') . 'Last Name' . (!$staff['LAST_NAME'] ? '</span>' : '') . '</label>' . str_replace('"', '\"', TextInput(trim($staff['LAST_NAME']), 'staff[LAST_NAME]', '', 'maxlength=50', false)) . '</div><div class=col-md-1><label for=staff[NAME_SUFFIX]>Suffix</label>' . str_replace('"', '\"', SelectInput($staff['NAME_SUFFIX'], 'staff[NAME_SUFFIX]', '', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '', false)) . '</div>","user_name",true);\'><div class="col-md-12"><div class=row><label class="col-md-2 control-label text-right">Name <span class="text-danger">*</span></label><div class="col-md-10 pt-10">' . (!$staff['TITLE'] && !$staff['FIRST_NAME'] && !$staff['MIDDLE_NAME'] && !$staff['LAST_NAME'] && !$staff['NAME_SUFFIX'] ? '-' : $staff['TITLE'] . ' ' . $staff['FIRST_NAME'] . ' ' . $staff['MIDDLE_NAME'] . ' ' . $staff['LAST_NAME']) . ' ' . $staff['NAME_SUFFIX'] . '</div></div></div></div>';
+    echo '<div onclick=\'addHTML("<div class=col-md-2><div><label for=staff[TITLE]>'._salutation.'</label>' . str_replace('"', '\"', SelectInput($staff['TITLE'], 'staff[TITLE]', '', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '', '', false)) . '</div></div><div class=col-md-3><label for=staff[FIRST_NAME]>' . (!$staff['FIRST_NAME'] ? '<span class="text-danger">' : '') . _firstName . (!$staff['FIRST_NAME'] ? '</span>' : '') . '</label>' . str_replace('"', '\"', TextInput(trim($staff['FIRST_NAME']), 'staff[FIRST_NAME]', '', 'maxlength=50', false)) . '</div><div class=col-md-3><label for=staff[MIDDLE_NAME]>'._lastName.'</label>' . str_replace('"', '\"', TextInput($staff['MIDDLE_NAME'], 'staff[MIDDLE_NAME]', '', 'size=3 maxlength=50', false)) . '</div><div class=col-md-3><label for=staff[LAST_NAME]>' . (!$staff['LAST_NAME'] ? '<span class="text-danger">' : '') . 'Last Name' . (!$staff['LAST_NAME'] ? '</span>' : '') . '</label>' . str_replace('"', '\"', TextInput(trim($staff['LAST_NAME']), 'staff[LAST_NAME]', '', 'maxlength=50', false)) . '</div><div class=col-md-1><label for=staff[NAME_SUFFIX]>Suffix</label>' . str_replace('"', '\"', SelectInput($staff['NAME_SUFFIX'], 'staff[NAME_SUFFIX]', '', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '', false)) . '</div>","user_name",true);\'><div class="col-md-12"><div class=row><label class="col-md-2 control-label text-right">'._middleName.' <span class="text-danger">*</span></label><div class="col-md-10 pt-10">' . (!$staff['TITLE'] && !$staff['FIRST_NAME'] && !$staff['MIDDLE_NAME'] && !$staff['LAST_NAME'] && !$staff['NAME_SUFFIX'] ? '-' : $staff['TITLE'] . ' ' . $staff['FIRST_NAME'] . ' ' . $staff['MIDDLE_NAME'] . ' ' . $staff['LAST_NAME']) . ' ' . $staff['NAME_SUFFIX'] . '</div></div></div></div>';
     echo '</div>'; //.row
 }
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group">' . NoInput($staff['STAFF_ID'], 'Staff ID') . '</div>';
+echo '<div class="form-group">' . NoInput($staff['STAFF_ID'], _staffId) . '</div>';
 echo '</div><div class="col-md-6">';
-echo '<div class="form-group">' . TextInput($staff['ALTERNATE_ID'], 'staff[ALTERNATE_ID]', 'Alternate ID', 'size=12 maxlength=100 ') . '</div>';
+echo '<div class="form-group">' . TextInput($staff['ALTERNATE_ID'], 'staff[ALTERNATE_ID]', _alternateId, 'size=12 maxlength=100 ') . '</div>';
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender</label><div class="col-lg-8">' . SelectInput($staff['GENDER'], 'staff[GENDER]', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._gender.'</label><div class="col-lg-8">' . SelectInput($staff['GENDER'], 'staff[GENDER]', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') . '</div></div>';
 echo '</div><div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date of Birth</label><div class="col-lg-8">';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dateOfBirth.'</label><div class="col-lg-8">';
 echo DateInputAY($staff['BIRTHDATE'] != "" && $staff['BIRTHDATE'] != "0000-00-00" ? $staff['BIRTHDATE'] : "", 'staff[BIRTHDATE]', 1) . '</div></div>';
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
@@ -68,22 +68,22 @@ foreach ($ETHNICITY_RET as $ethnicity_array) {
 }
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity</label><div class="col-lg-8">' . SelectInput($staff['ETHNICITY_ID'], 'staff[ETHNICITY_ID]', '', $ethnicity, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._ethnicity.'</label><div class="col-lg-8">' . SelectInput($staff['ETHNICITY_ID'], 'staff[ETHNICITY_ID]', '', $ethnicity, 'N/A', '') . '</div></div>';
 echo '</div><div class="col-md-6">';
 $LANGUAGE_RET = DBGet(DBQuery("SELECT LANGUAGE_ID,LANGUAGE_NAME FROM language ORDER BY SORT_ORDER"));
 foreach ($LANGUAGE_RET as $language_array) {
     $language[$language_array['LANGUAGE_ID']] = $language_array['LANGUAGE_NAME'];
 }
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Primary Language</label><div class="col-lg-8">' . SelectInput($staff['PRIMARY_LANGUAGE_ID'], 'staff[PRIMARY_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._primaryLanguage.'</label><div class="col-lg-8">' . SelectInput($staff['PRIMARY_LANGUAGE_ID'], 'staff[PRIMARY_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
 
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Second Language</label><div class="col-lg-8">' . SelectInput($staff['SECOND_LANGUAGE_ID'], 'staff[SECOND_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._secondLanguage.'</label><div class="col-lg-8">' . SelectInput($staff['SECOND_LANGUAGE_ID'], 'staff[SECOND_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
 echo '</div><div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Third Language</label><div class="col-lg-8">' . SelectInput($staff['THIRD_LANGUAGE_ID'], 'staff[THIRD_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._thirdLanguage.'</label><div class="col-lg-8">' . SelectInput($staff['THIRD_LANGUAGE_ID'], 'staff[THIRD_LANGUAGE_ID]', '', $language, 'N/A', '') . '</div></div>';
 echo '</div>'; //.col-md-6
 echo '</div>'; //.row
 
@@ -98,10 +98,10 @@ if ($_REQUEST['staff_id'] == 'new') {
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label text-right col-lg-4">Email <span class="text-danger">*</span></label><div class="col-lg-8">' . TextInput($staff['EMAIL'], 'staff[EMAIL]', '', 'autocomplete=off id=email_id class=cell_medium onkeyup=check_email(this,' . $id_sent . ',2); onblur=check_email(this,' . $id_sent . ',2) ') . '<p id="email_error" class="help-block"></p></div></div>';
+echo '<div class="form-group"><label class="control-label text-right col-lg-4">'._email.' <span class="text-danger">*</span></label><div class="col-lg-8">' . TextInput($staff['EMAIL'], 'staff[EMAIL]', '', 'autocomplete=off id=email_id class=cell_medium onkeyup=check_email(this,' . $id_sent . ',2); onblur=check_email(this,' . $id_sent . ',2) ') . '<p id="email_error" class="help-block"></p></div></div>';
 echo '</div>'; //.ocl-md-6
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Physical Disability</label><div class="col-lg-8">' . SelectInput($staff['PHYSICAL_DISABILITY'], 'staff[PHYSICAL_DISABILITY]', '', array('N' => 'No', 'Y' => 'Yes'), false, 'onchange=show_span("span_disability_desc",this.value)') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._physicalDisability.'</label><div class="col-lg-8">' . SelectInput($staff['PHYSICAL_DISABILITY'], 'staff[PHYSICAL_DISABILITY]', '', array('N' => 'No', 'Y' => 'Yes'), false, 'onchange=show_span("span_disability_desc",this.value)') . '</div></div>';
 echo '</div>'; //.ocl-md-6
 echo '</div>'; //.row
 
@@ -110,9 +110,9 @@ echo '<div class="col-md-6">';
 echo '</div>';
 echo '<div class="col-md-6">';
 if ($staff['PHYSICAL_DISABILITY'] == 'Y') {
-    echo '<div class="form-group" id="span_disability_desc"><label class="control-label col-lg-4 text-right">Disability Description</label><div class="col-lg-8">' . TextAreaInput($staff['DISABILITY_DESC'], 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
+    echo '<div class="form-group" id="span_disability_desc"><label class="control-label col-lg-4 text-right">'._disabilityDescription.'</label><div class="col-lg-8">' . TextAreaInput($staff['DISABILITY_DESC'], 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
 } else {
-    echo '<div class="form-group" id="span_disability_desc" style="display:none"><label class="control-label col-lg-4 text-right">Disability Description</label><div class="col-lg-8">' . TextAreaInput('', 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
+    echo '<div class="form-group" id="span_disability_desc" style="display:none"><label class="control-label col-lg-4 text-right">'._disabilityDescription.'</label><div class="col-lg-8">' . TextAreaInput('', 'staff[DISABILITY_DESC]', '', '', 'true') . '</div></div>';
 }
 echo '</div>';
 echo '</div>';
@@ -131,14 +131,14 @@ if($_REQUEST['staff_id'] != 'new' && $staff['IMG_NAME'] != '')
 {
     echo '<div width=150 align="center"><IMG SRC="data:image/jpeg;base64,' . base64_encode($staff['IMG_CONTENT']) . '"  width=150 class=pic>';
     if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-        echo '<br><a href=Modules.php?modname=users/UploadUserPhoto.php?modfunc=edit  style="text-decoration:none"><b>Update Staff\'s Photo</b></a></div>';
+        echo '<br><a href=Modules.php?modname=users/UploadUserPhoto.php?modfunc=edit  style="text-decoration:none"><b>'._updateStaffSPhoto.'</b></a></div>';
     else
         echo '';
 }
 else {
 
     if ($_REQUEST['staff_id'] != 'new') {
-        echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
+        echo '<div align="center"><h6>'._uploadStaffSPhoto.':</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
         if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
             echo '<div align=center>'
             //. '<div class="fileUpload btn btn-primary btn-sm">'
@@ -152,9 +152,9 @@ else {
         }
     } else {
 
-        echo '<div align="center"><h6>Upload Staff\'s Photo:</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
+        echo '<div align="center"><h6>'._uploadStaffSPhoto.':</h6><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" class="upload-pic">';
         if ((User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-            echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">Upload<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this)" /></label></div>';
+            echo '<div align=center><label class="fileUpload btn btn-primary btn-sm btn-block mt-15">'._upload.'<input type="file" id="uploadBtn"  name="file" class="upload" onchange="selectFile(this)" /></label></div>';
         echo '<div id="uploadFile"></div>';
     }
 }
@@ -177,7 +177,7 @@ echo '<div class="image-cropper-container content-group" id=div_img style="heigh
           
       </div>';
 echo '<input type=hidden name=imgblob id=imgblob value=>';
-echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="'._upload.'">';
 echo '</div>'; //.modal-body
 
 echo '</div>'; //.modal-content

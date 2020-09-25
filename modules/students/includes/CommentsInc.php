@@ -36,7 +36,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
 	echo '</FORM>';
         if($_REQUEST[staff_id]==User('STAFF_ID'))
         {
-            if(DeletePromptCommon('comment'))            
+            if(DeletePromptCommon(_comment))            
             {
                 DBQuery("DELETE FROM $_REQUEST[table] WHERE ID='$_REQUEST[id]'");
 		unset($_REQUEST['modfunc']);
@@ -45,8 +45,8 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
         else 
         {
                 echo '<BR>';
-		PopTable('header','Alert Message');
-		echo "<CENTER><h4>You can not delete comment of another user.</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=Ok onclick='window.location=\"Modules.php?modname=".$_REQUEST['modname']."&category_id=".$_REQUEST['category_id']."&table=".$_REQUEST['table']."&include=".$_REQUEST['include']."&subject_id=".$_REQUEST['subject_id']."&course_id=".$_REQUEST['course_id']."&course_period_id=".$_REQUEST['course_period_id']."\"'></FORM></CENTER>";
+		PopTable('header', _alertMessage);
+		echo "<CENTER><h4>"._youCanNotDeleteCommentOfAnotherUser."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=".$_REQUEST['modname']."&category_id=".$_REQUEST['category_id']."&table=".$_REQUEST['table']."&include=".$_REQUEST['include']."&subject_id=".$_REQUEST['subject_id']."&course_id=".$_REQUEST['course_id']."&course_period_id=".$_REQUEST['course_period_id']."\"'></FORM></CENTER>";
 		PopTable('footer');
                 unset($_REQUEST['modfunc']);
 		return false;
@@ -77,7 +77,10 @@ if(!$_REQUEST['modfunc'])
             $comments_RET[$mi]['COMMENT_DATE']=_makeDate($md['COMMENT_DATE'],'COMMENT_DATE',$counter_for_date,array('ID'=>$md['ID'],'TABLE'=>'student_mp_comments'));
         }
         $counter_for_date=$counter_for_date+1;
-	$columns = array('USER_NAME'=>'Entered By','COMMENT_DATE'=>'Date','COMMENT'=>'Comments');
+    $columns = array('USER_NAME'=>_enteredBy,
+    'COMMENT_DATE'=>_date,
+    'COMMENT'=>_comments,
+);
 	$link['add']['html'] = array('COMMENT_DATE'=>_makeDate('','COMMENT_DATE',$counter_for_date),'COMMENT'=>_makeCommentsn('','COMMENT'),'USER_NAME'=>'');
 	  if(User('PROFILE')=='admin' ||User('PROFILE')=='teacher')
           {
@@ -92,7 +95,7 @@ if(!$_REQUEST['modfunc'])
          $link['USER_NAME']['variables'] = array('staff_id'=>'STAFF_ID');
           }
         
-	ListOutput($comments_RET,$columns,'Comment','Comments',$link,array(),array('search'=>false));
+	ListOutput($comments_RET,$columns,_comment,_comments,$link,array(),array('search'=>false));
 
 
 	$_REQUEST['category_id'] = '4';

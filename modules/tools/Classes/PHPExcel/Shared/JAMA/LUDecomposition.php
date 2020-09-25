@@ -232,7 +232,7 @@ class LUDecomposition {
 						}
 					}
 				}
-				// Solve U*X = Y;
+				// Solve U*X = _Y;
 				for ($k = $this->n-1; $k >= 0; --$k) {
 					for ($j = 0; $j < $nx; ++$j) {
 						$X->A[$k][$j] /= $this->LU[$k][$k];

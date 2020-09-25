@@ -27,6 +27,16 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+if($_SESSION['language'] === 'fr'){
+    define("_teacherWhoHasnTTaken", "Maître qui n 'a t pris");
+    define("_teachersWhoHaventTaken", "Les enseignants qui n 'pris");
+}
+else {
+    define("_teacherWhoHasntTaken", "Teacher who hasn\'t taken");
+    define("_teachersWhoHaventTaken ", "Teachers who haven\'t taken ");
+}
+
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
 //    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];
     $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
@@ -37,17 +47,17 @@ if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) 
     $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
 }
 
-DrawBC("Attendance > " . ProgramTitle());
+DrawBC(""._attendance." > " . ProgramTitle());
 $QI = DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM school_periods sp WHERE sp.SCHOOL_ID=\'' . UserSchool() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND EXISTS (SELECT \'\' FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR=sp.SYEAR AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\') ORDER BY sp.SORT_ORDER');
 $periods_RET = DBGet($QI, array(), array('PERIOD_ID'));
-$period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>All</OPTION>";
+$period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>"._all."</OPTION>";
 foreach ($periods_RET as $id => $period)
     $period_select .= "<OPTION value=$id" . (($_REQUEST['period'] == $id) ? ' SELECTED' : '') . ">" . $period[1]['TITLE'] . "</OPTION>";
 $period_select .= "</SELECT>";
 echo "<FORM class='form-horizontal' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 echo "<div class=\"panel panel-default\">";
 echo "<div class=\"panel-body\">";
-DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($date, 'date', false, array('submit' => true)) . '</div><div class="form-group m-l-15">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value=Go></div></div></div>');
+DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($date, 'date', false, array('submit' =>true)) . '</div><div class="form-group m-l-15">' . $period_select . '</div><div class="form-group"> &nbsp;<INPUT type=submit class="btn btn-primary" value='._go.'></div></div></div>');
 echo '</div>'; //.panel-body
 echo '</div>'; //.panel.panel-default
 echo '</FORM>';
@@ -107,6 +117,6 @@ if (!$_REQUEST['period']) {
 } else
     $period_title = $periods_RET[$_REQUEST['period']][1]['TITLE'] . ' ';
 echo '<div class="panel panel-default">';
-ListOutput($staff_RET, $columns, 'Teacher who hasn\'t taken ' . $period_title . 'attendance', 'Teachers who haven\'t taken ' . $period_title . 'attendance');
+ListOutput($staff_RET, $columns, ''._teacherWhoHasntTaken.' ' . $period_title . ''._attendance.'', ''._teachersWhoHaventTaken.' ' . $period_title . ''._attendance.'');
 echo '</div>';
 ?>

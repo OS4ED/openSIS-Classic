@@ -171,11 +171,11 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
         {
             if(in_array($_REQUEST['modname'],  $allow_back_to_student_list))
             {
-                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
             }
             else
             {
-                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
             }
         }
     } else if ($count_student_RET[1]['NUM'] == 1) {
@@ -183,7 +183,7 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
 
         if(in_array($_REQUEST['modname'], $allow_buffer_list))
         {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><A HREF=SideForStudent.php?student_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . '&modname=' . $_REQUEST['modname'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div>');
         }
     }
 }
@@ -196,7 +196,7 @@ if (UserStaffID() && User('PROFILE') == 'admin' && substr(clean_param($_REQUEST[
         if ($_REQUEST['modname'] != 'users/User.php') {
             $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
             echo '<div class="panel panel-default">';
-            DrawHeader('Selected Staff : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to User List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+            DrawHeader(''._selectedStaff.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . clean_param($_REQUEST['modname'], PARAM_NOTAGS) . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . clean_param($_REQUEST['modcat'], PARAM_NOTAGS) . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
             echo '</div>';
         }
     }
@@ -269,7 +269,7 @@ if (clean_param($_REQUEST['modname'], PARAM_NOTAGS)) {
             }
 
 
-            echo "You're not allowed to use this program! This attempted violation has been logged and your IP address was captured.";
+            echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";
             DBQuery("INSERT INTO hacking_log (HOST_NAME,IP_ADDRESS,LOGIN_DATE,VERSION,PHP_SELF,DOCUMENT_ROOT,SCRIPT_NAME,MODNAME,USERNAME) values('$_SERVER[SERVER_NAME]','$ip','" . date('Y-m-d') . "','$openSISVersion','$_SERVER[PHP_SELF]','$_SERVER[DOCUMENT_ROOT]','$_SERVER[SCRIPT_NAME]','$_REQUEST[modname]','" . User('USERNAME') . "')");
             Warehouse('footer');
             if ($openSISNotifyAddress)

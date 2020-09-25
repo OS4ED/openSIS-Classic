@@ -62,14 +62,14 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 	 *
 	 * @var array
 	 */
-	private $_loadSheetsOnly = null;
+	private $_loadSheetsOnly = _null;
 
 	/**
 	 * PHPExcel_Reader_IReadFilter instance
 	 *
 	 * @var PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 	/**
 	 * Read data only?
@@ -121,7 +121,7 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 	 */
 	public function setLoadAllSheets()
 	{
-		$this->_loadSheetsOnly = null;
+		$this->_loadSheetsOnly = _null;
 		return $this;
 	}
 
@@ -357,7 +357,7 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 					$cellStyles = array();
 					$xpath = self::array_item($relsWorkbook->xpath("rel:Relationship[@Type='http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles']"));
 					$xmlStyles = simplexml_load_string($this->_getFromZipArchive($zip, "$dir/$xpath[Target]")); //~ http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-					$numFmts = null;
+					$numFmts = _null;
 					if ($xmlStyles && $xmlStyles->numFmts[0]) {
 						$numFmts = $xmlStyles->numFmts[0];
 					}
@@ -480,7 +480,7 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 							// Check if sheet should be skipped
 							if (isset($this->_loadSheetsOnly) && !in_array((string) $eleSheet["name"], $this->_loadSheetsOnly)) {
 								++$countSkippedSheets;
-								$mapSheetId[$oldSheetId] = null;
+								$mapSheetId[$oldSheetId] = _null;
 								continue;
 							}
 
@@ -653,8 +653,8 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 									foreach ($row->c as $c) {
 										$r 					= (string) $c["r"];
 										$cellDataType 		= (string) $c["t"];
-										$value				= null;
-										$calculatedValue 	= null;
+										$value				= _null;
+										$calculatedValue 	= _null;
 
 										// Read cell?
 										if (!is_null($this->getReadFilter())) {
@@ -1041,8 +1041,8 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 										if (isset($shape['style'])) {
 	    									$style        = (string)$shape['style'];
 	    									$fillColor    = strtoupper( substr( (string)$shape['fillcolor'], 1 ) );
-	    									$column       = null;
-	    									$row          = null;
+	    									$column       = _null;
+	    									$row          = _null;
 
 	    									$clientData   = $shape->xpath('.//x:ClientData');
 	    									if (is_array($clientData) && count($clientData) > 0) {
@@ -1333,7 +1333,7 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 									}
 								} else if (!isset($definedName['localSheetId'])) {
 									// "Global" definedNames
-									$locatedSheet = null;
+									$locatedSheet = _null;
 									$extractedSheetName = '';
 									if (strpos( (string)$definedName, '!' ) !== false) {
 										// Extract sheet name

@@ -29,7 +29,7 @@ include('../../RedirectModulesInc.php');
 $cp_id = $_REQUEST['cp_id'];
 if (UserStaffID() || $_REQUEST['staff_id'])
     echo "<FORM class=\"form-horizontal\" name=\"search\" action=Modules.php?modname=$_REQUEST[modname]&dt=1&pr=1 method=POST>";
-DrawBC("Users > Teacher Programs");
+DrawBC(""._users." > Teacher Programs");
 ###########################################
 if (UserStaffID() || $_REQUEST['staff_id']) {
     if ($_REQUEST['modfunc'] != 'save' && $_REQUEST[modname] != 'users/TeacherPrograms.php?include=attendance/MissingAttendance.php' && $_REQUEST[modname] != 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php') {
@@ -41,9 +41,9 @@ if (UserStaffID() || $_REQUEST['staff_id']) {
         $count_staff_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM staff'));
         if ($count_staff_RET[1]['NUM'] > 1) {
             if (trim($_REQUEST['process']) == "")
-                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected User: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to User List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+                DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedUser.': ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
         }else {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected User: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'] . '</h6> <div class="heading-elements"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedUser.': ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'] . '</h6> <div class="heading-elements"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div>');
         }
     }
 }
@@ -117,7 +117,7 @@ if (UserStaffID()) {
         $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,cp.SHORT_NAME as SHOW_TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE,cp.TITLE as COURSE_PERIOD_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
         if (!$_SESSION['take_mssn_attn']) {
-            $period_select = "<div class=\"form-inline\"><div class=\"form-group\"><label class=\"control-label\">Choose Period:</label><SELECT class=\"form-control\" name=period onChange='this.form.submit();'>";
+            $period_select = "<div class=\"form-inline\"><div class=\"form-group\"><label class=\"control-label\">"._choosePeriod.":</label><SELECT class=\"form-control\" name=period onChange='this.form.submit();'>";
             $period_select .= "<OPTION value='na' selected>N/A</OPTION>";
         } else {
             $period_select = "<div class=\"form-inline\"><div class=\"form-group\"><SELECT name=period class=\"form-control\" onChange='document.forms[1].submit();' style='visibility:hidden;'>";
@@ -158,7 +158,7 @@ if (UserStaffID()) {
 
                     $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,cp.SHORT_NAME as CPSHORT, cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE,cp.TITLE as COURSE_PERIOD_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) ORDER BY sp.SORT_ORDER ');
                     $RET = DBGet($QI);
-                    $period_select .= "<div class=\"form-inline pull-right\"><div class=\"input-group\"><span class=\"input-group-addon\">Choose Period : </span><SELECT name=period class=\"form-control\" onChange='this.form.submit();'>";
+                    $period_select .= "<div class=\"form-inline pull-right\"><div class=\"input-group\"><span class=\"input-group-addon\">"._choosePeriod." : </span><SELECT name=period class=\"form-control\" onChange='this.form.submit();'>";
                     $period_select .= "<OPTION value='na' selected>N/A</OPTION>";
                     foreach ($RET as $period) {
                         if ($period['DAYS'] != '')
@@ -188,7 +188,7 @@ if (UserStaffID()) {
                     $period_select .= "</SELECT></div></div>";
 
                     if ($_REQUEST['miss_attn'] != '1' && $_SESSION['miss_attn'] != '1' && $_REQUEST['attn'] != 'miss' && $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php') {
-                        $period_select .= '<div class="inline-block p-t-10"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-arrow-left8"></i> Back to User List </A></div>';
+                        $period_select .= '<div class="inline-block p-t-10"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-arrow-left8"></i> '._backToUserList.' </A></div>';
                 }
                     $period_select .= '</div>';
             }
@@ -203,7 +203,7 @@ if (UserStaffID()) {
 
                     $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,cp.SHORT_NAME as CPSHORT, cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE,cp.TITLE as COURSE_PERIOD_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.SORT_ORDER ');
                     $RET = DBGet($QI);
-                    $period_select = "<div class=\"form-inline\"><label class=\"control-label\">Choose Period : </label> &nbsp;<SELECT name=period onChange='this.form.submit();' class=\"form-control\">";
+                    $period_select = "<div class=\"form-inline\"><label class=\"control-label\">"._choosePeriod." : </label> &nbsp;<SELECT name=period onChange='this.form.submit();' class=\"form-control\">";
                     $period_select .= "<OPTION value='na' selected>N/A</OPTION>";
                     foreach ($RET as $period) {
                         $period_select .= "<OPTION value=$period[ID]" . ((CpvId() == $period['ID']) ? ' SELECTED' : '') . ">" . $period['COURSE_PERIOD_TITLE'] . "</OPTION>";

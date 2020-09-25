@@ -34,7 +34,7 @@ if(count($_REQUEST['mp_arr']))
 	$mp_list = substr($mp_list,1);
 }
 
-$extra['search'] = '<TR><TD align=right>Marking Periods</TD><TD><TABLE>';
+$extra['search'] = '<TR><TD align=right>'._markingPeriods.'</TD><TD><TABLE>';
 $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER'),array(),array('SEMESTER_ID'));
 foreach($mps_RET as $sem=>$quarters)
 {
@@ -86,7 +86,7 @@ if(!$_REQUEST['search_modfunc'] || $_openSIS['modules_search'])
 else
 {
 	if(!$_REQUEST['mp_arr'])
-		BackPrompt('You must choose at least one marking period');
+		BackPrompt(_youMustChooseAtLeastOneMarkingPeriod);
 	
 	$RET = GetStuList($extra);
 	// GET THE ATTENDANCE
@@ -138,7 +138,7 @@ else
 			exec("chmod 777 $tempfile");
 			$FP=@fopen($tempfile,"w");
 			if(!$FP)
-				die("Can't open $tempfile");
+				die(""._canTOpen." $tempfile");
 			$this_PDF = $original_PDF;
 
 			$student_count++;
@@ -267,7 +267,7 @@ else
 		exit;
 	}
 	else
-		BackPrompt('No Students were found.');
+		BackPrompt(_noStudentsWereFound.'.');
 }
 
 ?>

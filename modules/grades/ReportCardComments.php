@@ -31,7 +31,7 @@ include 'modules/grades/DeletePromptX.fnc.php';
 
 echo '<div class="panel panel-default">';
 
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
     if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
         if ($_REQUEST['tab_id'] != '') {
@@ -118,14 +118,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
     $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
 
     if ($has_assigned > 0) {
-        UnableDeletePromptX('Cannot delete because report card comments are associated.');
+        UnableDeletePromptX(_cannotDeleteBecauseReportCardCommentsAreAssociated.'.');
     } else {
         if ($_REQUEST['tab_id'] != 'new') {
-            if (DeletePromptX('Report Card Comment')) {
+            if (DeletePromptX(_reportCardComment)) {
                 DBQuery('DELETE FROM report_card_comments WHERE ID=\'' . $_REQUEST['id'] . '\'');
             }
         } else
-        if (DeletePromptX('Report Card Comment')) {
+        if (DeletePromptX(_reportCardComment)) {
             DBQuery('DELETE FROM report_card_comments WHERE ID=\'' . $_REQUEST['id'] . '\'');
         }
     }
@@ -145,7 +145,7 @@ if (!$_REQUEST['modfunc']) {
     else {
         $course_period_RET = DBGet(DBQuery('SELECT GRADE_SCALE_ID,DOES_BREAKOFF,TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''));
         if (!$course_period_RET[1]['GRADE_SCALE_ID'])
-            ErrorMessage(array('This course is not graded.'), 'fatal');
+            ErrorMessage(array(_thisCourseIsNotGraded), 'fatal');
         $courses_RET = DBGet(DBQuery('SELECT TITLE,COURSE_ID FROM courses WHERE COURSE_ID=(SELECT COURSE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\')'));
 
         $_REQUEST['course_id'] = $courses_RET[1]['COURSE_ID'];
@@ -156,8 +156,8 @@ if (!$_REQUEST['modfunc']) {
 
     $course_RET = DBGet(DBQuery("SELECT TITLE FROM courses WHERE COURSE_ID='$_REQUEST[course_id]'"));
     $tabs = array(1 => array('title' => $course_RET[1]['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[course_id]"),
-        2 => array('title' => 'All Courses', 'link' => "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=0"),
-        3 => array('title' => 'General', 'link' => "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=new"));
+        2 => array('title' =>_allCourses, 'link' => "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=0"),
+        3 => array('title' =>_general, 'link' => "Modules.php?modname=$_REQUEST[modname]&course_id=$_REQUEST[course_id]&tab_id=new"));
 
     if ($_REQUEST['tab_id'] != 'new') {
         if ($_REQUEST['tab_id'])
@@ -167,7 +167,9 @@ if (!$_REQUEST['modfunc']) {
             $sql = 'SELECT * FROM report_card_comments WHERE COURSE_ID=\'' . $_REQUEST['tab_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER';
         $functions = array('TITLE' => 'makeCommentsInput', 'SORT_ORDER' => 'makeCommentsInput');
 
-        $LO_columns = array('TITLE' => 'Comment', 'SORT_ORDER' => 'Sort Order');
+        $LO_columns = array('TITLE' =>_comment,
+         'SORT_ORDER' =>_sortOrder,
+        );
 
         $link['add']['html'] = array('TITLE' => makeCommentsInput('', 'TITLE'), 'SORT_ORDER' => makeCommentsInput('', 'SORT_ORDER'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&table=report_card_grades";
@@ -179,7 +181,9 @@ if (!$_REQUEST['modfunc']) {
     else {
         $sql = 'SELECT * FROM report_card_comments WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COURSE_ID IS NULL ORDER BY SORT_ORDER';
         $functions = array('SORT_ORDER' => 'makeTextInput', 'TITLE' => 'makeTextInput');
-        $LO_columns = array('SORT_ORDER' => 'ID', 'TITLE' => 'Comment');
+        $LO_columns = array('SORT_ORDER' =>_id,
+         'TITLE' =>_comment,
+        );
 
         $link['add']['html'] = array('SORT_ORDER' => makeTextInput('', 'SORT_ORDER'), 'TITLE' => makeTextInput('', 'TITLE'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&tab_id=new";
@@ -192,12 +196,12 @@ if (!$_REQUEST['modfunc']) {
     if (count($report_card_comments) > 0)
         $report_card_comments = implode(',', $report_card_comments);
     echo "<FORM name=F1 id=F1 class=\"m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id] method=POST>";
-    if(UserProfileID() != 2){
-        $report_card_comment_submitbutton=SubmitButton('Save', '', 'id="gradeCommentBtnOne" class="btn btn-primary" onclick="formcheck_grade_comment(this);"');
+        if(UserProfileID() != 2){
+        $report_card_comment_submitbutton=SubmitButton(_save, '', 'id="gradeCommentBtnOne" class="btn btn-primary" onclick="formcheck_grade_comment(this);"');
     }else{
         $report_card_comment_submitbutton='';
     }
-    DrawHeader('Report Card Comments', '<div class="form-inline"><div class="form-group">' . $course_select . ' &nbsp; ' . $report_card_comment_submitbutton. '</div></div>');
+    DrawHeader(_reportCardComments, '<div class="form-inline"><div class="form-group">' . $course_select . ' &nbsp; ' . $report_card_comment_submitbutton. '</div></div>');
     echo '<input type="hidden" name="comment_ids" id="comment_ids" value="' . $report_card_comments . '">';
     echo '<hr class="no-margin"/>';
 
@@ -206,15 +210,14 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel-body">';
     echo '<div id="div_margin" class="tab-content">';
     echo "<div class=\"table-responsive\">";
-    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
+    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>false, 'download' =>false, 'search' =>false));
     echo "</div>"; //.table-responsive
     echo "</div>"; //.tab-content
 
     echo '</div>'; //.panel-body
-
     if(UserProfileID() != '2')
     {
-        echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="gradeCommentBtnTwo" class="btn btn-primary" onclick="formcheck_grade_comment(this);"') . '</div>';
+        echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton(_save, '', 'id="gradeCommentBtnTwo" class="btn btn-primary" onclick="formcheck_grade_comment(this);"') . '</div>';
     }
     echo '</FORM>';
 }

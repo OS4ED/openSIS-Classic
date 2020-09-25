@@ -171,7 +171,7 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 */
 	public function setEnclosure($pValue = '"') {
 		if ($pValue == '') {
-			$pValue = null;
+			$pValue = _null;
 		}
 		$this->_enclosure = $pValue;
 		return $this;

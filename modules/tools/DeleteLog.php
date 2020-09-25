@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("tools > " . ProgramTitle());
+DrawBC(""._tools." > " . ProgramTitle());
 
 if (isset($_REQUEST['del'])) {
 
@@ -59,21 +59,21 @@ if (isset($_REQUEST['del'])) {
     if (isset($conv_st_date) && isset($conv_end_date)) {
         
         $sql_del = DBQuery('DELETE FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\' AND LOGIN_TIME <=\'' . $conv_end_date . '\'');
-        echo '<center><font color="red"><b>Log deleted successfully</b></font></center>';
+        echo '<center><font color="red"><b>'._logDeletedSuccessfully.'</b></font></center>';
     }
 
     if (isset($conv_st_date) && !isset($conv_end_date)) {
         $sql_del = DBQuery('DELETE FROM login_records WHERE LOGIN_TIME >=\'' . $conv_st_date . '\'');
-        echo '<center><font color="red"><b>Log deleted successfully</b></font></center>';
+        echo '<center><font color="red"><b>'._logDeletedSuccessfully.'</b></font></center>';
     }
 
     if (!isset($conv_st_date) && isset($conv_end_date)) {
         $sql_del = DBQuery('DELETE FROM login_records WHERE LOGIN_TIME <=\'' . $conv_end_date . '\'');
-        echo '<center><font color="red"><b>Log deleted successfully</b></font></center>';
+        echo '<center><font color="red"><b>'._logDeletedSuccessfully.'</b></font></center>';
     }
 
     if (!isset($conv_st_date) && !isset($conv_end_date)) {
-        echo '<center><font color="red"><b>You have to select atleast one date from the date range</b></font></center>';
+        echo '<center><font color="red"><b>'._youHaveToSelectAtleastOneDateFromTheDateRange.'</b></font></center>';
     }
     
    
@@ -85,15 +85,15 @@ if (isset($_REQUEST['del'])) {
 echo '<div class="row">';
 echo '<div class="col-md-8 col-md-offset-2">';
 echo "<FORM class=\"form-horizontal\" name=del id=del action=Modules.php?modname=$_REQUEST[modname] method=POST>";
-PopTable('header', 'Delete Log');
+PopTable('header',  _deleteLog);
 
-echo '<h5 class="text-center">Please Select Date Range</h5>';
+echo '<h5 class="text-center">'._pleaseSelectDateRange.'</h5>';
 
 echo '<div class="row">';
 echo '<div class="col-lg-6 col-lg-offset-3">';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-2 control-label text-right">From</label><div class="col-md-10">';
+echo '<label class="col-md-2 control-label text-right">'._from.'</label><div class="col-md-10">';
 echo DateInputAY($start_date, 'start', 1);
 echo '</div>'; //.col-md-8
 echo '</div>'; //.form-group
@@ -104,7 +104,7 @@ echo '<div class="row">';
 echo '<div class="col-lg-6 col-lg-offset-3">';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-2 control-label text-right">To </label><div class="col-md-10">';
+echo '<label class="col-md-2 control-label text-right">'._to.'</label><div class="col-md-10">';
 echo DateInputAY($end_date, 'end', 2);
 echo '</div>'; //.col-md-8
 echo '</div>'; //.form-group
@@ -112,7 +112,7 @@ echo '</div>'; //.form-group
 echo '</div>'; //.col-lg-4
 echo '</div>'; //.row
 
-$btn = '<input type="submit" class="btn btn-primary" value="Delete" name="del">';
+$btn = '<input type="submit" class="btn btn-primary" value="'._delete.'" name="del" onclick="self_disable(this);">';
 
 PopTable('footer', $btn);
 echo '</FORM>';

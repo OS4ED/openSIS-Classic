@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Students > ".ProgramTitle());
+DrawBC(""._students." > ".ProgramTitle());
 $_openSIS['allow_edit'] = true;
 
 if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']))
@@ -135,7 +135,7 @@ if($_REQUEST['modfunc']=='delete')
 {
 	if($_REQUEST['id'])
 	{
-		if(DeletePrompt('contact field'))
+		if(DeletePrompt(_contactField))
 		{
 			$id = $_REQUEST['id'];
 			DBQuery('DELETE FROM people_fields WHERE ID=\''.$id.'\'');
@@ -146,7 +146,7 @@ if($_REQUEST['modfunc']=='delete')
 	}
 	elseif($_REQUEST['category_id'])
 	{
-		if(DeletePrompt('contact field category and all fields in the category'))
+		if(DeletePrompt(_contactFieldCategoryAndAllFieldsInTheCategory))
 		{
 			$fields = DBGet(DBQuery('SELECT ID FROM people_fields WHERE CATEGORY_ID=\''.$_REQUEST[category_id].'\''));
 			foreach($fields as $field)
@@ -169,7 +169,7 @@ if(!$_REQUEST['modfunc'])
 	$categories_RET = DBGet($QI);
 
 	if(AllowEdit() && $_REQUEST['id']!='new' && $_REQUEST['category_id']!='new' && ($_REQUEST['id'] || $_REQUEST['category_id']))
-		$delete_button = "<INPUT type=button value=Delete class='btn btn-primary' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>"."&nbsp;";
+		$delete_button = "<INPUT type=button value='._delete.' class='btn btn-primary' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>"."&nbsp;";
 
 	// ADDING & EDITING FORM
 	if($_REQUEST['id'] && $_REQUEST['id']!='new')
@@ -189,9 +189,9 @@ if(!$_REQUEST['modfunc'])
 		$title = $RET['TITLE'];
 	}
 	elseif($_REQUEST['id']=='new')
-		$title = 'New Contact Field';
+		$title = _newContactField;
 	elseif($_REQUEST['category_id']=='new')
-		$title = 'New Contact Field Category';
+		$title = _newContactFieldCategory;
 
 	if($_REQUEST['id'])
 	{
@@ -200,11 +200,11 @@ if(!$_REQUEST['modfunc'])
 			echo "&id=$_REQUEST[id]";
 		echo "&table=people_fields method=POST>";
 
-		DrawHeaderHome($title,$delete_button.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_student_contactField_F1();"')); //'<INPUT type=submit value=Save>');
+		DrawHeaderHome($title,$delete_button.SubmitButton(_save,'','class="btn btn-primary" onclick="formcheck_student_contactField_F1();"')); //'<INPUT type=submit value='._save.'>');
 		$header .= '<TABLE cellpadding=3 width=100%>';
 		$header .= '<TR>';
 
-		$header .= '<TD>' . TextInput($RET['TITLE'],'tables['.$_REQUEST['id'].'][TITLE]','Field Name') . '</TD>';
+		$header .= '<TD>' . TextInput($RET['TITLE'],'tables['.$_REQUEST['id'].'][TITLE]',_fieldName) . '</TD>';
 
 		// You can't change an people field type after it has been created
 		// mab - allow changing between select and autos and edits and text
@@ -216,15 +216,39 @@ if(!$_REQUEST['modfunc'])
 				$AllowEdit = $_openSIS['AllowEdit'][$modname];
 				$_openSIS['allow_edit'] = false;
 				$_openSIS['AllowEdit'][$modname] = array();
-				$type_options = array('select'=>'Pull-Down','autos'=>'Auto Pull-Down','edits'=>'Edit Pull-Down','text'=>'Text','radio'=>'Checkbox','codeds'=>'Coded Pull-Down','numeric'=>'Number','multiple'=>'Select Multiple from Options','date'=>'Date','textarea'=>'Long Text');
+				$type_options = array('select'=>_pullDown,
+				'autos'=>_autoPullDown,
+				'edits'=>_editPullDown,
+				'text'=>_text,
+				'radio'=>_checkbox,
+				'codeds'=>_codedPullDown,
+				'numeric'=>_number,
+				'multiple'=>_selectMultipleFromOptions,
+				'date'=>_date,
+				'textarea'=>_longText,
+			);
 			}
 			else
-				$type_options = array('select'=>'Pull-Down','autos'=>'Auto Pull-down','edits'=>'Edit Pull-Down','text'=>'Text');
+				$type_options = array('select'=>_pullDown,
+				'autos'=>_autoPullDown,
+				'edits'=>_editPullDown,
+				'text'=>_text,
+			);
 		}
 		else
-			$type_options = array('select'=>'Pull-Down','autos'=>'Auto Pull-down','edits'=>'Edit Pull-Down','text'=>'Text','radio'=>'Checkbox','codeds'=>'Coded Pull-Down','numeric'=>'Number','multiple'=>'Select Multiple from Options','date'=>'Date','textarea'=>'Long Text');
+			$type_options = array('select'=>_pullDown,
+			'autos'=>_autoPullDown,
+			'edits'=>_editPullDown,
+			'text'=>_text,
+			'radio'=>_checkbox,
+			'codeds'=>_codedPullDown,
+			'numeric'=>_number,
+			'multiple'=>_selectMultipleFromOptions,
+			'date'=>_date,
+			'textarea'=>_longText,
+		);
 
-		$header .= '<TD>' . SelectInput($RET['TYPE'],'tables['.$_REQUEST['id'].'][TYPE]','Data Type',$type_options,false) . '</TD>';
+		$header .= '<TD>' . SelectInput($RET['TYPE'],'tables['.$_REQUEST['id'].'][TYPE]',_dataType,$type_options,false) . '</TD>';
 		if($_REQUEST['id']!='new' && $RET['TYPE']!='select' && $RET['TYPE']!='autos' && $RET['TYPE']!='edits' && $RET['TYPE']!='text')
 		{
 			$_openSIS['allow_edit'] = $allow_edit;
@@ -233,18 +257,18 @@ if(!$_REQUEST['modfunc'])
 		foreach($categories_RET as $type)
 			$categories_options[$type['ID']] = $type['TITLE'];
 
-		$header .= '<TD>' . SelectInput($RET['CATEGORY_ID']?$RET['CATEGORY_ID']:$_REQUEST['category_id'],'tables['.$_REQUEST['id'].'][CATEGORY_ID]','Contact Field Category',$categories_options,false) . '</TD>';
+		$header .= '<TD>' . SelectInput($RET['CATEGORY_ID']?$RET['CATEGORY_ID']:$_REQUEST['category_id'],'tables['.$_REQUEST['id'].'][CATEGORY_ID]',_contactFieldCategory,$categories_options,false) . '</TD>';
 
-		$header .= '<TD>' . TextInput($RET['SORT_ORDER'],'tables['.$_REQUEST['id'].'][SORT_ORDER]','Sort Order') . '</TD>';
+		$header .= '<TD>' . TextInput($RET['SORT_ORDER'],'tables['.$_REQUEST['id'].'][SORT_ORDER]',_sortOrder) . '</TD>';
 
 		$header .= '</TR><TR>';
 		$colspan = 2;
 		if($RET['TYPE']=='autos' || $RET['TYPE']=='edits' || $RET['TYPE']=='select' || $RET['TYPE']=='codeds' || $RET['TYPE']=='multiple' || $_REQUEST['id']=='new')
 		{
-			$header .= '<TD colspan=2>'.TextAreaInput($RET['SELECT_OPTIONS'],'tables['.$_REQUEST['id'].'][SELECT_OPTIONS]','Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices<BR>* one per line','rows=7 cols=40') . '</TD>';
+			$header .= '<TD colspan=2>'.TextAreaInput($RET['SELECT_OPTIONS'],'tables['.$_REQUEST['id'].'][SELECT_OPTIONS]','Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices<BR>* '._onePerLine.'','rows=7 cols=40') . '</TD>';
 			$colspan = 1;
 		}
-		$header .= '<TD valign=bottom colspan='.$colspan.'>'.TextInput($RET['DEFAULT_SELECTION'],'tables['.$_REQUEST['id'].'][DEFAULT_SELECTION]','Default').'<small><BR>* for dates: YYYY-MM-DD,<BR> for checkboxes: Y</small></TD>';
+		$header .= '<TD valign=bottom colspan='.$colspan.'>'.TextInput($RET['DEFAULT_SELECTION'],'tables['.$_REQUEST['id'].'][DEFAULT_SELECTION]','Default').'<small><BR>* '._forDates.': YYYY-MM-DD,<BR> '._forCheckboxes.': Y</small></TD>';
 
 		if($_REQUEST['id']=='new')
 			$new = true;
@@ -259,13 +283,13 @@ if(!$_REQUEST['modfunc'])
 		if($_REQUEST['category_id']!='new')
 			echo "&category_id=$_REQUEST[category_id]";
 		echo " method=POST>";
-		DrawHeaderHome($title,$delete_button.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_student_contactField_F2();"')); //'<INPUT type=submit value=Save>');
+		DrawHeaderHome($title,$delete_button.SubmitButton(_save,'','class="btn btn-primary" onclick="formcheck_student_contactField_F2();"')); //'<INPUT type=submit value='._save.'>');
 		$header .= '<TABLE cellpadding=3 width=100%>';
 		$header .= '<TR>';
 
 		$header .= '<TD>' . TextInput($RET['TITLE'],'tables['.$_REQUEST['category_id'].'][TITLE]','Title') . '</TD>';
 
-		$header .= '<TD>' . TextInput($RET['SORT_ORDER'],'tables['.$_REQUEST['category_id'].'][SORT_ORDER]','Sort Order') . '</TD>';
+		$header .= '<TD>' . TextInput($RET['SORT_ORDER'],'tables['.$_REQUEST['category_id'].'][SORT_ORDER]',_sortOrder) . '</TD>';
 
 		if($_REQUEST['category_id']=='new')
 			$new = true;
@@ -307,7 +331,9 @@ if(!$_REQUEST['modfunc'])
 	}
 
 	echo '<TD valign=top>';
-	$columns = array('TITLE'=>'Category','SORT_ORDER'=>'Order');
+	$columns = array('TITLE'=>_category,
+	'SORT_ORDER'=>_order,
+);
 	$link = array();
 	$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 	
@@ -315,7 +341,7 @@ if(!$_REQUEST['modfunc'])
 
 	$link['add']['link'] = "#"." onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=new\");'";
 
-	ListOutput($categories_RET,$columns,'Contact Field Category','Contact Field Categories',$link,array(),$LO_options);
+	ListOutput($categories_RET,$columns,_contactFieldCategory,_contactFieldCategories,$link,array(),$LO_options);
 	echo '</TD>';
 
 	// FIELDS
@@ -337,7 +363,10 @@ if(!$_REQUEST['modfunc'])
 		}
 
 		echo '<TD valign=top>';
-		$columns = array('TITLE'=>'Contact Field','SORT_ORDER'=>'Order','TYPE'=>'Data Type');
+		$columns = array('TITLE'=>_contactField,
+		'SORT_ORDER'=>_order,
+		'TYPE'=>_dataType,
+	);
 		$link = array();
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
 	
@@ -345,7 +374,7 @@ if(!$_REQUEST['modfunc'])
 	
 		$link['add']['link'] = "#"." onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
 
-		ListOutput($fields_RET,$columns,'Contact Field','Contact Fields',$link,array(),$LO_options);
+		ListOutput($fields_RET,$columns,_contactField,_contactFields,$link,array(),$LO_options);
 
 		echo '</TD>';
 	}
@@ -355,7 +384,17 @@ if(!$_REQUEST['modfunc'])
 
 function _makeType($value,$name)
 {
-	$options = array('radio'=>'Checkbox','text'=>'Text','autos'=>'Auto Pull-Down','edits'=>'Edit Pull-Down','select'=>'Pull-Down','codeds'=>'Coded Pull-Down','date'=>'Date','numeric'=>'Number','textarea'=>'Long Text','multiple'=>'Select Multiple');
+	$options = array('radio'=>_checkbox,
+	'text'=>_text,
+	'autos'=>_autoPullDown,
+	'edits'=>_editPullDown,
+	'select'=>_pullDown,
+	'codeds'=>_codedPullDown,
+	'date'=>_date,
+	'numeric'=>_number,
+	'textarea'=>_longText,
+	'multiple'=>_selectMultiple,
+);
 	return $options[$value];
 }
 

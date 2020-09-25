@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include 'modules/grades/DeletePromptX.fnc.php';
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
@@ -64,7 +64,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
 
                             if ($value == '0' && $column != 'GPA_VALUE' && $column != 'UNWEIGHTED_GP' && $column != 'BREAK_OFF') {
-                                $value = NULL;
+                                $value = _NULL;
                             }
                             if (isset($value))
                                 $sql .= $column . '=\'' . str_replace("'", "''", str_replace("\'", "'", trim($value))) . '\',';
@@ -114,10 +114,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                             $v_break = $validate_break[1]['NO'];
                         }
                         if ($validate_title[1]['TITLE_EX'] != 0 && $flag != 0) {
-                            echo "<div class=\"alert bg-danger alert-styled-left\">Unable to save data, because title already exists.</div>";
+                            echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseTitleAlreadyExists."</div>";
                             break;
                         } else if ($v_break > 0) {
-                            echo "<div class=\"alert bg-danger alert-styled-left\">Unable to save data, because break of already exists.</div>";
+                            echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseBreakOfAlreadyExists."</div>";
                             break;
                         } else {
                             DBQuery($sql); //update query
@@ -184,7 +184,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                                     $v_break = $validate_break[1]['NO'];
                                 }
                                 if ($validate_title[1]['TITLE_EX'] != 0 || $new_cat == 'attendance') {
-                                    echo "<div class=\"alert bg-danger alert-styled-left\">Unable to save data, because title already exists.</div>";
+                                    echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseTitleAlreadyExists."</div>";
                                     break;
                                 }
                                 
@@ -209,14 +209,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
         $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
     }
     if ($has_assigned > 0) {
-        UnableDeletePromptX('Cannot delete because student grades are associated.');
+        UnableDeletePromptX(_cannotDeleteBecauseStudentGradesAreAssociated.'.');
     } else {
         if ($_REQUEST['tab_id'] != 'new') {
-            if (DeletePromptX('Report Card Grade')) {
+            if (DeletePromptX(_reportCardGrade)) {
                 DBQuery("DELETE FROM report_card_grades WHERE ID='$_REQUEST[id]'");
             }
         } else
-        if (DeletePromptX('Report Card Grading Scale')) {
+        if (DeletePromptX(_reportCardGradingScale)) {
             $ret = DBGet(DBQuery("select * from course_periods where grade_scale_id=$_REQUEST[id]"));
             $count_associated_period = count($ret);
             if ($count_associated_period == 0) {
@@ -224,8 +224,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
                 DBQuery('DELETE FROM report_card_grade_scales WHERE ID=\'' . $_REQUEST[id] . '\'');
             } else {
                 echo '<BR>';
-                PopTable('header', 'Alert Message');
-                echo "<CENTER><h4>Already associated with a course period</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]\");'></FORM></CENTER>";
+                PopTable('header',  _alertMessage);
+                echo "<CENTER><h4>"._alreadyAssociatedWithACoursePeriod."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]\");'></FORM></CENTER>";
                 PopTable('footer');
                 return false;
             }
@@ -250,7 +250,7 @@ if (!$_REQUEST['modfunc']) {
     else {
         $course_period_RET = DBGet(DBQuery('SELECT GRADE_SCALE_ID,DOES_BREAKOFF,TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''));
         if (!$course_period_RET[1]['GRADE_SCALE_ID'])
-            ErrorMessage(array('This course is not graded.'), 'fatal');
+            ErrorMessage(array(_thisCourseIsNotGraded), 'fatal');
         $grade_scales_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grade_scales WHERE ID=\'' . $course_period_RET[1]['GRADE_SCALE_ID'] . '\''), array(), array('ID'));
         if ($course_period_RET[1]['DOES_BREAKOFF'] == 'Y') {
             $teacher_id = $course_period_RET[1]['TEACHER_ID'];
@@ -274,16 +274,17 @@ if (!$_REQUEST['modfunc']) {
             'GPA_VALUE' => 'makeGradesInput',
             'UNWEIGHTED_GP' => 'makeGradesInput',
             'COMMENT' => 'makeGradesInput');
-        $LO_columns = array('TITLE' => 'Title',
-            'BREAK_OFF' => 'Breakoff',
-            'GPA_VALUE' => 'Weighted GP Value',
-            'UNWEIGHTED_GP' => 'Unweighted GP Value',
-            'SORT_ORDER' => 'Order',
-            'COMMENT' => 'Comment');
+        $LO_columns = array('TITLE' =>_title,
+            'BREAK_OFF' =>_breakoff,
+            'GPA_VALUE' =>_weightedGpValue,
+            'UNWEIGHTED_GP' =>_unweightedGpValue,
+            'SORT_ORDER' =>_order,
+            'COMMENT' =>_comment,
+        );
 
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             $functions += array('GRADE_SCALE_ID' => 'makeGradesInput');
-            $LO_columns += array('GRADE_SCALE_ID' => 'Grade Scale');
+            $LO_columns += array('GRADE_SCALE_ID' =>_gradeScale);
         }
 
         $link['add']['html'] = array('TITLE' => makeGradesInput('', 'TITLE'), 'BREAK_OFF' => makeGradesInput('', 'BREAK_OFF'), 'GPA_VALUE' => makeGradesInput('', 'GPA_VALUE'), 'UNWEIGHTED_GP' => makeGradesInput('', 'UNWEIGHTED_GP'), 'SORT_ORDER' => makeGradesInput('', 'SORT_ORDER'), 'COMMENT' => makeGradesInput('', 'COMMENT'));
@@ -298,7 +299,12 @@ if (!$_REQUEST['modfunc']) {
         //BJJ modifications to $functions array and $LO_columns array to handle scale value GP_SCALE
         $sql = 'SELECT * FROM report_card_grade_scales WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER';
         $functions = array('TITLE' => 'makeTextInput', 'GP_SCALE' => 'makeTextInput', 'COMMENT' => 'makeTextInput', 'GPA_CAL' => 'makeCheckInput', 'SORT_ORDER' => 'makeTextInput');
-        $LO_columns = array('TITLE' => 'Gradescale', 'GP_SCALE' => 'Scale Value', 'COMMENT' => 'Comment', 'GPA_CAL' => 'Calculate GPA', 'SORT_ORDER' => 'Sort Order');
+        $LO_columns = array('TITLE' =>_gradeScale,
+         'GP_SCALE' =>_scaleValue,
+         'COMMENT' =>_comment,
+         'GPA_CAL' =>_calculateGpa,
+         'SORT_ORDER' =>_sortOrder,
+    );
 
         $link['add']['html'] = array('TITLE' => makeTextInput('', 'TITLE'), 'GP_SCALE' => makeTextInput('', 'GP_SCALE'), 'COMMENT' => makeTextInput('', 'COMMENT'), 'GPA_CAL' => makeCheckInput('', 'GPA_CAL'), 'SORT_ORDER' => makeTextInput('', 'SORT_ORDER'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&tab_id=new";
@@ -328,15 +334,14 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="div_margin" class="panel-body">';
     echo '<div id="students" class="tab-content">';
     echo '<div class="table-responsive">';
-    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
+    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>false, 'download' =>false, 'search' =>false));
     echo '</div>'; //.table-responsive
     echo '</div>'; //.tab-content
     
     echo '</div>'; //.panel-body
-    
     if(UserProfileID() != '2')
     {
-        echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="setupGradesBtn" class="btn  btn-primary" onclick="formcheck_grade_grade(this);"') . '</div>';
+        echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton(_save, '', 'id="setupGradesBtn" class="btn  btn-primary" onclick="formcheck_grade_grade(this);"') . '</div>';
     }
     echo '</div>'; //.panel
     echo '</FORM>';

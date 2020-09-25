@@ -37,20 +37,20 @@ if (User('PROFILE') == 'admin') {
         }
 
         echo '<div>';
-        PopTable('header', 'Find a Parent');
+        PopTable('header',  _findAParent);
 
         echo "<FORM name=search class=\"no-margin form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=list&next_modname=$_REQUEST[next_modname] method=POST>";
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">Last Name</label><div class="col-lg-8"><INPUT type=text placeholder="Last Name" class=form-control name=last></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._lastName.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._lastName.'" class=form-control name=last></div></div>';
         echo '</div><div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">First Name</label><div class="col-lg-8"><INPUT type=text placeholder="First Name" class=form-control name=first></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._firstName.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._firstName.'" class=form-control name=first></div></div>';
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
 
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">Username</label><div class="col-lg-8"><INPUT type=text placeholder="Username" class=form-control name=username></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._username.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._username.'" class=form-control name=username></div></div>';
         echo '</div><div class="col-md-6">';
         $profiles = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
         $options[''] = 'N/A';
@@ -63,7 +63,7 @@ if (User('PROFILE') == 'admin') {
 
         if ($extra['profile'] == 'parent')
             $options = array('3' => $options[3]);
-        echo '<div class="form-group"><label class="control-label col-lg-4">Profile</label><div class="col-lg-8"><SELECT class=form-control name=profile>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._profile.'</label><div class="col-lg-8"><SELECT class=form-control name=profile>';
         foreach ($options as $key => $val)
             echo '<OPTION value="' . $key . '">' . $val;
         echo '</SELECT></div></div>';
@@ -76,12 +76,12 @@ if (User('PROFILE') == 'admin') {
             echo $extra['search'];
 
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Schools</label>';
-        echo '<label class="checkbox-inline"><INPUT type=checkbox name=_dis_user value=Y>Include Disabled User</label>';
+            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>'._searchAllSchools.'</label>';
+        echo '<label class="checkbox-inline"><INPUT type=checkbox name=_dis_user value=Y>'._includeDisabledUser.'</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
         
-        echo "<hr class=\"m-b-15\"/><div class=\"text-right\"><INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'></div>";
+        echo "<hr class=\"m-b-15\"/><div class=\"text-right\"><INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'></div>";
 
         /*         * ******************for Back to user************************** */
         echo '<input type=hidden name=sql_save_session_staf value=true />';
@@ -102,7 +102,7 @@ if (User('PROFILE') == 'admin') {
             $_REQUEST['next_modname'] = 'users/User.php';
 
         if (!isset($_openSIS['DrawHeader']))
-            DrawHeader('Please select a parent');
+            DrawHeader(_pleaseSelectAParent);
         if ($_REQUEST['profile'] != 'none') {
             $staff_RET = GetStaffList($extra);
             $_SESSION['count_stf'] = count($staff_RET);
@@ -110,16 +110,25 @@ if (User('PROFILE') == 'admin') {
                 $options = array('admin' => 'Administrator', 'teacher' => 'Teacher', 'parent' => 'Parent', 'none' => 'No Access');
                 $singular = $options[$extra['profile']];
                 $plural = $singular . ($options[$extra['profile']] == 'none' ? 'es' : 's');
-                $columns = array('FULL_NAME' => $singular, 'STAFF_ID' => 'Staff ID');
+                $columns = array('FULL_NAME' => $singular, 'STAFF_ID' =>_staffId);
             } else {
 
-                $singular = 'Parent';
-                $plural = 'Parents';
+                $singular = _parent;
+                $plural = _parents;
 
                 if ($_REQUEST['_dis_user'])
-                    $columns = array('FULL_NAME' => 'Parent', 'USERNAME' => 'Username', 'PROFILE' => 'Profile', 'STAFF_ID' => 'User ID', 'Status' => 'Status');
+                    $columns = array('FULL_NAME' =>_parent,
+                     'USERNAME' =>_username,
+                     'PROFILE' =>_profile,
+                     'STAFF_ID' =>_userId,
+                     'Status' =>_status,
+                    );
                 else
-                    $columns = array('FULL_NAME' => 'Parent', 'USERNAME' => 'Username', 'PROFILE' => 'Profile', 'STAFF_ID' => 'User ID');
+                    $columns = array('FULL_NAME' =>_parent,
+                     'USERNAME' =>_username,
+                     'PROFILE' =>_profile,
+                     'STAFF_ID' =>_userId,
+                    );
             }
             if (is_array($extra['columns_before']))
                 $columns = $extra['columns_before'] + $columns;
@@ -152,10 +161,13 @@ if (User('PROFILE') == 'admin') {
 
             $_SESSION['count_stf'] = count($staff_RET);
 
-            $singular = 'User';
-            $plural = 'Users';
+            $singular = _user;
+            $plural = _users;
 
-            $columns = array('FULL_NAME' => 'User', 'PROFILE' => 'Profile', 'STAFF_ID' => 'User ID');
+            $columns = array('FULL_NAME' =>_user,
+             'PROFILE' =>_profile,
+             'STAFF_ID' =>_userId,
+            );
 
             $link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]&profile=none";
 

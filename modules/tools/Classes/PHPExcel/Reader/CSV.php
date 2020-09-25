@@ -96,7 +96,7 @@ class PHPExcel_Reader_CSV implements PHPExcel_Reader_IReader
 	 *	@access	private
 	 *	@var	PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 	/**
 	 *	Create a new PHPExcel_Reader_CSV

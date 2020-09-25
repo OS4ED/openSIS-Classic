@@ -232,34 +232,34 @@ if (!$_REQUEST['modfunc']) {
             if ($_REQUEST['address_id'] != 'new' && $_REQUEST['address_id'] != '0') {
                 $display_address = urlencode($this_address['STAFF_ADDRESS1_PRIMARY'] . ', ' . ($this_address['STAFF_CITY_PRIMARY'] ? ' ' . $this_address['STAFF_CITY_PRIMARY'] . ', ' : '') . $this_address['STAFF_STATE_PRIMARY'] . ($this_address['STAFF_ZIP_PRIMARY'] ? ' ' . $this_address['STAFF_ZIP_PRIMARY'] : ''));
                 $link = 'http://google.com/maps?q=' . $display_address;
-                echo '<div class="pull-right"><A class="btn bg-teal-400 btn-xs btn-labeled" HREF=# onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> Map it</A></div>';
+                echo '<div class="pull-right"><A class="btn bg-teal-400 btn-xs btn-labeled" HREF=# onclick=\'window.open("' . $link . '","","scrollbars=yes,resizable=yes,width=800,height=700");\'><b><i class="icon-location4"></i></b> '._mapIt.'</A></div>';
             }
-            echo '<h5 class="text-primary">Home Address</h5>';
+            echo '<h5 class="text-primary">'._homeAddress.'</h5>';
                         
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS1_PRIMARY]', 'Street Address 1', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS1_PRIMARY]', _streetAddress_1, 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS2_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS2_PRIMARY]', 'Street Address 2', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS2_PRIMARY'], 'values[ADDRESS][STAFF_ADDRESS2_PRIMARY]', _streetAddress_2, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             
             echo '<div class="row">';            
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_CITY_PRIMARY'], 'values[ADDRESS][STAFF_CITY_PRIMARY]', 'City', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_CITY_PRIMARY'], 'values[ADDRESS][STAFF_CITY_PRIMARY]', _city, 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_STATE_PRIMARY'], 'values[ADDRESS][STAFF_STATE_PRIMARY]', 'State', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_STATE_PRIMARY'], 'values[ADDRESS][STAFF_STATE_PRIMARY]', _state, 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '<div class="row">';       
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ZIP_PRIMARY'], 'values[ADDRESS][STAFF_ZIP_PRIMARY]', 'Zip/Postal Code', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ZIP_PRIMARY'], 'values[ADDRESS][STAFF_ZIP_PRIMARY]', _zipPostalCode, 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-4
             echo '</div>'; //.row
 
@@ -273,10 +273,10 @@ if (!$_REQUEST['modfunc']) {
             if ($_REQUEST['address_id']!='new'){
                  $st_mail=DBGet(DBQuery('SELECT staff_address1_mail FROM staff_address WHERE staff_address_id='.$_REQUEST['address_id'])); 
                  if(count($st_mail)){
-                   echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5>';  
+                   echo '<h5 class="text-primary visible-lg-inline-block">'._mailingAddress.'</h5>';  
                  }
             }else{
-                 echo '<h5 class="text-primary visible-lg-inline-block">Mailing Address</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>Same as Home Address</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">Add New Address</label></div>';
+                 echo '<h5 class="text-primary visible-lg-inline-block">'._mailingAddress.'</h5><div class="visible-lg-inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="Y" onClick="hidediv();" checked>'._sameAsHomeAddress.'</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="r4" value="N" onClick="showdiv();">'._addNewAddress.'</label></div>';
 
             }
                 
@@ -288,98 +288,98 @@ if (!$_REQUEST['modfunc']) {
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_MAIL'], 'values[ADDRESS][STAFF_ADDRESS1_MAIL]', 'Street Address 1', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS1_MAIL'], 'values[ADDRESS][STAFF_ADDRESS1_MAIL]', _streetAddress_1, '') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS2_MAIL'], 'values[ADDRESS][STAFF_ADDRESS2_MAIL]', 'Street Address 2', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ADDRESS2_MAIL'], 'values[ADDRESS][STAFF_ADDRESS2_MAIL]', _streetAddress_2, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_CITY_MAIL'], 'values[ADDRESS][STAFF_CITY_MAIL]', 'City', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_CITY_MAIL'], 'values[ADDRESS][STAFF_CITY_MAIL]', _city, '') . '</div>';
             echo '</div>'; //.col-md-6            
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_STATE_MAIL'], 'values[ADDRESS][STAFF_STATE_MAIL]', 'State', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_STATE_MAIL'], 'values[ADDRESS][STAFF_STATE_MAIL]', _state, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_address['STAFF_ZIP_MAIL'], 'values[ADDRESS][STAFF_ZIP_MAIL]', 'Zip/Postal Code', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_address['STAFF_ZIP_MAIL'], 'values[ADDRESS][STAFF_ZIP_MAIL]', _zipPostalCode, 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '</div>'; //#hideShow
 
 
-            echo '<h5 class="text-primary">Contact Information</h5>';
+            echo '<h5 class="text-primary">'._contactInformation.'</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_contact['STAFF_HOME_PHONE'], 'values[CONTACT][STAFF_HOME_PHONE]', 'Home Phone', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_contact['STAFF_HOME_PHONE'], 'values[CONTACT][STAFF_HOME_PHONE]', _homePhone, '') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_contact['STAFF_MOBILE_PHONE'], 'values[CONTACT][STAFF_MOBILE_PHONE]', 'Mobile Phone', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_contact['STAFF_MOBILE_PHONE'], 'values[CONTACT][STAFF_MOBILE_PHONE]', _mobilePhone, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row            
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_contact['STAFF_WORK_PHONE'], 'values[CONTACT][STAFF_WORK_PHONE]', 'Office Phone', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_contact['STAFF_WORK_PHONE'], 'values[CONTACT][STAFF_WORK_PHONE]', _officePhone, '') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_contact['STAFF_WORK_EMAIL'], 'values[CONTACT][STAFF_WORK_EMAIL]', 'Work Email', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_contact['STAFF_WORK_EMAIL'], 'values[CONTACT][STAFF_WORK_EMAIL]', _workEmail, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_contact['STAFF_PERSONAL_EMAIL'], 'values[CONTACT][STAFF_PERSONAL_EMAIL]', 'Personal Email', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_contact['STAFF_PERSONAL_EMAIL'], 'values[CONTACT][STAFF_PERSONAL_EMAIL]', _personalEmail, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
 
             ############################################################################################		
 
-            echo '<h5 class="text-primary">Emergency Contact Information</h5>';
+            echo '<h5 class="text-primary">'._emergencyContactInformation.'</h5>';
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_FIRST_NAME'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_FIRST_NAME]', 'First Name', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_FIRST_NAME'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_FIRST_NAME]', _firstName, '') . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_LAST_NAME'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_LAST_NAME]', 'Last Name', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_LAST_NAME'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_LAST_NAME]', _lastName, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row            
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . _makeAutoSelectInputX($this_emer_contact['STAFF_EMERGENCY_RELATIONSHIP'], 'STAFF_EMERGENCY_RELATIONSHIP', 'EMERGENCY_CONTACT', 'Relationship to Staff', $relation_options) . '</div>';
+            echo '<div class="form-group">' . _makeAutoSelectInputX($this_emer_contact['STAFF_EMERGENCY_RELATIONSHIP'], 'STAFF_EMERGENCY_RELATIONSHIP', 'EMERGENCY_CONTACT', _relationshipToStaff, $relation_options) . '</div>';
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_HOME_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_HOME_PHONE]', 'Home Phone', '') . '</div>';
-            echo '</div>'; //.col-md-6
-            echo '</div>'; //.row
-            
-            echo '<div class="row">';
-            echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_WORK_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_WORK_PHONE]', 'Work Phone', '') . '</div>';
-            echo '</div>'; //.col-md-6
-            
-            echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_MOBILE_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_MOBILE_PHONE]', 'Mobile Phone', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_HOME_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_HOME_PHONE]', _homePhone, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_EMAIL'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_EMAIL]', 'Email', '') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_WORK_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_WORK_PHONE]', _workPhone, '') . '</div>';
+            echo '</div>'; //.col-md-6
+            
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_MOBILE_PHONE'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_MOBILE_PHONE]', _mobilePhone, '') . '</div>';
+            echo '</div>'; //.col-md-6
+            echo '</div>'; //.row
+            
+            echo '<div class="row">';
+            echo '<div class="col-md-6">';
+            echo '<div class="form-group">' . TextInput($this_emer_contact['STAFF_EMERGENCY_EMAIL'], 'values[EMERGENCY_CONTACT][STAFF_EMERGENCY_EMAIL]', _email, '') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 

@@ -49,12 +49,21 @@ if($_REQUEST['modfunc']=='save')
 	$RET = GetStuList($extra);
 	if(count($RET))
 	{
-		$columns = array('ASSIGN_TYP'=>'Assignment Type','ASSIGN_TYP_WG'=>'Weight (%)','TITLE'=>'Assignment');
+        $columns = array(
+            'ASSIGN_TYP'=>_assignmentType,
+            'ASSIGN_TYP_WG'=>''._weight.' (%)',
+            'TITLE'=>_assignment
+        );
 		if($_REQUEST['assigned_date']=='Y')
-			$columns += array('ASSIGNED_DATE'=>'Assigned Date');
+			$columns += array('ASSIGNED_DATE'=>_assignedDate);
 		if($_REQUEST['due_date']=='Y')
-			$columns += array('DUE_DATE'=>'Due Date');
-		$columns += array('POINTS'=>'Points','LETTER_GRADE'=>'Grade','WEIGHT_GRADE'=>'Weighted Grade','COMMENT'=>'Comment');
+			$columns += array('DUE_DATE'=>_dueDate);
+        $columns += array(
+            'POINTS'=>_points,
+            'LETTER_GRADE'=>_grade,
+            'WEIGHT_GRADE'=>_weightedGrade,
+            'COMMENT'=>_comment,
+        );
                 
 		$handle = PDFStart();
 		foreach($RET as $student)
@@ -65,16 +74,16 @@ if($_REQUEST['modfunc']=='save')
                           
 			unset($_openSIS['DrawHeader']);
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool())."<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br/>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool())."<div style=\"font-size:12px;\">"._studentProgressReport."</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br/>"._studentProgressReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 			echo '<table border=0 style=\"font-size:12px;\">';
-			echo "<tr><td>Student Name:</td>";
+			echo "<tr><td>"._studentName.":</td>";
 			echo "<td>" .$student['FULL_NAME']. "</td></tr>";
-			echo "<tr><td>ID:</td>";
+			echo "<tr><td>"._id.":</td>";
 			echo "<td>". $student['STUDENT_ID'] ." </td></tr>";
-			echo "<tr><td>Grade:</td>";
+			echo "<tr><td>"._grade.":</td>";
 			echo "<td>". $student['GRADE_ID'] ." </td></tr>";
 			
-			echo "<tr><td>Marking Period:</td>";
+			echo "<tr><td>"._markingPeriod.":</td>";
 			echo "<td>". GetMP(UserMP())." </td></tr>";
 			echo '</table>';
                          $MP_TYPE_RET=DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID='.UserMP().' LIMIT 1'));
@@ -155,8 +164,8 @@ if($_REQUEST['modfunc']=='save')
             
                              $course_period_title=DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\''.$course_period_id.'\' '));
                       echo '<table border=0 style=\"font-size:12px;\">';
-                      echo "<tr><td>Course:</td><td>".$course_title ."</td></tr>";
-                      echo "<tr><td>Course Period:</td><td>".$course_period_title[1]['TITLE']."</td></tr>";
+                      echo "<tr><td>"._course.":</td><td>".$course_title ."</td></tr>";
+                      echo "<tr><td>"._coursePeriod.":</td><td>".$course_period_title[1]['TITLE']."</td></tr>";
                       
 			if($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'){
                                 $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id='.$course_period_id));
@@ -263,8 +272,8 @@ if($_REQUEST['modfunc']=='save')
                          if($_REQUEST['list_type']=='total')
 			{
 			  echo '<table border=0  style=\"font-size:12px;\" >';
-                          echo '<tr><td> Total:</td><td>'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,$course['TEACHER_ID'],"%").'%&nbsp;'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,$course['TEACHER_ID']).'</td> </tr>';
-                          echo '<tr><td> Total Weighted Grade:</td><td>'.($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",$course['TEACHER_ID'],'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,$course_period_id,$course['TEACHER_ID']):'N/A').'</td> </tr>';
+                          echo '<tr><td> '._total.':</td><td>'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,$course['TEACHER_ID'],"%").'%&nbsp;'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,$course['TEACHER_ID']).'</td> </tr>';
+                          echo '<tr><td> '._totalWeightedGrade.':</td><td>'.($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",$course['TEACHER_ID'],'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,$course_period_id,$course['TEACHER_ID']):'N/A').'</td> </tr>';
                           echo '<tr><td></td></tr>';
                           echo '</table>';
                         }
@@ -275,7 +284,7 @@ if($_REQUEST['modfunc']=='save')
                     }
                     else
                     {
-                        echo "<p style='color:red'><b>No Grades Were Found</b></p>";
+                        echo "<p style='color:red'><b>"._noGradesWereFound."</b></p>";
                     }
  
 			echo '<div style="page-break-before: always;">&nbsp;</div>';
@@ -284,10 +293,10 @@ if($_REQUEST['modfunc']=='save')
 		PDFStop($handle);
 	}
 	else
-		BackPrompt('No Students were found.');
+		BackPrompt(''._noStudentsWereFound.'.');
 	}
 	else
-		BackPrompt('You must choose at least one student.');
+		BackPrompt(''._youMustChooseAtLeastOneStudent.'.');
 }
 if(!$_REQUEST['modfunc'])
 {
@@ -302,13 +311,13 @@ if(!$_REQUEST['modfunc'])
 		echo "<FORM id=F1 action=ForExport.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=save&include_inactive=".strip_tags(trim($_REQUEST[include_inactive]))."&_openSIS_PDF=true method=POST target=_blank>";
 		
 		$extra['extra_header_left'] = '<div class="checkbox">';
-		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=assigned_date>Assigned Date</label>';
-		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_ec checked>Exclude Ungraded E/C Assignments</label>';
-		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=due_date checked>Due Date</label>';
-		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_notdue>Exclude Ungraded Assignments Not Due</label>';
+		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=assigned_date>'._assignedDate.'</label>';
+		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_ec checked>'._excludeUngradedECAssignments.'</label>';
+		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=due_date checked>'._dueDate.'</label>';
+		$extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox value=Y name=exclude_notdue>'._excludeUngradedAssignmentsNotDue.'</label>';
                 $extra['extra_header_left'] .= '</div><div class="radio">';
-                $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio value=detail name=list_type checked=true>With Assignment Details</label>';
-                $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio value=total name=list_type>Totals Only</label>';
+                $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio value=detail name=list_type checked=true>'._withAssignmentDetails.'</label>';
+                $extra['extra_header_left'] .= '<label class="radio-inline"><INPUT type=radio value=total name=list_type>'._totalsOnly.'</label>';
 		$extra['extra_header_left'] .= '</div>';
                 $extra['extra_header_left'] .= $extra['search'];
 		$extra['search'] = '';
@@ -333,7 +342,7 @@ if(!$_REQUEST['modfunc'])
 	if($_REQUEST['search_modfunc']=='list')
 	{
             if($_SESSION['count_stu']!=0)
-		echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\'Create Progress Reports for Selected Students\'  class="btn btn-primary"></div>';
+		echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\''._createProgressReportsForSelectedStudents.'\'  class="btn btn-primary"></div>';
 		echo "</FORM>";
 	}
 }
@@ -367,7 +376,7 @@ function _makeExtra($value,$column)
 		if($THIS_RET['TOTAL_POINTS']!='0')
 			if($value!='-1')
 				if($THIS_RET['DUE'] && $value=='')
-                                    return 'Not Graded';
+                                    return _notGraded;
                                 else if($THIS_RET['DUE'] || $value!='')
                                 {
                                     $per = $value/$THIS_RET['TOTAL_POINTS'];

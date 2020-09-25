@@ -146,7 +146,7 @@ if (isset($_REQUEST['delete_ok']) && $_REQUEST['delete_ok'] == 1) {
 if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit_save') && $_REQUEST['filter_id'] != '') {
 
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit_save') {
-        echo "<div class='alert alert-success alert-styled-left alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;&nbsp;&nbsp;</a>The filter has been successfully saved</div>";
+        echo "<div class='alert alert-success alert-styled-left alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;&nbsp;&nbsp;</a>"._theFilterHasBeenSuccessfullySaved."</div>";
     }
 
     $get_filters = DBGet(DBQuery('SELECT * FROM filter_fields WHERE FILTER_ID=' . $_REQUEST['filter_id']));
@@ -190,7 +190,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo "<FORM name=search onSubmit='return save_student_filters();' class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=$_REQUEST[modname]&modfunc=filter_edit_save&filter_id=$_REQUEST[filter_id] method=POST>";
     echo '<div id="error_modal_filter"></div>';
     echo '<div class="panel">';
-    echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">Edit Filter</a></li></ul>';
+    echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">'._editFilter.'</a></li></ul>';
     echo '<div class="panel-body">';
 
     $get_filter_name = DBGet(DBQuery('SELECT * FROM filters WHERE SCHOOL_ID IN (' . UserSchool() . ',0) AND SHOW_TO IN (' . UserID() . ',0) AND FILTER_ID =' . $_REQUEST['filter_id']));
@@ -235,9 +235,9 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '<table class="table table-striped table-bordered table-xxs">';
     echo '<tbody>';
     echo '<tr>';
-    echo '<th><span class="text-primary">Filter Name</span></th>';
-    echo '<th><span class="text-primary">Make Public</span></th>';
-    echo '<th><span class="text-primary">All School</span></th>';
+    echo '<th><span class="text-primary">'._filterName.'</span></th>';
+    echo '<th><span class="text-primary">'._makePublic.'</span></th>';
+    echo '<th><span class="text-primary">'._allSchool.'</span></th>';
     echo '</tr>';
     echo '<tr>';
     echo '<td><input class="form-control" type="text" id="filter_name" name="filter_name" value="' . $_REQUEST['filter_name'] . '"/></td>';
@@ -249,7 +249,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '</div>';
     echo '</div>'; // .col-md-6
     echo '</div>'; // .row
-    
+
     //    echo '<div class="row">';
     //    echo '<div class="col-md-3"><Label>Filter Name</Label><input class="form-control" type="text" id="filter_name" name="filter_name" value="' . $_REQUEST['filter_name'] . '"/></div>';
     //
@@ -266,42 +266,42 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '<table class="table table-striped table-bordered table-xxs">';
     echo '<tbody>';
     echo '<tr>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleLastName\');">Last Name</a></th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleFirstName\');">First Name</a></th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleStudentId\');">Student ID</a></th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAltId\');">Alt ID</th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAddress\');">Address</th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrade\');">Grade</th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleLastName\');">'._lastName.'</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleFirstName\');">'._firstName.'</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleStudentId\');">'._studentId.'</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAltId\');">'._altId.'</th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAddress\');">'._address.'</th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrade\');">'._grade.'</th>';
     echo '</tr>';
     echo '<tr>';
 
 
     if ($_REQUEST['last'] != '')
-        echo '<td><div  id="toggleLastName_element"><input type="text" id="last" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" value="' . $_REQUEST['last'] . '"/></div></td>';
+        echo '<td><div  id="toggleLastName_element"><input type="text" id="last" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._lastName.'" value="' . $_REQUEST['last'] . '"/></div></td>';
     else
-        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" name="last" id="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" name="last" id="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._lastName.'" /></div></td>';
 
     if ($_REQUEST['first'] != '')
-        echo '<td><div id="toggleFirstName_element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" value="' . $_REQUEST['first'] . '"/></div></td>';
+        echo '<td><div id="toggleFirstName_element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._firstName.'" value="' . $_REQUEST['first'] . '"/></div></td>';
     else
-        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._firstName.'" /></div></td>';
 
 
     if ($_REQUEST['stuid'] != '')
-        echo '<td><div id="toggleStudentId_element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" value="' . $_REQUEST['stuid'] . '"/></div></td>';
+        echo '<td><div id="toggleStudentId_element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._studentId.'" value="' . $_REQUEST['stuid'] . '"/></div></td>';
     else
-        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._studentId.'" /></div></td>';
 
     if ($_REQUEST['altid'] != '')
-        echo '<td><div id="toggleAltId_element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" value="' . $_REQUEST['altid'] . '"/></div></td>';
+        echo '<td><div id="toggleAltId_element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._altId.'" value="' . $_REQUEST['altid'] . '"/></div></td>';
     else
-        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._altId.'" /></div></td>';
 
 
     if ($_REQUEST['addr'] != '')
-        echo '<td><div id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" value="' . $_REQUEST['addr'] . '"/></div></td>';
+        echo '<td><div id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._address.'" value="' . $_REQUEST['addr'] . '"/></div></td>';
     else
-        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._address.'" /></div></td>';
 
 
     $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
@@ -320,10 +320,10 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
         echo '</tr>';
     }
     echo '<tr>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
-    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllSchool\');">Search All Schools</a></th>';
-    echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">'._section.'</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">'._groupByFamily.'</a></th>';
+    echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllSchool\');">'._searchAllSchools.'</a></th>';
+    echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">'._includeInactiveStudents.'</a></th>';
     echo '</tr>';
 
 
@@ -375,15 +375,15 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
 
 
     echo '<div id="searchdiv1" style="display:none;" class="well">';
-    echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div1();"><i class="icon-cancel-square"></i> Close Advanced Filter</a></div>';
+    echo '<div><a href="javascript:void(0);" class="text-pink" onclick="hide_search_div1();"><i class="icon-cancel-square"></i> '._closeAdvancedFilter.'</a></div>';
     echo '<br/>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['mp_comment'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="mp_comment" name="mp_comment" class="form-control p-t-0 p-b-0 input-xs" placeholder="Comments" value="' . $_REQUEST['mp_comment'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.' </label><div class="col-lg-8"><input type="text" id="mp_comment" name="mp_comment" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._comments.'" value="' . $_REQUEST['mp_comment'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type=text id="mp_comment" name="mp_comment" size=30 placeholder="Comments" class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.' </label><div class="col-lg-8"><input type=text id="mp_comment" name="mp_comment" size=30 placeholder="'._comments.'" class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
@@ -404,18 +404,18 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     }
 
 
-    echo '<h5 class="text-primary">General Information</h5>';
+    echo '<h5 class="text-primary">'._generalInformation.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     $G = array('Male' => 'Male', 'Female' => 'Female');
     if ($_REQUEST['GENDER'] != '') {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8"><select id="GENDER" name="GENDER" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._gender.' </label><div class="col-lg-8"><select id="GENDER" name="GENDER" class="form-control"><option value="">-- Select --</option>';
         foreach ($G as $value)
             echo '<option value="' . $value . '" ' . ($value == $_REQUEST['GENDER'] ? 'selected' : '') . '>' . $value . '</option>';
         echo '</select></div></div>';
     } else {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Gender </label><div class="col-lg-8"><select id="GENDER" name="GENDER" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._gender.' </label><div class="col-lg-8"><select id="GENDER" name="GENDER" class="form-control"><option value="">-- Select --</option>';
         foreach ($G as $value)
             echo '<option value="' . $value . '">' . $value . '</option>';
         echo '</select></div></div>';
@@ -424,12 +424,12 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
 
     echo '<div class="col-md-6">';
     if ($_REQUEST['ETHNICITY_ID'] != '') {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8"><select id="ETHNICITY_ID" name="ETHNICITY_ID" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._ethnicity.' </label><div class="col-lg-8"><select id="ETHNICITY_ID" name="ETHNICITY_ID" class="form-control"><option value="">-- Select --</option>';
         foreach ($ethnic_option as $value)
             echo '<option value="' . $value . '" ' . ($value == $_REQUEST['ETHNICITY_ID'] ? 'selected' : '') . '>' . $value . '</option>';
         echo '</select></div></div>';
     } else {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Ethnicity </label><div class="col-lg-8"><select id="ETHNICITY_ID" name="ETHNICITY_ID" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._ethnicity.' </label><div class="col-lg-8"><select id="ETHNICITY_ID" name="ETHNICITY_ID" class="form-control"><option value="">-- Select --</option>';
         foreach ($ethnic_option as $value)
             echo '<option value="' . $value . '">' . $value . '</option>';
         echo '</select></div></div>';
@@ -438,13 +438,13 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
 
     echo '<div class="col-md-6">';
     if ($_REQUEST['LANGUAGE_ID'] != '') {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8"><select id="LANGUAGE_ID" name="LANGUAGE_ID" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._language.' </label><div class="col-lg-8"><select id="LANGUAGE_ID" name="LANGUAGE_ID" class="form-control"><option value="">-- Select --</option>';
 
         foreach ($language_option as $value)
             echo '<option value="' . $value . '" ' . ($value == $_REQUEST['LANGUAGE_ID'] ? 'selected' : '') . '>' . $value . '</option>';
         echo '</select></div></div>';
     } else {
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Language </label><div class="col-lg-8"><select id="LANGUAGE_ID" name="LANGUAGE_ID" class="form-control"><option value="">-- Select --</option>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._language.' </label><div class="col-lg-8"><select id="LANGUAGE_ID" name="LANGUAGE_ID" class="form-control"><option value="">-- Select --</option>';
 
         foreach ($language_option as $value)
             echo '<option value="' . $value . '" >' . $value . '</option>';
@@ -454,18 +454,18 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '</div>';
 
 
-    echo '<h5 class="text-primary">Birthday Search</h5>';
+    echo '<h5 class="text-primary">'._birthdaySearch.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">From: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._from.': </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_from_birthdate', 'month_from_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
     echo '</div><div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">To: </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._to.': </label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInputDob('day_to_birthdate', 'month_to_birthdate', '', 'Y', 'Y', '') . '</div></div></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">DOB</h5>';
+    echo '<h5 class="text-primary">'._dob.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
@@ -476,112 +476,112 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">Goal and Progress</h5>';
+    echo '<h5 class="text-primary">'._goalAndProgress.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['goal_title'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title </label><div class="col-lg-8"><input type="text" id="goal_title" name="goal_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="Goal Title" value="' . $_REQUEST['goal_title'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._goalTitle.' </label><div class="col-lg-8"><input type="text" id="goal_title" name="goal_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._goalTitle.'" value="' . $_REQUEST['goal_title'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Title </label><div class="col-lg-8"><input type=text id="goal_title" name="goal_title" placeholder="Goal Title" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._goalTitle.' </label><div class="col-lg-8"><input type=text id="goal_title" name="goal_title" placeholder="'._goalTitle.'" size=30 class="form-control"></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['goal_description'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description </label><div class="col-lg-8"><input type="text" id="goal_description" name="goal_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="Goal Description" value="' . $_REQUEST['goal_description'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._goalDescription.' </label><div class="col-lg-8"><input type="text" id="goal_description" name="goal_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._goalDescription.'" value="' . $_REQUEST['goal_description'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Goal Description </label><div class="col-lg-8"><input type=text id="goal_description" name="goal_description" placeholder="Goal Description" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._goalDescription.' </label><div class="col-lg-8"><input type=text id="goal_description" name="goal_description" placeholder="'._goalDescription.'" size=30 class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['progress_name'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period </label><div class="col-lg-8"><input type="text" id="progress_name" name="progress_name" class="form-control p-t-0 p-b-0 input-xs" placeholder="Progress Period" value="' . $_REQUEST['progress_name'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._progressPeriod.' </label><div class="col-lg-8"><input type="text" id="progress_name" name="progress_name" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._progressPeriod.'" value="' . $_REQUEST['progress_name'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Period </label><div class="col-lg-8"><input type=text id="progress_name" name="progress_name" placeholder="Progress Period" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._progressPeriod.' </label><div class="col-lg-8"><input type=text id="progress_name" name="progress_name" placeholder="'._progressPeriod.'" size=30 class="form-control"></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['progress_description'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment </label><div class="col-lg-8"><input type="text" id="progress_description" name="progress_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="Progress Assessment" value="' . $_REQUEST['progress_description'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._progressAssessment.' </label><div class="col-lg-8"><input type="text" id="progress_description" name="progress_description" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._progressAssessment.'" value="' . $_REQUEST['progress_description'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Progress Assessment </label><div class="col-lg-8"><input type=text id="progress_description" name="progress_description" size=30 placeholder="Progress Assessment" class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._progressAssessment.' </label><div class="col-lg-8"><input type=text id="progress_description" name="progress_description" size=30 placeholder="'._progressAssessment.'" class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">Medical</h5>';
+    echo '<h5 class="text-primary">'._medical.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['doctors_note_comments'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note </label><div class="col-lg-8"><input type="text" id="doctors_note_comments" name="doctors_note_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Doctor\'s Note" value="' . $_REQUEST['doctors_note_comments'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._doctorSNote.' </label><div class="col-lg-8"><input type="text" id="doctors_note_comments" name="doctors_note_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._doctorSNote.'" value="' . $_REQUEST['doctors_note_comments'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Doctor\'s Note</label><div class="col-lg-8"><input type=text id="doctors_note_comments" name="doctors_note_comments" placeholder="Doctor\'s Note" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._doctorSNote.'</label><div class="col-lg-8"><input type=text id="doctors_note_comments" name="doctors_note_comments" placeholder="'._doctorSNote.'" size=30 class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">Immunization</h5>';
+    echo '<h5 class="text-primary">'._immunization.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['type'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type </label><div class="col-lg-8"><input type="text" id="type" name="type" class="form-control p-t-0 p-b-0 input-xs" placeholder="Immunization Type" value="' . $_REQUEST['type'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._type.' </label><div class="col-lg-8"><input type="text" id="type" name="type" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._immunizationType.'" value="' . $_REQUEST['type'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Type</label><div class="col-lg-8"><input type=text id="type" name="type" placeholder="Immunization Type" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._type.'</label><div class="col-lg-8"><input type=text id="type" name="type" placeholder="'._immunizationType.'" size=30 class="form-control"></div></div>';
     echo '</div><div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['imm_comments'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="imm_comments" name="imm_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Immunization Comments" value="' . $_REQUEST['imm_comments'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.' </label><div class="col-lg-8"><input type="text" id="imm_comments" name="imm_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._immunizationComments.'" value="' . $_REQUEST['imm_comments'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text id="imm_comments" name="imm_comments" placeholder="Immunization Comments" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.'</label><div class="col-lg-8"><input type=text id="imm_comments" name="imm_comments" placeholder="'._immunizationComments.'" size=30 class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">Medical Alert</h5>';
+    echo '<h5 class="text-primary">'._medicalAlert.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['med_alrt_title'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert </label><div class="col-lg-8"><input type="text" id="med_alrt_title" name="med_alrt_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="Medical Alert" value="' . $_REQUEST['med_alrt_title'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._alert.' </label><div class="col-lg-8"><input type="text" id="med_alrt_title" name="med_alrt_title" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._medicalAlert.'" value="' . $_REQUEST['med_alrt_title'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Alert</label><div class="col-lg-8"><input type=text id="med_alrt_title" name="med_alrt_title" placeholder="Medical Alert" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._alert.'</label><div class="col-lg-8"><input type=text id="med_alrt_title" name="med_alrt_title" placeholder="'._medicalAlert.'" size=30 class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
 
-    echo '<h5 class="text-primary">Nurse Visit</h5>';
+    echo '<h5 class="text-primary">'._nurseVisit.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
-    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Date</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+    echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['reason'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason </label><div class="col-lg-8"><input type="text" id="reason" name="reason" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Reason" value="' . $_REQUEST['reason'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._reason.' </label><div class="col-lg-8"><input type="text" id="reason" name="reason" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._nurseVisitReason.'" value="' . $_REQUEST['reason'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Reason</label><div class="col-lg-8"><input type=text id="reason" name="reason" size=30 placeholder="Nurse Visit Reason" class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._reason.'</label><div class="col-lg-8"><input type=text id="reason" name="reason" size=30 placeholder="'._nurseVisitReason.'" class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     if ($_REQUEST['result'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result </label><div class="col-lg-8"><input type="text" id="result" name="result" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Result" value="' . $_REQUEST['result'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._result.' </label><div class="col-lg-8"><input type="text" id="result" name="result" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._nurseVisitResult.'" value="' . $_REQUEST['result'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Result</label><div class="col-lg-8"><input type=text id="result" name="result" size=30 placeholder="Nurse Visit Result" class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._result.'</label><div class="col-lg-8"><input type=text id="result" name="result" size=30 placeholder="'._nurseVisitResult.'" class="form-control"></div></div>';
     echo '</div><div class="col-md-6">';
     if ($_REQUEST['med_vist_comments'] != '')
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments </label><div class="col-lg-8"><input type="text" id="med_vist_comments" name="med_vist_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="Nurse Visit Comments" value="' . $_REQUEST['med_vist_comments'] . '"/></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.' </label><div class="col-lg-8"><input type="text" id="med_vist_comments" name="med_vist_comments" class="form-control p-t-0 p-b-0 input-xs" placeholder="'._nurseVisitComments.'" value="' . $_REQUEST['med_vist_comments'] . '"/></div></div>';
     else
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Comments</label><div class="col-lg-8"><input type=text id="med_vist_comments" name="med_vist_comments" placeholder="Nurse Visit Comments" size=30 class="form-control"></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._comments.'</label><div class="col-lg-8"><input type=text id="med_vist_comments" name="med_vist_comments" placeholder="'._nurseVisitComments.'" size=30 class="form-control"></div></div>';
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
 
@@ -650,13 +650,13 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '<div class="row">';
     echo '<div class="col-sm-6 col-md-6 col-lg-6">';
 
-    echo '<a id="addiv1" href="javascript:void(0);" class="text-pink btn-block m-t-10" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> Advanced Filter</a>';
+    echo '<a id="addiv1" href="javascript:void(0);" class="text-pink btn-block m-t-10" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
     echo '</div>'; //.col-sm-6
 
     echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
     
     
-    echo '<button id="saveFilterBtn" class="btn btn-primary display-inline-block" onClick="setFilterValues();">Save Filter</button>';
+    echo '<button id="saveFilterBtn" class="btn btn-primary display-inline-block" onClick="setFilterValues();">'._saveFilter.'</button>';
 
     echo '</div>'; //.col-sm-6
     echo '</div>'; //.row

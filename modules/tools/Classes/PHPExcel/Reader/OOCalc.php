@@ -62,7 +62,7 @@ class PHPExcel_Reader_OOCalc implements PHPExcel_Reader_IReader
 	 *
 	 * @var array
 	 */
-	private $_loadSheetsOnly = null;
+	private $_loadSheetsOnly = _null;
 
 	/**
 	 * Sheet index to read
@@ -83,7 +83,7 @@ class PHPExcel_Reader_OOCalc implements PHPExcel_Reader_IReader
 	 *
 	 * @var PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 
 	/**
@@ -136,7 +136,7 @@ class PHPExcel_Reader_OOCalc implements PHPExcel_Reader_IReader
 	 */
 	public function setLoadAllSheets()
 	{
-		$this->_loadSheetsOnly = null;
+		$this->_loadSheetsOnly = _null;
 		return $this;
 	}
 
@@ -354,7 +354,7 @@ class PHPExcel_Reader_OOCalc implements PHPExcel_Reader_IReader
 //									print_r($cellDataText);
 //									echo '<br />';
 //
-									$type = $formatting = $hyperlink = null;
+									$type = $formatting = $hyperlink = _null;
 									$hasCalculatedValue = false;
 									$cellDataFormula = '';
 									if (isset($cellDataTableAttributes['formula'])) {

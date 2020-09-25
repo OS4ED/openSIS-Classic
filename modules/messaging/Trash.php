@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_REQUEST['msg']) && $_REQUEST['msg'] == 4) {
-    echo'<p style=color:red>Message deleted sucessfully.</p>';
+    echo'<p style=color:red>'._messageDeletedSucessfully.'.</p>';
 }
 $userName = User('USERNAME');
 $user_dt = DBGet(DBQuery('SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USERNAME=\'' . $userName . '\''));
@@ -69,22 +69,22 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
             echo "<script>window.location.href='Modules.php?modname=messaging/Trash.php&msg=4'</script>";
         }
     } else {
-        PopTable('header', 'Alert Message');
-        echo "<CENTER><h4>Please select atleast one message to delete</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='window.location=\"Modules.php?modname=messaging/Trash.php\"'></FORM></CENTER>";
+        PopTable('header', _alertMessage);
+        echo "<CENTER><h4>"._pleaseSelectAtleastOneMessageToDelete."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=messaging/Trash.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     }
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
-    PopTable('header', 'Message Details');
+    PopTable('header', _messageDetails);
     $mail_id = $_REQUEST['mail_id'];
     $mail_body = "select mail_body,to_user,from_user,mail_datetime,mail_attachment from msg_inbox where mail_id='$mail_id'";
     $mail_body_info = DBGet(DBQuery($mail_body));
     foreach ($mail_body_info as $k => $v) {
         echo "<table width='100%' style='width:650px'>
                <tr>
-               <td align='left'><b>From:</b> " . GetNameFromUserName($v['FROM_USER']) . "</td>
-               <td align='right'><b>Date/Time:</b> " . $v['MAIL_DATETIME'] .
+               <td align='left'><b>"._from.":</b> " . GetNameFromUserName($v['FROM_USER']) . "</td>
+               <td align='right'><b>"._dateTime.":</b> " . $v['MAIL_DATETIME'] .
         "</tr>";
         if ($v['TO_CC_MULTIPLE'] != '') {
             echo "<tr>
@@ -96,7 +96,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
             $to_bcc_arr = explode(',', $v['TO_BCC_MULTIPLE']);
             if (in_array($userName, $to_bcc_arr)) {
                 echo "<tr>
-                        <td align='left'>BCC: " . $userName . "</td><td></td></tr>";
+                        <td align='left'>'"._bcc."': " . $userName . "</td><td></td></tr>";
             }
         }
         if ($v['MAIL_ATTACHMENT'] != '') {
@@ -105,7 +105,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
             
             echo "<tr>
                  <td align='left'>
-                  Attachment: ";
+                  "._attachment.": ";
 //            $attach = explode(',', $v['MAIL_ATTACHMENT']);
              $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.$v['MAIL_ATTACHMENT'].')'));
             foreach ($attach as $user => $img) {
@@ -144,7 +144,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         }
         echo "<tr><td align='left' colspan='2'><br /><div class='mail_body'>" . str_replace('<a href=', '<a target="_blank" href=', $v['MAIL_BODY']) . "<br /></div></td></tr></table>";
     }
-    echo "<p align='center'><a class='btn btn-primary' href='Modules.php?modname=messaging/Trash.php'>Back</a></p>";
+    echo "<p align='center'><a class='btn btn-primary' href='Modules.php?modname=messaging/Trash.php'>"._back."</a></p>";
     PopTable('footer');
 }
 
@@ -255,7 +255,10 @@ if (!isset($_REQUEST['modfunc'])) {
 
     echo "<div id='students' class='panel panel-default'>";
 
-    $columns = array('FROM_USER' => 'FROM', 'MAIL_SUBJECT' => 'SUBJECT', 'MAIL_DATETIME' => 'DATE/TIME');
+    $columns = array('FROM_USER' => _from,
+     'MAIL_SUBJECT' => _subject,
+     'MAIL_DATETIME' => _dateTime,
+    );
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['LO_group'] = array('MAIL_ID');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'mail\');"><A>');
@@ -274,11 +277,11 @@ if (!isset($_REQUEST['modfunc'])) {
     }
     if (count($trash_info) != 0) {
         if (isset($userName)){
-            $custom_header = '<h6 class="panel-title text-pink">TRASH</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> Delete</button></div>';
+            $custom_header = '<h6 class="panel-title text-pink">'._trash.'</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> '._delete.'</button></div>';
         }
     }
 
-    ListOutput($trash_info, $columns, '', '', $link, array(), array('search' => false), TRUE, $custom_header);
+    ListOutput($trash_info, $columns, '', '', $link, array(), array('search' =>false), TRUE, $custom_header);
 
     echo "</div>";
     echo '</FORM>';

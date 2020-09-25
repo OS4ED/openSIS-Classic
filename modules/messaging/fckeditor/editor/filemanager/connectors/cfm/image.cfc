@@ -311,15 +311,15 @@
 		}
 		if (newWidth gt 0 and newHeight eq 0) {
 			scale = newWidth / w;
-			w = newWidth;
+			w = _newWidth;
 			h = round(h*scale);
 		} else if (newHeight gt 0 and newWidth eq 0) {
 			scale = newHeight / h;
-			h = newHeight;
+			h = _newHeight;
 			w = round(w*scale);
 		} else if (newHeight gt 0 and newWidth gt 0) {
-			w = newWidth;
-			h = newHeight;
+			w = _newWidth;
+			h = _newHeight;
 		} else {
 			retVal = throw( retVal.errorMessage);
 			return retVal;
@@ -366,7 +366,7 @@
 		}
 		if (outputFile eq "")
 		{
-			retVal.img = resizedImage;
+			retVal.img = _resizedImage;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, resizedImage, jpegCompression);
@@ -426,7 +426,7 @@
 		croppedImage = img.getSubimage(javaCast("int", fromX), javaCast("int", fromY), javaCast("int", newWidth), javaCast("int", newHeight) );
 		if (outputFile eq "")
 		{
-			retVal.img = croppedImage;
+			retVal.img = _croppedImage;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, croppedImage, jpegCompression);
@@ -489,10 +489,10 @@
 		at = CreateObject("java", "java.awt.geom.AffineTransform");
 		op = CreateObject("java", "java.awt.image.AffineTransformOp");
 
-		iw = img.getWidth(); h = iw;
-		ih = img.getHeight(); w = ih;
+		iw = img.getWidth(); h = _iw;
+		ih = img.getHeight(); w = _ih;
 
-		if(arguments.degrees eq 180) { w = iw; h = ih; }
+		if(arguments.degrees eq 180) { w = _iw; h = _iw; }
 
 		x = (w/2)-(iw/2);
 		y = (h/2)-(ih/2);
@@ -507,7 +507,7 @@
 
 		if (outputFile eq "")
 		{
-			retVal.img = rotatedImage;
+			retVal.img = _rotatedImage;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, rotatedImage, jpegCompression);
@@ -810,7 +810,7 @@
 
 		if (outputFile eq "")
 		{
-			retVal.img = flippedImage;
+			retVal.img = _flippedImage;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, flippedImage, jpegCompression);
@@ -868,7 +868,7 @@
 		variables.blurFilter.init(arguments.blurAmount);
 		// move the source image into the destination image
 		// so we can repeatedly blur it.
-		destImage = srcImage;
+		destImage = _srcImage;
 
 		for (i=1; i lte iterations; i=i+1)
 		{
@@ -880,7 +880,7 @@
 		if (outputFile eq "")
 		{
 			// return the image object
-			retVal.img = destImage;
+			retVal.img = _destImage;
 			return retVal;
 		} else {
 			// write the image object to the specified file.
@@ -940,7 +940,7 @@
 		if (outputFile eq "")
 		{
 			// return the image object
-			retVal.img = destImage;
+			retVal.img = _destImage;
 			return retVal;
 		} else {
 			// write the image object to the specified file.
@@ -1004,7 +1004,7 @@
 		if (outputFile eq "")
 		{
 			// return the image object
-			retVal.img = destImage;
+			retVal.img = _destImage;
 			return retVal;
 		} else {
 			// write the image object to the specified file.
@@ -1118,7 +1118,7 @@
 
 		if (outputFile eq "")
 		{
-			retVal.img = img;
+			retVal.img = _img;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, img, jpegCompression);
@@ -1202,7 +1202,7 @@
 
 		if (outputFile eq "")
 		{
-			retVal.img = originalImage;
+			retVal.img = _originalImage;
 			return retVal;
 		} else {
 			saveImage = writeImage(outputFile, originalImage, jpegCompression);

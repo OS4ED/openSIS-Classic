@@ -38,7 +38,7 @@ $_SESSION['NY'] = $next_syear;
 
 echo '<div id="start_date" class="text-danger"></div>';
 
-echo '<table width="80%" cellpadding="6" cellspacing="6"><tr><td width="50%" valign="top"><div id="back_db" style="display: none; padding-top:60px;" align="center"><img src="assets/missing_attn_loader.gif" /><br/><br/><strong>Saving database for backup before rollover, please donot click anywhere.....</strong></div><div id="calculating" style="display: none; padding-top:60px;" align="center"><img src="assets/rollover_anim.gif" /><br/><br/><strong>School year rolling over, please wait...</strong></div><div id="response" style="font-size:14px"></div></td></tr></table>';
+echo '<table width="80%" cellpadding="6" cellspacing="6"><tr><td width="50%" valign="top"><div id="back_db" style="display: none; padding-top:60px;" align="center"><img src="assets/missing_attn_loader.gif" /><br/><br/><strong>'._savingDatabaseForBackupBeforeRolloverPleaseDonotClickAnywhere.'.....</strong></div><div id="calculating" style="display: none; padding-top:60px;" align="center"><img src="assets/rollover_anim.gif" /><br/><br/><strong>'._schoolYearRollingOverPleaseWait.'...</strong></div><div id="response" style="font-size:14px"></div></td></tr></table>';
 $notice_roll_date = DBGet(DBQuery('SELECT SYEAR FROM school_years WHERE SYEAR>\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 $cur_session_RET = DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
 if ($cur_session_RET[1]['PRE'] == $cur_session_RET[1]['POST']) {
@@ -77,9 +77,22 @@ if (trim($_REQUEST['custom_date']) == 'Y') {
 }
 if ($rolled == 0) {
     
-    $tables = array('staff' => 'Staff', 'school_periods' => 'School Periods', 'school_years' => 'Marking Periods', 'school_calendars' => 'Calendars', 'report_card_grade_scales' => 'Report Card Grade Codes', 'course_subjects' => 'Subjects', 'courses' => 'Courses', 'course_periods' => 'Course Periods', 'student_enrollment' => 'Students', 'report_card_comments' => 'Report Card Comment Codes', 'honor_roll' => 'Honor Roll Setup', 'attendance_codes' => 'Attendance Codes', 'student_enrollment_codes' => 'Student Enrollment Codes');
-    $no_school_tables = array('student_enrollment_codes' => true, 'staff' => true);
-    $required = array('staff' => true, 'school_years' => true, 'student_enrollment' => true, 'student_enrollment_codes' => true);
+    $tables = array('staff' => _staff,
+     'school_periods' => _schoolPeriods,
+     'school_years' => _markingPeriods,
+     'school_calendars' => _calendars,
+     'report_card_grade_scales' => _reportCardGradeCodes,
+     'course_subjects' => _subjects,
+     'courses' => _courses,
+     'course_periods' => _coursePeriods,
+     'student_enrollment' => _students,
+     'report_card_comments' => _reportCardCommentCodes,
+     'honor_roll' =>_honorRollSetup,
+     'attendance_codes' => _attendanceCodes,
+     'student_enrollment_codes' => _studentEnrollmentCodes,
+    );
+    $no_school_tables = array('student_enrollment_codes' =>true, 'staff' =>true);
+    $required = array('staff' =>true, 'school_years' =>true, 'student_enrollment' =>true, 'student_enrollment_codes' =>true);
     $i = 0;
     $j = 0;
     $rollover_rolled=5;
@@ -101,11 +114,11 @@ if ($rolled == 0) {
     //
     //===============================
     $rolledover_table=11;
-    if (Prompt_rollover('Confirm Rollover', 'Are you sure you want to roll the data for ' . $cur_session . ' to the next school year?', $table_list)) {
+    if (Prompt_rollover(_confirmRollover, ''._areYouSureYouWantToRollTheDataFor.' ' . $cur_session . ' '._toTheNextSchoolYear.' ?', $table_list)) {
         echo "<script type='text/javascript'>back_before_roll();</script>";
     }
 } else {
-    Prompt_rollover_back('Rollover Completed', 'Data has been rolledover for ' . $cur_session . ' for ' . GetSchool(UserSchool()) . '');
+    Prompt_rollover_back(_rolloverCompleted, ''._dataHasBeenRolledoverFor.' ' . $cur_session . ' '._for.' ' . GetSchool(UserSchool()) . '');
 }
 
 foreach ($tables as $table => $name) {

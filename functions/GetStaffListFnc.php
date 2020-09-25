@@ -131,32 +131,28 @@ function GetUserStaffList(& $extra)
             $sql .= ' AND s.PROFILE_ID NOT IN(0,1) '; 
         }
 
-        if ($extra['GROUP'])
-            $sql .= ' GROUP BY ' . $extra['GROUP'];
-
+                if ($extra['GROUP'])
+                    $sql .= ' GROUP BY ' . $extra['GROUP'];
 		$sql .= 'ORDER BY FULL_NAME ';
-
-		/**************************************for Back to User*************************************************************/
-
-        if($_SESSION['staf_search']['sql'] && $_REQUEST['return_session']) {
-           $sql= $_SESSION['staf_search']['sql'];
-        }
-        else
-        {
-            if ($_REQUEST['sql_save_session_staf'])
-                $_SESSION['staf_search']['sql'] = $sql;
+/**************************************for Back to User*************************************************************/
+            if($_SESSION['staf_search']['sql'] && $_REQUEST['return_session']) {
+               $sql= $_SESSION['staf_search']['sql'];
+            }
+            else
+            {
+                if ($_REQUEST['sql_save_session_staf'])
+                    $_SESSION['staf_search']['sql'] = $sql;
 
             if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
 	        {
 	            $_SESSION['staf_search_hold'] = $sql;
-	        }
+            }
         }
 
-		/***************************************************************************************************/
-
+/***************************************************************************************************/
 		if ($extra['functions'])
 			$functions += $extra['functions'];
-		//echo $sql;
+//echo $sql;
 		return DBGet(DBQuery($sql),$functions);
 		break;
 	}

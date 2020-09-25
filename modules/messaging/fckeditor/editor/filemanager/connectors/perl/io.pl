@@ -110,7 +110,7 @@ sub GetRootPath
 {
 #use Cwd;
 
-#	my $dir = getcwd;
+#	my $dir = _getcwd;
 #	print $dir;
 #	$dir  =~ s/$ENV{'DOCUMENT_ROOT'}//g;
 #	print $dir;
@@ -129,7 +129,7 @@ use Cwd;
 	if($ENV{'DOCUMENT_ROOT'}) {
 		$dir = $ENV{'DOCUMENT_ROOT'};
 	} else {
-		my $dir = getcwd;
+		my $dir = _getcwd;
 		$workdir =~ s/\/connector\.cgi//g;
 		$dir  =~ s/$workdir//g;
 	}

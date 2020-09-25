@@ -127,7 +127,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                
                 if ($table_name!='student_goal_progress' && ((strtotime($start_date) > strtotime($end_date) && $start_date != "" && $end_date != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($end_date) && $row_s_date[1]['START_DATE'] != "" && $end_date != "") || (strtotime($start_date) > strtotime($row_s_date[1]['END_DATE']) && $start_date != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($row_s_date[1]['END_DATE']) && $row_s_date[1]['START_DATE'] != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt)))) {
                 {
-                    ShowErr('Data not saved because start and end date is not valid');
+                    ShowErr(_dataNotSavedBecauseStartAndEndDateIsNotValid);
                 }
                 } else {
                        
@@ -142,7 +142,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
 
                             if ((date('Y-m-d', strtotime($_REQUEST['tables'][$id]['START_DATE'])) < date('Y-m-d', strtotime($chk_dt[1]['START_DATE']))) || (date('Y-m-d', strtotime($_REQUEST['tables'][$id]['START_DATE'])) > date('Y-m-d', strtotime($chk_dt[1]['END_DATE'])))) {
-                                echo '<p style=color:red> Progress entry date should be between goals start date,end date</p>';
+                                echo '<p style=color:red> '._progressEntryDateShouldBeBetweenGoalsStartDate.','._endDate.'</p>';
 
                                 break;
                             } 
@@ -240,7 +240,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 if ($go) {
                     if ($table_name == 'student_goal_progress') {
                         if ($flag == 1)
-                            ShowErr('Progress entry date should be between goals start date,end date');
+                            ShowErr(''._progressEntryDateShouldBeBetweenGoalsStartDate.''._endDate.'');
 
                         else {
                             DBQuery($sql);
@@ -252,7 +252,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         $school_start_dt = $school_syear_date[1]['START_DATE'];
                         $school_end_dt = $school_syear_date[1]['END_DATE'];
                         if ((isset($start_date) && isset($end_date) && strtotime($end_date) < strtotime($start_date)) || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt))) {
-                            ShowErr('Data not saved because start and end date is not valid');
+                            ShowErr(_dataNotSavedBecauseStartAndEndDateIsNotValid);
                         } else {
 
                             DBQuery($sql);
@@ -287,7 +287,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
 if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'choose_course') && !clean_param($_REQUEST['course_modfunc'], PARAM_NOTAGS)) {
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) != 'choose_course')
-        DrawBC("Students > " . ProgramTitle());
+        DrawBC(""._students." > " . ProgramTitle());
 
     $sql = 'SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE SCHOOL_ID=\'' . $school_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY START_DATE DESC';
 
@@ -304,7 +304,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
 
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) != 'choose_course') {
         if (AllowEdit())
-            $delete_button = "<INPUT type=button class=\"btn btn-primary\" value=Delete onClick='javascript:window.location=\"Modules.php?modname=students/Student.php&include=GoalInc&modfunc=delete&goal_id=$_REQUEST[goal_id]&progress_id=$_REQUEST[progress_id]&course_period_id=$_REQUEST[course_period_id]\"'> ";
+            $delete_button = "<INPUT type=button class=\"btn btn-primary\" value='._delete.' onClick='javascript:window.location=\"Modules.php?modname=students/Student.php&include=GoalInc&modfunc=delete&goal_id=$_REQUEST[goal_id]&progress_id=$_REQUEST[progress_id]&course_period_id=$_REQUEST[course_period_id]\"'> ";
         // ADDING & EDITING FORM
 
 
@@ -385,30 +385,40 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             # ------------------------------ Delete ---------------------------------------- #
             $header .= '<div class="form-horizontal">';
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6">' . TextInput($RET['PROGRESS_NAME'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_NAME]', 'Progress Period Name', 'size=60 maxlength=50') . '</div>';
+            $header .= '<div class="col-md-6">' . TextInput($RET['PROGRESS_NAME'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_NAME]', _progressPeriodName, 'size=60 maxlength=50') . '</div>';
             if (($_REQUEST['progress_id'] != 'new')) {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST[progress_id] . "'><b><i class=\"icon-trash\"></i></b> Delete This Progress</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST[progress_id] . "'><b><i class=\"icon-trash\"></i></b> "._deleteThisProgress."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row
             
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['GOAL_ID'] ? $RET['GOAL_ID'] : $_REQUEST['goal_id'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][GOAL_ID]', 'Goal Title', $options, false).'</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
-            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET_sel['COURSE_PERIOD_ID'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][COURSE_PERIOD_ID]', 'Course Period', $options_cp) . '</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['GOAL_ID'] ? $RET['GOAL_ID'] : $_REQUEST['goal_id'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][GOAL_ID]', _goalTitle, $options, false).'</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET_sel['COURSE_PERIOD_ID'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][COURSE_PERIOD_ID]', _coursePeriod, $options_cp) . '</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
             $header .= '</div>'; //.row
             $header .= '<input type="hidden" name="req_progress_id" id="req_progress_id" value="' . $_REQUEST['progress_id'] . '" />';
             $header .= '<input type="hidden" name="hgoal" value="' . $_REQUEST[goal_id] . '" />';
             
             
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">Date of Entry</label><div class="col-lg-8">' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['progress_id'] . '][START_DATE]', 1) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
-            $options = array('0-10%' => '0-10%', '11-20%' => '11-20%', '21-30%' => '21-30%', '31-40%' => '31-40%', '41-50%' => '41-50%', '51-60%' => '51-60%', '61-70%' => '61-70%', '71-80%' => '71-80%', '81-90%' => '81-90%', '91-100%' => '91-100%');
-            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['PROFICIENCY'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROFICIENCY]', 'Proficiency  Scale', $options) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">'._dateOfEntry.'</label><div class="col-lg-8">' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['progress_id'] . '][START_DATE]', 1) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            $options = array('0-10%' => '0-10%',
+             '11-20%' => '11-20%',
+             '21-30%' => '21-30%',
+             '31-40%' => '31-40%',
+             '41-50%' => '41-50%',
+             '51-60%' => '51-60%',
+             '61-70%' => '61-70%',
+             '71-80%' => '71-80%',
+             '81-90%' => '81-90%',
+             '91-100%' => '91-100%',
+            );
+            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['PROFICIENCY'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROFICIENCY]', _proficiencyScale, $options) . '</div></div>';
             $header .= '</div>'; //.row
             
             $header .= '<div class="row">';            
-            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-lg-2">Progress Assessment</label><div class="col-lg-10">' . TextAreaInput($RET['PROGRESS_DESCRIPTION'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_DESCRIPTION]', '', 'rows=10 cols=57', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal_progress"></div></div></div>';
+            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-lg-2">'._progressAssessment.'</label><div class="col-lg-10">' . TextAreaInput($RET['PROGRESS_DESCRIPTION'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_DESCRIPTION]', '', 'rows=10 cols=57', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal_progress"></div></div></div>';
             $header .= '</div>'; //.row
             $header .= '</div>'; //.row
             
@@ -424,7 +434,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
                 $RET = $RET[1];
                 $title = $RET['GOAL_TITLE'];
             } else {
-                $title = 'New Subject';
+                $title = 'newSubject';
                 unset($delete_button);
             }
 
@@ -456,26 +466,26 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
 
             $header .= '<div class="form-horizontal well">';
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['GOAL_TITLE'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_TITLE]', 'Goal Title', 'size=75 maxlength=50') . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['GOAL_TITLE'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_TITLE]', _goalTitle, 'size=75 maxlength=50') . '</div></div>';
             
             if ($_REQUEST['goal_id'] != 'new') {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> Delete This Goal</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisGoal."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row
             
             $header .= '<div class="row">';            
             if ($_REQUEST[goal_id] . trim() != '')
-                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Begin Date</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="' . $_REQUEST[goal_id] . '" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._beginDate.'</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="' . $_REQUEST[goal_id] . '" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
             else
-                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Begin Date</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="new" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._beginDate.'</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="new" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
 
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">End Date</label><div class="col-lg-8">' . DateInputAY($RET['END_DATE']!="" ? $RET['END_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][END_DATE]', 3) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 296
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._endDate.'</label><div class="col-lg-8">' . DateInputAY($RET['END_DATE']!="" ? $RET['END_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][END_DATE]', 3) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 296
             $header .= '</div>'; //.row
             
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label col-lg-2 text-right">Goal Description</label><div class="col-lg-10">' . TextAreaInput($RET['GOAL_DESCRIPTION'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_DESCRIPTION]', '', 'rows=10 cols=70', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal"></div></div></div>';
+            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label col-lg-2 text-right">'._goalDescription.'</label><div class="col-lg-10">' . TextAreaInput($RET['GOAL_DESCRIPTION'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_DESCRIPTION]', '', 'rows=10 cols=70', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal"></div></div></div>';
             $header .= '</div>';
             
             $header .= '</div>'; //.form-horizontal
@@ -485,7 +495,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' => false, 'search' => false);
+    $LO_options = array('save' =>false, 'search' =>false);
 
     if (!$_REQUEST['goal_id'] || $_REQUEST['modfunc'] == 'choose_course')
         DrawHeaderHome('Goals', "<A HREF=ForWindow.php?modname=students/Student.php&include=GoalInc&modfunc=$_REQUEST[modfunc]&course_modfunc=search>Search</A>");
@@ -503,7 +513,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     }
 
     echo '<div class="col-md-6">';
-    $columns = array('GOAL_TITLE' => 'Goals');
+    $columns = array('GOAL_TITLE' =>_goals);
     $link = array();
     $link['GOAL_TITLE']['link'] = "Modules.php?modname=students/Student.php&include=GoalInc";
     $link['GOAL_TITLE']['variables'] = array('goal_id' => 'GOAL_ID');
@@ -512,7 +522,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     else
         $link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-    ListOutput($subjects_RET, $columns, 'Goal', 'Goals', $link, array(), $LO_options);
+    ListOutput($subjects_RET, $columns, _goal, _goals, $link, array(), $LO_options);
     echo '</div>';
 
     if ($_REQUEST['goal_id'] && $_REQUEST['goal_id'] != 'new') {
@@ -533,7 +543,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
         }
 
         echo '<div class="col-md-6">';
-        $columns = array('PROGRESS_NAME' => 'Progresses');
+        $columns = array('PROGRESS_NAME' =>_progresses);
         $link = array();
         $link['PROGRESS_NAME']['link'] = "Modules.php?modname=students/Student.php&include=GoalInc&goal_id=$_REQUEST[goal_id]";
         $link['PROGRESS_NAME']['variables'] = array('progress_id' => 'PROGRESS_ID');
@@ -545,7 +555,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
 
 
 
-        ListOutput($courses_RET, $columns, 'Progress', 'Progresses', $link, array(), $LO_options);
+        ListOutput($courses_RET, $columns, _progress, _progresses, $link, array(), $LO_options);
         echo '</div>';
     }
 

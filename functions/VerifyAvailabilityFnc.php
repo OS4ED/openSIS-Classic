@@ -495,12 +495,12 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     {
         return 'There is gender restriction';
     }
-    $do_check=false;
+    $do_check= false;
     foreach($course_RET as $course)
     {
         if($course['IGNORE_SCHEDULING']!='Y')
         {
-            $do_check=true;
+            $do_check= true;
             break;
         }
     }

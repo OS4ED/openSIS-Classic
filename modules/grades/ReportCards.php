@@ -117,9 +117,9 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
         if (count($RET)) {
-            $columns = array('COURSE_TITLE' => 'Course');
+            $columns = array('COURSE_TITLE' =>_course);
             if ($_REQUEST['elements']['teacher'] == 'Y')
-                $columns += array('TEACHER' => 'Teacher');
+                $columns += array('TEACHER' =>_teacher);
             if ($_REQUEST['elements']['period_absences'] == 'Y')
                 $columns += array('ABSENCES' => 'Abs<BR>YTD / MP');
             if (count($_REQUEST['mp_arr']) > 4)
@@ -143,7 +143,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 foreach ($RET as $student_id => $course_periods) {
 
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . ' (' . $cur_session . ')' . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . ' (' . $cur_session . ')' . "<div style=\"font-size:12px;\">"._studentReportCard."</div></td><td align=right style=\"padding-top:20px\">" . ProperDate(DBDate()) . "<br \>"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                     echo '<!-- MEDIA SIZE 8.5x11in -->';
                     if (!isset($_REQUEST['elements']['percents']) || (isset($_REQUEST['elements']['percents']) && $_REQUEST['elements']['percents'] == 'Y')) {   //when Standard Grade is not selected
                         $comments_arr = array();
@@ -305,13 +305,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 else
                                     echo '<tr><td><IMG src="assets/noimage.jpg" width=100 class=pic></td></tr>';
                             }
-                            echo '<tr><td><strong>Student Name :</strong></td>';
+                            echo '<tr><td><strong>'._studentName.' :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['FULL_NAME'] . '</td></tr>';
-                            echo '<tr><td><strong>Student ID :</strong></td>';
+                            echo '<tr><td><strong>'._studentId.' :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['STUDENT_ID'] . '</td></tr>';
-                            echo '<tr><td><strong>Alternate ID :</strong></td>';
+                            echo '<tr><td><strong>'._alternateId.' :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['ALT_ID'] . '</td></tr>';
-                            echo '<tr><td><strong>Student Grade :</strong></td>';
+                            echo '<tr><td><strong>'._studentGrade.' :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['GRADE_ID'] . '</td></tr>';
                             echo '</table>';
 
@@ -321,7 +321,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $count = 0;
                                 foreach ($attendance_day_RET[$student_id][$last_mp] as $abs)
                                     $count += 1 - $abs['STATE_VALUE'];
-                                $mp_absences = '<strong>Daily Absences this ' . GetMP($last_mp, 'TITLE') . ' :</strong> ' . $count;
+                                $mp_absences = '<strong>'._dailyAbsencesThis.' ' . GetMP($last_mp, 'TITLE') . ' :</strong> ' . $count;
                             }
                             if ($_REQUEST['elements']['ytd_absences'] == 'Y') {
                                 $count = 0;
@@ -329,7 +329,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     foreach ($mp_abs as $abs)
                                         $count += 1 - $abs['STATE_VALUE'];
                                 echo '<br/><table width="100%" border="0" cellspacing="0"><tr>';
-                                echo '<td><strong>Year-to-Date Daily Absences :</strong> ' . $count.'</td>';
+                                echo '<td><strong>'._yearToDateDailyAbsences.' :</strong> ' . $count.'</td>';
                                 echo '<td align="right">'.$mp_absences.'</td>';
                                 echo '</tr></table><br/>';
                                 $count_lines++;
@@ -359,14 +359,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 DrawHeader($mp_tardies);
                                 $count_lines++;
                             }
-                            ListOutputPrint($grades_RET, $columns, '', '', array(), array(), array('print' => false));
+                            ListOutputPrint($grades_RET, $columns, '', '', array(), array(), array('print' =>false));
 
                             if ($_REQUEST['elements']['comments'] == 'Y' && ($comments_arr_key || count($comments_arr))) {
                                 $gender = substr($mps[key($mps)][1]['GENDER'], 0, 1);
                                 $personalizations = array('^n' => ($mps[key($mps)][1]['NICKNAME'] ? $mps[key($mps)][1]['NICKNAME'] : $mps[key($mps)][1]['FIRST_NAME']),
                                     '^s' => ($gender == 'M' ? 'his' : ($gender == 'F' ? 'her' : 'his/her')));
 
-                                echo '<TABLE width=100%><TR><TD colspan=2><b>Explanation of Comment Codes</b></TD>';
+                                echo '<TABLE width=100%><TR><TD colspan=2><b>'._explanationOfCommentCodes.'</b></TD>';
                                 $i = 0;
                                 if ($comments_arr_key)
                                     foreach ($commentsA_select as $key => $comment) {
@@ -411,14 +411,14 @@ if ($_REQUEST['modfunc'] == 'save') {
             #################end####################################### 
             PDFStop($handle);
         } else
-            BackPrompt('Missing grades or No Students were found.');
+            BackPrompt(_missingGradesOrNoStudentsWereFound);
     } else
         
-        BackPrompt('You must choose at least one student and marking period.');
+        BackPrompt(_youMustChooseAtLeastOneStudentAndMarkingPeriod);
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Gradebook > " . ProgramTitle());
+    DrawBC(""._gradebook." > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&_openSIS_PDF=true&head_html=Student+Report+Card method=POST target=_blank>";
@@ -426,24 +426,24 @@ if (!$_REQUEST['modfunc']) {
 
         $attendance_codes = DBGet(DBQuery("SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' AND (DEFAULT_CODE!='Y' OR DEFAULT_CODE IS NULL) AND TABLE_NAME='0'"));
 
-        $extra['extra_header_left'] = '<h5 class="text-primary no-margin-top">Include on Report Card:</h5>';
+        $extra['extra_header_left'] = '<h5 class="text-primary no-margin-top">'._includeOnReportCard.':</h5>';
         $extra['extra_header_left'] .= '<div class="row">';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[teacher] value=Y CHECKED><span></span>Teacher</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[signature] value=Y><span></span>Include Signature Line</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[comments] value=Y CHECKED><span></span>Comments</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[percents] value=Y><span></span>Percents</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[ytd_absences] value=Y CHECKED><span></span>Year-to-date Daily Absences</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[mp_absences] value=Y' . (GetMP(UserMP(), 'SORT_ORDER') != 1 ? ' CHECKED' : '') . '><span></span>Daily Absences this Marking Period</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4 form-inline"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[ytd_tardies] value=Y><span></span>Other Attendance Year-to-Date :</label></div> <SELECT name="ytd_tardies_code" class="form-control input-xs">';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[teacher] value=Y CHECKED><span></span>'._teacher.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[signature] value=Y><span></span>'._includeSignatureLine.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[comments] value=Y CHECKED><span></span>'._comments.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[percents] value=Y><span></span>'._percents.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[ytd_absences] value=Y CHECKED><span></span>'._yearToDateDailyAbsences.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[mp_absences] value=Y' . (GetMP(UserMP(), 'SORT_ORDER') != 1 ? ' CHECKED' : '') . '><span></span>'._dailyAbsencesThisMarkingPeriod.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4 form-inline"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[ytd_tardies] value=Y><span></span>'._otherAttendanceYearToDate.' :</label></div> <SELECT name="ytd_tardies_code" class="form-control input-xs">';
         foreach ($attendance_codes as $code)
             $extra['extra_header_left'] .= '<OPTION value=' . $code['ID'] . '>' . $code['SHORT_NAME'] . '</OPTION>';
         $extra['extra_header_left'] .= '</SELECT></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4 form-inline"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-success switch-xs"><label><INPUT type=checkbox name=elements[mp_tardies] value=Y><span></span>Other Attendance this Marking Period:</label></div> <SELECT class="form-control input-xs" name="mp_tardies_code">';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4 form-inline"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-success switch-xs"><label><INPUT type=checkbox name=elements[mp_tardies] value=Y><span></span>'._otherAttendanceThisMarkingPeriod.':</label></div> <SELECT class="form-control input-xs" name="mp_tardies_code">';
         foreach ($attendance_codes as $code)
             $extra['extra_header_left'] .= '<OPTION value=' . $code['ID'] . '>' . $code['SHORT_NAME'] . '</OPTION>';
         $extra['extra_header_left'] .= '</SELECT></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[period_absences] value=Y><span></span>Period-by-Period Absences</label></div></div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[gpa] value=Y><span></span>GPA</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[period_absences] value=Y><span></span>'._periodByPeriodAbsences.'</label></div></div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-6 col-lg-4"><div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=elements[gpa] value=Y><span></span>'._gpa.'</label></div></div></div>';
         $extra['extra_header_left'] .= '</div>';
 
         $mps_RET = DBGet(DBQuery("SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"), array(), array('SEMESTER_ID'));
@@ -456,7 +456,7 @@ if (!$_REQUEST['modfunc']) {
             $mps_RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,SHORT_NAME FROM school_years WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"), array(), array('MARKING_PERIOD_ID'));
         }
 
-        $extra['extra_header_left'] .= '<h5 class="text-primary">Marking Periods</h5>';
+        $extra['extra_header_left'] .= '<h5 class="text-primary">'._markingPeriods.'</h5>';
         $extra['extra_header_left'] .= '<div class="form-group">';
         foreach ($mps_RET as $sem => $quarters) {
 
@@ -492,7 +492,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['search'] = '';
     }
 
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -529,10 +529,14 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
+    // echo "<pre><xmp>";
+    // print_r($extra);
+    // echo "</xmp></pre>";
+
     Search('student_id', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Report Cards for Selected Students\'></div>';
+            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._createReportCardsForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 }
@@ -545,7 +549,7 @@ if ($modal_flag == 1) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -556,9 +560,9 @@ if ($modal_flag == 1) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }

@@ -55,7 +55,7 @@ function CreateXmlHeader( $command, $resourceType, $currentFolder )
 	// Add the current folder node.
 	echo '<CurrentFolder path="' . ConvertToXmlAttribute( $currentFolder ) . '" url="' . ConvertToXmlAttribute( GetUrlFromPath( $resourceType, $currentFolder, $command ) ) . '" />' ;
 
-	$GLOBALS['HeaderSent'] = true ;
+	$GLOBALS['HeaderSent'] = true;
 }
 
 function CreateXmlFooter()

@@ -30,7 +30,7 @@ include('../../RedirectModulesInc.php');
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 echo "<FORM action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))." method=POST>";
-DrawHeaderHome('<INPUT type=checkbox name=include_inactive value=Y'.($_REQUEST['include_inactive']=='Y'?" CHECKED onclick='document.location.href=\"".PreparePHP_SELF($tmp_REQUEST)."&include_inactive=\";'":" onclick='document.location.href=\"".PreparePHP_SELF($tmp_REQUEST)."&include_inactive=Y\";'").'>Include Inactive Students');
+DrawHeaderHome('<INPUT type=checkbox name=include_inactive value=Y'.($_REQUEST['include_inactive']=='Y'?" CHECKED onclick='document.location.href=\"".PreparePHP_SELF($tmp_REQUEST)."&include_inactive=\";'":" onclick='document.location.href=\"".PreparePHP_SELF($tmp_REQUEST)."&include_inactive=Y\";'").'>'._includeInactiveStudents.':');
 echo '</FORM>';
 $course_period_id = UserCoursePeriod();
 $course_id = DBGet(DBQuery('SELECT COURSE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\''.$course_period_id.'\''));
@@ -49,20 +49,26 @@ $students_RET = GetStuList($extra);
 
 if(AllowUse('grades/Grades.php'))
 	$link = array('FULL_NAME'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_ianctive=$_REQUEST[include_inactive]&assignment_id=all",'variables'=>array('student_id'=>'STUDENT_ID')),'TITLE'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_inactive=$_REQUEST[include_inactive]",'variables'=>array('assignment_id'=>'ASSIGNMENT_ID','student_id'=>'STUDENT_ID')));
-$columns = array('FULL_NAME'=>'Name','STUDENT_ID'=>'Student ID','POINTS'=>'Problem','TYPE_TITLE'=>'Category','TITLE'=>'Assignment','COMMENT'=>'Comment');
-ListOutput($students_RET,$columns,'Anomalous Grade','Anomalous grades',$link,array(),array('center'=>false,'save'=>false,'search'=>false));
+$columns = array('FULL_NAME'=>_name,
+'STUDENT_ID'=>_studentId,
+'POINTS'=>_problem,
+'TYPE_TITLE'=>_category,
+'TITLE'=>_assignment,
+'COMMENT'=>_comment,
+);
+ListOutput($students_RET,$columns,_anomalousGrade,_anomalousGrades,$link,array(),array('center'=>false,'save'=>false,'search'=>false));
 
 function _makePoints($value,$column)
 {	global $THIS_RET;
 
 	if($value=='')
-		return '<FONT class=red>Missing</FONT>';
+		return '<FONT class=red>'._missing.'</FONT>';
 	elseif($value=='-1')
-		return '<FONT color=#00a000>Excused</FONT>';
+		return '<FONT color=#00a000>'._excused.'</FONT>';
 	elseif($value<0)
-		return '<FONT class=red>Negative!</FONT>';
+		return '<FONT class=red>'._negative.'!</FONT>';
 	elseif($THIS_RET['TOTAL_POINTS']==0)
-		return '<FONT color=#0000ff>Extra Credit</FONT>';
+		return '<FONT color=#0000ff>'._extraCredit.'</FONT>';
 	
         $rounding=DBGet(DBQuery('SELECT VALUE AS ROUNDING FROM program_user_config WHERE USER_ID=\''.User('STAFF_ID').'\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_'.UserCoursePeriod().'\''));
                         $points_r=($value/$THIS_RET['TOTAL_POINTS'])*100;

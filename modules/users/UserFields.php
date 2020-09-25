@@ -27,7 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Users > " . ProgramTitle());
+include('lang/language.php');
+DrawBC(""._users." > " . ProgramTitle());
 $_openSIS['allow_edit'] = true;
 $not_default = false;
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax'])) {
@@ -264,7 +265,7 @@ if (!$_REQUEST['modfunc']) {
     $categories_RET = DBGet($QI);
 
     if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 2))
-        $delete_button = "<INPUT type=button class=\"btn btn-danger btn-sm\" value=Delete onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'> ";
+        $delete_button = "<INPUT type=button class=\"btn btn-danger btn-sm\" value='"._delete."' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'> ";
 
     // ADDING & EDITING FORM
     if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
@@ -280,9 +281,9 @@ if (!$_REQUEST['modfunc']) {
         $RET = $RET[1];
         $title = $RET['TITLE'];
     } elseif ($_REQUEST['id'] == 'new')
-        $title = 'New User Field';
+        $title = _newUserField;
     elseif ($_REQUEST['category_id'] == 'new')
-        $title = 'New User Field Category';
+        $title = _newUserFieldCategory;
 
 
     if ($_REQUEST['id']) {
@@ -293,13 +294,13 @@ if (!$_REQUEST['modfunc']) {
         echo "&table=people_fields method=POST>";
         echo '<div class="panel panel-default">';
 
-        DrawHeader($title, $delete_button . ' &nbsp; ' . SubmitButton('Save', '', 'id="userFieldsBtn" class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F1(this);"')); //'<INPUT type=submit value=Save>');
+        DrawHeader($title, $delete_button . ' &nbsp; ' . SubmitButton(_save, '', 'id="userFieldsBtn" class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F1(this);"')); //'<INPUT type=submit value='._save.'>');
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=f_id value="' . $_REQUEST['id'] . '"/>';
         $header .= '<div class="row">';
         $header .= '<div class="col-md-3">';
-        $header .= '<div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['id'] . '][TITLE]', 'Field Name') . '</div>';
+        $header .= '<div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['id'] . '][TITLE]', _fieldName) . '</div>';
         $header .= '</div>'; //.col-md-3
         // You can't change a student field type after it has been created
         // mab - allow changing between select and autos and edits and text
@@ -309,7 +310,7 @@ if (!$_REQUEST['modfunc']) {
             $type_options = array('select' => 'Pull-Down', 'autos' => 'Auto Pull-down', 'edits' => 'Edit Pull-Down', 'text' => 'Text', 'radio' => 'Checkbox', 'codeds' => 'Coded Pull-Down', 'numeric' => 'Number', 'multiple' => 'Select Multiple from Options', 'date' => 'Date', 'textarea' => 'Long Text');
 
         $header .= '<div class="col-md-3">';
-        $header .= '<div class="form-group">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', 'Data Type', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div>';
+        $header .= '<div class="form-group">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', _dataType, $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div>';
         $header .= '</div>'; //.col-md-3
 
         if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text') {
@@ -320,14 +321,14 @@ if (!$_REQUEST['modfunc']) {
             $categories_options[$type['ID']] = $type['TITLE'];
 
         $header .= '<div class="col-md-3">';
-        $header .= '<div class="form-group"><label class="control-label col-md-4">User Field Category</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-md-4">'._userFieldCategory.'</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         $header .= '</div>'; //.col-md-3
 
         $header .= '<div class="col-md-3">';
         if ($_REQUEST['id'] == 'new')
-            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', 'Sort Order', 'onkeydown="return numberOnly(event);"') . '</div>';
+            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', _sortOrder, 'onkeydown="return numberOnly(event);"') . '</div>';
         else
-            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', 'Sort Order', 'onkeydown=\"return numberOnly(event);\"') . '</div>';
+            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', _sortOrder, 'onkeydown=\"return numberOnly(event);\"') . '</div>';
 
         $header .= '</div>'; //.col-md-3
         $header .= '</div>'; //.row
@@ -335,13 +336,13 @@ if (!$_REQUEST['modfunc']) {
         $header .= '<div class="row">';
         $colspan = 2;
         if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
-            $header .= '<div class="col-md-6" id="show_textarea" style="display:block"><div class="form-group" >' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', 'Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices (*)', 'rows=7 cols=40') . '<p class="help-block">* One per line</p></div></div>';
+            $header .= '<div class="col-md-6" id="show_textarea" style="display:block"><div class="form-group" >' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', 'Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices (*)', 'rows=7 cols=40') . '<p class="help-block">* '._onePerLine.'</p></div></div>';
             $colspan = 1;
         }
-        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">Default</label><div class="col-lg-8">' . TextInput($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '</div><p class="help-block">* for dates: YYYY-MM-DD, for checkboxes: Y &amp; for long text it will be ignored</p></div></div>';
+        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">'._default.'</label><div class="col-lg-8">' . TextInput($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '</div><p class="help-block">* '._forDatesYyyyMmDdForCheckboxesYAmpForLongTextItWillBeIgnored.'</p></div></div>';
 
         $new = ($_REQUEST['id'] == 'new');
-        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">Required</label><div class="col-lg-8">' . CheckboxInput($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', '', '', $new) . '</div></div></div>';
+        $header .= '<div class="col-md-3"><div class="form-group"><label class="col-lg-4 text-right control-label">'._required.'</label><div class="col-lg-8">' . CheckboxInput($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', '', '', $new) . '</div></div></div>';
 
         $header .= '</div>'; //.row
     } elseif ($_REQUEST['category_id']) {
@@ -351,18 +352,18 @@ if (!$_REQUEST['modfunc']) {
             echo "&category_id=$_REQUEST[category_id]";
         echo " method=POST>";
         echo '<div class="panel panel-default">';
-        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="userFieldsCatBtn" class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F2(this);"')); //'<INPUT type=submit value=Save>');
+        DrawHeader($title, $delete_button . SubmitButton(_save, '', 'id="userFieldsCatBtn" class="btn btn-primary btn-sm" onclick="formcheck_user_userfields_F2(this);"')); //'<INPUT type=submit value='._save.'>');
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
 
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header .= '<div class="form-group">' . (($RET['ID'] > 2 || $RET['ID'] == '') ? TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title') : NoInput($RET['TITLE'], 'Title')) . '</div>';
+        $header .= '<div class="form-group">' . (($RET['ID'] > 2 || $RET['ID'] == '') ? TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title) : NoInput($RET['TITLE'], _title)) . '</div>';
         $header .= '</div>'; //.col-md-6
         
         $header .= '<div class="col-md-4">';
-        $header .= '<div class="form-group">' . (($RET['SORT_ORDER'] > 2 || $RET['SORT_ORDER'] == '') ? TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order') : NoInput($RET['SORT_ORDER'], 'Sort Order')) . '</div>';
+        $header .= '<div class="form-group">' . (($RET['SORT_ORDER'] > 2 || $RET['SORT_ORDER'] == '') ? TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder) : NoInput($RET['SORT_ORDER'], _sortOrder)) . '</div>';
         $header .= '</div>'; //.col-md-4
         $new = ($_REQUEST['category_id'] == 'new');
 //        if ($_REQUEST['category_id'] > 2 || $new) {
@@ -373,13 +374,13 @@ if (!$_REQUEST['modfunc']) {
         $header .= '</div>'; //.row
 
         $header .= '<div class="form-group">';
-        $header .= '<label class="control-label col-md-2 text-right">Profiles</label>';
+        $header .= '<label class="control-label col-md-2 text-right">'._profiles.'</label>';
         $header .= '<div class="col-md-10">';
         $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '<div class="checkbox">' : '<p class="p-t-10">';
 //        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['ADMIN'], 'tables[' . $_REQUEST['category_id'] . '][ADMIN]', ($_REQUEST['category_id'] == '1' && !$RET['ADMIN'] ? '<FONT color=red>' : '') . 'Administrator' . ($_REQUEST['category_id'] == '1' && !$RET['ADMIN'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['ADMIN'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Administrator</span> &nbsp; &nbsp; ');
 //        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['TEACHER'], 'tables[' . $_REQUEST['category_id'] . '][TEACHER]', ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '<FONT color=red>' : '') . 'Teacher' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['TEACHER'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Teacher</span> &nbsp; &nbsp; ');
-        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['PARENT'], 'tables[' . $_REQUEST['category_id'] . '][PARENT]', ($_REQUEST['category_id'] == '1' && !$RET['PARENT'] ? '<FONT color=red>' : '') . 'Parent' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['PARENT'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; Parent</span> &nbsp; &nbsp; ');
-        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['NONE'], 'tables[' . $_REQUEST['category_id'] . '][NONE]', ($_REQUEST['category_id'] == '1' && !$RET['NONE'] ? '<FONT color=red>' : '') . 'No Access' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['NONE'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; No Access</span>');
+        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['PARENT'], 'tables[' . $_REQUEST['category_id'] . '][PARENT]', ($_REQUEST['category_id'] == '1' && !$RET['PARENT'] ? '<FONT color=red>' : '') . 'Parent' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['PARENT'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; '._parent.'</span> &nbsp; &nbsp; ');
+        $header .= (($RET['ID'] > 2 || $RET['ID'] == '') ? CheckboxInput($RET['NONE'], 'tables[' . $_REQUEST['category_id'] . '][NONE]', ($_REQUEST['category_id'] == '1' && !$RET['NONE'] ? '<FONT color=red>' : '') . 'No Access' . ($_REQUEST['category_id'] == '1' && !$RET['TEACHER'] ? '</FONT>' : ''), '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') : '<span>' . ($RET['NONE'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>') . ' &nbsp; '._noAccess.'</span>');
         $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '</div>' : '</p>'; //.checkbox
         $header .= '</div>'; //.col-md-10
         $header .= '</div>'; //.form-group
@@ -395,7 +396,7 @@ if (!$_REQUEST['modfunc']) {
 
 
     // DISPLAY THE MENU
-    $LO_options = array('save' => false, 'search' => false, 'add' => true);
+    $LO_options = array('save' =>false, 'search' =>false, 'add' =>true);
 
     echo '<div class="row">';
 
@@ -410,14 +411,62 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="col-md-6">';
     echo '<div class="panel panel-default">';
-    $columns = array('TITLE' => 'Category', 'SORT_ORDER' => 'Order');
+    $columns = array('TITLE' =>_category,
+     'SORT_ORDER' =>_order,
+    );
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
     $link['TITLE']['variables'] = array('category_id' => 'ID');
     $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=new\");'";
 
     echo '<div class="table-responsive">';
-    ListOutput($categories_RET, $columns, 'User Field Category', 'User Field Categories', $link, array(), $LO_options);
+    foreach ($categories_RET as $key => $value) {
+        switch ($value['TITLE']) {
+            case 'General Info':
+                $categories_RET[$key]['TITLE'] = _generalInfo;
+                break;
+            case 'Address Info':
+                $categories_RET[$key]['TITLE'] = _addressInfo;
+                break;
+            case 'Addresses &amp; Contacts':
+                $categories_RET[$key]['TITLE'] = _addressesContacts;
+                break;
+            case 'Medical':
+                $categories_RET[$key]['TITLE'] = _medical;
+                break;
+            case 'Comments':
+                $categories_RET[$key]['TITLE'] = _comments;
+                break;
+            case 'Goals':
+                $categories_RET[$key]['TITLE'] = _goals;
+                break;
+            case 'Enrollment Info':
+                $categories_RET[$key]['TITLE'] = _enrollmentInfo;
+                break;
+            case 'Files':
+                $categories_RET[$key]['TITLE'] = _files;
+                break;
+            default:
+                $categories_RET[$key]['TITLE'] = $value['TITLE'] ;
+                break;
+            // case 'Demographic Info':
+            //     $categories_RET[$key]['TITLE'] = _demographicInfo;
+            //     break;
+            // case 'Addresses &amp; Contacts':
+            //     $categories_RET[$key]['TITLE'] = _addressesContacts;
+            //     break;
+            // case 'School Information':
+            //     $categories_RET[$key]['TITLE'] = _schoolInformation;
+            //     break;
+            // case 'Certification Information':
+            //     $categories_RET[$key]['TITLE'] = _certificationInformation;
+            //     break;
+            // case 'Schedule':
+            //     $categories_RET[$key]['TITLE'] = _schedule;
+            //     break;
+        }
+    }
+    ListOutput($categories_RET, $columns, _userFieldCategory, _userFieldCategories, $link, array(), $LO_options);
     echo '</div>'; //.table-responsive
     
     echo '</div>'; //.panel.panel-default
@@ -438,7 +487,10 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-md-6">';
         echo '<div class="panel panel-default">';
-        $columns = array('TITLE' => 'User Field', 'SORT_ORDER' => 'Order', 'TYPE' => 'Data Type');
+        $columns = array('TITLE' =>_userField,
+         'SORT_ORDER' =>_order,
+         'TYPE' =>_dataType,
+        );
         $link = array();
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
 
@@ -451,14 +503,31 @@ if (!$_REQUEST['modfunc']) {
         $count++;
         switch ($_REQUEST[category_id]) {
             case 1:
-                $arr = array('Name', 'Email Address', 'Disable User', 'User Id', 'Home Phone', 'Work Phone', 'Cell Phone', 'User Profile', 'Username', 'Password');
+                $arr = array(
+                 _name,
+                 _emailAddress,
+                 _disableUser,
+                 _userId,
+                 _homePhone,
+                 _workPhone,
+                 _cellPhone,
+                 _userProfile,
+                 _username,
+                 _password,
+                );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
                 $link['TITLE']['variables'] = array('id' => 'ID');
 
                 break;
             case 2:
-                $arr = array('Address', 'Street', 'City', 'State', 'Zip Code');
+                $arr = array(
+                 _address,
+                 _street,
+                 _city,
+                 _state,
+                 _zipCode,
+                );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
                 $link['TITLE']['variables'] = array('id' => 'ID');
@@ -477,7 +546,7 @@ if (!$_REQUEST['modfunc']) {
                 break;
         }
         foreach ($arr as $key => $value) {
-            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'TYPE' => '<span style="color:#ea8828;">Default</span>');
+            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'TYPE' => '<span style="color:#ea8828;">'._default.'</span>');
             $count++;
         }
         $count2 = 1;
@@ -491,7 +560,7 @@ if (!$_REQUEST['modfunc']) {
         }
         
         echo '<div class="table-responsive">';
-        ListOutput($dd, $columns, 'User Field', 'User Fields', $link, array(), $LO_options);
+        ListOutput($dd, $columns, _userField, _userFields, $link, array(), $LO_options);
         echo '</div>'; //.table-responsive
 
 

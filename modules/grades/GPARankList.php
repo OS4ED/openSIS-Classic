@@ -33,7 +33,7 @@ if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     $_REQUEST['search_modfunc'] = 'list';
 }
 
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 if (!$_REQUEST['LO_sort']) {
     $_REQUEST['LO_sort'] = "CUM_RANK";
     $_REQUEST['LO_direction'] = 1;
@@ -73,7 +73,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     $PHP_tmp_SELF = PreparePHP_SELF();
 
     echo "<FORM action=$PHP_tmp_SELF method=POST>";
-    $mps_select = "<div class='form-inline'><div class='input-group'><span class='input-group-addon' id='marking_period_id'>Marking Period :</span><SELECT name=mp class='form-control' onChange='this.form.submit();'>";
+    $mps_select = "<div class='form-inline'><div class='input-group'><span class='input-group-addon' id='marking_period_id'>"._markingPeriod." :</span><SELECT name=mp class='form-control' onChange='this.form.submit();'>";
 
     if (GetMP(UserMP(), 'POST_START_DATE'))
         $mps_select .= "<OPTION value=" . UserMP() . ">" . GetMP(UserMP()) . "</OPTION>";
@@ -114,7 +114,7 @@ echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h4 class="modal-title">Choose course</h4>';
+echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -125,9 +125,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
@@ -159,7 +159,11 @@ else if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 {
     $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
 }
-$extra['columns_after'] = array('GPA' => 'GPA', 'UNWEIGHTED_GPA' => 'Unweighted GPA', 'WEIGHTED_GPA' => 'Weighted GPA', 'CLASS_RANK' => 'Class Rank');
+$extra['columns_after'] = array('GPA' =>_gpa,
+ 'UNWEIGHTED_GPA' =>_unweightedGpa,
+ 'WEIGHTED_GPA' =>_weightedGpa,
+ 'CLASS_RANK' =>_classRank,
+);
 $extra['link']['FULL_NAME'] = false;
 $extra['new'] = true;
 

@@ -27,17 +27,19 @@
 #
 #***************************************************************************************
 include_once("fckeditor/fckeditor.php");
+include('lang/language.php');
+
 //PopTable('header', 'Compose Message');
 if(isset($_SESSION['BODY_EMPTY']) && $_SESSION['BODY_EMPTY']!='')
 {
     // echo '<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
-    echo '<div class="alert alert-danger alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Message body cannot be empty</div>';
+    echo '<div class="alert alert-danger alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>'._messageBodyCannotBeEmpty.'</div>';
     unset($_SESSION['BODY_EMPTY']);
 }
 echo '<div class="panel">';
 echo '<div class="tabbable">';
 echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom">';
-echo '<li class="active" id="tab[]"><a href="javascript:void(0);">Compose&nbsp;Message</a></li>';
+echo '<li class="active" id="tab[]"><a href="javascript:void(0);">'._compose.'&nbsp;'._message.'</a></li>';
 echo '</ul>';
 $userName = User('USERNAME');
 $_SESSION['course_period_id'] = '';
@@ -79,7 +81,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     echo '<div class="form-group">';
     echo '<div class="input-group">';
-    echo '<span class="input-group-addon">To</span>';
+    echo '<span class="input-group-addon">'._to.'</span>';
     echo TextInput_mail($to_user, 'txtToUser', '', 'onkeyup="nameslist(this.value,1)" autocomplete = "off" class=form-control');
     echo '</div>'; //.input-group
     echo '<ul class="dropdown-menu" id="ajax_response"></ul>';
@@ -89,7 +91,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     echo '<div class="col-md-4 form-inline">';
     echo '<div class="input-group">';
     $groupList = DBGet(DBQuery("SELECT GROUP_ID,GROUP_NAME FROM mail_group where user_name='" . $userName . "'"));
-    echo "<SELECT name='groups' class=\"form-control\" onChange=\"list_of_groups(this.options[this.selectedIndex].value);\"><OPTION value=''>Select Group</OPTION>";
+    echo "<SELECT name='groups' class=\"form-control\" onChange=\"list_of_groups(this.options[this.selectedIndex].value);\"><OPTION value=''>"._selectGroup."</OPTION>";
     foreach ($groupList as $groupArr) {
         $option = $groupArr['GROUP_NAME'];
         $value = $groupArr['GROUP_ID'];
@@ -101,11 +103,11 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     }
     echo '</SELECT>';
     echo '<span class="input-group-btn">';
-    echo '<a href="#" class="btn btn-default" onclick="show_cc()">CC</a> &nbsp; ';
-    echo '<a href="#" class="btn btn-default" onclick="show_bcc()">BCC</a>';
+    echo '<a href="#" class="btn btn-default" onclick="show_cc()">'._cc.'</a> &nbsp; ';
+    echo '<a href="#" class="btn btn-default" onclick="show_bcc()">'._bcc.'</a>';
     if (User('PROFILE') == 'teacher') {
         if (!isset($_REQUEST['modto']) && $_REQUEST['m'] != 'reply') {
-            echo "<a href='#' class='btn btn-default' onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>Message My Class</a>";
+            echo "<a href='#' class='btn btn-default' onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'>"._messageMyClass."</a>";
         }
     }
     echo '</span>';
@@ -120,7 +122,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     echo '<div class="form-group">';
     echo '<div class="input-group">';
-    echo '<span class="input-group-addon">CC</span>';
+    echo '<span class="input-group-addon">'._cc.'</span>';
     echo TextInput_mail($to_cc, 'txtToCCUser', '', 'onkeyup="nameslist(this.value,2)" class=mail_input');
     echo '</div>'; //.input-group
     echo '</div>'; //.form-group
@@ -131,7 +133,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     echo '<div class="form-group">';
     echo '<div class="input-group">';
-    echo '<span class="input-group-addon">BCC</span>';
+    echo '<span class="input-group-addon">'._bcc.'</span>';
     echo TextInput_mail($to_bcc, 'txtToBCCUser', '', 'onkeyup="nameslist(this.value,3)" class=mail_input');
     echo '</div>'; //.input-group
     echo '</div>'; //.form-group
@@ -145,7 +147,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     echo '<div class="col-md-12">';
 
     echo '<div class="form-group">';
-    echo TextInput_mail($mail_subject, 'txtSubj', '', 'placeholder=Subject');
+    echo TextInput_mail($mail_subject, 'txtSubj', '', 'placeholder='._subject.'');
     echo '</div>'; //.form-group
     echo '<div id=ajax_response_cc></div>';
 
@@ -158,7 +160,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
       $oFCKeditor->Value = '';
       $oFCKeditor->Height = "350px";
       $oFCKeditor->Width = "600px";
-      $oFCKeditor->ToolbarSet	= 'Mytoolbar ';
+      $oFCKeditor->ToolbarSet   = 'Mytoolbar ';
       $oFCKeditor->Create() ; */
     echo '<textarea name="txtBody" id="txtBody" rows="4" cols="100"></textarea>';
 
@@ -168,17 +170,17 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
     echo '<script type="text/javascript">$(function(){ CKEDITOR.replace(\'txtBody\', { height: \'400px\', extraPlugins: \'forms\'}); });</script>';
 
-    echo '<h5>Attach File</h5>';
+    echo '<h5>'._attachFile.'</h5>';
     echo '<div id="append_tab">';
-    echo '<div id="tr1" class="form-group clearfix"><div class="col-md-4"><input type="file" name="f[]" id="up1" onchange="attachfile(1);" multiple/></div><div id="del1" class="col-md-8"><input type="button" value="Clear" class="btn btn-danger btn-xs" onclick="clearfile(1)" /></div></div>';
+    echo '<div id="tr1" class="form-group clearfix"><div class="col-md-4"><input type="file" name="f[]" id="up1" onchange="attachfile(1);" multiple/></div><div id="del1" class="col-md-8"><input type="button" value="'._clear.'" class="btn btn-danger btn-xs" onclick="clearfile(1)" /></div></div>';
     echo '</div>'; //#append_tab
-    echo '<input type="button" style="display:none;" class="btn btn-default"  id="attach1" onclick="appendFile();" value="Attach Another File" />';
+    echo '<input type="button" style="display:none;" class="btn btn-default"  id="attach1" onclick="appendFile();" value="'._attachAnotherFile.'" />';
     
     echo '</div>'; //.panel-body
     
     echo '<div class="panel-footer"><div class="heading-elements">';
     echo '<input type=hidden id=counter value=1 />';
-    echo '<button type="submit" name=button id=button class="btn btn-primary heading-btn pull-right" VALUE="Send" onClick="validate_email(this);">Send <i class="icon-paperplane"></i></button>';
+    echo '<button type="submit" name=button id=button class="btn btn-primary heading-btn pull-right" VALUE="'._send.'" onClick="validate_email(this);">'._send.' <i class="icon-paperplane"></i></button>';
     echo '</div></div>';
     
 }
@@ -202,12 +204,13 @@ if ($_REQUEST['modfunc'] == 'choose_course') {
         $_SESSION['course_period_id'] = $_REQUEST['course_period_id'];
         $grp = DBGet(DBQuery("select * from mail_group"));
         $title = trim($course_title) . ' ' . trim($period_title);
-        echo "<script language=javascript>opener.document.getElementById(\"txtToUser\").value=\"$title\";opener.document.getElementById(\"ajax_response\").innerHTML='';opener.document.getElementById(\"txtToUser\").readOnly='true';opener.document.getElementById(\"message_my_class_div\").innerHTML = \"<input type=hidden name=cp_id id=cp_id value=$course_period_id><INPUT type=checkbox id=list_gpa_student name=list_gpa_student value=Y CHECKED>Only Students<INPUT type=checkbox name=list_gpa_parent id=list_gpa_parent value=Y CHECKED>Only Parents" . (User('PROFILE') != 'teacher' ? '<INPUT type=checkbox name=list_gpa_teacher id=list_gpa_teacher value=Y CHECKED>Only Teachers' : '') . "&nbsp;&nbsp;<a href='Modules.php?modname=messaging/Compose.php'><font color='red'>Remove Course</font>\";window.close();</script>";
+        echo "<script language=javascript>opener.document.getElementById(\"txtToUser\").value=\"$title\";opener.document.getElementById(\"ajax_response\").innerHTML='';opener.document.getElementById(\"txtToUser\").readOnly='true';opener.document.getElementById(\"message_my_class_div\").innerHTML = \"<input type=hidden name=cp_id id=cp_id value=$course_period_id><INPUT type=checkbox id=list_gpa_student name=list_gpa_student value=Y CHECKED>"._onlyStudents."<INPUT type=checkbox name=list_gpa_parent id=list_gpa_parent value=Y CHECKED>"._onlyParents."" . (User('PROFILE') != 'teacher' ? '<INPUT type=checkbox name=list_gpa_teacher id=list_gpa_teacher value=Y CHECKED>'._onlyTeachers.'' : '') . "&nbsp;&nbsp;<a href='Modules.php?modname=messaging/Compose.php'><font color='red'>"._removeCourse."</font>\";window.close();</script>";
     }
 }
 echo "</form>";
 echo "</div>"; //.panel
 ?>
+
 
 
 

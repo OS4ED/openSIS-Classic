@@ -41,7 +41,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='save' && AllowEdit())
                   unset($_SESSION['_REQUEST_vars']['modfunc']);
 	$note = "The selected user's profile now includes access to the selected students.";
 }
-DrawBC("users > ".ProgramTitle());
+DrawBC(""._users." > ".ProgramTitle());
 
 
 
@@ -54,9 +54,9 @@ if(isset($_REQUEST['staff_id']) && $_REQUEST['staff_id']!='new' || (UserStaffID(
             $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID=\''.$staff_id.'\''));
             $count_staff_RET=DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM staff'));
             if($count_staff_RET[1]['NUM']>1){
-                DrawHeaderHome( 'Selected User: '.$RET[1]['FIRST_NAME'].'&nbsp;'.$RET[1]['LAST_NAME'].' (<A HREF=Side.php?staff_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body>Back to User List</A>');
+                DrawHeaderHome( ''._selectedUser.': '.$RET[1]['FIRST_NAME'].'&nbsp;'.$RET[1]['LAST_NAME'].' (<A HREF=Side.php?staff_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>'._selectedUser.':</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body>Back to User List</A>');
             }else{
-                DrawHeaderHome( 'Selected User: '.$RET[1]['FIRST_NAME'].'&nbsp;'.$RET[1]['LAST_NAME'].' (<A HREF=Side.php?staff_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>)');
+                DrawHeaderHome( ''._selectedUser.': '.$RET[1]['FIRST_NAME'].'&nbsp;'.$RET[1]['LAST_NAME'].' (<A HREF=Side.php?staff_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>'._selectedUser.':</font></A>)');
             }
 }
 
@@ -108,7 +108,7 @@ if($_REQUEST['modfunc']!='delete')
 		echo '</TD></TR></TABLE><div class="clear"></div><div style="width:830px;">';
 		
 			if(clean_param($_REQUEST['search_modfunc'],PARAM_ALPHAMOD)=='list')
-			echo '<div style="margin-bottom:-28px;">'.DrawHeader('',SubmitButton('Add Selected Students','','class=btn_large')).'</div>';
+			echo '<div style="margin-bottom:-28px;">'.DrawHeader('',SubmitButton(addSelectedStudents,'','class=btn_large')).'</div>';
 			
 		$extra['link'] = array('FULL_NAME'=>false);
 		$extra['SELECT'] = ",NULL AS CHECKBOX";
@@ -123,7 +123,7 @@ if($_REQUEST['modfunc']!='delete')
 		echo '</div></CENTER>';
 		
 		if(clean_param($_REQUEST['search_modfunc'],PARAM_ALPHAMOD)=='list')
-			echo "<BR><CENTER>".SubmitButton('Add Selected Students','','class=btn_large')."</CENTER></FORM>";
+			echo "<BR><CENTER>".SubmitButton(addSelectedStudents,'','class=btn_large')."</CENTER></FORM>";
 	}
 }
 

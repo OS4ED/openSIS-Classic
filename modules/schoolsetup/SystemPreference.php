@@ -26,13 +26,14 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+include('lang/language.php');
 include('../../RedirectModulesInc.php');
 
 echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>';
 echo '<script type="text/javascript" src="assets/js/plugins/forms/styling/switch.min.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
 
-DrawBC("School Setup > " . ProgramTitle());
+DrawBC(""._schoolSetup." > " . ProgramTitle());
 
 if(!isset($_REQUEST['page_display'])){
     $_REQUEST['page_display'] = 'SystemPreference';
@@ -42,16 +43,16 @@ echo '<div class="row">';
 echo '<div class="col-md-4">';
 
 echo '<div class="panel panel-white">';
-echo '<div class="panel-heading"><h5 class="panel-title">System Preference</h5></div>';
+echo '<div class="panel-heading"><h5 class="panel-title">'._systemPreferences.'</h5></div>';
 echo '<div class="panel-body p-0">';
 echo '<ul class="nav nav-pills nav-stacked nav-pills-primary m-b-0">';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=SystemPreference"><i class="icon-watch2"></i> &nbsp;Set half-day and full-day minutes</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'FAILURE') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=FAILURE"><i class="icon-key"></i> &nbsp;Set login failure allowance count</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'INACTIVITY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=INACTIVITY"><i class="icon-calendar22"></i> &nbsp;Set allowable user inactivity days</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'MAINTENANCE') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=MAINTENANCE"><i class="icon-hammer-wrench"></i> &nbsp;Put system in maintenance mode</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CURRENCY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=CURRENCY"><i class="icon-coins"></i> &nbsp;Set Currency</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CLASSRANK') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=CLASSRANK"><i class="icon-podium"></i> &nbsp;Display Class Rank</a></li>';
-echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'UPDATENOTIFY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=UPDATENOTIFY"><i class="icon-bell3"></i> &nbsp;Display Notifications</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=SystemPreference"><i class="icon-watch2"></i> &nbsp;'._setHalfDayAndFullDayMinutes.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'FAILURE') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=FAILURE"><i class="icon-key"></i> &nbsp;'._setLoginFailureAllowanceCount.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'INACTIVITY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=INACTIVITY"><i class="icon-calendar22"></i> &nbsp;'._setAllowableUserInactivityDays.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'MAINTENANCE') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=MAINTENANCE"><i class="icon-hammer-wrench"></i> &nbsp;'._putSystemInMaintenanceMode.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CURRENCY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=CURRENCY"><i class="icon-coins"></i> &nbsp;'._setCurrency.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CLASSRANK') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=CLASSRANK"><i class="icon-podium"></i> &nbsp;'._displayClassRank.'</a></li>';
+echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'UPDATENOTIFY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=UPDATENOTIFY"><i class="icon-bell3"></i> &nbsp;'._displayNotifications.'</a></li>';
 echo '</ul>';
 echo '</div>'; //.panel-body
 echo '</div>'; //.panel
@@ -66,9 +67,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         foreach ($_REQUEST['values'] as $column => $value) {
             $value = paramlib_validation($column, $value);
             if ($column == 'FULL_DAY_MINUTE' && $value == '')
-                $value = NULL;
+                $value = _NULL;
             if ($column == 'HALF_DAY_MINUTE' && $value == '')
-                $value = NULL;
+                $value = _NULL;
             $sql .= $column . '=\'' . str_replace("\'", "''", $value) . '\',';
         }
         $sql = substr($sql, 0, -1) . ' WHERE SCHOOL_ID=\'' . UserSchool() . '\'';
@@ -95,13 +96,13 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
 
         echo "<FORM name=sys_pref id=sys_pref class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&action=update&page_display=SystemPreference method=POST>";
     }
-    PopTable('header', 'Half-day and full-day minutes');
-    echo '<div class="form-group"><div class="col-md-12"><label class="control-label text-right text-uppercase"><b>Full day minutes</b></label>' . TextInput($sys_pref['FULL_DAY_MINUTE'], 'values[FULL_DAY_MINUTE]', '', 'class=form-control') . '</div></div>';
-    echo '<div class="form-group"><div class="col-md-12"><label class="control-label text-right text-uppercase"><b>Half day minutes</b></label>' . TextInput($sys_pref['HALF_DAY_MINUTE'], 'values[HALF_DAY_MINUTE]', '', 'class=form-control') . '</div></div>';
+    PopTable('header',  _halfDayAndFullDayMinutes);
+    echo '<div class="form-group"><div class="col-md-12"><label class="control-label text-right text-uppercase"><b>'._fullDayMinutes.'</b></label>' . TextInput($sys_pref['FULL_DAY_MINUTE'], 'values[FULL_DAY_MINUTE]', '', 'class=form-control') . '</div></div>';
+    echo '<div class="form-group"><div class="col-md-12"><label class="control-label text-right text-uppercase"><b>'._halfDayMinutes.'</b></label>' . TextInput($sys_pref['HALF_DAY_MINUTE'], 'values[HALF_DAY_MINUTE]', '', 'class=form-control') . '</div></div>';
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo "<INPUT TYPE=SUBMIT name=button id=button class=\"btn btn-primary pull-right\" onclick='return formcheck_halfday_fullday(this);'  VALUE='Save'>";
+    echo "<INPUT TYPE=SUBMIT name=button id=button class=\"btn btn-primary pull-right\" onclick='return formcheck_halfday_fullday(this);'  VALUE="._save.">";
     PopTable('footer');
     echo "</FORM>";
     
@@ -204,7 +205,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         echo '<div class="panel-heading"><input name="maintain[SYSTEM_MAINTENANCE_SWITCH]" value="" type="hidden"><div class="checkbox checkbox-switch switch-success switch-sm">
           <label ' . (($maintain['SYSTEM_MAINTENANCE_SWITCH'] == 'Y') ? 'class="text-success"' : 'text-muted') . '>
           <input type="checkbox" value=Y name="maintain[SYSTEM_MAINTENANCE_SWITCH]" ' . (($maintain['SYSTEM_MAINTENANCE_SWITCH'] == 'Y') ? 'checked="checked"' : '') . '><span></span>
-          ' . (($maintain['SYSTEM_MAINTENANCE_SWITCH'] == 'Y') ? 'The system is under maintenance' : 'Put the system in maintenance mode') . '
+          ' . (($maintain['SYSTEM_MAINTENANCE_SWITCH'] == 'Y') ? _theSystemIsUnderMaintenance : _putTheSystemInMaintenanceMode) . '
           </label>
           </div></div><hr class="no-margin"/>';
         //echo '<div class="panel-heading">' . CheckboxInputSwitch($maintain['SYSTEM_MAINTENANCE_SWITCH'], 'maintain[SYSTEM_MAINTENANCE_SWITCH]', 'Maintenance Mode') . '</div><hr class="no-margin"/>';
@@ -214,36 +215,36 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         $link['add']['html'] = array('MESSAGE' => _makeContentInput('', 'MESSAGE'), 'DISPLAY' => _makeRadio('', 'DISPLAY'));
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&page_display=MAINTENANCE";
         $link['remove']['variables'] = array('id' => 'ID');
-        $columns = array('MESSAGE' => 'Login Message', 'DISPLAY' => 'Display');
-        ListOutput($login_MESSAGE, $columns, 'Message', 'Messages', $link, true, array('search' => false));
+        $columns = array('MESSAGE' =>_loginMessage, 'DISPLAY' =>_display);
+        ListOutput($login_MESSAGE, $columns,  _message, _messages, $link, true, array('search' =>false));
 
         echo '<div class="panel-body">';
 //        if ($_REQUEST['page_display']) {
 //            echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //        }
-        echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
+        echo SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
         echo '</div>';
         echo '</FORM>';
         echo '</div>';
     }
 }if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'INACTIVITY') {
 
-    PopTable('header', 'User Inactivity Days');
+    PopTable('header',  _userInactivityDays);
     include("UserActivityDays.php");
     PopTable('footer');
 } if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'FAILURE') {
 
-    PopTable('header', 'Login Failure Allowance');
+    PopTable('header',  _loginFailureAllowance);
     include("FailureCount.php");
     PopTable('footer');
 } if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CURRENCY') {
 
-    PopTable('header', 'Currency');
+    PopTable('header',  _currency);
     include("SetCurrency.php");
     PopTable('footer');
 }if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'CLASSRANK') {
 
-    PopTable('header', 'Class Rank');
+    PopTable('header',  _classRank);
 
     if ($_REQUEST['modfunc'] == 'update') {
         if (isset($_REQUEST['display_rank'])) {
@@ -263,21 +264,21 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     echo "<FORM name=failure class=no-margin id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=CLASSRANK method=POST>";
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($rank['VALUE'], 'display_rank', 'Display Class Rank?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($rank['VALUE'], 'display_rank', _displayClassRank.'?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<hr />';
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
+    echo SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
     echo '</FORM>';
 
     PopTable('footer');
 }if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'UPDATENOTIFY') {
 
-    PopTable('header', 'Display Notifications');
+    PopTable('header',  _displayNotifications);
 
     if ($_REQUEST['modfunc'] == 'update') {
 
@@ -309,18 +310,18 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
     echo "<FORM name=failure id=failure action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&page_display=UPDATENOTIFY method=POST>";
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET['VALUE'], 'display_notify', 'Notify when latest version is available?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET['VALUE'], 'display_notify', _notifyWhenLatestVersionIsAvailable.'?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<div class="row"><div class="col-md-12">';
-    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET_school['VALUE'], 'display_school_notify', 'Notify when school setup is incomplete?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
+    echo '<div class="form-group">' . CheckboxInputSwitch($notify_RET_school['VALUE'], 'display_school_notify', _notifyWhenSchoolSetupIsIncomplete.'?', '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
     echo '</div></div>';
 
     echo '<hr />';
 //    if ($_REQUEST['page_display']) {
 //        echo "<a href=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " class=\"btn btn-default\"><i class=\"fa fa-arrow-left\"></i>&nbsp; Back to System Preference</a>";
 //    }
-    echo SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
+    echo SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"');
 
     echo '</FORM>';
 

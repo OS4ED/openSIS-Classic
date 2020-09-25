@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Attendance > " . ProgramTitle());
+include('lang/language.php');
+
+DrawBC(""._attendance." > " . ProgramTitle());
 
 
 //////////////////////////////For new date picker///////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ if (strtotime($start_date_mod) < strtotime($get_min_start_date[1]['START_DATE'])
 
 if ($_REQUEST['modfunc'] == 'search') {
     echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . "&day_start=" . strip_tags(trim($_REQUEST[day_start])) . "&day_end=" . strip_tags(trim($_REQUEST[day_end])) . "&month_start=" . strip_tags(trim($_REQUEST[month_start])) . "&month_end=" . strip_tags(trim($_REQUEST[month_end])) . "&year_start=" . strip_tags(trim($_REQUEST[year_start])) . "&year_end=" . strip_tags(trim($_REQUEST[year_end])) . " method=POST>";
-    PopTable('header', 'Advanced');
+    PopTable('header', _advanced);
     Search('general_info', $extra['grades']);
     if (!isset($extra))
         $extra = array();
@@ -68,9 +70,9 @@ if ($_REQUEST['modfunc'] == 'search') {
         echo $extra['search'];
     Search('student_fields', is_array($extra['student_fields']) ? $extra['student_fields'] : array());
     if (User('PROFILE') == 'admin'){
-        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div>';
+        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>'._searchAllSchools.'</label></div></div>';
     }
-    $btn = '<div class="p-l-20">' . Buttons('Submit') . '</div>';
+    $btn = '<div class="p-l-20">' . Buttons(submit) . '</div>';
     PopTable('footer', $btn);
     echo '</FORM>';
 }
@@ -88,9 +90,9 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel panel-default">';
     echo '<div class="panel-heading clearfix">';
     echo "<FORM  name=ada_from id=ada_from onSubmit='return formcheck_ada_dates();' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
-    $advanced_link = " <A class=\"text-pink\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> Advanced</A>";
+    $advanced_link = " <A class=\"text-pink\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> "._advanced."</A>";
 
-    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; <INPUT type=submit value=Go  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; <INPUT type=submit value='._go.'  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';
     echo '</FORM>';
     echo '</div>'; //.panel-body
 
@@ -174,9 +176,9 @@ if (!$_REQUEST['modfunc']) {
         }
 
 
-        $columns = array('SCHOOL_DATE' => 'Date', 'GRADE_ID' => 'Grade', 'STUDENTS' => 'Students', 'DAYS_POSSIBLE' => 'Days Possible', 'PRESENT' => 'Present', 'ABSENT' => 'Absent', 'OTHERS' => 'Others', 'ADA' => 'ADA', 'AVERAGE_ATTENDANCE' => 'Average Attendance', 'AVERAGE_ABSENT' => 'Average Absent');
+        $columns = array('SCHOOL_DATE' => _date, 'GRADE_ID' => _grade, 'STUDENTS' => _students, 'DAYS_POSSIBLE' => _daysPossible, 'PRESENT' => _present, 'ABSENT' => _absent, 'OTHERS' => _others, 'ADA' => _ada, 'AVERAGE_ATTENDANCE' => _averageAttendance, 'AVERAGE_ABSENT' => _averageAbsent);
 
-        ListOutput($student_days_possible, $columns, 'Student', 'Students', $link);
+        ListOutput($student_days_possible, $columns,  _student, _students, $link);
     }
     else {
 
@@ -227,7 +229,7 @@ if (!$_REQUEST['modfunc']) {
             $stu_q = DBGet(DBQuery('SELECT GROUP_CONAT(STUDENT_ID) as STUDENT_ID FROM student_address WHERE address like \'%' . $_REQUEST['addr'] . '%\''));
             $search_stu.=$stu_q[1]['STUDENT_ID'];
         }
-        $columns = array('GRADE_ID' => 'Grade', 'STUDENTS' => 'Students', 'DAYS_POSSIBLE' => 'Days Possible', 'ATTENDANCE_POSSIBLE' => 'Attendance Possible', 'PRESENT' => 'Present', 'ABSENT' => 'Absent', 'OTHERS' => 'Others', 'NOT_TAKEN' => 'Not Taken', 'ADA' => 'ADA', 'AVERAGE_ATTENDANCE' => 'Avg Attendance', 'AVERAGE_ABSENT' => 'Avg Absent');
+        $columns = array('GRADE_ID' => _grade, 'STUDENTS' => _students, 'DAYS_POSSIBLE' => _daysPossible, 'ATTENDANCE_POSSIBLE' => _attendancePossible, 'PRESENT' => _present, 'ABSENT' => _absent, 'OTHERS' => _others, 'NOT_TAKEN' => _notTaken, 'ADA' => _ada, 'AVERAGE_ATTENDANCE' => _avgAttendance, 'AVERAGE_ABSENT' => _avgAbsent);
         if ($_REQUEST['grade'] == '')
             $ada = DBGet(DBQuery('SELECT ID as GRADE,TITLE as GRADE_ID,0 as STUDENTS,0 as DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,0 AS PRESENT,0 AS ABSENT,0 AS NOT_TAKEN,0 AS ADA,0 AS AVERAGE_ATTENDANCE,0 AS AVERAGE_ABSENT,0 as OTHERS FROM school_gradelevels ' . ($_REQUEST['_search_all_schools'] != 'Y' ? 'WHERE SCHOOL_ID=\'' . UserSchool() . '\' ' : '')));
         if ($_REQUEST['grade'] != '')
@@ -422,7 +424,7 @@ if (!$_REQUEST['modfunc']) {
             $ada[$indexWillBe]['AVERAGE_ABSENT'] = $last_sum['AVERAGE_ABSENT'];
         }
 //                $link['add']['html'] = array('GRADE_ID'=>'<b>'.'Total'.'</b>','STUDENTS'=>$last_sum['STUDENTS'],'DAYS_POSSIBLE'=>$last_sum['DAYS_POSSIBLE'],'ATTENDANCE_POSSIBLE'=>$last_sum['ATTENDANCE_POSSIBLE'],'PRESENT'=>$last_sum['PRESENT'],'ADA'=>$last_sum['ADA'],'ABSENT'=>$last_sum['ABSENT'],'OTHERS'=>$last_sum['OTHERS'],'NOT_TAKEN'=>$last_sum['NOT_TAKEN'],'AVERAGE_ATTENDANCE'=>$last_sum['AVERAGE_ATTENDANCE'],'AVERAGE_ABSENT'=>$last_sum['AVERAGE_ABSENT']);
-        ListOutput($ada, $columns, 'Grade level', 'Grade levels', $link);
+        ListOutput($ada, $columns,  _gradeLevel, _gradeLevels, $link);
     }
 
 

@@ -26,7 +26,7 @@
 	Config = StructNew() ;
 
 	// SECURITY: You must explicitly enable this "connector". (Set enabled to "true")
-	Config.Enabled = false ;
+	Config.Enabled = false;
 
 	// Path to uploaded files relative to the document root.
 	Config.UserFilesPath = "/userfiles/" ;
@@ -39,7 +39,7 @@
 
 	// Due to security issues with Apache modules, it is recommended to leave the
 	// following setting enabled.
-	Config.ForceSingleExtension = true ;
+	Config.ForceSingleExtension = true;
 
 	// Perform additional checks for image files - if set to true, validate image size
 	// (This feature works in MX 6.0 and above)

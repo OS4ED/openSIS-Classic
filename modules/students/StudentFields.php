@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Students > " . ProgramTitle());
+DrawBC(""._students." > " . ProgramTitle());
 $_openSIS['allow_edit'] = true;
 $not_default = false;
 $err_msg = '';
@@ -53,7 +53,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
             if ($chk_title[1]['TITLE_FOUND'] != 0) {
 
-                echo $err_msg = "<div class=\"alert bg-danger alert-styled-left\">Title already exists.</div>";
+                echo $err_msg = "<div class=\"alert bg-danger alert-styled-left\">"._titleAlreadyExists."</div>";
             } else {
                 $sql = substr($sql, 0, -1) . " WHERE ID='$id'";
 
@@ -139,7 +139,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 if (trim($_REQUEST['tables']['new']['TITLE']) != '') {
                     $chk_title = DBGet(DBQuery('SELECT COUNT(*) AS TITLE_FOUND FROM student_field_categories WHERE TITLE=\'' . str_replace("'", "''", trim($_REQUEST['tables']['new']['TITLE'])) . '\''));
                     if ($chk_title[1]['TITLE_FOUND'] != 0)
-                        $err_msg = "<div class=\"alert bg-danger alert-styled-left\">Title already exists.</div>";
+                        $err_msg = "<div class=\"alert bg-danger alert-styled-left\">"._titleAlreadyExists."</div>";
                     else {
 
 
@@ -252,11 +252,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
         $id = $_REQUEST['id'];
         $has_assigned_RET = DBGet(DBQuery("SELECT COUNT(CUSTOM_$id) AS TOTAL_ASSIGNED FROM students WHERE CUSTOM_$id<>''"));
         $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
-        $msg = 'Cannot delete because student fields are associated.';
+        $msg = _cannotDeleteBecauseStudentFieldsAreAssociated;
     } else if ($_REQUEST['category_id'] == 5) {
         $has_assigned_RET = DBGet(DBQuery("SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_goal"));
         $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
-        $msg = 'Cannot delete because field categories are associated.';
+        $msg = _cannotDeleteBecauseFieldCategoriesAreAssociated;
     } else {
         $catId = $_REQUEST['category_id'];
         $sql = "Select id as customid from custom_fields where category_id=$catId";
@@ -279,7 +279,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
     } else {
 
         if ($_REQUEST['id']) {
-            if (DeletePromptCommon('student field')) {
+            if (DeletePromptCommon(_studentField)) {
                 $id = $_REQUEST['id'];
                 DBQuery("DELETE FROM custom_fields WHERE ID='$id'");
                 DBQuery("ALTER TABLE students DROP COLUMN CUSTOM_$id");
@@ -288,10 +288,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
             }
         } elseif ($_REQUEST['category_id']) {
             if ($deletable_category == FALSE) {
-                $msg = 'Cannot delete because student fields are associated.';
+                $msg = _cannotDeleteBecauseStudentFieldsAreAssociated;
                 $queryString = 'category_id=' . $_REQUEST['category_id'];
                 UnableDeletePromptMod($msg, '', $queryString);
-            } elseif (DeletePromptCommon('student field category and all fields in the category')) {
+            } elseif (DeletePromptCommon(_studentFieldCategoryAndAllFieldsInTheCategory)) {
                 $fields = DBGet(DBQuery("SELECT ID FROM custom_fields WHERE SYSTEM_FIELD='N' AND CATEGORY_ID='$_REQUEST[category_id]'"));
                 foreach ($fields as $field) {
                     DBQuery("DELETE FROM custom_fields WHERE ID='$field[ID]'");
@@ -314,7 +314,7 @@ if (!$_REQUEST['modfunc']) {
     $categories_RET = DBGet($QI);
 
     if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 7))
-        $delete_button = "<INPUT type=button value=Delete class=\"btn btn-danger\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
+        $delete_button = "<INPUT type=button value="._delete." class=\"btn btn-danger\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
 
     // ADDING & EDITING FORM
     if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
@@ -342,9 +342,9 @@ if (!$_REQUEST['modfunc']) {
             $RET['SORT_ORDER'] = 6;
     }
     elseif ($_REQUEST['id'] == 'new')
-        $title = 'New Student Field';
+        $title = _newStudentField;
     elseif ($_REQUEST['category_id'] == 'new')
-        $title = 'New Student Field Category';
+        $title = _newStudentFieldCategory;
 
     if ($_REQUEST['id']) {
         echo "<FORM name=F1 id=F1 class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
@@ -354,24 +354,44 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel panel-default">';
 
-        DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="setupStuFieldsBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F1(this);"')); //'<INPUT type=submit value=Save>');
+        DrawHeader($title, $delete_button . SubmitButton(_save, '', 'id="setupStuFieldsBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F1(this);"')); //'<INPUT type=submit value='._save.'>');
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=f_id value="' . $_REQUEST['id'] . '"/>';
 
         $header .= '<div class="row">';
         $header .= '<div class="col-lg-6">';
-        $header .= TextInput($RET['TITLE'], 'tables[' . $_REQUEST['id'] . '][TITLE]', 'Field Name');
+        $header .= TextInput($RET['TITLE'], 'tables[' . $_REQUEST['id'] . '][TITLE]', _fieldName);
         $header .= '</div><div class="col-lg-6">';
 
         // You can't change a student field type after it has been created
         // mab - allow changing between select and autos and edits and text
         if ($_REQUEST['id'] != 'new') {
-            $type_options = array('select' => 'Pull-Down', 'autos' => 'Auto Pull-Down', 'edits' => 'Edit Pull-Down', 'text' => 'Text', 'radio' => 'Checkbox', 'codeds' => 'Coded Pull-Down', 'numeric' => 'Number', 'multiple' => 'Select Multiple from Options', 'date' => 'Date', 'textarea' => 'Long Text');
+            $type_options = array('select' => _pullDown,
+             'autos' => _autoPullDown,
+             'edits' => _editPullDown,
+             'text' => _text,
+             'radio' => _checkbox,
+             'codeds' => _codedPullDown,
+             'numeric' => _number,
+             'multiple' => _selectMultipleFromOptions,
+             'date' => _date,
+             'textarea' => _longText,
+            );
         } else {
-            $type_options = array('select' => 'Pull-Down', 'autos' => 'Auto Pull-down', 'edits' => 'Edit Pull-Down', 'text' => 'Text', 'radio' => 'Checkbox', 'codeds' => 'Coded Pull-Down', 'numeric' => 'Number', 'multiple' => 'Select Multiple from Options', 'date' => 'Date', 'textarea' => 'Long Text');
+            $type_options = array('select' => _pullDown,
+             'autos' => _autoPullDown,
+             'edits' => _editPullDown,
+             'text' => _text,
+             'radio' => _checkbox,
+             'codeds' => _codedPullDown,
+             'numeric' => _number,
+             'multiple' => _selectMultipleFromOptions,
+             'date' => _date,
+             'textarea' => _longText,
+            );
         }
 
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Data Type</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text') {
             $_openSIS['allow_edit'] = $allow_edit;
             $_openSIS['AllowEdit'][$modname] = $AllowEdit;
@@ -385,12 +405,12 @@ if (!$_REQUEST['modfunc']) {
 
         $header .= '<div class="row">';
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Student Field Category</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._studentFieldCategory.'</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         $header .= '</div><div class="col-lg-6">';
         if ($_REQUEST['id'] == 'new' || $RET['SORT_ORDER'] == '')
-            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown="return numberOnly(event);"') . '</div>';
+            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 onkeydown="return numberOnly(event);"') . '</div>';
         else
-            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 onkeydown=\"return numberOnly(event);\"') . '</div>';
+            $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 onkeydown=\"return numberOnly(event);\"') . '</div>';
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row
 
@@ -400,22 +420,22 @@ if (!$_REQUEST['modfunc']) {
 
         if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
             $header .= '<div class="col-lg-6" id="show_textarea" style="display:block">';
-            $header .= '<label class="control-label col-md-4 text-right">Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40').'<p class="help-block">* one per line</p></div>';
+            $header .= '<label class="control-label col-md-4 text-right">'._pullDown.'/'._autoPullDown.'/'._codedPullDown.'/'._selectMultipleChoices.'</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40').'<p class="help-block">* '._onePerLine.'</p></div>';
             $colspan = 1;
             $header .= '</div>';
         }
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">Default</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">* for dates: YYYY-MM-DD, for checkboxes: Y for long text it will be ignored</p></div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">* '._forDatesYyyyMmDdForCheckboxesYForLongTextItWillBeIgnored.'</p></div></div>';
         $new = ($_REQUEST['id'] == 'new');
         $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">&nbsp;</label><div class="col-lg-8">';
-        $header .= CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required', '', $new);
-        $header .= CheckboxInputSwitch($RET['HIDE'], 'tables[' . $_REQUEST['id'] . '][HIDE]', 'Hide', '', $new);
+        $header .= CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', _required, '', $new);
+        $header .= CheckboxInputSwitch($RET['HIDE'], 'tables[' . $_REQUEST['id'] . '][HIDE]', _hide, '', $new);
         $header .= '</div></div>';
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row
     } elseif ($_REQUEST['category_id']) {
         if ($_REQUEST['err'] == true)
-            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>Title already exists.</b></font>';</script>";
+            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>"._titleAlreadyExists."</b></font>';</script>";
         echo "<FORM class=\"form-horizontal m-b-0\" name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=student_field_categories";
         if ($_REQUEST['category_id'] != 'new')
             echo "&category_id=$_REQUEST[category_id]";
@@ -423,21 +443,21 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel panel-default">';
         if ($_REQUEST[category_id] > 7 || $_REQUEST['category_id'] == 'new')
-            DrawHeader($title, $delete_button . SubmitButton('Save', '', 'id="setupStuCatBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F2(this);"'));
+            DrawHeader($title, $delete_button . SubmitButton(_save, '', 'id="setupStuCatBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F2(this);"'));
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
         $header .= '<div class="row">';
-        $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], 'Title') : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', 'Title', 'placeholder="Title"')) . '</div></div>';
+        $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], _title) : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title, 'placeholder="'._title.'"')) . '</div></div>';
 
         if ($_REQUEST['category_id'] == 'new' || $RET['SORT_ORDER'] == '')
-            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 placeholder="Sort Order" onkeydown="return numberOnly(event);"')) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder="'._sortOrder.'" onkeydown="return numberOnly(event);"')) . '</div></div>';
         else
-            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], 'Sort Order') : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', 'Sort Order', 'maxlength=5 placeholder="Sort Order" onkeydown=\"return numberOnly(event);\"')) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder="'._sortOrder.'" onkeydown=\"return numberOnly(event);\"')) . '</div></div>';
 
         $new = ($_REQUEST['category_id'] == 'new');
         if ($_REQUEST['category_id'] > 7 || $new)
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-md-4 text-right">Include</label><div class="col-md-8">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', '', 'placeholder="Include"') . '<p class="help-block">Should be left blank for most categories</p></div></div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-md-4 text-right">'._include.'</label><div class="col-md-8">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', '', 'placeholder="'._include.'"') . '<p class="help-block">'._shouldBeLeftBlankForMostCategories.'</p></div></div></div>';
 
         $header .= '</div>'; //.form-group
     } else
@@ -451,17 +471,17 @@ if (!$_REQUEST['modfunc']) {
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' => false, 'search' => false, 'add' => true);
+    $LO_options = array('save' =>false, 'search' =>false, 'add' =>true);
 
     echo '<div class="row">';
 
     if (count($categories_RET)) {
         foreach ($categories_RET as $ci => $cd) {
 
-            if ($cd['TITLE'] == 'General Info') {
+            if ($cd['TITLE'] == generalInfo) {
                 $categories_RET1[1]['ID'] = $categories_RET[1]['ID'];
                 $categories_RET1[1]['TITLE'] = $categories_RET[1]['TITLE'];
-            } elseif ($cd['TITLE'] == 'Enrollment Info') {
+            } elseif ($cd['TITLE'] == _enrollmentInfo) {
                 $categories_RET1[2]['ID'] = $categories_RET[6]['ID'];
                 $categories_RET1[2]['TITLE'] = $categories_RET[6]['TITLE'];
             } else {
@@ -495,7 +515,9 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="col-md-6">';
     echo '<div class="panel">';
-    $columns = array('TITLE' => 'Category', 'SORT_ORDER' => 'Order');
+    $columns = array('TITLE' =>_category,
+     'SORT_ORDER' =>_order,
+    );
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 
@@ -503,7 +525,50 @@ if (!$_REQUEST['modfunc']) {
 
     $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=new\");'";
 
-    ListOutput($categories_RET, $columns, 'Student Field Category', 'Student Field Categories', $link, array(), $LO_options);
+    foreach ($categories_RET as $key => $value) {
+        switch ($value['TITLE']) {
+            case 'General Info':
+                $categories_RET[$key]['TITLE'] = _generalInfo;
+                break;
+            case 'Addresses &amp; Contacts':
+                $categories_RET[$key]['TITLE'] = _addressesContacts;
+                break;
+            case 'Medical':
+                $categories_RET[$key]['TITLE'] = _medical;
+                break;
+            case 'Comments':
+                $categories_RET[$key]['TITLE'] = _comments;
+                break;
+            case 'Goals':
+                $categories_RET[$key]['TITLE'] = _goals;
+                break;
+            case 'Enrollment Info':
+                $categories_RET[$key]['TITLE'] = _enrollmentInfo;
+                break;
+            case 'Files':
+                $categories_RET[$key]['TITLE'] = _files;
+                break;
+            default:
+                $categories_RET[$key]['TITLE'] = $value['TITLE'] ;
+                break;
+            // case 'Demographic Info':
+            //     $categories_RET[$key]['TITLE'] = _demographicInfo;
+            //     break;
+            // case 'Addresses &amp; Contacts':
+            //     $categories_RET[$key]['TITLE'] = _addressesContacts;
+            //     break;
+            // case 'School Information':
+            //     $categories_RET[$key]['TITLE'] = _schoolInformation;
+            //     break;
+            // case 'Certification Information':
+            //     $categories_RET[$key]['TITLE'] = _certificationInformation;
+            //     break;
+            // case 'Schedule':
+            //     $categories_RET[$key]['TITLE'] = _schedule;
+            //     break;
+        }
+    }
+    ListOutput($categories_RET, $columns, _studentFieldCategory, _studentFieldCategories, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
     // FIELDS
@@ -522,42 +587,106 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-md-6">';
         echo '<div class="panel">';
-        $columns = array('TITLE' => 'Student Field', 'SORT_ORDER' => 'Order', 'FEILD' => 'Field Type');
+        $columns = array('TITLE' =>_studentField,
+         'SORT_ORDER' =>_order,
+         'FEILD' =>_fieldType,
+        );
         $link = array();
 
         $count = 0;
         $count++;
         switch ($_REQUEST[category_id]) {
             case 1:
-                $arr = array('Name', 'Estimated Grad. Date', 'Gender', 'Ethnicity', 'Common Name', 'Birthdate', 'Primary Language', 'Email', 'Phone');
+                $arr = array(
+                 _name,
+                 _estimatedGradDate,
+                 _gender,
+                 _ethnicity,
+                 _commonName,
+                 _birthdate,
+                 _primaryLanguage,
+                 _email,
+                 _phone,
+                );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
                 $link['TITLE']['variables'] = array('id' => 'ID');
 
                 break;
             case 2:
-                $arr = array('Primary Care Physician', 'Physician\'s Phone', 'Preferred Medical Facility', 'Date(Medical Notes)', 'Medical Notes', 'Type(Immunizations)'
-                    , 'Date(Immunizations)', 'Comments(Immunizations)', 'Alert Date', 'Medical Alert', 'Date(Nurse Visits)', 'Time In', 'Time Out', 'Reason', 'Result', 'Comments(Nurse Visits)');
+                $arr = array(
+                 _primaryCarePhysician,
+                 _physicianSPhone,
+                 _preferredMedicalFacility,
+                 _dateMedicalNotes,
+                 _medicalNotes,
+                 _typeImmunizations,
+                 _dateImmunizations,
+                 _commentsImmunizations,
+                 _alertDate,
+                 _medicalAlert,
+                 _dateNurseVisits,
+                 _timeIn,
+                 _timeOut,
+                 _reason,
+                 _result,
+                 _commentsNurseVisits,
+                );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
                 $link['TITLE']['variables'] = array('id' => 'ID');
 
                 break;
             case 3:
-                $arr = array('Address Line 1', 'Address Line 2', 'City', 'State', 'Zip/Postal Code', 'School Bus Pick-up', 'School Bus Drop-off', 'Bus No', 'Relationship to Student'
-                    , 'First Name', 'Last Name', 'Home Phone', 'Work Phone', 'Cell/Mobile Phone', 'Email', 'Custody of Student');
+                $arr = array(
+                    _addressLine_1,
+                    _addressLine_2,
+                    _city,
+                    _state,
+                    _zipPostalCode,
+                    _schoolBusPickUp,
+                    _schoolBusDropOff,
+                    _busNo,
+                    _relationshipToStudent,
+                    _firstName,
+                    _lastName,
+                    _homePhone,
+                    _workPhone,
+                    _cellMobilePhone,
+                    _email,
+                    _custodyOfStudent,
+                    );
 
                 break;
             case 4:
-                $arr = array('Entered By', 'Date', 'Comments');
+                $arr = array(enteredBy, date, comments);
 
                 break;
             case 5:
-                $arr = array('GoalInc Title', 'Begin Date', 'End Date', 'GoalInc Description');
+                $arr = array(
+                 goalIncTitle,
+                 beginDate,
+                 endDate,
+                 goalIncDescription,
+                );
                 break;
             case 6:
-                $arr = array('Student ID', 'Alternate ID', 'Grade', 'Calendar', 'Rolling/Retention Options', 'Username', 'Password', 'Last Login', 'Disable Student'
-                    , 'Start Date', 'Enrollment Code', 'Drop Date', 'Drop Code', 'School');
+                $arr = array(
+                    _studentId,
+                    _alternateId,
+                    _grade,
+                    _calendar,
+                    _rollingRetentionOptions,
+                    _username,
+                    _password,
+                    _lastLogin,
+                    _disableStudent,
+                    _startDate,
+                    _enrollmentCode,
+                    _dropDate,
+                    _dropCode,
+                    _school,
+                );
 
                 break;
             case 7:
@@ -572,7 +701,7 @@ if (!$_REQUEST['modfunc']) {
                 break;
         }
         foreach ($arr as $key => $value) {
-            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'FEILD' => '<span style="color:#ea8828;">Default</span>');
+            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'FEILD' => '<span style="color:#ea8828;">'._default.'</span>');
             $count++;
         }
         $count2 = 1;
@@ -584,7 +713,18 @@ if (!$_REQUEST['modfunc']) {
             $dd[$count2] = $row;
             $count2++;
         }
-        ListOutput($dd, $columns, 'Student Field', 'Student Fields', $link, array(), $LO_options);
+        foreach ($dd as $key => $value) {
+            // print_r($value);
+            switch ($value['FEILD']) {
+                case 'Custom':
+                    $dd[$key]['FEILD'] = _custom;
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+        ListOutput($dd, $columns, _studentField, _studentFields, $link, array(), $LO_options);
         echo '</div>'; //.panel
         echo '</div>'; //.col-md-6
     }
@@ -592,7 +732,17 @@ if (!$_REQUEST['modfunc']) {
 }
 
 function _makeType($value, $name) {
-    $options = array('radio' => 'Checkbox', 'text' => 'Text', 'autos' => 'Auto Pull-Down', 'edits' => 'Edit Pull-Down', 'select' => 'Pull-Down', 'codeds' => 'Coded Pull-Down', 'date' => 'Date', 'numeric' => 'Number', 'textarea' => 'Long Text', 'multiple' => 'Select Multiple');
+    $options = array('radio' => _checkbox,
+     'text' => _text,
+     'autos' => _autoPullDown,
+     'edits' => _editPullDown,
+     'select' => _pullDown,
+     'codeds' => _codedPullDown,
+     'date' => _date,
+     'numeric' => _number,
+     'textarea' => _longText,
+     'multiple' => _selectMultiple,
+    );
     return $options[$value];
 }
 

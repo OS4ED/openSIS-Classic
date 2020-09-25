@@ -26,6 +26,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 
 if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']))
 {
@@ -38,7 +40,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND SCHOOL_ID='.UserSchool()));
                 if($check_name[1]['REC_EX']>0)
                 {
-                    $err_msg='Section already exists.';
+                    $err_msg=_sectionAlreadyExists.'.';
                     break;
                 }
             }
@@ -68,7 +70,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND SCHOOL_ID='.UserSchool().' AND ID!='.$vi));
                 if($check_name[1]['REC_EX']>0)
                 {
-                    $err_msg='Section already exists.';
+                    $err_msg=_sectionAlreadyExists.'.';
                     break;
                 }
                 else
@@ -110,7 +112,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
         }
     }
 }
-DrawBC("School Setup > ".ProgramTitle());
+DrawBC(""._schoolSetup." > ".ProgramTitle());
 
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
 {
@@ -118,7 +120,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
     $has_assigned_RET=DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE SECTION_ID=\''.$sec_id.'\''));
 	$has_assigned=$has_assigned_RET[1]['TOTAL_ASSIGNED'];
 	if($has_assigned>0){
-	UnableDeletePrompt('Cannot delete because sections are associated.');
+	UnableDeletePrompt( _cannotDeleteBecauseSectionsAreAssociated.'.');
 	}else{
 	if(DeletePrompt_Sections('section'))
 	{
@@ -133,7 +135,7 @@ if($_REQUEST['modfunc']!='remove')
 	$sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER';
 	$sec_RET = DBGet(DBQuery($sql),array('NAME'=>'makeTextInput','SORT_ORDER'=>'makeTextInput'));
 	
-	$columns = array('NAME'=>'Section','SORT_ORDER'=>'Sort Order');
+	$columns = array('NAME'=>_section,'SORT_ORDER'=>_sortOrder);
 	$link['add']['html'] = array('NAME'=>makeTextInput('','NAME'),'SORT_ORDER'=>makeTextInputMod2('','SORT_ORDER'));
 	$link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 	$link['remove']['variables'] = array('id'=>'ID');
@@ -150,11 +152,11 @@ if($_REQUEST['modfunc']!='remove')
         $section_ids[]=$ld['ID'];
         
     echo '<div class="panel panel-default">';
-    ListOutput($sec_RET,$columns,'Section','Sections',$link, true, array('search'=>false));
+    ListOutput($sec_RET,$columns,section,sections,$link, true, array('search'=>false));
     echo '<hr class="no-margin"/>';
     echo '<div class="panel-body text-right">';
 	echo '<input type=hidden value="'.implode('_',$section_ids).'" id="get_ids" />' ;
-    echo '<INPUT class="btn btn-primary" type=submit value=Save onclick="self_disable(this)">';
+    echo '<INPUT class="btn btn-primary" type=submit value='._save.' onclick="self_disable(this)">';
     echo '</div>'; //.panel-footer
     echo '</div>'; //.panel
 	echo '</FORM>';

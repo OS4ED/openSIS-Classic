@@ -29,7 +29,7 @@
 ini_set('memory_limit', '12000000M');
 ini_set('max_execution_time', '50000');
 include('../../RedirectModulesInc.php');
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 
 echo '<div class="panel panel-default">';
 $sem = GetParentMP('SEM', UserMP());
@@ -66,7 +66,7 @@ if ($_REQUEST['mp'])
 else
     $cur_mp = UserMP();
 echo "<FORM class=\"no-margin\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
-DrawHeader('Teacher Completion', '<div class="form-inline"><div class="form-group">'.$mp_select . '<label class="control-label ml-20 mr-20">-</label>' . $period_select.'</div></div>');
+DrawHeader(_teacherCompletion, '<div class="form-inline"><div class="form-group">'.$mp_select . '<label class="control-label ml-20 mr-20">-</label>' . $period_select.'</div></div>');
 echo '</FORM>';
 
 echo '<hr class="no-margin"/>';
@@ -125,13 +125,13 @@ if (count($RET)) {
 }
 
 
-$columns = array('FULL_NAME' => 'Teacher');
+$columns = array('FULL_NAME' =>_teacher);
 
 foreach ($period_RET as $period)
     $columns[$period['PERIOD_ID']] = $period['TITLE'];
 
 
-ListOutput($staff_RET, $columns, 'Teacher who hasn\'t entered grades', 'Teachers who haven\'t entered grades');
+ListOutput($staff_RET, $columns, _teacherWhoHasnTEnteredGrades, _teachersWhoHavenTEnteredGrades);
 
 echo '</div>';
 ?>

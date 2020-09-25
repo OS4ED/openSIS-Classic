@@ -57,14 +57,14 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 	 *
 	 * @var string
 	 */
-	private $_orientation	= null;
+	private $_orientation	= _null;
 
 	/**
 	 * Paper size (Over-ride)
 	 *
 	 * @var int
 	 */
-	private $_paperSize	= null;
+	private $_paperSize	= _null;
 
 
 	/**

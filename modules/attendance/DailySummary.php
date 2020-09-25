@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Attendance > " . ProgramTitle());
+DrawBC(""._attendance." > " . ProgramTitle());
 //////////////////////////////For new date picker///////////////////////////////////////////////////////
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start']) {
     $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
@@ -41,15 +41,15 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 } else {
     $end_date = ProperDateMAvr();
 }
-DrawBC("Attendance > " . ProgramTitle());
+DrawBC(""._attendance." > " . ProgramTitle());
 ####################
 if (isset($_REQUEST['student_id'])) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._selectedStudent.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div>');
     }
 }
 ####################
@@ -112,7 +112,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     }
 
     echo '<div class="panel-heading">';
-    echo '<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div><div class="inline-block" style="margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div><div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div></div>';
+    echo '<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div><div class="inline-block" style="margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div><div style="display: inline-block; margin: 0 10px;">' . $period_select . '</div><div style="display: inline-block; margin: 0 10px 0 0;"><INPUT type=submit class="btn btn-primary" value='._go.'></div><div style="display: inline-block; margin: 0 10px 0 0;">' . (($_REQUEST['period_id']) ? $myclasses : '') . '</div></div></div>';
     echo '</div>'; //.panel-body
 }
 
@@ -157,7 +157,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
         $attendance_RET = DBGet(DBQuery($sql), array(), array('SCHOOL_DATE', 'COURSE_PERIOD_ID'));
     } else {
         $_REQUEST['myclasses'] = '';
-        $schedule_RET[1] = array('COURSE_PERIOD' => 'Daily Attendance', 'COURSE_PERIOD_ID' => '0');
+        $schedule_RET[1] = array('COURSE_PERIOD' => _dailyAttendance, 'COURSE_PERIOD_ID' => '0');
         if ($_REQUEST['myclasses'] != '') {
             $attendance_RET = DBGet(DBQuery('SELECT ad.SCHOOL_DATE,\'0\' AS COURSE_PERIOD_ID,ad.STATE_VALUE AS STATE_CODE,' . db_case(array('ad.STATE_VALUE', "'0.0'", "'A'", "'1.0'", "'P'", "'H'")) . ' AS SHORT_NAME FROM attendance_day ad, attendance_period ap, course_periods cp WHERE ad.STUDENT_ID=ap.STUDENT_ID AND ad.SCHOOL_DATE=ap.SCHOOL_DATE AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ad.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' AND ad.STUDENT_ID=\'' . UserStudentID() . '\''), array(), array('SCHOOL_DATE', 'COURSE_PERIOD_ID'));
         } else {
@@ -176,7 +176,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
         }
     }
 
-    $columns = array('TITLE' => 'Course Period');
+    $columns = array('TITLE' => _coursePeriod);
 
     if (count($cal_RET)) {
         foreach ($cal_RET as $value)
@@ -185,7 +185,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
 
     echo '<div class="panel-body p-0">';
     //echo '<div class="table-responsive">';
-    ListOutput($student_RET, $columns, 'Course', 'Courses');
+    ListOutput($student_RET, $columns, _course, _courses);
     //echo '</div>';
     echo '</div>';
     echo '</div>'; //.panel
@@ -269,7 +269,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -280,7 +280,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '.subjectWas : ' '.subjectsWere) . ' found.</h6>';
     if (count($subjects_RET) > 0) {
         echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
         foreach ($subjects_RET as $val) {

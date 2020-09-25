@@ -27,7 +27,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 echo "<FORM name=add id=add action=".PreparePHP_SELF()." method=POST>";
-DrawBC("Students > ".ProgramTitle());
+DrawBC(""._students." > ".ProgramTitle());
 if($_REQUEST['day__start'] && $_REQUEST['month__start'] && $_REQUEST['year__start'])
 {
 	while(!VerifyDate($start_date = $_REQUEST['day__start'].'-'.$_REQUEST['month__start'].'-'.$_REQUEST['year__start']))
@@ -49,15 +49,25 @@ else
 $start_date=date('Y-m-d',strtotime($start_date));
 $end_date=date('Y-m-d',strtotime($end_date));
 echo '<div class="panel panel-default">';
-echo '<div class="panel-body"><div class="form-inline"><div class="row"><div class="col-md-12">'.PrepareDateSchedule($start_date,'_start').' &nbsp; <label class="control-label"> &nbsp; - &nbsp; </label> &nbsp; '.PrepareDateSchedule($end_date,'_end'),' &nbsp; <INPUT type=submit class="btn btn-primary" value=Go></div></div></div></div>';
+echo '<div class="panel-body"><div class="form-inline"><div class="row"><div class="col-md-12">'.PrepareDateSchedule($start_date,'_start').' &nbsp; <label class="control-label"> &nbsp; - &nbsp; </label> &nbsp; '.PrepareDateSchedule($end_date,'_end'),' &nbsp; <INPUT type=submit class="btn btn-primary" value='._go.'></div></div></div></div>';
 echo '</div>';
 echo '</FORM>';
 
 $enrollment_RET = DBGet(DBQuery('SELECT se.START_DATE,se.END_DATE,se.START_DATE AS DATE,se.SCHOOL_ID,se.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FULL_NAME,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.enrollment_code=seci.id AND se.START_DATE>=\''.$start_date.'\') AS ENROLLMENT_CODE,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.drop_code=seci.id) AS DROP_CODE FROM student_enrollment se, students s WHERE s.STUDENT_ID=se.STUDENT_ID AND ((se.START_DATE>=\''.$start_date.'\' AND se.END_DATE<=\''.$end_date.'\') OR (se.START_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\') OR (se.END_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\'))
-								ORDER BY DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetSchool'));
-$columns = array('FULL_NAME'=>'Student','STUDENT_ID'=>'Student ID','SCHOOL_ID'=>'School','START_DATE'=>'Enrolled','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Dropped','DROP_CODE'=>'Drop Code');
+								ORDER BY DATE DESC'),array('START_DATE'=>'ProperDate'
+								,'END_DATE'=>'ProperDate'
+								,'SCHOOL_ID'=>'GetSchool'));
+
+$columns = array('FULL_NAME'=>_student,
+'STUDENT_ID'=>_studentId,
+'SCHOOL_ID'=>_school,
+'START_DATE'=>_enrolled,
+'ENROLLMENT_CODE'=>_enrollmentCode,
+'END_DATE'=>_dropped,
+'DROP_CODE'=>_dropCode,
+);
 
 echo '<div class="panel panel-default">';
-ListOutput($enrollment_RET,$columns,'Enrollment Record','Enrollment Records');
+ListOutput($enrollment_RET,$columns,_enrollmentRecord,_enrollmentRecords);
 echo '</div>';
 ?>

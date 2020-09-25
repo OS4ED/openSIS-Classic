@@ -47,7 +47,37 @@ if (!$extra['functions'])
     $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSectionVal');
 if ($_REQUEST['search_modfunc'] == 'list') {
     if (!$fields_list) {
-        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'ETHNICITY_ID' =>'Ethnicity','LANGUAGE_ID'=>'Language','NAME_SUFFIX' => 'Suffix', 'GENDER'=>'Gender','STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade','SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
+         'FIRST_NAME' =>_first,
+         'FIRST_INIT' =>_firstInitial,
+         'LAST_NAME' =>_last,
+         'MIDDLE_NAME' =>_middle,
+         'ETHNICITY_ID' =>_ethnicity,
+        'LANGUAGE_ID'=>_language,
+        'NAME_SUFFIX' =>_suffix,
+         'GENDER'=>_gender,
+        'STUDENT_ID' =>_studentId,
+         'GRADE_ID' =>_grade,
+        'SECTION_ID' =>_section,
+         'SCHOOL_ID' =>_school,
+         'NEXT_SCHOOL' =>_rollingRetentionOptions,
+         'CALENDAR_ID' =>_calendar,
+         'USERNAME' =>_username,
+         'PASSWORD' =>_password,
+         'ALT_ID' =>_alternateId,
+         'BIRTHDATE' =>_dob,
+         'EMAIL' =>_emailId,
+         'ADDRESS' =>_address,
+         'CITY' =>_city,
+         'STATE' =>_state,
+         'ZIPCODE' =>_zipCode,
+         'PHONE' =>_phone,
+         'MAIL_ADDRESS' =>_mailingAddress,
+         'MAIL_CITY' =>_mailingCity,
+         'MAIL_STATE' =>_mailingState,
+         'MAIL_ZIPCODE' =>_mailingZipcode,
+         'PARENTS' => contacts
+        );
         if ($extra['field_names'])
             $fields_list += $extra['field_names'];
 
@@ -148,7 +178,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
         }
         
         
-        foreach($columns as $stu_indx=>$stu_data)
+        foreach($columns as $stu_indx=> $stu_data)
                     {
             $f=0;
                       
@@ -191,7 +221,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
             $extra['array_function']($RET);
         echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
        
-        ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : 'Student', $extra['plural'] ? $extra['plural'] : 'Students', array(), $extra['LO_group'], $extra['LO_options']);
+        ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : student, $extra['plural'] ? $extra['plural'] : students, array(), $extra['LO_group'], $extra['LO_options']);
 
         echo "</body></html>";
     }
@@ -199,9 +229,37 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
 else {
     if (!$fields_list) {
         if (AllowUse('students/Student.php&category_id=1'))
-            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'ETHNICITY_ID' =>'Ethnicity','LANGUAGE_ID'=>'Language', 'NAME_SUFFIX' => 'Suffix','GENDER' => 'Gender', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'PHONE' => 'Phone');
+            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
+             'FIRST_NAME' =>_first,
+             'FIRST_INIT' =>_firstInitial,
+             'LAST_NAME' =>_last,
+             'MIDDLE_NAME' =>_middle,
+             'ETHNICITY_ID' =>_ethnicity,
+             'LANGUAGE_ID'=>_language,
+             'NAME_SUFFIX' =>_suffix,
+             'GENDER' =>_gender,
+             'STUDENT_ID' =>_studentId,
+             'GRADE_ID' =>_grade,
+             'SECTION_ID' =>_section,
+             'SCHOOL_ID' =>_school,
+             'NEXT_SCHOOL' =>_rollingRetentionOptions,
+             'CALENDAR_ID' =>_calendar,
+             'USERNAME' =>_username,
+             'ALT_ID' =>_alternateId,
+             'BIRTHDATE' =>_dob,
+             'EMAIL' =>_emailId,
+             'PHONE' =>_phone,
+        );
         if (AllowUse('students/Student.php&category_id=3')) {
-            $fields_list['Address'] = array('ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode');
+            $fields_list['Address'] = array('ADDRESS' =>_address,
+             'CITY' =>_city,
+             'STATE' =>_state,
+             'ZIPCODE' =>_zipCode,
+             'MAIL_ADDRESS' =>_mailingAddress,
+             'MAIL_CITY' =>_mailingCity,
+             'MAIL_STATE' =>_mailingState,
+             'MAIL_ZIPCODE' =>_mailingZipcode,
+            );
         }
         if ($extra['field_names'])
             $fields_list['General'] += $extra['field_names'];
@@ -225,36 +283,86 @@ else {
             }
             foreach ($custom_RET1[$category['ID']] as $field) {
                 $fields_list[$category['TITLE']]['CUSTOM_' . $field['ID']] = $field['TITLE'];
-                if($fields_list['General Info'] !=''){
-                    $fields_list['General']+=$fields_list['General Info'];
+                if($fields_list[generalInfo] !=''){
+                    $fields_list['General']+=$fields_list[generalInfo];
                 }
             }
         }
     }
-    unset($fields_list['General Info']);
+    unset($fields_list[generalInfo]);
     $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''.($_REQUEST['period_id']!=''?" AND PERIOD_ID=".$_REQUEST['period_id']."":"").' ORDER BY SORT_ORDER'));
     foreach ($periods_RET as $period)
         $fields_list['Schedule']['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'] . ' Teacher - Room';
 
     if ($openSISModules['Food_Service'])
-        $fields_list['Food_Service'] = array('FS_ACCOUNT_ID' => 'Account ID', 'FS_DISCOUNT' => 'Discount', 'FS_STATUS' => 'Status', 'FS_BARCODE' => 'Barcode', 'FS_BALANCE' => 'Balance');
+        $fields_list['Food_Service'] = array('FS_ACCOUNT_ID' => ''._accountID.'', 'FS_DISCOUNT' => ''._discount.'', 'FS_STATUS' => ''._status.'', 'FS_BARCODE' => ''._barcode.'', 'FS_BALANCE' => ''._balance.'');
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     //DrawHeader("<div></div>", $extra['header_right']);
-    PopTable_wo_header('header', '<i class="glyphicon glyphicon-tasks"></i> &nbsp;Select Fields To Generate Report');
+    PopTable_wo_header('header', '<i class="glyphicon glyphicon-tasks"></i> &nbsp;'._selectFieldsToGenerateReport.'');
     //echo '<ul class="list-group">';
     foreach ($fields_list as $category => $fields) {
         $i = 1;
         $j = 1;
-        echo '<h4>' . $category . '</h4>';
+        switch ($category) {
+            case 'General':
+                $categoryTitle = _general;
+                break;
+            case 'Address':
+                $categoryTitle = _address;
+                break;
+            case 'Schedule':
+                $categoryTitle = _schedule;
+                break;
+            case 'General Info':
+                $categoryTitle = _generalInfo;
+                break;
+            case 'Addresses &amp; Contacts':
+                $categoryTitle = _addressesContacts;
+                break;
+            case 'Medical':
+                $categoryTitle = _medical;
+                break;
+            case 'Comments':
+                $categoryTitle = _comments;
+                break;
+            case 'Goals':
+                $categoryTitle = _goals;
+                break;
+            case 'Enrollment Info':
+                $categoryTitle = _enrollmentInfo;
+                break;
+            case 'Files':
+                $categoryTitle = _files;
+                break;
+            default:
+                $categoryTitle = $category ;
+                break;
+            // case 'Demographic Info':
+            //     $categoryTitle = _demographicInfo;
+            //     break;
+            // case 'Addresses &amp; Contacts':
+            //     $categoryTitle = _addressesContacts;
+            //     break;
+            // case 'School Information':
+            //     $categoryTitle = _schoolInformation;
+            //     break;
+            // case 'Certification Information':
+            //     $categoryTitle = _certificationInformation;
+            //     break;
+            // case 'Schedule':
+            //     $categoryTitle = _schedule;
+            //     break;
+        }
+        echo '<h4>' . $categoryTitle . '</h4>';
         foreach ($fields as $field => $title) {
             if ($i == 1 && $j == 1) {
                 echo '<div class="row">';
             }elseif($i == 1 && $j > 1){
                 echo '</div><div class="row">';
             }
-            echo '<div class="col-md-6"><div class="checkbox"><label><INPUT type=checkbox onclick="addHTML(\'<li class=col-lg-6>' . $title . '</li>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields[' . $field . '] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">' . $title . '</label></div>' . ($field == 'PARENTS' ? '<BR>(<small>Relation: </small><input type=text id=relation name=relation size=8>)' : '') . '</div>';
+            echo '<div class="col-md-6"><div class="checkbox"><label><INPUT type=checkbox onclick="addHTML(\'<li class=col-lg-6>' . $title . '</li>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields[' . $field . '] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">' . $title . '</label></div>' . ($field == 'PARENTS' ? '<BR>(<small>'._relation.': </small><input type=text id=relation name=relation size=8>)' : '') . '</div>';
             //if ($i % 2 == 0)
             //echo '</TR><TR>';
             $i++;
@@ -278,11 +386,11 @@ else {
 
     echo '<div class="panel">';
     echo '<div class="panel-heading">';
-    echo '<h6 class="panel-title text-pink text-uppercase"><i class="glyphicon glyphicon-saved"></i> &nbsp;Selected Fields</h6>';
+    echo '<h6 class="panel-title text-pink text-uppercase"><i class="glyphicon glyphicon-saved"></i> &nbsp;'._selectedFields.'</h6>';
     echo '</div>'; //.panel-heading
     echo '<div class="panel-body">';
-    //DrawHeader("<div><a class=big_font><i class=\"glyphicon glyphicon-saved\"></i> &nbsp;Selected Fields</a></div>", $extra['header_right']);
-    echo '<div class="well"><div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">No fields selected</div><ol id=names_div class=row></ol></div>';
+    //DrawHeader("<div><a class=big_font><i class=\"glyphicon glyphicon-saved\"></i> &nbsp;'._selectedFields.'</a></div>", $extra['header_right']);
+    echo '<div class="well"><div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">'._noFieldsSelected.'</div><ol id=names_div class=row></ol></div>';
 
     if ($Search && function_exists($Search))
         $Search($extra);

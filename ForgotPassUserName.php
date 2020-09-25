@@ -48,7 +48,7 @@ function db_start()
 				$errormessage = mysqli_error($connection);
 			break;
 		}
-		db_show_error("","Could not Connect to Database: $DatabaseServer",$errstring);
+		db_show_error("",""._couldNotConnectToDatabase.": $DatabaseServer",$errstring);
 	}
 	return $connection;
 }
@@ -89,14 +89,14 @@ function DBQuery($sql)
 						if(!$result)
 						{
                                                     $connection->query("ROLLBACK");
-							die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+							die(db_show_error($sql,_dbExecuteFailed,mysql_error()));
 						}
 					}
 				}
 			}
 			else
 			{
-				$result =$connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysql_error()));
+				$result =$connection->query($sql) or die(db_show_error($sql,_dbExecuteFailed,mysql_error()));
 			}
 		break;
 	}
@@ -267,7 +267,7 @@ function db_show_error($sql,$failnote,$additional='')
         {
             $username = $_GET['u'];
             $usr_type = $_GET['user_type'];
-            $found=false;
+            $found= false;
             if($usr_type=='student')
             {
                 $check_uname=  DBGet(DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \''.$username.'\'  AND PROFILE_ID IN (SELECT ID FROM user_profiles WHERE PROFILE=\'student\')'));
@@ -291,7 +291,7 @@ function db_show_error($sql,$failnote,$additional='')
         {
             $email = $_GET['u'];
             $usr_type = $_GET['user_type'];
-            $found=false;
+            $found= false;
             if($usr_type=='staff') 
             {
                 if($_GET['username']!='')

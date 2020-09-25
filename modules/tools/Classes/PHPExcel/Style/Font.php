@@ -226,10 +226,10 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->getFont()->applyFromArray(
      * 		array(
      * 			'name'      => 'Arial',
-     * 			'bold'      => true,
-     * 			'italic'    => false,
+     * 			'bold'      =>true,
+     * 			'italic'    =>false,
      * 			'underline' => PHPExcel_Style_Font::UNDERLINE_DOUBLE,
-     * 			'strike'    => false,
+     * 			'strike'    =>false,
      * 			'color'     => array(
      * 				'rgb' => '808080'
      * 			)

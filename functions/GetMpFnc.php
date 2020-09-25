@@ -176,7 +176,7 @@ function GetCurrentMP($mp,$date,$error=true)
 	if($_openSIS['GetCurrentMP'][$date][$mp][1]['MARKING_PERIOD_ID'])
 		return $_openSIS['GetCurrentMP'][$date][$mp][1]['MARKING_PERIOD_ID'];
 	elseif(strpos($_SERVER['PHP_SELF'],'Side.php')===false && $error==true)
-		ErrorMessage(array("You are not currently in a marking period"));
+		ErrorMessage(array(_youAreNotCurrentlyInAMarkingPeriod));
 		
 }
 function GetMPId($mp)

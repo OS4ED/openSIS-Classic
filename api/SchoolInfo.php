@@ -25,7 +25,7 @@ function db_start() {
                 $errormessage = mysqli_error($connection);
                 break;
         }
-        db_show_error("", "Could not Connect to Database: $DatabaseServer", $errstring);
+        db_show_error("", ""._couldNotConnectToDatabase.": $DatabaseServer", $errstring);
     }
     return $connection;
 }
@@ -59,12 +59,12 @@ function DBQuery($sql) {
                         $result = $connection->query($value);
                         if (!$result) {
                             $connection->query("ROLLBACK");
-                            die(db_show_error($sql, "DB Execute Failed.", mysqli_error($connection)));
+                            die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
                         }
                     }
                 }
             } else {
-                $result = $connection->query($sql) or die(db_show_error($sql, "DB Execute Failed.", mysqli_error($connection)));
+                $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
             }
             break;
     }

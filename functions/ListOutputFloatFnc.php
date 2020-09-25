@@ -349,9 +349,9 @@ function ListOutputFloat($result,$column_names,$singular='',$plural='',$link=fal
 		if($options['count'] || $display_zero)
 		{
 			if(($result_count==0 || $display_count==0) && $plural)
-				echo "<table class=alert_center><tr><td class=alert_center_padding><b>No $plural were found.</b></td></tr></table>";
+				echo "<table class=alert_center><tr><td class=alert_center_padding><b>No $plural "._wereFound.".</b></td></tr></table>";
 			elseif($result_count==0 || $display_count==0)
-				echo '<table class=alert_center><tr><td class=alert_center_padding><b>None were found.</b></td></tr></table>';
+				echo '<table class=alert_center><tr><td class=alert_center_padding><b>'._noneWereFound.'.</b></td></tr></table>';
 		}
 		if($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search']!='Search'))
 		{

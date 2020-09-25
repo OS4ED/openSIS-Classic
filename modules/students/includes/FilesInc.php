@@ -80,7 +80,7 @@ if (!$_REQUEST['modfunc']) {
             $_FILES["uploadfile"]["error"] = 1;
         }
         if ($_FILES["uploadfile"]["error"] > 0) {
-            $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file. Invalid file type.</span>';
+            $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvalidFileType.'</span>';
         } else {
 
             $fp = fopen($tmpName, 'r');
@@ -94,10 +94,10 @@ if (!$_REQUEST['modfunc']) {
 
             DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
 
-            $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Successfully uploaded</span>';
+            $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._successfullyUploaded.'</span>';
 
 //            if (!move_uploaded_file($_FILES["uploadfile"]["tmp_name"], $upload->target_path))
-//                $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file. Invalid Permission</span>';
+//                $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvalidPermission.'</span>';
 //            else {
 //
 //                $target_path1 = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'];
@@ -105,7 +105,7 @@ if (!$_REQUEST['modfunc']) {
 //
 //                    $n = DuplicateFile("duplicate file", $_SESSION['dup_file_name']);
 //                }
-//                $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Successfully uploaded</span>';
+//                $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._successfullyUploaded.'</span>';
 //            }
         }
         unset($_FILES['uploadfile']);
@@ -118,9 +118,9 @@ if (!$_REQUEST['modfunc']) {
 
 
         if (AllowEdit()) {
-            echo '<div class="alert bg-primary alert-styled-left">To upload additional files click browse, select file, give it a file name and click save</div>';
+            echo '<div class="alert bg-primary alert-styled-left">'._toUploadAdditionalFilesClickBrowseSelectFileGiveItAFileNameAndClickSave.'</div>';
         } else {
-            echo '<div class="alert bg-primary alert-styled-left">To View a certain file,click on the name of the file</div>';
+            echo '<div class="alert bg-primary alert-styled-left">'._toViewACertainFileClickOnTheNameOfTheFile.'</div>';
         }
 
         if (AllowEdit()) {
@@ -229,7 +229,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</tbody>';
         echo '</table>';
         if ($found != true) {
-            echo '<span class="text-danger">No files found.</span>';
+            echo '<span class="text-danger">'._noFilesFound.'.</span>';
         }
     }
 }

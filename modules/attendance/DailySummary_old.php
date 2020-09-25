@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Attendance > ".ProgramTitle());
+DrawBC(""._attendance." > ".ProgramTitle());
 if($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'])
 	$start_date = $_REQUEST['day_start'].'-'.$_REQUEST['month_start'].'-'.substr($_REQUEST['year_start'],2,4);
 else
@@ -37,7 +37,7 @@ if($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end'])
 else
 	$end_date = DBDate();
 
-DrawBC("Attendance > ".ProgramTitle());
+DrawBC(""._attendance." > ".ProgramTitle());
 
 if($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit())
 {
@@ -89,7 +89,7 @@ if($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || 
 	echo "<div style='width:795px; overflow:scroll; overflow-y:hidden;'>";
 	
 
-	DrawHeaderHome('<table><tr><td>'.PrepareDate($start_date,'_start').'</td><td> - </td><td>'.PrepareDate($end_date,'_end').'</td><td> : </td><td>'.$period_select.' : <INPUT type=submit class="btn btn-primary" value=Go></td></tr></table>');
+	DrawHeaderHome('<table><tr><td>'.PrepareDate($start_date,'_start').'</td><td> - </td><td>'.PrepareDate($end_date,'_end').'</td><td> : </td><td>'.$period_select.' : <INPUT type=submit class="btn btn-primary" value='._go.'></td></tr></table>');
 	
 }
 
@@ -143,7 +143,7 @@ if(UserStudentID() || $_REQUEST['student_id'] || User('PROFILE')=='parent')
 			$columns[$value['SHORT_DATE']] = ShortDate($value['SCHOOL_DATE']);
 	}
 	
-	ListOutput($student_RET,$columns,'Course','Courses');
+	ListOutput($student_RET,$columns,_course,_courses);
 echo '</div>';
 }
 else

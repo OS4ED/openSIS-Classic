@@ -279,7 +279,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 				// Close file for each PPS, and unlink it
 				//if (isset($raList[$i]->_PPS_FILE)) {
 				//	fclose($raList[$i]->_PPS_FILE);
-				//	$raList[$i]->_PPS_FILE = null;
+				//	$raList[$i]->_PPS_FILE = _null;
 				//	unlink($raList[$i]->_tmp_filename);
 				//}
 			}

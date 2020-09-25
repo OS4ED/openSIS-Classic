@@ -35,8 +35,8 @@
  */
 class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage_CacheBase implements PHPExcel_CachedObjectStorage_ICache {
 
-	private $_fileName = null;
-	private $_fileHandle = null;
+	private $_fileName = _null;
+	private $_fileHandle = _null;
 
 
 	private function _storeData() {
@@ -48,7 +48,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
 		$this->_cellCache[$this->_currentObjectID]	= array('ptr' => $offset,
 															'sz'  => ftell($this->_fileHandle) - $offset
 														   );
-		$this->_currentObjectID = $this->_currentObject = null;
+		$this->_currentObjectID = $this->_currentObject = _null;
 	}	//	function _storeData()
 
 
@@ -106,12 +106,12 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
 	public function unsetWorksheetCells() {
 		if(!is_null($this->_currentObject)) {
 			$this->_currentObject->detach();
-			$this->_currentObject = $this->_currentObjectID = null;
+			$this->_currentObject = $this->_currentObjectID = _null;
 		}
 		$this->_cellCache = array();
 
 		//	detach ourself from the worksheet, so that it can then delete this object successfully
-		$this->_parent = null;
+		$this->_parent = _null;
 
 		//	Close down the temporary cache file
 		$this->__destruct();
@@ -137,7 +137,7 @@ class PHPExcel_CachedObjectStorage_DiscISAM extends PHPExcel_CachedObjectStorage
 			fclose($this->_fileHandle);
 			unlink($this->_fileName);
 		}
-		$this->_fileHandle = null;
+		$this->_fileHandle = _null;
 	}	//	function __destruct()
 
 }

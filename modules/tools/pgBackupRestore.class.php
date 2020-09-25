@@ -231,10 +231,10 @@ class pgBackupRestore
       //---[ PASS 1.1: Set default options
       $this->commentSQL("Default options\n");
       $this->writeSQL("SET client_encoding = '{$this->Encoding}';\n");
-      $this->writeSQL("SET standard_conforming_strings = off;\n");
+      $this->writeSQL("SET standard_conforming_strings = _off;\n");
       $this->writeSQL("SET check_function_bodies = false;\n");
-      $this->writeSQL("SET client_min_messages = warning;\n");
-      $this->writeSQL("SET escape_string_warning = off;\n");
+      $this->writeSQL("SET client_min_messages = _warning;\n");
+      $this->writeSQL("SET escape_string_warning = _off;\n");
       $this->writeSQL("\n");
       
       //---[ PASS 2: Obtaining table list from database 

@@ -800,7 +800,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 		$record	= 0x0006;	 // Record identifier
 
 		// Initialize possible additional value for STRING record that should be written after the FORMULA record?
-		$stringValue = null;
+		$stringValue = _null;
 
 		// calculated value
 		if (isset($calculatedValue)) {
@@ -1174,7 +1174,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 		$ixfe		= $xfIndex;
 
 		if ( $height < 0 ){
-			$height = null;
+			$height = _null;
 		}
 
 		// Use _writeRow($row, null, $XF) to set XF format without setting height
@@ -1717,7 +1717,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 		if (count($panes) > 4) { // if Active pane was received
 			$pnnAct = $panes[4];
 		} else {
-			$pnnAct = null;
+			$pnnAct = _null;
 		}
 		$record  = 0x0041;	   // Record identifier
 		$length  = 0x000A;	   // Number of bytes to follow

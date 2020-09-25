@@ -28,6 +28,9 @@
 #***************************************************************************************
 #######################################################################################################################
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
+
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['report']) {
     echo '<style type="text/css">*{font-family:arial; font-size:12px;}</style>';
 
@@ -36,9 +39,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
         $where = ' AND c.course_id=cp.course_id AND c.grade_level=' . $_REQUEST['id'];
     }
     $sql = 'select distinct
-				(select title from course_subjects where subject_id=(select subject_id from courses where course_id=cp.course_id)) as subject,
-				(select title from courses where course_id=cp.course_id) as COURSE_TITLE,cp.course_id
-				from course_periods cp' . $from . ' where cp.school_id=\'' . UserSchool() . '\' and cp.syear=\'' . UserSyear() . '\' ' . $where . ' order by subject,COURSE_TITLE';
+                (select title from course_subjects where subject_id=(select subject_id from courses where course_id=cp.course_id)) as subject,
+                (select title from courses where course_id=cp.course_id) as COURSE_TITLE,cp.course_id
+                from course_periods cp' . $from . ' where cp.school_id=\'' . UserSchool() . '\' and cp.syear=\'' . UserSyear() . '\' ' . $where . ' order by subject,COURSE_TITLE';
 
 
     $ret = DBGet(DBQuery($sql));
@@ -51,9 +54,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
             $grade_title = $grade_level_RET[1]['TITLE'];
 
             if ($grade_title != '') {
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Course catalog by Grade Level : " . $grade_title . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._courseCatalogByGradeLevel." : " . $grade_title . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
             } else {
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Course catalog by Grade Level	: All</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._courseCatalogByGradeLevel." : "._all."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
             }
 
             echo '<div align="center">';
@@ -67,10 +70,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
 
 ##############################################List Output Generation##################################################
 
-            $columns = array('SHORT_NAME' => 'Course Period', 'PERIOD' => 'Time', 'DAYS' => 'Days', 'ROOM' => 'Location', 'TEACHER' => 'Teacher');
+            $columns = array('SHORT_NAME' => _coursePeriod, 'PERIOD' => _time, 'DAYS' => _days, 'ROOM' => _location, 'TEACHER' => _teacher);
 
             echo '<tr><td colspan="2" valign="top" align="right">';
-            PrintCatalog($period_list, $columns, 'Course', 'Courses', '', '', array('search' => false));
+            PrintCatalog($period_list, $columns, _course, _courses, '', '', array('search' => false));
             echo '</td></tr></table></td></tr></table></td></tr>';
 
             ######################################################################################################################
@@ -79,33 +82,32 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
             echo "<div style=\"page-break-before: always;\"></div>";
         }
     } else
-        echo '<table width=100%><tr><td align=center><font color=red face=verdana size=2><strong>No Courses were found in this Grade Level</strong></font></td></tr></table>';
+        echo '<table width=100%><tr><td align=center><font color=red face=verdana size=2><strong>'._noCoursesWereFoundInThisGradeLevel.'</strong></font></td></tr></table>';
 }
 else {
     echo '<div class="row">';
     echo '<div class="col-md-6 col-md-offset-3">';
-    PopTable('header', 'Print Catalog by Grade Level', 'class="panel panel-default"');
+    PopTable('header', _printCatalogByGradeLevel, 'class="panel panel-default"');
      echo "<FORM id='search' name='search' class='form-horizontal' method=POST action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . ">";
     $grade_level_RET = DBGet(DBQuery('SELECT ID,TITLE FROM school_gradelevels WHERE school_id=\'' . UserSchool() . '\''));
     if (count($grade_level_RET)) {
-        echo '<div class="form-group"><div class="col-md-12">'.CreateSelect($grade_level_RET, 'id', 'All', 'Select Grade Level: ', 'Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&id=').'</div></div>';
+        echo '<div class="form-group"><div class="col-md-12">'.CreateSelect($grade_level_RET, 'id', 'All', _selectGradeLevel.' : ', 'Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&id=').'</div></div>';
     }
 
     if (clean_param($_REQUEST['id'], PARAM_ALPHANUM)) {
         $grade_level_RET = DBGet(DBQuery('SELECT TITLE FROM school_gradelevels WHERE id=\'' . $_REQUEST['id'] . '\''));
         $grade_title = $grade_level_RET[1]['TITLE'];
-        echo '<div class="alert bg-success alert-styled-left">Report generated for ' . $grade_title . ' Grade Level</div>';
+        echo '<div class="alert bg-success alert-styled-left">'._reportGeneratedFor.'' . $grade_title . ''._gradeLevel.'</div>';
     } else
-        echo '<div class="alert bg-success alert-styled-left">Report generated for all Grade Levels</div>';
+        echo '<div class="alert bg-success alert-styled-left">'._reportGeneratedForAllGradeLevels.'</div>';
     echo '</form>';
     echo "<FORM name=exp id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=print&id=" . $_REQUEST['id'] . "&_openSIS_PDF=true&report=true method=POST target=_blank>";
-    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print\'></div>';
+    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\''._print.'\'></div>';
     echo '</form>';
     PopTable('footer');
     echo '</div>'; //.col-md-6.col-md-offset-3
     echo '</div>'; //.row
 }
-
 
 
 

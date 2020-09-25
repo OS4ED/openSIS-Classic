@@ -53,9 +53,9 @@ if (isset($_REQUEST['student_id'])) {
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-       DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+       DrawHeaderHome( ''._selectedStudent.':: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>'._selectedStudent.':</A>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-      DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) ');
+      DrawHeaderHome( ''._selectedStudent.':: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>'._selectedStudent.':</font></A>) ');
     }
 }
 ####################
@@ -63,13 +63,26 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
 
     if (!$_REQUEST['id']) {
         echo '<div class="panel">';
-        DrawHeader('Totals', "<span class=\"heading-text\"><A HREF=Modules.php?modname=$_REQUEST[modname]&id=all><i class=\"icon-menu-open\"></i> &nbsp; Expand All</A></span>");
+        DrawHeader(_totals, "<span class=\"heading-text\"><A HREF=Modules.php?modname=$_REQUEST[modname]&id=all><i class=\"icon-menu-open\"></i> &nbsp; "._expandAll."</A></span>");
         echo '</div>';
         $courses_RET = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.COURSE_ID,cp.TEACHER_ID AS STAFF_ID FROM schedule s,course_periods cp,courses c WHERE s.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND ((cp.MARKING_PERIOD_ID IN (' . GetAllMP($MP_TYPE, UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) AND ((\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN s.START_DATE AND s.END_DATE OR \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=s.START_DATE AND s.END_DATE IS NULL))) AND s.STUDENT_ID=\'' . UserStudentID() . '\' ' . (User('PROFILE') == 'teacher' ? ' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : '') . ' AND c.COURSE_ID=cp.COURSE_ID ORDER BY cp.COURSE_ID'), array(), array('COURSE_PERIOD_ID'));
         if ($display_rank == 'Y')
-            $LO_columns = array('TITLE' => 'Course Title', 'TEACHER' => 'Teacher', 'PERCENT' => 'Percent', 'GRADE' => 'Letter', 'UNGRADED' => 'Ungraded') + ($do_stats ? array('BAR1' => 'Grade Range(%)', 'BAR2' => 'Class Rank') : array());
+            $LO_columns = array('TITLE' =>_courseTitle,
+             'TEACHER' =>_teacher,
+             'PERCENT' =>_percent,
+             'GRADE' =>_letter,
+             'UNGRADED' =>_ungraded,
+             ) + ($do_stats ? array('BAR1' =>  ''._gradeRange.'(%)',
+             'BAR2' =>_classRank,
+             ) : array());
         else
-            $LO_columns = array('TITLE' => 'Course Title', 'TEACHER' => 'Teacher', 'PERCENT' => 'Percent', 'GRADE' => 'Letter', 'UNGRADED' => 'Ungraded') + ($do_stats ? array('BAR1' => 'Grade Range(%)') : array());
+            $LO_columns = array('TITLE' =>_courseTitle,
+             'TEACHER' =>_teacher,
+             'PERCENT' =>_percent,
+             'GRADE' =>_letter,
+             'UNGRADED' =>_ungraded,
+             ) + ($do_stats ? array('BAR1' =>  ''._gradeRange.'(%)',
+             ) : array());
 
         if (count($courses_RET)) {
             $LO_ret = array(0 => array());
@@ -264,10 +277,10 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
             unset($LO_ret[0]);
             $link = array('TITLE' => array('link' => "Modules.php?modname=$_REQUEST[modname]", 'variables' => array('id' => 'ID')));
             echo '<div class="panel">';
-            ListOutput($LO_ret, $LO_columns, 'Course', 'Courses', $link, array(), array('center' => false, 'save' => false, 'search' => false));
+            ListOutput($LO_ret, $LO_columns,  _course, _courses, $link, array(), array('center' =>false, 'save' =>false, 'search' =>false));
             echo '</div>';
         } else
-            DrawHeader('There are no grades available for this student.');
+            DrawHeader(_thereAreNoGradesAvailableForThisStudent);
     }
 
     else {
@@ -278,25 +291,25 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
                                                    FROM gradebook_assignments ga, gradebook_assignment_types gt
                                       where assignment_id =\'' . $_REQUEST['assignment_id'] . '\' and gt.assignment_type_id=ga.assignment_type_id'));
 
-            $val1 = '<div class="panel-heading"><h6 class="panel-title">Assignment Details</h6></div>';
+            $val1 = '<div class="panel-heading"><h6 class="panel-title">'._assignmentDetails.'</h6></div>';
             $val1 .= '<hr class="no-margin"/>';
             $val1 .= '<div class="panel-body">';
             $val1 .= '<div class="row form-horizontal">';
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Title</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._title.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['TITLE'] . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>'; //.col-md-4
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Assigned Date</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._assignedDate.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['ASSIGNED_DATE'] . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>';
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Due Date</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._dueDate.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['DUE_DATE'] . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>'; //.col-md-4
@@ -305,19 +318,19 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
             $val1 .= '<div class="row form-horizontal">';
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Assignement Type</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._assignementType.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['ASSIGNMENT_TYPE'] . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>'; //.col-md-4
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Points</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._points.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . $assignments_RET[1]['POINTS'] . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>';
             $val1 .= '<div class="col-md-4">';
             $val1 .= '<div class="form-group">';
-            $val1 .= '<label class="control-label col-lg-4">Description</label>';
+            $val1 .= '<label class="control-label col-lg-4">'._description.'</label>';
             $val1 .= '<div class="col-lg-8"><input type="readonly" class="form-control" value="' . strip_tags(html_entity_decode(html_entity_decode($assignments_RET[1]['DESCRIPTION']))) . '" /></div>';
             $val1 .= '</div>'; //.form-group
             $val1 .= '</div>'; //.col-md-4
@@ -338,7 +351,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
 
             $courses_RET = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.COURSE_ID,cp.TEACHER_ID AS STAFF_ID FROM schedule s,course_periods cp,courses c WHERE s.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND s.MARKING_PERIOD_ID IN (' . $mp . ') AND (\'' . DBDate() . '\' BETWEEN s.START_DATE AND s.END_DATE OR \'' . DBDate() . '\'>=s.START_DATE AND s.END_DATE IS NULL) AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND cp.GRADE_SCALE_ID IS NOT NULL' . (User('PROFILE') == 'teacher' ? ' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\'' : '') . ' AND c.COURSE_ID=cp.COURSE_ID ORDER BY cp.COURSE_ID'));
             echo '<div class="panel">';
-            DrawHeader('All Courses', '');
+            DrawHeader(_allCourses, '');
             DrawHeader($val1);
             echo '</div>';
         }
@@ -386,9 +399,26 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
                     $all_RET = DBGet(DBQuery('SELECT ga.ASSIGNMENT_ID,gg.POINTS,min(' . db_case(array('gg.POINTS', "'-1'", 'ga.POINTS', 'gg.POINTS')) . ') AS MIN,max(' . db_case(array('gg.POINTS', "'-1'", '0', 'gg.POINTS')) . ') AS MAX,' . db_case(array("sum(" . db_case(array('gg.POINTS', "'-1'", '0', '1')) . ")", "'0'", "'0'", "sum(" . db_case(array('gg.POINTS', "'-1'", '0', 'gg.POINTS')) . ') / sum(' . db_case(array('gg.POINTS', "'-1'", '0', '1')) . ")")) . ' AS AVG,sum(CASE WHEN gg.POINTS<=g.POINTS AND gg.STUDENT_ID!=g.STUDENT_ID THEN 1 ELSE 0 END) AS LOWER,sum(CASE WHEN gg.POINTS>g.POINTS THEN 1 ELSE 0 END) AS HIGHER FROM gradebook_grades gg,gradebook_assignments ga LEFT OUTER JOIN gradebook_grades g ON (g.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' AND g.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND g.STUDENT_ID=\'' . UserStudentID() . '\'),gradebook_assignment_types at WHERE (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND ga.MARKING_PERIOD_ID=\'' . UserMP() . '\' AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND ((ga.ASSIGNED_DATE IS NOT NULL )  OR g.POINTS IS NOT NULL) AND ga.POINTS!=\'0\' GROUP BY ga.ASSIGNMENT_ID'), array(), array('ASSIGNMENT_ID'));
 
                 if ($display_rank == 'Y')
-                    $LO_columns = array('TITLE' => 'Title', 'CATEGORY' => 'Category', 'POINTS' => 'Points / Possible', 'PERCENT' => 'Percent', 'LETTER' => 'Letter', 'ASSIGNED_DATE' => 'Assigned Date', 'DUE_DATE' => 'Due Date') + ($do_stats ? array('BAR1' => 'Grade Range', 'BAR2' => 'Class Rank') : array());
+                    $LO_columns = array('TITLE' =>_title,
+                     'CATEGORY' =>_category,
+                     'POINTS' =>_pointsPossible,
+                     'PERCENT' =>_percent,
+                     'LETTER' =>_letter,
+                     'ASSIGNED_DATE' =>_assignedDate,
+                     'DUE_DATE' =>_dueDate,
+                     ) + ($do_stats ? array('BAR1' =>_gradeRange,
+                     'BAR2' =>_classRank,
+                     ) : array());
                 else
-                    $LO_columns = array('TITLE' => 'Title', 'CATEGORY' => 'Category', 'POINTS' => 'Points / Possible', 'PERCENT' => 'Percent', 'LETTER' => 'Letter', 'ASSIGNED_DATE' => 'Assigned Date', 'DUE_DATE' => 'Due Date') + ($do_stats ? array('BAR1' => 'Grade Range') : array());
+                    $LO_columns = array('TITLE' =>_title,
+                     'CATEGORY' =>_category,
+                     'POINTS' =>_pointsPossible,
+                     'PERCENT' =>_percent,
+                     'LETTER' =>_letter,
+                     'ASSIGNED_DATE' =>_assignedDate,
+                     'DUE_DATE' =>_dueDate,
+                     ) + ($do_stats ? array('BAR1' =>_gradeRange,
+                     ) : array());
 
                 $LO_ret = array(0 => array());
 
@@ -459,11 +489,11 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
                 }
 
                 unset($LO_ret[0]);
-                ListOutput($LO_ret, $LO_columns, 'Assignment', 'Assignments', array(), array(), array('center' => false, 'save' => $_REQUEST['id'] != 'all', 'search' => false));
+                ListOutput($LO_ret, $LO_columns,  _assignment, _assignments, array(), array(), array('center' =>false, 'save' => $_REQUEST['id'] != 'all', 'search' =>false));
                 echo '</div>';
             } else
             if ($_REQUEST['id'] != 'all')
-                DrawHeader('There are no grades available for this student.');
+                DrawHeader(_thereAreNoGradesAvailableForThisStudent);
         }
     }
 }

@@ -168,7 +168,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
      * Apply styles from array
      *
      * <code>
-     * $objPHPExcel->getActiveSheet()->getStyle('B2')->getLocked()->applyFromArray( array('locked' => true, 'hidden' => false) );
+     * $objPHPExcel->getActiveSheet()->getStyle('B2')->getLocked()->applyFromArray( array('locked' =>true, 'hidden' =>false) );
      * </code>
      *
      * @param	array	$pStyles	Array containing style information

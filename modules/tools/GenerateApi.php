@@ -43,14 +43,14 @@ if($_REQUEST['modfunc']=='remove')
     
     DBQuery('DELETE FROM api_info WHERE ID='.$_REQUEST['id']);
 }    
-PopTable('header', 'API Token');
+PopTable('header',  _apiToken);
 $get_token=DBGet(DBQuery('SELECT * FROM api_info'));
-$columns=array('API_KEY'=>'Key','API_SECRET'=>'Secret');
+$columns=array('API_KEY'=>_key,'API_SECRET'=>_secret);
 $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 $link['remove']['variables'] = array('id' => 'ID');
-ListOutput($get_token, $columns, 'Token', 'Tokens',$link);
+ListOutput($get_token, $columns, _token, _tokens,$link);
 
-echo '<br><br><div class="text-center"><a class="btn btn-primary" href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=generate" onclick="grabA(this); return false;">Generate</a></div>';
+echo '<br><br><div class="text-center"><a class="btn btn-primary" href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=generate" onclick="grabA(this); return false;">'._generate.'</a></div>';
 function generateAPI() 
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -36,12 +36,21 @@ if ($_REQUEST['modfunc'] == 'save') {
     $RET = GetStuList($extra);
 
     if (count($RET)) {
-        $columns = array('ASSIGN_TYP' => 'Assignment Type', 'ASSIGN_TYP_WG' => 'Weight (%)', 'TITLE' => 'Assignment');
+        $columns = array('ASSIGN_TYP' =>_assignmentType,
+         'ASSIGN_TYP_WG' => weight.' (%)',
+         'TITLE' =>_assignment,
+        );
         if ($_REQUEST['assigned_date'] == 'Y')
-            $columns += array('ASSIGNED_DATE' => 'Assigned Date');
+            $columns += array('ASSIGNED_DATE' =>_assignedDate,
+        );
         if ($_REQUEST['due_date'] == 'Y')
-            $columns += array('DUE_DATE' => 'Due Date');
-        $columns += array('POINTS' => 'Points', 'LETTER_GRADE' => 'Grade', 'WEIGHT_GRADE' => 'Weighted Grade', 'COMMENT' => 'Comment');
+            $columns += array('DUE_DATE' =>_dueDate,
+        );
+        $columns += array('POINTS' =>_points,
+         'LETTER_GRADE' =>_grade,
+         'WEIGHT_GRADE' =>_weightedGrade,
+         'COMMENT' =>_comment,
+        );
 
         $handle = PDFStart();
         foreach ($RET as $student) {
@@ -51,16 +60,16 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             unset($_openSIS['DrawHeader']);
             echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-            echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br/>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+            echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentProgressReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br/>"._studentProgressReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
             echo '<table border=0 style=\"font-size:12px;\">';
-            echo "<tr><td>Student Name:</td>";
+            echo "<tr><td>"._studentName.":</td>";
             echo "<td>" . $student['FULL_NAME'] . "</td></tr>";
-            echo "<tr><td>ID:</td>";
+            echo "<tr><td>"._id.":</td>";
             echo "<td>" . $student['STUDENT_ID'] . " </td></tr>";
-            echo "<tr><td>Grade:</td>";
+            echo "<tr><td>"._grade.":</td>";
             echo "<td>" . $student['GRADE_ID'] . " </td></tr>";
 
-            echo "<tr><td>Marking Period:</td>";
+            echo "<tr><td>"._markingPeriod.":</td>";
             echo "<td>" . GetMP(UserMP()) . " </td></tr>";
             echo '</table>';
 
@@ -126,8 +135,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $program_config[$course['TEACHER_ID']][$course_period_id] = true;
                     $course_period_title = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\' '));
                     echo '<table border=0 style=\"font-size:12px;\">';
-                    echo "<tr><td>Course:</td><td>" . $course_title . "</td></tr>";
-                    echo "<tr><td>Course Period:</td><td>" . $course_period_title[1]['TITLE'] . "</td></tr>";
+                    echo "<tr><td>"._course.":</td><td>" . $course_title . "</td></tr>";
+                    echo "<tr><td>"._coursePeriod.":</td><td>" . $course_period_title[1]['TITLE'] . "</td></tr>";
 
                     if ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y') {
                         $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id=' . $course_period_id));
@@ -212,7 +221,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
 //                            $link['add']['html'] = array('TITLE'=>'<B>Total</B>','LETTER_GRADE'=>'( '.$total_stpoints.' / '.$total_asgnpoints.' ) '._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID'],"%").'%&nbsp;'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID']),'WEIGHT_GRADE'=>$programconfig[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",$course['TEACHER_ID'],'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,$course_period_id,$course['TEACHER_ID']):'N/A');
-                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>Total</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
+                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>'._total.'</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
 
 
 
@@ -222,24 +231,24 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     if ($_REQUEST['list_type'] == 'total') {
                         echo '<table border=0  style=\"font-size:12px;\" >';
-                        echo '<tr><td> Total:</td><td>' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</td> </tr>';
-                        echo '<tr><td> Total Weighted Grade:</td><td>' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</td> </tr>';
+                        echo '<tr><td> '._total.':</td><td>' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</td> </tr>';
+                        echo '<tr><td> '._totalWeightedGrade.':</td><td>' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : ''._nA.'') . '</td> </tr>';
                         echo '<tr><td></td></tr>';
                         echo '</table>';
                     } else
-                        ListOutputPrint($grades_RET, $columns, 'Assignment', 'Assignments', $link, array(), array('center' => false, 'add' => true));
+                        ListOutputPrint($grades_RET, $columns, _assignment, _assignments, $link, array(), array('center' =>false, 'add' =>true));
                     unset($percent_weights);
                 }
             }
             else {
-                echo "<p style='color:red'><b>No Grades Were Found</b></p>";
+                echo "<p style='color:red'><b>"._noGradesWereFound."</b></p>";
             }
             echo '<div style="page-break-before: always;">&nbsp;</div>';
         }
 
         PDFStop($handle);
     } else
-        BackPrompt('No Students were found.');
+        BackPrompt(_noStudentsWereFound.'.');
 }
 
 if (!$_REQUEST['modfunc']) {
@@ -247,36 +256,36 @@ if (!$_REQUEST['modfunc']) {
     echo "<FORM action=ForExport.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=save&include_inactive=".strip_tags(trim($_REQUEST[include_inactive]))."&_openSIS_PDF=true method=POST target=_blank>";
     //echo '<div class="panel">';
     //echo '<div class="panel-body">';
-    PopTable('header','Progress Reports');
+    PopTable('header', _progressReports);
 
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=assigned_date><span></span>Assigned Date</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=assigned_date><span></span>'._assignedDate.'</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_ec checked><span></span>Exclude Ungraded E/C Assignments</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_ec checked><span></span>'._excludeUngradedECAssignments.'</label></div></div>';
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
     
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=due_date checked><span></span>Due Date</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=due_date checked><span></span>'._dueDate.'</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_notdue><span></span>Exclude Ungraded Assignments Not Due</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_notdue><span></span>'._excludeUngradedAssignmentsNotDue.'</label></div></div>';
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
     
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=detail name=list_type checked=true>With Assignment Details</label></div></div>';
+    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=detail name=list_type checked=true>'._withAssignmentDetails.'</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=total name=list_type>Totals Only</label></div></div>';
+    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=total name=list_type>'._totalsOnly.'</label></div></div>';
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
     
-    PopTable('footer','<div class="text-center"><INPUT type=submit value="Create Progress Reports"  class="btn btn-primary"></div>');
+    PopTable('footer','<div class="text-center"><INPUT type=submit value="'._createProgressReports.'"  class="btn btn-primary"></div>');
 
     echo '</FORM>';
 }

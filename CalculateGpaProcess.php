@@ -42,7 +42,7 @@ include 'Data.php';
          
          if(mysqli_multi_query($connection,$sql))
          {
-            echo '<br/><table><tr><td width="38"><img src="assets/icon_ok.png" /></td><td valign="middle"><span style="font-size:14px;">The grades for '.GetMP($_REQUEST['mp']).' has been calculated.</span></td></tr></table>';   
+            echo '<br/><table><tr><td width="38"><img src="assets/icon_ok.png" /></td><td valign="middle"><span style="font-size:14px;">'._theGradesFor.' '.GetMP($_REQUEST['mp']).' '._hasBeenCalculated.'.</span></td></tr></table>';   
          }
         
          unset($_REQUEST['modfunc']);   

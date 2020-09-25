@@ -33,7 +33,7 @@ if (GetTeacher(UserStaffID(), '', 'PROFILE', false) == 'teacher') {
 
 
 
-    echo '<div class="form-group"><label class="control-label col-md-2">Marking Periods :</label><div class="col-md-3">' . $print_mp . '</div></div>';
+    echo '<div class="form-group"><label class="control-label col-md-2">'._markingPeriods.' :</label><div class="col-md-3">' . $print_mp . '</div></div>';
     if (!$_REQUEST['marking_period_id']) {
         $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,c.TITLE AS COURSE,cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID from
 course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r  WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\')  AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=' . UserSchool()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
@@ -88,13 +88,19 @@ course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WH
 
  if (count($schedule_RET) > 0) {	
     echo '<div class="panel">';
-    ListOutput($schedule_RET, array('COURSE' => 'Course', 'PERIOD' => 'Period', 'DAYS' => 'Days', 'DURATION' => 'Time', 'ROOM' => 'Room', 'MARKING_PERIOD_ID' => 'Marking Period'), 'Course', 'Courses');
+    ListOutput($schedule_RET, array('COURSE' => _course,
+     'PERIOD' => _period,
+     'DAYS' => _days,
+     'DURATION' => _time,
+     'ROOM' => _room,
+     'MARKING_PERIOD_ID' => _markingPeriod,
+    ), _course, _courses);
     echo '</div>';
 }else
-        echo '<br><div class="alert alert-danger no-border">This staff is not scheduled to any course period and therefore no schedule data is available.</div>';
+        echo '<br><div class="alert alert-danger no-border">'._thisStaffIsNotScheduledToAnyCoursePeriodAndThereforeNoScheduleDataIsAvailable.'.</div>';
 }
 else {
-    echo '<div class="alert alert-danger no-border"><i class="icon-alert"></i> This staff is not scheduled to any course period and therefore no schedule data is available.</div>';
+    echo '<div class="alert alert-danger no-border"><i class="icon-alert"></i> '._thisStaffIsNotScheduledToAnyCoursePeriodAndThereforeNoScheduleDataIsAvailable.'.</div>';
 }
 $_REQUEST['category_id'] = 2;
 include('modules/users/includes/OtherInfoInc.inc.php');

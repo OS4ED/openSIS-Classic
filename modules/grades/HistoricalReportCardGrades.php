@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include 'modules/grades/DeletePromptX.fnc.php';
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 Search('student_id');
 
 $_REQUEST['SCHOOL_NAME'] = str_replace("'", "\'", $_REQUEST['SCHOOL_NAME']);
@@ -38,9 +38,9 @@ if (isset($_REQUEST['student_id'])) {
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     echo '<div class="panel panel-default">';
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
     }
     echo '</div>';
 }
@@ -56,7 +56,7 @@ if (UserStudentID()) {
         $mp_id = $current_markingperiod[1]['MARKING_PERIOD_ID'];
     }
     $tab_id = ($_REQUEST['tab_id'] ? $_REQUEST['tab_id'] : 'grades');
-    if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['removemp'] && $mp_id && DeletePromptX('Marking Period')) {
+    if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['removemp'] && $mp_id && DeletePromptX(_markingPeriod)) {
         DBQuery('UPDATE student_gpa_calculated SET  cum_unweighted_factor=NULL WHERE student_id = ' . $student_id . ' and marking_period_id = ' . $mp_id . '');
         unset($mp_id);
     }
@@ -70,7 +70,7 @@ if (UserStudentID()) {
             if ($rows == 0) {
                 DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');
             } elseif ($rows != 0) {
-                echo '<div class="alert alert-success alert-bordered"><i class="icon-checkmark2"></i> This Marking Periods has been updated.</div>';
+                echo '<div class="alert alert-success alert-bordered"><i class="icon-checkmark2"></i> '._thisMarkingPeriodsHasBeenUpdated.'.</div>';
             }
             // ------------------------- End --------------------------- //
             $mp_id = $_REQUEST['new_sms'];
@@ -195,7 +195,7 @@ if (UserStudentID()) {
                     DBQuery($sql);
             }
             if ($f == 1) {
-                echo '<div id="divErr"><div class="alert bg-danger alert-styled-left">Credit Earned can be only equal to Credit Attempted or equal to 0.</div></div>';
+                echo '<div id="divErr"><div class="alert bg-danger alert-styled-left">'._creditEarnedCanBeOnlyEqualToCreditAttemptedOrEqualTo_0.'.</div></div>';
                 break;
             }
         }
@@ -261,7 +261,7 @@ if (UserStudentID()) {
         unset($stu_val);
     }
     if ($_REQUEST['modfunc'] == 'remove') {
-        if (DeletePromptX('Student Grade')) {
+        if (DeletePromptX(_studentGrade)) {
             DBQuery('DELETE FROM student_report_card_grades WHERE ID=\'' . $_REQUEST['id'] . '\'');
         }
     }
@@ -282,7 +282,7 @@ if (UserStudentID()) {
         $GRET = DBGet(DBQuery($gquery));
 
 
-        $last_posted = null;
+        $last_posted = _null;
         $gmp = array(); //grade marking_periodso
         $grecs = array();  //grade records
         if ($GRET) {
@@ -323,7 +323,7 @@ if (UserStudentID()) {
         foreach ($gmp as $id => $mparray) {
             $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['schoolyear'] . ' ' . $mparray['mp_name'] . ', Grade ' . $mparray['grade_level'] . "</OPTION>";
         }
-        $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">Add another marking period</OPTION>";
+        $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">"._addAnotherMarkingPeriod."</OPTION>";
         $mpselect .= '</SELECT>';
 
         echo '</FORM>';
@@ -342,10 +342,10 @@ if (UserStudentID()) {
         echo '<h1 class="no-margin-top">' . $displayname . '</h1>';
         echo '<div class="row">';
         echo '<div class="col-md-4">';
-        echo '<h5><b>Weighted GPA :</b> <span class="text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['weighted_gpa']) . '</span></h5>';
+        echo '<h5><b>'._weightedGpa.' :</b> <span class="text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['weighted_gpa']) . '</span></h5>';
         echo '</div>'; //.col-md-4
         echo '<div class="col-md-4">';
-        echo '<h5><b>Unweighted GPA :</b> <span class="text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['unweighted_gpa']) . '</span></h5>';
+        echo '<h5><b>'._unweightedGpa.' :</b> <span class="text-primary">' . sprintf('%0.2f', $gmp[$mp_id]['unweighted_gpa']) . '</span></h5>';
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
         echo '</div>'; //.media-body
@@ -367,9 +367,9 @@ if (UserStudentID()) {
                 }
 
                 echo '<div class="form-group">';
-                echo '<div class="col-md-4"><label class="control-label">New Marking Period</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">School Name</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">Grade Level</label>' . $sms_grade_level . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">'._schoolName.'</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">'._gradeLevel.'</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
             }
         } else {
@@ -387,9 +387,9 @@ if (UserStudentID()) {
                 }
             }
             echo '<div class="form-group clearfix">';
-            echo '<div class="col-md-4"><label class="control-label">Grade Level:</label>' . $sms_grade_level . '</div>';
-            echo '<div class="col-md-4"><label class="control-label">Select Marking Period:</label>' . $mpselect . '</div>';
-            echo '<div class="col-md-4"><label class="control-label">School Name:</label>' . TextInput($school_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">'._gradeLevel.':</label>' . $sms_grade_level . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">'._selectMarkingPeriod.':</label>' . $mpselect . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">'._schoolName.':</label>' . TextInput($school_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</div>';
             echo '</div>';
             
             $sql = 'SELECT ID,COURSE_CODE,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
@@ -412,16 +412,16 @@ if (UserStudentID()) {
                 'CREDIT_EARNED' => 'makeTextInput'
             );
             $LO_columns = array(
-                'COURSE_CODE' => 'Code',
-                'COURSE_TITLE' => 'Course Name',
-                'GRADE_PERCENT' => 'Percentage',
-                'GRADE_LETTER' => 'Letter Grade',
-                'GP' => 'GP Value',
-                'GPA_CAL' => 'Calculate GPA',
-                'WEIGHTED_GP' => 'Weighted GP',
-                'GP_SCALE' => 'Grade Scale',
-                'CREDIT_ATTEMPTED' => 'Credit Attempted',
-                'CREDIT_EARNED' => 'Credit Earned'
+                'COURSE_CODE' =>_code,
+                'COURSE_TITLE' =>_courseName,
+                'GRADE_PERCENT' =>_percentage,
+                'GRADE_LETTER' =>_letterGrade,
+                'GP' =>_gpValue,
+                'GPA_CAL' =>_calculateGpa,
+                'WEIGHTED_GP' =>_weightedGp,
+                'GP_SCALE' =>_gradeScale,
+                'CREDIT_ATTEMPTED' =>_creditAttempted,
+                'CREDIT_EARNED' =>_creditEarned,
             );
             $link['add']['html'] = array('COURSE_CODE' => makeTextInput('', 'COURSE_CODE'),
                 'COURSE_TITLE' => makeTextInput('', 'COURSE_TITLE'),
@@ -441,7 +441,7 @@ if (UserStudentID()) {
             if ($mp_id) {
                 $LO_ret = DBGet(DBQuery($sql), $functions);
 
-                ListOutput($LO_ret, $LO_columns, '', '', $link, array(), array('count' => true, 'download' => true, 'search' => true));
+                ListOutput($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>true, 'download' =>true, 'search' =>true));
             }
             $his_id_arr = array();
             foreach ($LO_ret as $ti => $td) {
@@ -453,7 +453,7 @@ if (UserStudentID()) {
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-footer text-right p-r-20">';
-        echo SubmitButton('Save', 'S1', 'class="btn btn-primary" onclick="self_disable(this);"');
+        echo SubmitButton(_save, 'S1', 'class="btn btn-primary" onclick="self_disable(this);"');
         echo '</div>'; //.panel-footer
         echo '</div>'; //.panel
         echo '</FORM>';

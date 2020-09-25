@@ -106,60 +106,60 @@ if ($_REQUEST['modfunc'] == 'save') {
                 if (count($res_goal) != 0) {
                     $error = 'N';
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                    echo "<tr><td width=105>" . DrawLogoParam($student['SCHOOL_ID']) . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool($student['SCHOOL_ID']) . "</font></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                    echo "<tr><td width=105>" . DrawLogoParam($student['SCHOOL_ID']) . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool($student['SCHOOL_ID']) . "</font></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                     echo "<table width=100% cellspacing=0 style=\"border-collapse:collapse\">";
 
 
-                    echo "<tr><td width=15%>Student Name:</td>";
+                    echo "<tr><td width=15%>"._studentName.":</td>";
                     echo "<td>" . $student['FULL_NAME'] . "</td></tr>";
 
-                    echo "<tr><td>Grade:</td>";
+                    echo "<tr><td>"._grade.":</td>";
                     echo "<td>" . $student['GRADE_ID'] . " </td></tr>";
-                    echo "<tr><td>Gender:</td>";
+                    echo "<tr><td>"._gender.":</td>";
                     echo "<td>" . $sql_student['GENDER'] . "</td></tr>";
-                    echo "<tr><td>Ethnicity:</td>";
+                    echo "<tr><td>"._ethnicity.":</td>";
                     $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id='".$sql_student['ETHNICITY']."'"));
                     echo "<td>" . $sql_ethinicity[1]['ETHNICITY_NAME'] . "</td></tr>";
                     if ($sql_student['COM_NAME'] != '') {
-                        echo "<tr><td>Common Name:</td>";
+                        echo "<tr><td>"._commonName.":</td>";
                         echo "<td>" . $sql_student['COM_NAME'] . "</td></tr>";
                     }
                     if ($sql_student['SOCIAL_SEC'] != '') {
-                        echo "<tr><td>Social Security:</td>";
+                        echo "<tr><td>"._socialSecurity.":</td>";
                         echo "<td>" . $sql_student['SOCIAL_SEC'] . "</td></tr>";
                     }
-                    echo "<tr><td>Date of Birth:</td>";
+                    echo "<tr><td>"._dateOfBirth.":</td>";
                     echo "<td>" . $bir_dt . "</td></tr>";
                     if ($sql_student['LANG'] != '') {
-                        echo "<tr><td>Language Spoken:</td>";
+                        echo "<tr><td>"._languageSpoken.":</td>";
                         $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id='".$sql_student['LANG']."'"));
                         echo "<td>" . $sql_language[1]['LANGUAGE_NAME'] . "</td></tr>";
                         echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                     }
 
                     echo '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                    echo '<tr><td><b><u>Goal Details</u></b></td><td>&nbsp;</td></tr>';
+                    echo '<tr><td><b><u>'._goalDetails.'</u></b></td><td>&nbsp;</td></tr>';
                     echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                     foreach ($res_goal as $row_goal) {
-                        echo '<tr><td><b>Goal Title: </b></td><td>' . $row_goal['GOAL_TITLE'] . '</td></tr>';
-                        echo '<tr><td><b>Begin Date: </b></td><td>' . $row_goal['START_DATE'] . '</td></tr>';
-                        echo '<tr><td><b>End Date: </b></td><td>' . $row_goal['END_DATE'] . '</td></tr>';
-                        echo '<tr><td valign=top><b>Goal Description: </b></td><td>' . $row_goal['GOAL_DESCRIPTION'] . '</td></tr>';
+                        echo '<tr><td><b>'._goalTitle.': </b></td><td>' . $row_goal['GOAL_TITLE'] . '</td></tr>';
+                        echo '<tr><td><b>'._beginDate.': </b></td><td>' . $row_goal['START_DATE'] . '</td></tr>';
+                        echo '<tr><td><b>'._endDate.': </b></td><td>' . $row_goal['END_DATE'] . '</td></tr>';
+                        echo '<tr><td valign=top><b>'._goalDescription.': </b></td><td>' . $row_goal['GOAL_DESCRIPTION'] . '</td></tr>';
                         echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
 
                         if ($progress == 'Y') {
                             $goal_id = $row_goal['GOAL_ID'];
                             $res_pro = DBGet(DBQuery("SELECT START_DATE,PROGRESS_NAME ,PROFICIENCY,PROGRESS_DESCRIPTION,(SELECT TITLE FROM course_periods cp WHERE cp.COURSE_PERIOD_ID=student_goal_progress.COURSE_PERIOD_ID) AS CP_TITLE FROM student_goal_progress WHERE STUDENT_ID='" . $_SESSION['student_id'] . "' AND GOAL_ID='" . $goal_id . "' ORDER BY PROGRESS_NAME"), array('START_DATE' => 'ProperDate'));
-                            echo '<tr><td><b><u>Progress Details</u></b></td><td>&nbsp;</td></tr>';
+                            echo '<tr><td><b><u>'._progressDetails.'</u></b></td><td>&nbsp;</td></tr>';
                             echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                             foreach ($res_pro as $row_pro) {
-                                echo '<tr><td><b>Date of Entry: </b></td><td>' . $row_pro['START_DATE'] . '</td></tr>';
+                                echo '<tr><td><b>'._dateOfEntry.': </b></td><td>' . $row_pro['START_DATE'] . '</td></tr>';
                                 # ----------------------------- CP ------------------------------------------------- #	
-                                echo '<tr><td><b>Course Period: </b></td><td>' . $row_pro['CP_TITLE'] . '</td></tr>';
+                                echo '<tr><td><b>'._coursePeriod.': </b></td><td>' . $row_pro['CP_TITLE'] . '</td></tr>';
                                 # ----------------------------- CP ------------------------------------------------- #		
-                                echo '<tr><td><b>Progress Period Name: </b></td><td>' . $row_pro['PROGRESS_NAME'] . '</td></tr>';
-                                echo '<tr><td><b>Proficiency: </b></td><td>' . $row_pro['PROFICIENCY'] . '</td></tr>';
-                                echo '<tr><td><b>Progress Assessment: </b></td><td>' . $row_pro['PROGRESS_DESCRIPTION'] . '</td></tr>';
+                                echo '<tr><td><b>'._progressPeriodName.': </b></td><td>' . $row_pro['PROGRESS_NAME'] . '</td></tr>';
+                                echo '<tr><td><b>'._proficiency.': </b></td><td>' . $row_pro['PROFICIENCY'] . '</td></tr>';
+                                echo '<tr><td><b>'._progressAssessment.': </b></td><td>' . $row_pro['PROGRESS_DESCRIPTION'] . '</td></tr>';
                                 echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                             }
                         }
@@ -188,18 +188,18 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
             PDFStop($handle);
         } else
-            BackPrompt('No Students were found.');
+            BackPrompt(_noStudentsWereFound.'.');
     } else
-        BackPrompt('You must choose at least one student.');
+        BackPrompt(_youMustChooseAtLeastOneStudent.'.');
 
     if ($error == 'Y')
-        BackPrompt('No goals and progress were found.');
+        BackPrompt(_noGoalsAndProgressWereFound);
     // unset($_SESSION['student_id']);
     $_REQUEST['modfunc'] = true;
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Students > " . ProgramTitle());
+    DrawBC(""._students." > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
@@ -208,23 +208,23 @@ if (!$_REQUEST['modfunc']) {
             echo '<input type="hidden" name="_search_all_schools" value="Y" />';
         echo '<div class="panel-body form-inline">';
         echo '<div class="form-group">';
-        echo '<label>Please select the date range :</label>';
+        echo '<label>'._pleaseSelectTheDateRange.' :</label>';
         echo '<div class="input-group">';
         $date = '';
-        echo '<span class="input-group-addon">From : </span>';
+        echo '<span class="input-group-addon">'._from.' : </span>';
         DrawHeader(DateInputAY($start_date, 'start', 1));
-        echo '<span class="input-group-addon">To :</span>';
+        echo '<span class="input-group-addon">'._to.' :</span>';
         DrawHeader(DateInputAY($end_date, 'end', 2));
         echo '</div>';
         echo '</div>'; //.form-group
         echo '<div class="form-group">';
-        echo '<label class="checkbox-inline checkbox-switch switch-success"><input type="checkbox" name="chk_pro" id="chk_pro" value="Y" /><span></span>With Progress</label>';
+        echo '<label class="checkbox-inline checkbox-switch switch-success"><input type="checkbox" name="chk_pro" id="chk_pro" value="Y" /><span></span>'._withProgress.'</label>';
         echo '</div>';
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
     }
 
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -274,7 +274,7 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Info for Selected Students\'></div>';
+        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._printInfoForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 
@@ -283,7 +283,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -295,9 +295,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
@@ -321,7 +321,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -333,9 +333,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }

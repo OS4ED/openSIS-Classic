@@ -164,7 +164,7 @@ class PHPExcel_Calculation_FormulaParser {
 		// Helper variables
 		$tokens1	= $tokens2 	= $stack = array();
 		$inString	= $inPath 	= $inRange 	= $inError = false;
-		$token		= $previousToken	= $nextToken	= null;
+		$token		= $previousToken	= $nextToken	= _null;
 
 		$index	= 1;
 		$value	= '';
@@ -470,12 +470,12 @@ class PHPExcel_Calculation_FormulaParser {
 			if (isset($tokens1[$i - 1])) {
 				$previousToken = $tokens1[$i - 1];
 			} else {
-				$previousToken = null;
+				$previousToken = _null;
 			}
 			if (isset($tokens1[$i + 1])) {
 				$nextToken = $tokens1[$i + 1];
 			} else {
-				$nextToken = null;
+				$nextToken = _null;
 			}
 
 			if (is_null($token)) {
@@ -524,12 +524,12 @@ class PHPExcel_Calculation_FormulaParser {
 			if (isset($tokens2[$i - 1])) {
 				$previousToken = $tokens2[$i - 1];
 			} else {
-				$previousToken = null;
+				$previousToken = _null;
 			}
 			if (isset($tokens2[$i + 1])) {
 				$nextToken = $tokens2[$i + 1];
 			} else {
-				$nextToken = null;
+				$nextToken = _null;
 			}
 
 			if (is_null($token)) {

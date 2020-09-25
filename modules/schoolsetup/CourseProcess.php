@@ -28,6 +28,14 @@
 #***************************************************************************************
 include('../../RedirectRootInc.php');
 include('../../Warehouse.php');
+if(isset($_SESSION['language']) && $_SESSION['language']=='fr'){
+    define("_saveContinue","Enregistrer continuer");
+}
+elseif(isset($_SESSION['language']) && $_SESSION['language']=='es'){
+    define("_saveContinue", "Guardar Continuar");
+}else{
+    define("_saveContinue","Save & Continue");
+}
 $task = $_REQUEST['task'];
 $calendar_id = $_REQUEST['cal_id'];
 if ($_REQUEST['cp_id'] == '')
@@ -69,22 +77,47 @@ switch ($task) {
             }
         }
         if ($_REQUEST['sch_type'] == 'variable') {
-
+            if(isset($_SESSION['language']) && $_SESSION['language']=='fr'){
+                define("_classRoom","Salle de cours");
+                define("_period","Période");
+                define("_days","Journées");
+                define("_takesAttendance","La participation prend");
+                define("_room", "Chambre");
+                define("_time", "Temps");
+                define("_saveContinue", "Enregistrer continuer");
+            }
+            elseif(isset($_SESSION['language']) && $_SESSION['language']=='es'){
+                define("_classRoom","Salón de clases");
+                define("_period","Período");
+                define("_days","Dias");
+                define("_takesAttendance","toma de Asistencia");
+                define("_room","Habitación");
+                define("_time","Hora");
+                define("_saveContinue", "Guardar Continuar");
+            }else{
+                define("_classRoom","Class Room");
+                define("_period","Period");
+                define("_days","Days");
+                define("_takesAttendance","Takes Attendance");
+                define("_room", "Room");
+                define("_time", "Time");
+                define("_saveContinue", "Save & Continue");
+            }
             $header = '<hr/><input type=hidden name=tables[course_periods][' . $course_period_id . '][SCHEDULE_TYPE] value=VARIABLE id="variable"/>';
             echo '<input type="hidden" name="get_status" id="get_status" value="" />';
             echo '<input type="hidden" name="cp_id" id="' . $day . '_id" value="' . $course_period_id . '"/>';
             
             $header .= '<div class="clearfix">';
             $header .= '<div class="col-md-1">';
-            $header .= '<label class="control-label">Days</label>';
+            $header .= '<label class="control-label">'._days.'</label>';
             $header .= SelectInput($RET['DAYS'], 'course_period_variable[' . $course_period_id . '][DAYS]', '', $days, 'N/A', 'id=days class="form-control"', $div_this);
             $header .= '</div>'; //.col-md-1
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Period</label>';
+            $header .= '<label class="control-label">'._period.'</label>';
             $header .= SelectInput($RET['PERIOD_ID'], 'course_period_variable[' . $course_period_id . '][PERIOD_ID]', '', $periods, 'N/A', 'id=' . $day . '_period class=form-control ' . $disable . ' onchange=show_period_time(this.value,"' . $day . '","' . $course_period_id . '","n");', $div_this);
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Time</label>';
+            $header .= '<label class="control-label">'._time.'</label>';
             if ($_REQUEST['msg'] != 'conflict')
                 $header .='<div id=' . $day . '_period_time></div>';
             else {
@@ -96,33 +129,59 @@ switch ($task) {
             }
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Room</label>';
+            $header .= '<label class="control-label">'._room.'</label>';
             $header .= SelectInput($RET['ROOM'], 'course_period_variable[' . $course_period_id . '][ROOM_ID]', '', $rooms, 'N/A', 'id=' . $day . '_room  ' . $disable, $div_this);
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-2">';
             $header .= '<label class="control-label">&nbsp;</label>';
-            $header .= CheckboxInput_var_sch($RET['DOES_ATTENDANCE'], 'course_period_variable[' . $course_period_id . '][DOES_ATTENDANCE]', 'Takes Attendance', '', false, 'Yes', 'No', false, ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"' . $disable);
+            $header .= CheckboxInput_var_sch($RET['DOES_ATTENDANCE'], 'course_period_variable[' . $course_period_id . '][DOES_ATTENDANCE]', _takesAttendance, '', false, 'Yes', 'No', false, ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"' . $disable);
             $header .= '</div>'; //.col-md-2
             $header .= '</div>';
             $header .= '<div id="ajax_output"></div>';
             
             echo '<input type="hidden" name="fixed_day" id="fixed_day" value="' . $day . '" />';
         } elseif ($_REQUEST['sch_type'] == 'fixed') {
+            if(isset($_SESSION['language']) && $_SESSION['language']=='fr'){
+                define("_classRoom","Salle de cours");
+                define("_period","Période");
+                define("_days","Journées");
+                define("_takesAttendance","La participation prend");
+                define("_room", "Chambre");
+                define("_time", "Temps");
+                define("_saveContinue", "Enregistrer continuer");
+            }
+            elseif(isset($_SESSION['language']) && $_SESSION['language']=='es'){
+                define("_classRoom","Salón de clases");
+                define("_period","Período");
+                define("_days","Dias");
+                define("_takesAttendance","toma de Asistencia");
+                define("_room","Habitación");
+                define("_time","Hora");
+                define("_saveContinue", "Guardar Continuar");
+            }else{
+                define("_classRoom","Class Room");
+                define("_period","Period");
+                define("_days","Days");
+                define("_takesAttendance","Takes Attendance");
+                define("_room", "Room");
+                define("_time", "Time");
+                define("_saveContinue", "Save & Continue");
+            }
             $header = '<hr/><input type=hidden name=tables[course_periods][' . $course_period_id . '][SCHEDULE_TYPE] value=FIXED />';
             echo '<input type="hidden" name="get_status" id="get_status" value="" />';
             echo '<input type="hidden" name="cp_id" id="' . $day . '_id" value="' . $course_period_id . '"/>';
             
             $header .= '<div class="row clearfix">';
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Class Room</label>';
+            $header .= '<label class="control-label">'._classRoom.'</label>';
             $header .= SelectInput($RET['ROOM'], 'tables[course_period_var][' . $course_period_id . '][ROOM_ID]', '', $rooms, 'N/A', 'id=' . $day . '_room  ' . $disable, $div_this);
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Period</label>';
+            $header .= '<label class="control-label">'._period.'</label>';
             $header .= SelectInput($RET['PERIOD_ID'], 'tables[course_period_var][' . $course_period_id . '][PERIOD_ID]', '', $periods, 'N/A', 'id=' . $day . '_period class=form-control onchange="formcheck_periods_F2(\'' . $day . '\');"' . $disable, $div_this);
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
-            $header .= '<label class="control-label">Days</label>';
+            $header .= '<label class="control-label">'._days.'</label>';
             $header .= '<div class="days-check"><table><tr>';
             foreach ($days as $day => $short_day) {
                 if (strpos($RET['DAYS'], $day) !== false || ($new && $day != 'S' && $day != 'U'))
@@ -137,7 +196,7 @@ switch ($task) {
             $header .= '</div>'; //.col-md-3
             $header .= '<div class="col-md-3">';
             $header .= '<label class="control-label">&nbsp;</label>';
-            $header .= CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $course_period_id . '][DOES_ATTENDANCE]', 'Takes Attendance', $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success');
+            $header .= CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $course_period_id . '][DOES_ATTENDANCE]', _takesAttendance, $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success');
             $header .= '</div>'; //.col-md-3
             $header .= '</div>'; //.clearfix
             
@@ -146,7 +205,7 @@ switch ($task) {
         }
         elseif ($_REQUEST['sch_type'] == 'blocked') {
             $header = '<input type=hidden name=tables[course_periods][' . $course_period_id . '][SCHEDULE_TYPE] value=BLOCKED />';
-            $header .= '<hr/>' . SubmitButton('Save & Continue', '', 'class="btn btn-primary" onclick="validate_course_period();"');
+            $header .= '<hr/>' . SubmitButton(_saveContinue , '', 'class="btn btn-primary" onclick="validate_course_period();"');
         }
         echo $header;
         break;

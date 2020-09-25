@@ -39,7 +39,7 @@ function PrepareDate($date = '', $title = '', $allow_na = true, $options = '', $
         $options = array();
     }
     if (!$options['Y'] && !$options['M'] && !$options['D'] && !$options['C']) {
-        $options += array('Y' => true, 'M' => true, 'D' => true, 'C' => true);
+        $options += array('Y' =>true, 'M' =>true, 'D' =>true, 'C' =>true);
     }
     if ($options['disabled'] == true) {
         $extraM = ' DISABLED ';
@@ -221,7 +221,7 @@ function PrepareDate2($date = '', $title = '', $selectid, $allow_na = true, $opt
     if ($options == '')
         $options = array();
     if (!$options['Y'] && !$options['M'] && !$options['D'] && !$options['C'])
-        $options += array('Y' => true, 'M' => true, 'D' => true, 'C' => true);
+        $options += array('Y' =>true, 'M' =>true, 'D' =>true, 'C' =>true);
     if ($options['disabled'] == true) {
         $extraM = ' DISABLED ';
         $extraD = ' DISABLED ';
@@ -435,7 +435,7 @@ function PrepareDate_for_EndInput($date = '', $title = '', $allow_na = true, $op
     if ($options == '')
         $options = array();
     if (!$options['Y'] && !$options['M'] && !$options['D'] && !$options['C'])
-        $options += array('Y' => true, 'M' => true, 'D' => true, 'C' => true);
+        $options += array('Y' =>true, 'M' =>true, 'D' =>true, 'C' =>true);
 
     if ($options['short'] == true)
         $extraM = "style='width:60;' ";

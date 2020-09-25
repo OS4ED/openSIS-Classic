@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
@@ -61,22 +63,22 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
             echo "<tr><td width=105>" . DrawLogo() . "</td>";
-            echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Teacher Class List</div></td>";
-            echo "<td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr>";
+            echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._teacherClassList."</div></td>";
+            echo "<td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr>";
             echo "<tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr>";
             echo "</table>";
             echo '</td></tr>';
             echo '<tr><td width="100%">';
             echo "<table>";
-            echo '<tr><td>Teacher Name:</td>';
+            echo '<tr><td>'._teacherName.'</td>';
             echo '<td>' . $course_period['TEACHER'] . '</td></tr>';
-            echo '<tr><td>Course Name:</td>';
+            echo '<tr><td>'._courseName.'</td>';
             echo '<td>' . $course_period['COURSE_TITLE'] . '</td></tr>';
-            echo '<tr><td>Course Period Name:</td>';
+            echo '<tr><td>'._coursePeriodName.'</td>';
             echo '<td>' . GetActualCpName($course_period) . '</td></tr>';
-            echo '<tr><td>Course Period Occurance:</td>';
+            echo '<tr><td>'._coursePeriodOccurance.'</td>';
             echo '<td>' . GetPeriodOcc($course_period['COURSE_PERIOD_ID']) . '</td></tr>';
-            echo '<tr><td>Marking Period:</td>';
+            echo '<tr><td>'._markingPeriod.':</td>';
             echo '<td>' . GetMP($course_period['MARKING_PERIOD_ID']) . '</td></tr>';
             echo '</table>';
             echo '</td></tr>';
@@ -109,7 +111,34 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             if ($_REQUEST['search_modfunc'] == 'list') {
                 if (!$fields_list) {
-                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GENDER' => 'Gender', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM), 'FIRST_NAME' => 'First',
+                     'FIRST_INIT' =>_firstInitial,
+                     'LAST_NAME' =>_last,
+                     'MIDDLE_NAME' =>_middle,
+                     'NAME_SUFFIX' =>_suffix,
+                     'STUDENT_ID' =>_studentId,
+                     'GENDER' =>_gender,
+                     'GRADE_ID' =>_grade,
+                     'SECTION_ID' =>_section,
+                     'SCHOOL_ID' =>_school,
+                     'NEXT_SCHOOL' =>_rollingRetentionOptions,
+                     'CALENDAR_ID' =>_calendar,
+                     'USERNAME' =>_username,
+                     'PASSWORD' =>_password,
+                     'ALT_ID' =>_alternateId,
+                     'BIRTHDATE' =>_dob,
+                     'EMAIL' =>_emailId,
+                     'ADDRESS' =>_address,
+                     'CITY' =>_city,
+                     'STATE' =>_state,
+                     'ZIPCODE' =>_zipCode,
+                     'PHONE' =>_phone,
+                     'MAIL_ADDRESS' =>_mailingAddress,
+                     'MAIL_CITY' =>_mailingCity,
+                     'MAIL_STATE' =>_mailingState,
+                     'MAIL_ZIPCODE' =>_mailingZipcode,
+                     'PARENTS' =>_contacts,
+                    );
                     if ($extra['field_names'])
                         $fields_list += $extra['field_names'];
 
@@ -251,7 +280,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
                     else
-                        $table = '<br><br><b><font style="color:red">No students found.</font></b>';
+                        $table = '<br><br><b><font style="color:red">'._noStudentsFound.'.</font></b>';
                     unset($cr_pr_id);
                     unset($date);
                 }
@@ -268,12 +297,12 @@ if ($_REQUEST['modfunc'] == 'save') {
         PDFStop($handle);
     }
     else {
-        BackPrompt('You must choose at least one course period.');
+        BackPrompt(''._youMustChooseAtLeastOneCoursePeriod.'');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
 
     if (User('PROFILE') != 'admin') {
         $_REQUEST['search_modfunc'] = 'list';
@@ -281,7 +310,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list' || $_REQUEST['search_modfunc'] == 'select') {
         $_REQUEST['search_modfunc'] = 'select';
 
-        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y><span></span>Include Inactive Students</label></div></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y><span></span>'._includeInactiveStudents.'</label></div></div>';
 
         $Search = 'mySearch';
         include('modules/miscellaneous/Export.php');
@@ -289,14 +318,14 @@ if (!$_REQUEST['modfunc']) {
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST[next_modname])) . " method=POST>";
 
 
-        PopTable('header', 'Search');
+        PopTable('header',  _search);
 
         $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(Trim(s.LAST_NAME),\', \',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND FIND_IN_SET(\'' . UserSchool() . '\', ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">Teacher</label><div class="col-lg-8">';
-        echo "<SELECT name=teacher_id class=form-control><OPTION value=''>N/A</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._teacher.'</label><div class="col-lg-8">';
+        echo "<SELECT name=teacher_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $teacher)
             echo "<OPTION value=$teacher[STAFF_ID]>$teacher[FULL_NAME]</OPTION>";
         echo '</SELECT>';
@@ -305,8 +334,8 @@ if (!$_REQUEST['modfunc']) {
 
         $RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE"));
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">Subject</label><div class="col-lg-8">';
-        echo "<SELECT name=subject_id class=form-control><OPTION value=''>N/A</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._subject.'</label><div class="col-lg-8">';
+        echo "<SELECT name=subject_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $subject)
             echo "<OPTION value=$subject[SUBJECT_ID]>$subject[TITLE]</OPTION>";
         echo '</SELECT></div></div>';
@@ -316,8 +345,8 @@ if (!$_REQUEST['modfunc']) {
         $RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">Period</label><div class="col-lg-8">';
-        echo "<SELECT name=period_id class=form-control><OPTION value=''>N/A</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">'._period.'</label><div class="col-lg-8">';
+        echo "<SELECT name=period_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $period)
             echo "<OPTION value=$period[PERIOD_ID]>$period[TITLE]</OPTION>";
         echo '</SELECT></div></div>';
@@ -330,7 +359,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.row
 
         echo '<div>';
-        echo Buttons('Submit', 'Reset', 'onclick="self_disable(this);"');
+        echo Buttons(_submit, _reset, 'onclick="self_disable(this);"');
         echo '</div>';
         PopTable('footer');
         echo '</FORM>';
@@ -351,7 +380,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -362,9 +391,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectsWere.'') . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
@@ -423,21 +452,21 @@ function mySearch($extra) {
     $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
      
     if ($stu_schedule_qr[1]['TOT'] > 0) {
-        echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.") . '</div>';
+        echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . ""._studentIsFound."" : $stu_schedule_qr[1]['TOT'] . " "._studentIsFound.".") . '</div>';
     } else {
-        echo '<div class="alert bg-danger alert-styled-left">No student found.</div>';
+        echo '<div class="alert bg-danger alert-styled-left">'._noStudentFound.'.</div>';
     }
     $course_periods_RET = DBGet(DBQuery($sql), array('COURSE_PERIOD_ID' => '_makeChooseCheckbox', 'STU_COURSE_PERIOD_ID' => '_make_no_student'));
-    $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => 'Course Period', 'STU_COURSE_PERIOD_ID' => 'No of schedule student');
+    $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => ''._coursePeriod.'', 'STU_COURSE_PERIOD_ID' => ''._coursePeriod.'');
 
     echo '<INPUT type=hidden name=relation>';
 
     echo '<div class="panel panel-default">';
-    ListOutput($course_periods_RET, $LO_columns, 'Course Period', 'Course Periods', array(), array(), array('save' => true, 'count' => false, 'search' => true));
+    ListOutput($course_periods_RET, $LO_columns, ''._coursePeriod.'', ''._coursePeriod.'', array(), array(), array('save' =>true, 'count' =>true, 'search' =>true));
     echo '</div>';
 
     if (count($course_periods_RET) != 0)
-        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'Print Class Lists for Selected Course Periods\'></div>';
+        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\''._printClassListsForSelectedCoursePeriods.'\'></div>';
     echo "</FORM>";
 }
 
@@ -454,7 +483,7 @@ function GetActualCpName($cp_array) {
 
 function GetPeriodOcc($cp_id) {
     $period_name = array();
-    $days = array('M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday', 'H' => 'Thursday', 'F' => 'Friday', 'S' => 'Saturday', 'U' => 'Sunday');
+    $days = array('M' =>_monday, 'T' =>_monday, 'W' =>_monday, 'H' =>_monday, 'F' =>_monday, 'S' =>_monday, 'U' =>_sunday);
     $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.START_TIME,cpv.END_TIME,sp.TITLE FROM course_period_var cpv,school_periods sp WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $cp_id . ' GROUP BY cpv.DAYS,sp.PERIOD_ID,cpv.COURSE_PERIOD_ID'));
     foreach ($get_det as $gd) {
         $period_name[] = $days[$gd['DAYS']] . ' - ' . $gd['TITLE'] . ' (' . date("g:i A", strtotime($gd['START_TIME'])) . ' - ' . date("g:i A", strtotime($gd['END_TIME'])) . ')';

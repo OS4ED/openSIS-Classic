@@ -47,14 +47,14 @@ class PHPExcel_CachedObjectStorage_CacheBase {
 	 *
 	 *	@var PHPExcel_Cell
 	 */
-	protected $_currentObject = null;
+	protected $_currentObject = _null;
 
 	/**
 	 *	Coordinate address of the currently active Cell
 	 *
 	 *	@var string
 	 */
-	protected $_currentObjectID = null;
+	protected $_currentObjectID = _null;
 
 
 	/**
@@ -113,7 +113,7 @@ class PHPExcel_CachedObjectStorage_CacheBase {
 	public function deleteCacheData($pCoord) {
 		if ($pCoord === $this->_currentObjectID) {
 			$this->_currentObject->detach();
-			$this->_currentObjectID = $this->_currentObject = null;
+			$this->_currentObjectID = $this->_currentObject = _null;
 		}
 
 		if (isset($this->_cellCache[$pCoord])) {

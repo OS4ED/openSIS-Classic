@@ -64,7 +64,7 @@
 		WriteOutput('<script type="text/javascript">');
 		// Minified version of the document.domain automatic fix script (#1919).
 		// The original script can be found at _dev/domain_fix_template.js
-		WriteOutput("(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\.|$)/,'');if (d.length==0) break;try{document.domain=d;}catch (e){break;}}})();");
+		WriteOutput("(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\.|$)/,'');if (d.length==0) break;try{document.domain= _d;}catch (e){break;}}})();");
 		WriteOutput('window.parent.OnUploadCompleted(' & errorNumber & ', "' & JSStringFormat(fileUrl) & '", "' & JSStringFormat(fileName) & '", "' & JSStringFormat(customMsg) & '");' );
 		WriteOutput('</script>');
 	}
@@ -259,7 +259,7 @@
 		errorNumber = 0;
 		fileName = cffile.ClientFileName ;
 		fileExt = cffile.ServerFileExt ;
-		fileExisted = false ;
+		fileExisted = false;
 
 		// munge filename for html download. Only a-z, 0-9, _, - and . are allowed
 		if( reFind("[^A-Za-z0-9_\-\.]", fileName) ) {
@@ -275,9 +275,9 @@
 
 		// When the original filename already exists, add numbers (0), (1), (2), ... at the end of the filename.
 		counter = 0;
-		tmpFileName = fileName;
+		tmpFileName = _fileName;
 		while( fileExists("#currentFolderPath##fileName#.#fileExt#") ) {
-			fileExisted = true ;
+			fileExisted = true;
 			counter = counter + 1 ;
 			fileName = tmpFileName & '(#counter#)' ;
 		}

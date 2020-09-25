@@ -54,7 +54,7 @@ function db_start()
 				$errormessage = mysqli_error($connection);
 			break;
 		}
-		db_show_error("","Could not Connect to Database: $DatabaseServer",$errstring);
+		db_show_error("",""._couldNotConnectToDatabase.": $DatabaseServer",$errstring);
 	}
 	return $connection;
 }
@@ -112,7 +112,7 @@ function DBQuery($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
                                                     $connection->query("ROLLBACK");
-                                                    die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+                                                    die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -123,7 +123,7 @@ function DBQuery($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 {
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+                                $result = $connection->query($sql) or die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                 }
                                 
 			}
@@ -175,7 +175,7 @@ function DBQuery_assignment($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
 							$connection->query("ROLLBACK");
-							die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+							die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -186,7 +186,7 @@ function DBQuery_assignment($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 { 
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+                                $result = $connection->query($sql) or die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                 }
 				
 			}
@@ -235,7 +235,7 @@ function DBQueryMod($sql)
                                                     if($user_agent[0]=='Mozilla')
                                                     {
 							$connection->query("ROLLBACK");
-							die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+							die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                                     }
 						}
 					}
@@ -246,7 +246,7 @@ function DBQueryMod($sql)
                                 $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
                                 if($user_agent[0]=='Mozilla')
                                 { 
-                                $result = $connection->query($sql) or die(db_show_error($sql,"DB Execute Failed.",mysqli_error($connection)));
+                                $result = $connection->query($sql) or die(db_show_error($sql,_dbExecuteFailed,mysqli_error($connection)));
                                 }
 				
 			}
@@ -358,65 +358,65 @@ function db_properties($table)
 function db_show_error($sql,$failnote,$additional='')
 {	global $openSISTitle,$openSISVersion,$openSISNotifyAddress;
 
-	PopTable('header','Error');
+	PopTable('header', _error);
 	$tb = debug_backtrace();
 	$error = $tb[1]['file'] . " at " . $tb[1]['line'];
 	echo "
 		<TABLE CELLSPACING=10 BORDER=0>
-			<TD align=right><b>Date:</TD>
+			<TD align=right><b>"._date.":</b></TD>
 			<TD><pre>".date("m/d/Y h:i:s")."</pre></TD>
 		</TR><TR>
-			<TD align=right><b>Failure Notice:</b></TD>
+			<TD align=right><b>"._failureNotice.":</b></TD>
 			<TD><pre> $failnote </pre></TD>
 		</TR><TR>
-			<TD align=right><b>SQL:</b></TD>
+			<TD align=right><b>"._sql.":</b></TD>
 			<TD>$sql</TD>
 		</TR>
 		</TR><TR>
-			<TD align=right><b>Traceback:</b></TD>
+			<TD align=right><b>"._traceback.":</b></TD>
 			<TD>$error</TD>
 		</TR>
 		</TR><TR>
-			<TD align=right><b>Additional Information:</b></TD>
+			<TD align=right><b>"._additionalInformation.":</b></TD>
 			<TD>$additional</TD>
 		</TR>
 		</TABLE>";
 		echo "
 		<TABLE CELLSPACING=10 BORDER=0>
-			<TR><TD align=right><b>Date:</TD>
+			<TR><TD align=right><b>"._date.":</TD>
 			<TD><pre>".date("m/d/Y h:i:s")."</pre></TD>
 		</TR><TR>
 			<TD align=right></TD>
-			<TD>openSIS has encountered an error that could have resulted from any of the following:
+			<TD>"._openSisHasEncounteredAnErrorThatCouldHaveResultedFromAnyOfTheFollowing.":
 			<br/>
 			<ul>
-			<li>Invalid data input</li>
-			<li>Database SQL error</li>
-			<li>Program error</li>
+			<li>"._invalidDataInput."</li>
+			<li>"._databaseSqlError."</li>
+			<li>"._programError."</li>
 			</ul>
 			
-			Please take this screen shot and send it to your openSIS representative for debugging and resolution.
+			"._pleaseTakeThisScreenShotAndSendItToYourOpenSisRepresentativeForDebuggingAndResolution.".
 			</TD>
 		</TR>
 		
 		</TABLE>";
 	//Something you have asked the system to do has thrown a database error.  A system administrator has been notified, and the problem will be fixed as soon as possible.  It might be that changing the input parameters sent to this program will cause it to run properly.  Thanks for your patience.
 	PopTable('footer');
-	echo "<!-- SQL STATEMENT: \n\n $sql \n\n -->";
+	echo "<!-- "._sqlStatement.": \n\n $sql \n\n -->";
 
 	
 
 	if($openSISNotifyAddress)
 	{
-		$message = "System: $openSISTitle \n";
-		$message .= "Date: ".date("m/d/Y h:i:s")."\n";
-		$message .= "Page: ".$_SERVER['PHP_SELF'].' '.ProgramTitle()." \n\n";
-		$message .= "Failure Notice:  $failnote \n";
-		$message .= "Additional Info: $additional \n";
+		$message = ""._system.": $openSISTitle \n";
+		$message .= ""._date.": ".date("m/d/Y h:i:s")."\n";
+		$message .= ""._page.": ".$_SERVER['PHP_SELF'].' '.ProgramTitle()." \n\n";
+		$message .= ""._failureNotice.":  $failnote \n";
+		$message .= ""._additionalInfo.": $additional \n";
 		$message .= "\n $sql \n";
-		$message .= "Request Array: \n".ShowVar($_REQUEST,'Y', 'N');
-		$message .= "\n\nSession Array: \n".ShowVar($_SESSION,'Y', 'N');
-		mail($openSISNotifyAddress,'openSIS Database Error',$message);
+		$message .= ""._requestArray.": \n".ShowVar($_REQUEST,'Y', 'N');
+		$message .= "\n\n"._sessionArray.": \n".ShowVar($_SESSION,'Y', 'N');
+		mail($openSISNotifyAddress,_openSisDatabaseError,$message);
 
 	}
 

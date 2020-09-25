@@ -41,8 +41,20 @@ $city_options = array('Kokomo'=>'Kokomo');
 $state_options = array('IN'=>'IN');
 $zip_options = array('46901'=>'46901','46902'=>'46902');
 
-$relation_options = array('Father'=>'Father','Mother'=>'Mother','Step Mother'=>'Step Mother','Step Father'=>'Step Father','Grandmother'=>'Grandmother','Grandfather'=>'Grandfather','Legal Guardian'=>'Legal Guardian','Other Family Member'=>'Other Family Member');
+$relation_options = array('Father'=>_father,
+'Mother'=>_mother,
+'Step Mother'=>_stepMother,
+'Step Father'=>_stepFather,
+'Grandmother'=>_grandmother,
+'Grandfather'=>_grandfather,
+'Legal Guardian'=>_legalGuardian,
+'Other Family Member'=>_otherFamilyMember,
+);
 if($info_apd)
-	$info_options_x = array('Phone'=>'Phone','Cell Phone'=>'Cell Phone','Work Phone'=>'Work Phone','Employer'=>'Employer');
+	$info_options_x = array('Phone'=>_phone,
+	'Cell Phone'=>_cellPhone,
+	'Work Phone'=>_workPhone,
+	'Employer'=>_employer,
+);
 
 ?>

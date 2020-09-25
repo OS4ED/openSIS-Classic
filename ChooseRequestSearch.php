@@ -37,9 +37,9 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html = 'course_modal_request||';
-    $html.= '<h6>'.count($courses_RET) . ((count($courses_RET) == 1) ? ' Course was' : ' Courses were') . ' found.</h6>';
+    $html.= '<h6>'.count($courses_RET) . ((count($courses_RET) == 1) ? ' '._courseWas.'' : ' '._coursesWere.'') . ' '._found.'.</h6>';
     if (count($courses_RET) > 0) {
-        $html.='<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Course</th></tr></thead>';
+        $html.='<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._course.'</th></tr></thead>';
         $html.='<tbody>';
         foreach ($courses_RET as $val) {
 

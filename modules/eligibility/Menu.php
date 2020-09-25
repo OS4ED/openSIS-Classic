@@ -1,19 +1,19 @@
 <?php
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -27,27 +27,27 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['eligibility']['admin'] = array(
-						'eligibility/Student.php'=>'Student Screen',
-						'eligibility/AddActivity.php'=>'Add Activity',
-						1=>'Reports',
-						'eligibility/StudentList.php'=>'Student List',
-						'eligibility/TeacherCompletion.php'=>'Teacher Completion',
-						2=>'Setup',
-						'eligibility/Activities.php'=>'Activities',
-						'eligibility/EntryTimes.php'=>'Entry Times'
+						'eligibility/Student.php'=>_studentScreen,
+						'eligibility/AddActivity.php'=>_addActivity,
+						1=>_reports,
+						'eligibility/StudentList.php'=>_studentList,
+						'eligibility/TeacherCompletion.php'=>_teacherCompletion,
+						2=>_setup,
+						'eligibility/Activities.php'=>_activities,
+						'eligibility/EntryTimes.php'=>_entryTimes,
 					);
 
 $menu['eligibility']['teacher'] = array(
-						'eligibility/EnterEligibility.php'=>'Enter Extracurricular'
+						'eligibility/EnterEligibility.php'=>_enterExtracurricular,
 					);
 
 $menu['eligibility']['parent'] = array(
-						'eligibility/Student.php'=>'Student Screen',
-						'eligibility/StudentList.php'=>'Student List'
+						'eligibility/Student.php'=>_studentScreen,
+						'eligibility/StudentList.php'=>_studentList,
 					);
 
 $menu['users']['admin'] += array(
-						'users/TeacherPrograms.php?include=eligibility/EnterEligibility.php'=>'Enter Extracurricular'
+						'users/TeacherPrograms.php?include=eligibility/EnterEligibility.php'=>_enterExtracurricular,
 					);
 
 $exceptions['eligibility'] = array(

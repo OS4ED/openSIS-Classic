@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2010 Frederico Caldeira Knabben
@@ -22,44 +22,41 @@
  * Page used to create new folders in the current folder.
 -->
 <html>
-	<head>
-		<title>Create Folder</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link href="browser.css" type="text/css" rel="stylesheet">
-		<script type="text/javascript" src="js/common.js"></script>
-		<script type="text/javascript">
+  <head>
+    <title>Create Folder</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="browser.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript">
+      function SetCurrentFolder(resourceType, folderPath) {
+        oConnector.ResourceType = _resourceType;
+        oConnector.CurrentFolder = _folderPath;
+      }
 
-function SetCurrentFolder( resourceType, folderPath )
-{
-	oConnector.ResourceType = resourceType ;
-	oConnector.CurrentFolder = folderPath ;
-}
+      function CreateFolder() {
+        var sFolderName;
 
-function CreateFolder()
-{
-	var sFolderName ;
+        while (true) {
+          sFolderName = prompt("Type the name of the new folder:", "");
 
-	while ( true )
-	{
-		sFolderName = prompt( 'Type the name of the new folder:', '' ) ;
+          if (sFolderName == null) return;
+          else if (sFolderName.length == 0)
+            alert("Please type the folder name");
+          else break;
+        }
 
-		if ( sFolderName == null )
-			return ;
-		else if ( sFolderName.length == 0 )
-			alert( 'Please type the folder name' ) ;
-		else
-			break ;
-	}
+        oConnector.SendCommand(
+          "CreateFolder",
+          "NewFolderName=" + encodeURIComponent(sFolderName),
+          CreateFolderCallBack
+        );
+      }
 
-	oConnector.SendCommand( 'CreateFolder', 'NewFolderName=' + encodeURIComponent( sFolderName) , CreateFolderCallBack ) ;
-}
+      function CreateFolderCallBack(fckXml) {
+        if (oConnector.CheckError(fckXml) == 0)
+          window.parent.frames["frmResourcesList"].Refresh();
 
-function CreateFolderCallBack( fckXml )
-{
-	if ( oConnector.CheckError( fckXml ) == 0 )
-		window.parent.frames['frmResourcesList'].Refresh() ;
-
-	/*
+        /*
 	// Get the current folder path.
 	var oNode = fckXml.SelectSingleNode( 'Connector/Error' ) ;
 	var iErrorNumber = parseInt( oNode.attributes.getNamedItem('number').value ) ;
@@ -86,29 +83,36 @@ function CreateFolderCallBack( fckXml )
 			break ;
 	}
 	*/
-}
+      }
 
-window.onload = function()
-{
-	window.top.IsLoadedCreateFolder = true ;
-}
-		</script>
-	</head>
-	<body>
-		<table class="fullHeight" cellSpacing="0" cellPadding="0" width="100%" border="0">
-			<tr>
-				<td>
-					<button type="button" style="WIDTH: 100%" onclick="CreateFolder();">
-						<table cellSpacing="0" cellPadding="0" border="0">
-							<tr>
-								<td><img height="16" alt="" src="images/Folder.gif" width="16"></td>
-								<td>&nbsp;</td>
-								<td nowrap>Create New Folder</td>
-							</tr>
-						</table>
-					</button>
-				</td>
-			</tr>
-		</table>
-	</body>
+      window.onload = function () {
+        window.top.IsLoadedCreateFolder = true;
+      };
+    </script>
+  </head>
+  <body>
+    <table
+      class="fullHeight"
+      cellspacing="0"
+      cellpadding="0"
+      width="100%"
+      border="0"
+    >
+      <tr>
+        <td>
+          <button type="button" style="width: 100%;" onclick="CreateFolder();">
+            <table cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td>
+                  <img height="16" alt="" src="images/Folder.gif" width="16" />
+                </td>
+                <td>&nbsp;</td>
+                <td nowrap>Create New Folder</td>
+              </tr>
+            </table>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>

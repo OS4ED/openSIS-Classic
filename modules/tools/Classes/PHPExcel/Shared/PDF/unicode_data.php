@@ -18211,7 +18211,7 @@ $unicode_mirror = array (
 
 /**
  * Arabic shape subtitutions
- * char code=>isolated, final, initial, medial
+ * char code=>_isolated, final, initial, medial
  */
 global $unicode_arlet;
 $unicode_arlet = array(
@@ -18295,7 +18295,7 @@ $unicode_arlet = array(
 
 /**
  * Arabic laa letter
- * char code=>isolated, final, initial, medial
+ * char code=>_isolated, final, initial, medial
  */
 global $laa_array;
 $laa_array = array (

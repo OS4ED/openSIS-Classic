@@ -134,7 +134,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
     	// Initialise values
     	$this->_name				= '';
     	$this->_description			= '';
-    	$this->_worksheet			= null;
+    	$this->_worksheet			= _null;
     	$this->_coordinates			= 'A1';
     	$this->_offsetX				= 0;
     	$this->_offsetY				= 0;
@@ -229,7 +229,7 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
     			while ($iterator->valid()) {
     				if ($iterator->current()->getHashCode() == $this->getHashCode()) {
     					$this->_worksheet->getDrawingCollection()->offsetUnset( $iterator->key() );
-    					$this->_worksheet = null;
+    					$this->_worksheet = _null;
     					break;
     				}
     			}

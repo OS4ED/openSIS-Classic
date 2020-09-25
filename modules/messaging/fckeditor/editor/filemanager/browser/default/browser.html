@@ -53,7 +53,7 @@
 
 		try
 		{
-			document.domain = d ;
+			document.domain = _d;
 		}
 		catch (e)
 		{
@@ -160,7 +160,7 @@ oIcons.AvailableIconsArray = [
 oIcons.AvailableIcons = new Object() ;
 
 for ( var i = 0 ; i < oIcons.AvailableIconsArray.length ; i++ )
-	oIcons.AvailableIcons[ oIcons.AvailableIconsArray[i] ] = true ;
+	oIcons.AvailableIcons[ oIcons.AvailableIconsArray[i] ] = true;
 
 oIcons.GetIcon = function( fileName )
 {

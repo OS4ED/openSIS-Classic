@@ -300,7 +300,7 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 			// Add media
 			for ($i = 0; $i < $this->getDrawingHashTable()->count(); ++$i) {
 				if ($this->getDrawingHashTable()->getByIndex($i) instanceof PHPExcel_Worksheet_Drawing) {
-					$imageContents = null;
+					$imageContents = _null;
 					$imagePath = $this->getDrawingHashTable()->getByIndex($i)->getPath();
 
 					if (strpos($imagePath, 'zip://') !== false) {

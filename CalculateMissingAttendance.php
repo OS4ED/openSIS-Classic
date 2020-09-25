@@ -30,11 +30,11 @@ include('RedirectRootInc.php');
 include 'Warehouse.php';
 include 'Data.php';
 $syear = $_SESSION['UserSyear'];
-$flag=FALSE;
+$flag= FALSE;
 $RET=DBGet(DBQuery('SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID FROM missing_attendance WHERE SYEAR=\''.  UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' LIMIT 0,1'));
  if (count($RET))
 {
-     $flag=TRUE;
+     $flag= TRUE;
  }
 $last_update=DBGet(DBQuery('SELECT VALUE FROM program_config WHERE PROGRAM=\'MissingAttendance\' AND TITLE=\'LAST_UPDATE\' AND SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.UserSchool().'\''));
 $last_update=trim($last_update[1]['VALUE']);
@@ -58,6 +58,6 @@ $RET=DBGet(DBQuery("SELECT SCHOOL_ID,SCHOOL_DATE,COURSE_PERIOD_ID,TEACHER_ID,SEC
      echo '<span style="display:none">NEW_MI_YES</span>';
  }
 if(count($RET))
-echo '<div class="alert alert-success alert-styled-left alert-arrow-left alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Missing attendance data list created.</div>';
+echo '<div class="alert alert-success alert-styled-left alert-arrow-left alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>'._missingAttendanceDataListCreated.'.</div>';
 
 ?>

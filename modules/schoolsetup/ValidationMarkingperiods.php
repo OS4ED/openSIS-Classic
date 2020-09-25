@@ -32,7 +32,7 @@ include('../../RedirectModulesInc.php');
 	function formcheck_school_setup_marking_onedit(){
 
   	var frmvalidator  = new Validator("marking_period");
-  	frmvalidator.addValidation("tables['.$_REQUEST['marking_period_id'].'][TITLE]","req","Please enter the title");
+  	frmvalidator.addValidation("tables['.$_REQUEST['marking_period_id'].'][TITLE]","req",pleaseEnterTheTitle);
   	frmvalidator.addValidation("tables['.$_REQUEST['marking_period_id'].'][TITLE]","maxlen=50", "Max length for title is 50");
 	
 	frmvalidator.addValidation("tables['.$_REQUEST['marking_period_id'].'][SHORT_NAME]","req","Please enter the Short Name");

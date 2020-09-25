@@ -39,7 +39,7 @@ class PHPExcel_CachedObjectStorage_MemoryGZip extends PHPExcel_CachedObjectStora
 		$this->_currentObject->detach();
 
 		$this->_cellCache[$this->_currentObjectID] = gzdeflate(serialize($this->_currentObject));
-		$this->_currentObjectID = $this->_currentObject = null;
+		$this->_currentObjectID = $this->_currentObject = _null;
 	}	//	function _storeData()
 
 
@@ -96,12 +96,12 @@ class PHPExcel_CachedObjectStorage_MemoryGZip extends PHPExcel_CachedObjectStora
 	public function unsetWorksheetCells() {
 		if(!is_null($this->_currentObject)) {
 			$this->_currentObject->detach();
-			$this->_currentObject = $this->_currentObjectID = null;
+			$this->_currentObject = $this->_currentObjectID = _null;
 		}
 		$this->_cellCache = array();
 
 		//	detach ourself from the worksheet, so that it can then delete this object successfully
-		$this->_parent = null;
+		$this->_parent = _null;
 	}	//	function unsetWorksheetCells()
 
 }

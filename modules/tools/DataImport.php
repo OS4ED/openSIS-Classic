@@ -32,7 +32,7 @@ echo "<div id='mapping'></div>";
 include('../../RedirectModules.php');
 include('Classes/PHPExcel.php');
 echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
-DrawBC("School Setup > Data Import >" . ProgramTitle());
+DrawBC(""._schoolSetup." > "._dataImport." >" . ProgramTitle());
 
 
 function add_person($first, $middle, $last, $email) {
@@ -55,15 +55,15 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body text-center">';
 
-        echo '<h5 class="text-center">Click on the Browse button to navigate to the Excel file in your computer\'s hard drive that has your data and select it. <b>After selecting, click Upload.</b></h5>';
+        echo '<h5 class="text-center">'._clickOnTheBrowseButtonToNavigateToTheExcelFileInYourComputerSHardDriveThatHasYourDataAndSelectIt.'. <b>'._afterSelectingClickUpload.'.</b></h5>';
         echo '<div class="form-group">';
         echo '<input type="hidden"  name="MAX_FILE_SIZE" value="2000000" />';
-        echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>Click here to select a file</span></label></div>';
-        echo '<p class="help-block">Supported file types: xls, xlsx</p>';
+        echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>'._clickHereToSelectAFile.'</span></label></div>';
+        echo '<p class="help-block">'._supportedFileTypesXlsXlsx.'</p>';
         echo '</div>';
 
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="Upload" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
         echo '</div>'; //.panel
         echo '</form>';
         echo '</div>'; //.col-md-6
@@ -85,14 +85,14 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<form action="Modules.php?modname=' . $_REQUEST[modname] . '&action=display&page_display=STUDENT_INFO" name="student_form"  method="POST">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">Please create a one-to-one relationship between the fields in your spreadsheet and the fields in the openSIS database by selecting the appropriate fields from the right column. After you are done, click Map it.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
         echo '</div>'; //.panel-heading
 
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
-        echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</td><td width="200">&nbsp;</td><td>These are available fields in openSIS</td></tr>';
+        echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
 	echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
         $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
@@ -116,15 +116,57 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         }
 
         $_SESSION['data'] = $arr_data;
-        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Graduation Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
-        $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
-        $options+=array('GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'START_DATE' => 'Student Enrollment Date', 'END_DATE' => 'Student Enrollment End Date');
+        $options = array('FIRST_NAME' =>_firstName,
+         'LAST_NAME' => _lastName,
+         'MIDDLE_NAME' =>_firstName,
+         'NAME_SUFFIX' => _nameSuffix,
+         'GENDER' => _gender,
+         'ETHNICITY' => _ethnicity,
+         'COMMON_NAME' => _commonName,
+         'SOCIAL_SECURITY' => _socialSecurity,
+         'BIRTHDATE' => _birthdate,
+         'LANGUAGE' => _language,
+         'ESTIMATED_GRAD_DATE' => _estimatedGraduationDate,
+         'ALT_ID' => _alternateId,
+         'EMAIL' => _emailStudentS,
+         'PHONE' => _contactNoStudentS,
+         'IS_DISABLE' => _disabled,
+        );
+        $options+=array('USERNAME' => _username,
+         'PASSWORD' => _password,
+        );
+        $options+=array('GRADE_ID' => _grade,
+         'SECTION_ID' => _section,
+         'START_DATE' => _studentEnrollmentDate,
+         'END_DATE' => _studentEnrollmentEndDate,
+        );
 
 
 
-        $options+=array('STREET_ADDRESS_1' => 'Address Line 1 (Student\'s)', 'STREET_ADDRESS_2' => 'Address Line 2 (Student\'s)', 'CITY' => 'City (Student\'s)', 'STATE' => 'State (Student\'s)', 'ZIPCODE' => 'Zipcode (Student\'s)');
-        $options+=array('PRIMARY_FIRST_NAME' => 'Primary First Name', 'PRIMARY_MIDDLE_NAME' => 'Primary Middle Name', 'PRIMARY_LAST_NAME' => 'Primary Last Name', 'PRIMARY_WORK_PHONE' => 'Work Phone (Primary Contact\'s)', 'PRIMARY_HOME_PHONE' => 'Home Phone (Primary Contact\'s)', 'PRIMARY_CELL_PHONE' => 'Cell Phone (Primary Contact\'s)', 'PRIMARY_EMAIL' => 'Email (Primary Contact\'s)', 'PRIMARY_RELATION' => 'Relationship (Primary Contact\'s)');
-        $options+=array('SECONDARY_FIRST_NAME' => 'Secondary First Name', 'SECONDARY_MIDDLE_NAME' => 'Secondary Middle Name', 'SECONDARY_LAST_NAME' => 'Secondary Last Name', 'SECONDARY_WORK_PHONE' => 'Work Phone (Secondary Contact\'s)', 'SECONDARY_HOME_PHONE' => 'Home Phone (Secondary Contact\'s)', 'SECONDARY_CELL_PHONE' => 'Cell Phone (Secondary Contact\'s)', 'SECONDARY_EMAIL' => 'Email (Secondary Contact\'s)', 'SECONDARY_RELATION' => 'Relationship (Secondary Contact\'s)');
+        $options+=array('STREET_ADDRESS_1' => _addressLine_1StudentS,
+         'STREET_ADDRESS_2' => _addressLine_2StudentS,
+         'CITY' => _cityStudentS,
+         'STATE' => _stateStudentS,
+         'ZIPCODE' => _zipcodeStudentS,
+        );
+        $options+=array('PRIMARY_FIRST_NAME' => _primaryFirstName,
+         'PRIMARY_MIDDLE_NAME' => _primaryMiddleName,
+         'PRIMARY_LAST_NAME' => _primaryLastName,
+         'PRIMARY_WORK_PHONE' => _workPhonePrimaryContactS,
+         'PRIMARY_HOME_PHONE' => _homePhonePrimaryContactS,
+         'PRIMARY_CELL_PHONE' => _cellPhonePrimaryContactS,
+         'PRIMARY_EMAIL' => _emailPrimaryContactS,
+         'PRIMARY_RELATION' => _relationshipPrimaryContactS,
+        );
+        $options+=array('SECONDARY_FIRST_NAME' => _secondaryFirstName,
+         'SECONDARY_MIDDLE_NAME' => _secondaryMiddleName,
+         'SECONDARY_LAST_NAME' => _secondaryLastName,
+         'SECONDARY_WORK_PHONE' => _workPhoneSecondaryContactS,
+         'SECONDARY_HOME_PHONE' => _homePhoneSecondaryContactS,
+         'SECONDARY_CELL_PHONE' => _cellPhoneSecondaryContactS,
+         'SECONDARY_EMAIL' => _emailSecondaryContactS,
+         'SECONDARY_RELATION' => _relationshipSecondaryContactS,
+        );
 
         $custom = DBGet(DBQuery('SELECT * FROM custom_fields'));
         foreach ($custom as $c) {
@@ -148,7 +190,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
-        echo '<div class="panel-footer text-center"><input type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.');"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStuBtnOne" type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
 
         echo "</form>";
@@ -159,25 +201,67 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">Please create a one-to-one relationship between the fields in your spread sheet and the fields in the openSIS database by selecting the appropriate fields from the right column. After you are done, click Confirm.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
-        echo '<tr class="bg-grey-200"><th style="word-wrap: break-word;">These fields are in your Excel spread sheet</th><th width="200">&nbsp;</th><th>These are available fields in openSIS</th></tr>';
+        echo '<tr class="bg-grey-200"><th style="word-wrap: break-word;">'._theseFieldsAreInYourExcelSpreadSheet.'</th><th width="200">&nbsp;</th><th>'._theseAreAvailableFieldsInOpenSis.'</th></tr>';
 	echo '</thead>';
         echo '<tbody>';
 
-        $options = array('FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'NAME_SUFFIX' => 'Name Suffix', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'COMMON_NAME' => 'Common Name', 'SOCIAL_SECURITY' => 'Social Security', 'BIRTHDATE' => 'Birthdate', 'LANGUAGE' => 'Language', 'ESTIMATED_GRAD_DATE' => 'Estimated Graduation Date', 'ALT_ID' => 'Alternate Id', 'EMAIL' => 'Email (Student\'s)', 'PHONE' => 'Contact No (Student\'s)', 'IS_DISABLE' => 'Disabled');
-        $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
-        $options+=array('GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'START_DATE' => 'Student Enrollment Date', 'END_DATE' => 'Student Enrollment End Date');
+        $options = array('FIRST_NAME' =>_firstName,
+         'LAST_NAME' => _lastName,
+         'MIDDLE_NAME' =>_firstName,
+         'NAME_SUFFIX' => _nameSuffix,
+         'GENDER' => _gender,
+         'ETHNICITY' => _ethnicity,
+         'COMMON_NAME' => _commonName,
+         'SOCIAL_SECURITY' => _socialSecurity,
+         'BIRTHDATE' => _birthdate,
+         'LANGUAGE' => _language,
+         'ESTIMATED_GRAD_DATE' => _estimatedGraduationDate,
+         'ALT_ID' => _alternateId,
+         'EMAIL' => _emailStudentS,
+         'PHONE' => _contactNoStudentS,
+         'IS_DISABLE' => _disabled,
+        );
+        $options+=array('USERNAME' => _username,
+         'PASSWORD' => _password,
+        );
+        $options+=array('GRADE_ID' => _grade,
+         'SECTION_ID' => _section,
+         'START_DATE' => _studentEnrollmentDate,
+         'END_DATE' => _studentEnrollmentEndDate,
+        );
 
 
-        $options+=array('STREET_ADDRESS_1' => 'Address Line 1 (Student\'s)', 'STREET_ADDRESS_2' => 'Address Line 2 (Student\'s)', 'CITY' => 'City (Student\'s)', 'STATE' => 'State (Student\'s)', 'ZIPCODE' => 'Zipcode (Student\'s)');
-        $options+=array('PRIMARY_FIRST_NAME' => 'Primary First Name', 'PRIMARY_MIDDLE_NAME' => 'Primary Middle Name', 'PRIMARY_LAST_NAME' => 'Primary Last Name', 'PRIMARY_WORK_PHONE' => 'Work Phone (Primary Contact\'s)', 'PRIMARY_HOME_PHONE' => 'Home Phone (Primary Contact\'s)', 'PRIMARY_CELL_PHONE' => 'Cell Phone (Primary Contact\'s)', 'PRIMARY_EMAIL' => 'Email (Primary Contact\'s)', 'PRIMARY_RELATION' => 'Relationship (Primary Contact\'s)');
-        $options+=array('SECONDARY_FIRST_NAME' => 'Secondary First Name', 'SECONDARY_MIDDLE_NAME' => 'Secondary Middle Name', 'SECONDARY_LAST_NAME' => 'Secondary Last Name', 'SECONDARY_WORK_PHONE' => 'Work Phone (Secondary Contact\'s)', 'SECONDARY_HOME_PHONE' => 'Home Phone (Secondary Contact\'s)', 'SECONDARY_CELL_PHONE' => 'Cell Phone (Secondary Contact\'s)', 'SECONDARY_EMAIL' => 'Email (Secondary Contact\'s)', 'SECONDARY_RELATION' => 'Relationship (Secondary Contact\'s)');
+        $options+=array('STREET_ADDRESS_1' => _addressLine_1StudentS,
+         'STREET_ADDRESS_2' => _addressLine_2StudentS,
+         'CITY' => _cityStudentS,
+         'STATE' => _stateStudentS,
+         'ZIPCODE' => _zipcodeStudentS,
+        );
+        $options+=array('PRIMARY_FIRST_NAME' => _primaryFirstName,
+         'PRIMARY_MIDDLE_NAME' => _primaryMiddleName,
+         'PRIMARY_LAST_NAME' => _primaryLastName,
+         'PRIMARY_WORK_PHONE' => _workPhonePrimaryContactS,
+         'PRIMARY_HOME_PHONE' => _homePhonePrimaryContactS,
+         'PRIMARY_CELL_PHONE' => _cellPhonePrimaryContactS,
+         'PRIMARY_EMAIL' => _emailPrimaryContactS,
+         'PRIMARY_RELATION' => _relationshipPrimaryContactS,
+        );
+        $options+=array('SECONDARY_FIRST_NAME' => _secondaryFirstName,
+         'SECONDARY_MIDDLE_NAME' => _secondaryMiddleName,
+         'SECONDARY_LAST_NAME' => _secondaryLastName,
+         'SECONDARY_WORK_PHONE' => _workPhoneSecondaryContactS,
+         'SECONDARY_HOME_PHONE' => _homePhoneSecondaryContactS,
+         'SECONDARY_CELL_PHONE' => _cellPhoneSecondaryContactS,
+         'SECONDARY_EMAIL' => _emailSecondaryContactS,
+         'SECONDARY_RELATION' => _relationshipSecondaryContactS,
+        );
         $custom = DBGet(DBQuery('SELECT * FROM custom_fields'));
         foreach ($custom as $c) {
             $options['CUSTOM_' . $c['ID']] = $c['TITLE'];
@@ -209,7 +293,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</table>';
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input type="submit" value="Confirm" class="btn btn-primary" onClick="return valid_mapping_student('.$i.');" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStuBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
         echo '</form>';
         
@@ -220,7 +304,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div id="calculating" class="panel panel-default">';
         echo '<div class="panel-body text-center">';
         echo '<h3 class="text-center m-b-0">Importing data in to the database</h3>';
-        echo '<h6 class="text-center text-danger m-t-0">Please do not interrupt this process.....</h6>';
+        echo '<h6 class="text-center text-danger m-t-0">'._pleaseDoNotInterruptThisProcess.'.....</h6>';
         echo '<div class="p-t-35 p-b-35"><img src="modules/tools/assets/images/copy-to-database.gif" width="80%" /></div>';
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
@@ -243,15 +327,15 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center">';
 
-    echo '<h5 class="text-center">Click on the Browse button to navigate to the Excel file in your computer\'s hard drive that has your data and select it. <b>After selecting, click Upload.</b></h5>';
+    echo '<h5 class="text-center">'._clickOnTheBrowseButtonToNavigateToTheExcelFileInYourComputerSHardDriveThatHasYourDataAndSelectIt.'. <b>'._afterSelectingClickUpload.'.</b></h5>';
     echo '<div class="form-group">';
     echo '<input type="hidden"  name="MAX_FILE_SIZE" value="2000000" />';
-    echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>Click here to select a file</span></label></div>';
-    echo '<p class="help-block">Supported file types: xls, xlsx</p>';
+    echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>'._clickHereToSelectAFile.'</span></label></div>';
+    echo '<p class="help-block">'._supportedFileTypesXlsXlsx.'</p>';
     echo '</div>';
 
     echo '</div>'; //.panel-body
-    echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="Upload" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+    echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
     echo '</div>'; //.panel
     echo '</form>';
     echo '</div>'; //.col-md-6
@@ -273,14 +357,14 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<form action="Modules.php?modname=' . $_REQUEST[modname] . '&action=display&page_display=STAFF_INFO" name="staff_form"  method="POST">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">Please create a one-to-one relationship between the fields in your spread sheet and the fields in the openSIS database by selecting the appropriate fields from the right column. After you are done, click Map it.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
         echo '</div>'; //.panel-heading
 
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
-        echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</td><td width="200">&nbsp;</td><td>These are available fields in openSIS</td></tr>';
+        echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
 	echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
         $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
@@ -304,10 +388,33 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         }
         $_SESSION['data'] = $arr_data;
 
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'GENDER' => 'Gender', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
-        $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
-        $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
-        $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');
+        $options = array('TITLE' => _salutation,
+         'FIRST_NAME' =>_firstName,
+         'LAST_NAME' => _lastName,
+         'MIDDLE_NAME' =>_firstName,
+         'EMAIL' => _email,
+         'PHONE' => _phone,
+         'PROFILE' => _profile,
+         'HOMEROOM' => _homeroom,
+         'BIRTHDATE' => _birthdate,
+         'ETHNICITY_ID' => _ethnicity,
+         'ALTERNATE_ID' =>_firstName,
+         'PRIMARY_LANGUAGE_ID' => _primaryLanguage,
+         'GENDER' => _gender,
+         'SECOND_LANGUAGE_ID' => _secondaryLanguage,
+         'THIRD_LANGUAGE_ID' => _thirdLanguage,
+         'IS_DISABLE' => _disabled,
+        );
+        $options+=array('USERNAME' => _username,
+         'PASSWORD' => _password,
+        );
+        $options+=array('START_DATE' => _startDate,
+         'END_DATE' => _endDate,
+        );
+        $options+=array('CATEGORY' => _category,
+         'JOB_TITLE' =>_jobTitle,
+         'JOINING_DATE' => _joiningDate,
+        );
         $custom = DBGet(DBQuery('SELECT * FROM staff_fields'));
         foreach ($custom as $c) {
             $options['CUSTOM_' . $c['ID']] = $c['TITLE'];
@@ -331,7 +438,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
-        echo '<div class="panel-footer text-center"><input type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.');"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStaBtnOne" type="submit" value="'._mapIt.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
         echo "</form>";
     }
     elseif ($_REQUEST['action'] == 'display') {
@@ -343,22 +450,45 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">Please create a one-to-one relationship between the fields in your spread sheet and the fields in the openSIS database by selecting the appropriate fields from the right column. After you are done, click Confirm.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
 	echo '<thead>';
-        echo '<tr class="bg-grey-200"><th width="260">These fields are in your Excel spread sheet</th><th width="200">&nbsp;</th><th>These are available fields in openSIS (Click to change the field values)</th></tr>';
+        echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</th><th width="200">&nbsp;</th><th>'._theseAreAvailableFieldsInOpenSis.' (Click to change the field values)</th></tr>';
 	echo '</thead>';
         echo '<tbody>';
         
 
-        $options = array('TITLE' => 'Salutation', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'MIDDLE_NAME' => 'Middle Name', 'EMAIL' => 'Email', 'PHONE' => 'Phone', 'PROFILE' => 'Profile', 'HOMEROOM' => 'Homeroom', 'BIRTHDATE' => 'Birthdate', 'ETHNICITY_ID' => 'Ethnicity', 'ALTERNATE_ID' => 'Alternate ID', 'PRIMARY_LANGUAGE_ID' => 'Primary Language', 'GENDER' => 'Gender', 'SECOND_LANGUAGE_ID' => 'Secondary Language', 'THIRD_LANGUAGE_ID' => 'Third Language', 'IS_DISABLE' => 'Disabled');
-        $options+=array('USERNAME' => 'Username', 'PASSWORD' => 'Password');
-        $options+=array('START_DATE' => 'Start Date', 'END_DATE' => 'End Date');
-        $options+=array('CATEGORY' => 'Category', 'JOB_TITLE' => 'Job Title', 'JOINING_DATE' => 'Joining Date');
+        $options = array('TITLE' => _salutation,
+         'FIRST_NAME' =>_firstName,
+         'LAST_NAME' => _lastName,
+         'MIDDLE_NAME' =>_firstName,
+         'EMAIL' => _email,
+         'PHONE' => _phone,
+         'PROFILE' => _profile,
+         'HOMEROOM' => _homeroom,
+         'BIRTHDATE' => _birthdate,
+         'ETHNICITY_ID' => _ethnicity,
+         'ALTERNATE_ID' =>_firstName,
+         'PRIMARY_LANGUAGE_ID' => _primaryLanguage,
+         'GENDER' => _gender,
+         'SECOND_LANGUAGE_ID' => _secondaryLanguage,
+         'THIRD_LANGUAGE_ID' => _thirdLanguage,
+         'IS_DISABLE' => _disabled,
+        );
+        $options+=array('USERNAME' => _username,
+         'PASSWORD' => _password,
+        );
+        $options+=array('START_DATE' => _startDate,
+         'END_DATE' => _endDate,
+        );
+        $options+=array('CATEGORY' => _category,
+         'JOB_TITLE' =>_jobTitle,
+         'JOINING_DATE' => _joiningDate,
+        );
         $class = "odd";
         $custom = DBGet(DBQuery('SELECT * FROM staff_fields'));
         foreach ($custom as $c) {
@@ -387,7 +517,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</table>';
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input type="submit" value="Confirm" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.');" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStaBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
         echo '</form>';
         
@@ -399,8 +529,8 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">';
         echo '<div id="calculating" class="panel panel-default">';
         echo '<div class="panel-body text-center">';
-        echo '<h3 class="text-center m-b-0">Importing data in to the database</h3>';
-        echo '<h6 class="text-center text-danger m-t-0">Please do not interrupt this process.....</h6>';
+        echo '<h3 class="text-center m-b-0">'._importingDataInToTheDatabase.'</h3>';
+        echo '<h6 class="text-center text-danger m-t-0">'._pleaseDoNotInterruptThisProcess.'.....</h6>';
         echo '<div class="p-t-35 p-b-35"><img src="modules/tools/assets/images/copy-to-database.gif" width="80%" /></div>';
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
@@ -414,21 +544,21 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
 }
 else {
 
-    echo '<h1 class="text-center m-b-0">Data Import Utility</h1>';
-    echo '<p class="text-center text-grey m-b-30">Please select a profile to import their relevant data.</p>';
+    echo '<h1 class="text-center m-b-0">'._dataImportUtility.'</h1>';
+    echo '<p class="text-center text-grey m-b-30">'._pleaseSelectAProfileToImportTheirRelevantData.'.</p>';
 
     echo '<div class="row">';
     echo '<div class="col-md-3 col-md-offset-3">';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center p-t-35">';
-    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STUDENT_INFO><img src="modules/tools/assets/images/student.svg" width="60%" /><h4>Import Student Data</h4></a>';
+    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STUDENT_INFO><img src="modules/tools/assets/images/student.svg" width="60%" /><h4>'._importStudentData.'</h4></a>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-3
     echo '<div class="col-md-3">';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center p-t-35">';
-    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STAFF_INFO><img src="modules/tools/assets/images/faculty.svg" width="60%" /><h4>Import Staff Data</h4></a>';
+    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STAFF_INFO><img src="modules/tools/assets/images/faculty.svg" width="60%" /><h4>'._importStaffData.'</h4></a>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div>';

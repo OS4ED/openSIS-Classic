@@ -315,7 +315,7 @@ class TCPDFBarcode {
 				$bararray['maxw'] += $w;
 				++$k;
 			}
-			$bararray['bcode'][$k] = array('t' => false, 'w' => 1, 'h' => 1, 'p' => 0);
+			$bararray['bcode'][$k] = array('t' =>false, 'w' => 1, 'h' => 1, 'p' => 0);
 			$bararray['maxw'] += 1;
 			++$k;
 		}
@@ -519,7 +519,7 @@ class TCPDFBarcode {
 				++$k;
 			}
 		}
-		$bararray['bcode'][$k] = array('t' => true, 'w' => 1, 'h' => 1, 'p' => 0);
+		$bararray['bcode'][$k] = array('t' =>true, 'w' => 1, 'h' => 1, 'p' => 0);
 		$bararray['maxw'] += 1;
 		++$k;		
 		return $bararray;

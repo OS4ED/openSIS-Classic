@@ -58,7 +58,14 @@ function GetStuList(& $extra) {
         $view_other_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE PROGRAM=\'StudentFieldsView\' AND TITLE IN (\'PHONE\',\'HOME_PHONE\',\'GUARDIANS\',\'ALL_CONTACTS\') AND USER_ID=\'' . User('STAFF_ID') . '\''), array(), array('TITLE'));
 
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
-            $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
+            $extra['columns_after'] = array('PHONE' =>_phone,
+             'GENDER' =>_gender,
+             'ETHNICITY' =>_ethnicity,
+             'ADDRESS' =>_mailingAddress,
+             'CITY' =>_city,
+             'STATE' =>_state,
+             'ZIPCODE' =>_zipcode,
+            ) + $extra['columns_after'];
 
             $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
 
@@ -599,7 +606,7 @@ else
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
     
-//        echo "<br><br>".$sql;
+    //    echo "<br><br>".$sql;
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
     if ($_REQUEST['modname'] == 'students/Student.php' && $_REQUEST['search_modfunc'] == 'list')
@@ -1038,7 +1045,14 @@ function GetStuList_Absence_Summary(& $extra) {
         $view_other_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE PROGRAM=\'StudentFieldsView\' AND TITLE IN (\'PHONE\',\'HOME_PHONE\',\'GUARDIANS\',\'ALL_CONTACTS\') AND USER_ID=\'' . User('STAFF_ID') . '\''), array(), array('TITLE'));
 
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
-            $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
+            $extra['columns_after'] = array('PHONE' =>_phone,
+             'GENDER' =>_gender,
+             'ETHNICITY' =>_ethnicity,
+             'ADDRESS' =>_mailingAddress,
+             'CITY' =>_city,
+             'STATE' =>_state,
+             'ZIPCODE' =>_zipcode,
+            ) + $extra['columns_after'];
 
 
             $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE ';

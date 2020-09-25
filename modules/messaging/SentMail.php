@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
-    echo'<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Message deleted sucessfully</div>';
+    echo'<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>'._messageDeletedSucessfully.'</div>';
 }
 $userName = User('USERNAME');
 $user_dt = DBGet(DBQuery('SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USERNAME=\'' . $userName . '\''));
@@ -48,14 +48,14 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
         }
     } else {
         echo '<BR>';
-        PopTable('header', 'Alert Message');
-        echo "<CENTER><h4>Please select atleast one message to delete</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='window.location=\"Modules.php?modname=messaging/SentMail.php\"'></FORM></CENTER>";
+        PopTable('header', _alertMessage);
+        echo "<CENTER><h4>"._pleaseSelectAtleastOneMessageToDelete."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=messaging/SentMail.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     }
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
-    //PopTable('header', 'Message Details');
+    //PopTable('header', _messageDetails);
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
 
@@ -140,7 +140,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         
         if ($v['MAIL_ATTACHMENT'] != '') {
             echo '<hr/>';
-            echo '<h6 class="text-bold"><i class="icon-attachment2"></i> Attachments</h6>';
+            echo '<h6 class="text-bold"><i class="icon-attachment2"></i> '._attachments.'</h6>';
             
 //            $attach = explode(',', $v['MAIL_ATTACHMENT']);
             
@@ -225,7 +225,10 @@ if (!isset($_REQUEST['modfunc'])) {
         }
     }
     echo '<div id="students" class="panel panel-default" >';
-    $columns = array('TO1' => 'TO', 'MAIL_SUBJECT' => 'SUBJECT', 'MAIL_DATETIME' => 'DATE/TIME');
+    $columns = array('TO1' => _to,
+     'MAIL_SUBJECT' => _subject,
+     'MAIL_DATETIME' => _dateTime,
+    );
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['LO_group'] = array('MAIL_ID');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'mail\');"><A>');
@@ -244,12 +247,12 @@ if (!isset($_REQUEST['modfunc'])) {
     }
     if (count($outbox_info) != 0) {
         if (isset($userName)){
-            $custom_header = '<h6 class="panel-title text-pink text-uppercase">Sent Message</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> Delete</button></div>';
-            //echo '<table align="center" width="94%"><tr><td align="right"><INPUT type=submit class=delete_mail value=Delete onclick=\'formload_ajax("sav");\' ></td></tr></table>';
+            $custom_header = '<h6 class="panel-title text-pink text-uppercase">'._sentMessage.'</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> '._delete.'</button></div>';
+            //echo '<table align="center" width="94%"><tr><td align="right"><INPUT type=submit class=delete_mail value='._delete.' onclick=\'formload_ajax("sav");\' ></td></tr></table>';
         }
     }
     echo "";
-    ListOutput($outbox_info, $columns, '', '', $link, array(), array('search' => false), TRUE, $custom_header);
+    ListOutput($outbox_info, $columns, '', '', $link, array(), array('search' =>false), TRUE, $custom_header);
     echo "</div>";
     echo '</FORM>';
     
@@ -272,7 +275,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'save') {
 
 function output_file($file, $name, $mime_type = '', $mod_file) {
     if (!is_readable($file))
-        die('File not found or inaccessible!');
+        die(''._fileNotFoundOrInaccessible.'!');
 
     $size = filesize($file);
     $name = rawurldecode($name);

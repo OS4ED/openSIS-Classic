@@ -27,9 +27,11 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 unset($_SESSION['_REQUEST_vars']['values']);
 unset($_SESSION['_REQUEST_vars']['modfunc']);
-DrawBC("School Setup > " . ProgramTitle());
+DrawBC(""._schoolSetup." > " . ProgramTitle());
 // --------------------------------------------------------------- Test SQL ------------------------------------------------------------------ //
 // --------------------------------------------------------------- Tset SQL ------------------------------------------------------------------ //
 
@@ -61,12 +63,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                         $value = $custom['DEFAULT'];
                     } else if ($custom['NULL'] == 'NO' && $value == '' && $custom_RET[1]['REQUIRED'] == 'Y') {
                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                        echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is required.</b></font><br/>';
+                        echo "<font color=red><b>"._unableToSaveDataBecause."" . $custom_TITLE . ''._isRequired.'</b></font><br/>';
                         $error = true;
                         break;
                     } else if ($custom_RET[1]['TYPE'] == 'numeric' && (!is_numeric($value) && $value != '')) {
                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                        echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is Numeric type.</b></font><br/>';
+                        echo "<font color=red><b>"._unableToSaveDataBecause."" . $custom_TITLE . ''. isNumericType.'</b></font><br/>';
                         $error = true;
                     } else {
                         $m_custom_RET = DBGet(DBQuery("select ID,TITLE,TYPE from school_custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
@@ -98,7 +100,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
             if ($error != 1)
                 DBQuery($sql);
             //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
-            $note[] = 'This school has been modified.';
+            $note[] = _thisSchoolHasBeenModified; //This school has been modified.
             $_REQUEST['modfunc'] = '';
         }
         else {
@@ -175,8 +177,8 @@ echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
         
-	//DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value=OK class="btn_medium">');
-	echo '<input type="hidden" name="copy" value="done"/>';
+	//DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value="._ok." class="btn_medium">');
+	echo '<input type="hidden" name="copy" value="'._done.'"/>';
 	echo '</FORM>';
         }
     } else {
@@ -217,7 +219,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
     }
 }
 if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
-    echo '<br><strong>School has been created successfully.</strong>';
+    echo '<br><strong>'._schoolHasBeenCreatedSuccessfully.'</strong>';
 } else {
     if (!$_REQUEST['modfunc']) {
         if (!$_REQUEST['new_school']) {
@@ -232,74 +234,74 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         //echo "<FORM name=school  id=school class=\"form-horizontal\"  enctype='multipart/form-data'  METHOD='POST' ACTION='Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=update&btn=" . $_REQUEST['button'] . "&new_school=$_REQUEST[new_school]'>";
         echo "<FORM name=school  id=school class=\"form-horizontal\"  enctype='multipart/form-data'  METHOD='POST' ACTION='Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=update'>";
 
-        PopTable('header', 'School Information');
+        PopTable('header',  _schoolInformation);
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">School Name<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['TITLE'], 'values[TITLE]', '', ' size=24 onKeyUp=checkDuplicateName(1,this,' . $schooldata['ID'] . '); onBlur=checkDuplicateName(1,this,' . $schooldata['ID'] . ');') . "</div></div>";
-        echo "<input type=hidden id=checkDuplicateNameTable1 value='schools'/>";
-        echo "<input type=hidden id=checkDuplicateNameField1 value='title'/>";
-        echo "<input type=hidden id=checkDuplicateNameMsg1 value='school name'/>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._schoolName."<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['TITLE'], 'values[TITLE]', '', ' size=24 onKeyUp=checkDuplicateName(1,this,' . $schooldata['ID'] . '); onBlur=checkDuplicateName(1,this,' . $schooldata['ID'] . ');') . "</div></div>";
+        echo "<input type=hidden id=checkDuplicateNameTable1 value='"._schools."'/>";
+        echo "<input type=hidden id=checkDuplicateNameField1 value='"._title."'/>";
+        echo "<input type=hidden id=checkDuplicateNameMsg1 value='"._schoolName."'/>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Address</label><div class=\"col-md-8\">" . TextInput($schooldata['ADDRESS'], 'values[ADDRESS]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._address."</label><div class=\"col-md-8\">" . TextInput($schooldata['ADDRESS'], 'values[ADDRESS]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">City</label><div class=\"col-md-8\">" . TextInput($schooldata['CITY'], 'values[CITY]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._city."</label><div class=\"col-md-8\">" . TextInput($schooldata['CITY'], 'values[CITY]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">State</label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._state."</label><div class=\"col-md-8\">" . TextInput($schooldata['STATE'], 'values[STATE]', '', 'maxlength=100, class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-
+        //Zip/Postal Code
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Zip/Postal Code</label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._zipPostalCode."</label><div class=\"col-md-8\">" . TextInput($schooldata['ZIPCODE'], 'values[ZIPCODE]', '', 'maxlength=10 class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
 
         
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Area Code</label><div class=\"col-md-8\">" . TextInput($schooldata['AREA_CODE'], 'values[AREA_CODE]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._areaCode."</label><div class=\"col-md-8\">" . TextInput($schooldata['AREA_CODE'], 'values[AREA_CODE]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row 
         
         
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Telephone</label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._telephone."</label><div class=\"col-md-8\">" . TextInput($schooldata['PHONE'], 'values[PHONE]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row 
 
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Principal</label><div class=\"col-md-8\">" . TextInput($schooldata['PRINCIPAL'], 'values[PRINCIPAL]', '', 'class=cell_floating size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._principal."</label><div class=\"col-md-8\">" . TextInput($schooldata['PRINCIPAL'], 'values[PRINCIPAL]', '', 'class=cell_floating size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
-
+        //Base Grading Scale
         echo '<div class="col-lg-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Base Grading Scale<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['REPORTING_GP_SCALE'], 'values[REPORTING_GP_SCALE]', '', 'class=cell_floating maxlength=10 size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._baseGradingScale."<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['REPORTING_GP_SCALE'], 'values[REPORTING_GP_SCALE]', '', 'class=cell_floating maxlength=10 size=24') . "</div></div>";
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-
+         //E-Mail
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">E-Mail</label><div class=\"col-md-8\">" . TextInput($schooldata['E_MAIL'], 'values[E_MAIL]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
+        echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._email."</label><div class=\"col-md-8\">" . TextInput($schooldata['E_MAIL'], 'values[E_MAIL]', '', 'class=cell_floating maxlength=100 size=24') . "</div></div>";
         echo '</div>'; //.col-md-6
 
         echo '<div class="col-md-6">';
         
         if (AllowEdit() || !$schooldata['WWW_ADDRESS']) {
-
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Website</label><div class=\"col-md-8\">" . TextInput($schooldata['WWW_ADDRESS'], 'values[WWW_ADDRESS]', '', 'class=cell_floating size=24') . "</div></div>";
+            //Website
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._website."</label><div class=\"col-md-8\">" . TextInput($schooldata['WWW_ADDRESS'], 'values[WWW_ADDRESS]', '', 'class=cell_floating size=24') . "</div></div>";
         } else {
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Website</label><div class=\"col-md-8\"><A HREF=http://$schooldata[WWW_ADDRESS] target=_blank>$schooldata[WWW_ADDRESS]</A></div></div>";
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._website."</label><div class=\"col-md-8\"><A HREF=http://$schooldata[WWW_ADDRESS] target=_blank>$schooldata[WWW_ADDRESS]</A></div></div>";
         }
         echo '</div>';
         echo '</div>';
@@ -333,11 +335,11 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">Start Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._startDate."</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['START_DATE'], '_min', 1). "</div></div>";
             echo '</div>'; //.col-md-6
             
             echo '<div class="col-md-6">';
-            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">End Date</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
+            echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._endDate."</label><div class=\"col-md-8\">" . DateInputAY($get_this_school_date[1]['END_DATE'], '_max', 2). "</div></div>";
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row  
         }
@@ -355,10 +357,10 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             //echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Save' onclick='return formcheck_school_setup_school(this);'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._save." onclick='return formcheck_school_setup_school(this);'></div>";
             } else {
 
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE='Update' onclick='return formcheck_school_setup_school(this);'></div>";
+                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._update." onclick='return formcheck_school_setup_school(this);'></div>";
             }
         }
 

@@ -62,7 +62,7 @@ function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_y
 
     $dt.= '<div class="input-group datepicker-group" id="original_date_' . $day . '" value="" style="">';
     $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
-    $dt.= '<input id="date_' . $day . '" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '<input id="date_' . $day . '" placeholder="'._selectDate.'" value="" class="form-control daterange-single" type="text">';
     $dt.= '</div>';
 
     $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
@@ -115,7 +115,7 @@ function SearchDateInputDob($day, $month, $year, $allow_day, $allow_month, $allo
 
     $dt.= '<div class="input-group datepicker-group-month-date" id="original_date_' . $day . '" value="" style="">';
     $dt.= '<span class="input-group-addon"><i class="icon-calendar22"></i></span>';
-    $dt.= '<input id="date_' . $day . '" placeholder="Select Date" value="" class="form-control daterange-single" type="text">';
+    $dt.= '<input id="date_' . $day . '" placeholder="'._selectDate.'" value="" class="form-control daterange-single" type="text">';
     $dt.= '</div>';
 
     $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
@@ -451,7 +451,7 @@ function TextAreaInputInputFinalGrade($value, $name, $title = '', $options = '',
         return ((($value) != '') ? nl2br(($value)) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function CheckboxInput($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     if ($checked) {
         if (strpos($name, 'STANDARD_GRADE_SCALE'))
@@ -479,7 +479,7 @@ function CheckboxInput($value, $name, $title = '', $checked = '', $new = false, 
         return ($title != '' ? '<label class="control-label">' . $title . '</label>' : '') . '<p class="form-control" readonly="readonly">' . ($value ? $yes : $no) . '</p>';
 }
 
-function CheckboxInput_comments($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput_comments($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     if ($checked) {
         if (strpos($name, 'STANDARD_GRADE_SCALE'))
@@ -511,7 +511,7 @@ function CheckboxInput_comments($value, $name, $title = '', $checked = '', $new 
         return ($title != '' ? '<label class="control-label">' . $title . '</label>' : '') . '<p class="form-control" readonly="readonly">' . ($value ? $yes : $no) . '</p>';
 }
 
-function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
+function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
 
     // $checked has been deprecated -- it remains only as a placeholder
     if (Preferences('HIDDEN') != 'Y') {
@@ -553,7 +553,7 @@ function CheckboxInputSwitch($value, $name, $title = '', $checked = '', $new = f
         return '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '"><label><INPUT type=checkbox disabled="disabled" ' . ($value ? 'checked=checked' : '') . '><span></span>' . $title . '</label></div>';
 }
 
-function CheckboxInput_grade($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput_grade($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     if ($checked) {
         if (strpos($name, 'STANDARD_GRADE_SCALE'))
@@ -583,7 +583,7 @@ function CheckboxInput_grade($value, $name, $title = '', $checked = '', $new = f
         return '<div class="form-control" disabled=disabled>' . ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
 }
 
-function CheckboxInput_exam($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput_exam($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     if ($checked) {
         if (strpos($name, 'STANDARD_GRADE_SCALE'))
@@ -613,7 +613,7 @@ function CheckboxInput_exam($value, $name, $title = '', $checked = '', $new = fa
         return '<div class="form-control" disabled=disabled>' . ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '') . '</div>';
 }
 
-function CheckboxInput_var_sch($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput_var_sch($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     if ($checked) {
         if (strpos($name, 'STANDARD_GRADE_SCALE'))
@@ -639,7 +639,7 @@ function CheckboxInput_var_sch($value, $name, $title = '', $checked = '', $new =
         return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function CheckboxInputMod($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInputMod($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
 
     // $checked has been deprecated -- it remains only as a placeholder
     if (Preferences('HIDDEN') != 'Y')
@@ -662,7 +662,7 @@ function CheckboxInputMod($value, $name, $title = '', $checked = '', $new = fals
 }
 
 //for calendar date
-function CheckboxInput_Calendar($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInput_Calendar($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
     // $checked has been deprecated -- it remains only as a placeholder
 
     if ($new == true) {
@@ -681,7 +681,7 @@ function CheckboxInput_Calendar($value, $name, $title = '', $checked = '', $new 
         return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function CheckboxInputWithID($value, $name, $id, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $div = true, $extra = '') {
+function CheckboxInputWithID($value, $name, $id, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $div = true, $extra = '') {
     // $checked has been deprecated -- it remains only as a placeholder
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
@@ -1197,7 +1197,7 @@ function TextAreaInputModal($value, $name, $title = '', $options = '', $div = tr
         return (($value != '') ? nl2br($value) : '-') . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function CheckboxInputSwitchModal($value, $name, $title = '', $checked = '', $new = false, $yes = 'Yes', $no = 'No', $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
+function CheckboxInputSwitchModal($value, $name, $title = '', $checked = '', $new = false, $yes = _yes, $no = _no, $extra = '', $switchery_color = 'switch-default', $size = 'sm') {
 
     // $checked has been deprecated -- it remains only as a placeholder
     if (Preferences('HIDDEN') != 'Y') {

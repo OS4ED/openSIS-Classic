@@ -37,8 +37,8 @@ function DeletePromptX($title,$action='Delete')
 	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
 	{
 		echo '<BR>';
-		PopTable('header','Confirm'.(!substr(' ',' '.$action)?$action:''));
-		echo "<CENTER><h4>Are You Sure You Want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=submit name=delete_ok class=\"btn btn-danger\" value=OK> <INPUT type=submit class=\"btn btn-primary\" name=delete_cancel value=Cancel></FORM></CENTER>";
+		PopTable('header',confirm.(!substr(' ',' '.$action)?$action:''));
+		echo "<CENTER><h4>"._areYouSureYouWantTo." $action that $title?</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=submit name=delete_ok class=\"btn btn-danger\" value="._ok."> <INPUT type=submit class=\"btn btn-primary\" name=delete_cancel value="._cancel."></FORM></CENTER>";
 		PopTable('footer');
 		return '';
 	}
@@ -59,8 +59,8 @@ function UnableDeletePromptX($title)
 	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
 	{
 		echo '<BR>';
-		PopTable('header','Unable to Delete');
-		echo "<CENTER><h4>$title</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=submit class=\"btn btn-primary\" name=delete_cancel value=Cancel></FORM></CENTER>";
+		PopTable('header', _unableToDelete);
+		echo "<CENTER><h4>$title</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=submit class=\"btn btn-primary\" name=delete_cancel value="._cancel."></FORM></CENTER>";
 		PopTable('footer');
 		return '';
 	}

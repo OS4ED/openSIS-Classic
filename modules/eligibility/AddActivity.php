@@ -48,23 +48,23 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
                 }
             }
             unset($_REQUEST['modfunc']);
-            $note = "That activity has been added to the selected students.";
+            $note = ""._thatActivityHasBeenAddedToTheSelectedStudents.".";
         } else {
             echo '<BR>';
-            PopTable('header', 'Alert Message');
-            echo "<h4>Please select atleast one student</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "\");'></FORM>";
+            PopTable('header',  _alertMessage);
+            echo "<h4>"._pleaseSelectAtleastOneStudent."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "\");'></FORM>";
             PopTable('footer');
             return false;
         }
     } else {
         echo '<BR>';
-        PopTable('header', 'Alert Message');
-        echo "<h4>Please select atleast one activity</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "\");'></FORM>";
+        PopTable('header',  _alertMessage);
+        echo "<h4>"._pleaseSelectAtleastOneActivity."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "\");'></FORM>";
         PopTable('footer');
         return false;
     }
 }
-DrawBC("Extracurricular > " . ProgramTitle());
+DrawBC(""._extracurricular." > " . ProgramTitle());
 if ($note)
     echo '<div class="alert bg-success alert-styled-left">' . $note . '</div>';
 
@@ -75,10 +75,10 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     echo '<div class="panel-heading">';
     echo '<div class="row">';
     echo '<div class="col-md-12">';
-    echo '<div class="form-group"><label class="control-label col-md-1">Activity</label>';
+    echo '<div class="form-group"><label class="control-label col-md-1">'._activity.'</label>';
     echo '<div class="col-md-3">';
     $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' order by TITLE'));
-    echo '<SELECT name=activity_id class=form-control><OPTION value="">N/A</OPTION>';
+    echo '<SELECT name=activity_id class=form-control><OPTION value="">'._nA.'</OPTION>';
     if (count($activities_RET)) {
         foreach ($activities_RET as $activity)
             echo "<OPTION value=$activity[ID]>$activity[TITLE]</OPTION>";
@@ -91,7 +91,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     echo '</div>'; //.panel-heading
     echo '</div>'; //.panel
 
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",NULL AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
@@ -108,7 +108,7 @@ $extra['search'] .= '</div>'; //.col-md-6
 $extra['search'] .= '</div>'; //.row
 
 if ($_REQUEST['search_modfunc'] == 'list') {
-    $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Add Activity to Selected Students', '', 'class="btn btn-primary"') . '</div>';
+    $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton(_addActivityToSelectedStudents, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 }
 Search('student_id', $extra);
 echo '<div id="modal_default" class="modal fade">
@@ -116,7 +116,7 @@ echo '<div id="modal_default" class="modal fade">
 <div class="modal-content">
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h5 class="modal-title">Choose course</h5>
+    <h5 class="modal-title">'._chooseCourse.'</h5>
 </div>
 
 <div class="modal-body">';
@@ -127,9 +127,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' found.<br>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>';
+    echo '<table class="table table-bordered"><tr class="bg-grey-200"><th>'._subject.'</th></tr>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }

@@ -47,10 +47,20 @@ $sql = 'SELECT
 
         $QI = DBQuery($sql);
         $schedule_RET = DBGet($QI, array('TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPA', 'DAYS' => '_makeDays', 'SCHEDULER_LOCK' => '_makeViewLock', 'START_DATE' => '_makeViewDate', 'END_DATE' => '_makeViewDate', 'MODIFIED_DATE' => '_makeViewDate'));
-        $columns = array('TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'MODIFIED_NAME' => 'Modified By', 'MODIFIED_DATE' => 'Modified Date');
-        $options = array('search' => false, 'count' => false, 'save' => false, 'sort' => false);
+        $columns = array('TITLE' =>_course,
+         'PERIOD_PULLDOWN' =>_periodTeacher,
+         'ROOM' =>_room,
+         'DAYS' =>_daysOfWeek,
+         'COURSE_MARKING_PERIOD_ID' =>_term,
+         'SCHEDULER_LOCK' =>  '<IMG SRC=assets/locked.gif border=0>',
+         'START_DATE' =>_enrolled,
+         'END_DATE' =>_endDateDropDate,
+         'MODIFIED_NAME' =>_modifiedBy,
+         'MODIFIED_DATE' =>_modifiedDate,
+        );
+        $options = array('search' =>false, 'count' =>false, 'save' =>false, 'sort' =>false);
 
-        ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link, '', $options,'',false,false);
+        ListOutput($schedule_RET, $columns,  _course, _courses, $link, '', $options,'',false,false);
         
         
  function _makeTitle($value, $column = '') {

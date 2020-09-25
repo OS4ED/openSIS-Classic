@@ -38,7 +38,7 @@ if($_REQUEST['course_modfunc']=='search')
 {
 	PopTable('header','Search');
 	echo "<FORM name=F1 id=F1 action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=".strip_tags(trim($_REQUEST[modfunc]))."&course_modfunc=search method=POST>";
-	echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="'.strip_tags(trim($_REQUEST['search_term'])).'"></TD><TD><INPUT type=submit class="btn btn-primary" value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+	echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="'.strip_tags(trim($_REQUEST['search_term'])).'"></TD><TD><INPUT type=submit class="btn btn-primary" value='._search.' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
 	echo '</FORM>';
 	PopTable('footer');
 
@@ -53,17 +53,17 @@ if($_REQUEST['course_modfunc']=='search')
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID');
-		ListOutput($subjects_RET,array('TITLE'=>'Subject'),'Subject','Subjects',$link);
+		ListOutput($subjects_RET,array('TITLE'=>'Subject'),_subject,_subjects,$link);
 		echo '</TD><TD valign=top>';
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID','course_id'=>'COURSE_ID');
-		ListOutput($courses_RET,array('TITLE'=>'Course'),'Course','Courses',$link);
+		ListOutput($courses_RET,array('TITLE'=>'Course'),_course,_courses,$link);
 		echo '</TD><TD valign=top>';
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID','course_id'=>'COURSE_ID','course_period_id'=>'COURSE_PERIOD_ID');
-		ListOutput($periods_RET,array('TITLE'=>'Course Period'),'Course Period','Course Periods',$link);
+		ListOutput($periods_RET,array('TITLE'=>'Course Period'),_coursePeriod,_coursePeriods,$link);
 		echo '</TD></TR></TABLE>';
 	}
 }
@@ -169,7 +169,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 				if($table_name=='course_subjects')
 				{
 				
-                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''.course_subjects.'\''));
+                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''._course_subjects.'\''));
                                       $id[1]['ID']= $id[1]['AUTO_INCREMENT'];
                                       
 					$fields = 'SCHOOL_ID,SYEAR,';
@@ -179,7 +179,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 				elseif($table_name=='courses')
 				{
 					
-                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''.courses.'\''));
+                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''._courses.'\''));
                                         $id[1]['ID']= $id[1]['AUTO_INCREMENT'];
                                         $_REQUEST['course_id'] = $id[1]['ID'];
 					$fields = 'SUBJECT_ID,SCHOOL_ID,SYEAR,';
@@ -191,7 +191,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 				{
 					
                                         // edited
-                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''.course_periods.'\''));
+                                        $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \''._course_periods.'\''));
                                       $id[1]['ID']= $id[1]['AUTO_INCREMENT'];
                                       // edited
 					$fields = 'SYEAR,SCHOOL_ID,COURSE_ID,TITLE,';
@@ -307,7 +307,7 @@ if($_REQUEST['modfunc']=='delete' && AllowEdit())
 if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUEST['course_modfunc'])
 {
 	if($_REQUEST['modfunc']!='choose_course')
-		DrawBC("Scheduling > ".ProgramTitle());
+		DrawBC(""._scheduling." > ".ProgramTitle());
 	$sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY TITLE';
 	$QI = DBQuery($sql);
 	$subjects_RET = DBGet($QI);
@@ -315,7 +315,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	if($_REQUEST['modfunc']!='choose_course')
 	{
 		if(AllowEdit())
-			$delete_button = "<INPUT type=button class='btn btn-primary' value=Delete onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]\"'> ";
+			$delete_button = "<INPUT type=button class='btn btn-primary' value='._delete.' onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]\"'> ";
 		// ADDING & EDITING FORM
 		if($_REQUEST['course_period_id'])
 		{
@@ -350,7 +350,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 			}
 
 			echo "<FORM name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id] method=POST>";
-			DrawHeaderHome($title,$delete_button.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_scheduling_course_F2();"'));
+			DrawHeaderHome($title,$delete_button.SubmitButton(_save,'','class="btn btn-primary" onclick="formcheck_scheduling_course_F2();"'));
 			
 			$header .= '<TABLE cellpadding=3 width=760 >';
 			$header .= '<TR>';
@@ -494,13 +494,13 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 						WHERE SUBJECT_ID=\''.$_REQUEST[subject_id].'\' ORDER BY TITLE';
 				$QI = DBQuery($sql);
 				$RET = DBGet($QI);
-				$title = $RET[1]['TITLE'].' - New Course';
+				$title = $RET[1]['TITLE'].' - '._newCourse.'';
 				unset($delete_button);
 				unset($RET);
 			}
 
 			echo "<FORM name=F3 id=F3 action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id] method=POST>";
-			DrawHeaderHome($title,$delete_button.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_scheduling_course_F3();"'));
+			DrawHeaderHome($title,$delete_button.SubmitButton(_save,'','class="btn btn-primary" onclick="formcheck_scheduling_course_F3();"'));
 			$header .= '<TABLE cellpadding=3 width=100%>';
 			$header .= '<TR>';
 
@@ -532,12 +532,12 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 			}
 			else
 			{
-				$title = 'New Subject';
+				$title = 'newSubject';
 				unset($delete_button);
 			}
 
 			echo "<FORM name=F4 id=F4 action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id] method=POST>";
-			DrawHeaderHome($title,$delete_button.SubmitButton('Save','','class="btn btn-primary" onclick="formcheck_scheduling_course_F4();"'));
+			DrawHeaderHome($title,$delete_button.SubmitButton(_save,'','class="btn btn-primary" onclick="formcheck_scheduling_course_F4();"'));
 			$header .= '<TABLE cellpadding=3 width=100%>';
 			$header .= '<TR>';
 
@@ -572,7 +572,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	}
 
 	echo '<TD valign=top>';
-	$columns = array('TITLE'=>'Subject');
+	$columns = array('TITLE'=>_subject);
 	$link = array();
 	$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]";
 	
@@ -583,7 +583,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	else
 		$link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-	ListOutput($subjects_RET,$columns,'Subject','Subjects',$link,array(),$LO_options);
+	ListOutput($subjects_RET,$columns,_subject,_subjects,$link,array(),$LO_options);
 	echo '</TD>';
 
 	if($_REQUEST['subject_id'] && $_REQUEST['subject_id']!='new')
@@ -605,7 +605,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 		}
 
 		echo '<TD valign=top>';
-		$columns = array('TITLE'=>'Course');
+		$columns = array('TITLE'=>_course);
 		$link = array();
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]";
 		
@@ -615,7 +615,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 			
 			$link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-		ListOutput($courses_RET,$columns,'Course','Courses',$link,array(),$LO_options);
+		ListOutput($courses_RET,$columns,_course,_courses,$link,array(),$LO_options);
 		echo '</TD>';
 
 		if($_REQUEST['course_id'] && $_REQUEST['course_id']!='new')
@@ -638,9 +638,9 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
                 }
 
                 echo '<TD valign=top>';
-                $columns = array('TITLE'=>'Course Period');
+                $columns = array('TITLE'=>_coursePeriod);
                 if($_REQUEST['modname']=='scheduling/Schedule.php')
-                    $columns += array('AVAILABLE_SEATS'=>'Available Seats');
+                    $columns += array('AVAILABLE_SEATS'=>_availableSeats);
                 $link = array();
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]";
 				
@@ -650,7 +650,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 					
                     $link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-                ListOutput($periods_RET,$columns,'Period','Periods',$link,array(),$LO_options);
+                ListOutput($periods_RET,$columns,_period,_periods,$link,array(),$LO_options);
                 echo '</TD>';
             
 		}

@@ -6,13 +6,13 @@
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
 #  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  student portal and more. 
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
 #  If you have question regarding this system or the license, please send 
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
+#  This program is released under the terms of the GNU General Public License as
 #  published by the Free Software Foundation, version 2 of the License. 
 #  See license.txt.
 #
@@ -28,15 +28,15 @@
 include('../../RedirectModulesInc.php');
 $menu['tools']['admin'] = array(
 						
-                               'tools/LogDetails.php'=>'Access Log',
-			                         'tools/DeleteLog.php'=>'Delete Log',
-                               'tools/Rollover.php'=>'Rollover',
-                               'tools/Backup.php'=>'Backup Database',
-                               'tools/DataImport.php'=>'Data Import Utility',
-                               'tools/GenerateApi.php'=>'API Token',
-                                1=>'Reports',  
-                               'tools/Reports.php?func=Basic'=>'At a Glance',
-                               'tools/Reports.php?func=Ins_r'=>'Institute Reports',
-                               'tools/Reports.php?func=Ins_cf'=>'Institute Custom Field Reports',                                
+                               'tools/LogDetails.php'=>_accessLog,
+			                         'tools/DeleteLog.php'=>_deleteLog,
+                               'tools/Rollover.php'=>_rollover,
+                               'tools/Backup.php'=>_backupDatabase,
+                               'tools/DataImport.php'=>_dataImportUtility,
+                               'tools/GenerateApi.php'=>_apiToken,
+                                1=>_reports,
+                                'tools/Reports.php?func=Basic'=>_atAGlance,
+                               'tools/Reports.php?func=Ins_r'=>_instituteReports,
+                               'tools/Reports.php?func=Ins_cf'=>_instituteCustomFieldReports,
     );
 ?>

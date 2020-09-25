@@ -40,7 +40,7 @@ class PHPExcel_Cell
 	 *
 	 * @var PHPExcel_Cell_IValueBinder
 	 */
-	private static $_valueBinder = null;
+	private static $_valueBinder = _null;
 
 	/**
 	 * Column of the cell
@@ -68,7 +68,7 @@ class PHPExcel_Cell
 	 *
 	 * @var mixed
 	 */
-	private $_calculatedValue = null;
+	private $_calculatedValue = _null;
 
 	/**
 	 * Type of the cell data
@@ -101,7 +101,7 @@ class PHPExcel_Cell
 	}
 
 	public function detach() {
-		$this->_parent = null;
+		$this->_parent = _null;
 	}
 
 	public function attach($parent) {

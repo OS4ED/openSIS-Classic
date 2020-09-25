@@ -286,7 +286,7 @@ function SendUploadResults( $errorNumber, $fileUrl = '', $fileName = '', $custom
 	// The original script can be found at _dev/domain_fix_template.js
 	echo <<<EOF
 <script type="text/javascript">
-(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\.|$)/,'');if (d.length==0) break;try{document.domain=d;}catch (e){break;}}})();
+(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\.|$)/,'');if (d.length==0) break;try{document.domain= _d;}catch (e){break;}}})();
 EOF;
 
 	if ($errorNumber && $errorNumber != 201) {

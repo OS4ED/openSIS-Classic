@@ -79,9 +79,9 @@ if (User('PROFILE') == 'admin') {
 
     $header .= "<FORM class=\"m-b-0\" name=missingatten id=missingatten action=Modules.php?modname=$_REQUEST[modname]&func=save method=POST>";
     $header .= '<div class="form-inline">';
-    $header .= '<div class="input-group"><span class="input-group-addon">From : </span>' . DateInputAY($From, 'From', 1).'</div>';
-    $header .= '<div class="input-group"><span class="input-group-addon">To : </span>' . DateInputAY($to, 'to', 2).'</div>';
-    $header .= '<INPUT type=submit class="btn btn-primary" name=go value=Go >';
+    $header .= '<div class="input-group"><span class="input-group-addon">'._from.' : </span>' . DateInputAY($From, 'From', 1).'</div>';
+    $header .= '<div class="input-group"><span class="input-group-addon">'._to.' : </span>' . DateInputAY($to, 'to', 2).'</div>';
+    $header .= '<INPUT type=submit class="btn btn-primary" name=go value='._go.' >';
     $header .= '</div>';
     $header .= '</form>';
     DrawHeader($header);
@@ -93,12 +93,14 @@ if (User('PROFILE') == 'admin') {
         $options = array('admin' => 'Administrator', 'teacher' => 'Teacher', 'parent' => 'Parent', 'none' => 'No Access');
         $singular = $options[$extra['profile']];
         $plural = $singular . ($options[$extra['profile']] == 'none' ? 'es' : 's');
-        $columns = array('FULL_NAME' => $singular, 'STAFF_ID' => 'Staff ID');
+        $columns = array('FULL_NAME' => $singular, 'STAFF_ID' =>_staffId);
     } else {
         $singular = 'User';
         $plural = 'users';
-//        $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
-        $columns = array('FULL_NAME' => 'Name', 'PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+//        $columns = array('FULL_NAME' => 'Staff Member', 'PROFILE' => 'Profile', 'STAFF_ID' =>_staffId);
+        $columns = array('FULL_NAME' =>_name,
+         'PROFILE' =>_profile,
+         'STAFF_ID' =>_staffId);
         
     }
     if (is_array($extra['columns_before']))

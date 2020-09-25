@@ -26,8 +26,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Gradebook > ".ProgramTitle());
-echo '<div id="calculating" style="display: none; padding-top:20px; padding-bottom:15px;"><img src="assets/missing_attn_loader.gif" /><br/><br/><br/><span style="color:#c90000;"><span style=" font-size:15px; font-weight:bold;">Please wait.</span><br /><span style=" font-size:12px;">Recalculating GPA . Do not click anywhere.</span></span></div>
+DrawBC(""._gradebook." > ".ProgramTitle());
+echo '<div id="calculating" style="display: none; padding-top:20px; padding-bottom:15px;"><img src="assets/missing_attn_loader.gif" /><br/><br/><br/><span style="color:#c90000;"><span style=" font-size:15px; font-weight:bold;">'._pleaseWait.'.</span><br /><span style=" font-size:12px;">'._pleaseWait.'</span></span></div>
 <div id="resp" style="font-size:14px"></div>';
 $mps = GetAllMP(GetMPTable(GetMP(UserMP(),'TABLE')),  UserMP());
 $mps = explode(',',str_replace("'",'',$mps));
@@ -42,7 +42,7 @@ if($_REQUEST['search_modfunc']=='list')
 {
     echo "<FORM name=sav id=sav action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=save method=POST>";
     PopTable_wo_header ('header');
-    echo '<CENTER><h4>When do you want to recalculate the running GPA numbers?</CENTER></h4><br/>';
+    echo '<CENTER><h4>'._whenDoYouWantToRecalculateTheRunningGpaNumbers.'</CENTER></h4><br/>';
     echo '<center>'.$message.'</center>';
     PopTable ('footer');
 }
@@ -61,7 +61,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='save')
     }
     else
     {
-         $err="<b><font color=red>No students are selected.</font></b>";  
+         $err="<b><font color=red>"._noStudentsAreSelected.".</font></b>";  
          unset($_REQUEST['modfunc']);
     }
   }
@@ -79,7 +79,7 @@ if(!$_REQUEST['modfunc'])
 	if($_REQUEST['search_modfunc']=='list')
 	{
             if($_SESSION['count_stu']!=0)
-		echo '<BR><CENTER>'.SubmitButton('Recalculate GPA','','class=btn_re_enroll').'</CENTER>';
+		echo '<BR><CENTER>'.SubmitButton(_recalculateGpa,'','class=btn_re_enroll').'</CENTER>';
 		echo "</FORM>";
 	}
 

@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Scheduling > " . ProgramTitle());
+include('lang/language.php');
+
+DrawBC(""._scheduling." > " . ProgramTitle());
 unset($sql);
 
 $extra['search'] .= '<div class="row">';
@@ -52,9 +54,9 @@ if (isset($_REQUEST['student_id'])) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"> <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span> <div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"> <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i>'._selectedStudent.'</A></span> <div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"> <A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"> <A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
     }
 }
 if ($_REQUEST['month__date'] && $_REQUEST['day__date'] && $_REQUEST['year__date']) {
@@ -146,10 +148,10 @@ if (UserStudentID()) {
 
 
             if (User('PROFILE_ID') == 2) {
-                DrawHeader('<div class="form-inline"><div class="input-group">' . PrepareDateSchedule($date, '_date', false, array('submit' => true)) . '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value=Go></span></div><div class="form-group"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> Include Inactive Courses</label></div></div></div>', '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader('<div class="form-inline"><div class="input-group">' . PrepareDateSchedule($date, '_date', false, array('submit' => true)) . '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value='._go.'></span></div><div class="form-group"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> '._includeInactiveCourses.'</label></div></div></div>', '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._markingPeriod.'</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">'._calendarView.'</span>' . $view_mode . '</div></div>');
                 echo '<hr class="no-margin"/>';
             } else {
-                DrawHeader('<div class="form-inline"><div class="input-group">' . PrepareDateSchedule($date, '_date', false, array('submit' => true)) . '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value=Go></span></div></div>', '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader('<div class="form-inline"><div class="input-group">' . PrepareDateSchedule($date, '_date', false, array('submit' => true)) . '<span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value='._go.'></span></div></div>', '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._markingPeriod.' :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">'._calendarView.'</span>' . $view_mode . '</div></div>');
                 echo '<hr class="no-margin"/>';
             }
 
@@ -223,11 +225,26 @@ if (UserStudentID()) {
             if (User('PROFILE') == 'teacher' || User('PROFILE_ID') == 2) {
                 $schedule_RET = DBGet($QI, array('TIME_PERIOD' => '_makeTimePeriod', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect', 'START_DATE' => '_makeDateMod', 'END_DATE' => '_makeDateMod', 'SCHEDULE_ID' => '_makeInfo'));
 
-                $columns = array('TIME_PERIOD' => 'Period', 'TITLE' => 'Course', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'SCHEDULE_ID' => 'More info');
+                $columns = array('TIME_PERIOD' => _period,
+                 'TITLE' => _course,
+                 'PERIOD_PULLDOWN' => _periodTeacher,
+                 'ROOM' => _room,
+                 'DAYS' => _daysOfWeek,
+                 'COURSE_MARKING_PERIOD_ID' => _term,
+                 'START_DATE' => _enrolled,
+                 'END_DATE' => _endDateDropDate,
+                 'SCHEDULE_ID' => _moreInfo,
+                );
             } else {
                 $schedule_RET = DBGet($QI, array('TIME_PERIOD' => '_makeTimePeriod', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect'));
 
-                $columns = array('TIME_PERIOD' => 'Period', 'TITLE' => 'Course', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term');
+                $columns = array('TIME_PERIOD' => _period,
+                 'TITLE' => _course,
+                 'PERIOD_PULLDOWN' => _periodTeacher,
+                 'ROOM' => _room,
+                 'DAYS' => _daysOfWeek,
+                 'COURSE_MARKING_PERIOD_ID' => _term,
+                );
             }
 
 
@@ -245,9 +262,9 @@ if (UserStudentID()) {
             $week_range = _makeWeeks($cal_RET[1]['START_DATE'], $cal_RET[1]['END_DATE'], 'Modules.php?modname=' . $_REQUEST['modname'] . '&marking_period_id=' . $_REQUEST['marking_period_id'] . '&view_mode=' . $_REQUEST['view_mode'] . '&week_range=');
 
             if (User('PROFILE_ID') == 2) {
-                DrawHeader($week_range, '<div class="form-inline"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> Include Inactive Courses &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></div><div class="input-group"><span class="input-group-addon" id="marking_period_id">  Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader($week_range, '<div class="form-inline"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> '._includeInactiveCourses.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></div><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._includeInactiveCourses.':</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
             } else {
-                DrawHeader($week_range, '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader($week_range, '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._markingPeriod.':</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">'._markingPeriod.':</span>' . $view_mode . '</div></div>');
             }
 
 
@@ -359,9 +376,9 @@ if (UserStudentID()) {
 
 
             if (User('PROFILE_ID') == 2) {
-                DrawHeader($month_str, '<div class="form-inline"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> Include Inactive Courses &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></div><div class="input-group"><span class="input-group-addon" id="marking_period_id">  Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader($month_str, '<div class="form-inline"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '> '._includeInactiveCourses.' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></div><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._includeInactiveCourses.'</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">'._includeInactiveCourses.'</span>' . $view_mode . '</div></div>');
             } else {
-                DrawHeader($month_str, '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">Marking Period :</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">Calendar View :</span>' . $view_mode . '</div></div>');
+                DrawHeader($month_str, '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="marking_period_id">'._markingPeriod.'</span>' . $mp . '</div><div class="input-group"><span class="input-group-addon" id="view_mode">'._markingPeriod.'</span>' . $view_mode . '</div></div>');
             }
 
             $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -383,7 +400,7 @@ if (UserStudentID()) {
             //echo '<div class="panel-body">';
             echo '<div class="table-responsive">';
             echo "<TABLE class=\"table table-bordered\" style=\"table-layout: fixed;\"><thead><TR align=center>";
-            echo "<TD style=\"width: 14.25%;\">Monday</TD><TD style=\"width: 14.25%;\">Tuesday</TD><TD style=\"width: 14.25%;\">Wednesday</TD><TD style=\"width: 14.25%;\">Thursday</TD><TD style=\"width: 14.25%;\">Friday</TD><TD style=\"width: 14.25%;\">Saturday</TD><TD style=\"width: 14.25%;\">Sunday</TD>";
+            echo "<TD style=\"width: 14.25%;\">"._monday."</TD><TD style=\"width: 14.25%;\">"._tuesday."</TD><TD style=\"width: 14.25%;\">"._wednesday."</TD><TD style=\"width: 14.25%;\">"._thursday."</TD><TD style=\"width: 14.25%;\">"._friday."</TD><TD style=\"width: 14.25%;\">"._saturday."</TD><TD style=\"width: 14.25%;\">"._sunday."</TD>";
             echo "</TR></thead><tbody><TR>";
 
             if ($skip) {
@@ -448,9 +465,9 @@ if (UserStudentID()) {
                         }
                         echo '</ul>';
                     } else
-                        echo '<div class="text-muted mt-10">Schedule not available</div>';
+                        echo '<div class="text-muted mt-10">'._scheduleNotAvailable.'</div>';
                 } else
-                    echo '<font class=text-danger>Holiday</font>';
+                    echo '<font class=text-danger>'._holiday.'</font>';
                 echo "</TD>";
                 $return_counter++;
 
@@ -512,22 +529,36 @@ if (UserStudentID()) {
         if (User('PROFILE') == 'teacher' || User('PROFILE_ID') == 2) {
             $schedule_RET = DBGet($QI, array('TIME_PERIOD' => '_makeTimePeriod', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect', 'START_DATE' => '_makeDateMod', 'END_DATE' => '_makeDateMod'));
 
-            $columns = array('TIME_PERIOD' => 'Period', 'TITLE' => 'Course', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date');
+            $columns = array('TIME_PERIOD' => _period,
+             'TITLE' => _course,
+             'PERIOD_PULLDOWN' => _periodTeacher,
+             'ROOM' => _room,
+             'DAYS' => _daysOfWeek,
+             'COURSE_MARKING_PERIOD_ID' => _term,
+             'START_DATE' => _enrolled,
+             'END_DATE' => _endDateDropDate,
+            );
         } else {
             $schedule_RET = DBGet($QI, array('TIME_PERIOD' => '_makeTimePeriod', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect'));
 
-            $columns = array('TIME_PERIOD' => 'Period', 'TITLE' => 'Course', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term');
+            $columns = array('TIME_PERIOD' => _period,
+             'TITLE' => _course,
+             'PERIOD_PULLDOWN' => _periodTeacher,
+             'ROOM' => _room,
+             'DAYS' => _daysOfWeek,
+             'COURSE_MARKING_PERIOD_ID' => _term,
+            );
         }
     }
     if ($_REQUEST['view_mode'] != 'month_view') {
-        ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link);
+        ListOutput($schedule_RET, $columns, _course, _courses, $link);
         if ($_REQUEST['modfunc'] == 'detail')
-            echo '<div class="panel-body"><input type="button" class="btn btn-default pull-right" value="Close" onclick="window.close();"></div>';
+            echo '<div class="panel-body"><input type="button" class="btn btn-default pull-right" value="'._close.'" onclick="window.close();"></div>';
     }
 
     if ($schedule_RET && $_REQUEST['view_mode'] == 'day_view') {
         echo '<hr class="no-margin"/><div class="panel-body pt-10 pb-10">';
-        echo ProgramLinkforExport('scheduling/PrintSchedules.php', '<b><i class="icon-printer4"></i></b>Print Schedule', '&modfunc=save&st_arr[]=' . UserStudentID() . '&mp_id=' . $mp_id . '&include_inactive=' . $_REQUEST['include_inactive'] . '&date1=' . $date1 . '&_openSIS_PDF=true', 'target="_blank" class="btn btn-success btn-labeled"') . '</div>';
+        echo ProgramLinkforExport('scheduling/PrintSchedules.php', '<b><i class="icon-printer4"></i></b>'._printSchedule.'', '&modfunc=save&st_arr[]=' . UserStudentID() . '&mp_id=' . $mp_id . '&include_inactive=' . $_REQUEST['include_inactive'] . '&date1=' . $date1 . '&_openSIS_PDF=true', 'target="_blank" class="btn btn-success btn-labeled"') . '</div>';
         echo '</div>'; //.panel-body
     }
     echo '</div>'; //.panel.panel-default
@@ -539,7 +570,7 @@ if (UserStudentID()) {
 
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">More info</h5>';
+    echo '<h5 class="modal-title">'._moreInfo.'</h5>';
     echo '</div>'; //.modal-header
 
     echo '<div class="modal-body">';
@@ -698,9 +729,9 @@ function create_view_mode($link)
     else
         $html .= "<select name='view_mode' id='view_mode'>";
 
-    $html .= '<option value="day_view" ' . ($_REQUEST['view_mode'] == 'day_view' ? 'selected' : '') . ' >Day</option>';
-    $html .= '<option value="week_view" ' . ($_REQUEST['view_mode'] == 'week_view' ? 'selected' : '') . '>Week</option>';
-    $html .= '<option value="month_view" ' . ($_REQUEST['view_mode'] == 'month_view' ? 'selected' : '') . '>Month</option>';
+    $html .= '<option value="day_view" ' . ($_REQUEST['view_mode'] == 'day_view' ? 'selected' : '') . ' >'._day.'</option>';
+    $html .= '<option value="week_view" ' . ($_REQUEST['view_mode'] == 'week_view' ? 'selected' : '') . '>'._week.'</option>';
+    $html .= '<option value="month_view" ' . ($_REQUEST['view_mode'] == 'month_view' ? 'selected' : '') . '>'._month.'</option>';
     $html .= "</select>";
     return $html;
 }
@@ -757,7 +788,7 @@ function _makeWeeks($start, $end, $link)
     $next = date('Y-m-d', strtotime($_REQUEST['week_range']) + $one_day * 7);
     $upper = date('Y-m-d', strtotime($_REQUEST['week_range']) + $one_day * 6);
     if ($link != '') {
-        $html .= "<a href='javascript:void(0);' class=\"text-primary\" title=Previous onClick=\"window.location='" . $link . $prev . "';\"><i class=\"fa fa-angle-left\"></i> Prev</a> &nbsp; &nbsp; <span>" . properDate($_REQUEST[week_range]) . "&nbsp; - &nbsp;" . properDate($upper) . "</span> &nbsp; &nbsp; <a href='javascript:void(0);' title=Next onClick=\"window.location='" . $link . $next . "';\" class=\"text-primary\">Next <i class=\"fa fa-angle-right\"></i></a>";
+        $html .= "<a href='javascript:void(0);' class=\"text-primary\" title=Previous onClick=\"window.location='" . $link . $prev . "';\"><i class=\"fa fa-angle-left\"></i> "._prev."</a> &nbsp; &nbsp; <span>" . properDate($_REQUEST[week_range]) . "&nbsp; - &nbsp;" . properDate($upper) . "</span> &nbsp; &nbsp; <a href='javascript:void(0);' title=Next onClick=\"window.location='" . $link . $next . "';\" class=\"text-primary\">"._prev." <i class=\"fa fa-angle-right\"></i></a>";
     }
 
     return $html;

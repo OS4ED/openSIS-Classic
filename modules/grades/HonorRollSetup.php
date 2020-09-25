@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include 'modules/grades/DeletePromptX.fnc.php';
-DrawBC("Gradebook > " . ProgramTitle());
+DrawBC(""._gradebook." > " . ProgramTitle());
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
     if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
         foreach ($_REQUEST['values'] as $id => $columns) {
@@ -68,7 +68,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 
-    if (DeletePromptX('Honor Roll')) {
+    if (DeletePromptX(_honorRoll)) {
 
         DBQuery("DELETE FROM honor_roll WHERE id='$_REQUEST[id]'");
     }
@@ -77,8 +77,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 if (!$_REQUEST['modfunc']) {
     $sql = 'SELECT TITLE,VALUE, id as ID FROM honor_roll WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY VALUE';
     $functions = array('TITLE' => '_makeTextInput', 'VALUE' => 'makeTextInputt');
-    $LO_columns = array('TITLE' => 'Honor Roll',
-        'VALUE' => 'Breakoff');
+    $LO_columns = array('TITLE' =>_honorRoll,
+        'VALUE' =>_breakoff,
+    );
     $link['add']['html'] = array('TITLE' => _makeTextInput('', 'TITLE'), 'VALUE' => makeTextInputt('', 'VALUE'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
     $link['remove']['variables'] = array('id' => 'ID');
@@ -91,7 +92,7 @@ if (!$_REQUEST['modfunc']) {
     }
     $honor_id = implode(',', $honor_id_arr);
     $tabs = array();
-    $tabs[] = array('title' => 'Honor Roll Setup');
+    $tabs[] = array('title' =>_honorRollSetup);
     echo "<FORM class=\"no-margin\" name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update method=POST>";
     echo '<input type="hidden" name="h1" id="h1" value="' . $honor_id . '">';
 
@@ -100,12 +101,12 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="div_margin" class="panel-body">';
     echo '<div class="tab-content">';
     echo '<div class="table-responsive">';
-    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' => false, 'download' => false, 'search' => false));
+    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>false, 'download' =>false, 'search' =>false));
     echo '</div>'; //.table-responsive
     $count = count($LO_ret);
     echo '</div>';
     echo '</div>';
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'id="setupHonorBtn" class="btn btn-primary" onclick="formcheck_honor_roll(this);"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton(_save, '', 'id="setupHonorBtn" class="btn btn-primary" onclick="formcheck_honor_roll(this);"') . '</div>';
     echo '</div>';
     echo '</FORM>';
 }

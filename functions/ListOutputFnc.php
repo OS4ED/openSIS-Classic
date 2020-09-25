@@ -314,9 +314,9 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>"._no." $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -398,7 +398,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='cell_medium' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='cell_medium' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -522,11 +522,11 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentProgressReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentProgressReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentReportCard."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentReportCard."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._addDropReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._addDropReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -1090,11 +1090,11 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">"._no." $plural "._wereFound.".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
                 echo '</div>';
             }
         }
@@ -1182,9 +1182,9 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                         echo "<h6 class=\"panel-title\">";
                         if ($singular && $plural && $options['count']) {
                             if ($display_count > 1)
-                                echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                                echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                             elseif ($display_count == 1)
-                                echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                                echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                         }else {
                             echo '&nbsp;';
                         }
@@ -1201,8 +1201,8 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                             echo "<div class=\"heading-elements\">";
                             echo '<div class="form-group">';
                             echo "<INPUT type=hidden id=hidden_field >";
-                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                             echo '</div>'; //.input-group
                             echo '</div>'; //.form-group
                             echo "</div>"; //.heading-elements
@@ -1894,11 +1894,11 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
                 echo '</div>';
             }
         }
@@ -1985,9 +1985,9 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                     echo "<h6 class=\"panel-title\">";
                     if ($singular && $plural && $options['count']) {
                         if ($display_count > 1)
-                            echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                         elseif ($display_count == 1)
-                            echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                     }
                     if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                         echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -2002,8 +2002,8 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                         echo "<div class=\"heading-elements\">";
                         echo '<div class="form-group">';
                         echo "<INPUT type=hidden id=hidden_field >";
-                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                         echo '</div>'; //.input-group
                         echo '</div>'; //.form-group
                         echo "</div>"; //.heading-elements
@@ -2655,9 +2655,9 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -2739,9 +2739,9 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                 if ($singular && $plural && $options['count']) {
 
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -2757,7 +2757,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -3423,9 +3423,9 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
 
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
@@ -3502,9 +3502,9 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                     if ($where_message)
                         echo $where_message;
                 }
@@ -3521,7 +3521,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                     echo "<div class=\"heading-elements\">";
                     echo '<div class="form-group">';
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -3735,7 +3735,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
             if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
                 echo '<div class="well">';
-                echo '<h4 class="text-primary m-t-0"><i class="icon-plus3 "></i> Add New Certification</h4>';
+                echo '<h4 class="text-primary m-t-0"><i class="icon-plus3 "></i> '._addNewCertification.'</h4>';
 
                 if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
                     echo button('add', $link['add']['title'], $link['add']['link']);
@@ -3843,7 +3843,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         if ($link['add']['html']['remove']) {
                             echo '<div><div class="pull-right">' . $link['add']['html']['remove'] . '</div><h4></h4></div>';
                         } else {
-                            echo '<div><h4 class="text-primary m-t-0">' . button('add') . ' Add New Certification</h4></div>';
+                            echo '<div><h4 class="text-primary m-t-0">' . button('add') . ' '._addNewCertification.'</h4></div>';
                         }
 
 
@@ -4228,9 +4228,9 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -4905,9 +4905,9 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -4989,7 +4989,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -5091,7 +5091,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -5599,9 +5599,9 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -5683,7 +5683,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -5789,11 +5789,11 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentProgressReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentProgressReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentReportCard."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentReportCard."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._addDropReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._addDropReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -6294,9 +6294,9 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -6378,7 +6378,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -6986,9 +6986,9 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -7070,7 +7070,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -7172,7 +7172,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentAdvancedReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentAdvancedReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -7690,11 +7690,11 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
                 echo '</div>';
             }
         }
@@ -7780,9 +7780,9 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 //                    echo "<h6 class=\"panel-title\">";
 //                if ($singular && $plural && $options['count']) {
 //                    if ($display_count > 1)
-//                            echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+//                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
 //                    elseif ($display_count == 1)
-//                            echo "<span class=\"heading-text\">1 $singular was found.</span>";
+//                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
 //                }
 //                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
 //                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -7797,8 +7797,8 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 //                        echo "<div class=\"heading-elements\">";
 //                    echo '<div class="form-group">';
 //                        echo "<INPUT type=hidden id=hidden_field >";
-//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
 //                        echo '</div>'; //.input-group
 //                    echo '</div>'; //.form-group
 //                        echo "</div>"; //.heading-elements
@@ -8473,11 +8473,11 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 //
 //            if (($result_count == 0 || $display_count == 0) && $plural) {
 //                echo '<div class="panel-body">';
-//                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural were found.</div>";
+//                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
 //                echo '</div>';
 //            } elseif ($result_count == 0 || $display_count == 0) {
 //                echo '<div class="panel-body">';
-//                echo '<div class="alert alert-danger no-border">None were found.</div>';
+//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
 //                echo '</div>';
 //            }
 //        }
@@ -8563,9 +8563,9 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 //                    echo "<h6 class=\"panel-title\">";
 //                if ($singular && $plural && $options['count']) {
 //                    if ($display_count > 1)
-//                            echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+//                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
 //                    elseif ($display_count == 1)
-//                            echo "<span class=\"heading-text\">1 $singular was found.</span>";
+//                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
 //                }
 //                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
 //                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -8580,8 +8580,8 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 //                        echo "<div class=\"heading-elements\">";
 //                    echo '<div class="form-group">';
 //                        echo "<INPUT type=hidden id=hidden_field >";
-//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
 //                        echo '</div>'; //.input-group
 //                    echo '</div>'; //.form-group
 //                        echo "</div>"; //.heading-elements
@@ -9383,9 +9383,9 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -9468,9 +9468,9 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                 echo "<TR><TD align=left valign=middle>";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">$display_count $plural were found.</span></h6>";
+                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">$display_count $plural "._wereFound.".</span></h6>";
                     elseif ($display_count == 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">1 $singular was found.</span></h6>";
+                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">1 $singular "._wasFound.".</span></h6>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo "<A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -9483,7 +9483,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle style="white-space:nowrap;">&nbsp;&nbsp;';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -10138,9 +10138,9 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -10223,9 +10223,9 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                 echo '<h6 class="panel-title">';
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -10239,7 +10239,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo '<div class="heading-elements">';
                     echo '<div class="form-group">';
                     echo '<div class="input-group">';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '') . "' placeholder=\"Search\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '') . "' placeholder=\""._search."\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._search." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-elements
@@ -10902,9 +10902,9 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural were found.</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>None were found.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -10986,7 +10986,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -11094,7 +11094,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -11625,9 +11625,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -11709,9 +11709,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -11727,7 +11727,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -12393,9 +12393,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 //
 //        if ($options['count'] || $display_zero) {
 //            if (($result_count == 0 || $display_count == 0) && $plural)
-//                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+//                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
 //            elseif ($result_count == 0 || $display_count == 0)
-//                echo '<div class="alert alert-danger no-border">None were found.</div>';
+//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
 //        }
 //        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
 //            if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -12477,9 +12477,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 //                echo "<h6 class=\"panel-title\">";
 //                if ($singular && $plural && $options['count']) {
 //                    if ($display_count > 1)
-//                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+//                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
 //                    elseif ($display_count == 1)
-//                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+//                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
 //                }
 //                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
 //                    echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -12495,9 +12495,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 //                    echo "<div class=\"heading-form\">";
 //                    echo '<div class="form-group">';
 //                    echo "<INPUT type=hidden id=hidden_field >";
-//                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                   // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                   echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+//                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+//                   // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+//                   echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
 //                    echo '</div>'; //.input-group
 //                    echo '</div>'; //.form-group
 //                    echo '</div>'; //.heading-form
@@ -13162,9 +13162,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -13246,9 +13246,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -13264,9 +13264,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                     echo "<div class=\"heading-form\">";
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
-                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                    // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-form
@@ -14721,11 +14721,11 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
                 echo '</div>';
             }
         }
@@ -14808,9 +14808,9 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -14826,7 +14826,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<INPUT type=text class='form-control'  id=LO_searchNew name=LO_searchNew value='" . (($_REQUEST['LO_searchNew'] && $_REQUEST['LO_searchNew'] != 'Search') ? $_REQUEST['LO_searchNew'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -15476,9 +15476,9 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"panel-body\"><div class=\"alert alert-danger no-border m-b-0\">No $plural were found.</div></div>";
+                echo "<div class=\"panel-body\"><div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="panel-body"><div class="alert alert-danger no-border m-b-0">None were found.</div></div>';
+                echo '<div class="panel-body"><div class="alert alert-danger no-border m-b-0">'._noneWereFound.'.</div></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -15559,9 +15559,9 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&dwnl=$dwnl&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -15577,7 +15577,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -16254,7 +16254,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                 echo '</div>';
 
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
 
@@ -16264,7 +16264,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                 echo '</div>';
 
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
                 echo '</div>';
             }
         }
@@ -16351,9 +16351,9 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                     echo "<h6 class=\"panel-title\">";
                     if ($singular && $plural && $options['count']) {
                         if ($display_count > 1)
-                            echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                         elseif ($display_count == 1)
-                            echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                     }
                     if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                         echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -16368,8 +16368,8 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                         echo "<div class=\"heading-elements\">";
                         echo '<div class="form-group">';
                         echo "<INPUT type=hidden id=hidden_field >";
-                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                         echo '</div>'; //.input-group
                         echo '</div>'; //.form-group
                         echo "</div>"; //.heading-elements
@@ -17034,9 +17034,9 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 //
 //        if ($options['count'] || $display_zero) {
 //            if (($result_count == 0 || $display_count == 0) && $plural)
-//                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+//                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
 //            elseif ($result_count == 0 || $display_count == 0)
-//                echo '<div class="alert alert-danger no-border">None were found.</div>';
+//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
 //        }
 //        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
 //            if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -17118,9 +17118,9 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 //                echo "<h6 class=\"panel-title\">";
 //                if ($singular && $plural && $options['count']) {
 //                    if ($display_count > 1)
-//                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+//                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
 //                    elseif ($display_count == 1)
-//                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+//                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
 //                }
 //                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
 //                    echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -17136,7 +17136,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 //                    echo '<div class="form-group">';
 //                    echo "<INPUT type=hidden id=hidden_field >";
 //                    echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+//                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
 //                    echo '</div>'; //.input-group
 //                    echo '</div>'; //.form-group
 //                    echo "</div>"; //.heading-elements
@@ -17794,9 +17794,9 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -17878,9 +17878,9 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -17896,7 +17896,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -18594,9 +18594,9 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural were found.</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">None were found.</div>';
+                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -18678,9 +18678,9 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural were found.</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular was found.</span>";
+                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', 'Modules.php?modname=scheduling/UnfilledRequests.php&search_modfunc=list&next_modname=scheduling/UnfilledRequests.php') . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -18696,9 +18696,9 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                     echo "<div class=\"heading-form\">";
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
-                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"Search\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=Go onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                    // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-form

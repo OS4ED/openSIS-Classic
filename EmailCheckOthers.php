@@ -26,55 +26,56 @@
 #
 #***************************************************************************************
 include('RedirectRootInc.php'); 
-include 'Warehouse.php';
-include 'Data.php';
+
+	include 'Warehouse.php';
+	include 'Data.php';
 // include('functions/SqlSecurityFnc.php');
 
 $email = sqlSecurityFilter($_REQUEST['email']);
 $id = sqlSecurityFilter($_REQUEST['id']);
 
-if(isset($_REQUEST['email']) && $_REQUEST['email']!='')
-{
-    if($_REQUEST['type']=='3')
-    {
-        if($_REQUEST['id']==0)
+        if(isset($_REQUEST['email']) && $_REQUEST['email']!='')
+        {
+            if($_REQUEST['type']=='3')
+            {
+                if($_REQUEST['id']==0)
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
-        else
+                else
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\' AND STUDENT_ID!='.$id));    
 
         $result_pe=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM people WHERE EMAIL=\''.$email.'\''));
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM staff WHERE EMAIL=\''.$email.'\''));
-    }
-    if($_REQUEST['type']=='2')
-    {
-        if($_REQUEST['id']==0)
+            }
+            if($_REQUEST['type']=='2')
+            {
+                if($_REQUEST['id']==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM staff WHERE EMAIL=\''.$email.'\''));
-        else
+                else
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM staff WHERE EMAIL=\''.$email.'\' AND STAFF_ID!='.$id));    
-        
+                
         $result_pe=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM people WHERE EMAIL=\''.$email.'\''));
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
-    }
-    
-    if($_REQUEST['type']=='4')
-    {
-        if($_REQUEST['id']==0)
+            }
+            
+            if($_REQUEST['type']=='4')
+            {
+                if($_REQUEST['id']==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM people WHERE EMAIL=\''.$email.'\''));
-        else
+                else
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM people WHERE EMAIL=\''.$email.'\' AND STAFF_ID!='.$id));    
-        
+                
         $result_pe=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM staff WHERE EMAIL=\''.$email.'\''));
-    }
-    
-    if($result_stf[1]['EMAIL_EX']==0 && $result_pe[1]['EMAIL_EX']==0 && $result_stu[1]['EMAIL_EX']==0 )
-    {
-        echo '0_'.$_REQUEST['type'];
-    }
-    else
-    {
-        echo '1_'.$_REQUEST['type'];
-    }
-    exit;
-}
+            }
+            
+            if($result_stf[1]['EMAIL_EX']==0 && $result_pe[1]['EMAIL_EX']==0 && $result_stu[1]['EMAIL_EX']==0 )
+            {
+                echo '0_'.$_REQUEST['type'];
+            }
+            else
+            {
+                echo '1_'.$_REQUEST['type'];
+            }
+            exit;
+        }
 ?>

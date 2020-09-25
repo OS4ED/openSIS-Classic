@@ -72,14 +72,14 @@ class PHPExcel_CachedObjectStorage_Memory extends PHPExcel_CachedObjectStorage_C
 		//	Because cells are all stored as intact objects in memory, we need to detach each one from the parent
 		foreach($this->_cellCache as $k => &$cell) {
 			$cell->detach();
-			$this->_cellCache[$k] = null;
+			$this->_cellCache[$k] = _null;
 		}
 		unset($cell);
 
 		$this->_cellCache = array();
 
 		//	detach ourself from the worksheet, so that it can then delete this object successfully
-		$this->_parent = null;
+		$this->_parent = _null;
 	}	//	function unsetWorksheetCells()
 
 }

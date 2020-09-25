@@ -167,9 +167,13 @@ if (!$_REQUEST['modfunc']) {
     echo '<input type=hidden id=no_date_fields value=' . ($counter_for_date == 0 ? $counter_for_date : $counter_for_date - 1) . '>';
     echo '<input type=hidden name=error_handler valuue="">';
 
-    $columns = array('STAFF_CERTIFICATION_NAME' => 'Certification Name', 'STAFF_CERTIFICATION_CODE' => 'Certification Code', 'STAFF_CERTIFICATION_DATE' => 'Certification Date', 'STAFF_CERTIFICATION_SHORT_NAME' => 'Certification Short Name', 'STAFF_PRIMARY_CERTIFICATION_INDICATOR' => 'Primary Certification Indicator',
-        'STAFF_CERTIFICATION_EXPIRY_DATE' => 'Certification Expiry Date',
-        'STAFF_CERTIFICATION_DESCRIPTION' => 'Certification Description');
+    $columns = array('STAFF_CERTIFICATION_NAME' =>_certificationName,
+    'STAFF_CERTIFICATION_CODE' =>_certificationCode,
+    'STAFF_CERTIFICATION_DATE' =>_certificationDate,
+    'STAFF_CERTIFICATION_SHORT_NAME' =>_certificationShortName,
+    'STAFF_PRIMARY_CERTIFICATION_INDICATOR' =>_primaryCertificationIndicator,
+    'STAFF_CERTIFICATION_EXPIRY_DATE' =>_certificationExpiryDate,
+    'STAFF_CERTIFICATION_DESCRIPTION' =>_certificationDescription);
 
     $link['add']['html'] = array('STAFF_CERTIFICATION_NAME' => _makeTextInput('', 'STAFF_CERTIFICATION_NAME'), 'STAFF_CERTIFICATION_CODE' => _makeTextInput('', 'STAFF_CERTIFICATION_CODE'), 'STAFF_CERTIFICATION_DATE' => _makeDate('', 'STAFF_CERTIFICATION_DATE', $counter_for_date + 1),
         'STAFF_CERTIFICATION_SHORT_NAME' => _makeTextInput('', 'STAFF_CERTIFICATION_SHORT_NAME'), 'STAFF_PRIMARY_CERTIFICATION_INDICATOR' => _makeSelectInput('', 'STAFF_PRIMARY_CERTIFICATION_INDICATOR'),

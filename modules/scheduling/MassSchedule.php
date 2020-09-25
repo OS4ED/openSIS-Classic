@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 unset($_SESSION['student_id']);
 //print_r($_REQUEST);
 $stu_sd_err_count = 0;
@@ -50,7 +52,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             unset($modname);
             echo "<script type='text/javascript'>";
             echo "$('body').find('.jGrowl').attr('class', '').attr('id', '').hide();
-                $.jGrowl('Schedule start date cannot be before marking periods end date.', {
+                $.jGrowl("._scheduleStartDateCannotBeBeforeMarkingPeriodsEndDate.", {
                     position: 'top-center',
                     theme: 'alert-styled-left bg-danger',
                     life: 5000,
@@ -90,7 +92,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'seatso') {
             }
         }
         if (count($room_name) > 0) {
-            $_SESSION['MANUAL_ERROR'] = "Unable to update because   " . implode(',', $room_name) . "   capacity is lower than your requested seats.";
+            $_SESSION['MANUAL_ERROR'] = "Unable to update because   " . implode(',', $room_name) . ''._capacityIsLowerThanYourRequestedSeats.'';
             echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=scheduling/MassSchedule.php"; window.close();</script>';
         } else {
 
@@ -136,7 +138,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 
 
         if ($course_mp_table != 'FY' && $course_mp != $_REQUEST['marking_period_id'] && strpos(GetChildrenMP($course_mp_table, $course_mp), "'" . $_REQUEST['marking_period_id'] . "'") === false) {
-            ShowErr("You cannot schedule a student into that course during the marking period that you chose.  This course meets on " . GetMP($course_mp) . '.');
+            ShowErr(""._youCannotScheduleAStudentIntoChatCourseDuringTheMarkingPeriodThatYouChoseThisCourseMeetsOn."" . GetMP($course_mp) . '.');
 
             for_error_sch();
         }
@@ -239,11 +241,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         ////Start Date Check///////////////////
         $start_date_q = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE school_id=' . UserSchool() . ' AND syear=' . UserSyear() . ''));
         if (strtotime($start_date_q[1]['START_DATE']) > strtotime($convdate)) {
-            $start_date_q_clash = 'Cannot schedule students before school start date';
+            $start_date_q_clash = _cannotScheduleStudentsBeforeSchoolStartDate;
         }
         ///////   for not to schedule before course start date////////
         else if (strtotime($convdate) < strtotime($course_bg_date[1]['BEGIN_DATE']) || strtotime($convdate) > strtotime($course_bg_date[1]['END_DATE'])) {
-            $sche_date_err = ' students schedule date should be between course start date and end date';
+            $sche_date_err = _studentsScheduleDateShouldBeBetweenCourseStartDateAndEndDate;
         } else {
             unset($start_date_q_clash);
             unset($sche_date_err);
@@ -485,16 +487,16 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             if (($exis_cp[1]['NO'] > 0) && ($stu_dup_cp[1]['NO'] == 0)) {
                                 DBQuery($sql);
                                 $request_exists = false;
-                                $note = "That course has been added to the selected students' schedules.";
+                                $note = _thatCourseHasBeenAddedToTheSelectedStudentsSchedules;
                             } else {
                                 if ($exis_cp[1]['NO'] == 0)
                                     $stat_cp = 1;
                             }
                         }
                         else {
-                            $no_seat = 'There is no available seats in this period.<br>';
+                            $no_seat = ''._thereIsNoAvailableSeatsInThisPeriod.'<br>';
 
-                            $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_SESSION['MassSchedule.php']['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='Manual Override'></strong></A></TD></TR>";
+                            $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_SESSION['MassSchedule.php']['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='"._manualOverride."'></strong></A></TD></TR>";
                         }
 
                         // ------------------------------------------------------- //
@@ -538,7 +540,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             DBQuery($sql);
 
                             $request_exists = false;
-                            $note = "That course has been added to the selected students' schedules.";
+                            $note = _thatCourseHasBeenAddedToTheSelectedStudentsSchedules;
                         } else {
                             if ($exis_cp[1]['NO'] == 0)
                                 $stat_cp = 1;
@@ -551,14 +553,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     }
                     else {
 
-                        $no_seat = 'There is no available seats in this period.<br>';
+                        $no_seat = ''._thereIsNoAvailableSeatsInThisPeriod.'<br>';
 
-                        $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_REQUEST['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='Manual Override'></strong></A></TD></TR>";
+                        $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_REQUEST['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='"._manualOverride."'></strong></A></TD></TR>";
                     }
                 }
             }
             if ($stat_cp == 1)
-                echo '<div class="alert bg-danger alert-styled-left">Incomplete course period Courses </div>';
+                echo '<div class="alert bg-danger alert-styled-left">'._incompleteCoursePeriodCourses.'</div>';
         }
 
         DBQuery('DELETE FROM missing_attendance WHERE COURSE_PERIOD_ID =' . $_SESSION['MassSchedule.php']['course_period_id'] . '');
@@ -585,19 +587,19 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         unset($_SESSION['MassSchedule.php']);
     }
     else {
-        ShowErr('You must choose a Course');
+        ShowErr(_youMustChooseACourse);
 
         for_error_sch();
     }
 }
 if ($_REQUEST['modfunc'] != 'choose_course') {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM id=sav class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save method=POST onclick=\'return validate_group_schedule();\'>";
 
         PopTable_wo_header('header');
         echo '<div class="row">';
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Course to Add</label><div class="col-lg-8"><A HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default" onClick="cleanModal(\"course_modal\");cleanModal(\"cp_modal\");"><i class="icon-menu6 pull-right m-t-10"></i><DIV id=course_div class="form-control m-b-5" readonly="readonly">';
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">'._courseToAdd.'</label><div class="col-lg-8"><A HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default" onClick="cleanModal(\"course_modal\");cleanModal(\"cp_modal\");"><i class="icon-menu6 pull-right m-t-10"></i><DIV id=course_div class="form-control m-b-5" readonly="readonly">';
         if ($_SESSION['MassSchedule.php']) {
             $course_title = DBGet(DBQuery('SELECT TITLE FROM courses WHERE COURSE_ID=\'' . $_SESSION['MassSchedule.php']['course_id'] . '\''));
             $course_title = $course_title[1]['TITLE'];
@@ -607,10 +609,10 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
             echo "$course_title - " . strip_tags(trim($_REQUEST[course_weight])) . "<BR>$period_title";
         }
 
-        echo '<span class="text-grey">Click to Select</span></div></A></div></div></div>';
+        echo '<span class="text-grey">'._clickToSelect.'</span></div></A></div></div></div>';
 
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Start Date</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
-        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Marking Period</label><div class="col-lg-8">';
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">'._startDate.'</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
+        echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">'._markingPeriod.'</label><div class="col-lg-8">';
 //        $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
 //        $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
 //        $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
@@ -635,31 +637,31 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     if ($gender_conflict) {
         echo '<div class="alert alert-warning alert-styled-left">';
         echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $gender_conflict . ' have Gender Clash';
+        echo $gender_conflict . ' '._haveGenderClash.'';
         echo '</div>';
     }
     if ($drop_stu){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $drop_stu . ' have dropped from school';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo $drop_stu . ''._haveDroppedFromSchool.'';
         echo '</div>';
     }
     if ($parent_res){
         echo '<div class="alert alert-warning alert-styled-left">';
         echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $parent_res . ' have Parent course restriction';
+        echo $parent_res . ''._haveParentCourseRestriction.'';
         echo '</div>';
     }
     if ($start_date_q_clash){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
         echo $start_date_q_clash;
         echo '</div>';
     }
 
     if ($sche_date_err){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
         echo $sche_date_err;
         echo '</div>';
     }
@@ -670,8 +672,8 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
             $put = 'his/her';
         }
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $stu_sd_err . ' cannot be scheduled before ' . $put . ' enrolled date';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo $stu_sd_err . ' '._cannotBeScheduledBefore.' ' . $put . ' '._cannotBeScheduledBefore.'';
         echo '</div>';
         unset($stu_sd_err);
         unset($stu_s_date_err_n);
@@ -682,27 +684,27 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         if($period_res_cnt>1)
             $singu=' are';
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $period_res . $singu.' already scheduled in that period';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo $period_res . $singu.' '._alreadyScheduledInThatPeriod.'';
         echo '</div>';
     }
     if ($time_clash){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $time_clash . ' have a period time clash';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo $time_clash . ' '._haveAPeriodTimeClash.'';
         echo '</div>';
     }
     if ($check_seats <= 0 && $no_seat){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
         echo $no_seat;
         echo '</div>';
     }
 
     elseif ($request_exists){
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo $request_clash . ' already have unscheduled requests';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo $request_clash . ' '._alreadyHaveUnscheduledRequests.'';
         echo '</div>';
     }
     if ($dup_schedule){
@@ -711,15 +713,15 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
         if(count($dup_schedule)==1)
             $singu=' is';
         echo '<div class="alert alert-warning alert-styled-left">';
-        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-        echo implode(', ', $dup_schedule) . $singu.' already scheduled in that course';
+        echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>';
+        echo implode(', ', $dup_schedule) . $singu.' '._alreadyScheduledInThatCourse.'';
         echo '</div>';
     }
 }
 if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] != 'list')
         unset($_SESSION['MassSchedule.php']);
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name="controller" onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
@@ -747,7 +749,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right">' . SubmitButton('Add Course to Selected Students', '', 'class="btn btn-primary" onclick="self_disable(this);" ') . '</div>';
+            echo '<div class="text-right">' . SubmitButton(''._addCourseToSelectedStudents.'', '', 'class="btn btn-primary" onclick="self_disable(this);" ') . '</div>';
 
         echo "</FORM>";
     }
@@ -796,8 +798,8 @@ if ($_REQUEST['modfunc'] == 'seats') {
     echo '<div align=center>';
     echo '<form name=update_seats id=update_seats method=POST action=ForWindow.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=seatso&course_period_id=' . $_REQUEST['course_period_id'] . '&update=true>';
     echo '<TABLE><TR>';
-    echo '<td colspan=2 align=center><b>Click on the number of seats to edit and click update</b></td></tr><tr><td colspan=2 align=center><table><tr><td>Total Seats</td><td>:</td><td>' . TextInput($RET['TOTAL_SEATS'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TOTAL_SEATS]', '', 'size=10 class=form-control maxlength=5') . '</td></tr></table>';
-    echo '</TR><tr><td colspan=2 align=center><input type=submit value=Update class="btn btn-primary" onclick="return check_update_seat(' . $_REQUEST['course_period_id'] . '); "></td></tr></TABLE>';
+    echo '<td colspan=2 align=center><b>'._clickOnTheNumberOfSeatsToEditAndClick.' '._update.'</b></td></tr><tr><td colspan=2 align=center><table><tr><td>'._clickOnTheNumberOfSeatsToEditAndClick.'</td><td>:</td><td>' . TextInput($RET['TOTAL_SEATS'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TOTAL_SEATS]', '', 'size=10 class=form-control maxlength=5') . '</td></tr></table>';
+    echo '</TR><tr><td colspan=2 align=center><input type=submit value='._update.' class="btn btn-primary" onclick="return check_update_seat(' . $_REQUEST['course_period_id'] . '); "></td></tr></TABLE>';
     echo '</form>';
     echo '</div>';
 }
@@ -812,7 +814,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -823,9 +825,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         //MassScheduleModal
@@ -855,7 +857,7 @@ echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -866,9 +868,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ''. found.'</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';

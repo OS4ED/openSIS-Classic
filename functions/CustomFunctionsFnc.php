@@ -67,7 +67,7 @@ function ShowErrPhp($msg) {
 function for_error() {
     $css = getCSS();
     echo "<form action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=post>";
-    echo '<BR><CENTER>' . SubmitButton('Try Again', '', 'class="btn btn-primary"') . '</CENTER>';
+    echo '<BR><CENTER>' . SubmitButton(_tryAgain, '', 'class="btn btn-primary"') . '</CENTER>';
     echo "</form>";
     echo '</div>';
     echo '</div>';
@@ -84,7 +84,7 @@ function for_error() {
     echo '<div class="row">';
     echo '<div class="col-md-9">';
     echo '<div class="navbar-text">';
-    echo 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+    echo _footerText;
     echo '</div>';
     echo '</div>';
     echo '<div class="col-md-3">';
@@ -136,7 +136,7 @@ function Prompt_Calender($title = 'Confirm', $question = '', $message = '', $pdf
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         PopTable('header', $title);
          $req_mod_name = strip_tags(trim($_REQUEST[modname]));
-        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit id=\"setupCalendarBtn\" class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender(this);'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
+        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit id=\"setupCalendarBtn\" class=\"btn btn-primary\" value="._ok." onclick='formcheck_school_setup_calender(this);'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
@@ -154,7 +154,7 @@ function Prompt_Copy_School($title = 'Confirm', $question = '', $message = '', $
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', $title);
-        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit id=\"copySchoolBtn\" class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_copyschool(this);'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=schoolsetup/Calendar.php\");'></div></FORM>";
+        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit id=\"copySchoolBtn\" class=\"btn btn-primary\" value="._ok." onclick='formcheck_school_setup_copyschool(this);'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=schoolsetup/Calendar.php\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
@@ -175,12 +175,12 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         PopTable('header', $title);
 
         echo '<h4 class="text-center">' . $question . '</h4>';
-        echo '<p class="text-center"><span class="text-danger"><i class="icon-alert"></i> Caution : </span> Rollover is an irreversible process.  If you are sure you want to proceed, type in the <BR>effective  roll over date below. You can use the next school year’s attendance start date.</p>';
+        echo '<p class="text-center"><span class="text-danger"><i class="icon-alert"></i> Caution : </span> '._rolloverIsAnIrreversibleProcessIfYouAreSureYouWantToProceedTypeInThe.' <BR>'._effectiveRollOverDateBelowYouCanUseTheNextSchoolYearSAttendanceStartDate.'.</p>';
         echo '<hr/>';
         echo '<div class="row">';
         echo '<div class="col-md-6">';
 
-        echo '<div class="form-group"><label class="col-md-4 control-label text-right">Student Enrollment Date</label>';
+        echo '<div class="form-group"><label class="col-md-4 control-label text-right">'._studentEnrollmentDate.'</label>';
         echo '<div class="col-md-8">' . DateInputAY('', 'roll_start_date', '1') . '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '<input type=hidden id=custom_date name=custom_date value=Y>';
@@ -191,16 +191,16 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         echo '<input type=hidden id=check_click value=1>';
 
         echo '<div class="row">';
-        echo '<div class="col-md-12"><h5 class="text-primary">Enter next school year’s begin and end dates</h5></div>';
+        echo '<div class="col-md-12"><h5 class="text-primary">'._enterNextSchoolYearSBeginAndEndDates.'</h5></div>';
 
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="col-md-4 control-label text-right">School Begin Date</label>';
+        echo '<div class="form-group"><label class="col-md-4 control-label text-right">'._schoolBeginDate.'</label>';
         echo '<div class="col-md-8">' . DateInputAY('', 'roll_school_start_date', '2') . '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-md-4
 
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="col-md-4 control-label text-right">School End Date</label>';
+        echo '<div class="form-group"><label class="col-md-4 control-label text-right">'._schoolEndDate.'</label>';
         echo '<div class="col-md-8">' . DateInputAY('', 'roll_school_end_date', '3') . '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-md-4
@@ -228,9 +228,9 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                 echo '<div class="col-md-6">';
 
                 echo '<div class="form-group">';
-                echo '<label class="col-md-4 control-label text-right">' . $ss_d['TITLE'] . ' Begin Date</label>';
+                echo '<label class="col-md-4 control-label text-right">' . $ss_d['TITLE'] . ' '._beginDate.'</label>';
                 echo '<div class="col-md-8">' . DateInputAY('', 'sem_start_' . $sem, $counter1);
-                echo '<input type=hidden id=name_' . $j . ' value="' . $ss_d['TITLE'] . ' Begin Date" ></div>';
+                echo '<input type=hidden id=name_' . $j . ' value="' . $ss_d['TITLE'] . ' '._beginDate.'" ></div>';
                 echo '</div>'; //.form-group
                 $j++;
 
@@ -238,8 +238,8 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
 
                 echo '<div class="form-group">';
                 $counter1 = $counter1 + 1;
-                echo '<label class="col-md-4 control-label text-right">' . $ss_d['TITLE'] . ' End Date</label><div class="col-md-8">' . DateInputAY('', 'sem_end_' . $sem, $counter1);
-                echo '<input type=hidden id=name_' . $j . ' value="' . $ss_d['TITLE'] . ' End Date" ></div>';
+                echo '<label class="col-md-4 control-label text-right">' . $ss_d['TITLE'] . ' '._endDate.'</label><div class="col-md-8">' . DateInputAY('', 'sem_end_' . $sem, $counter1);
+                echo '<input type=hidden id=name_' . $j . ' value="' . $ss_d['TITLE'] . ' '._endDate.'" ></div>';
                 echo '</div>'; //.form-group
 
                 echo '</div>'; //.col-md-4
@@ -259,9 +259,9 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                         echo '<div class="col-md-6">';
 
                         echo '<div class="form-group">';
-                        echo '<label class="col-md-4 control-label text-right">' . $sq_d['TITLE'] . ' Begin Date</label>';
+                        echo '<label class="col-md-4 control-label text-right">' . $sq_d['TITLE'] . ' '._beginDate.'</label>';
                         echo '<div class="col-md-8">' . DateInputAY('', 'qrtr_start_' . $qrtr, $counter1);
-                        echo '<input type=hidden id=name_' . $q . ' value="' . $sq_d['TITLE'] . ' Begin Date" ></div>';
+                        echo '<input type=hidden id=name_' . $q . ' value="' . $sq_d['TITLE'] . ' '._beginDate.'" ></div>';
                         echo '</div>'; //.form-group
 
                         $q_val.=$q . '`';
@@ -272,8 +272,8 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                         echo '</div><div class="col-md-6">';
 
                         echo '<div class="form-group">';
-                        echo '<label class="col-md-4 control-label text-right">' . $sq_d['TITLE'] . ' End Date</label><div class="col-md-8">' . DateInputAY('', 'qrtr_end_' . $qrtr, $counter1);
-                        echo '<input type=hidden id=name_' . $q . ' value="' . $sq_d['TITLE'] . ' End Date" ></div>';
+                        echo '<label class="col-md-4 control-label text-right">' . $sq_d['TITLE'] . ' '._endDate.'</label><div class="col-md-8">' . DateInputAY('', 'qrtr_end_' . $qrtr, $counter1);
+                        echo '<input type=hidden id=name_' . $q . ' value="' . $sq_d['TITLE'] . ' '._endDate.'" ></div>';
                         echo '</div>'; //.form-group
 
                         echo '</div>'; //.col-md-4
@@ -292,10 +292,10 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                                 echo '<div class="col-md-6">';
 
                                 echo '<div class="form-group">';
-                                echo '<label class="col-md-4 control-label text-right">' . $sp_d['TITLE'] . ' Begin Date</label>';
+                                echo '<label class="col-md-4 control-label text-right">' . $sp_d['TITLE'] . ' '._beginDate.'</label>';
 
                                 echo '<div class="col-md-8">' . DateInputAY('', 'prog_start_' . $prog, $counter1);
-                                echo '<input type=hidden id=name_' . $p . ' value="' . $sp_d['TITLE'] . ' Begin Date" ></div>';
+                                echo '<input type=hidden id=name_' . $p . ' value="' . $sp_d['TITLE'] . ' '._beginDate.'" ></div>';
                                 echo '</div>'; //.form-group
                                 $p_val.=$p . '`';
                                 $p++;
@@ -307,8 +307,8 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                                 echo '</div><div class="col-md-6">';
 
                                 echo '<div class="form-group">';
-                                echo '<label class="col-md-4 control-label text-right">' . $sp_d['TITLE'] . ' End Date</label><div class="col-md-8">' . DateInputAY('', 'prog_end_' . $prog, $counter1);
-                                echo '<input type=hidden id=name_' . $p . ' value="' . $sp_d['TITLE'] . ' End Date" ></div>';
+                                echo '<label class="col-md-4 control-label text-right">' . $sp_d['TITLE'] . ' '._endDate.'</label><div class="col-md-8">' . DateInputAY('', 'prog_end_' . $prog, $counter1);
+                                echo '<input type=hidden id=name_' . $p . ' value="' . $sp_d['TITLE'] . ' '._endDate.'" ></div>';
                                 echo '</div>'; //.form-group
 
                                 echo '</div>'; //.col-md-4
@@ -344,11 +344,11 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
             echo '<input type=hidden name=total_prg value=' . $prog . '>';
         }
 
-        echo '<p class="text-danger"><i class="fa fa-info-circle"></i> The following items will be rolled over to the next school year.  Uncheck the item(s) you do not want to be rolled over. Some items are mandatory and cannot be unchecked.</p>';
+        echo '<p class="text-danger"><i class="fa fa-info-circle"></i> '._theFollowingItemsWillBeRolledOverToTheNextSchoolYearUncheckTheItemSYouDoNotWantToBeRolledOverSomeItemsAreMandatoryAndCannotBeUnchecked.'</p>';
         
         echo $message;
 
-        $btn = "<INPUT type=submit class='btn btn-danger' value=Rollover onclick=\"return formcheck_rollover();\"> &nbsp; <INPUT type=button class='btn btn-default' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'>";
+        $btn = "<INPUT type=submit class='btn btn-danger' value="._rollover." onclick=\"return formcheck_rollover();\"> &nbsp; <INPUT type=button class='btn btn-default' name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'>";
         PopTable('footer', $btn);
         echo '</FORM>';
         return false;
@@ -356,7 +356,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         return true;
 }
 
-function Prompt_rollover_back($title = 'Rollover', $question = '', $pdf = '') {
+function Prompt_rollover_back($title = _rollover, $question = '', $pdf = '') {
     $tmp_REQUEST = $_REQUEST;
     unset($tmp_REQUEST['delete_ok']);
     if ($pdf == true)
@@ -368,7 +368,7 @@ function Prompt_rollover_back($title = 'Rollover', $question = '', $pdf = '') {
         echo '<BR>';
         PopTable('header', $title);
 
-        echo "<CENTER><h4>$question</h4><FORM name=roll_over id=roll_over action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><BR>&nbsp;<INPUT type=submit class='btn btn-primary' name=delete_cancel value=Ok onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'></FORM></CENTER>";
+        echo "<CENTER><h4>$question</h4><FORM name=roll_over id=roll_over action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><BR>&nbsp;<INPUT type=submit class='btn btn-primary' name=delete_cancel value="._ok." onclick='load_link(\"Modules.php?modname=tools/LogDetails.php\");'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -386,7 +386,7 @@ function Prompt_Runschedule($title = 'Confirm', $question = '', $message = '', $
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', $title);
-        echo "<CENTER><h4>$question</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class='btn btn-primary' value=OK>&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=scheduling/Schedule.php\");'></FORM></CENTER>";
+        echo "<CENTER><h4>$question</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=submit class='btn btn-primary' value="._ok.">&nbsp;<INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='load_link(\"Modules.php?modname=scheduling/Schedule.php\");'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -399,7 +399,7 @@ function PrepareDateSchedule($date = '', $title = '', $allow_na = true, $options
     if ($options == '')
         $options = array();
     if (!$options['Y'] && !$options['M'] && !$options['D'] && !$options['C'])
-        $options += array('Y' => true, 'M' => true, 'D' => true, 'C' => true);
+        $options += array('Y' =>true, 'M' =>true, 'D' =>true, 'C' =>true);
 
     if ($options['short'] == true)
         $extraM = "style='width:60;' ";
@@ -442,7 +442,7 @@ function PromptCourseWarning($title = 'Confirm', $question = '', $message = '', 
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', $title);
-        echo "<CENTER><h4>$question</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=button class='btn btn-primary' name=delete_cancel value=Cancel onclick='javascript:history.go(-1);'></FORM></CENTER>";
+        echo "<CENTER><h4>$question</h4><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<BR><BR><INPUT type=button class='btn btn-primary' name=delete_cancel value="._cancel." onclick='javascript:history.go(-1);'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -454,7 +454,7 @@ function PromptCourseWarning($title = 'Confirm', $question = '', $message = '', 
 function for_error_sch() {
     $css = getCSS();
     echo "<br><br><form action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=post>";
-    echo '<BR><CENTER>' . SubmitButton('Try Again', '', 'class="btn btn-primary"') . '</CENTER>';
+    echo '<BR><CENTER>' . SubmitButton(_tryAgain, '', 'class="btn btn-primary"') . '</CENTER>';
     echo "</form>";
     echo "</div>";
 
@@ -528,7 +528,14 @@ function GetStuListAttn(& $extra) {
         $view_other_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE PROGRAM=\'StudentFieldsView\' AND TITLE IN (\'CONTACT_INFO\',\'HOME_PHONE\',\'GUARDIANS\',\'ALL_CONTACTS\') AND USER_ID=\'' . User('STAFF_ID') . '\''), array(), array('TITLE'));
 
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
-            $extra['columns_after'] = array('CONTACT_INFO' => '<IMG SRC=assets/down_phone_button.gif border=0>', 'gender' => 'Gender', 'ethnicity' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
+            $extra['columns_after'] = array('CONTACT_INFO' =>  '<IMG SRC=assets/down_phone_button.gif border=0>',
+             'gender' =>_gender,
+             'ethnicity' =>_ethnicity,
+             'ADDRESS' =>_mailingAddress,
+             'CITY' =>_city,
+             'STATE' =>_state,
+             'ZIPCODE' =>_zipcode,
+            ) + $extra['columns_after'];
 
             $select = ',s.STUDENT_ID AS CONTACT_INFO,s.GENDER,s.ETHNICITY_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE';
             $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Mail\')  ' . $extra['FROM'];

@@ -26,12 +26,32 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
+include('lang/supportedLanguages.php');
+
+if(isset($_REQUEST['language'])){
+    if(in_array($_REQUEST['language'], array_keys($supportedLanguages))){
+    $langCode2 = $_REQUEST['language'];
+    }
+} else if (isset($_COOKIE['remember_me_lang'])){
+    if(in_array($_COOKIE['remember_me_lang'], array_keys($supportedLanguages))){
+        $langCode2 = $_COOKIE['remember_me_lang'];
+}
+}
+
+if(!isset($langCode2)){
+    $langCode2 = 'en';
+}
+
+$_SESSION['language'] = $langCode2;
+
+include("lang/lang_".$_SESSION['language'].".php");
+
 include('RedirectRootInc.php');
 include("Data.php");
 include("Warehouse.php");
+// var_dump($_SESSION);
 $cont = db_start();
-//$connection=mysql_connect($DatabaseServer,$DatabaseUsername,$DatabasePassword);
-//mysql_select_db($DatabaseName,$connection);
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 $maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_preference_misc where system_maintenance_switch=\'Y\''));
 $extra_header  = '';
@@ -46,12 +66,14 @@ $extra_header .= "<script type='text/javascript'>
 		{
   			var cookie_date = new Date ( );
   			cookie_date.setTime ( cookie_date.getTime() - 1 );
-			  document.cookie = cookie_name += \"=; expires=\" + cookie_date.toGMTString();
+			  document.cookie = cookie_name += \"= _; expires=\" + cookie_date.toGMTString();
 		}
                 
 </script>";
 Warehouse('header', $extra_header);
-
+require_once('functions/langFnc.php');
+// var_dump(langDirection());
+// var_dump($supportedLanguages[$_SESSION['language']]['direction']);
 ?>
 
 <BODY onLoad="document.loginform.USERNAME.focus();
@@ -63,6 +85,7 @@ Warehouse('header', $extra_header);
             <li id="min"></li>
         </ul>
         <div id="Date"></div>
+
     </div>
     <section class="login">
         <div class="login-wrapper">
@@ -73,7 +96,7 @@ Warehouse('header', $extra_header);
                     <div class="logo">
                         <img src="assets/images/opensis_logo.png" alt="openSIS" />
                     </div>                    
-                    <h3>Student Information System</h3>
+                    <h3><?= _studentInformationSystem ?></h3>
                 </div>
                 <div class="panel-body">
 
@@ -126,37 +149,58 @@ Warehouse('header', $extra_header);
                                         unset($_SESSION['fill_username']);
                                     }
                                     ?>
-                                    <input type="text" class="form-control username" id="username" placeholder="Enter Username" name='USERNAME' value="<?php echo $name; ?>" >
+                                    <input type="text" class="form-control username" id="username" placeholder="<?=_enterUsername?>" name='USERNAME' value="<?php echo $name; ?>">
                                 </div>
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_pwd']))
                                         $pwd = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_pwd'])));
                                     ?>
-                                    <input type="password" class="form-control password" placeholder="Enter Password" id="password" name='PASSWORD' AUTOCOMPLETE = 'off' value="<?php echo $pwd; ?>">
+                                    <input type="password" class="form-control password" placeholder="<?=_enterPassword?>" id="password" name='PASSWORD' AUTOCOMPLETE='off' value="<?php echo $pwd; ?>">
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-center">
+                               <div class="language-selection">
+                                    <i class="icon-earth"></i>
+                                        <select class="select-search" name="language" id="language" onchange="window.location = 'index.php?language='+this.value">
+                                        <?php
+                                            foreach ($supportedLanguages as $code => $value) {
+                                                echo "<option value='$code' ".($langCode2 == $code ? 'selected' : '')." >$value[name]</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group text-center">
                                         <div class="checkbox checkbox-switch switch-success switch-sm">
                                             <label>
-                                                <input type="checkbox" name="remember" id="remember" <?php
-                                    if (isset($_COOKIE['remember_me_name'])) {
-                                        echo 'checked="checked"';
-                                    } else {
-                                        echo '';
-                                    }
-                                    ?> /><span></span> Remember Me
+                                                <input type="checkbox" name="remember" id="remember" <?php echo (isset($_COOKIE['remember_me_name'])) ? 'checked="checked"' : ''; ?> /><span></span> <?=_rememberMe?>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                <br/>
-                                <p>
+                                <div class="col-md-12 text-center">
+                                    <p>
+                                        <a href="ForgotPass.php" id="forgotPass"><?=_forgotUsernamePassword?>?</a>
+                                    </p>
+                                                                    </div>
+                                </div>
+                                <div class="row">
+                                <div class="col-md-12">
                                     <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();
-                                            Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)">Login</button>
-                                </p>
-                                <p class="text-center"><a href="ForgotPass.php">Forgot Username / Password?</a></p>
-
+                                            Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)"><?=_login?></button>
+                                
+                                </div>
+                                </div>
+                                <script type="text/javascript">
+                                    document.getElementById("forgotPass").onclick = function() {
+                                        var link = document.getElementById("forgotPass");
+                                        var language = document.getElementById("language");
+                                        // console.log(language);
+                                        var href = link.href;
+                                        link.setAttribute("href", href+"?language="+language.value);
+                                        // return false;
+                                    }
+                                </script>
                             </form>
                         </div>
                     </div>
@@ -172,7 +216,8 @@ Warehouse('header', $extra_header);
                 </div>-->
             </div>
             <footer>
-                openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.
+                <!-- openSisIsAProductOfOpenSolutionsForEducationInc. (<a href="http://www.os4ed.com">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>. -->
+                <?= _footerText ?>
             </footer>
 
         </div>
@@ -180,12 +225,18 @@ Warehouse('header', $extra_header);
 
 
     <script src="assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>
 
     <script type="text/javascript">
-                                        $(document).ready(function () {
+        $(document).ready(function() {
 
-                                            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                            var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            $('.select-search').select2({
+                dropdownParent: $('.language-selection')
+            });
+
+
+            var monthNames = ["<?= _january ?>", "<?= _february ?>", "<?= _march ?>", "<?= _april ?>", "<?= _may ?>", "<?= _june ?>", "<?= _july ?>", "<?= _august ?>", "<?= _september ?>", "<?= _october ?>", "<?= _november ?>", "<?= _december ?>"];
+            var dayNames = ["<?= _sunday ?>", "<?= _monday ?>", "<?= _tuesday ?>", "<?= _wednesday ?>", "<?= _thursday ?>", "<?= _friday ?>", "<?= _saturday ?>"]
 
 
                                             var newDate = new Date();
@@ -196,14 +247,14 @@ Warehouse('header', $extra_header);
 
 
 
-                                            setInterval(function () {
+            setInterval(function() {
                                                 // Create a newDate() object and extract the minutes of the current time on the visitor's
                                                 var minutes = new Date().getMinutes();
                                                 // Add a leading zero to the minutes value
                                                 $("#min").html((minutes < 10 ? "0" : "") + minutes);
                                             }, 1000);
 
-                                            setInterval(function () {
+            setInterval(function() {
                                                 // Create a newDate() object and extract the hours of the current time on the visitor's
                                                 var hours = new Date().getHours();
                                                 // Add a leading zero to the hours value

@@ -45,7 +45,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 	public function writeRelationships(PHPExcel $pPHPExcel = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {
@@ -99,7 +99,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 	public function writeWorkbookRelationships(PHPExcel $pPHPExcel = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {
@@ -169,7 +169,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 	public function writeWorksheetRelationships(PHPExcel_Worksheet $pWorksheet = null, $pWorksheetId = 1)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {
@@ -254,7 +254,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 	public function writeDrawingRelationships(PHPExcel_Worksheet $pWorksheet = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {
@@ -303,7 +303,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 	public function writeHeaderFooterDrawingRelationships(PHPExcel_Worksheet $pWorksheet = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {

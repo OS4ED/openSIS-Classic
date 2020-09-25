@@ -35,7 +35,7 @@
  */
 class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage_CacheBase implements PHPExcel_CachedObjectStorage_ICache {
 
-	private $_cachePrefix = null;
+	private $_cachePrefix = _null;
 
 	private $_cacheTime = 600;
 
@@ -50,7 +50,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
 			wincache_ucache_add($this->_cachePrefix.$this->_currentObjectID.'.cache', $obj, $this->_cacheTime);
 		}
 
-		$this->_currentObjectID = $this->_currentObject = null;
+		$this->_currentObjectID = $this->_currentObject = _null;
 	}	//	function _storeData()
 
 
@@ -115,7 +115,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
 		$this->_storeData();
 
 		//	Check if the entry that has been requested actually exists
-		$obj = null;
+		$obj = _null;
 		if (parent::isDataSet($pCoord)) {
 			$success = false;
 			$obj = wincache_ucache_get($this->_cachePrefix.$pCoord.'.cache', $success);
@@ -158,7 +158,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
 	public function unsetWorksheetCells() {
 		if(!is_null($this->_currentObject)) {
 			$this->_currentObject->detach();
-			$this->_currentObject = $this->_currentObjectID = null;
+			$this->_currentObject = $this->_currentObjectID = _null;
 		}
 
 		//	Flush the Wincache cache
@@ -167,7 +167,7 @@ class PHPExcel_CachedObjectStorage_Wincache extends PHPExcel_CachedObjectStorage
 		$this->_cellCache = array();
 
 		//	detach ourself from the worksheet, so that it can then delete this object successfully
-		$this->_parent = null;
+		$this->_parent = _null;
 	}	//	function unsetWorksheetCells()
 
 

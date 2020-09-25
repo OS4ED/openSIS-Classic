@@ -49,7 +49,7 @@ $activity_RET=DBGet(DBQuery('SELECT ACTIVITY_DAYS FROM system_preference_Misc LI
 $activity=$activity_RET[1];
 echo "<FORM name=activity id=activity action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=update method=POST>";
 echo '<table>';
-echo '<tr><td>Maximum Inactive Days Allowed:</td><td>'.TextInput($activity['ACTIVITY_DAYS'],'activity[ACTIVITY_DAYS]','','class=cell_floating').'</td></tr>';
-echo '<tr><td><CENTER>'.SubmitButton('Save','','class="btn btn-primary"').'</CENTER></td></tr>';
+echo '<tr><td>'._maximumInactiveDaysAllowed.':</td><td>'.TextInput($activity['ACTIVITY_DAYS'],'activity[ACTIVITY_DAYS]','','class=cell_floating').'</td></tr>';
+echo '<tr><td><CENTER>'.SubmitButton(_save,'','class="btn btn-primary"').'</CENTER></td></tr>';
 echo '</table>';
 echo '</FORM>';

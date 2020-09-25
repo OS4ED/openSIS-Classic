@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if ($_REQUEST['modfunc'] == 'save') {
     if (UserStudentID()) {
         $extra['WHERE'] = ' AND s.STUDENT_ID =\'' . UserStudentID() . '\'';
@@ -95,7 +97,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 echo '<tr><td>Student ID:</td>';
                 echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
-                echo '<tr><td>Student Name:</td>';
+                echo '<tr><td>'._studentName.':</td>';
                 echo '<td><b>' . $courses[1]['FULL_NAME'] . '</b></td></tr>';
                 echo '<tr><td>' . $courses[1]['GRD_LVL'] . '</td>';
                 echo '<td>' . $st_data[1]['CUSTOM_10'] . '</td></tr>';
@@ -192,8 +194,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     echo "<td rowspan='" . $no_record . "'>" . $day . "</td>";
                                 }
                             }
-                            echo "<td>" . substr($sch['START_TIME'],0,5) . "</td>";
-                            echo "<td>" . substr($sch['END_TIME'],0,5) . "</td>";
+                            echo "<td>" . $sch['START_TIME'] . "</td>";
+                            echo "<td>" . $sch['END_TIME'] . "</td>";
                             echo "<td>" . $sch['CP_TITLE'] . "</td>";
                             echo "<td>" . $sch['TITLE'] . "</td>";
                             echo "<td>" . $sch['ROOM'] . "</td></tr>";
@@ -203,7 +205,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     echo "</table>";
                 } else {
-                    echo 'No Schedule Found';
+                    echo _noScheduleFound;
                 }
 
 
@@ -215,12 +217,12 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
             PDFStop($handle);
         } else
-            BackPrompt('No Records were found.');
+            BackPrompt(''._noRecordsWereFound.'.');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Scheduling > " . ProgramTitle());
+    DrawBC(""._scheduling." > " . ProgramTitle());
     echo "<FORM name=schs id=schs action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname]))."  method=POST >";
     echo '<div class="panel">';
     
@@ -229,7 +231,7 @@ if (!$_REQUEST['modfunc']) {
     $link = 'Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&sel_mp=';
     
     echo '<div class="panel-heading">';
-    echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">Please select the Marking Period :</span>';
+    echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">'._pleaseSelectTheMarkingPeriod.' :</span>';
     echo "<SELECT name=sel_mp id=sel_mp class=form-control onChange=\"window.location='".$link."' + this.options[this.selectedIndex].value;\">";
     if (count($RET1)) {
         if ($_REQUEST['sel_mp'])
@@ -376,8 +378,8 @@ if (!$_REQUEST['modfunc']) {
                                 echo "<th class='info' rowspan='" . $no_record . "'>" . $day . "</th>";
                             }
                         }
-                        echo "<td>" . substr($sch['START_TIME'],0,5) . "</td>";
-                        echo "<td>" . substr($sch['END_TIME'],0,5) . "</td>";
+                        echo "<td>" . $sch['START_TIME'] . "</td>";
+                        echo "<td>" . $sch['END_TIME'] . "</td>";
                         echo "<td>" . $sch['CP_TITLE'] . "</td>";
                         echo "<td>" . $sch['TITLE'] . "</td>";
                         echo "<td>" . $sch['ROOM'] . "</td></tr>";
@@ -389,7 +391,7 @@ if (!$_REQUEST['modfunc']) {
                 echo "</table>";
                 echo "</div>"; //.table-responsive
             } else {
-                $error = 'No Schedule Found';
+                $error = _noScheduleFound;
             }
         }
 
@@ -398,13 +400,13 @@ if (!$_REQUEST['modfunc']) {
             echo $error;
         }
     } else {
-        BackPrompt('No Students were found.');
+        BackPrompt(_noStudentsWereFound.'.');
     }
 #############################################################################################
     echo "</FORM>";
     $footer_options  = "<FORM name=sch class=\"no-padding no-margin\" id=sch action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname]). "&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_openSIS_PDF=true") . " method=POST target=_blank>";
     $footer_options .= "<input type=hidden name=sel_mp value=$sel_mp>";
-    $footer_options .= '<button type=submit class="btn btn-success btn-labeled pull-right" value="Print"><b><i class="icon-printer4"></i></b>Print</button>';
+    $footer_options .= '<button type=submit class="btn btn-success btn-labeled pull-right" value="Print"><b><i class="icon-printer4"></i></b>'._print.'</button>';
     $footer_options .= "</FORM>";
     //PopTable('footer',$footer_options);
     echo '</div>'; //.panel-body

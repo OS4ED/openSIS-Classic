@@ -33,7 +33,21 @@ $next_start_date=$_SESSION['roll_start_date'];
 $next_s_start_date=$_SESSION['roll_s_start_date'];
 $next_s_end_date=$_SESSION['roll_s_end_date'];
 //exit;
-$tables = array('staff'=>'users','school_periods'=>'School Periods','school_years'=>'Marking Periods','school_calendars'=>'Calendars','report_card_grade_scales'=>'Report Card Grade Codes','course_subjects'=>'Subjects','courses'=>'Courses','course_periods'=>'Course Periods','student_enrollment'=>'Students','honor_roll'=>'Honor Roll Setup','attendance_codes'=>'Attendance Codes','student_enrollment_codes'=>'Student Enrollment Codes','report_card_comments'=>'Report Card Comment Codes','NONE'=>'none');
+$tables = array('staff'=>_users,
+'school_periods'=>_schoolPeriods,
+'school_years'=>_markingPeriods,
+'school_calendars'=>_calendars,
+'report_card_grade_scales'=>_reportCardGradeCodes,
+'course_subjects'=>_subjects,
+'courses'=>_courses,
+'course_periods'=>_coursePeriods,
+'student_enrollment'=>_students,
+'honor_roll'=>_honorRollSetup,
+'attendance_codes'=>_attendanceCodes,
+'student_enrollment_codes'=>_studentEnrollmentCodes,
+'report_card_comments'=>_reportCardCommentCodes,
+'NONE'=>_none,
+);
 $no_school_tables = array('student_enrollment_codes'=>true,'staff'=>true);
 switch($table)
 {

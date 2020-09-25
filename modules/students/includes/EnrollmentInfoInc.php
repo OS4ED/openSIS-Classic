@@ -53,7 +53,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
             unset($_REQUEST['day_values']['student_enrollment']['new']);
             unset($_REQUEST['month_values']['student_enrollment']['new']);
             unset($_REQUEST['year_values']['student_enrollment']['new']);
-            echo ErrorMessage(array('The student is already enrolled on that date, and could not be enrolled a second time on the date you specified.  Please fix, and try enrolling the student again.'));
+            echo ErrorMessage(array(_theStudentIsAlreadyEnrolledOnThatDateAndCouldNotBeEnrolledASecondTimeOnTheDateYouSpecifiedPleaseFixAndTryEnrollingTheStudentAgain));
         }
     }
 
@@ -140,14 +140,14 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
 
                                 //SaveData($iu_extra, '', $field_names);
                             } else {
-                                echo '<div class="alert bg-danger alert-styled-left">Student cannot be dropped because student has got attendance till ' . date('m-d-Y', strtotime($max_at_dt)) . '</div>';
+                                echo '<div class="alert bg-danger alert-styled-left">'._studentCannotBeDroppedBecauseStudentHasGotAttendanceTill.'' . date('m-d-Y', strtotime($max_at_dt)) . '</div>';
                             }
                         } else {
 
                             $get_details = DBGet(DBQuery('SELECT max(START_DATE) AS START_DATE FROM student_enrollment WHERE STUDENT_ID=' . UserStudentID()));
 
                             if (strtotime($get_details[1]['START_DATE']) > strtotime($_REQUEST['values'][$table][$id][$column])) {
-                                echo '<div class="alert bg-danger alert-styled-left">Student drop date cannot be before student enrollment date </div>';
+                                echo '<div class="alert bg-danger alert-styled-left">'._studentDropDateCannotBeBeforeStudentEnrollmentDate.' </div>';
                             } else {
                                // SaveData($iu_extra, '', $field_names);
                             }
@@ -161,7 +161,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                         }
                     }
                 } else {
-                    echo '<div class="alert bg-danger alert-styled-left">Please enter proper drop date.Drop date must be greater than student enrollment date.</div>';
+                    echo '<div class="alert bg-danger alert-styled-left">'._pleaseEnterProperDropDateDropDateMustBeGreaterThanStudentEnrollmentDate.'</div>';
                 }
             }
         }
@@ -201,20 +201,29 @@ if (count($RET)) {
             $get_SEC = '';
         $RET[$in]['START_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['START_DATE'])) : _makeEnrollmentDates('START_DATE', $date_counter, $value));
         $date_counter = $date_counter + 1;
-        // if($RET[$in]['END_DATE']!='')
-            $RET[$in]['END_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['END_DATE'])) : _makeEnrollmentDates('END_DATE', $date_counter, $value));
-        // else {
-            //   $RET[$in]['END_DATE']='0000-00-00';    
-        // }
+//                        if($RET[$in]['END_DATE']!='')
+
+        $RET[$in]['END_DATE'] = ($get_SEC == 'TrnD' ? date('M/d/Y', strtotime($RET[$in]['END_DATE'])) : _makeEnrollmentDates('END_DATE', $date_counter, $value));
+//                  else {
+//                  $RET[$in]['END_DATE']=='0000-00-00';    
+//                  }
 //                      $date_counter=$date_counter+1;
     }
 }
 
 
-$columns = array('START_DATE' => 'Start Date ', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'Drop Date', 'DROP_CODE' => 'Drop Code', 'SCHOOL_ID' => 'School');
+$columns = array('START_DATE' =>_startDate,
+ 'ENROLLMENT_CODE' =>_enrollmentCode,
+ 'END_DATE' =>_dropDate,
+ 'DROP_CODE' =>_dropCode,
+ 'SCHOOL_ID' =>_school,
+);
 
 $schools_RET = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID!=\'' . UserSchool() . '\''));
-$next_school_options = array(UserSchool() => 'Next grade at current school', '0' => 'Retain', '-1' => 'Do not enroll after this school year');
+$next_school_options = array(UserSchool() =>_nextGradeAtCurrentSchool,
+ '0' =>_retain,
+ '-1' =>_doNotEnrollAfterThisSchoolYear,
+);
 if (count($schools_RET)) {
     foreach ($schools_RET as $school)
         $next_school_options[$school['ID']] = $school['TITLE'];
@@ -272,13 +281,13 @@ else {
 
 echo '</div>';
 
-echo '<h5 class="text-primary">Enrollment Information</h5>';
+echo '<h5 class="text-primary">'._enrollmentInformation.'</h5>';
 
 echo '<input type=hidden id=cal_stu_id value=' . $id . ' />';
 
 echo '<div class="row">';
-echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][CALENDAR_ID]">Calendar <span class="text-danger">*</span></label><div class="col-lg-8">' . SelectInput($calendar, "values[student_enrollment][$id][CALENDAR_ID]", (!$calendar || !$div ? '' : '') . '' . (!$calendar || !$div ? '' : ''), $calendar_options, false, '', $div) . '</div></div></div>';
-echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][NEXT_SCHOOL]">Rolling/Retention Options</label><div class="col-lg-8">' . SelectInput($next_school, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_school || !$div ? '' : '') . '' . (!$next_school || !$div ? '' : ''), $next_school_options, false, '', $div) . '</div></div></div>';
+echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][CALENDAR_ID]">'._calendar.' <span class="text-danger">*</span></label><div class="col-lg-8">' . SelectInput($calendar, "values[student_enrollment][$id][CALENDAR_ID]", (!$calendar || !$div ? '' : '') . '' . (!$calendar || !$div ? '' : ''), $calendar_options, false, '', $div) . '</div></div></div>';
+echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][NEXT_SCHOOL]">'._rollingRetentionOptions.'</label><div class="col-lg-8">' . SelectInput($next_school, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_school || !$div ? '' : '') . '' . (!$next_school || !$div ? '' : ''), $next_school_options, false, '', $div) . '</div></div></div>';
 echo '</div>'; //.row
 
 echo '<hr class="no-margin-bottom"/>';
@@ -306,7 +315,7 @@ if ($_REQUEST['student_id'] != 'new') {
     else
         $id = 'new';
     echo '<div id="students" class="table-responsive">';
-    ListOutput($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link);
+    ListOutput($RET, $columns,  _enrollmentRecord,_enrollmentRecords, $link);
     //echo "</div>";
     if ($id != 'new')
         $next_school = $RET[count($RET)]['NEXT_SCHOOL'];
@@ -317,7 +326,7 @@ if ($_REQUEST['student_id'] != 'new') {
 else {
     $id = 'new';
     echo '<div id="students">';
-    ListOutputMod($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link, array(), array('count' => false));
+    ListOutputMod($RET, $columns, enrollmentRecord,enrollmentRecords, $link, array(), array('count' =>false));
     echo "</div>";
     $next_school = UserSchool();
     $calendar = $calendars_RET[1]['CALENDAR_ID'];

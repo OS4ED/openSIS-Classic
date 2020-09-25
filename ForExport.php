@@ -137,7 +137,7 @@ if(optional_param('modname','',PARAM_NOTAGS))
 			}
 			
 			
-			echo "You're not allowed to use this program! This attempted violation has been logged and your IP address was captured.";
+			echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";
 			DBQuery("INSERT INTO hacking_log (HOST_NAME,IP_ADDRESS,LOGIN_DATE,VERSION,PHP_SELF,DOCUMENT_ROOT,SCRIPT_NAME,MODNAME,USERNAME) values('$_SERVER[SERVER_NAME]','$ip','".date('Y-m-d')."','$openSISVersion','$_SERVER[PHP_SELF]','$_SERVER[DOCUMENT_ROOT]','$_SERVER[SCRIPT_NAME]','$_REQUEST[modname]','".User('USERNAME')."')");
 			Warehouse('footer');
 			if($openSISNotifyAddress)

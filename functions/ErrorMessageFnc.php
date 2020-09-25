@@ -82,7 +82,7 @@ function ErrorMessage($errors, $code = 'error', $options = '') {
                 $return .= '<div class="row">';
                 $return .= '<div class="col-md-9">';
                 $return .= '<div class="navbar-text">';
-                $return .= 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+                $return .= _footerText;
                 $return .= '</div>';
                 $return .= '</div>';
                 $return .= '<div class="col-md-3">';
@@ -144,7 +144,7 @@ function ErrorMessage1($errors, $code = 'error') {
             $return .= '<div class="row">';
             $return .= '<div class="col-md-9">';
             $return .= '<div class="navbar-text">';
-            $return .= 'openSIS is a product of Open Solutions for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL license</a>.';
+            $return .= _footerText;
             $return .= '</div>';
             $return .= '</div>';
             $return .= '<div class="col-md-3">';

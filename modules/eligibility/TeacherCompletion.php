@@ -73,7 +73,7 @@ $period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>Al
 foreach ($periods_RET as $period)
     $period_select .= "<OPTION value=$period[PERIOD_ID]" . (($_REQUEST['period'] == $period['PERIOD_ID']) ? ' SELECTED' : '') . ">" . $period['TITLE'] . "</OPTION>";
 $period_select .= "</SELECT>";
-DrawBC("Extracurricular > " . ProgramTitle());
+DrawBC(""._extracurricular." > " . ProgramTitle());
 
 echo '<div class="panel panel-default">';
 echo "<FORM class=\"no-margin-bottom\" name=teach_comp id=teach_comp action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
@@ -90,12 +90,12 @@ if ($start && $begin_year) {
 echo '<div class="panel-heading">';
 echo '<div class="row">';
 echo '<div class="col-md-12">';
-echo '<div class="form-inline"><SELECT name=start_date class=form-control>' . $date_select . '</SELECT> &nbsp; ' . $period_select, ' &nbsp; <INPUT type=submit class="btn btn-primary" value=Go onclick=\'formload_ajax("teach_comp");\'></div>';
+echo '<div class="form-inline"><SELECT name=start_date class=form-control>' . $date_select . '</SELECT> &nbsp; ' . $period_select, ' &nbsp; <INPUT type=submit class="btn btn-primary" value='._go.' onclick=\'formload_ajax("teach_comp");\'></div>';
 echo '</div>'; //.col-md-4
 echo '</div>'; //.row
 echo '</div>'; //.panel-heading
 echo '</FORM>';
-
++
 $mp = GetAllMP('QTR', UserMP());
 
 if (!isset($mp))
@@ -126,14 +126,14 @@ if (count($RET)) {
             $staff_RET[$i][$period_id] = '<i class="fa fa-times text-danger fa-lg"></i>';
     }
 }
-$columns = array('FULL_NAME' => 'Teacher');
+$columns = array('FULL_NAME' =>_teacher);
 if (!$_REQUEST['period']) {
     foreach ($periods_RET as $period)
         $columns[$period['PERIOD_ID']] = $period['TITLE'];
 }
 echo '<hr class="no-margin"/>';
 //echo '<div class="table-responsive">';
-ListOutput($staff_RET, $columns, 'Teacher who hasn\'t entered eligibility', 'Teachers who haven\'t entered eligibility');
+ListOutput($staff_RET, $columns, _teacherWhoHasnTEnteredEligibility, _teachersWhoHavenTEnteredEligibility);
 //echo "</div>";
 
 echo '</div>'; //.panel.panel-default

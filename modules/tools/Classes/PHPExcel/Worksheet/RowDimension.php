@@ -94,7 +94,7 @@ class PHPExcel_Worksheet_RowDimension
     	$this->_collapsed		= false;
 
 		// set row dimension as unformatted by default
-		$this->_xfIndex = null;
+		$this->_xfIndex = _null;
     }
     
     /**

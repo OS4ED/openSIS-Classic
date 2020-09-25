@@ -154,11 +154,11 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $gradelevel = ($firstrec['GRADELEVEL'] != '' ? $firstrec['GRADELEVEL'] : 'Not Found');
 
                     $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec[SCHOOL_NAME] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
-                    $course_html[$colnum] .= '<p class="m-t-0 m-b-5">Posted Date : ' . $posted_arr[1] . '/' . $posted_arr[0] . '</p>';
+                    $course_html[$colnum] .= '<p class="m-t-0 m-b-5">'._postedDate.' : ' . $posted_arr[1] . '/' . $posted_arr[0] . '</p>';
                     $course_html[$colnum] .= '<table class="invoice-table table-bordered">';
                     $course_html[$colnum] .= '<thead>';
                     $course_html[$colnum] .= '<tr>';
-                    $course_html[$colnum] .= '<th class="text-left f-s-12">Course</th><th class="text-left f-s-12" width="20%">Credit Hours</th><th class="text-left f-s-12" width="20%">Credits Earned</th><th class="bg-grey f-s-12" width="5%">Grade</th><th class="text-left f-s-12" width="15%">GP Value</th>';
+                    $course_html[$colnum] .= '<th class="text-left f-s-12">'._course.'</th><th class="text-left f-s-12" width="20%">'._creditHours.'</th><th class="text-left f-s-12" width="20%">'._creditsEarned.'</th><th class="bg-grey f-s-12" width="5%">'._grade.'</th><th class="text-left f-s-12" width="15%">'._gpValue.'</th>';
                     $course_html[$colnum] .= '</tr>';
                     $course_html[$colnum] .= '</thead>';
                     $course_html[$colnum] .= '<tbody>';
@@ -284,9 +284,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $course_html[$colnum] .= '<tr>';
                     $course_html[$colnum] .= '<td colspan="5">';
                     if($credit_attempt!=0)
-                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $credit_attempt) . ' / Credit Earned: ' . sprintf("%01.2f", $credit_earn) . ' / GPA: ' .(($totqp!=0 && $cred_attempted!=0)?($unweighted_or_not>0?sprintf("%01.2f",($totqp/$cred_attempted)):sprintf("%01.2f",($totqp/$cred_attempted))):'0') . '</p>';
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">'._creditAttempted.': ' . sprintf("%01.2f", $credit_attempt) . ' / '._creditEarned.': ' . sprintf("%01.2f", $credit_earn) . ' / '._gpa.': ' .(($totqp!=0 && $cred_attempted!=0)?($unweighted_or_not>0?sprintf("%01.2f",($totqp/$cred_attempted)):sprintf("%01.2f",($totqp/$cred_attempted))):'0') . '</p>';
                     else
-                    $course_html[$colnum] .= '<p class="text-blue f-s-13">Credit Attempted: ' . sprintf("%01.2f", $credit_attempt) . ' / Credit Earned: ' . sprintf("%01.2f", $credit_earn) . ' / GPA: ' .sprintf("%01.2f", 0.00) . '</p>';    
+                    $course_html[$colnum] .= '<p class="text-blue f-s-13">'._creditAttempted.': ' . sprintf("%01.2f", $credit_attempt) . ' / '._creditEarned.': ' . sprintf("%01.2f", $credit_earn) . ' / '._gpa.': ' .sprintf("%01.2f", 0.00) . '</p>';    
                     $course_html[$colnum] .= '</td>';
                     $course_html[$colnum] .= '</tr>';
                     $course_html[$colnum] .= '</tfoot>';
@@ -309,13 +309,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <div class="print-header m-b-10">
                     <div class="school-details">
                         <h2><?php echo $schoolinfo['TITLE']; ?></h2>
-                        <b>Address :</b> <?php echo (($schoolinfo['ADDRESS'] != '') ? $schoolinfo['ADDRESS'] : '') . ' ' . (($schoolinfo['CITY'] != '') ? ', ' . $schoolinfo['CITY'] : '') . (($schoolinfo['STATE'] != '') ? ', ' . $schoolinfo['STATE'] : '') . (($schoolinfo['ZIPCODE'] != '') ? ', ' . $schoolinfo['ZIPCODE'] : '') ?>
+                        <b><?=_address?> :</b> <?php echo (($schoolinfo['ADDRESS'] != '') ? $schoolinfo['ADDRESS'] : '') . ' ' . (($schoolinfo['CITY'] != '') ? ', ' . $schoolinfo['CITY'] : '') . (($schoolinfo['STATE'] != '') ? ', ' . $schoolinfo['STATE'] : '') . (($schoolinfo['ZIPCODE'] != '') ? ', ' . $schoolinfo['ZIPCODE'] : '') ?>
                         <?php if ($schoolinfo['PHONE']) { ?>
-                            <p><b>Phone :</b> <?php echo $schoolinfo['PHONE']; ?></p>
+                            <p><b><?=phone?> :</b> <?php echo $schoolinfo['PHONE']; ?></p>
                         <?php } ?>
                     </div>
                     <div class="header-right">
-                        <h4 class="title">TRANSCRIPT</h4>
+                        <h4 class="title"><?=_transcript?></h4>
                     </div>
                 </div>
                 <hr/>
@@ -324,22 +324,22 @@ if ($_REQUEST['modfunc'] == 'save') {
                     <div class="transcript-student-info f-s-15">
                         <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
                         <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
-                        <p class="m-t-5 m-b-0"><b>Date of Birth :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
-                        <p class="m-t-5 m-b-0"><b>Student ID :</b><?php echo $student_id ?></p>
-                        <p class="m-t-5 m-b-0"><b>Grade Level :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
+                        <p class="m-t-5 m-b-0"><b><?=_dateOfBirth?> :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
+                        <p class="m-t-5 m-b-0"><b><?=_studentId?> :</b><?php echo $student_id ?></p>
+                        <p class="m-t-5 m-b-0"><b><?=_gradeLevel?> :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
                     </div>
                     <div class="transcript-student-overview">
                         <table class="table">
                             <tr>
-                                <td class="p-r-30">Cumulative GPA</td>
+                                <td class="p-r-30"><?=_cumulativeGpa?></td>
                                 <td><?php echo $tot_qp != 0 ? sprintf("%01.2f", ($tot_qp / $total_CGPA_attemted)) : '0.00'; ?></td>
                             </tr>
                             <tr>
-                                <td class="p-r-30">Total Credit Attempted</td>
+                                <td class="p-r-30"><?=_totalCreditAttempted?></td>
                                 <td><?php echo sprintf("%01.2f", $total_CGPA_attemp); ?></td>
                             </tr>
                             <tr>
-                                <td class="p-r-30">Total Credit Earned</td>
+                                <td class="p-r-30"><?=_totalCreditEarned?></td>
                                 <td><?php echo sprintf("%01.2f", $total_credit_earn); ?></td>
                             </tr>
                         </table>
@@ -370,29 +370,32 @@ if ($_REQUEST['modfunc'] == 'save') {
                         </div>
                     <?php } ?>
                 </div>-->
-                
-                <?php
+		
+		<?php
                 if($_SESSION['PROFILE'] != 'student')
-                echo'<div class="text-right m-t-40">
+		{
+		?>
+                <div class="text-right m-t-40">
                     <table width="100%">
                         <tr>
                             <td>
                                 <table align="right" class="m-t-30">
                                     <tr>
                                         <td class="text-center p-b-40" style="border-top: 2px solid #333; width: 300px;">
-                                            <i>Signature</i>
+                                            <i><?=_signature?></i>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="text-center" style="border-top: 2px solid #333; width: 300px;">
-                                            <i>Title</i>
+                                            <i><?=_title?></i>
                                         </td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                     </table>
-                </div>'; ?>
+                </div>
+		<?php } ?>
                 <div style="page-break-before: always;">&nbsp;</div>
 
 
@@ -403,14 +406,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $grade_scale_value = $grade_scale[1];
                 ?>
                 <div class="m-t-0">
-                    <h3 class="m-b-5 m-t-0">GPA & CGPA based on a <?php echo $grade_scale_value['GP_SCALE']; ?>-point scale as follows:</h3>
+                    <h3 class="m-b-5 m-t-0"><?=_gpaCgpaBasedOnA?> <?php echo $grade_scale_value['GP_SCALE']; ?>-<?=_pointScaleAsFollows?>:</h3>
                     <table class="invoice-table table-bordered">
                         <thead>                            
                             <tr>
-                                <th class="text-center f-s-12">Grade Letter</th>
-                                <th class="text-center f-s-12">Weighted Grade Points</th>
-                                <th class="text-center f-s-12">Unweighted Grade Points</th>
-                                <th class="text-center f-s-12">Comments</th>
+                                <th class="text-center f-s-12"><?=_gradeLetter?></th>
+                                <th class="text-center f-s-12"><?=_weightedGradePoints?></th>
+                                <th class="text-center f-s-12"><?=_unweightedGradePoints?></th>
+                                <th class="text-center f-s-12"><?=_comments?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -442,10 +445,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 if ($probation) {
                     $general_info_html = $general_info_html .
-                            '<tr><td width="2%"></td><td width="3%" style="padding-bottom:15px">Status:</td><td width="95%"> ACADEMIC PROBATION
-         Please be reminded of Section 2.3.6 of the Academic Handbook:
-         If students fail to raise their CGPA above 3.0 for two consecutive semesters
-         the default action is dismissal from the Program.</td></tr>' .
+                            '<tr><td width="2%"></td><td width="3%" style="padding-bottom:15px">Status:</td><td width="95%"> '._academicProbationPleaseBeRemindedOfSectionOfTheAcademicHandbooKIfStudentsFailToRaiseTheirCGPAAboveForTwoConsecutiveSemestersTheDefaultActionIsDismissalFromTheProgram.'.</td></tr>' .
                             '</table><BR><BR></td></tr>';
                 } else {
                     $general_info_html = $general_info_html .
@@ -459,12 +459,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                             <div>' . $sinfo['ADDRESS'] . '</div>
                             <div>' . $sinfo['CITY'] . ', ' . $sinfo['STATE'] . '  ' . $sinfo['ZIPCODE'] . '</div>
                             <div><b>Phone:</b>  ' . $sinfo['STUDENT_PHONE'] . '</div>
-							<div><table cellspacing="0" cellpadding="3" border="1"  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>Date of Birth</b></td><td><b>Gender</b></td><td><b>Grade</b></td></tr><tr><td>' . str_replace('-', '/', $sinfo['BIRTHDATE']) . '</td><td>' . $sinfo['GENDER'] . '</td><td>' . $sinfo['GRADE_SHORT'] . '</td></tr></table>' . '</div>
+							<div><table cellspacing="0" cellpadding="3" border="1"  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>'._dateOfBirthh.'</b></td><td><b>'._gender.'</b></td><td><b>'._grade.'</b></td></tr><tr><td>' . str_replace('-', '/', $sinfo['BIRTHDATE']) . '</td><td>' . $sinfo['GENDER'] . '</td><td>' . $sinfo['GRADE_SHORT'] . '</td></tr></table>' . '</div>
 							</td>
 
-                        </tr></table></td></tr><tr><td colspan="2" style="padding:6px 0px 6px 0px;"><table width="100%" cellspacing="0" cellpadding="3" border="1" align=center  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>Cumulative GPA:</b> ' . sprintf("%01.2f", (($tot_qp) / ($total_CGPA_attemted))) . '&nbsp;&nbsp;&nbsp;&nbsp;
+                        </tr></table></td></tr><tr><td colspan="2" style="padding:6px 0px 6px 0px;"><table width="100%" cellspacing="0" cellpadding="3" border="1" align=center  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>'._cumulativeGpa.':</b> ' . sprintf("%01.2f", (($tot_qp) / ($total_CGPA_attemted))) . '&nbsp;&nbsp;&nbsp;&nbsp;
                             
-                                </td></tr><tr><td><b>Total Credit Attempted:</b> ' . sprintf("%01.2f", $total_CGPA_attemted) . '&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Credit Earned:</b> ' . sprintf("%01.2f", $total_credit_earned) . '</td></tr></table></td></tr></table>';
+                                </td></tr><tr><td><b>'._totalCreditAttempted.':</b> ' . sprintf("%01.2f", $total_CGPA_attemted) . '&nbsp;&nbsp;&nbsp;&nbsp;<b>'._totalCreditEarned.':</b> ' . sprintf("%01.2f", $total_credit_earned) . '</td></tr></table></td></tr></table>';
 
 
 
@@ -480,18 +480,18 @@ if ($_REQUEST['modfunc'] == 'save') {
     PDFStop($handle);
 }
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Gradebook > " . ProgramTitle());
+    DrawBC(""._gradebook." > " . ProgramTitle());
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&_openSIS_PDF=true method=POST target=_blank>";
 
         $extra['extra_header_left'] = '<div class="form-inline">';
-        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="show_photo" id="show_photo" /><span></span> Include Student Picture</label></div></div>';
-        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="incl_mp_grades" id="" checked disabled /><span></span> Include Marking Period grades</label></div></div>';
-        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" checked /> Two Column Template</label>';
-        $extra['extra_header_left'] .= '<label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" /> Single Column Template</label></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="show_photo" id="show_photo" /><span></span> '._includeStudentPicture.'</label></div></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="incl_mp_grades" id="" checked disabled /><span></span> '._includeMarkingPeriodGrades.'</label></div></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" checked /> '._twoColumnTemplate.'</label>';
+        $extra['extra_header_left'] .= '<label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" /> '._singleColumnTemplate.'</label></div>';
         $extra['extra_header_left'] .= '</div>';
     }
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -531,7 +531,7 @@ if (!$_REQUEST['modfunc']) {
     Search('student_id', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Transcripts for Selected Students\'></div>';
+            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._createTranscriptsForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 
@@ -540,7 +540,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">Choose course</h4>';
+    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -551,9 +551,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }

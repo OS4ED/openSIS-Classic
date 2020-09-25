@@ -65,22 +65,22 @@ if ($From && $to) {
 
 if ((!UserStudentID() || substr($_REQUEST['modname'], 0, 5) == 'users')) {
     $RET_Users = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID=\'' . UserStaffID() . '\''));
-    DrawHeader('Selected User: ' . $RET_Users[1]['FIRST_NAME'] . '&nbsp;' . $RET_Users[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Side.php?modname=' . $_REQUEST['modname'] . '&staff_id=new&From=' . $From . '&to=' . $to . ' ><i class="icon-square-left"></i> Back to User List</A></span>');
+    DrawHeader(''._selectedUser.': ' . $RET_Users[1]['FIRST_NAME'] . '&nbsp;' . $RET_Users[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Side.php?modname=' . $_REQUEST['modname'] . '&staff_id=new&From=' . $From . '&to=' . $to . ' ><i class="icon-square-left"></i> '._selectedUser.'</A></span>');
 }
 
 if (count($RET)) {
-    echo '<div class="panel-body p-b-0"><div class="alert alert-warning alert-styled-left m-b-0"><b>Warning!!</b> - Teachers have missing attendance data.</div></div>';
+    echo '<div class="panel-body p-b-0"><div class="alert alert-warning alert-styled-left m-b-0"><b>'._warning.'!!</b> - '._teachersHaveMissingAttendanceData.'.</div></div>';
 
     $modname = "users/TeacherPrograms.php?include=attendance/TakeAttendance.php&miss_attn=1&From=$From&to=$to";
     $link['remove']['link'] = "Modules.php?modname=$modname&modfunc=attn&username=admin";
     $link['remove']['variables'] = array('date' => 'SCHOOL_DATE', 'cp_id' => 'COURSE_PERIOD_ID', 'cpv_id' => 'CPV_ID');
     $_SESSION['miss_attn'] = 1;
     echo '<div class="panel-body">';
-    ListOutput_missing_attn($RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Period -Teacher', 'SCHOOL' => 'School'), 'Period', 'Periods', $link, array(), array('save' => false, 'search' => false));
+    ListOutput_missing_attn($RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Period -Teacher', 'SCHOOL' => 'School'), _period, _periods, $link, array(), array('save' =>false, 'search' =>false));
     echo '</div>'; //.panel-body
 } else {
     echo '<div class="panel-body">';
-    echo '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Attendance completed for this teacher.</div>';
+    echo '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> '._attendanceCompletedForThisTeacher.'.</div>';
     echo '</div>'; //.panel-body
 }
 ?>

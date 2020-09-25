@@ -25,7 +25,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
+
 if($_REQUEST['day_values'] && ($_POST['day_values'] || $_REQUEST['ajax']))
 {
 	foreach($_REQUEST['day_values'] as $id=>$values)
@@ -91,7 +95,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 //                                                    if((strtotime($columns['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='') || (strtotime($columns['START_DATE'])>strtotime($portal_RET['END_DATE']) && $portal_RET['END_DATE']!='') || (strtotime($portal_RET['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='')|| (isset ($columns['START_DATE']) && $columns['START_DATE']=='' && $columns['END_DATE']!='') || ($columns['START_DATE']!='' && strtotime($columns['START_DATE'])<strtotime($syear_RET['START_DATE'])) || ($columns['END_DATE']!='' && strtotime($columns['END_DATE'])>strtotime($syear_RET['END_DATE'])))
                                                     if((strtotime($columns['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='') || (strtotime($columns['START_DATE'])>strtotime($portal_RET['END_DATE']) && $portal_RET['END_DATE']!='') || (strtotime($portal_RET['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='')|| (isset ($columns['START_DATE']) && $columns['START_DATE']=='' && $columns['END_DATE']!='') )
                                                     {
-                                                        ShowErrPhp('<b>Data not saved because  date range is not valid.</b>');
+                                                        ShowErrPhp('<b>'._dataNotSavedBecauseDateRangeIsNotValid.'</b>');
                                                     }
                                                     else
                                                     {
@@ -151,12 +155,12 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                         $syear_RET=$syear_RET[1];
                         if($columns['START_DATE']=='' ||  $columns['END_DATE']=='')
                         {
-                            ShowErrPhp('<b>Date can not be blank.</b>');
+                            ShowErrPhp('<b>'._dateCanNotBeBlank.'</b>');
                         }
 //                        elseif((strtotime($columns['START_DATE'])<strtotime($syear_RET['START_DATE'])) || (strtotime($columns['END_DATE'])>strtotime($syear_RET['END_DATE'])))
                         elseif(strtotime($columns['START_DATE'])>strtotime($columns['END_DATE']))
                         {
-                            ShowErrPhp('<b>Data not saved because  date range is not valid.</b>');
+                            ShowErrPhp('<b>'._dataNotSavedBecauseDateRangeIsNotValid.'</b>');
                         }
                         else
                         {
@@ -231,11 +235,11 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 	unset($_SESSION['_REQUEST_vars']['profiles']);
 }
 
-DrawBC("School Setup > ".ProgramTitle());
+DrawBC(""._schoolSetup." > ".ProgramTitle());
 
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove' && AllowEdit())
 {
-	if(DeletePrompt_Portal('message'))
+	if(DeletePrompt_Portal(_message))
 	{
            
 		DBQuery('DELETE FROM portal_notes WHERE ID=\''.paramlib_validation($column=SORT_ORDER,$_REQUEST[id]).'\'');
@@ -257,9 +261,9 @@ foreach($LO as $ti => $td)
 $portal_id=implode(',',$portal_id_arr);
 	$notes_RET = DBGet($QI,array('TITLE'=>'_makeTextInput','CONTENT'=>'_makeContentInput','SORT_ORDER'=>'_makeTextInput','START_DATE'=>'_makePublishing'));
 
-	$columns = array('TITLE'=>'Title','CONTENT'=>'Note','SORT_ORDER'=>'Sort Order','START_DATE'=>'Publishing Options');
+	$columns = array('TITLE'=>_title,'CONTENT'=>_note,'SORT_ORDER'=>_sortOrder,'START_DATE'=>_publishingOptions);
 	
-	$link['add']['html'] = array('TITLE'=>_makeTextInput('','TITLE','placeholder="Title"'),'CONTENT'=>_makeContentInput('','CONTENT','placeholder="Note"'),'SHORT_NAME'=>_makeTextInput('','SHORT_NAME'),'SORT_ORDER'=>_makeTextInput('','SORT_ORDER','placeholder="Sort Order"'),'START_DATE'=>_makePublishing('','START_DATE'));
+	$link['add']['html'] = array('TITLE'=>_makeTextInput('','TITLE','placeholder="'._title.'"'),'CONTENT'=>_makeContentInput('','CONTENT','placeholder="'._note.'"'),'SHORT_NAME'=>_makeTextInput('','SHORT_NAME'),'SORT_ORDER'=>_makeTextInput('','SORT_ORDER','placeholder="'._sortOrder.'"'),'START_DATE'=>_makePublishing('','START_DATE'));
 	$link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 	$link['remove']['variables'] = array('id'=>'ID');
 
@@ -267,10 +271,10 @@ $portal_id=implode(',',$portal_id_arr);
 	
         echo '<input type="hidden" name="h1" id="h1" value="'.$portal_id.'">';
         echo '<div id="students" class="panel panel-white">';
-	ListOutput($notes_RET,$columns,'Note','Notes',$link);
+	ListOutput($notes_RET,$columns,_note,_notes,$link);
         $count_note=count($notes_RET);
 
-	echo '<div class="panel-footer"><div class="col-md-12 text-right">'.SubmitButton('Save','','id="savePortalBtn" class="btn btn-primary" onclick="formcheck_school_setup_portalnotes(this);"').'</div></div>';
+	echo '<div class="panel-footer"><div class="col-md-12 text-right">'.SubmitButton(_save,'','id="savePortalBtn" class="btn btn-primary" onclick="formcheck_school_setup_portalnotes(this);"').'</div></div>';
 	echo '</div></FORM>';
 }
 
@@ -341,7 +345,7 @@ function _makePublishing($value,$name)
 	else
 		$id = 'new';
 
-	$return = '<TABLE border=0 cellspacing=0 cellpadding=0 width=200 class=LO_field><tr></td><h4>Visible Between:</h4>';
+	$return = '<TABLE border=0 cellspacing=0 cellpadding=0 width=200 class=LO_field><tr></td><h4>'._visibleBetween.'</h4>';
      
         if($id!='new')
         {
@@ -359,13 +363,37 @@ function _makePublishing($value,$name)
 	if(!$profiles_RET)
 		$profiles_RET = DBGet(DBQuery("SELECT ID,TITLE FROM user_profiles ORDER BY ID"));
 
-	$return .= '<h4 class="p-t-15">Visible To: </h4>';
-	foreach(array('all'=>'All School','admin'=>'Administrator w/Custom','teacher'=>'Teacher w/Custom','parent'=>'Parent w/Custom') as $profile_id=>$profile)
+	$return .= '<h4 class="p-t-15">'._visibleTo.'</h4>';
+	foreach(array('all'=>_allSchool,'admin'=>_administratorWCustom,'teacher'=>_teacherWCustom,'parent'=>_parentWCustom) as $profile_id=>$profile)
 		$return .= "<div class=\"checkbox checkbox-switch switch-success switch-xs \"><label><INPUT type=checkbox name=profiles[$id][$profile_id] value=Y".(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile_id,")!==false?' CHECKED':'')."><span></span>$profile</label></div>";
 	$i = 3;
 	foreach($profiles_RET as $profile)
 	{
 		$i++;
+		if($profile[TITLE] == "Super Administrator")
+                    {
+                    $profile[TITLE] = _superAdministrator;
+                    
+                    }elseif($profile[TITLE] == "Administrator")
+                    {
+                        $profile[TITLE] = _administrator;
+                        
+                    }elseif($profile[TITLE] == "Teacher")
+                    {
+                        $profile[TITLE] = _teacher;
+                        
+                    }elseif($profile[TITLE] == "Student")
+                    {
+                        $profile[TITLE] = _student;
+                            
+                    }elseif($profile[TITLE] == "Parent"){
+                                $profile[TITLE] = _parent;
+                                
+                    }elseif($profile[TITLE] == "Admin Asst")
+                    {
+                      $profile[TITLE] = _adminAsst;
+                                
+                    }
 		$return .= '<div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=profiles['.$id.']['.$profile['ID'].'] value=Y'.(strpos($THIS_RET['PUBLISHED_PROFILES'],",$profile[ID],")!==false?' CHECKED':'')."><span></span>$profile[TITLE]</label></div>";
 //		if($i%4==0 && $i!=count($profile))
 //			$return .= '<TR>';

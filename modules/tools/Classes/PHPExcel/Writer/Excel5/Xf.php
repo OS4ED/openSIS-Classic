@@ -147,7 +147,7 @@ class PHPExcel_Writer_Excel5_Xf
 	 */
 	public function __construct(PHPExcel_Style $style = null)
 	{
-		$this->_isStyleXf =     false;
+		$this->_isStyleXf = false;
 		$this->_BIFFVersion   = 0x0600;
 		$this->_fontIndex      = 0;
 

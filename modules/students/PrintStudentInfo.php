@@ -39,7 +39,7 @@ echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -51,9 +51,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
@@ -76,7 +76,7 @@ echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -88,9 +88,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
@@ -135,7 +135,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             foreach ($RET as $student) {
                 $_SESSION['student_id'] = $student['STUDENT_ID'];
                 echo "<table width=100% style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Information Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentInformationReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentInformationReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
                 echo "<table cellspacing=0  border=\"0\" style=\"border-collapse:collapse\">";
                 echo "<tr><td colspan=3 style=\"height:18px\"></td></tr>";
@@ -175,42 +175,42 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                 if ($_REQUEST['category']['1']) {
-                    echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Personal Information</td></tr>";
+                    echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._personalInformation."</td></tr>";
                     //----------------------------------------------
-                    echo "<tr><td width=45% style='font-weight:bold'>Student Name:</td>";
+                    echo "<tr><td width=45% style='font-weight:bold'>"._studentName.":</td>";
                     echo "<td width=55%>" . $student['FULL_NAME'] . "</td></tr>";
-                    echo "<tr><td style='font-weight:bold'>ID:</td>";
+                    echo "<tr><td style='font-weight:bold'>"._id.":</td>";
                     echo "<td>" . $student['STUDENT_ID'] . " </td></tr>";
                     if ($student['ALT_ID'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Alt ID:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._altId.":</td>";
                         echo "<td>" . $student['ALT_ID'] . " </td></tr>";
                     }
-                    echo "<tr><td style='font-weight:bold'>Grade:</td>";
+                    echo "<tr><td style='font-weight:bold'>"._grade.":</td>";
                     echo "<td>" . $student['GRADE_ID'] . " </td></tr>";
-                    echo "<tr><td style='font-weight:bold'>Gender:</td>";
+                    echo "<tr><td style='font-weight:bold'>"._gender.":</td>";
                     echo "<td>" . $sql['GENDER'] . "</td></tr>";
-                    echo "<tr><td style='font-weight:bold'>Ethnicity:</td>";
+                    echo "<tr><td style='font-weight:bold'>"._ethnicity.":</td>";
                     echo "<td>" . $sql['ETHNICITY'] . "</td></tr>";
                     if ($sql['COMMON_NAME'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Common Name:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._commonName.":</td>";
                         echo "<td>" . $sql['COMMON_NAME'] . "</td></tr>";
                     }
                     if ($sql['SOCIAL_SEC_NO'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Social Security:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._socialSecurity.":</td>";
                         echo "<td>" . $sql['SOCIAL_SEC_NO'] . "</td></tr>";
                     }
-                    echo "<tr><td style='font-weight:bold'>Birth Date:</td>";
+                    echo "<tr><td style='font-weight:bold'>"._birthDate.":</td>";
                     echo "<td>" . $sql['BIRTHDAY'] . "</td></tr>";
                     if ($sql['LANGUAGE'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Language Spoken:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._languageSpoken.":</td>";
                         echo "<td>" . $sql['LANGUAGE'] . "</td></tr>";
                     }
                     if ($sql['EMAIL'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Email ID:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._emailId.":</td>";
                         echo "<td>" . $sql['EMAIL'] . "</td></tr>";
                     }
                     if ($sql['PHONE'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Phone:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._phone.":</td>";
                         echo "<td>" . $sql['PHONE'] . "</td></tr>";
                         echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                     }
@@ -220,7 +220,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                         $rolling = $rolling[1]['TITLE'];
                     } elseif ($sql['ROLLING'] != 0)
-                        $rolling = 'Do not enroll after this school year';
+                        $rolling = _doNotEnrollAfterThisSchoolYear;
 
                     elseif ($sql['ROLLING'] != -1)
                         $rolling = 'Retain';
@@ -292,34 +292,34 @@ if ($_REQUEST['modfunc'] == 'save') {
                     foreach ($addresses_RET as $address) {
                         $address_current = $address['ADDRESS'];
                         if ($address_current != $address_previous) {
-                            echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">Home Address</td></tr>";
-                            echo "<tr><td width=45% style='font-weight:bold'>Address1:</td>";
+                            echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">"._homeAddress."</td></tr>";
+                            echo "<tr><td width=45% style='font-weight:bold'>"._address1.":</td>";
                             echo "<td width=55%>" . $address['ADDRESS'] . "</td></tr>";
                             if ($address['STREET'] != '') {
-                                echo "<tr><td width=35% style='font-weight:bold'>Address2:</td>";
+                                echo "<tr><td width=35% style='font-weight:bold'>"._address2.":</td>";
                                 echo "<td width=65%>" . $address['STREET'] . "</td></tr>";
                             }
-                            echo "<tr><td style='font-weight:bold'>City:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._city.":</td>";
                             echo"<td>" . ($address['CITY'] ? $address['CITY'] . '' : '') . "</td></tr>";
-                            echo "<tr><td style='font-weight:bold'>State:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._state.":</td>";
                             echo"<td>" . $address['STATE'] . "</td></tr>";
-                            echo "<tr><td style='font-weight:bold'>Zipcode:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._zipcode.":</td>";
                             echo"<td>" . ($address['ZIPCODE'] ? $address['ZIPCODE'] . '' : '') . "</td></tr>";
                             echo "</table>";
 
                             echo "</td><td></td><td valign=top width=300>";
-                            echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Mailing Address</td></tr>";
-                            echo "<tr><td width=45% style='font-weight:bold'>Address1:</td>";
+                            echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._mailingAddress."</td></tr>";
+                            echo "<tr><td width=45% style='font-weight:bold'>"._address1.":</td>";
                             echo"<td width=55%>" . $address['MAIL_ADDRESS'] . "</td></tr>";
                             if ($address['MAIL_STREET'] != '') {
-                                echo "<tr><td width=35% style='font-weight:bold'>Address2:</td>";
+                                echo "<tr><td width=35% style='font-weight:bold'>"._address2.":</td>";
                                 echo "<td width=65%>" . $address['MAIL_STREET'] . "</td></tr>";
                             }
-                            echo "<tr><td style='font-weight:bold'>City:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._city.":</td>";
                             echo"<td>" . $address['MAIL_CITY'] . "</td></tr>";
-                            echo "<tr><td style='font-weight:bold'>State:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._state.":</td>";
                             echo"<td>" . $address['MAIL_STATE'] . "</td></tr>";
-                            echo "<tr><td style='font-weight:bold'>Zipcode:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._zipcode.":</td>";
                             echo"<td>" . $address['MAIL_ZIPCODE'] . "</td></tr>";
                             echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                             echo "</table>";
@@ -332,7 +332,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             }
                           
 
-                            echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Primary Emergency Contact</td></tr>";
+                            echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._primaryEmergencyContact."</td></tr>";
                             $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
                             $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
 
@@ -348,50 +348,50 @@ if ($_REQUEST['modfunc'] == 'save') {
                             foreach ($contacts_RET as $contact)  {
 
 
-                                echo "<tr><td width=45% style='font-weight:bold'>Relation :</td><td width=55%>" . $contact['PRIM_STUDENT_RELATION'] . "</td></tr>";
+                                echo "<tr><td width=45% style='font-weight:bold'>"._relation." :</td><td width=55%>" . $contact['PRIM_STUDENT_RELATION'] . "</td></tr>";
 
-                                echo "<tr><td style='font-weight:bold'>First Name :</td><td>" . $contact['PRI_FIRST_NAME'] . "</td></tr>";
-                                echo "<tr><td style='font-weight:bold'>Last Name :</td><td>" . $contact['PRI_LAST_NAME'] . "</td></tr>";
+                                echo "<tr><td style='font-weight:bold'>"._firstName." :</td><td>" . $contact['PRI_FIRST_NAME'] . "</td></tr>";
+                                echo "<tr><td style='font-weight:bold'>"._lastName." :</td><td>" . $contact['PRI_LAST_NAME'] . "</td></tr>";
 //                                if ($contact['HOME_PHONE'] != '') {
-//                                    echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['HOME_PHONE'] . "</td></tr>";
+//                                    echo "<tr><td style='font-weight:bold'>"._homePhone." :</td><td>" . $contact['HOME_PHONE'] . "</td></tr>";
 //                                }
 //                                if ($contact['WORK_PHONE'] != '') {
-//                                    echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['WORK_PHONE'] . "</td></tr>";
+//                                    echo "<tr><td style='font-weight:bold'>"._workPhone." :</td><td>" . $contact['WORK_PHONE'] . "</td></tr>";
 //                                }
 //                                if ($contact['MOBILE_PHONE'] != '') {
-//                                    echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['MOBILE_PHONE'] . "</td></tr>";
+//                                    echo "<tr><td style='font-weight:bold'>"._mobilePhone." :</td><td>" . $contact['MOBILE_PHONE'] . "</td></tr>";
 //                                }
                                 if ($contact['EMAIL'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Email :</td><td>" . $contact['EMAIL'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._email." :</td><td>" . $contact['EMAIL'] . "</td></tr>";
                                 }
 
                                 if ($contact['PRIM_ADDRESS'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Address1 :</td><td>" . $contact['PRIM_ADDRESS'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._address1." :</td><td>" . $contact['PRIM_ADDRESS'] . "</td></tr>";
                                 }
 
                                 if ($contact['PRIM_STREET'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Address2 :</td><td>" . $contact['PRIM_STREET'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._address2." :</td><td>" . $contact['PRIM_STREET'] . "</td></tr>";
                                 }
 
                                 if ($contact['PRIM_CITY'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>City :</td><td>" . $contact['PRIM_CITY'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._city." :</td><td>" . $contact['PRIM_CITY'] . "</td></tr>";
                                 }
 
                                 if ($contact['PRIM_STATE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>State :</td><td>" . $contact['PRIM_STATE'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._state." :</td><td>" . $contact['PRIM_STATE'] . "</td></tr>";
                                 }
 
                                 if ($contact['PRIM_ZIPCODE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Zipcode :</td><td>" . $contact['PRIM_ZIPCODE'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._zipcode." :</td><td>" . $contact['PRIM_ZIPCODE'] . "</td></tr>";
                                 }
                                 if ($contact['PRIM_HOME_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['PRIM_HOME_PHONE'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._homePhone." :</td><td>" . $contact['PRIM_HOME_PHONE'] . "</td></tr>";
                                 }
                                 if ($contact['PRIM_WORK_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['PRIM_WORK_PHONE'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._workPhone." :</td><td>" . $contact['PRIM_WORK_PHONE'] . "</td></tr>";
                                 }
                                 if ($contact['PRIM_CELL_PHONE'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>Cell Phone :</td><td>" . $contact['PRIM_CELL_PHONE'] . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>"._cellPhone." :</td><td>" . $contact['PRIM_CELL_PHONE'] . "</td></tr>";
                                 }
                                 echo "</table>";
 
@@ -399,54 +399,54 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 if (!empty($st_ja_pe[1])) {
 
                                     if ($contact['SEC_STUDENT_RELATION'] != '')
-                                        echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Secondary Emergency Contact</td></tr>";
+                                        echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._secondaryEmergencyContact."</td></tr>";
                                     if ($contact['SEC_STUDENT_RELATION'] != '')
-                                        echo "<tr><td width=45% style='font-weight:bold'>Relation :</td><td width=55%>" . $contact['SEC_STUDENT_RELATION'] . "</td></tr>";
+                                        echo "<tr><td width=45% style='font-weight:bold'>"._relation." :</td><td width=55%>" . $contact['SEC_STUDENT_RELATION'] . "</td></tr>";
                                     if ($contact['SEC_FIRST_NAME'] != '')
-                                        echo "<tr><td style='font-weight:bold'>First Name :</td><td>" . $contact['SEC_FIRST_NAME'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._firstName." :</td><td>" . $contact['SEC_FIRST_NAME'] . "</td></tr>";
                                     if ($contact['SEC_LAST_NAME'] != '')
-                                        echo "<tr><td style='font-weight:bold'>Last Name :</td><td>" . $contact['SEC_LAST_NAME'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._lastName." :</td><td>" . $contact['SEC_LAST_NAME'] . "</td></tr>";
 //                                    if ($contact['SEC_HOME_PHONE'] != '') {
-//                                        echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
+//                                        echo "<tr><td style='font-weight:bold'>"._homePhone." :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
 //                                    }
 //                                    if ($contact['SEC_WORK_PHONE'] != '') {
-//                                        echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
+//                                        echo "<tr><td style='font-weight:bold'>"._workPhone." :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
 //                                    }
 //                                    if ($contact['SEC_MOBILE_PHONE'] != '') {
-//                                        echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $contact['SEC_MOBILE_PHONE'] . "</td></tr>";
+//                                        echo "<tr><td style='font-weight:bold'>"._mobilePhone." :</td><td>" . $contact['SEC_MOBILE_PHONE'] . "</td></tr>";
 //                                    }
                                     if ($contact['SEC_EMAIL'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Email :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._email." :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_ADDRESS'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Address1 :</td><td>" . $contact['SEC_ADDRESS'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._address1." :</td><td>" . $contact['SEC_ADDRESS'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_STREET'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Address2 :</td><td>" . $contact['SEC_STREET'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._address2." :</td><td>" . $contact['SEC_STREET'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_CITY'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>City :</td><td>" . $contact['SEC_CITY'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._city." :</td><td>" . $contact['SEC_CITY'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_STATE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>State :</td><td>" . $contact['SEC_STATE'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._state." :</td><td>" . $contact['SEC_STATE'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_ZIPCODE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Zipcode :</td><td>" . $contact['SEC_ZIPCODE'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._zipcode." :</td><td>" . $contact['SEC_ZIPCODE'] . "</td></tr>";
                                     }
 
                                     if ($contact['SEC_HOME_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._homePhone." :</td><td>" . $contact['SEC_HOME_PHONE'] . "</td></tr>";
                                     }
                                     if ($contact['SEC_WORK_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._workPhone." :</td><td>" . $contact['SEC_WORK_PHONE'] . "</td></tr>";
                                     }
                                     if ($contact['SEC_CELL_PHONE'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>Cell Phone :</td><td>" . $contact['SEC_CELL_PHONE'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._cellPhone." :</td><td>" . $contact['SEC_CELL_PHONE'] . "</td></tr>";
                                     }
 
                                     echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
@@ -459,46 +459,46 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                                 if ($info_RET[1]['STUDENT_RELATION'] != '') {
                                     echo '<table width=100%>';
-                                    echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">Additional Contact</td></tr>";
+                                    echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">"._additionalContact."</td></tr>";
                                     foreach ($info_RET as $info) {
 
-                                        echo "<tr><td width=45% style='font-weight:bold'>Relation :</td><td width=55%>" . $info['STUDENT_RELATION'] . "</td></tr>";
-                                        echo "<tr><td style='font-weight:bold'>First Name :</td><td>" . $info['FIRST_NAME'] . "</td></tr>";
+                                        echo "<tr><td width=45% style='font-weight:bold'>"._relation." :</td><td width=55%>" . $info['STUDENT_RELATION'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._firstName." :</td><td>" . $info['FIRST_NAME'] . "</td></tr>";
                                         if ($info['MIDDLE_NAME'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Middle Name :</td><td>" . $info['MIDDLE_NAME'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._middleName." :</td><td>" . $info['MIDDLE_NAME'] . "</td></tr>";
                                         }
-                                        echo "<tr><td style='font-weight:bold'>Last Name :</td><td>" . $info['LAST_NAME'] . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>"._lastName." :</td><td>" . $info['LAST_NAME'] . "</td></tr>";
                                         if ($info['ADDN_HOME_PHONE'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Home Phone :</td><td>" . $info['ADDN_HOME_PHONE'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._homePhone." :</td><td>" . $info['ADDN_HOME_PHONE'] . "</td></tr>";
                                         }
                                         if ($info['ADDN_WORK_PHONE'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Work Phone :</td><td>" . $info['ADDN_WORK_PHONE'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._workPhone." :</td><td>" . $info['ADDN_WORK_PHONE'] . "</td></tr>";
                                         }
                                         if ($info['ADDN_MOBILE_PHONE'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Mobile Phone :</td><td>" . $info['ADDN_MOBILE_PHONE'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._mobilePhone." :</td><td>" . $info['ADDN_MOBILE_PHONE'] . "</td></tr>";
                                         }
                                         if ($info['ADDN_EMAIL'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Email :</td><td>" . $info['ADDN_EMAIL'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._email." :</td><td>" . $info['ADDN_EMAIL'] . "</td></tr>";
                                         }
 
                                         if ($info['ADDN_ADDRESS'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Address1 :</td><td>" . $info['ADDN_ADDRESS'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._address1." :</td><td>" . $info['ADDN_ADDRESS'] . "</td></tr>";
                                         }
 
                                         if ($info['ADDN_STREET'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Address2 :</td><td>" . $info['ADDN_STREET'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._address2." :</td><td>" . $info['ADDN_STREET'] . "</td></tr>";
                                         }
 
                                         if ($info['ADDN_CITY'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>City :</td><td>" . $info['ADDN_CITY'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._city." :</td><td>" . $info['ADDN_CITY'] . "</td></tr>";
                                         }
 
                                         if ($info['ADDN_STATE'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>State :</td><td>" . $info['ADDN_STATE'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._state." :</td><td>" . $info['ADDN_STATE'] . "</td></tr>";
                                         }
 
                                         if ($info['ADDN_ZIPCODE'] != '') {
-                                            echo "<tr><td style='font-weight:bold'>Zipcode :</td><td>" . $info['ADDN_ZIPCODE'] . "</td></tr>";
+                                            echo "<tr><td style='font-weight:bold'>"._zipcode." :</td><td>" . $info['ADDN_ZIPCODE'] . "</td></tr>";
                                         }
 
 
@@ -534,32 +534,32 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     //------------------------------------------------------------------------------
 
-                    echo "<table width='100%'><tr><td style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">Medical Information</td></tr></table>";
+                    echo "<table width='100%'><tr><td style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">"._medicalInformationTdT."r></table>";
                     echo "</td><td></td><td valign=top>";
                     echo "</td></tr>";
                     echo "<tr><td valign=top colspan=3>";
-                    echo "<table width='100%'><tr><td colspan=\"2\" style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">General Information</td></tr>
+                    echo "<table width='100%'><tr><td colspan=\"2\" style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">"._generalInformation."</td></tr>
 				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
                     if ($sql['PHYSICIAN_NAME'] != '') {
-                        echo "<tr><td width=21% style='font-weight:bold'>Physician Name:</td>";
+                        echo "<tr><td width=21% style='font-weight:bold'>"._physicianName.":</td>";
                         echo "<td width=79%>" . $sql['PHYSICIAN_NAME'] . "</td></tr>";
                     }
                     if ($sql['PHYSICIAN_PHONO'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Physicians Phone:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._physiciansPhone.":</td>";
                         echo "<td>" . $sql['PHYSICIAN_PHONO'] . "</td></tr>";
                     }
                     if ($sql['HOSPITAL'] != '') {
-                        echo "<tr><td style='font-weight:bold'>Hospital Name:</td>";
+                        echo "<tr><td style='font-weight:bold'>"._hospitalName.":</td>";
                         echo "<td>" . $sql['HOSPITAL'] . "</td></tr>";
                     }
 
                     foreach ($medical_note as $medical) {
                         if ($medical['MCOMNT'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>Date:</td>";
+                            echo "<tr><td valign='top' style='font-weight:bold'>"._date.":</td>";
                             echo "<td align='justify'>" . $medical['MCOMNT'] . "</td></tr>";
                         }
                         if ($medical['DNOTE'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>Doctor's Note:</td>";
+                            echo "<tr><td valign='top' style='font-weight:bold'>"._doctorSNote.":</td>";
                             echo "<td align='justify'>" . $medical['DNOTE'] . "</td></tr>";
                         }
                     }
@@ -617,20 +617,20 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                     echo "<table width=100%>
-				<tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">Immunization / Physical Record</td></tr>
+				<tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">"._immunizationPhysicalRecord."</td></tr>
 				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
 
                     foreach ($res_immunization as $row_immunization) {
                         if ($row_immunization['TYPE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>Type:</td>";
+                            echo "<tr><td width=21% style='font-weight:bold'>"._type.":</td>";
                             echo "<td width=79%>" . $row_immunization['TYPE'] . "</td></tr>";
                         }
                         if ($row_immunization['MEDICAL_DATE'] != '') {
-                            echo "<tr><td style='font-weight:bold'>Date:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._date.":</td>";
                             echo "<td>" . $row_immunization['MEDICAL_DATE'] . "</td></tr>";
                         }
                         if ($row_immunization['COMMENTS'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>Comments:</td>";
+                            echo "<tr><td valign='top' style='font-weight:bold'>"._comments.":</td>";
                             echo "<td align='justify'>" . $row_immunization['COMMENTS'] . "</td></tr>";
                         }
                         echo "<tr><td colspan=2 style=\"border-bottom:1px dashed #999999;\">&nbsp;</td></tr>";
@@ -654,16 +654,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                 if ($_REQUEST['category']['2'] && count($res_alert) >= 1) {
                     //------------------------------------------------------------------------------
 
-                    echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">Medical Alert</td></tr>
+                    echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">"._medicalAlert."</td></tr>
 				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
 
                     foreach ($res_alert as $row_alert) {
                         if ($row_alert['TITLE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>Medical Alert:</td>";
+                            echo "<tr><td width=21% style='font-weight:bold'>"._medicalAlert.":</td>";
                             echo "<td width=79% align='justify'>" . $row_alert['TITLE'] . "</td></tr>";
                         }
                         if ($row_alert['ALERT_DATE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>Date:</td>";
+                            echo "<tr><td width=21% style='font-weight:bold'>"._date.":</td>";
                             echo "<td width=79% align='justify'>" . $row_alert['ALERT_DATE'] . "</td></tr>";
                         }
                         echo "<tr><td colspan=2 style=\"border-bottom:1px dashed #999999;\">&nbsp;</td></tr>";
@@ -684,32 +684,32 @@ if ($_REQUEST['modfunc'] == 'save') {
                 if ($_REQUEST['category']['2'] && count($res_visit) >= 1) {
                     //------------------------------------------------------------------------------
 
-                    echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">Nurse Visit Record</td></tr>
+                    echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">"._nurseVisitRecord."</td></tr>
 				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
 
                     foreach ($res_visit as $row_visit) {
                         if ($row_visit['SCHOOL_DATE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>Date:</td>";
+                            echo "<tr><td width=21% style='font-weight:bold'>"._date.":</td>";
                             echo "<td width=79%>" . $row_visit['SCHOOL_DATE'] . "</td></tr>";
                         }
                         if ($row_visit['TIME_IN'] != '') {
-                            echo "<tr><td style='font-weight:bold'>Time In:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._timeIn.":</td>";
                             echo "<td>" . $row_visit['TIME_IN'] . "</td></tr>";
                         }
                         if ($row_visit['TIME_OUT'] != '') {
-                            echo "<tr><td style='font-weight:bold'>Time Out:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._timeOut.":</td>";
                             echo "<td>" . $row_visit['TIME_OUT'] . "</td></tr>";
                         }
                         if ($row_visit['REASON'] != '') {
-                            echo "<tr><td style='font-weight:bold'>Reason:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._reason.":</td>";
                             echo "<td>" . $row_visit['REASON'] . "</td></tr>";
                         }
                         if ($row_visit['RESULT'] != '') {
-                            echo "<tr><td style='font-weight:bold'>Result:</td>";
+                            echo "<tr><td style='font-weight:bold'>"._result.":</td>";
                             echo "<td>" . $row_visit['RESULT'] . "</td></tr>";
                         }
                         if ($row_visit['COMMENTS'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>Comments:</td>";
+                            echo "<tr><td valign='top' style='font-weight:bold'>"._comments.":</td>";
                             echo "<td align='justify'>" . $row_visit['COMMENTS'] . "</td></tr>";
                         }
                         echo "<tr><td colspan=2 style=\"border-bottom:1px dashed #999999;\">&nbsp;</td></tr>";
@@ -730,17 +730,17 @@ if ($_REQUEST['modfunc'] == 'save') {
                 foreach ($res_comment as $row_comment) {
                     if ($_REQUEST['category']['4'] && $row_comment['COMMENT'] != '') {
 
-                        echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">Comment</td></tr>";
+                        echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">"._comment."</td></tr>";
                         if ($row_comment['USER_NAME'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>Entered by:</td>";
+                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>"._enteredBy.":</td>";
                             echo "<td width=79% align=justify>" . $row_comment['USER_NAME'] . "</td></tr>";
                         }
                         if ($row_comment['COMMENT_DATE'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>Date:</td>";
+                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>"._date.":</td>";
                             echo "<td width=79% align=justify>" . $row_comment['COMMENT_DATE'] . "</td></tr>";
                         }
                         if ($row_comment['COMMENT'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>Comment:</td>";
+                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>"._comment.":</td>";
                             echo "<td width=79% align=justify>" . $row_comment['COMMENT'] . "</td></tr>";
                         }
 
@@ -754,8 +754,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                 if ($_REQUEST['category']['5']) {
                     $res_goal = DBGet(DBQuery("SELECT goal_id AS GOAL,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE student_id='" . $_SESSION['student_id'] . "'"), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
                     if ($res_goal) {
-                        echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Goals</td></tr>";
-                        echo '<table><tr><td>Title</td><td>Start date</td><td>End date</td><td>Description</td></tr>';
+                        echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._goals."</td></tr>";
+                        echo '<table><tr><td>'._title.'</td><td>'._startDate.'</td><td>'._endDate.'</td><td>'._description.'</td></tr>';
                         foreach ($res_goal as $row_goal) {
                             echo '<tr><td>' . $row_goal['GOAL_TITLE'] . '</td><td>' . $row_goal['START_DATE'] . '</td><td>' . $row_goal['END_DATE'] . '</td><td>' . $row_goal['GOAL_DESCRIPTION'] . '</td></tr>';
                         }
@@ -767,7 +767,13 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 if ($_REQUEST['category']['6']) {
                     $stu_enr = DBGet(DBQuery('SELECT se.*,s.TITLE AS SCHOOL,sg.TITLE AS GRADE FROM student_enrollment se,schools s,school_gradelevels sg WHERE se.STUDENT_ID=' . $_SESSION['student_id'] . ' AND se.SCHOOL_ID=s.ID AND se.GRADE_ID=sg.ID'), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
-                    $stu_enr_col = array('SCHOOL' => 'School', 'GRADE' => 'Grade Level', 'START_DATE' => 'Start Date', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'End Date', 'DROP_CODE' => 'Drop Code');
+                    $stu_enr_col = array('SCHOOL' =>_school,
+                     'GRADE' =>_gradeLevel,
+                     'START_DATE' =>_startDate,
+                     'ENROLLMENT_CODE' =>_enrollmentCode,
+                     'END_DATE' =>_endDate,
+                     'DROP_CODE' =>_dropCode,
+                    );
 
                     foreach ($stu_enr as $si => $sd) {
                         $stu_enr[$si]['END_DATE'] = ($stu_enr[$si]['END_DATE'] != '' ? $stu_enr[$si]['END_DATE'] : 'N/A');
@@ -783,7 +789,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         unset($get_ecode);
                     }
                     if (count($stu_enr) > 0)
-                        echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Enrollment Info</td></tr>";
+                        echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">"._enrollmentInfo."</td></tr>";
                     echo '<tr><td><br>';
                     ListOutputPrint_Report($stu_enr, $stu_enr_col, '', '', false, $group = false, $options, 'ForWindow');
                     echo '</td></tr>';
@@ -889,16 +895,16 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             PDFStop($handle);
         } else
-            BackPrompt('No Students were found.');
+            BackPrompt(_noStudentsWereFound.'.');
     } else
-        BackPrompt('You must choose at least one student.');
+        BackPrompt(_youMustChooseAtLeastOneStudent.'.');
     // unset($_SESSION['student_id']);
 
     $_REQUEST['modfunc'] = true;
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Students > " . ProgramTitle());
+    DrawBC(""._students." > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
@@ -919,6 +925,48 @@ if (!$_REQUEST['modfunc']) {
         $categories_RET = DBGet(DBQuery("SELECT ID,TITLE,INCLUDE FROM student_field_categories ORDER BY SORT_ORDER,TITLE"));
         $extra['extra_header_left'] .= '';
         foreach ($categories_RET as $category) {
+                
+            switch ($category['TITLE']) {
+                case 'General Info':
+                    $category['TITLE'] = _generalInfo;
+                    break;
+                case 'Addresses &amp; Contacts':
+                    $category['TITLE'] = _addressesContacts;
+                    break;
+                case 'Medical':
+                    $category['TITLE'] = _medical;
+                    break;
+                case 'Comments':
+                    $category['TITLE'] = _comments;
+                    break;
+                case 'Goals':
+                    $category['TITLE'] = _goals;
+                    break;
+                case 'Enrollment Info':
+                    $category['TITLE'] = _enrollmentInfo;
+                    break;
+                case 'Files':
+                    $category['TITLE'] = _files;
+                    break;
+                default:
+                    $category['TITLE'] = $category['TITLE'] ;
+                    break;
+                // case 'Demographic Info':
+                //     $category['TITLE'] = _demographicInfo;
+                //     break;
+                // case 'Addresses &amp; Contacts':
+                //     $category['TITLE'] = _addressesContacts;
+                //     break;
+                // case 'School Information':
+                //     $category['TITLE'] = _schoolInformation;
+                //     break;
+                // case 'Certification Information':
+                //     $category['TITLE'] = _certificationInformation;
+                //     break;
+                // case 'Schedule':
+                //     $category['TITLE'] = _schedule;
+                //     break;
+            }
             if ($can_use_RET['students/Student.php&category_id=' . $category['ID']]) {
                 $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=category[' . $category['ID'] . '] value=Y checked><span></span>' . $category['TITLE'] . '</label>';
                 //$extra['extra_header_left'] .= '<td></TD></TR>';
@@ -926,7 +974,7 @@ if (!$_REQUEST['modfunc']) {
         }
     }
 
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -975,7 +1023,7 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Info for Selected Students\'></div>';
+        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._printInfoForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 }

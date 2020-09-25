@@ -36,7 +36,7 @@ if(UserSchool())
 	$custom_RET = DBGet(DBQuery("SELECT * FROM schools WHERE ID='".  UserSchool()."'"));
 	$value = $custom_RET[1];
 }
-$num_field_gen=true;
+$num_field_gen= true;
 if(count($fields_RET))
 {
 

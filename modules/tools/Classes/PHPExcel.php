@@ -137,7 +137,7 @@ class PHPExcel
 	public function disconnectWorksheets() {
 		foreach($this->_workSheetCollection as $k => &$worksheet) {
 			$worksheet->disconnectCells();
-			$this->_workSheetCollection[$k] = null;
+			$this->_workSheetCollection[$k] = _null;
 		}
 		unset($worksheet);
 		$this->_workSheetCollection = array();
@@ -476,7 +476,7 @@ class PHPExcel
 	 * @return PHPExcel_NamedRange|null
 	 */
 	public function getNamedRange($namedRange, PHPExcel_Worksheet $pSheet = null) {
-		$returnValue = null;
+		$returnValue = _null;
 
 		if ($namedRange != '' && !is_null($namedRange)) {
 			// first look for global defined name

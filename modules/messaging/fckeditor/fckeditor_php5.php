@@ -217,14 +217,14 @@ class FCKeditor
 	public function GetConfigFieldString()
 	{
 		$sParams = '' ;
-		$bFirst = true ;
+		$bFirst = true;
 
 		foreach ( $this->Config as $sKey => $sValue )
 		{
 			if ( $bFirst == false )
 				$sParams .= '&amp;' ;
 			else
-				$bFirst = false ;
+				$bFirst = false;
 
 			if ( $sValue === true )
 				$sParams .= $this->EncodeConfig( $sKey ) . '=true' ;

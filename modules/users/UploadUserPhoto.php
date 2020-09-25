@@ -27,8 +27,8 @@
 #***************************************************************************************
 
 include('../../RedirectModulesInc.php');
-DrawBC("users > " . ProgramTitle());
-PopTable('header', 'Upload Staff\'s Photo');
+DrawBC(""._users." > " . ProgramTitle());
+PopTable('header',  _uploadStaffSPhoto);
 $UserPicturesPath = 'assets/userphotos/';
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit') {
@@ -75,7 +75,7 @@ if (UserStaffID()) {
             ' . $msg . '
             <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
                 echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-    <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
     </form>';
                 PopTable('footer');
             } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
@@ -85,7 +85,7 @@ if (UserStaffID()) {
             ' . $msg . '
             <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
                 echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-    <input type="submit" value="Upload" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
     </form>';
                 PopTable('footer');
             } else {
@@ -130,14 +130,14 @@ if (UserStaffID()) {
           
       </div>';
             echo '<input type=hidden name="imgblob" id="imgblob" value="">';
-            echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="Upload">';
+            echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="'._upload.'">';
             echo '</div>'; //.modal-body
 
             echo '</div>'; //.modal-content
             echo '</div>'; //.modal-dialog
             echo '</div>'; //.modal
 
-            echo '<input type=button class="btn btn-default" value=Cancel onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+            echo '<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
 </form>';
             PopTable('footer');
         }

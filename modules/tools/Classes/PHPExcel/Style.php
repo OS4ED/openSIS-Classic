@@ -229,10 +229,10 @@ class PHPExcel_Style implements PHPExcel_IComparable
      * 		array(
      * 			'font'    => array(
      * 				'name'      => 'Arial',
-     * 				'bold'      => true,
-     * 				'italic'    => false,
+     * 				'bold'      =>true,
+     * 				'italic'    =>false,
      * 				'underline' => PHPExcel_Style_Font::UNDERLINE_DOUBLE,
-     * 				'strike'    => false,
+     * 				'strike'    =>false,
      * 				'color'     => array(
      * 					'rgb' => '808080'
      * 				)

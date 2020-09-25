@@ -176,14 +176,14 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 	 *
 	 * @var array
 	 */
-	private $_loadSheetsOnly = null;
+	private $_loadSheetsOnly = _null;
 
 	/**
 	 * PHPExcel_Reader_IReadFilter instance
 	 *
 	 * @var PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 	/**
 	 * Summary Information stream data.
@@ -428,7 +428,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 	 */
 	public function setLoadAllSheets()
 	{
-		$this->_loadSheetsOnly = null;
+		$this->_loadSheetsOnly = _null;
 		return $this;
 	}
 
@@ -974,7 +974,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			$type = $this->_GetInt4d($this->_summaryInformation, 48 + $offset);
 
 			// initialize property value
-			$value = null;
+			$value = _null;
 
 			// extract property value based on property type
 			switch ($type) {
@@ -2126,13 +2126,13 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			$optionFlags = ord($recordData{$pos});
 			++$pos;
 
-			// bit: 0; mask: 0x01; 0 = compressed; 1 = uncompressed
+			// bit: 0; mask: 0x01; 0 = _compressed; 1 = uncompressed
 			$isCompressed = (($optionFlags & 0x01) == 0) ;
 
-			// bit: 2; mask: 0x02; 0 = ordinary; 1 = Asian phonetic
+			// bit: 2; mask: 0x02; 0 = _ordinary; 1 = Asian phonetic
 			$hasAsian = (($optionFlags & 0x04) != 0);
 
-			// bit: 3; mask: 0x03; 0 = ordinary; 1 = Rich-Text
+			// bit: 3; mask: 0x03; 0 = _ordinary; 1 = Rich-Text
 			$hasRichText = (($optionFlags & 0x08) != 0);
 
 			if ($hasRichText) {
@@ -3280,7 +3280,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			// offset: 6; size: 1; the boolean value or error value
 			$boolErr = ord($recordData{6});
 
-			// offset: 7; size: 1; 0=boolean; 1=error
+			// offset: 7; size: 1; 0= _boolean; 1=error
 			$isError = ord($recordData{7});
 
 			$cell = $this->_phpSheet->getCell($columnString . ($row + 1));
@@ -3685,7 +3685,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			}
 
 			// detect type of hyperlink (there are 4 types)
-			$hyperlinkType = null;
+			$hyperlinkType = _null;
 
 			if ($isUNC) {
 				$hyperlinkType = 'UNC';
@@ -4605,7 +4605,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 		case 0x15: // parenthesis
 			$name  = 'tParen';
 			$size  = 1;
-			$data = null;
+			$data = _null;
 			break;
 		case 0x16: // missing argument
 			$name = 'tMissArg';
@@ -4625,12 +4625,12 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			case 0x01:
 				$name = 'tAttrVolatile';
 				$size = 4;
-				$data = null;
+				$data = _null;
 				break;
 			case 0x02:
 				$name = 'tAttrIf';
 				$size = 4;
-				$data = null;
+				$data = _null;
 				break;
 			case 0x04:
 				$name = 'tAttrChoose';
@@ -4639,17 +4639,17 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 				// offset: 4; size: 2 * $nc
 				// offset: 4 + 2 * $nc; size: 2
 				$size = 2 * $nc + 6;
-				$data = null;
+				$data = _null;
 				break;
 			case 0x08:
 				$name = 'tAttrSkip';
 				$size = 4;
-				$data = null;
+				$data = _null;
 				break;
 			case 0x10:
 				$name = 'tAttrSum';
 				$size = 4;
-				$data = null;
+				$data = _null;
 				break;
 			case 0x40:
 			case 0x41:
@@ -4719,7 +4719,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			// offset: 1; size: 7; not used
 			$name = 'tArray';
 			$size = 8;
-			$data = null;
+			$data = _null;
 			break;
 		case 0x41: // function with fixed number of arguments
 			$name = 'tFunc';

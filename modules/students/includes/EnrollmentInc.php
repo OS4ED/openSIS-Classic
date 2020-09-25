@@ -47,7 +47,7 @@ if(($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) 
 			unset($_REQUEST['day_values']['student_enrollment']['new']);
 			unset($_REQUEST['month_values']['student_enrollment']['new']);
 			unset($_REQUEST['year_values']['student_enrollment']['new']);
-			echo ErrorMessage(array('The student is already enrolled on that date, and could not be enrolled a second time on the date you specified.  Please fix, and try enrolling the student again.'));
+			echo ErrorMessage(array(_theStudentIsAlreadyEnrolledOnThatDateAndCouldNotBeEnrolledASecondTimeOnTheDateYouSpecifiedPleaseFixAndTryEnrollingTheStudentAgain));
 		}
 	}
 
@@ -77,7 +77,10 @@ if($add)
 $columns = array('START_DATE'=>'Attendance Start Date this School Year','END_DATE'=>'Dropped','SCHOOL_ID'=>'School');
 
 $schools_RET = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID!=\''.UserSchool().'\''));
-$next_school_options = array(UserSchool()=>'Next grade at current school','0'=>'Retain','-1'=>'Do not enroll after this school year');
+$next_school_options = array(UserSchool()=>_nextGradeAtCurrentSchool,
+'0'=>_retain,
+'-1'=>_doNotEnrollAfterThisSchoolYear,
+);
 if(count($schools_RET))
 {
 	foreach($schools_RET as $school)
@@ -97,7 +100,7 @@ if($_REQUEST['student_id']!='new')
 	else
 		$id = 'new';
 
-	ListOutput($RET,$columns,'Enrollment Record','Enrollment Records',$link);
+	ListOutput($RET,$columns,_enrollmentRecord,_enrollmentRecords,$link);
 	if($id!='new')
 		$next_school = $RET[count($RET)]['NEXT_SCHOOL'];
 	if($id!='new')
@@ -107,7 +110,7 @@ if($_REQUEST['student_id']!='new')
 else
 {
  	$id = 'new';
-	ListOutputMod($RET,$columns,'Enrollment Record','Enrollment Records',$link,array(),array('count'=>false));
+	ListOutputMod($RET,$columns,enrollmentRecord,enrollmentRecords,$link,array(),array('count'=>false));
 	$next_school = UserSchool();
 	$calendar = $calendars_RET[1]['CALENDAR_ID'];
 	$div = false;

@@ -1,19 +1,19 @@
 <?php
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -27,38 +27,38 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['students']['admin'] = array(
-						'students/Student.php'=>'Student Info',
-						'students/Student.php&include=GeneralInfoInc&student_id=new'=>'Add a Student',
-						'students/AssignOtherInfo.php'=>'Group Assign Student Info',
+						'students/Student.php'=>_studentInfo,
+						'students/Student.php&include=GeneralInfoInc&student_id=new'=>_addAStudent,
+						'students/AssignOtherInfo.php'=>_groupAssignStudentInfo,
 						
-                                                'students/StudentReenroll.php'=>'Student Re Enroll',
-						1=>'Reports',
-						'students/AdvancedReport.php'=>'Advanced Report',
-						'students/AddDrop.php'=>'Add / Drop Report',
-						'students/Letters.php'=>'Print Letters',
-						'students/MailingLabels.php'=>'Print Mailing Labels',
-						'students/StudentLabels.php'=>'Print Student Labels',
-						'students/PrintStudentInfo.php'=>'Print Student Info',
-                        'students/PrintStudentContactInfo.php'=>'Print Student Contact Info',
-                        'students/GoalReport.php'=>'Print Goals & Progresses',
-                        'students/EnrollmentReport.php'=>'Student Enrollment Report',
-						2=>'Setup',
-						'students/StudentFields.php'=>'Student Fields',
-						'students/EnrollmentCodes.php'=>'Enrollment Codes',
+                                                'students/StudentReenroll.php'=>_studentReEnroll,
+						1=>_reports,
+						'students/AdvancedReport.php'=>_advancedReport,
+						'students/AddDrop.php'=>_addDropReport,
+						'students/Letters.php'=>_printLetters,
+						'students/MailingLabels.php'=>_printMailingLabels,
+						'students/StudentLabels.php'=>_printStudentLabels,
+						'students/PrintStudentInfo.php'=>_printStudentInfo,
+                        'students/PrintStudentContactInfo.php'=>_printStudentContactInfo,
+                        'students/GoalReport.php'=>_printGoalsProgresses,
+                        'students/EnrollmentReport.php'=>_studentEnrollmentReport,
+						2=>_setup,
+						'students/StudentFields.php'=>_studentFields,
+						'students/EnrollmentCodes.php'=>_enrollmentCodes,
 						
 					);
 
 $menu['students']['teacher'] = array(
-						'students/Student.php'=>'Student Info',
-						'students/AddUsers.php'=>'Associated Parents',
-						1=>'Reports',
-						'students/AdvancedReport.php'=>'Advanced Report',
-						'students/StudentLabels.php'=>'Print Student Labels'
+						'students/Student.php'=>_studentInfo,
+						'students/AddUsers.php'=>_associatedParents,
+						1=>_reports,
+						'students/AdvancedReport.php'=>_advancedReport,
+						'students/StudentLabels.php'=>_printStudentLabels,
 					);
 
 $menu['students']['parent'] = array(
-						'students/Student.php'=>'Student Info',
-						'students/ChangePassword.php'=>'Change Password'
+						'students/Student.php'=>_studentInfo,
+						'students/ChangePassword.php'=>_changePassword,
 					);
 
 $exceptions['students'] = array(

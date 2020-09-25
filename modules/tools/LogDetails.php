@@ -34,15 +34,15 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="row">';
     echo '<div class="col-md-8 col-md-offset-2">';
     echo "<FORM class=\"form-horizontal\" name=log id=log action=Modules.php?modname=$_REQUEST[modname]&modfunc=generate method=POST>";
-    PopTable('header', 'Log Details');
+    PopTable('header',  _logDetails);
 
-    echo '<h5 class="text-center">Please Select Date Range</h5>';
+    echo '<h5 class="text-center">'._pleaseSelectDateRange.'</h5>';
 
     echo '<div class="row">';
     echo '<div class="col-lg-6 col-lg-offset-3">';
 
     echo '<div class="form-group">';
-    echo '<label class="col-md-2 control-label text-right">From</label><div class="col-md-10">';
+    echo '<label class="col-md-2 control-label text-right">'._from.'</label><div class="col-md-10">';
     echo DateInputAY($start_date, 'start', 1);
     echo '</div>'; //.col-md-10
     echo '</div>'; //.form-group
@@ -53,7 +53,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="col-lg-6 col-lg-offset-3">';
 
     echo '<div class="form-group">';
-    echo '<label class="col-md-2 control-label text-right">To </label><div class="col-md-10">';
+    echo '<label class="col-md-2 control-label text-right">'._to.'</label><div class="col-md-10">';
     echo DateInputAY($end_date, 'end', 2);
     echo '</div>'; //.col-md-10
     echo '</div>'; //.form-group
@@ -61,7 +61,7 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>'; //.col-lg-6
     echo '</div>'; //.row
 
-    $btn = '<input type="submit" class="btn btn-primary" value="Generate" name="generate">';
+    $btn = '<input type="submit" class="btn btn-primary" value="'._generate.'" name="generate" onclick="self_disable(this);">';
     PopTable('footer', $btn);
     echo '</FORM>';
     echo '</div>';
@@ -141,20 +141,28 @@ echo '</div>';
 //        if (count($alllogs_RET)) {
             echo '<div class="panel panel-default">';
               //$extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
-            ListOutput($alllogs_RET, array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller  onclick="checkAllDtMod(this,\'log_arr\');"><A>','LOGIN_TIME' => 'Login Time', 'USER_NAME' => 'User Name', 'FIRST_NAME' => 'First Name', 'LAST_NAME' => 'Last Name', 'PROFILE' => 'Profile', 'FAILLOG_COUNT' => 'Failure Count', 'STATUS' => 'Status', 'IP_ADDRESS' => 'IP Address'), 'login record', 'login records', array(), array(), array('count' => true, 'save' => true));
+            ListOutput($alllogs_RET, array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller  onclick="checkAllDtMod(this,\'log_arr\');"><A>','LOGIN_TIME' => _loginTime,
+             'USER_NAME' => _userName,
+             'FIRST_NAME' =>_firstName,
+             'LAST_NAME' => _lastName,
+             'PROFILE' => _profile,
+             'FAILLOG_COUNT' => _failureCount,
+             'STATUS' => _status,
+             'IP_ADDRESS' => _ipAddress,
+            ), _loginRecord, _loginRecords, array(), array(), array('count' =>_firstName, 'save' =>true));
            
             if(count($alllogs_RET)>0) 
-            echo '<div class="panel-footer text-center"><INPUT type=submit value="Delete Log" class="btn btn-primary"></div>';
+            echo '<div class="panel-footer text-center"><INPUT type=submit value="'._deleteLog.'" class="btn btn-primary" onclick="self_disable(this);"></div>';
             echo '</div>';
             echo "</FORM>";
 //        } else {
 //
-//            echo '<table border=0 width=90%><tr><td class="alert"></td><td class="alert_msg"><b>No login records were found.</b></td></tr></table>';
+//            echo '<table border=0 width=90%><tr><td class="alert"></td><td class="alert_msg"><b>No login records "._wereFound.".</b></td></tr></table>';
 //        }
             
     }
     if ((!isset($conv_st_date) || !isset($conv_end_date))) {
-        echo '<center><font color="red"><b>You have to select date from the date range</b></font></center>';
+        echo '<center><font color="red"><b>'._youHaveToSelectDateFromTheDateRange.'</b></font></center>';
     }
 }
 

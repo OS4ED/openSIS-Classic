@@ -47,7 +47,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 	{
 		if (!is_null($pSheet)) {
 			// Create XML writer
-			$objWriter = null;
+			$objWriter = _null;
 			if ($this->getParentWriter()->getUseDiskCaching()) {
 				$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 			} else {
@@ -868,7 +868,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 										$rowDimension->getVisible() == false ||
 										$rowDimension->getCollapsed() == true ||
 										$rowDimension->getOutlineLevel() > 0 ||
-										$rowDimension->getXfIndex() !== null;
+										$rowDimension->getXfIndex() !== _null;
 
 					if ($writeCurrentRow) {
 						// Start a new row
@@ -963,7 +963,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 						$objWriter->writeAttribute('t', $mappedType);
 						break;
 					case 'f':			// Formula
-						$calculatedValue = null;
+						$calculatedValue = _null;
 						if ($this->getParentWriter()->getPreCalculateFormulas()) {
 							$pCell->attach($pSheet);
 							$calculatedValue = $pCell->getCalculatedValue();

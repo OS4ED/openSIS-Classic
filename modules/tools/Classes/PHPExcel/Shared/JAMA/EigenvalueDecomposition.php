@@ -477,7 +477,7 @@ class EigenvalueDecomposition {
 						$this->H[$n][$j] = $q * $this->H[$n][$j] - $p * $z;
 					}
 					// Column modification
-					for ($i = 0; $i <= n; ++$i) {
+					for ($i = 0; $i <= _n; ++$i) {
 						$z = $this->H[$i][$n-1];
 						$this->H[$i][$n-1] = $q * $z + $p * $this->H[$i][$n];
 						$this->H[$i][$n] = $q * $this->H[$i][$n] - $p * $z;

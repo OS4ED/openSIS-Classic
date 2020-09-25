@@ -44,7 +44,7 @@ if($_REQUEST['course_modfunc']=='search')
 {
 	PopTable('header','Search');
 	echo "<FORM name=F1 id=F1 action=ForWindow.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=".strip_tags(trim($_REQUEST[modfunc]))."&course_modfunc=search method=POST>";
-	echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="'.strip_tags(trim($_REQUEST['search_term'])).'"></TD><TD><INPUT type=submit class="btn btn-primary" value=Search onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+	echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="'.strip_tags(trim($_REQUEST['search_term'])).'"></TD><TD><INPUT type=submit class="btn btn-primary" value='._search.' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
 	echo '</FORM>';
 	PopTable('footer');
 	if($_REQUEST['search_term'])
@@ -57,28 +57,28 @@ if($_REQUEST['course_modfunc']=='search')
 		$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID');
-		ListOutput($subjects_RET,array('TITLE'=>'Subject'),'Subject','Subjects',$link,array(),array('search'=>false,'save'=>false));
+		ListOutput($subjects_RET,array('TITLE'=>'Subject'),_subject,_subjects,$link,array(),array('search'=>false,'save'=>false));
 		echo '</TD><TD valign=top>';
 		$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID','course_id'=>'COURSE_ID');
-		ListOutput($courses_RET,array('TITLE'=>'Course'),'Course','Courses',$link,array(),array('search'=>false,'save'=>false));
+		ListOutput($courses_RET,array('TITLE'=>'Course'),_course,_courses,$link,array(),array('search'=>false,'save'=>false));
 		echo '</TD><TD valign=top>';
 		$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
 		
 		$link['TITLE']['variables'] = array('subject_id'=>'SUBJECT_ID','course_id'=>'COURSE_ID','course_period_id'=>'COURSE_PERIOD_ID');
-		ListOutput($periods_RET,array('TITLE'=>'Course Period'),'Course Period','Course Periods',$link,array(),array('search'=>false,'save'=>false));
+		ListOutput($periods_RET,array('TITLE'=>'Course Period'),_coursePeriod,_coursePeriods,$link,array(),array('search'=>false,'save'=>false));
 		echo '</TD></TR></TABLE>';
 	}
 }
 if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUEST['course_modfunc'])
 {
 	if($_REQUEST['modfunc']!='choose_course')
-		DrawBC("Scheduling > ".ProgramTitle());
+		DrawBC(""._scheduling." > ".ProgramTitle());
         echo '<center><div id="conf_div"></div></center>';
-        echo '<center><div id="calculating" style=display:none><img src="assets/ajax-loader.gif" width="15px" ><br />Checking schedule Please Wait...</div></center>';
+        echo '<center><div id="calculating" style=display:none><img src="assets/ajax-loader.gif" width="15px" ><br />'._checkingSchedulePleaseWait.'...</div></center>';
         if($clash)
-                                    echo "<center><b>There is a conflict. You cannot add this course period </b></center>".ErrorMessage($clash,'note')."";
+                                    echo "<center><b>"._thereIsAConflict.". "._youCannotAddThisCoursePeriod." </b></center>".ErrorMessage($clash,'note')."";
        
         echo '<FORM name="courses" method="post">';
         echo '<center><div id="resp_div">';
@@ -178,7 +178,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	}
 
 	echo '<TD valign=top>';
-	$columns = array('TITLE'=>'Subject');
+	$columns = array('TITLE'=>_subject);
 	$link = array();
 	$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]";
 	
@@ -189,7 +189,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	else
 		$link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-	ListOutput($subjects_RET,$columns,'Subject','Subjects',$link,array(),$LO_options,'ForWindow');
+	ListOutput($subjects_RET,$columns,_subject,_subjects,$link,array(),$LO_options,'ForWindow');
 	echo '</TD>';
 
 	if($_REQUEST['subject_id'] && $_REQUEST['subject_id']!='new')
@@ -212,7 +212,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 		}
 
 		echo '<TD valign=top>';
-		$columns = array('GRADE_COURSE'=>'Course');
+		$columns = array('GRADE_COURSE'=>_course);
 		$link = array();
 		$link['GRADE_COURSE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]";
 		
@@ -223,7 +223,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 		else
 			$link['GRADE_COURSE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 	
-		ListOutput($courses_RET,$columns,'Course','Courses',$link,array(),$LO_options,'ForWindow');
+		ListOutput($courses_RET,$columns,_course,_courses,$link,array(),$LO_options,'ForWindow');
 		echo '</TD>';
 
 		if($_REQUEST['course_id'] && $_REQUEST['course_id']!='new')
@@ -248,15 +248,15 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
                 echo '<TD valign=top>';
                 
                     
-                    $columns = array('CHECKBOX'=>'</A><A>','TITLE'=>'Course Period');
+                    $columns = array('CHECKBOX'=>'</A><A>','TITLE'=>_coursePeriod);
 
                 if($_REQUEST['modname']=='scheduling/Schedule.php')
-                    $columns += array('AVAILABLE_SEATS'=>'Available Seats');
+                    $columns += array('AVAILABLE_SEATS'=>_availableSeats);
                 $link = array();
-                ListOutput($periods_RET,$columns,'Period','Periods',$link,array(),$LO_options,'ForWindow');
+                ListOutput($periods_RET,$columns,_period,_periods,$link,array(),$LO_options,'ForWindow');
                 if(count($periods_RET))
                 {
-                        echo '<BR>'.SubmitButton('Done','done','class="btn btn-primary" ').'&nbsp;&nbsp;'.SubmitButton('Clear & Exit','exit','class="btn btn-primary" ');
+                        echo '<BR>'.SubmitButton(done,'done','class="btn btn-primary" ').'&nbsp;&nbsp;'.SubmitButton(clearExit,'exit','class="btn btn-primary" ');
                 }
                 echo '</TD>';
             echo '</FORM>';

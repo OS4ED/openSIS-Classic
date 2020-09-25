@@ -28,7 +28,7 @@
 // Establish MySQL DB connection.  
 class ConnectDBOpensis
 {
-    var $auto_init=true;
+    var $auto_init= true;
     function init($DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName)
     {
         $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);

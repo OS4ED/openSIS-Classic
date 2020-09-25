@@ -96,6 +96,10 @@ div.form-control {
     margin: 6px 0 6px 20px;
     background: #f3f3f3;
 }
+.sidebar-control:dir(rtl) {
+    float: right;
+    margin: 6px 0;
+}
 
 .sidebar-main {
     z-index: 10;
@@ -121,6 +125,12 @@ label.radio {
     margin-bottom: 0;
     height: 50px;
     margin-left: 15px;
+}
+
+#navbar-mobile .form-group:dir(rtl),
+#navbar-mobile form:dir(rtl) {
+    margin-left: 0;
+    margin-right: 15px
 }
 
 #navbar-mobile.navbar-collapse .navbar-nav {

@@ -48,7 +48,7 @@ $failure_RET=DBGet(DBQuery('SELECT FAIL_COUNT FROM system_preference_Misc LIMIT 
 $failure=$failure_RET[1];
 echo "<FORM name=failure id=failure action=Modules.php?modname=$_REQUEST[modname]&modfunc=update method=POST>";
 echo '<table>';
-echo '<tr><td>Maximum Failure Allow:</td><td>'.TextInput($failure['FAIL_COUNT'],'failure[FAIL_COUNT]','','class=cell_floating').'</td></tr>';
-echo '<tr><td><CENTER>'.SubmitButton('Save','','class="btn btn-primary"').'</CENTER></td></tr>';
+echo '<tr><td>'._maximumFailureAllow.':</td><td>'.TextInput($failure['FAIL_COUNT'],'failure[FAIL_COUNT]','','class=cell_floating').'</td></tr>';
+echo '<tr><td><CENTER>'.SubmitButton(_save,'','class="btn btn-primary"').'</CENTER></td></tr>';
 echo '</table>';
 echo '</FORM>';

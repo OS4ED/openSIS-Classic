@@ -66,7 +66,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     $value = str_replace("'", "\'", clean_param(trim($value), PARAM_SPCL));
                     $title = strtoupper(str_replace("'", "\'", clean_param($value, PARAM_SPCL)));
                     if ($title == '') {
-                        $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with blank title.</div>';
+                        $err = '<div class="alert bg-danger alert-styled-left">'._cannotAddActivityWithBlankTitle.'.</div>';
                         $cnt = 1;
                     }
                 }
@@ -94,18 +94,18 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 
 
             if ($s_date1 == '' || $e_date1 == '') {
-                $err = '<div class="alert bg-danger alert-styled-left">Start date or End date cannot be blank title.</div>';
+                $err = '<div class="alert bg-danger alert-styled-left">'._startDateOrEndDateCannotBeBlankTitle.'.</div>';
                 $cnt = 1;
             }
             if ($s_date1 > $e_date1) {
-                $err = '<div class="alert bg-danger alert-styled-left">End date must be greater than begin date.</div>';
+                $err = '<div class="alert bg-danger alert-styled-left">'._endDateMustBeGreaterThanBeginDate.'.</div>';
                 $cnt = 1;
             }
             if ($cnt == 0) {
                 if ($check_rec[1]['REC_EX'] == 0) {
                     DBQuery($sql);
                 } else {
-                    $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with same title.</div>';
+                    $err = '<div class="alert bg-danger alert-styled-left">'._cannotAddActivityWithSameTitle.'.</div>';
                 }
             }
         } else {
@@ -146,7 +146,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                 }
 
                 if ($title == '' && ($s_date != '' && $e_date == '') || ($s_date == '' && $e_date != '')) {
-                    $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with blank title.</div>';
+                    $err = '<div class="alert bg-danger alert-styled-left">'._cannotAddActivityWithBlankTitle.'.</div>';
                     $cnt = 1;
                 }
             }
@@ -155,11 +155,11 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
             if ($go) {
                 $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM eligibility_activities WHERE UPPER(TITLE)=\'' . $title . '\' AND SYEAR=\'' . UserSyear() . '\'  AND SCHOOL_ID=\'' . UserSchool() . '\''));
                 if ($s_date == '' || $e_date == '' && $title != '') {
-                    $err = '<div class="alert bg-danger alert-styled-left">Start date or End date cannot be blank.</div>';
+                    $err = '<div class="alert bg-danger alert-styled-left">'._startDateOrEndDateCannotBeBlank.'.</div>';
                     $cnt = 1;
                 }
                 if ($s_date > $e_date && $s_date != '' && $e_date != '') {
-                    $err = '<div class="alert bg-danger alert-styled-left">End date must be greater than begin date.</div>';
+                    $err = '<div class="alert bg-danger alert-styled-left">'._endDateMustBeGreaterThanBeginDate.'.</div>';
                     $cnt = 1;
                 }
 
@@ -168,7 +168,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 
                         DBQuery($sql);
                     } else
-                        $err = '<div class="alert bg-danger alert-styled-left">Cannot add activity with same title.</div>';
+                        $err = '<div class="alert bg-danger alert-styled-left">'._cannotAddActivityWithSameTitle.'.</div>';
                 }
             }
         }
@@ -178,14 +178,14 @@ if (isset($err) && $err != '') {
     echo $err;
     unset($err);
 }
-DrawBC("Extracurricular > " . ProgramTitle());
+DrawBC(""._extracurricular." > " . ProgramTitle());
 
 
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'remove') {
     $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST[id] . '\''));
     $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
     if ($has_assigned > 0) {
-        UnableDeletePrompt('Cannot delete because eligibility activities are associated.');
+        UnableDeletePrompt(_cannotDeleteBecauseEligibilityActivitiesAreAssociated);
     } else {
         if (DeletePrompt_activity('activity')) {
             DBQuery('DELETE FROM eligibility_activities WHERE ID=\'' . $_REQUEST[id] . '\'');
@@ -208,7 +208,10 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $ids = $ids + 1;
         $activities_RET[$ari]['END_DATE'] = makeDateInput($activities_RET[$ari]['END_DATE'], 'END_DATE', $ids, $ard['ID']);
     }
-    $columns = array('TITLE' => 'Title', 'START_DATE' => 'Begins', 'END_DATE' => 'Ends');
+    $columns = array('TITLE' =>_title,
+     'START_DATE' =>_begins,
+     'END_DATE' =>_ends,
+    );
     $link['add']['html'] = array('TITLE' => makeTextInput('', 'TITLE'), 'START_DATE' => makeDateInput('', 'START_DATE', $ids + 1), 'END_DATE' => makeDateInput('', 'END_DATE', $ids + 2));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
     $link['remove']['variables'] = array('id' => 'ID');
@@ -227,10 +230,10 @@ if ($_REQUEST['modfunc'] != 'remove') {
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body p-0">';
     echo '<div class="table-responsive">';
-    ListOutput($activities_RET, $columns, 'Activity', 'Activities', $link);
+    ListOutput($activities_RET, $columns,  _activity, _activities, $link);
     echo '</div>';
     echo '</div>'; //.panel-body
-    echo '<div class="panel-footer text-right p-r-20">'.SubmitButton('Save', '', 'class="btn btn-primary"').'</div>';
+    echo '<div class="panel-footer text-right p-r-20">'.SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"').'</div>';
     echo '</div>'; //.panel
     echo '</FORM>';
 }

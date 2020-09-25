@@ -29,7 +29,7 @@
 include('../../RedirectModulesInc.php');
 $max_cols = 3;
 $max_rows = 10;
-$to_family = 'To the parents of:';
+$to_family = ''._toTheParentsOf.':';
 
 if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 {
@@ -331,12 +331,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
             PDFstop($handle);
         } else
-            BackPrompt('No Students were found.');
+            BackPrompt(_noStudentsWereFound.'.');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Students -> " . ProgramTitle());
+    DrawBC(""._students." -> " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]&_openSIS_PDF=true method=POST target=_blank>";
@@ -346,17 +346,17 @@ if (!$_REQUEST['modfunc']) {
 
         //$extra['extra_header_left'] .= '<div class="row">';
         //$extra['extra_header_left'] .= '<div class="col-md-6">';
-        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="student" checked> To Student</label></div>';
-        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="pri_contact">To Primary Emergency Contact</label></div>';
-        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="sec_contact">To Secondary Emergency Contact</label></div>';
-        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="contact">To Both Emergency Contacts</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="student" checked> '._toStudent.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="pri_contact">'._toPrimaryEmergencyContact.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="sec_contact">'._toSecondaryEmergencyContact.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="radio"><label><INPUT class="styled" type=radio name=to_address value="contact">'._toBothEmergencyContacts.'</label></div>';
         //$extra['extra_header_left'] .= '</div>';
         //$extra['extra_header_left'] .= '<div class="col-md-6">';
         $extra['extra_header_right'] .= '<div style="min-width:300px;">';
         $extra['extra_header_right'] .= '<div class="row">';
         $extra['extra_header_right'] .= '<div class="col-md-6">';
         $extra['extra_header_right'] .= '<div class="form-group">';
-        $extra['extra_header_right'] .= '<label>Starting row</label>';
+        $extra['extra_header_right'] .= '<label>'._startingRow.'</label>';
         $extra['extra_header_right'] .= '<SELECT name="start_row" class="form-control">';
         for ($row = 1; $row <= $max_rows; $row++) {
             $extra['extra_header_right'] .= '<OPTION value="' . $row . '">' . $row . '</OPTION>';
@@ -366,7 +366,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_right'] .= '</div>'; //.col-md-6
         $extra['extra_header_right'] .= '<div class="col-md-6">';
         $extra['extra_header_right'] .= '<div class="form-group">';
-        $extra['extra_header_right'] .= '<label>Starting column</label>';
+        $extra['extra_header_right'] .= '<label>'._startingColumn.'</label>';
         $extra['extra_header_right'] .= '<SELECT name="start_col" class="form-control">';
         for ($col = 1; $col <= $max_cols; $col++) {
             $extra['extra_header_right'] .= '<OPTION value="' . $col . '">' . $col . '</OPTION>';
@@ -422,7 +422,7 @@ if (!$_REQUEST['modfunc']) {
     {
         $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
     }
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['options']['search'] = false;
@@ -430,7 +430,7 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Labels for Selected Students\'></div>';
+        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._printLabelsForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 
@@ -439,7 +439,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -451,9 +451,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
@@ -477,7 +477,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class = "modal-title">Choose course</h5>';
+    echo '<h5 class = "modal-title">'._chooseCourse.'</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -489,9 +489,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }

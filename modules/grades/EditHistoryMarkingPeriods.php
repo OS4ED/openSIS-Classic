@@ -95,14 +95,14 @@ if ($_REQUEST['modfunc'] == 'update') {
     unset($_REQUEST['modfunc']);
 }
 if ($_REQUEST['modfunc'] == 'remove') {
-    if (DeletePromptX('History Marking Period')) {
+    if (DeletePromptX(_historyMarkingPeriod)) {
         DBQuery('DELETE FROM history_marking_periods WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['id'] . '\'');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
     echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
-    DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"'));
+    DrawHeader(ProgramTitle(), SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"'));
     echo '<hr class="no-margin"/>';
 
     $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY POST_END_DATE';
@@ -112,10 +112,10 @@ if (!$_REQUEST['modfunc']) {
         'POST_END_DATE' => 'makeDateInput',
         'SYEAR' => 'makeSchoolYearSelectInput'
     );
-    $LO_columns = array('MP_TYPE' => 'Type',
-        'NAME' => 'Name',
-        'POST_END_DATE' => 'Grade Post Date',
-        'SYEAR' => 'School Year'
+    $LO_columns = array('MP_TYPE' =>_type,
+        'NAME' =>_name,
+        'POST_END_DATE' =>_gradePostDate,
+        'SYEAR' =>_schoolYear,
     );
     $link['add']['html'] = array('MP_TYPE' => makeSelectInput('', 'MP_TYPE'),
         'NAME' => makeTextInput('', 'NAME'),
@@ -130,9 +130,9 @@ if (!$_REQUEST['modfunc']) {
     $LO_ret = DBGet(DBQuery($sql), $functions);
 
     echo '<div class="panel-body no-padding">';
-    ListOutput($LO_ret, $LO_columns, 'History Marking Period', 'History Marking Periods', $link, array(), array('count' => true, 'download' => false, 'search' => false));
+    ListOutput($LO_ret, $LO_columns,  _historyMarkingPeriod, _historyMarkingPeriods, $link, array(), array('count' =>true, 'download' =>true, 'search' =>false));
     echo '</div>';
-    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
+    echo '<div class="panel-footer p-r-20 text-right">' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
     echo '</FORM>';
 }
 
@@ -174,7 +174,10 @@ function makeSelectInput($value, $name) {
     else
         $id = 'new';
 
-    $options = array('year' => 'Year', 'semester' => 'Semester', 'quarter' => 'Quarter');
+    $options = array('year' => _year,
+     'semester' => _semester,
+     'quarter' => _quarter,
+    );
 
     return SelectInput(trim($value), "values[$id][$name]", '', $options, false);
 }

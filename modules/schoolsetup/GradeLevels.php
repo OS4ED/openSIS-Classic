@@ -26,6 +26,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include('lang/language.php');
+
 if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']))
 {
     foreach($_REQUEST['values'] as $id=>$columns)
@@ -72,14 +74,14 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 }
                 if(in_array($columns['TITLE'], $grd_title))
                 {
-                    $err_msg="Title already exists";
+                    $err_msg= _titleAlreadyExists;
                     break;
                 }
                 else 
                 {
                     if(in_array($columns['SHORT_NAME'], $shortname) && $columns['SHORT_NAME']!='')
                     {
-                        $err_msg="Short name already exists";
+                        $err_msg= _shortNameAlreadyExists;
                         break;
                     }
                     else 
@@ -119,7 +121,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             }
     }
 }
-DrawBC("School Setup > ".ProgramTitle());
+DrawBC(""._schoolSetup." > ".ProgramTitle());
 
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
 {
@@ -127,7 +129,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
     $has_assigned_RET=DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE GRADE_ID=\''.$grd_id.'\''));
 	$has_assigned=$has_assigned_RET[1]['TOTAL_ASSIGNED'];
 	if($has_assigned>0){
-	UnableDeletePrompt('Cannot delete because grade levels are associated.');
+	UnableDeletePrompt( _cannotDeleteBecauseGradeLevelsAreAssociated.'.');
 	}else{
 	if(DeletePrompt_GradeLevel('grade level'))
 	{
@@ -155,23 +157,23 @@ foreach($LO as $ti => $td)
 $grade_id=implode(',',$grade_id_arr);
 	$grades_RET = DBGet($QI,array('TITLE'=>'makeTextInput','SHORT_NAME'=>'makeTextInput','SORT_ORDER'=>'makeTextInput','NEXT_GRADE_ID'=>'makeGradeInput'));
 	
-	$columns = array('TITLE'=>'Title','SHORT_NAME'=>'Short Name','SORT_ORDER'=>'Sort Order','NEXT_GRADE_ID'=>'Next Grade');
+	$columns = array('TITLE'=>_title,'SHORT_NAME'=>_shortName,'SORT_ORDER'=>_sortOrder,'NEXT_GRADE_ID'=>_nextGrade);
 	$link['add']['html'] = array('TITLE'=>makeTextInput('','TITLE'),'SHORT_NAME'=>makeTextInput('','SHORT_NAME'),'SORT_ORDER'=>makeTextInputMod2('','SORT_ORDER'),'NEXT_GRADE_ID'=>makeGradeInput('','NEXT_GRADE_ID'));
 	$link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 	$link['remove']['variables'] = array('id'=>'ID');
 	if($err_msg)
         {
             echo '<div class="alert bg-danger alert-styled-left">';
-            echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>'.$err_msg.'</div>';
+            echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>'.$err_msg.'</div>';
         
             unset($err_msg);
         }
 	echo "<FORM name=F1 id=F1 action=Modules.php?modname=".strip_tags(trim($_REQUEST[modname]))."&modfunc=update method=POST>";
 	echo '<div class="panel panel-white">';
         echo '<input type="hidden" name="h1" id="h1" value="'.$grade_id.'">';
-	ListOutput($grades_RET,$columns,'Grade Level','Grade Levels',$link, true, array('search'=>false));
+	ListOutput($grades_RET,$columns,_gradeLevel,_gradeLevels,$link, true, array('search'=>false));
 	if(AllowEdit()){
-            echo '<hr class="no-margin"/><div class="panel-body text-right"><INPUT id="setupGradeLvlBtn" class="btn btn-primary" type=submit value=Save onclick="formcheck_school_setup_grade_levels(this);"></div>';
+            echo '<hr class="no-margin"/><div class="panel-body text-right"><INPUT id="setupGradeLvlBtn" class="btn btn-primary" type=submit value='._save.' onclick="formcheck_school_setup_grade_levels(this);"></div>';
         }
         echo '</div>';
 	echo '</FORM>';

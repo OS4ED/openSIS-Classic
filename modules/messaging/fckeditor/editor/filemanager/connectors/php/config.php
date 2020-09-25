@@ -25,9 +25,9 @@
 global $Config ;
 
 // SECURITY: You must explicitly enable this "connector". (Set it to "true").
-// WARNING: don't just set "$Config['Enabled'] = true ;", you must be sure that only
+// WARNING: don't just set "$Config['Enabled'] = true;", you must be sure that only
 //		authenticated users can access this file or use some kind of session checking.
-$Config['Enabled'] = false ;
+$Config['Enabled'] = false;
 
 // Path to user files relative to the document root.
 $Config['UserFilesPath'] = '/userfiles/' ;
@@ -40,7 +40,7 @@ $Config['UserFilesAbsolutePath'] = '' ;
 
 // Due to security issues with Apache modules, it is recommended to leave the
 // following setting enabled.
-$Config['ForceSingleExtension'] = true ;
+$Config['ForceSingleExtension'] = true;
 
 // Perform additional checks for image files.
 // If set to true, validate image size (using getimagesize).

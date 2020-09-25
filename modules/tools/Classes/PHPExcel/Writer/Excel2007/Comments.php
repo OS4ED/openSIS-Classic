@@ -45,7 +45,7 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
 	public function writeComments(PHPExcel_Worksheet $pWorksheet = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {
@@ -125,7 +125,7 @@ class PHPExcel_Writer_Excel2007_Comments extends PHPExcel_Writer_Excel2007_Write
 	public function writeVMLComments(PHPExcel_Worksheet $pWorksheet = null)
 	{
 		// Create XML writer
-		$objWriter = null;
+		$objWriter = _null;
 		if ($this->getParentWriter()->getUseDiskCaching()) {
 			$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 		} else {

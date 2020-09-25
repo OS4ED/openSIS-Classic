@@ -260,14 +260,14 @@ class PHPExcel_Worksheet_PageSetup
 	 *
 	 * @var string
 	 */
-	private $_printArea = null;
+	private $_printArea = _null;
 	
 	/**
 	 * First page number
 	 *
 	 * @var int
 	 */
-	private $_firstPageNumber = null;
+	private $_firstPageNumber = _null;
 
     /**
      * Create a new PHPExcel_Worksheet_PageSetup
@@ -285,8 +285,8 @@ class PHPExcel_Worksheet_PageSetup
     	$this->_rowsToRepeatAtTop		= array(0, 0);
     	$this->_horizontalCentered		= false;
     	$this->_verticalCentered		= false;
-    	$this->_printArea				= null;
-    	$this->_firstPageNumber         = null;
+    	$this->_printArea				= _null;
+    	$this->_firstPageNumber         = _null;
     }
 
     /**

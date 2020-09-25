@@ -51,7 +51,7 @@ if (clean_param($_REQUEST['staff_id'], PARAM_ALPHA) == 'new') {
     echo '</div>'; //.row
 } else {
     echo '<div class="row" id="user_name">';
-    echo '<div onclick=\'addHTML("<div class=col-md-2><div class=form-group>' . str_replace('"', '\"', SelectInput($staff['TITLE'], 'people[TITLE]', 'Title', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '', '', false)) . '</div></div><div class=col-md-4><div class=form-group>' . str_replace('"', '\"', TextInput($staff['FIRST_NAME'], 'people[FIRST_NAME]', (!$staff['FIRST_NAME'] ? '<FONT color=red>' : '') . 'First' . (!$staff['FIRST_NAME'] ? '</FONT>' : ''), 'id=fname size=20 maxlength=50', false)) . '</div></div><div class=col-md-3><div class=form-group>' . str_replace('"', '\"', TextInput($staff['MIDDLE_NAME'], 'people[MIDDLE_NAME]', 'Middle', 'size=18 maxlength=50', false)) . '</div></div><div class=col-md-3><div class=form-group>' . str_replace('"', '\"', TextInput($staff['LAST_NAME'], 'people[LAST_NAME]', (!$staff['LAST_NAME'] ? '<FONT color=red>' : '') . 'Last' . (!$staff['LAST_NAME'] ? '</FONT>' : ''), 'id=lname size=20 maxlength=50', false)) . '</div></div>","user_name",true);\'><div class="col-md-12"><div class=form-group><label class="col-md-2 control-label text-right">Name <span class="text-danger">*</span></label><div class="col-md-10"><div class="form-control" readonly>' . (!$staff['TITLE'] && !$staff['FIRST_NAME'] && !$staff['MIDDLE_NAME'] && !$staff['LAST_NAME'] ? '-' : $staff['TITLE'] . ' ' . $staff['FIRST_NAME'] . ' ' . $staff['MIDDLE_NAME'] . ' ' . $staff['LAST_NAME']) . '</div></div></div></div></div>';
+    echo '<div onclick=\'addHTML("<div class=col-md-2><div class=form-group>' . str_replace('"', '\"', SelectInput($staff['TITLE'], 'people[TITLE]', 'Title', array('Mr.' => 'Mr.', 'Mrs.' => 'Mrs.', 'Ms.' => 'Ms.', 'Miss' => 'Miss', 'Dr' => 'Dr', 'Rev' => 'Rev'), '', '', false)) . '</div></div><div class=col-md-4><div class=form-group>' . str_replace('"', '\"', TextInput($staff['FIRST_NAME'], 'people[FIRST_NAME]', (!$staff['FIRST_NAME'] ? '<FONT color=red>' : '') . 'First' . (!$staff['FIRST_NAME'] ? '</FONT>' : ''), 'id=fname size=20 maxlength=50', false)) . '</div></div><div class=col-md-3><div class=form-group>' . str_replace('"', '\"', TextInput($staff['MIDDLE_NAME'], 'people[MIDDLE_NAME]', 'Middle', 'size=18 maxlength=50', false)) . '</div></div><div class=col-md-3><div class=form-group>' . str_replace('"', '\"', TextInput($staff['LAST_NAME'], 'people[LAST_NAME]', (!$staff['LAST_NAME'] ? '<FONT color=red>' : '') . 'Last' . (!$staff['LAST_NAME'] ? '</FONT>' : ''), 'id=lname size=20 maxlength=50', false)) . '</div></div>","user_name",true);\'><div class="col-md-12"><div class=form-group><label class="col-md-2 control-label text-right">'._name.' <span class="text-danger">*</span></label><div class="col-md-10"><div class="form-control" readonly>' . (!$staff['TITLE'] && !$staff['FIRST_NAME'] && !$staff['MIDDLE_NAME'] && !$staff['LAST_NAME'] ? '-' : $staff['TITLE'] . ' ' . $staff['FIRST_NAME'] . ' ' . $staff['MIDDLE_NAME'] . ' ' . $staff['LAST_NAME']) . '</div></div></div></div></div>';
     echo '</div>'; //.row
 }
 
@@ -60,7 +60,7 @@ if ($_REQUEST['staff_id'] != 'new') {
     echo '<div class="col-md-6">';
 }
 echo '<div class="form-group">';
-echo '<label class="control-label text-right col-lg-4" for="people[EMAIL]">Email Address </label>';
+echo '<label class="control-label text-right col-lg-4" for="people[EMAIL]">'._emailAddress.' </label>';
 echo '<div class="col-lg-8">' . TextInput($staff['EMAIL'], 'people[EMAIL]', '', 'size=25 maxlength=100 id=email class=form-control onkeyup=check_email(this,' . $id_sent . ',4); onblur=check_email(this,' . $id_sent . ',4)') . '<p class="help-block" id="email_error"></p></div>';
 echo '</div>';
 
@@ -72,7 +72,7 @@ if ($_REQUEST['staff_id'] != 'new') {
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo TextInput($det['HOME_PHONE'], 'people[HOME_PHONE]', 'Home Phone', 'size=25 maxlength=100 class=form-control');
+    echo TextInput($det['HOME_PHONE'], 'people[HOME_PHONE]', _homePhone, 'size=25 maxlength=100 class=form-control');
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-6
     echo '</div>'; //.row
@@ -80,13 +80,13 @@ if ($_REQUEST['staff_id'] != 'new') {
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo TextInput($det['WORK_PHONE'], 'people[WORK_PHONE]', 'Work Phone', 'size=25 maxlength=100  class=form-control');
+    echo TextInput($det['WORK_PHONE'], 'people[WORK_PHONE]', _workPhone, 'size=25 maxlength=100  class=form-control');
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-6
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo TextInput($det['CELL_PHONE'], 'people[CELL_PHONE]', 'Cell Phone', 'size=25 maxlength=100 class=form-control');
+    echo TextInput($det['CELL_PHONE'], 'people[CELL_PHONE]', _cellPhone, 'size=25 maxlength=100 class=form-control');
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-6
 }
@@ -97,20 +97,20 @@ echo '</div>'; //.row
 if ($_REQUEST['staff_id'] != 'new') {
 
     echo '<div class="row">';
-    echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">Disable User</label><div class="col-lg-8">' . CheckboxInput($staff['IS_DISABLE'], 'people[IS_DISABLE]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
-    echo '<div class="col-md-6"><div class="form-group">' . NoInput(ProperDate(substr($staff['LAST_LOGIN'], 0, 10)) . substr($staff['LAST_LOGIN'], 10), 'Last Login') . '</div></div>';
+    echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">'._disableUser.'</label><div class="col-lg-8">' . CheckboxInput($staff['IS_DISABLE'], 'people[IS_DISABLE]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
+    echo '<div class="col-md-6"><div class="form-group">' . NoInput(ProperDate(substr($staff['LAST_LOGIN'], 0, 10)) . substr($staff['LAST_LOGIN'], 10), _lastLogin) . '</div></div>';
     echo '</div>';
 }
 
 echo '<div class="row">';
 if ($_REQUEST['staff_id'] != 'new') {
-    echo '<div class="col-md-6"><div class="form-group">' . NoInput($staff['STAFF_ID'], 'User ID') . '</div></div>';
+    echo '<div class="col-md-6"><div class="form-group">' . NoInput($staff['STAFF_ID'], _userId) . '</div></div>';
 }
 if (basename($_SERVER['PHP_SELF']) != 'index.php') {
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo '<label class="control-label text-right col-lg-4">User Profile</label>';
+    echo '<label class="control-label text-right col-lg-4">'._userProfile.'</label>';
     echo '<div class="col-lg-8">';
     unset($options);
     if ($staff['PROFILE'] == 'Parent') {
@@ -155,14 +155,14 @@ if ($_REQUEST['profile'] != 'none') {
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo TextInput($staff['USERNAME'], 'login_authentication[USERNAME]', 'Username', 'size=25 maxlength=100 class=form-control onkeyup="usercheck_init(this)"');
+    echo TextInput($staff['USERNAME'], 'login_authentication[USERNAME]', _username, 'size=25 maxlength=100 class=form-control onkeyup="usercheck_init(this)"');
     echo '<div id="ajax_output"></div>';
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-6
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo '<label class="control-label text-right col-lg-4">Password</label>';
+    echo '<label class="control-label text-right col-lg-4">'._password.'</label>';
     echo '<div class="col-lg-8">';
     if (!isset($staff['STAFF_ID'])) {
         //for adding new user
@@ -223,21 +223,25 @@ if (in_array($staff['PROFILE'], $parent_profs_arr)) {
     echo '<hr class="no-margin"/>';
     echo '<div class="row">';
     echo '<div class="col-md-12">';
-    echo '<h5>Associated Students </h5>';
+    echo '<h5>'._associatedStudents.' </h5>';
     $sql = 'SELECT s.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS SCHOOL FROM students s,student_enrollment ssm,school_gradelevels gr,schools sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.GRADE_ID=gr.ID AND ssm.SCHOOL_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
     $students = DBGet(DBQuery($sql));
     foreach ($students as $sti => $std) {
         $get_relation = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE STUDENT_ID=' . $std['STUDENT_ID'] . ' AND PERSON_ID=' . $staff['STAFF_ID']));
         $students[$sti]['RELATIONSHIP'] = $get_relation[1]['RELATIONSHIP'];
     }
-    $columns = array('FULL_NAME' => 'Name', 'RELATIONSHIP' => 'Relationship', 'GRADE' => 'Grade Level', 'SCHOOL' => 'School Name');
+    $columns = array('FULL_NAME' =>_name,
+     'RELATIONSHIP' =>_relationship,
+     'GRADE' =>_gradeLevel,
+     'SCHOOL' =>_schoolName,
+    );
 
 
     if (User('PROFILE_ID') == 0 || User('PROFILE_ID') == 1) {
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&staff_id=$staff[STAFF_ID]&modfunc=remove_stu" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '');
         $link['remove']['variables'] = array('id' => 'STUDENT_ID');
     }
-    ListOutput($students, $columns, 'Student', 'Students', $link, array(), array('search' => false));
+    ListOutput($students, $columns,  _student, _students, $link, array(), array('search' =>false));
     echo '</div>'; //.col-md-12
     echo '</div>'; //.row
 }

@@ -50,10 +50,10 @@ function Widgets($item, $allow_widget = false) {
                         }
                     }
 
-//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
+//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._course."</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseCourse.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
 //                    echo '</DIV>' . "<A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default' onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' >Choose a Course</A></div></div></div>";
 //                    $extra['search'] .='<div id="hidden_tag_cp_id"></div>';
-                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class='icon-menu6 pull-right m-t-10'></i><DIV id=course_div class='form-control m-b-5' readonly><span class='text-grey'>Click to Select</span></DIV></A><div class=form-control id=showTitle style=display:none ></div>
+                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._course."</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class='icon-menu6 pull-right m-t-10'></i><DIV id=course_div class='form-control m-b-5' readonly><span class='text-grey'>"._course."</span></DIV></A><div class=form-control id=showTitle style=display:none ></div>
                                             <input type=hidden name=marking_period_id id=val_marking_period_id /></div></div>";
 //                    $extra['search'] .= '<div id="modal_default" class="modal fade">
 //                    <div class="modal-dialog">
@@ -70,10 +70,10 @@ function Widgets($item, $allow_widget = false) {
 //                    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 //                    $QI = DBQuery($sql);
 //                    $subjects_RET = DBGet($QI);
-//                    $extra['search'] .=  count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
+//                    $extra['search'] .=  count($subjects_RET). ((count($subjects_RET)==1)?' '._subjectWas.'':' '._subjectsWere.'').' '._found.'.<br>';
 //                    if(count($subjects_RET)>0)
 //                    {
-//                    $extra['search'] .=  '<table class="table table-bordered"><tr class="bg-grey-200"><th>Subject</th></tr>'; 
+//                    $extra['search'] .=  '<table class="table table-bordered"><tr class="bg-grey-200"><th>'._subject.'</th></tr>'; 
 //                    foreach($subjects_RET as $val)
 //                    {
 //                    $extra['search'] .=  '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch('.$val['SUBJECT_ID'].',\'courses\')">'.$val['TITLE'].'</a></td></tr>';
@@ -107,9 +107,9 @@ function Widgets($item, $allow_widget = false) {
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                         }
                     }
-//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
-//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseRequest.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
-                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class='icon-menu6 m-t-10 pull-right'></i><DIV id=request_div class='form-control m-b-5' readonly><span class='text-grey'>Click to Select</span></DIV></A></div></div>";
+//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._course."</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
+//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._request."</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseRequest.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
+                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._request."</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class='icon-menu6 m-t-10 pull-right'></i><DIV id=request_div class='form-control m-b-5' readonly><span class='text-grey'>"._request."</span></DIV></A></div></div>";
                 }
                 break;
 
@@ -128,9 +128,9 @@ function Widgets($item, $allow_widget = false) {
 //                            $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
 //                        }
 //                    }
-//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Course</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
-//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseRequest.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
-                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Request</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class='icon-menu6 m-t-10 pull-right'></i><DIV id=request_div class='form-control m-b-5' readonly><span class='text-grey'>Click to Select</span></DIV></A></div></div>";
+//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._course."</label><div class=\"col-lg-8\"><DIV id=course_div></DIV><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default'  onClick='cleanModal(\"course_modal\");cleanModal(\"cp_modal\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose Course/Course Period</A></div></div>";
+//                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._request."</label><div class=\"col-lg-8\"><DIV id=request_div></DIV><A HREF=# onclick='window.open(\"ForWindow.php?modname=miscellaneous/ChooseRequest.php\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' class=\"text-primary\"><i class=icon-menu6></i> &nbsp;Choose</A></div></div>";
+                    $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._request."</label><div class=\"col-lg-8\"><A HREF=javascript:void(0) data-toggle='modal' data-target='#modal_default_request'  onClick='cleanModal(\"course_modal_request\");' class=\"text-primary\"><i class='icon-menu6 m-t-10 pull-right'></i><DIV id=request_div class='form-control m-b-5' readonly><span class='text-grey'>"._request."</span></DIV></A></div></div>";
                 }
                 break;
 
@@ -161,7 +161,7 @@ function Widgets($item, $allow_widget = false) {
                     }
                     $_openSIS['SearchTerms'] .= '<font color=gray><b>Days Absent ' . $term . ' between: </b></font>' . $_REQUEST['absences_low'] . ' &amp; ' . $_REQUEST['absences_high'] . '<BR>';
                 }
-                $extra['search'] .= "<div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">Days Absent</label><div class=\"col-lg-8\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=FY checked> YTD</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=SEM> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=QTR> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">Between</label><div class=\"col-lg-8\"><div class=\"form-inline\"><INPUT type=text name=absences_low size=3 class=form-control maxlength=5> &nbsp; &amp; &nbsp; <INPUT type=text name=absences_high size=3 maxlength=5 class=form-control></div></div></div>";
+                $extra['search'] .= "<div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">"._daysAbsent."</label><div class=\"col-lg-8\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=FY checked> YTD</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=SEM> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=absences_term value=QTR> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div><div class=\"form-group\"><label class=\"control-label text-right col-lg-4\">"._daysAbsent."</label><div class=\"col-lg-8\"><div class=\"form-inline\"><INPUT type=text name=absences_low size=3 class=form-control maxlength=5> &nbsp; &amp; &nbsp; <INPUT type=text name=absences_high size=3 maxlength=5 class=form-control></div></div></div>";
                 break;
 
             case 'gpa':
@@ -202,20 +202,20 @@ function Widgets($item, $allow_widget = false) {
                 }
                 $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM school_quarters where SCHOOL_ID=\'' . UserSchool() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=list_gpa value=Y> Marking Period GPA</label></div></div>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=list_gpa value=Y> "._markingPeriodGpa."</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=gpa_term value=" . GetParentMP('SEM', UserMP()) . "> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label>";
                     $extra['search'] .= "<label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=gpa_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
-                    $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">Between</label><div class=\"col-xs-3\"><INPUT type=text name=gpa_low class=form-control size=3 maxlength=5></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=gpa_high size=3 maxlength=5 class=form-control></div></div></div>";
+                    $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label col-xs-2\">"._between."</label><div class=\"col-xs-3\"><INPUT type=text name=gpa_low class=form-control size=3 maxlength=5></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=gpa_high size=3 maxlength=5 class=form-control></div></div></div>";
                 }
                 if ($qrtrs_query[1]['QUARTER'] <= 1) {
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><div><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=list_gpa value=Y> Marking Period GPA</label></div></div></div>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><div><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=list_gpa value=Y> "._markingPeriodGpa."</label></div></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><label class=\"radio-inline col-lg-4\"><INPUT class=\"styled\" type=radio name=gpa_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label>";
-                    $extra['search'] .= "<div class=\"col-lg-8\"><div class=\"form-inline\"><label>Between</label><INPUT type=text name=gpa_low class=form-control size=3 maxlength=5> &nbsp; - &nbsp; <INPUT type=text name=gpa_high size=3 maxlength=5 class=form-control></div></div>";
+                    $extra['search'] .= "<div class=\"col-lg-8\"><div class=\"form-inline\"><label>"._between."</label><INPUT type=text name=gpa_low class=form-control size=3 maxlength=5> &nbsp; - &nbsp; <INPUT type=text name=gpa_high size=3 maxlength=5 class=form-control></div></div>";
                     $extra['search'] .= "</div>";
                 }
 
                 $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"checkbox-inline col-lg-4\"><INPUT class=\"styled\" type=checkbox name=cgpa value=Y> CGPA</label></div></div>";
-                $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-xs-2\">Between</label><div class=\"col-xs-3\"><INPUT type=text name=cgpa_low class=form-control size=10 maxlength=5></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=cgpa_high size=10 maxlength=5 class=form-control></div></div></div>";
+                $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-xs-2\">"._between."</label><div class=\"col-xs-3\"><INPUT type=text name=cgpa_low class=form-control size=10 maxlength=5></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=cgpa_high size=10 maxlength=5 class=form-control></div></div></div>";
 
                 break;
 
@@ -235,20 +235,20 @@ function Widgets($item, $allow_widget = false) {
                 }
                 $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM school_quarters where SCHOOL_ID=\'' . UserSchool() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
-                    $extra['search'] .= "<h6 class=\"text-primary\">Class Rank</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=CUM checked> Cumulative</label></div></div>";
+                    $extra['search'] .= "<h6 class=\"text-primary\">"._classRank."</h6>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=CUM checked> "._cumulative."</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=" . GetParentMP('SEM', UserMP()) . "> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if ($qrtrs_query[1]['QUARTER'] <= 1) {
-                    $extra['search'] .= "<h6 class=\"text-primary\">Class Rank</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=CUM checked> Cumulative</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
+                    $extra['search'] .= "<h6 class=\"text-primary\">"._classRank."</h6>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=CUM checked> "._cumulative."</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if (strlen($pros = GetChildrenMP('PRO', UserMP()))) {
                     $pros = explode(',', singleQuoteReplace("'", '', $pros));
                     foreach ($pros as $pro)
                         $extra['search'] .= "<div class=\"col-lg-8\"><label class=\"radio-inline\"><INPUT type=radio name=class_rank_term value=" . $pro . ">" . GetMP($pro, 'SHORT_NAME') . "</label></div>";
                 }
-                $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-2\">Between</label><div class=\"col-xs-3\"><INPUT type=text name=class_rank_low size=3 maxlength=5 class=form-control></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=class_rank_high size=3 maxlength=5 class=form-control></div></div></div>";
+                $extra['search'] .= "<div class=\"form-horizontal\"><div class=\"form-group\"><label class=\"control-label text-right col-lg-2\">"._between."</label><div class=\"col-xs-3\"><INPUT type=text name=class_rank_low size=3 maxlength=5 class=form-control></div><div class=\"col-xs-1 text-center\">-</div><div class=\"col-xs-3\"><INPUT type=text name=class_rank_high size=3 maxlength=5 class=form-control></div></div></div>";
                 break;
 
             case 'letter_grade':
@@ -265,13 +265,13 @@ function Widgets($item, $allow_widget = false) {
                 }
                 $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM school_quarters where SCHOOL_ID=\'' . UserSchool() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
-                    $extra['search'] .= "<h6 class=\"text-primary\">Letter Grade</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
+                    $extra['search'] .= "<h6 class=\"text-primary\">"._letterGrade."</h6>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> "._didNotRecieve."</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . GetParentMP('SEM', UserMP()) . "> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . UserMP() . ">" . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if ($qrtrs_query[1]['QUARTER'] <= 1) {
-                    $extra['search'] .= "<h6 class=\"text-primary\">Letter Grade</h6>";
-                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
+                    $extra['search'] .= "<h6 class=\"text-primary\">"._letterGrade."</h6>";
+                    $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> "._didNotRecieve."</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=letter_grade_term value=" . UserMP() . "> " . GetMP(UserMP(), 'SHORT_NAME') . "</label></div></div>";
                 }
                 if (strlen($pros = GetChildrenMP('PRO', UserMP()))) {
@@ -357,7 +357,7 @@ function Widgets($item, $allow_widget = false) {
                         $select .= "<OPTION value=$activity[ID]>$activity[TITLE]</OPTION>";
                 }
                 $select .= '</SELECT>';
-                $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">Activity</label><div class=\"col-lg-8\">" . $select . "</div></div>";
+                $extra['search'] .= "<div class=\"form-group clearfix\"><label class=\"control-label text-right col-lg-4\">"._activity."</label><div class=\"col-lg-8\">" . $select . "</div></div>";
                 break;
 
             case 'mailing_labels':
@@ -367,10 +367,10 @@ function Widgets($item, $allow_widget = false) {
                     $extra['functions'] += array('MAILING_LABEL' => 'MailingLabel');
                 }
                 if ($_REQUEST[modname] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php') {
-                    $extra['search'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox name=mailing_labels value=Y><span></span> Mailing Labels</label>';
+                    $extra['search'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox name=mailing_labels value=Y><span></span> '._mailingLabels.'</label>';
                 } else {
                     $extra['search'] .= '<div class="form-group">';
-                    $extra['search'] .= '<label class="control-label text-right col-lg-4">Mailing Labels</label>';
+                    $extra['search'] .= '<label class="control-label text-right col-lg-4">'._mailingLabels.'</label>';
                     $extra['search'] .= '<div class="col-lg-8">';
                     $extra['search'] .= '<div class="checkbox checkbox-switch switch-success"><label><INPUT type=checkbox name=mailing_labels value=Y><span></span></label></div>';
                     $extra['search'] .= '</div>';

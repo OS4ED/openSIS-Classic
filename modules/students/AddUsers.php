@@ -38,9 +38,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save' && AllowEdit()) 
     unset($_REQUEST['modfunc']);
     unset($_SESSION['_REQUEST_vars']['modfunc']);
     if ($_REQUEST['staff'])
-        $note = "The selected user's profile now includes access to the selected students.";
+        $note = ""._theSelectedUserSProfileNowIncludesAccessToTheSelectedStudents.".";
 }
-DrawBC("Students > " . ProgramTitle());
+DrawBC(""._students." > " . ProgramTitle());
 if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserStudentID()) {
     if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new')
         $stu_id = $_REQUEST['student_id'];
@@ -51,16 +51,16 @@ if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserSt
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader(''._selectedStudent.': : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
         echo '</div>';
     } else if ($count_student_RET[1]['NUM'] == 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader(''._selectedStudent.': : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
         echo '</div>';
     }
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()) {
-    if (DeletePromptCommon('student from that user', 'remove access to')) {
+    if (DeletePromptCommon(_studentFromThatUser, _removeAccessTo)) {
         DBQuery('DELETE FROM students_join_users WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\' AND STUDENT_ID=\'' . UserStudentID() . '\'');
         unset($_REQUEST['modfunc']);
     }
@@ -69,7 +69,7 @@ if ($note)
     DrawHeader('<IMG SRC=assets/check.gif>' . $note);
 if ($_REQUEST['modfunc'] != 'delete') {
     $extra['SELECT'] = ',(SELECT count(distinct u.PERSON_ID) FROM students_join_people u,people p WHERE u.STUDENT_ID=s.STUDENT_ID AND p.STAFF_ID=u.PERSON_ID) AS ASSOCIATED';
-    $extra['columns_after'] = array('ASSOCIATED' => '# Associated');
+    $extra['columns_after'] = array('ASSOCIATED' => '# '.associated);
     Search('student_id', $extra);
     if (UserStudentID()) {
 
@@ -83,13 +83,13 @@ if ($_REQUEST['modfunc'] != 'delete') {
         $current_RET = DBGet(DBQuery('SELECT DISTINCT u.PERSON_ID AS STAFF_ID,CONCAT(p.LAST_NAME,\', \',p.FIRST_NAME) AS FULL_NAME,la.LAST_LOGIN FROM people p INNER JOIN students_join_people u ON ( p.STAFF_ID=u.PERSON_ID ) LEFT JOIN login_authentication la ON (la.PROFILE_ID=p.PROFILE_ID AND p.STAFF_ID=la.USER_ID) WHERE u.STUDENT_ID=\'' . UserStudentID() . '\' group by (p.staff_id) order by la.LAST_LOGIN desc'), array('LAST_LOGIN' => '_makeLogin'));
         $link['remove'] = array('link' => "Modules.php?modname=$_REQUEST[modname]&modfunc=delete", 'variables' => array('staff_id' => 'STAFF_ID'));
         echo '<div class="panel panel-default">';
-        ListOutput($current_RET, array('FULL_NAME' => 'Parents', 'LAST_LOGIN' => 'Last Login'), '', '', $link, array(), array('search' => false));
+        ListOutput($current_RET, array('FULL_NAME' => 'Parents', 'LAST_LOGIN' =>_lastLogin), '', '', $link, array(), array('search' =>_lastLogin));
         echo '</div>'; //.panel.panel-default
         echo '</div><div class="col-md-4">';
 
         if (AllowEdit()) {
             unset($extra);
-            $extra['link'] = array('FULL_NAME' => false);
+            $extra['link'] = array('FULL_NAME' =>false);
             $extra['SELECT'] = ',CAST(NULL AS CHAR(1)) AS CHECKBOX';
             $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
             $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'staff\');"><A>');
@@ -105,7 +105,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
         echo '</div>';//.row
 
         if ($_REQUEST['modfunc'] == 'list' && $_SESSION['count_stf'])
-            echo SubmitButton('Add Selected Parents', '', 'class="btn btn-primary"') . "</FORM>";
+            echo SubmitButton(_addSelectedParents, '', 'class="btn btn-primary"') . "</FORM>";
     }
 }
 

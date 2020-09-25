@@ -189,7 +189,7 @@ sub SendUploadResults
 Content-type: text/html
 
 <script type="text/javascript">
-(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|\$)/,'');if (d.length==0) break;try{document.domain=d;}catch (e){break;}}})();
+(function(){var d=document.domain;while (true){try{var A=window.parent.document.domain;break;}catch(e) {};d=d.replace(/.*?(?:\\.|\$)/,'');if (d.length==0) break;try{document.domain= _d;}catch (e){break;}}})();
 
 EOF
 	print 'window.parent.OnUploadCompleted(' . $sErrorNumber . ',"' . JS_cnv($sFileUrl) . '","' . JS_cnv($sFileName) . '","' . JS_cnv($customMsg) . '") ;';

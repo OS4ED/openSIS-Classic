@@ -64,13 +64,13 @@ class PHPExcel_Shared_OLE
 
 	/**
 	 * Big Block Allocation Table
-	 * @var array  (blockId => nextBlockId)
+	 * @var array  (blockId =>_nextBlockId)
 	*/
 	public $bbat;
 
 	/**
 	 * Short Block Allocation Table
-	 * @var array  (blockId => nextBlockId)
+	 * @var array  (blockId =>_nextBlockId)
 	*/
 	public $sbat;
 

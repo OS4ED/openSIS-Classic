@@ -46,7 +46,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             if (isset($_SESSION['stu_search']['sql'])) {
                 unset($_SESSION['stu_search']);
             }
-            PopTable('header', 'Find a Student');
+            PopTable('header', _findAStudent);
             if ($extra['pdf'] != true)
                 echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
@@ -60,19 +60,19 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="row">';
             echo '<div class="col-lg-12">';
             if (User('PROFILE') == 'admin') {
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '>Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Schools</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '>'._groupByFamily.'</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>'._searchAllSchools.'</label>';
             }
-            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>Include Inactive Students</label>';
+            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>'._includeInactiveStudents.'</label>';
             echo '</div>'; //.col-lg-12
             echo '</div>'; //.row
 
             echo '<hr>';
             echo '<div class="text-right">';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='Submit' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'>";
+                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick=\"self_disable(this);\" > &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
             echo '</div>';
             echo '</FORM>';
 
@@ -83,7 +83,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             break;
         case 'parent':
         case 'student':
-            PopTable('header', 'Search');
+            PopTable('header', _search);
             if ($extra['pdf'] != true)
                 echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
@@ -93,7 +93,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                 echo $extra['search'];
             echo '<TR><TD colspan=2 align=center>';
             echo '<BR>';
-            echo Buttons('Submit', 'Reset');
+            echo Buttons(submit, reset);
             echo '</TD></TR>';
             echo '</TABLE>';
             echo '</FORM>';
@@ -146,7 +146,11 @@ else {
         else
             $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section');
+    $LO_columns = array('FULL_NAME' => _student,
+     'STUDENT_ID' => _studentId,
+     'GRADE_ID' => _grade,
+     'SECTION_ID' => _section,
+    );
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_REQUEST['_search_all_schools'])
@@ -173,9 +177,9 @@ else {
         echo '<div class="panel panel-default">';
         
         if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0)
-            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> Expanded View</A>", $extra['header_right']);
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> "._expandedView."</A>", $extra['header_right']);
         elseif (!UserStudentID() && count($students_RET) != 0)
-            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false><i class=\"icon-square-up-left\"></i> Original View</A>", $extra['header_right']);
+            DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false><i class=\"icon-square-up-left\"></i> "._originalView."</A>", $extra['header_right']);
         DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
         DrawHeader(str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)));
         if ($_REQUEST['LO_save'] != '1' && !$extra['suppress_save']) {
@@ -230,7 +234,7 @@ else {
             include('modules/' . $modname);
         }
     } else
-        BackPrompt('No Students were found.');
+        BackPrompt(_noStudentsWereFound.'.');
 }
 
 function _make_sections($value) {

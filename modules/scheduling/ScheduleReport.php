@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Scheduling > " . ProgramTitle());
+include('lang/language.php');
+
+DrawBC(""._scheduling." > " . ProgramTitle());
 //echo '<div class="panel panel-default">';
 if ($_REQUEST['subject_id']) {
     $RET = DBGet(DBQuery("SELECT TITLE FROM course_subjects WHERE SUBJECT_ID='" . $_REQUEST['subject_id'] . "'"));
@@ -45,13 +47,13 @@ if ($_REQUEST['subject_id']) {
             $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=students&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]>" . $RET[1]['TITLE'] . '</A></li>';
         }
 
-        $header2 .= "&students=$location&modfunc=$location><i class=\"fa fa-list position-left\"></i> List Students</A></li><li>" . $header2 . "&unscheduled=true&students=$location&modfunc=$location><i class=\"fa fa-user-times position-left\"></i> List Unscheduled Students</A></li>";
+        $header2 .= "&students=$location&modfunc=$location><i class=\"fa fa-list position-left\"></i> "._listStudents."</A></li><li>" . $header2 . "&unscheduled=true&students=$location&modfunc=$location><i class=\"fa fa-user-times position-left\"></i> "._listStudents."</A></li>";
 
         echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb breadcrumb-white-text">'.$header.'</ul><ul class="breadcrumb-elements">'.$header2.'</ul></div>';
     } else
         echo '<div class="breadcrumb-line breadcrumb-line-component content-group-lg"><ul class="breadcrumb breadcrumb-white-text">'.$header.'</ul></div>';
 }
-$LO_options = array('save' => false, 'search' => false, 'print' => false);
+$LO_options = array('save' =>false, 'search' =>false, 'print' =>false);
 
 echo '<div class="row">';
 // SUBJECTS ----
@@ -68,7 +70,7 @@ if (!$_REQUEST['modfunc'] || ($_REQUEST['modfunc'] == 'courses' && $_REQUEST['st
     }
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=courses";
     $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID');
-    ListOutput($RET, array('TITLE' => 'Subject'), 'Subject', 'Subjects', $link, array(), $LO_options);
+    ListOutput($RET, array('TITLE' => 'Subject'), _subject, _subjects, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
@@ -103,7 +105,7 @@ if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
     }
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=course_periods&subject_id=$_REQUEST[subject_id]";
     $link['TITLE']['variables'] = array('course_id' => 'COURSE_ID');
-    ListOutput($RET, array('TITLE' => 'Course', 'COUNT_REQUESTS' => 'Requests', 'OPEN_SEATS' => 'Open', 'TOTAL_SEATS' => 'Total'), 'Course', 'Courses', $link, array(), $LO_options);
+    ListOutput($RET, array('TITLE' =>_course, 'COUNT_REQUESTS' =>_course, 'OPEN_SEATS' =>_course, 'TOTAL_SEATS' =>_total), _course, _courses, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
@@ -139,7 +141,7 @@ if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=students&students=course_periods&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]";
     $link['TITLE']['variables'] = array('course_period_id' => 'COURSE_PERIOD_ID');
-    ListOutput($RET, array('TITLE' => 'Period - Teacher', 'OPEN_SEATS' => 'Open', 'TOTAL_SEATS' => 'Total'), 'Course Period', 'Course Periods', $link, array(), $LO_options);
+    ListOutput($RET, array('TITLE' =>_periodTeacher, 'OPEN_SEATS' =>_periodTeacher, 'TOTAL_SEATS' =>_total), _coursePeriod, _coursePeriods, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
@@ -171,7 +173,7 @@ if ($_REQUEST['students']) {
     $link = array();
     $link['FULL_NAME']['link'] = "Modules.php?modname=scheduling/Schedule.php";
     $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
-    ListOutput($RET, array('FULL_NAME' => 'Student', 'GRADE_ID' => 'Grade', 'BIRTHDATE' => 'Birthdate'), 'Student', 'Students', $link, array(), $LO_options);
+    ListOutput($RET, array('FULL_NAME' =>_student, 'GRADE_ID' =>_student, 'BIRTHDATE' =>_birthdate), _student, _students, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }

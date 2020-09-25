@@ -54,11 +54,11 @@ SET time_zone = '+00:00';
 --
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.5'),
-('date', 'August 11, 2020'),
+('version', '7.6'),
+('date', 'September 11, 2020'),
 ('build', '20200811001'),
 ('update', '0'),
-('last_updated', 'August 11, 2020');
+('last_updated', 'September 11, 2020');
 
 --
 -- Dumping data for table `attendance_calendar`
@@ -2192,10 +2192,6 @@ INSERT INTO `student_medical_visits` (`id`, `student_id`, `school_date`, `time_i
 INSERT INTO `student_mp_comments` (`id`, `student_id`, `syear`, `marking_period_id`, `staff_id`, `comment`, `comment_date`, `last_updated`, `updated_by`) VALUES
 (1,13,2020,14,1,'Arthur is doing well in his assignments. ','2020-08-12','2020-08-12 16:32:22',NULL);
 
---
--- Dumping data for table `student_report_card_grades`
---
-
 
 --
 -- Dumping data for table `system_preference`
@@ -2252,22 +2248,6 @@ INSERT INTO `user_profiles` (`id`, `profile`, `title`, `last_updated`, `updated_
 (11,2,14,19,NULL,5,'Writing Assignment - Week 2','2020-08-17','2020-08-18',40,'&lt;p&gt;WRITING ABOUT READING&lt;/p&gt;\r\n\r\n&lt;p&gt;writing a summary of what you read&lt;/p&gt;\r\n',1,'2020-08-17 14:02:13',NULL),
 (12,2,14,19,NULL,4,'Writing Assignment - HW Week 2','2020-08-17','2020-08-20',20,'&lt;p&gt;ESSAY ASSIGNMENTS&lt;/p&gt;\r\n\r\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\r\n',1,'2020-08-17 14:03:35',NULL),
 (13,2,14,19,NULL,6,'Quiz Assignment Week 2','2020-08-21','2020-08-21',40,'&lt;p&gt;Quiz Assignment Week 2 for Writing on 21st Aug&lt;/p&gt;\r\n',1,'2020-08-17 14:04:23',NULL);");
- 
-        
-//        $dbconn->query("INSERT INTO `msg_inbox` (`mail_id`, `to_user`, `from_user`, `mail_Subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `isdraft`, `istrash`, `to_multiple_users`, `to_cc`, `to_cc_multiple`, `to_bcc`, `to_bcc_multiple`, `mail_read_unread`, `last_updated`, `updated_by`) VALUES
-//(1, 'teacher', 'os4ed', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2020-01-23 13:07:18', NULL, NULL, NULL, 'richard,kim', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:07:18', NULL),
-//(2, 'student', 'os4ed', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2020-01-23 13:08:10', NULL, NULL, NULL, 'student', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:08:10', NULL),
-//(3, 'os4ed', 'teacher', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2020-01-23 13:47:44', NULL, NULL, NULL, 'os4ed', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:47:44', NULL),
-//(4, 'teacher', 'student', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2020-01-23 13:50:37', NULL, NULL, NULL, 'teacher', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:50:37', NULL);
-//");
-// 
-//        
-//        $dbconn->query("INSERT INTO `msg_outbox` (`mail_id`, `from_user`, `to_user`, `mail_subject`, `mail_body`, `mail_datetime`, `mail_attachment`, `istrash`, `to_cc`, `to_bcc`, `to_grpName`, `last_updated`, `updated_by`) VALUES
-//(1, 'os4ed', 'teacher', 'Welcome', '<p>Hello All,</p>\n\n<p>&nbsp;</p>\n\n<p>Welcome to our new session...</p>\n\n<p>&nbsp;</p>\n\n<p>Regards,</p>\n\n<p>Os4ed Administrator.</p>\n\n<p>Peach Tree School</p>', '2020-01-23 13:07:18', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:07:18', NULL),
-//(2, 'os4ed', 'student', 'Hello', '<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and  typesetting industry. Lorem Ipsum has been the industry''s standard dummy  text ever since the 1500s, when an unknown printer took a galley of  type and scrambled it to make a type specimen book.</p>', '2020-01-23 13:08:10', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:08:10', NULL),
-//(3, 'teacher', 'os4ed', 'Thank you', '<p>Thak you sir... Sure.</p>\n\n<p>&nbsp;</p>\n\n<p>Regrads,</p>\n\n<p>Jennifer Lawrence.</p>\n\n<p>Asst. Professor</p>\n\n<p>Peach Tree School</p>', '2020-01-23 13:47:44', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:47:44', NULL),
-//(4, 'student', 'teacher', 'Hello', '<p>Hello Madam,</p>\n\n<p>&nbsp;&nbsp; I have submitted my assignment please check .</p>\n\n<p>Yours faithfully,</p>\n\n<p>Colin Parker.</p>', '2020-01-23 13:50:37', NULL, NULL, NULL, NULL, NULL, '2020-01-23 13:50:37', NULL);
-//");
 
 ?>
 

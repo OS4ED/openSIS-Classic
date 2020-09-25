@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2010 Frederico Caldeira Knabben
@@ -22,92 +22,94 @@
  * Preview shown in the "Document Properties" dialog window.
 -->
 <html>
-	<head>
-		<title>Document Properties - Preview</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="robots" content="noindex, nofollow">
-		<script type="text/javascript">
+  <head>
+    <title>Document Properties - Preview</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script type="text/javascript">
+      var eBase = parent.FCK.EditorDocument.getElementsByTagName("BASE");
+      if (eBase.length > 0 && eBase[0].href.length > 0) {
+        document.write('<base href="' + eBase[0].href + '">');
+      }
 
-var eBase = parent.FCK.EditorDocument.getElementsByTagName( 'BASE' ) ;
-if ( eBase.length > 0 && eBase[0].href.length > 0 )
-{
-	document.write( '<base href="' + eBase[0].href + '">' ) ;
-}
+      window.onload = function () {
+        if (typeof parent.OnPreviewLoad == "function")
+          parent.OnPreviewLoad(window, document.body);
+      };
 
-window.onload = function()
-{
-	if ( typeof( parent.OnPreviewLoad ) == 'function' )
-		parent.OnPreviewLoad( window, document.body ) ;
-}
+      function SetBaseHRef(baseHref) {
+        var eBase = document.createElement("BASE");
+        eBase.href = _baseHref;
 
-function SetBaseHRef( baseHref )
-{
-	var eBase = document.createElement( 'BASE' ) ;
-	eBase.href = baseHref ;
+        var eHead = document.getElementsByTagName("HEAD")[0];
+        eHead.appendChild(eBase);
+      }
 
-	var eHead = document.getElementsByTagName( 'HEAD' )[0] ;
-	eHead.appendChild( eBase ) ;
-}
+      function SetLinkColor(color) {
+        if (color && color.length > 0)
+          document.getElementById("eLink").style.color = _color;
+        else
+          document.getElementById("eLink").style.color =
+            window.document.linkColor;
+      }
 
-function SetLinkColor( color )
-{
-	if ( color && color.length > 0 )
-		document.getElementById('eLink').style.color = color ;
-	else
-		document.getElementById('eLink').style.color = window.document.linkColor ;
-}
+      function SetVisitedColor(color) {
+        if (color && color.length > 0)
+          document.getElementById("eVisited").style.color = _color;
+        else
+          document.getElementById("eVisited").style.color =
+            window.document.vlinkColor;
+      }
 
-function SetVisitedColor( color )
-{
-	if ( color && color.length > 0 )
-		document.getElementById('eVisited').style.color = color ;
-	else
-		document.getElementById('eVisited').style.color = window.document.vlinkColor ;
-}
-
-function SetActiveColor( color )
-{
-	if ( color && color.length > 0 )
-		document.getElementById('eActive').style.color = color ;
-	else
-		document.getElementById('eActive').style.color = window.document.alinkColor ;
-}
-		</script>
-	</head>
-	<body>
-		<table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td align="center" valign="middle">
-					Normal Text
-				</td>
-				<td id="eLink" align="center" valign="middle">
-					<u>Link Text</u>
-				</td>
-			</tr>
-			<tr>
-				<td id="eVisited" valign="middle" align="center">
-					<u>Visited Link</u>
-				</td>
-				<td id="eActive" valign="middle" align="center">
-					<u>Active Link</u>
-				</td>
-			</tr>
-		</table>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-	</body>
+      function SetActiveColor(color) {
+        if (color && color.length > 0)
+          document.getElementById("eActive").style.color = _color;
+        else
+          document.getElementById("eActive").style.color =
+            window.document.alinkColor;
+      }
+    </script>
+  </head>
+  <body>
+    <table
+      width="100%"
+      height="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+    >
+      <tr>
+        <td align="center" valign="middle">
+          Normal Text
+        </td>
+        <td id="eLink" align="center" valign="middle">
+          <u>Link Text</u>
+        </td>
+      </tr>
+      <tr>
+        <td id="eVisited" valign="middle" align="center">
+          <u>Visited Link</u>
+        </td>
+        <td id="eActive" valign="middle" align="center">
+          <u>Active Link</u>
+        </td>
+      </tr>
+    </table>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+  </body>
 </html>

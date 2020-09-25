@@ -48,8 +48,8 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 		if (!is_null($pSheet)) {
 			// Create string lookup table
 			$aStringTable = array();
-			$cellCollection = null;
-			$aFlippedStringTable = null;	// For faster lookup
+			$cellCollection = _null;
+			$aFlippedStringTable = _null;	// For faster lookup
 
 			// Is an existing table given?
 			if (!is_null($pExistingTable) && is_array($pExistingTable)) {
@@ -98,7 +98,7 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 	{
 		if (!is_null($pStringTable)) {
 			// Create XML writer
-			$objWriter = null;
+			$objWriter = _null;
 			if ($this->getParentWriter()->getUseDiskCaching()) {
 				$objWriter = new PHPExcel_Shared_XMLWriter(PHPExcel_Shared_XMLWriter::STORAGE_DISK, $this->getParentWriter()->getDiskCachingDirectory());
 			} else {

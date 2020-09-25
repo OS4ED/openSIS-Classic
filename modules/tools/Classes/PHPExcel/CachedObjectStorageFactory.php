@@ -11,9 +11,9 @@ class PHPExcel_CachedObjectStorageFactory {
 	const cache_to_wincache				= 'Wincache';
 
 
-	private static $_cacheStorageMethod = null;
+	private static $_cacheStorageMethod = _null;
 
-	private static $_cacheStorageClass = null;
+	private static $_cacheStorageClass = _null;
 
 
 	private static $_storageMethods = array(

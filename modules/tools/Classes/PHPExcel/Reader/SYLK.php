@@ -104,7 +104,7 @@ class PHPExcel_Reader_SYLK implements PHPExcel_Reader_IReader
 	 *
 	 * @var PHPExcel_Reader_IReadFilter
 	 */
-	private $_readFilter = null;
+	private $_readFilter = _null;
 
 	/**
 	 * Create a new PHPExcel_Reader_SYLK

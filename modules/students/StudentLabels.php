@@ -81,7 +81,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 $rows = 0;
 
                 echo "<table width=100%  border=0 style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogoParam($si) . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(($si != '' ? $si : UserSchool())) . "<div style=\"font-size:12px;\">Student Labels</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogoParam($si) . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(($si != '' ? $si : UserSchool())) . "<div style=\"font-size:12px;\">"._studentLabels."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>"._studentLabels."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                 echo '<table width="100%" border="0" cellspacing="0" cellpadding="0" style=font-family:Arial; font-size:12px;>';
                 foreach ($sd as $i => $student) {
                     if ($cols < 1)
@@ -91,11 +91,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     echo '<tr>';
                     echo '<td align=center>' . $student['NICK_NAME'] . ' ' . $student['LAST_NAME'] . '</td></tr>';
                     if ($_REQUEST['teacher']) {
-                        echo '<tr><td align=center>Teacher :';
+                        echo '<tr><td align=center>'._teacher.' :';
                         echo '' . $student['TEACHER'] . '</td></tr>';
                     }
                     if ($_REQUEST['room']) {
-                        echo '<tr><td align=center>Room No :';
+                        echo '<tr><td align=center>'._roomNo.' :';
                         echo '' . $student['ROOM'] . '</td></tr>';
                     }
                     echo '</table>';
@@ -142,12 +142,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
             PDFstop($handle);
         } else
-            BackPrompt('No Students were found.');
+            BackPrompt(_noStudentsWereFound.'.');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC("Students > " . ProgramTitle());
+    DrawBC(""._students." > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools]" . (User('PROFILE') == 'admin' ? "&w_course_period_id_which=$_REQUEST[w_course_period_id_which]&w_course_period_id=$_REQUEST[w_course_period_id]" : '') . "&_openSIS_PDF=true method=POST target=_blank>";
@@ -155,26 +155,26 @@ if (!$_REQUEST['modfunc']) {
 
         //$extra['extra_header_left'] = '<div class="row">';
         //$extra['extra_header_left'] .= '<div class="col-md-6">';
-        $extra['extra_header_left'] = '<h6>Include on Labels:</h6>';
+        $extra['extra_header_left'] = '<h6>'._includeOnLabels.':</h6>';
         if (User('PROFILE') == 'admin') {
             if ($_REQUEST['w_course_period_id_which'] == 'course_period' && $_REQUEST['w_course_period_id']) {
                 $course_RET = DBGet(DBQuery('SELECT CONCAT(s.FIRST_NAME,' . ' ' . ',s.LAST_NAME) AS TEACHER,r.TITLE AS ROOM FROM staff s,course_periods cp,course_period_var cpv,rooms r WHERE r.ROOM_ID=cpv.ROOM_ID AND s.STAFF_ID=cp.TEACHER_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=\'' . $_REQUEST[w_course_period_id] . '\''));
-                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Teacher (' . $course_RET[1]['TEACHER'] . ')</label>';
-                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Room (' . $course_RET[1]['ROOM'] . ')</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>'._teacher.' (' . $course_RET[1]['TEACHER'] . ')</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>'._room.' (' . $course_RET[1]['ROOM'] . ')</label>';
             } else {
-                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Attendance Teacher</label>';
-                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Attendance Room</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>'._attendanceTeacher.'</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>'._attendanceRoom.'</label>';
             }
         } else {
-            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>Teacher</label>';
-            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>Room</label>';
+            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=teacher value=Y><span></span>'._teacher.'</label>';
+            $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success switch-sm"><INPUT type=checkbox name=room value=Y><span></span>'._room.'</label>';
         }
         //$extra['extra_header_left'] .= '</div>';
 
         $extra['extra_header_right'] .= '<div style="width:300px;">';
         $extra['extra_header_right'] .= '<div class="row">';
         $extra['extra_header_right'] .= '<div class="col-md-6">';
-        $extra['extra_header_right'] .= '<div class="form-group"><label class="control-label">Starting row</label><SELECT class="form-control" name=start_row>';
+        $extra['extra_header_right'] .= '<div class="form-group"><label class="control-label">'._startingRow.'</label><SELECT class="form-control" name=start_row>';
         for ($row = 1; $row <= $max_rows; $row++) {
             $extra['extra_header_right'] .= '<OPTION value="' . $row . '">' . $row;
         }
@@ -182,7 +182,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_right'] .= '</div>'; //.col-md-6
         $extra['extra_header_right'] .= '<div class="col-md-6">';
         $extra['extra_header_right'] .= '<div class="form-group">';
-        $extra['extra_header_right'] .= '<label class="control-label">Starting column</label><SELECT class="form-control" name=start_col>';
+        $extra['extra_header_right'] .= '<label class="control-label">'._startingColumn.'</label><SELECT class="form-control" name=start_col>';
         for ($col = 1; $col <= $max_cols; $col++)
             $extra['extra_header_right'] .= '<OPTION value="' . $col . '">' . $col;
         $extra['extra_header_right'] .= '</SELECT></div>';
@@ -199,7 +199,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
 
-    $extra['link'] = array('FULL_NAME' => false);
+    $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
     if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
     {
@@ -213,7 +213,7 @@ if (!$_REQUEST['modfunc']) {
 
     Search('student_id', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
-        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Labels for Selected Students\'></div>';
+        echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._printLabelsForSelectedStudents.'\'></div>';
         echo "</FORM>";
     }
 
@@ -222,7 +222,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">Choose course</h5>';
+    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -234,9 +234,9 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }

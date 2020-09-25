@@ -74,14 +74,14 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 	 *
 	 * @var array
 	 */
-	private $_cssStyles = null;
+	private $_cssStyles = _null;
 
 	/**
 	 * Array of column widths in points
 	 *
 	 * @var array
 	 */
-	private $_columnWidths = null;
+	private $_columnWidths = _null;
 
 	/**
 	 * Default font
@@ -251,7 +251,7 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 	 * Write all sheets (resets sheetIndex to NULL)
 	 */
 	public function writeAllSheets() {
-		$this->_sheetIndex = null;
+		$this->_sheetIndex = _null;
 	}
 
 	/**
@@ -348,7 +348,7 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 			}
 			
 			// Loop through cells
-	    	$rowData = null;
+	    	$rowData = _null;
 	    	for ($row = $rowMin; $row <= $rowMax; ++$row) {
 				// Start a new row
 				$rowData = array();
@@ -1214,7 +1214,7 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 	public function formatColor($pValue, $pFormat)
 	{
 		// Color information, e.g. [Red] is always at the beginning
-		$color = null; // initialize
+		$color = _null; // initialize
 		$matches = array();
 
 		$color_regex = '/^\\[[a-zA-Z]+\\]/';

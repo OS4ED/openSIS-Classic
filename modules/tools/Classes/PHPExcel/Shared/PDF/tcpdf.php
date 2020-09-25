@@ -1445,7 +1445,7 @@ if (!class_exists('TCPDF', false)) {
 		protected $apxo_obj_id = 400000;
 		
 		/**
-		 * List of fonts used on form fields (fontname => fontkey).
+		 * List of fonts used on form fields (fontname =>_fontkey).
 		 * @access protected
 		 * @since 4.8.001 (2009-09-09)
 		 */
@@ -5775,7 +5775,7 @@ if (!class_exists('TCPDF', false)) {
 							$annots .= ' /AP <<';
 							if (is_array($pl['opt']['ap'])) {
 								foreach ($pl['opt']['ap'] as $apmode => $apdef) {
-									// $apmode can be: n = normal; r = rollover; d = down;
+									// $apmode can be: n = _normal; r = _normal; d = _normal;
 									$annots .= ' /'.strtoupper($apmode);
 									if (is_array($apdef)) {
 										$annots .= ' <<';
@@ -10838,7 +10838,7 @@ if (!class_exists('TCPDF', false)) {
 				$this->javascript .= 'f'.$name.".buttonSetCaption('".addslashes($caption)."');\n";
 				$this->javascript .= 'f'.$name.".setAction('MouseUp','".addslashes($action)."');\n";
 				$this->javascript .= 'f'.$name.".highlight='push';\n";
-				$this->javascript .= 'f'.$name.".print=false;\n";
+				$this->javascript .= 'f'.$name.".print= false;\n";
 				return;
 			}
 			// get default style
@@ -12053,7 +12053,7 @@ if (!class_exists('TCPDF', false)) {
 		 * @param int $w width in user units
 		 * @param int $h height in user units
 		 * @param float $xres width of the smallest bar in user units
-		 * @param array $style array of options:<ul><li>string $style['position'] barcode position inside the specified width: L = left (default for LTR); C = center; R = right (default for RTL); S = stretch</li><li>boolean $style['border'] if true prints a border around the barcode</li><li>int $style['padding'] padding to leave around the barcode in user units</li><li>array $style['fgcolor'] color array for bars and text</li><li>mixed $style['bgcolor'] color array for background or false for transparent</li><li>boolean $style["text"] boolean if true prints text below the barcode</li><li>string $style['font'] font name for text</li><li>int $style['fontsize'] font size for text</li><li>int $style['stretchtext']: 0 = disabled; 1 = horizontal scaling only if necessary; 2 = forced horizontal scaling; 3 = character spacing only if necessary; 4 = forced character spacing</li></ul>
+		 * @param array $style array of options:<ul><li>string $style['position'] barcode position inside the specified width: L = left (default for LTR); C = _center; R = right (default for RTL); S = stretch</li><li>boolean $style['border'] if true prints a border around the barcode</li><li>int $style['padding'] padding to leave around the barcode in user units</li><li>array $style['fgcolor'] color array for bars and text</li><li>mixed $style['bgcolor'] color array for background or false for transparent</li><li>boolean $style["text"] boolean if true prints text below the barcode</li><li>string $style['font'] font name for text</li><li>int $style['fontsize'] font size for text</li><li>int $style['stretchtext']: 0 = _center; 1 = horizontal scaling only if necessary; 2 = forced horizontal scaling; 3 = character spacing only if necessary; 4 = forced character spacing</li></ul>
 		 * @param string $align Indicates the alignment of the pointer next to barcode insertion relative to barcode height. The value can be:<ul><li>T: top-right for LTR or top-left for RTL</li><li>M: middle-right for LTR or middle-left for RTL</li><li>B: bottom-right for LTR or bottom-left for RTL</li><li>N: next line</li></ul>
 		 * @author Nicola Asuni
 		 * @since 3.1.000 (2008-06-09)
@@ -12265,11 +12265,11 @@ if (!class_exists('TCPDF', false)) {
 			$xres = 1 / $xres;
 			$newstyle = array(
 				'position' => 'L',
-				'border' => false,
+				'border' =>false,
 				'padding' => 0,
 				'fgcolor' => array(0,0,0),
-				'bgcolor' => false,
-				'text' => true,
+				'bgcolor' =>false,
+				'text' =>true,
 				'font' => $font,
 				'fontsize' => 8,
 				'stretchtext' => 4

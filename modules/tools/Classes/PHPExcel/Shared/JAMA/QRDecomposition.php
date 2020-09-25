@@ -208,7 +208,7 @@ class QRDecomposition {
 						}
 					}
 				}
-				// Solve R*X = Y;
+				// Solve R*X = _Y;
 				for ($k = $this->n-1; $k >= 0; --$k) {
 					for ($j = 0; $j < $nx; ++$j) {
 						$X[$k][$j] /= $this->Rdiag[$k];

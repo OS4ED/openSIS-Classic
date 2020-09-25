@@ -1507,7 +1507,7 @@ ALTER TABLE student_report_card_comments
 ALTER TABLE `staff_school_relationship` ADD `start_date` DATE NOT NULL ,
 ADD `end_date` DATE NOT NULL ;
 
-ALTER TABLE `courses` ADD `description` LONGTEXT NULL AFTER `short_name`;
+
 
 
 

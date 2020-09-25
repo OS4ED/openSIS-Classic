@@ -42,7 +42,7 @@ if($_REQUEST['title'])
     $_SESSION['MassSchedule.php']['course_period_id']=$_REQUEST['course_period_id'];
     $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));
     $_SESSION['MassSchedule.php']['gender'] = $gender_res[1]['GENDER_RESTRICTION'];
-        // $_REQUEST['title'] = str_replace('"', '\"', $_REQUEST['title']);
+//        $_REQUEST['title'] = str_replace('"', '\"', $_REQUEST['title']);
         if ($gender_res[1]['GENDER_RESTRICTION'] != 'N')
         $_REQUEST['title']=$_REQUEST['title'].' - Gender : '.($gender_res == 'M' ? 'Male' : 'Female');
     }

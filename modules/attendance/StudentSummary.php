@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("Attendance > " . ProgramTitle());
+include('lang/language.php');
+
+DrawBC(""._attendance." > " . ProgramTitle());
 $month_names = array('JAN' => '01', 'FEB' => '02', 'MAR' => '03', 'APR' => '04', 'MAY' => '05', 'JUN' => '06', 'JUL' => '07', 'AUG' => '08', 'SEP' => '09', 'OCT' => '10', 'NOV' => '11', 'DEC' => '12');
 if ($_REQUEST['day_start'] && $_REQUEST['month_start'] && $_REQUEST['year_start'])
     $start_date = $_REQUEST['year_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['day_start'];
@@ -43,9 +45,9 @@ if (isset($_REQUEST['student_id'])) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> '._selectedStudent.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div>');
     }
 }
 ####################
@@ -75,7 +77,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     echo "<FORM class=\"form-horizontal\" action=$PHP_tmp_SELF method=POST>";
     echo "<div class=\"panel panel-default\">";
     echo "<div class=\"panel-body\">";
-    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($start_date, 'start') . '</div><div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . PrepareDateSchedule($end_date, 'end') . '</div><div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value=Go></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
+    DrawHeaderHome('<div class="form-inline clearfix"><div class="col-md-12"><div class="inline-block">' . PrepareDateSchedule($start_date, 'start') . '</div><div style="display: inline-block; margin: 0 10px;">&nbsp; - &nbsp;</div><div class="inline-block">' . PrepareDateSchedule($end_date, 'end') . '</div><div style="display: inline-block; margin: 0 10px;"><INPUT type=submit name=absence_go class="btn btn-primary" value='._go.'></div><div style="display: inline-block; margin: 0 10px 0 0;">', $period_select . '</div><div style="display: inline-block;">' . $myclasses . '</div></div></div>');
     echo '</div>';
     echo '</div>';
     echo '</FORM>';
@@ -160,7 +162,7 @@ echo '<div class="modal-dialog modal-lg">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h4 class="modal-title">Choose course</h4>';
+echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -171,9 +173,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? _subjectWas : _subjectsWere) . ' '._found.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
@@ -214,17 +216,17 @@ if (UserStudentID()) {
     } else {
         $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.SHORT_NAME FROM school_periods sp,schedule s,course_periods cp,course_period_var cpv WHERE sp.SCHOOL_ID=\'' . UserSchool() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ORDER BY sp.SORT_ORDER'));
     }
-    $columns['SCHOOL_DATE'] = 'Date';
-    $columns['DAILY'] = 'Present';
-    $columns['OFFICE_COMMENT'] = 'Admin & Office Comment';
-    $columns['TEACHER_COMMENT'] = 'Teacher Comment';
+    $columns['SCHOOL_DATE'] = _date;
+    $columns['DAILY'] = _present;
+    $columns['OFFICE_COMMENT'] = _adminOfficeComment;
+    $columns['TEACHER_COMMENT'] = _teacherComment;
     foreach ($periods_RET as $period)
         $columns[$period['PERIOD_ID']] = $period['SHORT_NAME'];
 
 
     //echo '<div class="panel panel-default">';
     PopTable('header', $name_RET[1]['FULL_NAME']);
-    ListOutput($days_RET, $columns, 'Day', 'Days');
+    ListOutput($days_RET, $columns, _day, _days);
     PopTable('footer');
     //echo '</div>'; //.panel.panel-default
 }

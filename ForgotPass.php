@@ -33,8 +33,10 @@ include("functions/DbGetFnc.php");
 include("functions/MonthNwSwitchFnc.php");
 include("functions/ProperDateFnc.php");
 require_once("functions/PragRepFnc.php");
+include("lang/language.php");
 
-function DateInputAY($value, $name, $counter = 1, $placeholder = "Enter Date") {
+
+function DateInputAY($value, $name, $counter = 1, $placeholder = _enterDate) {
 
     $show = "";
     $date_sep = "";
@@ -69,7 +71,7 @@ function db_start() {
                 $errormessage = mysqli_error($connection);
                 break;
         }
-        db_show_error("", "Could not Connect to Database: $DatabaseServer", $errstring);
+        db_show_error("", ""._couldNotConnectToDatabase.": $DatabaseServer", $errstring);
     }
     return $connection;
 }
@@ -103,12 +105,12 @@ function DBQuery($sql) {
                         $result = $connection->query($value);
                         if (!$result) {
                             $connection->query("ROLLBACK");
-                            die(db_show_error($sql, "DB Execute Failed.", mysql_error()));
+                            die(db_show_error($sql, _dbExecuteFailed, mysql_error()));
                         }
                     }
                 }
             } else {
-                $result = $connection->query($sql) or die(db_show_error($sql, "DB Execute Failed.", mysql_error()));
+                $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysql_error()));
             }
             break;
     }
@@ -209,40 +211,40 @@ function db_show_error($sql, $failnote, $additional = '') {
 
     echo "
                     <TABLE CELLSPACING=10 BORDER=0>
-                            <TD align=right><b>Date:</TD>
+                            <TD align=right><b>"._date.":</TD>
                             <TD><pre>" . date("m/d/Y h:i:s") . "</pre></TD>
                     </TR><TR>
-                            <TD align=right><b>Failure Notice:</b></TD>
+                            <TD align=right><b>"._failureNotice.":</b></TD>
                             <TD><pre> $failnote </pre></TD>
                     </TR><TR>
-                            <TD align=right><b>SQL:</b></TD>
+                            <TD align=right><b>"._sql.":</b></TD>
                             <TD>$sql</TD>
                     </TR>
                     </TR><TR>
-                            <TD align=right><b>Traceback:</b></TD>
+                            <TD align=right><b>"._traceback.":</b></TD>
                             <TD>$error</TD>
                     </TR>
                     </TR><TR>
-                            <TD align=right><b>Additional Information:</b></TD>
+                            <TD align=right><b>"._additionalInformation.":</b></TD>
                             <TD>$additional</TD>
                     </TR>
                     </TABLE>";
 
     echo "
 		<TABLE CELLSPACING=10 BORDER=0>
-			<TR><TD align=right><b>Date:</TD>
+			<TR><TD align=right><b>"._date.":</TD>
 			<TD><pre>" . date("m/d/Y h:i:s") . "</pre></TD>
 		</TR><TR>
 			<TD align=right></TD>
-			<TD>openSIS has encountered an error that could have resulted from any of the following:
+			<TD>"._openSisHasEncounteredAnErrorThatCouldHaveResultedFromAnyOfTheFollowing.":
 			<br/>
 			<ul>
-			<li>Invalid data input</li>
-			<li>Database SQL error</li>
-			<li>Program error</li>
+			<li>"._invalidDataInput."</li>
+			<li>"._databaseSqlError."</li>
+			<li>"._programError."</li>
 			</ul>
 			
-			Please take this screen shot and send it to your openSIS representative for debugging and resolution.
+			"._pleaseTakeThisScreenShotAndSendItToYourOpenSisRepresentativeForDebuggingAndResolution.".
 			</TD>
 		</TR>
 		
@@ -369,8 +371,8 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
                     <div class="panel-inside">
                         <div class="panel-heading">
                             <ul class="forgot-tabs clearfix">
-                                <li class="active"><a data-toggle="tab" href="#forgot_password">Forgot Password</a></li>
-                                <li><a data-toggle="tab" href="#forgot_username">Forgot Username</a></li>
+                                <li class="active"><a data-toggle="tab" href="#forgot_password"><?=_forgotPassword?></a></li>
+                                <li><a data-toggle="tab" href="#forgot_username"><?=_forgotUsername?></a></li>
                             </ul>
                         </div>
                         <div class="panel-body">
@@ -379,17 +381,17 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
 <div id="forgot_password" class="tab-pane fade in active">
  <form name="f1" id="f1" method="post" action="ResetUserInfo.php">
  <div class="form-group">
- <label>I am a</label>
+ <label><?=_iAmA?></label>
     <div class="radio styled-radio">
 <label><input type="radio" name="pass_user_type" id="pass_student" value="pass_student" checked="checked" onclick="show_fields('student');
-forgotpassusername_init(this.value);" /><span></span>Student</label>
+forgotpassusername_init(this.value);" /><span></span><?=_student?></label>
 
 
  <label><input type="radio" name="pass_user_type" id="pass_staff" value="pass_staff" onclick="show_fields('staff');
  forgotpassusername_init(this.value);
- forgotpassemail_init('pass_email');" /><span></span>Teacher</label>
+ forgotpassemail_init('pass_email');" /><span></span><?=_teacher?></label>
 <label><input type="radio" name="pass_user_type" id="pass_parent" value="pass_parent" onclick="show_fields('parent');  forgotpassusername_init(this.value);
-   forgotpassemail_init('pass_email');" /><span></span>Parent</label>
+   forgotpassemail_init('pass_email');" /><span></span><?=_parent?></label>
  </div>
  <input type="hidden" name="pass_type_form" id="pass_type_form" value="password"/>
 
@@ -404,19 +406,19 @@ if ($_SESSION['err_msg'] != '')
                                         </div>
 
                                         <div class="form-group" id="pass_stu_id">
-                                            <input type="text" name="password_stn_id" id="password_stn_id" placeholder="Student ID" class="form-control" onkeydown="return numberOnly(event);" onblur="return check_input_val(this.value, 'password_stn_id');"/>
+                                            <input type="text" name="password_stn_id" id="password_stn_id" placeholder="<?= _studentId ?>" class="form-control" onkeydown="return numberOnly(event);" onblur="return check_input_val(this.value, 'password_stn_id');"/>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" name="uname" id="uname" placeholder="Username" class="form-control" onkeydown=" return withoutspace_forgotpass(event);" onblur="return withoutspace_forgotpass(event);"/>
+                                            <input type="text" name="uname" id="uname" placeholder="<?=_username?>" class="form-control" onkeydown=" return withoutspace_forgotpass(event);" onblur="return withoutspace_forgotpass(event);"/>
                                             <span style="display: none" id="calculating"><img src="assets/ajax_loader.gif"/></span>
                                             <p id="err_msg"></p>
                                         </div>
                                         <div class="form-group" id="pass_stu_dob">
-                                            <?php echo DateInputAY('', 'password_dob', 3, 'Date of Birth') ?>
+                                            <?php echo DateInputAY('', 'password_dob', 3, _dateOfBirth) ?>
                                         </div>
                                         <div id="pass_stf_email" class="form-group" style="display: none">
                                             <input type="hidden" name="pass_email" id="pass_email" value=""/>
-                                            <input type="text" name="password_stf_email" id="password_stf_email" placeholder="Email Address" class="form-control" onblur="forgotpassemail_init('pass_email');" />
+                                            <input type="text" name="password_stf_email" id="password_stf_email" placeholder="<?=_emailAddress?>" class="form-control" onblur="forgotpassemail_init('pass_email');" />
                                             <span style="display: none" id="pass_calculating_email"><img src="assets/ajax_loader.gif"/>
                                             </span>
                                             <span id="pass_err_msg_email">
@@ -425,10 +427,10 @@ if ($_SESSION['err_msg'] != '')
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <input type="submit" class="btn btn-success btn-lg btn-block" value="Confirm" />
+                                                <input type="submit" class="btn btn-success btn-lg btn-block" value="<?=_confirm?>" />
                                             </div>
                                             <div class="col-xs-6">
-                                                <a href="index.php" class="btn btn-default btn-rounded btn-lg btn-block">Cancel</a>
+                                                <a href="index.php?language=<?=$_SESSION['language']?>" class="btn btn-default btn-rounded btn-lg btn-block"><?=_cancel?></a>
                                             </div>
                                         </div>
                                     </form>
@@ -436,38 +438,38 @@ if ($_SESSION['err_msg'] != '')
                                 <div id="forgot_username" class="tab-pane fade">
                                     <form name="f1" id="f1" method="post" action="ResetUserInfo.php">
                                         <div class="form-group">
-                                            <label>I am a</label>
+                                            <label><?=_iAmA?></label>
                                             <div class="radio styled-radio">
-                                                <label onclick="uname_show_fields('student')"><input type="radio" name="uname_user_type" id="uname_student" value="uname_student" checked="checked" /><span></span>Student</label>
+                                                <label onclick="uname_show_fields('student')"><input type="radio" name="uname_user_type" id="uname_student" value="uname_student" checked="checked" /><span></span><?=_student?></label>
                                                 <label onclick="uname_show_fields('staff');
-                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span>Teacher</label>
+                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_staff" value="uname_staff" /><span></span><?=_teacher?></label>
                                                 <label onclick="uname_show_fields('parent');
-                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_parent" value="uname_parent" /><span></span>Parent</label>
+                                                        forgotpassemail_init('uname_email');"><input type="radio" name="uname_user_type" id="uname_parent" value="uname_parent" /><span></span><?=_parent?></label>
                                             </div>                                            
                                             <input type="hidden" name="user_type_form" id="user_type_form" value="username" />                                            
 
                                         </div>
                                         <div class="form-group" id="uname_stu_id">
-                                            <input type="text" name="username_stn_id" id="username_stn_id" class="form-control" placeholder="Student ID" onblur="return check_input_val(this.value, 'username_stn_id');" onkeydown="return numberOnly(event);"/>
+                                            <input type="text" name="username_stn_id" id="username_stn_id" class="form-control" placeholder="<?=_studentId?>" onblur="return check_input_val(this.value, 'username_stn_id');" onkeydown="return numberOnly(event);"/>
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" name="pass" id="pass" class="form-control" placeholder="Password" />
+                                            <input type="password" name="pass" id="pass" class="form-control" placeholder="<?=_password?>" />
                                         </div>
                                         <div class="form-group" id="uname_stu_dob">
-                                            <?php echo DateInputAY('', 'username_dob', 2, 'Date of Birth') ?>
+                                            <?php echo DateInputAY('', 'username_dob', 2, _dateOfBirth) ?>
                                         </div>                                        
                                         <div class="form-group" id="uname_stf_email" style="display: none">
                                             <input type="hidden" name="un_email" id="un_email" value=""/>
-                                            <input type="text" name="username_stf_email" id="username_stf_email" class="form-control" placeholder="Email Address" onblur="forgotpassemail_init('uname_email');" />
+                                            <input type="text" name="username_stf_email" id="username_stf_email" class="form-control" placeholder="<?=_emailAddress?>" onblur="forgotpassemail_init('uname_email');" />
                                             <span style="display: none" id="uname_calculating_email"><img src="assets/ajax_loader.gif"/></span>
                                             <span id="uname_err_msg_email"></span>
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <input type="submit" class="btn btn-success btn-lg btn-block" name="save" onClick="return forgotusername();" value="Confirm" />
+                                                <input type="submit" class="btn btn-success btn-lg btn-block" name="save" onClick="return forgotusername();" value="<?=_confirm?>" />
                                             </div>
                                             <div class="col-xs-6">
-                                                <a href="index.php" class="btn btn-default btn-rounded btn-lg btn-block">Cancel</a>
+                                                <a href="index.php?language=<?=$_SESSION['language']?>" class="btn btn-default btn-rounded btn-lg btn-block"><?=_cancel?></a>
                                             </div>
                                         </div>
                                     </form>
@@ -481,7 +483,8 @@ if ($_SESSION['err_msg'] != '')
                                         </div>-->
                 </div>
                 <footer>
-                    openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>.
+                    <!-- openSIS is a product of Open Solutions for Education, Inc. (<a href='http://www.os4ed.com' target='_blank'>OS4ED</a>) and is licensed under the <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>GPL license</a>. -->
+                    <?=_footerText?>
                 </footer>
             </div>
         </section>

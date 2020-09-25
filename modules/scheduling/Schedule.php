@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 //print_r($_REQUEST);
+include('lang/language.php');
+
 if ($_REQUEST['modfunc'] == 'cp_insert') {
 
     if ($_POST['exit']) {
@@ -113,7 +115,7 @@ $end_d = implode('-', $end_d);
 include('../../RedirectModulesInc.php');
 ini_set('memory_limit', '12000000M');
 ini_set('max_execution_time', '50000');
-DrawBC("Scheduling > " . ProgramTitle());
+DrawBC(""._scheduling." > " . ProgramTitle());
 $tot_cp = '';
 
 $extra['search'] .= '<div class="row">';
@@ -144,7 +146,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -155,9 +157,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ''._subjectWas.'') . ' '._subjectWas.'.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
@@ -183,7 +185,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">Choose course</h5>';
+echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -193,9 +195,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.<br>';
+echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectWas.'') . ' '._subjectWas.'.<br>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><tr class="alpha-grey"><th>Subject</th></tr>';
+    echo '<table class="table table-bordered"><tr class="alpha-grey"><th>'._subject.'</th></tr>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
     }
@@ -218,7 +220,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">More info</h5>';
+echo '<h5 class="modal-title">'._moreInfo.'</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -231,7 +233,7 @@ echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
 
 if (isset($_SESSION['conflict_cp']) && $_SESSION['conflict_cp'] != '') {
-    DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $_SESSION['conflict_cp'] . ' have Parent course restriction');
+    DrawHeaderHome('<IMG SRC=assets/warning_button.gif><br>' . $_SESSION['conflict_cp'] . ' '._haveParentCourseRestriction.'');
     unset($_SESSION['conflict_cp']);
 }
 if ($_REQUEST['del'] == 'true') {
@@ -245,17 +247,17 @@ if ($_REQUEST['del'] == 'true') {
     $a_rpt = count(DBGet($association_query_reportcard));
 
     if ($a_grd > 0) {
-        UnableDeletePrompt('Cannot delete because assignments grading are already given.');
+        UnableDeletePrompt(''._cannotdeleteBecauseAssignmentsGradingAreAlreadyGiven.'');
 
         unset($_REQUEST['del']);
         unset($_REQUEST['c_id']);
     } elseif ($a_rpt > 0) {
-        UnableDeletePrompt('Cannot delete because final grade is already given .');
+        UnableDeletePrompt(''._cannotDeleteBecauseFinalGradeIsAlreadyGiven.'');
 
         unset($_REQUEST['del']);
         unset($_REQUEST['c_id']);
     } elseif ($a_attn > 0 || $a_grd > 0 || $a_rpt > 0) {
-        UnableDeletePrompt('Cannot delete because students attendance are already taken.');
+        UnableDeletePrompt(''._cannotDeleteBecauseStudentsAttendanceAreAlreadyTaken.'');
         unset($_REQUEST['del']);
         unset($_REQUEST['c_id']);
     } else {
@@ -288,9 +290,9 @@ if ($_REQUEST['del'] == 'true') {
 
         $count_student_RET[1]['NUM'] = $_SESSION['count_stu'];
         if ($count_student_RET[1]['NUM'] > 1) {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student:' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.':' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
         } else if ($count_student_RET[1]['NUM'] == 1) {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.':' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div>');
         }
     }
 ####################
@@ -811,7 +813,7 @@ if ($_REQUEST['del'] == 'true') {
         
         echo '<div class="row">';
         echo '<div class="col-md-3">';
-        echo '<div class="form-group" id="filter"><label class="control-label">Date</label>' . PrepareDateSchedule($newformat, '_date', false, array('submit' => true)) . '</div>';
+        echo '<div class="form-group" id="filter"><label class="control-label">'._date.'</label>' . PrepareDateSchedule($newformat, '_date', false, array('submit' =>true)) . '</div>';
         echo '</div>'; //col-md-3
 
         ?>
@@ -828,15 +830,15 @@ if ($_REQUEST['del'] == 'true') {
         <?php
 
         echo '<div class="col-md-3">';
-        echo '<div class="form-group"><label class="control-label">Marking Period</label>' . $mp . '</div>';
+        echo '<div class="form-group"><label class="control-label">'._markingPeriod.'</label>' . $mp . '</div>';
         echo '</div>'; //.col-md-3
 
         echo '<div class="col-md-3">';
-        echo '<div class="form-group"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '>Include Inactive Courses</label></div></div>';
+        echo '<div class="form-group"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '>'._includeInactiveCourses.'</label></div></div>';
         echo '</div>'; //.col-md-3
         echo '</div>'; //.row
 
-        echo '<div class="form-group">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
+        echo '<div class="form-group">' . SubmitButton(_save, '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
 
 
         $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -888,12 +890,31 @@ if ($_REQUEST['del'] == 'true') {
         //$schedule_RET = DBGet($QI, array('ACTION' => '_makeAction', 'TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'DAYS' => '_makeDays', 'COURSE_MARKING_PERIOD_ID' => '_makeMPSelect_red', 'SCHEDULER_LOCK' => '_makeLock', 'START_DATE' => '_makeDate_red', 'END_DATE' => '_makeDate', 'SCHEDULE_ID' => '_makeInfo'));
         $link['add']['link'] = "javascript:void(0) data-toggle='modal' data-target='#modal_default_cp_calc' onclick='cleanModal(\"course_modal_cp\");cleanModal(\"cp_modal_cp\");cleanTempData();'";
 //        $link['add']['link'] = "javascript:void(0) data-toggle='modal' data-target='#modal_default' onclick='window.open(\"ForWindow.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=choose_course&ses=1\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");' ";
-        $link['add']['title'] = "Add a Course";
+        $link['add']['title'] = ""._addACourse."";
 
         if (User('PROFILE') == 'teacher')
-            $columns = array('TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'SCHEDULE_ID' => 'More info');
+            $columns = array('TITLE' =>_course,
+             'PERIOD_PULLDOWN' =>_periodTeacher,
+             'ROOM' =>_room,
+             'DAYS' =>_daysOfWeek,
+             'COURSE_MARKING_PERIOD_ID' =>_term,
+             'SCHEDULER_LOCK' =>  '<IMG SRC=assets/locked.gif border=0>',
+             'START_DATE' =>_enrolled,
+             'END_DATE' =>_endDateDropDate,
+             'SCHEDULE_ID' =>_moreInfo,
+            );
         else
-            $columns = array('ACTION' => 'Action', 'TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'SCHEDULE_ID' => 'More info');
+            $columns = array('ACTION' =>_action,
+             'TITLE' =>_course,
+             'PERIOD_PULLDOWN' =>_periodTeacher,
+             'ROOM' =>_room,
+             'DAYS' =>_daysOfWeek,
+             'COURSE_MARKING_PERIOD_ID' =>_term,
+             'SCHEDULER_LOCK' =>  '<IMG SRC=assets/locked.gif border=0>',
+             'START_DATE' =>_enrolled,
+             'END_DATE' =>_endDateDropDate,
+             'SCHEDULE_ID' =>_moreInfo,
+            );
 
         $days_RET = DBGet(DBQuery('SELECT DISTINCT DAYS FROM course_period_var'));
         if (count($days_RET) == 1)
@@ -901,51 +922,51 @@ if ($_REQUEST['del'] == 'true') {
         if ($_REQUEST['_openSIS_PDF'])
             unset($columns['SCHEDULER_LOCK']);
         if ($start_date_msg == "start") {
-            echo "<b style='color:red'>Enrolled Date Cannot Be After Dropped Date</b>";
+            echo "<b style='color:red'>"._enrolledDateCannotBeAfterDroppedDate."</b>";
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "enroll") {
-            echo "<b style='color:red'>Course Enrolled Date Cannot Be Before Student's School Start Date</b>";
+            echo "<b style='color:red'>"._courseEnrolledDateCannotBeBeforeStudentsSchoolStartDate."</b>";
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "re_enroll") {
-            echo "<b style='color:red'>Course Enrolled Date Cannot Be Before Course Start Date</b>";
+            echo "<b style='color:red'>"._courseEnrolledDateCannotBeBeforeStudentsCourseStartDate."</b>";
 
             unset($start_date_msg);
         }
 
         if ($start_date_msg == "prev_schdl_error") {
-            echo "<b style='color:red'>Course Enrolled Date Cannot Be Before Dropdate Of Previous Schedule</b>";
+            echo "<b style='color:red'>"._courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule."</b>";
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "dropped_schdl_error") {
 
-            echo "<b style='color:red'>You cannot modify the schedule enrolled date, as it's clashing with other dropped course</b>";
+            echo "<b style='color:red'>"._youCannotModifyTheScheduleEnrolledDateAsItsClashingWithOtherDroppedCourse."</b>";
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "error") {
-            echo "<b style='color:red'>Course Enrolled Date Cannot Be Before Dropdate Of Previous Schedule</b>";
+            echo "<b style='color:red'>"._courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule."</b>";
 
             unset($start_date_msg);
         }
         if ($end_date_msg == "end") {
-            echo "<b style='color:red'>Please enter proper dropped date. Dropped date must be greater than start date.</b>";
+            echo "<b style='color:red'>"._pleaseEnterProperDroppedDateDroppedDateMustBeGreaterThanStartDate."</b>";
 
             unset($end_date_msg);
         }
 
         if ($sch_lock_msg == "end") {
-            echo "<b style='color:red'>This Schedule is locked,dropped date can not be changed.</b>";
+            echo "<b style='color:red'>"._thisScheduleIsLockedDroppedDateCanNotBeChanged."</b>";
 
             unset($sch_lock_msg);
         }
         if ($end_date_msg == "attn" && strtotime($end_d) < strtotime($_SESSION['last_attendance'])) {
 
-            echo "<b style='color:red'>Course cannot be dropped because student has got attendance till " . $_SESSION['last_attendance'] . ".</b>";
+            echo "<b style='color:red'>"._courseCannotBeDroppedBecauseStudentHasGotAttendanceTill." " . $_SESSION['last_attendance'] . ".</b>";
 
             unset($end_date_msg);
         }
@@ -954,15 +975,15 @@ if ($_REQUEST['del'] == 'true') {
         echo '<hr class="no-margin"/>';
 
         echo '<div class="table-responsive">';
-        ListOutputSchedule($schedule_RET, $columns, 'Course', 'Courses', $link);
+        ListOutputSchedule($schedule_RET, $columns, _course, _courses, $link);
         echo '</div>';
 
 
         if (!$schedule_RET)
             echo '';
         else {
-            echo '<div class="panel-footer no-padding-bottom">' . ProgramLinkforExport('scheduling/PrintSchedules.php', '<b><i class="icon-printer4"></i></b>Print Schedule', '&modfunc=save&st_arr[]=' . UserStudentID() . '&mp_id=' . $mp_id . '&include_inactive=' . $_REQUEST['include_inactive'] . '&_openSIS_PDF=true', ' target=_blank class="btn btn-success btn-labeled"') . ' &nbsp; ';
-            echo SubmitButton('Save', '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
+            echo '<div class="panel-footer no-padding-bottom">' . ProgramLinkforExport('scheduling/PrintSchedules.php', '<b><i class="icon-printer4"></i></b>'._printSchedule.'', '&modfunc=save&st_arr[]=' . UserStudentID() . '&mp_id=' . $mp_id . '&include_inactive=' . $_REQUEST['include_inactive'] . '&_openSIS_PDF=true', ' target=_blank class="btn btn-success btn-labeled"') . ' &nbsp; ';
+            echo SubmitButton(_save, '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
         }
 
         echo '</FORM>';
@@ -983,7 +1004,7 @@ if ($_REQUEST['del'] == 'true') {
 //        
 //        $columns = array('TITLE' => 'Activity', 'START_DATE' => 'Starts', 'END_DATE' => 'Ends');
 //        echo '<div class="table-responsive">';
-//        ListOutput($RET_AC, $columns, 'Activity', 'Activities');
+//        ListOutput($RET_AC, $columns, activity, activities);
 //        echo '</div>';
 ////        echo "<div class=break></div>";
 //        
@@ -1053,11 +1074,21 @@ if ($_REQUEST['del'] == 'true') {
 
         $QI = DBQuery($sql);
         $schedule_RET = DBGet($QI, array('TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPA', 'DAYS' => '_makeDays', 'SCHEDULER_LOCK' => '_makeViewLock', 'START_DATE' => '_makeViewDate', 'END_DATE' => '_makeViewDate', 'MODIFIED_DATE' => '_makeViewDate'));
-        $columns = array('TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'MODIFIED_NAME' => 'Modified By', 'MODIFIED_DATE' => 'Modified Date');
-        $options = array('search' => false, 'count' => false, 'save' => false, 'sort' => false);
-        ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link, '', $options);
+        $columns = array('TITLE' =>_course,
+         'PERIOD_PULLDOWN' =>_periodTeacher,
+         'ROOM' =>_room,
+         'DAYS' =>_daysOfWeek,
+         'COURSE_MARKING_PERIOD_ID' =>_term,
+         'SCHEDULER_LOCK' =>  '<IMG SRC=assets/locked.gif border=0>',
+         'START_DATE' =>_enrolled,
+         'END_DATE' =>_endDateDropDate,
+         'MODIFIED_NAME' =>_modifiedBy,
+         'MODIFIED_DATE' =>_modifiedDate,
+        );
+        $options = array('search' =>false, 'count' =>false, 'save' =>false, 'sort' =>false);
+        ListOutput($schedule_RET, $columns, _course, _courses, $link, '', $options);
         
-        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
+        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="'._close.'" onclick="window.close();"></div>';
     }
 }
 
@@ -1263,7 +1294,7 @@ function _makeInfo($value, $column) {
 
 function makeModal($value)
 {
-    echo 'Hello';
+    echo _hello;
 }
 
 function _makeMP($value, $column) {
@@ -1298,7 +1329,7 @@ function _makeViewDate($value, $column) {
     if ($value)
         return ProperDate($value);
     else
-        return '<center>n/a</center>';
+        return '<center>'._nA.'</center>';
 }
 
 function _makeLock($value, $column) {

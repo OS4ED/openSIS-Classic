@@ -69,11 +69,11 @@ if (isset($_REQUEST['staff_id']) && $_REQUEST['staff_id'] != 'new') {
         $count_staff_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM people'));
         if ($count_staff_RET[1]['NUM'] > 1) {
             echo '<div class="panel panel-default">';
-            DrawHeader('Selected User : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true' . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . ' target=body><i class="icon-square-left"></i> Back to User List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+            DrawHeader(''._selectedUser.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true' . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . ' target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
             echo '</div>';
         } else {
             echo '<div class="panel panel-default">';
-            DrawHeader('Selected User : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+            DrawHeader(''._selectedUser.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
             echo '</div>';
         }
     }
@@ -313,14 +313,14 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
     if (basename($_SERVER['PHP_SELF']) != 'index.php') {
         if ($_REQUEST['staff_id'] == 'new')
-            DrawBC("Users > Add a User");
+            DrawBC(""._users." > Add a User");
         else
-            DrawBC("Users > " . ProgramTitle());
+            DrawBC(""._users." > " . ProgramTitle());
         unset($_SESSION['staff_id']);
 
         Search('staff_id', $extra);
     } else
-        DrawHeader('Create Account');
+        DrawHeader(_createAccount);
 
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && basename($_SERVER['PHP_SELF']) != 'index.php' && AllowEdit()) {
         if (DeletePrompt('user')) {
@@ -361,7 +361,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
         if (basename($_SERVER['PHP_SELF']) != 'index.php') {
             if (UserStaffID() && UserStaffID() != User('STAFF_ID') && UserStaffID() != $_SESSION['STAFF_ID'] && User('PROFILE') == 'admin')
-                $delete_button = '<INPUT type=button class="btn btn-danger" value=Delete onclick="window.location=\'Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=delete\'">';
+                $delete_button = '<INPUT type=button class="btn btn-danger" value='._delete.' onclick="window.location=\'Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=delete\'">';
         }
 
         if (User('PROFILE_ID') != '')
@@ -388,11 +388,23 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                     $include = $category['INCLUDE'];
                 else
                     $include = 'OtherInfoUserInc';
+                    // echo "$category[TITLE]<br>";
+                switch ($category['TITLE'] ) {
+                    case 'General Info':
+                        $categoryTitle = _generalInfo;
+                        break;
+                    case 'Address Info':
+                        $categoryTitle = _addressInfo;
+                        break;
+                    default:
+                        $categoryTitle = $category['TITLE'] ;
+                        break;
+                }
 
                 if (User('PROFILE_ID') == 4)
-                    $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&category_id=" . $category['ID'] . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
+                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&category_id=" . $category['ID'] . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
                 else
-                    $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&category_id=" . $category['ID'] . "&staff_id=" . UserStaffID() . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
+                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&category_id=" . $category['ID'] . "&staff_id=" . UserStaffID() . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
             }
         }
 
@@ -419,7 +431,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
         $sql = 'SELECT count(s.ID) as schools FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
         $school_admin = DBGet(DBQuery($sql));
-        $submit_btn = SubmitButton('Save', '', 'id="saveUserBtn" class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ', this);"');
+        $submit_btn = SubmitButton(_save, '', 'id="saveUserBtn" class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ', this);"');
 
         PopTable('footer', $submit_btn);
         echo '</FORM>';
