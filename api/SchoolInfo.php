@@ -7,6 +7,7 @@
 
 
 include("../functions/ParamLibFnc.php");
+include("../functions/SqlSecurityFnc.php");
 require_once("../Data.php");
 require_once("../functions/PragRepFnc.php");
 function db_start() {
@@ -364,9 +365,12 @@ $cp=DBGet(DBQuery('SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='.$course
 
 $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 
-$format = mysqli_real_escape_string($connection,strtolower(optional_param('format', '', PARAM_RAW)));
-$api_key= mysqli_real_escape_string($connection,optional_param('api_key', '', PARAM_RAW));
-$api_secret= mysqli_real_escape_string($connection, optional_param('api_secret', '', PARAM_RAW));
+$format     =   mysqli_real_escape_string($connection,strtolower(optional_param('format', '', PARAM_RAW)));
+$api_key    =   mysqli_real_escape_string($connection,optional_param('api_key', '', PARAM_RAW));
+$api_secret =   mysqli_real_escape_string($connection, optional_param('api_secret', '', PARAM_RAW));
+
+$api_key    =   sqlSecurityFilter($api_key);
+$api_secret =   sqlSecurityFilter($api_secret);
 
 $validate= DBGet(DBQuery('SELECT * FROM api_info WHERE API_KEY=\''.$api_key.'\' AND API_SECRET=\''.$api_secret.'\''));
 if(count($validate) > 0)

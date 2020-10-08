@@ -129,7 +129,8 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<table class="table table-bordered table-striped m-t-15">';
 //        $dir = dir($dir);
-        $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND file_info=\'stufile\''));
+        // $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND file_info=\'stufile\''));
+        $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND file_info=\'stufile\''));
         echo '<tbody>';
         $found = false;
         $gridClass = "";
