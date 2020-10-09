@@ -26,41 +26,41 @@
 #
 #***************************************************************************************
 error_reporting(0);
-class custom{
-var $customQuery=array();
-var $customQueryString=array();
-function __construct($mysql_database){
-//mysql_connect($_SESSION['server'],$_SESSION['username'],$_SESSION['password']) or die() ;
-//mysql_select_db($mysql_database);
-    $dbconncus = new mysqli($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$mysql_database,$_SESSION['port']);    
-}
-function set($res,$table,$mysql_database){
-        $dbconncus = new mysqli($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$mysql_database,$_SESSION['port']);    
-    
-	$res=$dbconncus->query($res)  or die($dbconncus->error.' at line CustomClass 6 12');
+class custom
+{
+	var $customQuery = array();
+	var $customQueryString = array();
+	function __construct($mysql_database)
+	{
+		//mysql_connect($_SESSION['server'],$_SESSION['username'],$_SESSION['password']) or die() ;
+		//mysql_select_db($mysql_database);
+		$dbconncus = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $mysql_database, $_SESSION['port']);
+	}
+	function set($res, $table, $mysql_database)
+	{
+		$dbconncus = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $mysql_database, $_SESSION['port']);
 
-	while($row=$res->fetch_assoc())
-	{	
-	 $this->customQuery[]=$row ;
-	}
-	
-	foreach($this->customQuery as $value){
-	$str="ALTER TABLE $table ADD $value[Field] $value[Type]";
-	if($value['Null']=='YES'){
-	$str.=" NULL ";
-	}else if($value['Null']=='NO'){
-	$str.=" NOT NULL ";
-	}
-	if($value['Default']){
-	$str.=" DEFAULT '".$value['Default']."' ";
-	}
-	$this->customQueryString[]=$str;
-	}
-	
-}
- function __destruct() {
-      $dbconncus->close();
-   }
-}
+		$res = $dbconncus->query($res)  or die($dbconncus->error . ' at line CustomClass 6 12');
 
- ?>
+		while ($row = $res->fetch_assoc()) {
+			$this->customQuery[] = $row;
+		}
+
+		foreach ($this->customQuery as $value) {
+			$str = "ALTER TABLE $table ADD $value[Field] $value[Type]";
+			if ($value['Null'] == 'YES') {
+				$str .= " NULL ";
+			} else if ($value['Null'] == 'NO') {
+				$str .= " NOT NULL ";
+			}
+			if ($value['Default']) {
+				$str .= " DEFAULT '" . $value['Default'] . "' ";
+			}
+			$this->customQueryString[] = $str;
+		}
+	}
+	function __destruct()
+	{
+		$dbconncus->close();
+	}
+}

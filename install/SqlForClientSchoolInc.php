@@ -815,5 +815,3 @@ INSERT INTO `user_profiles` (`id`, `profile`, `title`, `last_updated`, `updated_
 			}
 		}
 	}
-
-?>

@@ -28,28 +28,19 @@
 
 function array_rwalk(&$array, $function)
 {
-    global $DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName,$DatabasePort,$DatabaseType,$connection ;
-    $connection = new mysqli($DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName);
-	if($connection->connect_errno>0)
-    die('Not connected');
-    
-    foreach($array as $key => $value)
-	{
+	global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType, $connection;
+	$connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort);
+	if ($connection->connect_errno > 0)
+		die('Not connected');
 
-		if(is_array($value))
-		{
+	foreach ($array as $key => $value) {
+
+		if (is_array($value)) {
 			array_rwalk($value, $function);
-                        $array[$key] = $value;
-		}
-		else
-                {
-                    $val=mysqli_real_escape_string($connection,$value);
+			$array[$key] = $value;
+		} else {
+			$val = mysqli_real_escape_string($connection, $value);
 			$array[$key] = $function($val);
-                }
-
-                 
+		}
 	}
-        
 }
-
-?>
