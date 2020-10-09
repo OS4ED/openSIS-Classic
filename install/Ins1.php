@@ -45,7 +45,7 @@ $err .= '<!DOCTYPE html>
         <title>openSIS Installer</title>
         <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/installer.css?v=' . rand(000, 999) . '" type="text/css" />
+        <link rel="stylesheet" href="assets/css/installer.css?v='.rand(000, 999).'" type="text/css" />
         <noscript><META http-equiv=REFRESH content="0;url=../EnableJavascript.php" /></noscript>
     </head>
     <body class="outer-body">
@@ -77,13 +77,13 @@ $err .= '<!DOCTYPE html>
                                 </ul>
                             </div><!-- /.installation-instructions -->
                             <div class="installation-steps">
-                                <h2 class="text-center">Couldn\'t connect to database server: ' . $_SESSION['host'] . '</h2><br/>';
-if (clean_param($_REQUEST['mod'], PARAM_ALPHAMOD) == 'upgrade') {
-    $err .= '<p class="text-center"><a href="Step1.php?mod=upgrade" class="btn btn-primary"><i class="fa fa-refresh"></i> Try Again</a></p>';
-} else {
-    $err .= '<p class="text-center"><a href="Step1.php" class="btn btn-primary"><i class="fa fa-refresh"></i> Try Again</a></p>';
-}
-$err .= '</div>
+                                <h2 class="text-center">Couldn\'t connect to database server: ' . $_SESSION['host'].'</h2><br/>';
+                                if (clean_param($_REQUEST['mod'], PARAM_ALPHAMOD) == 'upgrade') {
+                                    $err .= '<p class="text-center"><a href="Step1.php?mod=upgrade" class="btn btn-primary"><i class="fa fa-refresh"></i> Try Again</a></p>';
+                                } else {
+                                    $err .= '<p class="text-center"><a href="Step1.php" class="btn btn-primary"><i class="fa fa-refresh"></i> Try Again</a></p>';
+                                }
+                            $err .= '</div>
                         </div><!-- /.installation-steps-wrapper -->
                     </div><!-- /.panel-body -->
                 </div><!-- /.panel -->                
@@ -117,7 +117,7 @@ if ($dbconn->connect_errno != 0) {
                 <title>openSIS Installer</title>
                 <link href="../assets/css/icons/fontawesome/styles.min.css" rel="stylesheet">
                 <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
-                <link rel="stylesheet" href="assets/css/installer.css?v=' . rand(000, 999) . '" type="text/css" />
+                <link rel="stylesheet" href="assets/css/installer.css?v='.rand(000, 999).'" type="text/css" />
                 <noscript><META http-equiv=REFRESH content="0;url=../EnableJavascript.php" /></noscript>
             </head>
             <body class="outer-body">
@@ -132,7 +132,7 @@ if ($dbconn->connect_errno != 0) {
                             </div>
                             <div class="panel-body">
                                 <div class="padding-20 class="text-center"">
-                                    <h2 class="text-center">Couldn\'t connect to database server: ' . $_SESSION['host'] . '</h2><br/>
+                                    <h2 class="text-center">Couldn\'t connect to database server: ' . $_SESSION['host'].'</h2><br/>
                                     <h5 class="text-center">Possible causes are:</h5>
                                     <p class="text-center">Strict mode is enabled. Please disable Strict mode and restart your mysql and apache.
                                     </p>
@@ -146,7 +146,7 @@ if ($dbconn->connect_errno != 0) {
                 </section><!-- /.login -->
             </body>
         </html>';
-
+        
 
         exit($err);
     }
@@ -157,3 +157,5 @@ if (clean_param($_REQUEST['mod'], PARAM_ALPHAMOD) == 'upgrade') {
 } else {
     header('Location: Step2.php');
 }
+?>
+                    

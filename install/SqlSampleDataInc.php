@@ -2192,3 +2192,6 @@ $dbconn = new mysqli($_SESSION['host'],$_SESSION['username'],$_SESSION['password
 (11,2,14,19,NULL,5,'Writing Assignment - Week 2','2020-08-17','2020-08-18',40,'&lt;p&gt;WRITING ABOUT READING&lt;/p&gt;\r\n\r\n&lt;p&gt;writing a summary of what you read&lt;/p&gt;\r\n',1,'2020-08-17 14:02:13',NULL),
 (12,2,14,19,NULL,4,'Writing Assignment - HW Week 2','2020-08-17','2020-08-20',20,'&lt;p&gt;ESSAY ASSIGNMENTS&lt;/p&gt;\r\n\r\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\r\n',1,'2020-08-17 14:03:35',NULL),
 (13,2,14,19,NULL,6,'Quiz Assignment Week 2','2020-08-21','2020-08-21',40,'&lt;p&gt;Quiz Assignment Week 2 for Writing on 21st Aug&lt;/p&gt;\r\n',1,'2020-08-17 14:04:23',NULL);");
+
+?>
+

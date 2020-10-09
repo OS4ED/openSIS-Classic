@@ -33,17 +33,19 @@ $_SESSION['admin_pwd'] = md5($_POST['apassword']);
 
 require_once("../functions/PragRepFnc.php");
 //mysql_select_db($_SESSION['db']);
-$dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
-if ($dbconn->connect_errno != 0) {
-    echo "<h2>" . $dbconn->error . "</h2>\n";
-    exit;
-}
-$sql = "update staff set first_name='$_POST[fname]',last_name='$_POST[lname]',middle_name='$_POST[mname]', profile_id=0 where staff_id=1 ";
+$dbconn = new mysqli($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db'],$_SESSION['port']);
+if($dbconn->connect_errno!=0)
+        {
+            echo "<h2>" . $dbconn->error . "</h2>\n";
+            exit;
+        }
+$sql="update staff set first_name='$_POST[fname]',last_name='$_POST[lname]',middle_name='$_POST[mname]', profile_id=0 where staff_id=1 ";
 $result = $dbconn->query($sql);
-$sql = "update login_authentication set username='" . $_SESSION['admin_name'] . "', password='" . $_SESSION['admin_pwd'] . "' WHERE user_id=1 AND profile_id=0";
+$sql="update login_authentication set username='".$_SESSION['admin_name']."', password='".$_SESSION['admin_pwd']."' WHERE user_id=1 AND profile_id=0";
 $dbconn->query($sql);
 $dbconn->close();
 //mysqli_close($dbconn);
 
 
 header('Location: Step5.php');
+?>

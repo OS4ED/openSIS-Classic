@@ -47,17 +47,17 @@ if ($dbconn->connect_errno == 0) {
         header('Location: Step2.php?err=Database Exists. Enter a different name');
         exit;
     } else {
-        //        $result = mysql_select_db($_SESSION['db']);
-        //        if(!$result)
-        //        {
-        //            echo "<h2>" . mysql_error() . "</h2>\n";
-        //            exit;
-        //        }
+//        $result = mysql_select_db($_SESSION['db']);
+//        if(!$result)
+//        {
+//            echo "<h2>" . mysql_error() . "</h2>\n";
+//            exit;
+//        }
         // Get tables, loop thru the tables and drop each table.
         $sql = "SHOW TABLES";
         $num_tables = $dbconn->query($sql);
-        //        die(mysqli_error());
-        //        $num_tables = mysqli_l($_SESSION['db']);
+//        die(mysqli_error());
+//        $num_tables = mysqli_l($_SESSION['db']);
         while ($row = $num_tables->fetch_row()) {
             // Drop all tables.
             $delete_table = $dbconn->query("DROP TABLE IF EXISTS $row[0]");
@@ -75,7 +75,7 @@ if ($dbconn->connect_errno == 0) {
             }
         }
         // Free result set to clear memory
-        //        mysql_free_result($num_tables);
+//        mysql_free_result($num_tables);
         //This begins the add portion
 
         $myFile = "OpensisSchemaMysqlInc.sql";
@@ -96,12 +96,12 @@ if ($dbconn->connect_errno == 0) {
         echo "<h2>" . $dbconn->error . "</h2>\n";
         exit;
     }
-    //    $result = mysql_select_db($_SESSION['db']);
-    //    if(!$result)
-    //    {
-    //        echo "<h2>" . mysql_error() . "</h2>\n";
-    //        exit;
-    //    }
+//    $result = mysql_select_db($_SESSION['db']);
+//    if(!$result)
+//    {
+//        echo "<h2>" . mysql_error() . "</h2>\n";
+//        exit;
+//    }
 
 
     $myFile = "OpensisSchemaMysqlInc.sql";
@@ -114,16 +114,15 @@ if ($dbconn->connect_errno == 0) {
     //mysqli_close($dbconn);
     $dbconn->close();
 
-    // edited installation
+// edited installation
     header('Location: Step3.php');
 }
 
-function executeSQL($myFile)
-{
+function executeSQL($myFile) {
     $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     $sql = file_get_contents($myFile);
     $sqllines = par_spt("/[\n]/", $sql);
-    //    print_r($sqllines);exit;
+//    print_r($sqllines);exit;
     $cmd = '';
     $delim = false;
     foreach ($sqllines as $l) {
@@ -148,3 +147,5 @@ function executeSQL($myFile)
         }
     }
 }
+
+?>
