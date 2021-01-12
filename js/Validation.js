@@ -4322,8 +4322,8 @@ function formcheck_Timetable_course_F4(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[course_subjects][new][TITLE]",
-      "maxlen=50",
-      "Max length for subject is 50 characters"
+      "maxlen=100",
+      "Max length for subject is 100 characters"
     );
   } else {
     frmvalidator.addValidation(
@@ -4333,8 +4333,8 @@ function formcheck_Timetable_course_F4(this_DET) {
     );
     frmvalidator.addValidation(
       "inputtables[course_subjects][" + subject_id + "][TITLE]",
-      "maxlen=50",
-      "Max length for course title is 50 characters"
+      "maxlen=100",
+      "Max length for course title is 100 characters"
     );
   }
 }
@@ -4378,8 +4378,8 @@ function formcheck_Timetable_course_F3(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[courses][new][TITLE]",
-      "maxlen=50",
-      "Max length for course title is 50 characters "
+      "maxlen=100",
+      "Max length for course title is 100 characters "
     );
 
     frmvalidator.addValidation(
@@ -4395,8 +4395,8 @@ function formcheck_Timetable_course_F3(this_DET) {
     );
     frmvalidator.addValidation(
       "inputtables[courses][" + course_id + "][TITLE]",
-      "maxlen=50",
-      "Max length for course title is 50 characters"
+      "maxlen=100",
+      "Max length for course title is 100 characters"
     );
 
     frmvalidator.addValidation(
@@ -4446,8 +4446,8 @@ function formcheck_enrollment_code(this_DET) {
     );
     frmvalidator.addValidation(
       "values[new][TITLE]",
-      "maxlen=50",
-      "Max length for title is 50 characters"
+      "maxlen=100",
+      "Max length for title is 100 characters"
     );
   } else {
     frmvalidator.clearAllValidations();
@@ -4486,8 +4486,8 @@ function formcheck_enrollment_code(this_DET) {
       );
       frmvalidator.addValidation(
         "values[" + ar_id[i] + "][TITLE]",
-        "maxlen=50",
-        "Max length for title is 50 characters"
+        "maxlen=100",
+        "Max length for title is 100 characters"
       );
       frmvalidator.addValidation(
         "values[" + ar_id[i] + "][SHORT_NAME]",

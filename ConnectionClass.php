@@ -28,15 +28,13 @@
 // Establish MySQL DB connection.  
 class ConnectDBOpensis
 {
-    var $auto_init= true;
-    function init($DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName)
+    var $auto_init = true;
+    function init($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort)
     {
-        $user_agent=explode('/',$_SERVER['HTTP_USER_AGENT']);
-        if($user_agent[0]=='Mozilla')
-        {
-        return new mysqli($DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName);
+        // Used to ensure system is only accessed by a web browser
+        $user_agent = explode('/', $_SERVER['HTTP_USER_AGENT']);
+        if ($user_agent[0] == 'Mozilla') {
+            return new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort);
         }
     }
 }
-
-?>
