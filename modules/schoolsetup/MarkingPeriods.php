@@ -762,7 +762,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                             {
                                                   if($value=='')
                                                 {
-                                                    $sql .= $column.'=\''._NULL.'\',';
+                                                    $sql .= $column.'=NULL,';
                                                     $go = true;
                                                 }  
                                             }
