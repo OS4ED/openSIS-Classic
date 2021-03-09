@@ -202,7 +202,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             }
         elseif ($note)
             $note = substr($note, 0, strpos($note, '. '));
-        elseif ($next_school == '' && !$calendar && $str_date=='' && $end_date=='')
+        elseif($_REQUEST['category_id'] == 6 && ($next_school == '' && !$calendar && $str_date=='' && $end_date==''))
             $note = '<div class="alert bg-danger alert-styled-left">'._noDataWasEntered.'.</div>';
         if ($sec_id != '')
             DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
