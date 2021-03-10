@@ -1,11 +1,8 @@
 <?php
-
-require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/bestFitClass.php');
-
 /**
- * PHPExcel_Logarithmic_Best_Fit
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2010 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,89 +19,64 @@ require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/bestFitClass.php');
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
- * @package    PHPExcel_Shared_Trend
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- * @version    ##VERSION##, ##DATE##
+ * @package    PHPExcel_Shared_Best_Fit
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.7.3c, 2010-06-01
+ */
+
+
+require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/bestFitClass.php');
+
+
+/**
+ * PHPExcel_Logarithmic_Best_Fit
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel_Shared_Best_Fit
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Logarithmic_Best_Fit extends PHPExcel_Best_Fit
 {
-    /**
-     * Algorithm type to use for best-fit
-     * (Name of this trend class)
-     *
-     * @var    string
-     **/
-    protected $bestFitType        = 'logarithmic';
+	protected $_bestFitType		= 'logarithmic';
 
-    /**
-     * Return the Y-Value for a specified value of X
-     *
-     * @param     float        $xValue            X-Value
-     * @return     float                        Y-Value
-     **/
-    public function getValueOfYForX($xValue)
-    {
-        return $this->getIntersect() + $this->getSlope() * log($xValue - $this->xOffset);
-    }
 
-    /**
-     * Return the X-Value for a specified value of Y
-     *
-     * @param     float        $yValue            Y-Value
-     * @return     float                        X-Value
-     **/
-    public function getValueOfXForY($yValue)
-    {
-        return exp(($yValue - $this->getIntersect()) / $this->getSlope());
-    }
+	public function getValueOfYForX($xValue) {
+		return $this->getIntersect() + $this->getSlope() * log($xValue - $this->_Xoffset);
+	}	//	function getValueOfYForX()
 
-    /**
-     * Return the Equation of the best-fit line
-     *
-     * @param     int        $dp        Number of places of decimal precision to display
-     * @return     string
-     **/
-    public function getEquation($dp = 0)
-    {
-        $slope = $this->getSlope($dp);
-        $intersect = $this->getIntersect($dp);
 
-        return 'Y = '.$intersect.' + '.$slope.' * log(X)';
-    }
+	public function getValueOfXForY($yValue) {
+		return exp(($yValue - $this->getIntersect()) / $this->getSlope());
+	}	//	function getValueOfXForY()
 
-    /**
-     * Execute the regression and calculate the goodness of fit for a set of X and Y data values
-     *
-     * @param     float[]    $yValues    The set of Y-values for this regression
-     * @param     float[]    $xValues    The set of X-values for this regression
-     * @param     boolean    $const
-     */
-    private function logarithmicRegression($yValues, $xValues, $const)
-    {
-        foreach ($xValues as &$value) {
-            if ($value < 0.0) {
-                $value = 0 - log(abs($value));
-            } elseif ($value > 0.0) {
-                $value = log($value);
-            }
-        }
-        unset($value);
 
-        $this->leastSquareFit($yValues, $xValues, $const);
-    }
+	public function getEquation($dp=0) {
+		$slope = $this->getSlope($dp);
+		$intersect = $this->getIntersect($dp);
 
-    /**
-     * Define the regression and calculate the goodness of fit for a set of X and Y data values
-     *
-     * @param    float[]        $yValues    The set of Y-values for this regression
-     * @param    float[]        $xValues    The set of X-values for this regression
-     * @param    boolean        $const
-     */
-    public function __construct($yValues, $xValues = array(), $const = true)
-    {
-        if (parent::__construct($yValues, $xValues) !== false) {
-            $this->logarithmicRegression($yValues, $xValues, $const);
-        }
-    }
-}
+		return 'Y = '.$intersect.' + '.$slope.' * log(X)';
+	}	//	function getEquation()
+
+
+	private function _logarithmic_regression($yValues, $xValues, $const) {
+		foreach($xValues as &$value) {
+			if ($value < 0.0) {
+				$value = 0 - log(abs($value));
+			} elseif ($value > 0.0) {
+				$value = log($value);
+			}
+		}
+		unset($value);
+
+		$this->_leastSquareFit($yValues, $xValues, $const);
+	}	//	function _logarithmic_regression()
+
+
+	function __construct($yValues, $xValues=array(), $const=True) {
+		if (parent::__construct($yValues, $xValues) !== False) {
+			$this->_logarithmic_regression($yValues, $xValues, $const);
+		}
+	}	//	function __construct()
+
+}	//	class logarithmicBestFit

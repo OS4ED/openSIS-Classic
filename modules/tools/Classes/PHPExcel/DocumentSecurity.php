@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_DocumentSecurity
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2010 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,70 +20,78 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- * @version    ##VERSION##, ##DATE##
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.7.3c, 2010-06-01
+ */
+
+
+/**
+ * PHPExcel_DocumentSecurity
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_DocumentSecurity
 {
-    /**
-     * LockRevision
-     *
-     * @var boolean
-     */
-    private $lockRevision;
+	/**
+	 * LockRevision
+	 *
+	 * @var boolean
+	 */
+	private $_lockRevision;
 
-    /**
-     * LockStructure
-     *
-     * @var boolean
-     */
-    private $lockStructure;
+	/**
+	 * LockStructure
+	 *
+	 * @var boolean
+	 */
+	private $_lockStructure;
 
-    /**
-     * LockWindows
-     *
-     * @var boolean
-     */
-    private $lockWindows;
+	/**
+	 * LockWindows
+	 *
+	 * @var boolean
+	 */
+	private $_lockWindows;
 
-    /**
-     * RevisionsPassword
-     *
-     * @var string
-     */
-    private $revisionsPassword;
+	/**
+	 * RevisionsPassword
+	 *
+	 * @var string
+	 */
+	private $_revisionsPassword;
 
-    /**
-     * WorkbookPassword
-     *
-     * @var string
-     */
-    private $workbookPassword;
+	/**
+	 * WorkbookPassword
+	 *
+	 * @var string
+	 */
+	private $_workbookPassword;
 
     /**
      * Create a new PHPExcel_DocumentSecurity
      */
     public function __construct()
     {
-        // Initialise values
-        $this->lockRevision      = false;
-        $this->lockStructure     = false;
-        $this->lockWindows       = false;
-        $this->revisionsPassword = '';
-        $this->workbookPassword  = '';
+    	// Initialise values
+    	$this->_lockRevision		= false;
+    	$this->_lockStructure		= false;
+    	$this->_lockWindows			= false;
+    	$this->_revisionsPassword	= '';
+    	$this->_workbookPassword	= '';
     }
 
     /**
-     * Is some sort of document security enabled?
+     * Is some sort of dcument security enabled?
      *
      * @return boolean
      */
-    public function isSecurityEnabled()
-    {
-        return  $this->lockRevision ||
-                $this->lockStructure ||
-                $this->lockWindows;
+    function isSecurityEnabled() {
+    	return 	$this->_lockRevision ||
+		    	$this->_lockStructure ||
+		    	$this->_lockWindows;
     }
 
     /**
@@ -92,9 +99,8 @@ class PHPExcel_DocumentSecurity
      *
      * @return boolean
      */
-    public function getLockRevision()
-    {
-        return $this->lockRevision;
+    function getLockRevision() {
+    	return $this->_lockRevision;
     }
 
     /**
@@ -103,10 +109,9 @@ class PHPExcel_DocumentSecurity
      * @param boolean $pValue
      * @return PHPExcel_DocumentSecurity
      */
-    public function setLockRevision($pValue = false)
-    {
-        $this->lockRevision = $pValue;
-        return $this;
+    function setLockRevision($pValue = false) {
+    	$this->_lockRevision = $pValue;
+    	return $this;
     }
 
     /**
@@ -114,9 +119,8 @@ class PHPExcel_DocumentSecurity
      *
      * @return boolean
      */
-    public function getLockStructure()
-    {
-        return $this->lockStructure;
+    function getLockStructure() {
+    	return $this->_lockStructure;
     }
 
     /**
@@ -125,10 +129,9 @@ class PHPExcel_DocumentSecurity
      * @param boolean $pValue
      * @return PHPExcel_DocumentSecurity
      */
-    public function setLockStructure($pValue = false)
-    {
-        $this->lockStructure = $pValue;
-        return $this;
+    function setLockStructure($pValue = false) {
+		$this->_lockStructure = $pValue;
+		return $this;
     }
 
     /**
@@ -136,9 +139,8 @@ class PHPExcel_DocumentSecurity
      *
      * @return boolean
      */
-    public function getLockWindows()
-    {
-        return $this->lockWindows;
+    function getLockWindows() {
+    	return $this->_lockWindows;
     }
 
     /**
@@ -147,10 +149,9 @@ class PHPExcel_DocumentSecurity
      * @param boolean $pValue
      * @return PHPExcel_DocumentSecurity
      */
-    public function setLockWindows($pValue = false)
-    {
-        $this->lockWindows = $pValue;
-        return $this;
+    function setLockWindows($pValue = false) {
+    	$this->_lockWindows = $pValue;
+    	return $this;
     }
 
     /**
@@ -158,25 +159,23 @@ class PHPExcel_DocumentSecurity
      *
      * @return string
      */
-    public function getRevisionsPassword()
-    {
-        return $this->revisionsPassword;
+    function getRevisionsPassword() {
+    	return $this->_revisionsPassword;
     }
 
     /**
      * Set RevisionsPassword
      *
-     * @param string     $pValue
-     * @param boolean     $pAlreadyHashed If the password has already been hashed, set this to true
+     * @param string 	$pValue
+     * @param boolean 	$pAlreadyHashed If the password has already been hashed, set this to true
      * @return PHPExcel_DocumentSecurity
      */
-    public function setRevisionsPassword($pValue = '', $pAlreadyHashed = false)
-    {
-        if (!$pAlreadyHashed) {
-            $pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
-        }
-        $this->revisionsPassword = $pValue;
-        return $this;
+    function setRevisionsPassword($pValue = '', $pAlreadyHashed = false) {
+    	if (!$pAlreadyHashed) {
+    		$pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
+    	}
+    	$this->_revisionsPassword = $pValue;
+    	return $this;
     }
 
     /**
@@ -184,39 +183,36 @@ class PHPExcel_DocumentSecurity
      *
      * @return string
      */
-    public function getWorkbookPassword()
-    {
-        return $this->workbookPassword;
+    function getWorkbookPassword() {
+    	return $this->_workbookPassword;
     }
 
     /**
      * Set WorkbookPassword
      *
-     * @param string     $pValue
-     * @param boolean     $pAlreadyHashed If the password has already been hashed, set this to true
+     * @param string 	$pValue
+     * @param boolean 	$pAlreadyHashed If the password has already been hashed, set this to true
      * @return PHPExcel_DocumentSecurity
      */
-    public function setWorkbookPassword($pValue = '', $pAlreadyHashed = false)
-    {
-        if (!$pAlreadyHashed) {
-            $pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
-        }
-        $this->workbookPassword = $pValue;
-        return $this;
+    function setWorkbookPassword($pValue = '', $pAlreadyHashed = false) {
+    	if (!$pAlreadyHashed) {
+    		$pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
+    	}
+		$this->_workbookPassword = $pValue;
+		return $this;
     }
 
-    /**
-     * Implement PHP __clone to create a deep clone, not just a shallow copy.
-     */
-    public function __clone()
-    {
-        $vars = get_object_vars($this);
-        foreach ($vars as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $value;
-            } else {
-                $this->$key = $value;
-            }
-        }
-    }
+	/**
+	 * Implement PHP __clone to create a deep clone, not just a shallow copy.
+	 */
+	public function __clone() {
+		$vars = get_object_vars($this);
+		foreach ($vars as $key => $value) {
+			if (is_object($value)) {
+				$this->$key = clone $value;
+			} else {
+				$this->$key = $value;
+			}
+		}
+	}
 }

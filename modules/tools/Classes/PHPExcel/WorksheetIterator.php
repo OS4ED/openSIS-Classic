@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_WorksheetIterator
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2010 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,51 +20,59 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- * @version    ##VERSION##, ##DATE##
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.7.3c, 2010-06-01
  */
-class PHPExcel_WorksheetIterator implements Iterator
+
+
+/**
+ * PHPExcel_WorksheetIterator
+ *
+ * Used to iterate worksheets in PHPExcel
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class PHPExcel_WorksheetIterator extends CachingIterator
 {
-    /**
-     * Spreadsheet to iterate
-     *
-     * @var PHPExcel
-     */
-    private $subject;
+	/**
+	 * Spreadsheet to iterate
+	 *
+	 * @var PHPExcel
+	 */
+	private $_subject;
 
-    /**
-     * Current iterator position
-     *
-     * @var int
-     */
-    private $position = 0;
+	/**
+	 * Current iterator position
+	 *
+	 * @var int
+	 */
+	private $_position = 0;
 
-    /**
-     * Create a new worksheet iterator
-     *
-     * @param PHPExcel         $subject
-     */
-    public function __construct(PHPExcel $subject = null)
-    {
-        // Set subject
-        $this->subject = $subject;
-    }
+	/**
+	 * Create a new worksheet iterator
+	 *
+	 * @param PHPExcel 		$subject
+	 */
+	public function __construct(PHPExcel $subject = null) {
+		// Set subject
+		$this->_subject = $subject;
+	}
 
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        unset($this->subject);
-    }
+	/**
+	 * Destructor
+	 */
+	public function __destruct() {
+		unset($this->_subject);
+	}
 
-    /**
-     * Rewind iterator
-     */
-    public function rewind()
-    {
-        $this->position = 0;
+	/**
+	 * Rewind iterator
+	 */
+    public function rewind() {
+        $this->_position = 0;
     }
 
     /**
@@ -73,9 +80,8 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return PHPExcel_Worksheet
      */
-    public function current()
-    {
-        return $this->subject->getSheet($this->position);
+    public function current() {
+    	return $this->_subject->getSheet($this->_position);
     }
 
     /**
@@ -83,17 +89,15 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return int
      */
-    public function key()
-    {
-        return $this->position;
+    public function key() {
+        return $this->_position;
     }
 
     /**
      * Next value
      */
-    public function next()
-    {
-        ++$this->position;
+    public function next() {
+        ++$this->_position;
     }
 
     /**
@@ -101,8 +105,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return boolean
      */
-    public function valid()
-    {
-        return $this->position < $this->subject->getSheetCount();
+    public function valid() {
+        return $this->_position < $this->_subject->getSheetCount();
     }
 }

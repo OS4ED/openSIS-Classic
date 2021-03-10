@@ -1,9 +1,8 @@
 <?php
-
 /**
- * PHPExcel_Calculation_Function
+ * PHPExcel
  *
- * Copyright (c) 2006 - 2015 PHPExcel
+ * Copyright (c) 2006 - 2010 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,64 +20,72 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Calculation
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- * @version    ##VERSION##, ##DATE##
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.7.3c, 2010-06-01
  */
-class PHPExcel_Calculation_Function
-{
-    /* Function categories */
-    const CATEGORY_CUBE                 = 'Cube';
-    const CATEGORY_DATABASE             = 'Database';
-    const CATEGORY_DATE_AND_TIME        = 'Date and Time';
-    const CATEGORY_ENGINEERING          = 'Engineering';
-    const CATEGORY_FINANCIAL            = 'Financial';
-    const CATEGORY_INFORMATION          = 'Information';
-    const CATEGORY_LOGICAL              = 'Logical';
-    const CATEGORY_LOOKUP_AND_REFERENCE = 'Lookup and Reference';
-    const CATEGORY_MATH_AND_TRIG        = 'Math and Trig';
-    const CATEGORY_STATISTICAL          = 'Statistical';
-    const CATEGORY_TEXT_AND_DATA        = 'Text and Data';
 
-    /**
-     * Category (represented by CATEGORY_*)
-     *
-     * @var string
-     */
-    private $category;
 
-    /**
-     * Excel name
-     *
-     * @var string
-     */
-    private $excelName;
+/**
+ * PHPExcel_Calculation_Function
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel_Calculation
+ * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ */
+class PHPExcel_Calculation_Function {
+	/* Function categories */
+	const CATEGORY_CUBE						= 'Cube';
+	const CATEGORY_DATABASE					= 'Database';
+	const CATEGORY_DATE_AND_TIME			= 'Date and Time';
+	const CATEGORY_ENGINEERING				= 'Engineering';
+	const CATEGORY_FINANCIAL				= 'Financial';
+	const CATEGORY_INFORMATION				= 'Information';
+	const CATEGORY_LOGICAL					= 'Logical';
+	const CATEGORY_LOOKUP_AND_REFERENCE		= 'Lookup and Reference';
+	const CATEGORY_MATH_AND_TRIG			= 'Math and Trig';
+	const CATEGORY_STATISTICAL				= 'Statistical';
+	const CATEGORY_TEXT_AND_DATA			= 'Text and Data';
 
-    /**
-     * PHPExcel name
-     *
-     * @var string
-     */
-    private $phpExcelName;
+	/**
+	 * Category (represented by CATEGORY_*)
+	 *
+	 * @var string
+	 */
+	private $_category;
+
+	/**
+	 * Excel name
+	 *
+	 * @var string
+	 */
+	private $_excelName;
+
+	/**
+	 * PHPExcel name
+	 *
+	 * @var string
+	 */
+	private $_phpExcelName;
 
     /**
      * Create a new PHPExcel_Calculation_Function
      *
-     * @param     string        $pCategory         Category (represented by CATEGORY_*)
-     * @param     string        $pExcelName        Excel function name
-     * @param     string        $pPHPExcelName    PHPExcel function mapping
-     * @throws     PHPExcel_Calculation_Exception
+     * @param 	string		$pCategory 		Category (represented by CATEGORY_*)
+     * @param 	string		$pExcelName		Excel function name
+     * @param 	string		$pPHPExcelName	PHPExcel function mapping
+     * @throws 	Exception
      */
     public function __construct($pCategory = null, $pExcelName = null, $pPHPExcelName = null)
     {
-        if (($pCategory !== null) && ($pExcelName !== null) && ($pPHPExcelName !== null)) {
-            // Initialise values
-            $this->category     = $pCategory;
-            $this->excelName    = $pExcelName;
-            $this->phpExcelName = $pPHPExcelName;
-        } else {
-            throw new PHPExcel_Calculation_Exception("Invalid parameters passed.");
-        }
+    	if (!is_null($pCategory) && !is_null($pExcelName) && !is_null($pPHPExcelName)) {
+    		// Initialise values
+    		$this->_category 		= $pCategory;
+    		$this->_excelName 		= $pExcelName;
+    		$this->_phpExcelName 	= $pPHPExcelName;
+    	} else {
+    		throw new Exception("Invalid parameters passed.");
+    	}
     }
 
     /**
@@ -86,24 +93,22 @@ class PHPExcel_Calculation_Function
      *
      * @return string
      */
-    public function getCategory()
-    {
-        return $this->category;
+    public function getCategory() {
+    	return $this->_category;
     }
 
     /**
      * Set Category (represented by CATEGORY_*)
      *
-     * @param     string        $value
-     * @throws     PHPExcel_Calculation_Exception
+     * @param 	string		$value
+     * @throws 	Exception
      */
-    public function setCategory($value = null)
-    {
-        if (!is_null($value)) {
-            $this->category = $value;
-        } else {
-            throw new PHPExcel_Calculation_Exception("Invalid parameter passed.");
-        }
+    public function setCategory($value = null) {
+    	if (!is_null($value)) {
+    		$this->_category = $value;
+    	} else {
+    		throw new Exception("Invalid parameter passed.");
+    	}
     }
 
     /**
@@ -111,19 +116,17 @@ class PHPExcel_Calculation_Function
      *
      * @return string
      */
-    public function getExcelName()
-    {
-        return $this->excelName;
+    public function getExcelName() {
+    	return $this->_excelName;
     }
 
     /**
      * Set Excel name
      *
-     * @param string    $value
+     * @param string	$value
      */
-    public function setExcelName($value)
-    {
-        $this->excelName = $value;
+    public function setExcelName($value) {
+    	$this->_excelName = $value;
     }
 
     /**
@@ -131,18 +134,16 @@ class PHPExcel_Calculation_Function
      *
      * @return string
      */
-    public function getPHPExcelName()
-    {
-        return $this->phpExcelName;
+    public function getPHPExcelName() {
+    	return $this->_phpExcelName;
     }
 
     /**
      * Set PHPExcel name
      *
-     * @param string    $value
+     * @param string	$value
      */
-    public function setPHPExcelName($value)
-    {
-        $this->phpExcelName = $value;
+    public function setPHPExcelName($value) {
+    	$this->_phpExcelName = $value;
     }
 }
