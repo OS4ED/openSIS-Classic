@@ -34,13 +34,12 @@ require_once("functions/PragRepFnc.php");
 include("AuthCryp.php");
 include('functions/SqlSecurityFnc.php');
 
-function db_start()
-{
+function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
 
     switch ($DatabaseType) {
         case 'mysqli':
-            $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort);
+            $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
             break;
     }
 
@@ -51,7 +50,7 @@ function db_start()
                 $errormessage = mysqli_error($connection);
                 break;
         }
-        db_show_error("", "" . _couldNotConnectToDatabase . ": $DatabaseServer", $errormessage);
+        db_show_error("", ""._couldNotConnectToDatabase.": $DatabaseServer", $errstring);
     }
     return $connection;
 }
@@ -59,8 +58,7 @@ function db_start()
 // This function connects, and does the passed query, then returns a connection identifier.
 // Not receiving the return == unusable search.
 //		ie, $processable_results = DBQuery("select * from students");
-function DBQuery($sql)
-{
+function DBQuery($sql) {
     global $DatabaseType, $_openSIS;
 
     $connection = db_start();
@@ -99,8 +97,7 @@ function DBQuery($sql)
 }
 
 // return next row.
-function db_fetch_row($result)
-{
+function db_fetch_row($result) {
     global $DatabaseType;
 
     switch ($DatabaseType) {
@@ -118,8 +115,7 @@ function db_fetch_row($result)
 }
 
 // returns code to go into SQL statement for accessing the next value of a sequence function db_seq_nextval($seqname)
-function db_seq_nextval($seqname)
-{
+function db_seq_nextval($seqname) {
     global $DatabaseType;
 
     if ($DatabaseType == 'mysqli')
@@ -128,8 +124,7 @@ function db_seq_nextval($seqname)
     return $seq;
 }
 
-function db_case($array)
-{
+function db_case($array) {
     global $DatabaseType;
 
     $counter = 0;
@@ -146,15 +141,15 @@ function db_case($array)
                 $string = substr($string, 0, -1);
             }
 
-            $string .= "$value";
+            $string.="$value";
             if ($counter == ($array_count - 2) && $array_count % 2 == 0)
-                $string .= " ELSE ";
+                $string.=" ELSE ";
             elseif ($counter == ($array_count - 1))
-                $string .= " END ";
+                $string.=" END ";
             elseif ($counter % 2 == 0)
-                $string .= " WHEN $array[0]=";
+                $string.=" WHEN $array[0]=";
             elseif ($counter % 2 == 1)
-                $string .= " THEN ";
+                $string.=" THEN ";
 
             $counter++;
         }
@@ -163,8 +158,7 @@ function db_case($array)
     return $string;
 }
 
-function db_properties($table)
-{
+function db_properties($table) {
     global $DatabaseType, $DatabaseUsername;
 
     switch ($DatabaseType) {
@@ -189,8 +183,7 @@ function db_properties($table)
     return $properties;
 }
 
-function db_show_error($sql, $failnote, $additional = '')
-{
+function db_show_error($sql, $failnote, $additional = '') {
     global $openSISTitle, $openSISVersion, $openSISNotifyAddress, $openSISMode;
 
 
@@ -267,15 +260,15 @@ if ($_REQUEST['pass_type_form'] == 'password') {
     if ($_REQUEST['pass_user_type'] == 'pass_student') {
         if ($_REQUEST['password_stn_id'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Student Id.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['uname'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['month_password_dob'] == '' || $_REQUEST['day_password_dob'] == '' || $_REQUEST['year_password_dob'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Birthday Properly.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['password_stn_id'] != '' && $_REQUEST['uname'] != '' && $_REQUEST['month_password_dob'] != '' && $_REQUEST['day_password_dob'] != '' && $_REQUEST['year_password_dob'] != '') {
@@ -285,7 +278,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
 
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'stu_pass';
             }
@@ -295,11 +288,11 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
         if ($_REQUEST['uname'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['password_stf_email'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
@@ -308,7 +301,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
             if ($stf_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'stf_pass';
             }
@@ -317,11 +310,11 @@ if ($_REQUEST['pass_type_form'] == 'password') {
     if ($_REQUEST['pass_user_type'] == 'pass_parent') {
         if ($_REQUEST['uname'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['password_stf_email'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
@@ -330,7 +323,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 
             if ($par_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'par_pass';
             }
@@ -341,15 +334,15 @@ if ($_REQUEST['user_type_form'] == 'username') {
     if ($_REQUEST['uname_user_type'] == 'uname_student') {
         if ($_REQUEST['username_stn_id'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Student Id.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['pass'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['month_username_dob'] == '' || $_REQUEST['day_username_dob'] == '' || $_REQUEST['year_username_dob'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Birthday Properly.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['username_stn_id'] != '' && $_REQUEST['pass'] != '' && $_REQUEST['month_username_dob'] != '' && $_REQUEST['day_username_dob'] != '' && $_REQUEST['year_username_dob'] != '') {
@@ -358,11 +351,11 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $get_uname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $username_stn_id . ' AND PROFILE_ID=3'));
                 $_SESSION['fill_username'] = $get_uname[1]['USERNAME'];
-                echo '<script>window.location.href="index.php"</script>';
+                echo'<script>window.location.href="index.php"</script>';
             }
         }
     }
@@ -370,11 +363,11 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
         if ($_REQUEST['pass'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['username_stf_email'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
@@ -382,22 +375,22 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
             if ($stf_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $get_uname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $stf_info[1]['STAFF_ID'] . ' AND PROFILE_ID=' . $stf_info[1]['PROFILE_ID']));
                 $_SESSION['fill_username'] = $get_uname[1]['USERNAME'];
-                echo '<script>window.location.href="index.php"</script>';
+                echo'<script>window.location.href="index.php"</script>';
             }
         }
     }
     if ($_REQUEST['uname_user_type'] == 'uname_parent') {
         if ($_REQUEST['pass'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
         if ($_REQUEST['username_stf_email'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
-            echo '<script>window.location.href="ForgotPass.php"</script>';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
@@ -405,11 +398,11 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
             if ($par_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-                echo '<script>window.location.href="ForgotPass.php"</script>';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $get_uname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $par_info[1]['STAFF_ID'] . ' AND PROFILE_ID=4'));
                 $_SESSION['fill_username'] = $get_uname[1]['USERNAME'];
-                echo '<script>window.location.href="index.php"</script>';
+                echo'<script>window.location.href="index.php"</script>';
             }
         }
     }
@@ -427,158 +420,156 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
     } else {
         DBQuery('UPDATE login_authentication SET password=\'' . md5($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
         $_SESSION['conf_msg'] = '<font color="red" ><b>Password updated successfully.</b></font>';
-        echo '<script>window.location.href="index.php"</script>';
+        echo'<script>window.location.href="index.php"</script>';
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>openSIS Student Information System</title>
+        <link rel="shortcut icon" href="favicon.ico">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/login.css">
+        <script src='js/Ajaxload.js'></script>
+        <script src='js/Validation.js'></script>
+        <script src='js/Validator.js'></script>
+        <script src='js/ForgotPass.js'></script>
+        <script type='text/javascript'>
+            function init(param, param2) {
+                calendar.set('date_' + param);
+                document.getElementById('date_' + param).click();
+            }
+        </script>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>openSIS Student Information System</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/login.css">
-    <script src='js/Ajaxload.js'></script>
-    <script src='js/Validation.js'></script>
-    <script src='js/Validator.js'></script>
-    <script src='js/ForgotPass.js'></script>
-    <script type='text/javascript'>
-        function init(param, param2) {
-            calendar.set('date_' + param);
-            document.getElementById('date_' + param).click();
-        }
-    </script>
+        <script src="assets/js/core/libraries/jquery.min.js"></script>
+        <script src="assets/js/core/libraries/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
 
-    <script src="assets/js/core/libraries/jquery.min.js"></script>
-    <script src="assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-
-
-            var newDate = new Date();
-
-            newDate.setDate(newDate.getDate());
-
-            $('#Date').html(dayNames[newDate.getDay()] + ", " + monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getFullYear());
+                var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 
+                var newDate = new Date();
 
-            setInterval(function() {
-                // Create a newDate() object and extract the minutes of the current time on the visitor's
-                var minutes = new Date().getMinutes();
-                // Add a leading zero to the minutes value
-                $("#min").html((minutes < 10 ? "0" : "") + minutes);
-            }, 1000);
+                newDate.setDate(newDate.getDate());
 
-            setInterval(function() {
-                // Create a newDate() object and extract the hours of the current time on the visitor's
-                var hours = new Date().getHours();
-                // Add a leading zero to the hours value
-                $("#hours").html((hours < 10 ? "0" : "") + hours);
-            }, 1000);
-        });
-    </script>
-    <!--custom script-->
-    <script src="js/custom.js"></script>
-</head>
+                $('#Date').html(dayNames[newDate.getDay()] + ", " + monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getFullYear());
 
-<body>
 
-    <div class="clock">
-        <ul>
-            <li id="hours"></li>
-            <li id="point">:</li>
-            <li id="min"></li>
-        </ul>
-        <div id="Date"></div>
-    </div>
-    <section class="login">
-        <div class="login-wrapper">
 
-            <div class="panel">
+                setInterval(function () {
+                    // Create a newDate() object and extract the minutes of the current time on the visitor's
+                    var minutes = new Date().getMinutes();
+                    // Add a leading zero to the minutes value
+                    $("#min").html((minutes < 10 ? "0" : "") + minutes);
+                }, 1000);
 
-                <div class="panel-heading">
-                    <div class="logo">
-                        <img src="assets/images/opensis_logo.png" alt="openSIS" />
+                setInterval(function () {
+                    // Create a newDate() object and extract the hours of the current time on the visitor's
+                    var hours = new Date().getHours();
+                    // Add a leading zero to the hours value
+                    $("#hours").html((hours < 10 ? "0" : "") + hours);
+                }, 1000);
+            });
+        </script>
+        <!--custom script-->
+        <script src="js/custom.js"></script>
+    </head>
+    <body>
+
+        <div class="clock">
+            <ul>
+                <li id="hours"></li>
+                <li id="point">:</li>
+                <li id="min"></li>
+            </ul>
+            <div id="Date"></div>
+        </div>
+        <section class="login">
+            <div class="login-wrapper">
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+                        <div class="logo">
+                            <img src="assets/images/opensis_logo.png" alt="openSIS" />
+                        </div>                    
+                        <h3>Forgot Password</h3>
                     </div>
-                    <h3>Forgot Password</h3>
-                </div>
-                <div class="panel-body">
-                    <form name="f1" method="post" class="text-left" action="">
+                    <div class="panel-body">
+                        <form name="f1" method="post" class="text-left" action="">
 
-                        <?php if ($flag == 'stu_pass') { ?>
-                            <input type="hidden" name="user_info" value="<?php echo cryptor($stu_info[1]['STUDENT_ID'], 'ENC', '') . ',' . cryptor('3', 'ENC', '') . ',' . $_REQUEST['uname']; ?>" />
-                        <?php
-                        }
-                        if ($flag == 'stf_pass') {
-                        ?>
-                            <input type="hidden" name="user_info" value="<?php echo cryptor($stf_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($stf_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>" />
-                        <?php
-                        }
-                        if ($flag == 'par_pass') {
-                        ?>
-                            <input type="hidden" name="user_info" value="<?php echo cryptor($par_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($par_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>" />
-                        <?php
-                        }
-                        if ($flag == 'submited_value') {
-                        ?>
-                            <input type="hidden" name="user_info" value="<?php echo $_REQUEST['user_info']; ?>" />
-                        <?php
-                        }
-                        ?>
-
-                        <div id="divErr">
-                            <?php
-                            if ($_SESSION['err_msg_mod'] != '')
-                                echo $_SESSION['err_msg_mod'];
-                            unset($_SESSION['err_msg_mod']);
+                            <?php if ($flag == 'stu_pass') { ?>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($stu_info[1]['STUDENT_ID'], 'ENC', '') . ',' . cryptor('3', 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
+                                <?php
+                            }
+                            if ($flag == 'stf_pass') {
+                                ?>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($stf_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($stf_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
+                                <?php
+                            }
+                            if ($flag == 'par_pass') {
+                                ?>
+                                <input type="hidden" name="user_info" value="<?php echo cryptor($par_info[1]['STAFF_ID'], 'ENC', '') . ',' . cryptor($par_info[1]['PROFILE_ID'], 'ENC', '') . ',' . $_REQUEST['uname']; ?>"/>
+                                <?php
+                            }
+                            if ($flag == 'submited_value') {
+                                ?>
+                                <input type="hidden" name="user_info" value="<?php echo $_REQUEST['user_info']; ?>"/>
+                                <?php
+                            }
                             ?>
-                        </div>
-                        <p>Password must be minimum 8 characters long with at least one capital, one numeric and one special character. Example: S@mple123</p>
-                        <div class="form-group">
-                            <!--                                <label class="control-label">Enter new password</label>-->
-                            <input type="password" name="new_pass" id="new_pass" class="form-control" placeholder="Enter new password" AUTOCOMPLETE="off" onkeyup="forgotpasswordStrength(this.value);
+
+                            <div id="divErr">
+                                <?php
+                                if ($_SESSION['err_msg_mod'] != '')
+                                    echo $_SESSION['err_msg_mod'];
+                                unset($_SESSION['err_msg_mod']);
+                                ?>
+                            </div>
+                            <p>Password must be minimum 8 characters long with at least one capital, one numeric and one special character. Example: S@mple123</p>
+                            <div class="form-group">
+                                <!--                                <label class="control-label">Enter new password</label>-->
+                                <input type="password" name="new_pass" id="new_pass" class="form-control" placeholder="Enter new password" AUTOCOMPLETE="off" onkeyup="forgotpasswordStrength(this.value);
                 passwordMatch();
                 forgotpassvalidate_password(this.value, '<?php echo $_REQUEST['uname']; ?>',<?php
-                                                                                            if ($flag == 'stu_pass')
-                                                                                                echo 3;
-                                                                                            else if ($flag == 'stf_pass')
-                                                                                                echo $stf_info[1]['PROFILE_ID'];
-                                                                                            else
-                                                                                                echo $par_info[1]['PROFILE_ID'];
-                                                                                            ?>);" />
-                            <p id="passwordStrength" class="p-5"></p>
-                        </div>
+                                if ($flag == 'stu_pass')
+                                    echo 3;
+                                else if ($flag == 'stf_pass')
+                                    echo $stf_info[1]['PROFILE_ID'];
+                                else
+                                    echo $par_info[1]['PROFILE_ID'];
+                                ?>);" />
+                                <p id="passwordStrength" class="p-5"></p>
+                            </div>
 
-                        <div class="form-group">
-                            <!--                                <label class="control-label">Re-enter new password</label>-->
-                            <input type="password" name="ver_pass" id="ver_pass" class="form-control" placeholder="Re-enter new password" AUTOCOMPLETE="off" onkeyup="passwordMatch();" />
-                            <p id=passwordMatch></p>
-                        </div>
+                            <div class="form-group">
+                                <!--                                <label class="control-label">Re-enter new password</label>-->
+                                <input type="password" name="ver_pass" id="ver_pass" class="form-control" placeholder="Re-enter new password" AUTOCOMPLETE = "off" onkeyup="passwordMatch();"/>
+                                <p id=passwordMatch></p>
+                            </div>
 
-                        <div class="text-center">
-                            <input type="submit" name="save" class="btn btn-primary" value="Update" onClick="return pass_check();" />
-                            <a class="btn btn-default" href="ForgotPass.php" style="text-decoration:none;color:black;font-weight:bold">Cancel</a>
-                        </div>
+                            <div class="text-center">
+                                <input type="submit" name="save" class="btn btn-primary" value="Update" onClick="return pass_check();"/>
+                                <a class="btn btn-default" href="ForgotPass.php" style="text-decoration:none;color:black;font-weight:bold">Cancel</a>
+                            </div>
 
-                    </form>
+                        </form>
+                    </div>
                 </div>
+
+                <footer>
+                    Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
+                </footer>
             </div>
-
-            <footer>
-                Copyright &copy; Open Solutions for Education, Inc. (<a href="http://www.os4ed.com">OS4Ed</a>).
-            </footer>
-        </div>
-    </section>
-</body>
-
+        </section>
+    </body>
 </html>
+

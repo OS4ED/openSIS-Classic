@@ -102,7 +102,9 @@ function vdesc_validate()
 
     if(typeof submitBtn !== 'undefined' && submitBtn != '')
     {
-        document.getElementById(submitBtn).disabled =  true;
+        setTimeout(function () {
+            document.getElementById(submitBtn).disabled =  true;
+        }, 10);
     }
     
     return true;

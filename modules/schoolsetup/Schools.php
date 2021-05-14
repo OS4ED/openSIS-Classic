@@ -35,7 +35,7 @@ DrawBC(""._schoolSetup." > " . ProgramTitle());
 // --------------------------------------------------------------- Test SQL ------------------------------------------------------------------ //
 // --------------------------------------------------------------- Tset SQL ------------------------------------------------------------------ //
 
-if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Update' || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == '')) {
+if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == _save || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == _update || clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == '')) {
     if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
         if ($_REQUEST['new_school'] != 'true') {
 
@@ -178,7 +178,7 @@ echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).
         echo '</div>'; //.panel
         
 	//DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value="._ok." class="btn_medium">');
-	echo '<input type="hidden" name="copy" value="'._done.'"/>';
+	echo '<input type="hidden" name="copy" value="done"/>';
 	echo '</FORM>';
         }
     } else {
@@ -239,9 +239,9 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo "<div class=\"form-group\"><label class=\"col-md-4 control-label text-right\">"._schoolName."<span class=\"text-danger\">*</span></label><div class=\"col-md-8\">" . TextInput($schooldata['TITLE'], 'values[TITLE]', '', ' size=24 onKeyUp=checkDuplicateName(1,this,' . $schooldata['ID'] . '); onBlur=checkDuplicateName(1,this,' . $schooldata['ID'] . ');') . "</div></div>";
-        echo "<input type=hidden id=checkDuplicateNameTable1 value='"._schools."'/>";
-        echo "<input type=hidden id=checkDuplicateNameField1 value='"._title."'/>";
-        echo "<input type=hidden id=checkDuplicateNameMsg1 value='"._schoolName."'/>";
+        echo "<input type=hidden id=checkDuplicateNameTable1 value='schools'/>";
+        echo "<input type=hidden id=checkDuplicateNameField1 value='title'/>";
+        echo "<input type=hidden id=checkDuplicateNameMsg1 value='school name'/>";
         echo '</div>'; //.col-lg-6
 
         echo '<div class="col-lg-6">';
@@ -357,10 +357,10 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         if (User('PROFILE') == 'admin' && AllowEdit()) {
             //echo '<hr class="no-margin"/>';
             if ($_REQUEST['new_school']) {
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._save." onclick='return formcheck_school_setup_school(this);'></div>";
+                $btns = "<div class=\"text-right\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._save." onclick='return formcheck_school_setup_school(this);'></div>";
             } else {
 
-                $btns = "<div class=\"text-right p-r-20\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._update." onclick='return formcheck_school_setup_school(this);'></div>";
+                $btns = "<div class=\"text-right\"><INPUT TYPE=submit name=button id=button class=\"btn btn-primary\" VALUE="._update." onclick='return formcheck_school_setup_school(this);'></div>";
             }
         }
 

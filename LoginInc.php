@@ -142,8 +142,9 @@ require_once('functions/langFnc.php');
                                 ?>
                                 <div class="form-group">
                                     <?php
+                                    include_once './AuthCryp.php';
                                     if (isset($_COOKIE['remember_me_name']))
-                                        $name = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_name'])));
+                                        $name = mysqli_real_escape_string($cont, strip_tags(trim(cryptor($_COOKIE['remember_me_name'], 'DEC'))));
                                     if (isset($_SESSION['fill_username'])) {
                                         $name = $_SESSION['fill_username'];
                                         unset($_SESSION['fill_username']);
@@ -154,7 +155,7 @@ require_once('functions/langFnc.php');
                                 <div class="form-group">
                                     <?php
                                     if (isset($_COOKIE['remember_me_pwd']))
-                                        $pwd = mysqli_real_escape_string($cont, strip_tags(trim($_COOKIE['remember_me_pwd'])));
+                                        $pwd = mysqli_real_escape_string($cont, strip_tags(trim(cryptor($_COOKIE['remember_me_pwd'], 'DEC'))));
                                     ?>
                                     <input type="password" class="form-control password" placeholder="<?=_enterPassword?>" id="password" name='PASSWORD' AUTOCOMPLETE='off' value="<?php echo $pwd; ?>">
                                 </div>

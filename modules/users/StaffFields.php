@@ -241,7 +241,7 @@ if (!$_REQUEST['modfunc']) {
         $si++;
     }
     $categories_RET = $categories_RET2;
-    if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 4))
+    if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 4 && $_REQUEST['category_id'] != 6))
         $delete_button = "<INPUT type=button class=\"btn btn-danger btn-sm\" value=\""._delete."\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'> ";
 
     // ADDING & EDITING FORM
@@ -330,15 +330,15 @@ if (!$_REQUEST['modfunc']) {
 
         $header .= '<div class="row">';
         $header .= '<div class="col-md-4">';
-        $header .= '<div class="form-group">' . (($RET['ID'] > 5 || $RET['ID'] == '') ? TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title) : NoInput($RET['TITLE'], _title)) . '</div>';
+        $header .= '<div class="form-group">' . (($RET['ID'] > 6 || $RET['ID'] == '') ? TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title) : NoInput($RET['TITLE'], _title)) . '</div>';
         $header .= '</div>'; //.col-md-4
 
         $header .= '<div class="col-md-4">';
-        $header .= '<div class="form-group">' . (($RET['SORT_ORDER'] > 5 || $RET['SORT_ORDER'] == '') ? TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder) : NoInput($RET['SORT_ORDER'], _sortOrder)) . '</div>';
+        $header .= '<div class="form-group">' . (($RET['SORT_ORDER'] > 6 || $RET['SORT_ORDER'] == '') ? TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder) : NoInput($RET['SORT_ORDER'], _sortOrder)) . '</div>';
         $header .= '</div>'; //.col-md-4
 
         $new = ($_REQUEST['category_id'] == 'new');
-        if ($_REQUEST['category_id'] > 2 || $new) {
+        if (($_REQUEST['category_id'] > 2 && $_REQUEST['category_id'] != 6) || $new) {
             $header .= '<div class="col-md-4">';
             $header .= '<div class="form-group">' . ($RET['ID'] > 4 ? TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', _includeShouldBeLeftBlankForMostCategories) : '') . '</div>';
             $header .= '</div>'; //.col-md-4
@@ -351,10 +351,10 @@ if (!$_REQUEST['modfunc']) {
         $header .= '<label class="control-label col-md-2 text-right">'._profiles.'</label>';
         $header .= '<div class="col-md-10">';
         $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '<div class="checkbox">' : '<p>';
-        $header .= (($RET['ID'] > 5 || $RET['ID'] == '') ? CheckboxInput($RET['ADMIN'], 'tables[' . $_REQUEST['category_id'] . '][ADMIN]', _administrator, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['ADMIN'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; Administrator') . '</span> &nbsp; &nbsp; ';
-        $header .= (($RET['ID'] > 5 || $RET['ID'] == '') ? CheckboxInput($RET['TEACHER'], 'tables[' . $_REQUEST['category_id'] . '][TEACHER]', _teacher, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['TEACHER'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; Teacher') . '</span> &nbsp; &nbsp; ';
+        $header .= (($RET['ID'] > 6 || $RET['ID'] == '') ? CheckboxInput($RET['ADMIN'], 'tables[' . $_REQUEST['category_id'] . '][ADMIN]', _administrator, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['ADMIN'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; Administrator') . '</span> &nbsp; &nbsp; ';
+        $header .= (($RET['ID'] > 6 || $RET['ID'] == '') ? CheckboxInput($RET['TEACHER'], 'tables[' . $_REQUEST['category_id'] . '][TEACHER]', _teacher, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['TEACHER'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; Teacher') . '</span> &nbsp; &nbsp; ';
 //        $header .= (($RET['ID'] > 5 || $RET['ID'] == '') ? CheckboxInput($RET['PARENT'], 'tables[' . $_REQUEST['category_id'] . '][PARENT]', 'Parent', '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['PARENT'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; Parent') . '</span> &nbsp; &nbsp; ';
-        $header .= (($RET['ID'] > 5 || $RET['ID'] == '') ? CheckboxInput($RET['NONE'], 'tables[' . $_REQUEST['category_id'] . '][NONE]', _noAccess, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['NONE'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; No Access') . '</span> &nbsp; &nbsp; ';
+        $header .= (($RET['ID'] > 6 || $RET['ID'] == '') ? CheckboxInput($RET['NONE'], 'tables[' . $_REQUEST['category_id'] . '][NONE]', _noAccess, '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true) : '<span>' . ($RET['NONE'] == 'Y' ? '<i class="icon-checkbox-checked"></i>' : '<i class="icon-checkbox-unchecked"></i>').' &nbsp; No Access') . '</span> &nbsp; &nbsp; ';
         $header .= ($RET['ID'] > 2 || $RET['ID'] == '') ? '</div>' : '</p>'; //.checkbox
         $header .= '</div>'; //.col-md-10
         $header .= '</div>'; //.form-group
@@ -486,7 +486,7 @@ if (!$_REQUEST['modfunc']) {
 
         if ($_REQUEST[category_id] != 5) {
             $link['TITLE']['variables'] = array('id' => 'ID');
-            if($_REQUEST[category_id] != 2 && $_REQUEST[category_id] != 4)
+            if($_REQUEST[category_id] != 2 && $_REQUEST[category_id] != 4 && $_REQUEST[category_id] != 6)
             $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
         }
 
@@ -560,6 +560,10 @@ if (!$_REQUEST['modfunc']) {
 
             case 5:
                 $arr = array();
+                break;
+
+            case 6:
+                $arr = array(_files);
                 break;
 
             default:

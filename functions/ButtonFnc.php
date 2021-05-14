@@ -78,7 +78,11 @@ function button($type, $text = '', $link = '', $width = '', $extra = '', $button
             $button .= '</A>';
         }
         if ($text) {
-            $button .= "</div>";
+            if ($link) {
+                $button .= '';
+            } else {
+                $button .= "</div>";
+            }
         }
     }
 

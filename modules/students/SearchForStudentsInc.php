@@ -1004,7 +1004,7 @@ else {
 
         echo '<div class="row">';
         echo '<div class="col-sm-6 col-md-6 col-lg-6">';
-        echo '<input type="submit" class="btn btn-primary" value="'._applyFilter.'" onclick="self_disable(this);" /> &nbsp; <input class="btn btn-default" value="'._reset.'" type="RESET">';
+        echo '<input type="submit" class="btn btn-primary" value="'._applyFilter.'" onclick="self_disable(this);" /> &nbsp; <input class="btn btn-default" value="'._reset.'" type="button" onclick="clearSearching();">';
         echo '<a id="addiv1" href="javascript:void(0);" class="text-pink" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
         echo '</div>';
         echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
@@ -1017,7 +1017,7 @@ else {
 
         if(!empty($filters))
         {
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_filter_edit" class="text-pink display-inline-block" onClick=""><i class="fa fa-filter"></i> '._editFilters.'</a>';
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_filter_edit" class="text-pink display-inline-block" onClick="loadFilterList();"><i class="fa fa-filter"></i> '._editFilters.'</a>';
         }
 
         echo '</div>';
@@ -1029,7 +1029,7 @@ else {
 
 
 
-        //////////////Modal For Editing Filter/////////////////
+        ##### Modal For Editing Filter #####
         echo '<div id="modal_filter_edit" class="modal fade">';
         echo '<div class="modal-dialog modal-md">';
         echo '<div class="modal-content">';
@@ -1040,59 +1040,22 @@ else {
 
         echo "<form class='form-horizontal m-b-0' method=POST>";
 
-        echo '<div class="modal-body">';
+        echo '<div class="modal-body p-0">';
         echo '<div id="conf_div"></div>';
 
-        // if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove' && $_REQUEST['filter_id']!='') {
-        //         if (DeletePrompt_Filter('filter')) {
-        //             $filter_id = paramlib_validation($colmn = FILTER_ID, $_REQUEST['filter_id']);
-        //             DBQuery('DELETE FROM filters WHERE FILTER_ID=\'' . $filter_id . '\'');
-        //             DBQuery('DELETE FROM filter_fields WHERE FILTER_ID=\'' . $filter_id . '\'');
-        //             unset($_REQUEST['modfunc']);
-        //         }
-        // }
-
-        if ($_REQUEST['modfunc'] != 'remove') {
-
-            $sql = 'SELECT FILTER_ID, FILTER_NAME,NULL AS REMOVE_LINK,NULL AS MODIFY_LINK FROM filters WHERE SCHOOL_ID IN ('.UserSchool().',0) AND SHOW_TO IN ('. UserID().',0)';
-            $F = DBQuery($sql);
-
-            $filters_RET = DBGet($F);
-
-            $columns2 = array('REMOVE_LINK' => '',
-                'FILTER_NAME' => 'Filter Name',
-                'MODIFY_LINK' => '',
-            );
-
-            $filter_counter=1;
-            foreach($filters_RET as $key)
-            {
-                $filter_remove_link='<a class="btn btn-primary btn-icon btn-xs legitRipple" href="Modules.php?modname=students/StudentFilters.php&amp;modfunc=remove&amp;filter_id='.$key['FILTER_ID'].'" onclick="hide_filter_modal();"><i class="icon-cross2 "></i></a>';
-
-                $filter_modify_link='<a class="btn btn-primary btn-xs display-inline-block" href="Modules.php?modname=students/StudentFilters.php&amp;modfunc=filter_edit&amp;filter_id='.$key['FILTER_ID'].'" onClick="hide_filter_modal()">Edit</a>';
-
-                $filters_RET[$filter_counter]['REMOVE_LINK'] = $filter_remove_link;
-                $filters_RET[$filter_counter]['MODIFY_LINK'] = $filter_modify_link;
-                $filter_counter++;
-            }
-
-            // echo "<pre>"; print_r($filters_RET); echo "</pre>";
-            ListOutput($filters_RET, $columns2, _filter, _filters, false, array(), array('search' =>false));
-        }
+        echo '<div id="stuf_loader" class="ajax-loading"><img src="assets/search-loader.gif"></div>';
+        echo '<div id="view_resp" class=""></div>';
 
         echo '</div>'; //.modal-body
-        // echo '<div class="modal-footer text-center">';
-        // echo '<input type="submit" class="btn btn-primary display-inline-block" value="'._save.'">';
-        // echo '</div>'; //.modal-footer
         echo '</form>';
 
         echo '</div>'; //.modal-content
         echo '</div>'; //.modal-dialog
         echo '</div>'; //.modal
-        //////////////End of Modal/////////////////////////
+        ##### End of Modal #####
 
 
-        //////////////Modal For Filter Save////////////////////
+        ##### Modal For Filter Save #####
         echo '<div id="modal_default_filter" class="modal fade">';
         echo '<div class="modal-dialog modal-sm">';
         echo '<div class="modal-content">';

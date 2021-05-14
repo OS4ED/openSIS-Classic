@@ -28,10 +28,14 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
+    if($_REQUEST['day'] != '' && $_REQUEST['month'] != '' && $_REQUEST['year'] != ''){
     $date = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
+    }
     if (count($_REQUEST['month_values'])) {
         foreach ($_REQUEST['month_values'] as $field_name => $month) {
+            if($month != ''){
             $_REQUEST['values'][$field_name] = $_REQUEST['year_values'][$field_name] . '-' . $month . '-' . $_REQUEST['day_values'][$field_name];
+            }
 //            if (!VerifyDate($_REQUEST['values'][$field_name])) {
 //                if ($_REQUEST['values'][$field_name] != '--')
 //                    $note = '<IMG SRC=assets/warning_button.gif>The date you specified is not valid, so was not used.  The other data was saved.';
@@ -102,7 +106,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         foreach ($_REQUEST['values'] as $field => $value) {
 
             $arr = explode('[', $field);
-
             if ($arr[0] == 'language_id') {
                 if (isset($value) && trim($value) != '') {
                     $value = paramlib_validation($field, $value);
@@ -202,7 +205,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             }
         elseif ($note)
             $note = substr($note, 0, strpos($note, '. '));
-        elseif($_REQUEST['category_id'] == 6 && ($next_school == '' && !$calendar && $str_date=='' && $end_date==''))
+        elseif ($_REQUEST['category_id'] == 6 && ($next_school == '' && !$calendar && $str_date=='' && $end_date==''))
             $note = '<div class="alert bg-danger alert-styled-left">'._noDataWasEntered.'.</div>';
         if ($sec_id != '')
             DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
@@ -231,7 +234,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         unset($_SESSION['_REQUEST_vars']['values']);
     }
     else {
-        ShowErr(''._youMustChooseAtLeastOneFieldAndOneStudent.'.');
+        ShowErr('<div class="alert bg-warning alert-styled-left">'._youMustChooseAtLeastOneFieldAndOneStudent.'.</div>');
         for_error();
     }
 }
@@ -535,29 +538,28 @@ if (!$_REQUEST['modfunc']) {
 
         if (count($fields_RET['text'])) {
             foreach ($fields_RET['text'] as $field) {
-                $title = strtolower(trim($field['TITLE']));
-                if (strpos(trim($field['TITLE']), ' ') != 0) {
-                    $p1 = substr(trim($field['TITLE']), 0, strpos(trim($field['TITLE']), ' '));
-                    $p2 = substr(trim($field['TITLE']), strpos(trim($field['TITLE']), ' ') + 1);
-                    $title = strtolower($p1 . '_' . $p2);
-                }
-
-                $query = DBGet(DBQuery('SELECT * FROM students LIMIT 0,1'));
-                $query = $query[1];
-                $f = 0;
-                foreach ($query as $k => $v) {
-                    if (strtolower($k) == strtolower($title))
-                        $f = 1;
-                }
-                if ($f == 0) {
-                    if (trim($title) == 'physician')
-                        $title = 'medical_info[PHYSICIAN]';
-                    if (trim($title) == 'physician_phone')
-                        $title = 'medical_info[PHYSICIAN_PHONE]';
-                    else if (trim($title) == 'preferred_hospital')
-                        $title = 'medical_info[PREFERRED_HOSPITAL]';
-                }
-                array_push($fields, '<div class="form-group">' . _makeTextInput($title) . '</div>');
+//                $title = strtolower(trim($field['TITLE']));
+//                if (strpos(trim($field['TITLE']), ' ') != 0) {
+//                    $p1 = substr(trim($field['TITLE']), 0, strpos(trim($field['TITLE']), ' '));
+//                    $p2 = substr(trim($field['TITLE']), strpos(trim($field['TITLE']), ' ') + 1);
+//                    $title = strtolower($p1 . '_' . $p2);
+//                }
+//                $query = DBGet(DBQuery('SELECT * FROM students LIMIT 0,1'));
+//                $query = $query[1];
+//                $f = 0;
+//                foreach ($query as $k => $v) {
+//                    if (strtolower($k) == strtolower($title))
+//                        $f = 1;
+//                }
+//                if ($f == 0) {
+//                    if (trim($title) == 'physician')
+//                        $title = 'medical_info[PHYSICIAN]';
+//                    if (trim($title) == 'physician_phone')
+//                        $title = 'medical_info[PHYSICIAN_PHONE]';
+//                    else if (trim($title) == 'preferred_hospital')
+//                        $title = 'medical_info[PREFERRED_HOSPITAL]';
+//                }
+                array_push($fields, '<div class="form-group">' . TextInput('','values[CUSTOM_' . $field['ID'] . ']', $field['TITLE']) . '</div>');
             }
         }
         if (count($fields_RET['numeric'])) {

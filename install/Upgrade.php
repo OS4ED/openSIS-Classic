@@ -214,6 +214,7 @@
                                       `profile_id` int(11) NOT NULL,
                                       `school_id` int(11) NOT NULL,
                                       `syear` int(11) NOT NULL,
+                                      `download_id` varchar(50) NOT NULL DEFAULT UUID(),
                                       `name` varchar(255) NOT NULL,
                                       `size` int(11) NOT NULL,
                                       `type` varchar(255) NOT NULL,
@@ -418,6 +419,8 @@
 
                                     ### for Keys - End ###
 
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     // $_SESSION['mod'] = 'upgrade';
@@ -498,6 +501,8 @@
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
                                     ### for Keys - End ###
+
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -598,6 +603,8 @@
 
                                     ### for Keys - End ###
 
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     // $_SESSION['mod'] = 'upgrade';
@@ -696,6 +703,8 @@
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
                                     ### for Keys - End ###
+
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');

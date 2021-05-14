@@ -163,6 +163,7 @@ if ($_REQUEST['s_err'] == 'y') {
     echo '<font style="color:red"><b>Start date can not be before school\'s start date</b></font>';
     unset($_REQUEST['s_err']);
 }
+
 if (!$_REQUEST['include']) {
     $_REQUEST['include'] = 'DemographicInfoInc';
     $_REQUEST['category_id'] = '1';
@@ -175,6 +176,8 @@ if (!$_REQUEST['include']) {
         $_REQUEST['category_id'] = '3';
     elseif ($_REQUEST['include'] == 'CertificationInfoInc')
         $_REQUEST['category_id'] = '4';
+    elseif ($_REQUEST['include'] == 'FilesInc')
+        $_REQUEST['category_id'] = '6';
 
     elseif ($_REQUEST['include'] != 'OtherInfoInc') {
         $include = DBGet(DBQuery("SELECT ID FROM staff_field_categories WHERE INCLUDE='$_REQUEST[include]'"));
@@ -693,7 +696,7 @@ if (basename($_SERVER['PHP_SELF']) != 'index.php') {
     SearchStaff('staff_id', $extra);
 } else
     DrawHeader(_createAccount);
-if ($_REQUEST['modfunc'] == 'delete' && basename($_SERVER['PHP_SELF']) != 'index.php' && AllowEdit()) {
+if ($_REQUEST['modfunc'] == 'delete' && $_REQUEST['include'] != 'FilesInc' && basename($_SERVER['PHP_SELF']) != 'index.php' && AllowEdit()) {
 
     # ------------------------------------  For Certification Start ------------------------------------------- #
 
@@ -704,6 +707,15 @@ if ($_REQUEST['modfunc'] == 'delete' && basename($_SERVER['PHP_SELF']) != 'index
 
 
         $_REQUEST['certification_id'] = 'new';
+    }
+}
+if ($_REQUEST['modfunc'] == 'delete' && $_REQUEST['include'] == 'FilesInc' && (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')) {
+    if (DeletePromptFilesEncoded($_REQUEST['title'], '&include=FilesInc&category_id=7')) {
+        unlink('assets/stafffiles/'.base64_decode($_REQUEST['removefile']));
+        
+        DBQuery('DELETE FROM user_file_upload WHERE ID=' . $_REQUEST['del']);
+        
+        unset($_REQUEST['modfunc']);
     }
 }
 if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PHP_SELF']) != 'index.php') || !$_REQUEST['staff']['USERNAME']) && $_REQUEST['modfunc'] != 'delete' && $_SESSION['fn'] != 'user' && $_REQUEST['modfunc'] != 'remove') {
@@ -759,6 +771,8 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                     $include = 'CertificationInfoInc';
                 elseif ($category['ID'] == '5')
                     $include = 'ScheduleInc';
+                elseif ($category['ID'] == '6')
+                    $include = 'FilesInc';
                 elseif ($category['INCLUDE'])
                     $include = $category['INCLUDE'];
                 else

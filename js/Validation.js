@@ -1,7 +1,7 @@
 function formcheck_school_setup_school(this_DET) {
   var this_button_id = this_DET.id;
 
-  var frmvalidator = new Validator("school", this_button_id);
+  var frmvalidator = new Validator("school");
 
   frmvalidator.addValidation("values[TITLE]", "req", "Please enter the title");
   frmvalidator.addValidation(
@@ -2664,6 +2664,63 @@ function validate_course_period(this_DET = false) {
   return true;
 }
 
+
+function validate_cp_teacher_fields()
+{
+  var hd_cp_id = document.getElementById("hidden_cp_id").value;
+  if(hd_cp_id != 'new')
+  {
+    if(document.getElementsByName("tables[course_periods][" + hd_cp_id + "][SECONDARY_TEACHER_ID]")[0] && document.getElementsByName("tables[course_periods][" + hd_cp_id + "][SECONDARY_TEACHER_ID]")[0].value!="")
+    {
+        var secondary_teacher = document.getElementsByName("tables[course_periods][" + hd_cp_id + "][SECONDARY_TEACHER_ID]")[0].value;
+    }
+    else
+    {
+        var secondary_teacher = document.getElementById("hidden_secondary_teacher_id").value;
+    }
+
+    if(document.getElementsByName("tables[course_periods][" + hd_cp_id + "][TEACHER_ID]")[0] && document.getElementsByName("tables[course_periods][" + hd_cp_id + "][TEACHER_ID]")[0].value!="")
+    {
+        var primary_teacher = document.getElementsByName("tables[course_periods][" + hd_cp_id + "][TEACHER_ID]")[0].value;
+    }
+    else
+    {
+        var primary_teacher = document.getElementById("hidden_primary_teacher_id").value;
+    }
+    //alert(primary_teacher + "=====" + secondary_teacher);
+    if(primary_teacher == secondary_teacher)
+    {
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Primary and Secondary teacher cannot be same</div>';
+        window.$("#save_cp").attr("disabled", true);
+        window.$("#save_cps").attr("disabled", true);
+    }
+    else
+    {
+        document.getElementById("divErr").innerHTML = '';
+        window.$("#save_cp").attr("disabled", false);
+        window.$("#save_cps").attr("disabled", false);
+    }
+  }
+  else
+  {
+    var primary_teacher = document.getElementsByName("tables[course_periods][new][TEACHER_ID]")[0].value;
+    var secondary_teacher = document.getElementsByName("tables[course_periods][new][SECONDARY_TEACHER_ID]")[0].value;
+    if(primary_teacher == secondary_teacher)
+    {
+        document.getElementById("divErr").innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Primary and Secondary teacher cannot be same</div>';
+        window.$("#save_cp").attr("disabled", true);
+        window.$("#save_cps").attr("disabled", true);
+    }
+    else
+    {
+        document.getElementById("divErr").innerHTML = '';
+        window.$("#save_cp").attr("disabled", false);
+        window.$("#save_cps").attr("disabled", false);
+    }
+  }
+}
+
+
 function validate_block_schedule(option) {
   if (document.getElementById("hidden_period_block").value == "") {
     document.getElementById("block_error").innerHTML =
@@ -4322,8 +4379,8 @@ function formcheck_Timetable_course_F4(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[course_subjects][new][TITLE]",
-      "maxlen=100",
-      "Max length for subject is 100 characters"
+      "maxlen=50",
+      "Max length for subject is 50 characters"
     );
   } else {
     frmvalidator.addValidation(
@@ -4333,8 +4390,8 @@ function formcheck_Timetable_course_F4(this_DET) {
     );
     frmvalidator.addValidation(
       "inputtables[course_subjects][" + subject_id + "][TITLE]",
-      "maxlen=100",
-      "Max length for course title is 100 characters"
+      "maxlen=50",
+      "Max length for course title is 50 characters"
     );
   }
 }
@@ -4378,8 +4435,8 @@ function formcheck_Timetable_course_F3(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[courses][new][TITLE]",
-      "maxlen=100",
-      "Max length for course title is 100 characters "
+      "maxlen=50",
+      "Max length for course title is 50 characters "
     );
 
     frmvalidator.addValidation(
@@ -4395,8 +4452,8 @@ function formcheck_Timetable_course_F3(this_DET) {
     );
     frmvalidator.addValidation(
       "inputtables[courses][" + course_id + "][TITLE]",
-      "maxlen=100",
-      "Max length for course title is 100 characters"
+      "maxlen=50",
+      "Max length for course title is 50 characters"
     );
 
     frmvalidator.addValidation(
@@ -4446,8 +4503,8 @@ function formcheck_enrollment_code(this_DET) {
     );
     frmvalidator.addValidation(
       "values[new][TITLE]",
-      "maxlen=100",
-      "Max length for title is 100 characters"
+      "maxlen=50",
+      "Max length for title is 50 characters"
     );
   } else {
     frmvalidator.clearAllValidations();
@@ -4486,8 +4543,8 @@ function formcheck_enrollment_code(this_DET) {
       );
       frmvalidator.addValidation(
         "values[" + ar_id[i] + "][TITLE]",
-        "maxlen=100",
-        "Max length for title is 100 characters"
+        "maxlen=50",
+        "Max length for title is 50 characters"
       );
       frmvalidator.addValidation(
         "values[" + ar_id[i] + "][SHORT_NAME]",
@@ -4946,6 +5003,48 @@ function save_student_filters() {
 
     return true;
   }
+}
+
+function clearSearching()
+{
+    var formName = 'search';
+
+    var elements = document.forms[formName].elements;
+    for (i=0; i < elements.length; i++)
+    {
+        var this_input_type =   elements[i].type;
+        var this_input_tag  =   elements[i].tagName;
+
+        if(this_input_tag == 'INPUT')
+        {
+            if(this_input_type != 'hidden')
+            {
+                if(this_input_type == 'text')
+                {
+                    elements[i].value = '';
+                }
+                else if(this_input_type == 'checkbox' || this_input_type == 'radio')
+                {
+                    elements[i].checked = false;
+                }
+            }
+        }
+        else if(this_input_tag == 'SELECT')
+        {
+            // elements[i].selected = false;
+            elements[i].value = '';
+        }
+        else if(this_input_tag == 'TEXTAREA')
+        {
+            elements[i].innerHTML = '';
+        }
+
+        // console.log(elements[i]);
+        // console.log(this_input_type);
+        // console.log(this_input_tag);
+    }
+
+    document.getElementById(formName). submit();
 }
 
 function self_disable(this_DET) {

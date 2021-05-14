@@ -390,6 +390,15 @@ ul[id*="select2-period-"] {
 }
 /* Schoolwide Schedule Reports - End */
 
+.ajax-loading {
+    text-align: center;
+    display: none;
+}
+
+.ajax-loading img {
+    height: 40px;
+}
+
 .btn-undo {
     background-color: #fff;
     padding: 6px 8px;

@@ -570,7 +570,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         $cps = $_SESSION['MassSchedule.php']['course_period_id'];
         //$schedule_type_check1 = DBGet(DBQuery("SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID='" . $cps . "'"));
 
-        DBQuery("DELETE FROM attendance_completed where course_period_id=$cps and school_date>=$st_dt ");
+        DBQuery('DELETE FROM attendance_completed where course_period_id="'.$cps.'" and school_date>="'.$st_dt.'"');
         DBQuery("INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) 
           SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,
          cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN course_periods cp ON cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID 

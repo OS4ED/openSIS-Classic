@@ -202,7 +202,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
 
     $already_attn_flag = 0;
     
-    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (".implode(', ',array_keys($_REQUEST['attendance'])).") AND SCHOOL_DATE = '$date' AND PERIOD_ID='".UserPeriod()."'"))) > 0 ? true : false;
+    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (".implode(', ',array_keys($_REQUEST['attendance'])).") AND SCHOOL_DATE = '$date' AND PERIOD_ID='".UserPeriod()."'"))) == count($_REQUEST['attendance']) ? true : false;
        $attendanceAlreadyTakenTwo = DBGet(DBQuery('SELECT * FROM `attendance_completed` WHERE SCHOOL_DATE = \''.$date.'\' AND PERIOD_ID=\''.UserPeriod().'\' AND STAFF_ID = \''.User('STAFF_ID').'\''));
     if($attendanceAlreadyTaken && count($attendanceAlreadyTakenTwo) == 0) {
         // print_r(ErrorMessage(array('Attendance is already taken for the students on selected day and period.'), 'note'));

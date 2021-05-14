@@ -86,12 +86,13 @@ if (UserStudentID()) {
             if ($rows != 0 && $_REQUEST['SCHOOL_NAME']) {
                 $updatestats = 'UPDATE history_school SET school_name=\'' . trim($_REQUEST['SCHOOL_NAME']) . '\'
                                      WHERE marking_period_id = ' . $mp_id . ' AND student_id = ' . UserStudentID() . '';
+                DBQuery($updatestats);
             } elseif ($rows == 0) {
                 $updatestats = 'INSERT INTO history_school  (student_id, marking_period_id,school_name) VALUES
                         (' . UserStudentID() . ',' . $mp_id . ',\'' . trim($_REQUEST['SCHOOL_NAME']) . '\')';
+                DBQuery($updatestats);
             }
 
-            DBQuery($updatestats);
         }
         foreach ($_REQUEST['values'] as $id => $columns) {
             $f = 0;

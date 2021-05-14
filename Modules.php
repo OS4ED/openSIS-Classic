@@ -120,7 +120,7 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/interactions.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>';
-    echo '<script type="text/javascript" src="assets/js/plugins/media/cropper.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/media/cropper.min.js"></script>';    
     echo '<script type="text/javascript" src="assets/js/plugins/editors/ckeditor/ckeditor.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/tables/datatables/datatables.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>';
@@ -159,14 +159,14 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
             }
         });
     </script>';
-
+    
 
     if (strpos($_REQUEST['modname'], 'miscellaneous/') === false)
         echo '<script language="JavaScript">if(window == top  && (!window.opener || window.opener.location.href.substring(0,(window.opener.location.href.indexOf("&")!=-1?window.opener.location.href.indexOf("&"):window.opener.location.href.replace("#","").length))!=window.location.href.substring(0,(window.location.href.indexOf("&")!=-1?window.location.href.indexOf("&"):window.location.href.replace("#","").length)))) window.location.href = "index.php";</script>';
 
     echo "<BODY>";
 }
-echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> ' . _loading . '...</div>';
+echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> '._loading.'...</div>';
 echo '<div class="navbar navbar-inverse bg-white">
             <div class="navbar-header">
                 <a class="sidebar-control sidebar-main-toggle hidden-xs" data-popup="tooltip" data-placement="bottom" data-container="body" data-original-title="Collapse Menu"><i class="icon-paragraph-justify3"></i></a>
@@ -197,7 +197,7 @@ if (User('PROFILE') == 'teacher') {
     echo "</div></FORM></li>";
 
     //===================================================================================================
-
+    
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=syear method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $school_years_RET = DBGet(DBQuery("SELECT YEAR(sy.START_DATE)AS START_DATE,YEAR(sy.END_DATE)AS END_DATE FROM school_years sy,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE ssr.SYEAR=sy.SYEAR AND sy.school_id=ssr.school_id AND sy.school_id=" . UserSchool() . " AND st.staff_id=$_SESSION[STAFF_ID]"));
     echo "<SELECT class=\"select\" name=syear onChange='this.form.submit();' style='width:80;'>";
@@ -208,7 +208,7 @@ if (User('PROFILE') == 'teacher') {
     echo "</div></FORM></li>";
 
     //===================================================================================================
-
+    
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=mp method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_quarters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
     if (!isset($_SESSION['UserMP'])) {
@@ -295,7 +295,8 @@ if (User('PROFILE') != 'teacher') {
             } else
                 $stu_ID = UserStudentID();
             $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserSchool() . " "));
-        } else {
+        }
+        else {
             $school_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM school_years sy ,staff s INNER JOIN staff_school_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.school_id=ssr.school_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserSchool() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
         }
         foreach ($school_years_RET as $school_years) {
@@ -315,7 +316,8 @@ if (User('PROFILE') != 'teacher') {
             } else
                 $stu_ID = UserStudentID();
             $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserSchool() . " "));
-        } else {
+        }
+        else {
             if (UserSchool())
                 $school_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM school_years sy ,staff s INNER JOIN staff_school_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.school_id=ssr.school_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserSchool() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
             else
@@ -389,7 +391,7 @@ if (User('PROFILE') != 'teacher') {
     // Marking Period
 
     echo '</FORM></div></li>';
-} ################## Porfile Not Teacher End ##########################################
+}################## Porfile Not Teacher End ##########################################
 
 if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
@@ -442,21 +444,23 @@ if (User('PROFILE') == 'teacher') {
         echo '<OPTION value="">n/a</OPTION>';
     }
     echo "</SELECT>";
-    //===================================================================================================		
+//===================================================================================================		
     echo "</FORM></div></li>";
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=course method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
     $course = DBQuery("SELECT DISTINCT cd.COURSE_TITLE, cd.COURSE_ID,cd.SUBJECT_ID,cd.SCHOOL_ID FROM course_details cd WHERE (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cd.SYEAR='" . UserSyear() . "' AND cd.SCHOOL_ID='" . UserSchool() . "' AND cd.SUBJECT_ID='" . UserSubject() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");					
-    $RET_temp = DBGet($course);
-    $ret_increment = 1;
-    $RET = array();
-    foreach ($RET_temp as $ret_courses) {
-        $get_cps = DBGet(DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_ID='" . $ret_courses['COURSE_ID'] . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)"));
-        if (count($get_cps) > 0) {
-            $RET[$ret_increment] = $ret_courses;
+    $RET_temp= DBGet($course);
+    $ret_increment=1;
+    $RET=array();
+    foreach($RET_temp as $ret_courses)
+    {
+        $get_cps=DBGet(DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_ID='" . $ret_courses['COURSE_ID'] . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)"));
+        if(count($get_cps)>0)
+        {
+            $RET[$ret_increment]=$ret_courses;
             $ret_increment++;
         }
     }
-
+   
     if (!UserCourse()) {
         $_SESSION['UserCourse'] = $RET[1]['COURSE_ID'];
     }
@@ -469,7 +473,7 @@ if (User('PROFILE') == 'teacher') {
         echo '<OPTION value="">n/a</OPTION>';
     }
     echo "</SELECT>";
-    //===================================================================================================							     					     
+//===================================================================================================							     					     
     echo "</FORM></div></li>";
 
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=period method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
@@ -524,31 +528,34 @@ if (User('PROFILE') == 'teacher') {
 }
 $user_picture = '';
 if (User('PROFILE') != 'parent') {
-
-    if (User('PROFILE') == 'student') {
-        $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
-        $img_info = $img_info[1]['CONTENT'];
-    } else {
-        $img_info = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . UserID()));
-        $img_info = $img_info[1]['IMG_CONTENT'];
+    
+    if(User('PROFILE')=='student')
+    {
+    $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID(). ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $img_info=$img_info[1]['CONTENT'];
     }
-    if ($img_info != '')
-        $user_picture = '<a href="javascript:void(0)"><IMG src="data:image/jpeg;base64,' . base64_encode($img_info) . '" class="img-circle img-responsive"></a>';
+    else
+    {
+    $img_info= DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' .UserID()));
+    $img_info=$img_info[1]['IMG_CONTENT'];
+    }
+    if($img_info!='')
+      $user_picture = '<a href="javascript:void(0)"><IMG src="data:image/jpeg;base64,'. base64_encode($img_info) . '" class="img-circle img-responsive"></a>';
     else
         $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-    // if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
-    //     if (UserStudentID())
-    //         $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
-    //     if (UserID())
-    //         $picture_path = $UserPicturesPath . UserID() . '.JPG';
-    //     if (file_exists($picture_path)) {
-    //         $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
-    //     } else {
-    //         $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-    //     }
-    // } else {
-    //     $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
-    // }
+   // if (($StudentPicturesPath . UserStudentID() . '.JPG' || ($UserPicturesPath . UserID() . '.JPG'))) {
+   //     if (UserStudentID())
+   //         $picture_path = $StudentPicturesPath . UserStudentID() . '.JPG';
+   //     if (UserID())
+   //         $picture_path = $UserPicturesPath . UserID() . '.JPG';
+   //     if (file_exists($picture_path)) {
+   //         $user_picture = '<a href="javascript:void(0)"><img src="' . $picture_path . '"  alt="" class="img-circle img-responsive"></a>';
+   //     } else {
+   //         $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+   //     }
+   // } else {
+   //     $user_picture = '<a href="javascript:void(0)"><IMG SRC="assets/no_avtar.png" class="img-circle img-responsive"></a>';
+   // }
 }
 
 //$user_picture .= '<input type="file" name=""  />';
@@ -560,11 +567,11 @@ if (User('PROFILE') != 'parent') {
 // }elseif(User('PROFILE') == "Administrator")
 // {
 //     $userProfile = _administrator;
-
+    
 // }elseif(User('PROFILE') == "Teacher")
 // {
 //     $userProfile = _teacher;
-
+    
 // }elseif(User('PROFILE') == "Student")
 // {
 //     $userProfile = _student;
@@ -605,18 +612,18 @@ echo '</div>
                                         </div>
 
                                         <div class="sidebar-user-material-menu">
-                                            <a href="#user-nav" data-toggle="collapse"><span>' . _myAccount . '</span> <i class="caret"></i></a>
+                                            <a href="#user-nav" data-toggle="collapse"><span>'._myAccount.'</span> <i class="caret"></i></a>
                                         </div>
                                     </div>
 
                                     <div class="navigation-wrapper collapse" id="user-nav">
                                         <ul class="navigation">
                                 
-                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=messaging/Inbox.php\');"><i class="icon-comment-discussion"></i> <span>' . _messages . '</span></a></li>';
-if (User('PROFILE') != 'student')
-    echo '<li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=users/Preferences.php\');"><i class="icon-equalizer"></i> <span>' . _preferences . '</span></a></li>';
+                                            <li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=messaging/Inbox.php\');"><i class="icon-comment-discussion"></i> <span>'._messages.'</span></a></li>';
+if(User('PROFILE')!='student')                                            
+echo'<li><a href="javascript:void(0)" onclick="check_content(\'Ajax.php?modname=users/Preferences.php\');"><i class="icon-equalizer"></i> <span>'._preferences.'</span></a></li>';
 
-echo '<li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> <span>' . _logout . '</span></a></li>
+                                            echo'<li><a href="index.php?modfunc=logout"><i class="icon-switch2"></i> <span>'._logout.'</span></a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -651,7 +658,7 @@ $menu_icons = array(
 );
 
 //echo "<li><a href='javascript:void(0)' onmouseup='check_content(\"Ajax.php?modname=miscellaneous/Portal.php\");' onmousedown='document.getElementById(\"header\").innerHTML = \"Home\";document.getElementById(\"cframe\").src = \"Bottom.php?modcat=home\"'><i class=\"icon-home4\"></i><span>" . "Home" . "</span></a></li>";
-echo "<li><a href='#' onmouseup='check_content(\"Ajax.php?modname=miscellaneous/Portal.php\");' onmousedown='document.getElementById(\"header\").innerHTML = \"Home\";document.getElementById(\"cframe\").src = \"Bottom.php?modcat=home\"'><i class=\"icon-home4\"></i><span>" . _home . "</span></a></li>";
+echo "<li><a href='#' onmouseup='check_content(\"Ajax.php?modname=miscellaneous/Portal.php\");' onmousedown='document.getElementById(\"header\").innerHTML = \"Home\";document.getElementById(\"cframe\").src = \"Bottom.php?modcat=home\"'><i class=\"icon-home4\"></i><span>" ._home . "</span></a></li>";
 foreach ($_openSIS['Menu'] as $modcat => $programs) {
     if (count($_openSIS['Menu'][$modcat])) {
         $keys = array_keys($_openSIS['Menu'][$modcat]);
@@ -667,24 +674,24 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
 
 
         if (User('PROFILE') != 'admin' && $modcat == "schoolsetup") {
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _schoolInfo . "</span></a>";
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._schoolInfo."</span></a>";
         } elseif (User('PROFILE') != 'admin' && $modcat == "users") {
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _myInfo . "</span></a>";
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._myInfo."</span></a>";
         } elseif (User('PROFILE') == 'student' && $modcat == "students") {
 
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _myInfo . "</span></a>";
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._myInfo."</span></a>";
         } elseif (User('PROFILE') == 'student' && $modcat == "scheduling") {
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _schedule . "</span></a>";
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._schedule."</span></a>";
         } elseif ($modcat == "messaging") {
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _messaging . "</span></a>";
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._messaging."</span></a>";
         } else {
 
             if ($modcat == 'eligibility') {
-                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _extracurricular . "</span></a>";
+                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._extracurricular."</span></a>";
             } elseif ($modcat == 'schoolsetup')
-                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . _schoolSetup . "</span></a>";
+                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>"._schoolSetup."</span></a>";
             else {
-                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . ucfirst(str_replace('_', ' ', constant('_' . $modcat))) . "</span></a>";
+                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . ucfirst(str_replace('_', ' ', constant('_'.$modcat))) . "</span></a>";
             }
         }
 
@@ -725,7 +732,7 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
                                 if ($modcat != 'tools')
                                     echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? schoolSetup : ucwords(constant($modcat))) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                             } else
-                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='$(\"#header\").html(\"" . ($modcat == 'schoolsetup' ? schoolSetup : ucwords(constant($modcat))) . " <i class=icon-arrow-right5></i> " . $title . "\");' onmouseup=\"$('#cframe').attr('src','Bottom.php?modname=" . str_replace('&', '?', $file) . "');\">$title</A>";
+                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='$(\"#header\").html(\"" . ($modcat == 'schoolsetup' ? schoolSetup : ucwords(constant($modcat))) . " <i class=icon-arrow-right5></i> " . $title."\");' onmouseup=\"$('#cframe').attr('src','Bottom.php?modname=" . str_replace('&', '?', $file) . "');\">$title</A>";
                         }
                     }
                 elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
@@ -766,7 +773,8 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
                         } else
                             echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=dd HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? schoolSetup : ucwords(constant($modcat))) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">$title</A>";
                     }
-                } elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
+                }
+                elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
                     $mm = $mm + 1;
                     echo '</ul></li><li><a href="javascript:void(0)">' . $title . '</a><ul>';
                     $child2 = 1;
@@ -827,46 +835,46 @@ if (User('PROFILE') == 'admin') {
     $admin_COMMON_WHERE = " WHERE s.STUDENT_ID=ssm.STUDENT_ID  AND a.STUDENT_ID=s.STUDENT_ID AND a.TYPE='Home Address' AND ssm.SYEAR=" . UserSyear() . " AND ssm.SCHOOL_ID=" . UserSchool() . " ";
 
     if (optional_param('mp_comment', '', PARAM_NOTAGS) || $_SESSION['smc']) {
-        $admin_COMMON_FROM .= " ,student_mp_comments smc";
-        $admin_COMMON_WHERE .= " AND smc.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_mp_comments smc";
+        $admin_COMMON_WHERE .=" AND smc.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smc'] = '1';
     }
 
     if (optional_param('goal_description', '', PARAM_NOTAGS) || optional_param('goal_title', '', PARAM_NOTAGS) || $_SESSION['g']) {
-        $admin_COMMON_FROM .= " ,student_goal g ";
-        $admin_COMMON_WHERE .= " AND g.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_goal g ";
+        $admin_COMMON_WHERE .=" AND g.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['g'] = '1';
     }
 
     if (optional_param('progress_name', '', PARAM_NOTAGS) || optional_param('progress_description', '', PARAM_NOTAGS) || $_SESSION['p']) {
-        $admin_COMMON_FROM .= " ,student_goal_progress p ";
-        $admin_COMMON_WHERE .= " AND p.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_goal_progress p ";
+        $admin_COMMON_WHERE .=" AND p.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['p'] = '1';
     }
 
     if (optional_param('doctors_note_comments', '', PARAM_NOTAGS) || optional_param('med_day', '', PARAM_NOTAGS) || optional_param('med_month', '', PARAM_NOTAGS) || optional_param('med_year', '', PARAM_NOTAGS) || $_SESSION['smn']) {
-        $admin_COMMON_FROM .= " ,student_medical_notes smn ";
-        $admin_COMMON_WHERE .= " AND smn.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_medical_notes smn ";
+        $admin_COMMON_WHERE .=" AND smn.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smn'] = '1';
     }
 
     if (optional_param('type', '', PARAM_NOTAGS) || optional_param('imm_comments', '', PARAM_NOTAGS) || optional_param('imm_day', '', PARAM_NOTAGS) || optional_param('imm_month', '', PARAM_NOTAGS) || optional_param('imm_year', '', PARAM_NOTAGS) || $_SESSION['sm']) {
 
-        $admin_COMMON_FROM .= " ,student_immunization sm ";
-        $admin_COMMON_WHERE .= " AND sm.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_immunization sm ";
+        $admin_COMMON_WHERE .=" AND sm.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['sm'] = '1';
     }
 
 
     if (optional_param('ma_day', '', PARAM_NOTAGS) || optional_param('ma_month', '', PARAM_NOTAGS) || optional_param('ma_year', '', PARAM_NOTAGS) || optional_param('med_alrt_title', '', PARAM_NOTAGS) || $_SESSION['sma']) {
-        $admin_COMMON_FROM .= " ,student_medical_alerts sma  ";
-        $admin_COMMON_WHERE .= " AND sma.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_medical_alerts sma  ";
+        $admin_COMMON_WHERE .=" AND sma.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['sma'] = '1';
     }
 
     if (optional_param('nv_day', '', PARAM_NOTAGS) || optional_param('nv_month', '', PARAM_NOTAGS) || optional_param('nv_year', '', PARAM_NOTAGS) || optional_param('reason', '', PARAM_NOTAGS) || optional_param('result', '', PARAM_NOTAGS) || optional_param('med_vist_comments', '', PARAM_NOTAGS) || $_SESSION['smv']) {
-        $admin_COMMON_FROM .= " ,student_medical_visits smv   ";
-        $admin_COMMON_WHERE .= " AND smv.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_FROM .=" ,student_medical_visits smv   ";
+        $admin_COMMON_WHERE .=" AND smv.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smv'] = '1';
     }
     $admin_COMMON = $admin_COMMON_FROM . $admin_COMMON_WHERE;
@@ -881,45 +889,45 @@ if (User('PROFILE') == 'teacher') {
 
 
     if (optional_param('mp_comment', '', PARAM_SPCL) || $_SESSION['smc']) {
-        $teacher_COMMON_FROM .= " ,student_mp_comments smc";
-        $teacher_COMMON_WHERE .= " AND smc.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_mp_comments smc";
+        $teacher_COMMON_WHERE .=" AND smc.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smc'] = '1';
     }
 
     if (optional_param('goal_description', '', PARAM_SPCL) || optional_param('goal_title', '', PARAM_SPCL) || $_SESSION['g']) {
-        $teacher_COMMON_FROM .= " ,student_goal g ";
-        $teacher_COMMON_WHERE .= " AND g.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_goal g ";
+        $teacher_COMMON_WHERE .=" AND g.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['g'] = '1';
     }
 
     if (optional_param('progress_name', '', PARAM_NOTAGS) || optional_param('progress_description', '', PARAM_NOTAGS) || $_SESSION['p']) {
-        $teacher_COMMON_FROM .= " ,student_goal_progress p ";
-        $teacher_COMMON_WHERE .= " AND p.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_goal_progress p ";
+        $teacher_COMMON_WHERE .=" AND p.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['p'] = '1';
     }
 
     if (optional_param('doctors_note_comments', '', PARAM_NOTAGS) || optional_param('med_day', '', PARAM_NOTAGS) || optional_param('med_month', '', PARAM_NOTAGS) || optional_param('med_year', '', PARAM_NOTAGS) || $_SESSION['smn']) {
-        $teacher_COMMON_FROM .= " ,student_medical_notes smn ";
-        $teacher_COMMON_WHERE .= " AND smn.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_medical_notes smn ";
+        $teacher_COMMON_WHERE .=" AND smn.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smn'] = '1';
     }
 
     if (optional_param('type', '', PARAM_NOTAGS) || optional_param('imm_comments', '', PARAM_NOTAGS) || optional_param('imm_day', '', PARAM_NOTAGS) || optional_param('imm_month', '', PARAM_NOTAGS) || optional_param('imm_year', '', PARAM_NOTAGS) || $_SESSION['sm']) {
 
-        $teacher_COMMON_FROM .= " ,student_immunization sm ";
-        $teacher_COMMON_WHERE .= " AND sm.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_immunization sm ";
+        $teacher_COMMON_WHERE .=" AND sm.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['sm'] = '1';
     }
 
     if (optional_param('ma_day', '', PARAM_NOTAGS) || optional_param('ma_month', '', PARAM_NOTAGS) || optional_param('ma_year', '', PARAM_NOTAGS) || optional_param('med_alrt_title', '', PARAM_NOTAGS) || $_SESSION['sma']) {
-        $teacher_COMMON_FROM .= " ,student_medical_alerts sma  ";
-        $teacher_COMMON_WHERE .= " AND sma.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_medical_alerts sma  ";
+        $teacher_COMMON_WHERE .=" AND sma.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['sma'] = '1';
     }
 
     if (optional_param('nv_day', '', PARAM_NOTAGS) || optional_param('nv_month', '', PARAM_NOTAGS) || optional_param('nv_year', '', PARAM_NOTAGS) || optional_param('reason', '', PARAM_NOTAGS) || optional_param('result', '', PARAM_NOTAGS) || optional_param('med_vist_comments', '', PARAM_NOTAGS) || $_SESSION['smv']) {
-        $teacher_COMMON_FROM .= " ,student_medical_visits smv   ";
-        $teacher_COMMON_WHERE .= " AND smv.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_FROM .=" ,student_medical_visits smv   ";
+        $teacher_COMMON_WHERE .=" AND smv.STUDENT_ID=s.STUDENT_ID ";
         $_SESSION['smv'] = '1';
     }
     $teacher_COMMON = $teacher_COMMON_FROM . $teacher_COMMON_WHERE;
@@ -983,26 +991,29 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
             }
         }
     }
-
+    
 
     ##### REMOVE FILES FROM ROOT - START #####
 
     $check_backups = DBGet(DBQuery("SELECT * FROM `program_config` WHERE `program` = 'DB_BACKUP'"));
 
-    if (!empty($check_backups)) {
-        foreach ($check_backups as $each_backups) {
-            $filename = $each_backups['TITLE'] . '.sql';
+    if(!empty($check_backups))
+    {
+        foreach($check_backups as $each_backups)
+        {
+            $filename = $each_backups['TITLE'].'.sql';
 
-            if (file_exists($filename)) {
+            if(file_exists($filename))
+            {
                 unlink($filename);
 
-                DBQuery("DELETE FROM `program_config` WHERE `program` = 'DB_BACKUP' AND `value` = '" . $each_backups['VALUE'] . "'");
+                DBQuery("DELETE FROM `program_config` WHERE `program` = 'DB_BACKUP' AND `value` = '".$each_backups['VALUE']."'");
             }
         }
     }
 
     ##### REMOVE FILES FROM ROOT - END #####
-
+    
 
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php')
         $allowed = true;
@@ -1031,9 +1042,10 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
         if (Preferences('SEARCH') != 'Y' && substr(clean_param($modname, PARAM_NOTAGS), 0, 6) != 'users/')
             $_REQUEST['search_modfunc'] = 'list';
         include('modules/' . $modname);
-    } else {
+    }
+    else {
         if (User('USERNAME')) {
-            echo "" . _youReNotAllowedToUseThisProgram . "! " . _thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured . ".";
+            echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";
             Warehouse('footer');
 
             if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
@@ -1113,7 +1125,7 @@ echo '</div>
                 <div class="row">
                     <div class="col-md-9">
                         <div class="navbar-text">
-                            ' . _footerText . '
+                            '._footerText.'
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -1128,3 +1140,4 @@ echo '</div>
 
 echo "</body>";
 echo "</html>";
+?>

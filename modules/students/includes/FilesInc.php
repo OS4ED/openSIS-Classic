@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 include('../../../RedirectIncludes.php');
 $dir = 'assets/studentfiles';
 if ($_REQUEST['modfunc'] == 'delete' && (User('PROFILE') == 'admin' || User('PROFILE') == 'student')) {
@@ -33,7 +34,7 @@ if ($_REQUEST['modfunc'] == 'delete' && (User('PROFILE') == 'admin' || User('PRO
         echo '</FORM>';
     }
     if (DeletePromptFilesEncoded($_REQUEST['title'], '&include=FilesInc&category_id=7')) {
-//        unlink($_REQUEST['file']);
+        unlink($dir.'/'.base64_decode($_REQUEST['removefile']));
         DBQuery('DELETE FROM user_file_upload WHERE ID=' . $_REQUEST['del']);
         unset($_REQUEST['modfunc']);
     }
@@ -50,85 +51,156 @@ if (!$_REQUEST['modfunc']) {
     unset($_SESSION['dup_file_name']);
     ###########################File Upload ####################################################
 
-//    if (!file_exists($dir)) {
-//        mkdir($dir, 0777);
-//    }
-    if ($_FILES['uploadfile']['name']) {
-        $_FILES['uploadfile']['name'] = str_replace(" ", "opensis_space_here", $_FILES['uploadfile']['name']);
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777);
+    }
+
+    if($_FILES['uploadfile']) {
         $allowFiles = array("jpg", "jpeg", "png", "gif", "bmp", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pps", "txt", "pdf");
-        $target_path = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'];
-        if (file_exists($target_path)) {
-            $target_path = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'] . "-_" . time();
-            $_SESSION['dup_file_name'] = $target_path;
-            $_SESSION['grid_msg'] = 'block';
-        }
 
-        $fileName = $_FILES['uploadfile']['name'];
-        $tmpName = $_FILES['uploadfile']['tmp_name'];
-        $fileSize = $_FILES['uploadfile']['size'];
-        $fileType = $_FILES['uploadfile']['type'];
-        $destination_path = $dir;
-        $upload = new upload();
-        $upload->target_path = $target_path;
-        $upload->destination_path = $destination_path;
-        $upload->name = $_FILES["uploadfile"]["name"];
-        $upload->setFileExtension();
-        $upload->fileExtension;
-        $upload->allowExtension = $allowFiles;
-        $upload->validateImage();
-        if ($upload->wrongFormat == 1) {
-            $_FILES["uploadfile"]["error"] = 1;
-        }
-        if ($_FILES["uploadfile"]["error"] > 0) {
-            $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvalidFileType.'</span>';
-        } else {
+        $msg = '';
+        $upload_status = 1;
+        $uploadedFiles = 0;
+        $rejectedFiles = array("typeError" => 0, "permissionError" => 0, "typeErrorFiles" => '', "permissionErrorFiles" => '');
 
-            $fp = fopen($tmpName, 'r');
-            $content = fread($fp, filesize($tmpName));
-            $content = addslashes($content);
-            fclose($fp);
+        $no_of_files = count($_FILES['uploadfile']['name']);
 
-            if (!get_magic_quotes_gpc()) {
-                $fileName = addslashes($fileName);
+        for($i=0; $i<$no_of_files; $i++) {
+            if ($_FILES['uploadfile']['name'][$i]) {
+                $_FILES['uploadfile']['name'][$i] = str_replace(" ", "opensis_space_here", $_FILES['uploadfile']['name'][$i]);
+                
+                $target_path = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'][$i];
+                
+                if (file_exists($target_path)) {
+                    $target_path = $dir . '/' . UserStudentID() . '-' . time() . '-' . $_FILES['uploadfile']['name'][$i];
+                    $_SESSION['dup_file_name'] = $target_path;
+                    // $_SESSION['grid_msg'] = 'block';
+                }
+
+                $fileName = $tmpName = $fileSize = $fileType = '';
+        
+                $fileName = $_FILES['uploadfile']['name'][$i];
+                $tmpName = $_FILES['uploadfile']['tmp_name'][$i];
+                $fileSize = $_FILES['uploadfile']['size'][$i];
+                $fileType = $_FILES['uploadfile']['type'][$i];
+
+                $destination_path = $dir;
+                
+                $upload = new upload();
+                $upload->target_path = $target_path;
+                $upload->destination_path = $destination_path;
+                $upload->name = $_FILES["uploadfile"]["name"][$i];
+                $upload->setFileExtension();
+                $upload->fileExtension;
+                $upload->allowExtension = $allowFiles;
+                $upload->validateImage();
+
+                if ($upload->wrongFormat == 1) {
+                    $_FILES["uploadfile"]["error"][$i] = 1;
+                }
+                if ($_FILES["uploadfile"]["error"][$i] > 0) {
+                    // $msg .= '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file '.$fileName.'. Invalid file type.</span><br>';
+
+                    $rejectedFiles['typeError']++;
+                    $rejectedFiles['typeErrorFiles'] .= $fileName.', ';
+                } else {
+                    if (!move_uploaded_file($_FILES["uploadfile"]["tmp_name"][$i], $upload->target_path))
+                    {
+                       // $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Cannot upload file. Invalid Permission</span>';
+
+                        $rejectedFiles['permissionError']++;
+                        $rejectedFiles['permissionErrorFiles'] .= $fileName.', ';
+                    }
+                    else
+                    {
+                        $target_path1 = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'][$i];
+                        // if (file_exists($target_path1) && file_exists($_SESSION['dup_file_name'])) {
+
+                        //     $n = DuplicateFile("duplicate file", $_SESSION['dup_file_name']);
+                        // }
+
+                        $fileName = str_replace($dir.'/', '', $target_path);
+                        $content = 'IN_DIR';
+
+                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
+
+                        $uploadedFiles++;
+
+                        // $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Successfully uploaded</span>';
+                    }
+                }
+                unset($_FILES['uploadfile'][$i]);
             }
-
-            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
-
-            $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._successfullyUploaded.'</span>';
-
-//            if (!move_uploaded_file($_FILES["uploadfile"]["tmp_name"], $upload->target_path))
-//                $msg = '<span style="color: #C90000; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._cannotUploadFileInvalidPermission.'</span>';
-//            else {
-//
-//                $target_path1 = $dir . '/' . UserStudentID() . '-' . $_FILES['uploadfile']['name'];
-//                if (file_exists($target_path1) && file_exists($_SESSION['dup_file_name'])) {
-//
-//                    $n = DuplicateFile("duplicate file", $_SESSION['dup_file_name']);
-//                }
-//                $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">'._successfullyUploaded.'</span>';
-//            }
         }
         unset($_FILES['uploadfile']);
+        $rejectedFiles['typeErrorFiles'] = rtrim(trim($rejectedFiles['typeErrorFiles']), ',');
+        $rejectedFiles['permissionErrorFiles'] = rtrim(trim($rejectedFiles['permissionErrorFiles']), ',');
     }
+
     if (!isset($_SESSION['grid_msg'])) {
+        if($upload_status == 1)
+        {
+            if($no_of_files == $uploadedFiles) {
+                $msg = '<div class="alert alert-success alert-styled-left">'._allFilesAreSuccessfullyUploaded.'</div>';
+            } else {
+                $msg = '';
+                
+                if($uploadedFiles != 0) {
+                    $msg .= '<div class="alert alert-success alert-styled-left">';
+                    if($uploadedFiles == 1) {
+                        $msg .= _1File;
+                    } elseif($uploadedFiles > 1) {
+                        $msg .= $uploadedFiles. ' '._files.'';
+                    }
+                    $msg .= ' '._successfullyUploaded.'</div>';
+                }
+
+                if($rejectedFiles['typeError'] != 0) {
+                    $msg .= '<div class="alert alert-danger alert-styled-left">';
+                    if($rejectedFiles['typeError'] == 1) {
+                        $msg .= _1File;
+                    } elseif($rejectedFiles['typeError'] > 1) {
+                        $msg .= $rejectedFiles['typeError']. ' '._files.'';
+                    }
+                    $msg .= ' (' .$rejectedFiles['typeErrorFiles']. ') '._cannotBeUploadedBecauseOfInvalidFileType.'</div>';
+                }
+
+                if($rejectedFiles['permissionError'] != 0) {
+                    $msg .= '<div class="alert alert-danger alert-styled-left">';
+                    if($rejectedFiles['permissionError'] == 1) {
+                        $msg .= _1File;
+                    } elseif($rejectedFiles['permissionError'] > 1) {
+                        $msg .= $rejectedFiles['permissionError']. ' '._files.'';
+                    }
+                    $msg .= ' (' .$rejectedFiles['permissionErrorFiles']. ') '._cannotBeUploadedBecauseOfInvalidPermission.'</div>';
+                }
+            }
+        }
+
         if ($msg) {
             echo $msg;
         }
-
+        if ($succmsg) {
+            echo $succmsg;
+        }
 
 
         if (AllowEdit()) {
-            echo '<div class="alert bg-primary alert-styled-left">'._toUploadAdditionalFilesClickBrowseSelectFileGiveItAFileNameAndClickSave.'</div>';
+            echo '<div class="alert alert-info alert-styled-left">'._toUploadAdditionalFilesClickBrowseSelectFileAndClickSave.'</div>';
         } else {
-            echo '<div class="alert bg-primary alert-styled-left">'._toViewACertainFileClickOnTheNameOfTheFile.'</div>';
+            echo '<div class="alert alert-info alert-styled-left">'._toViewACertainFileClickOnTheNameOfTheFile.'</div>';
         }
 
         if (AllowEdit()) {
-            echo '<input type="file" name="uploadfile" size=50 id="upfile">';
+            echo '<script>var fileobj = [];</script>';
+            echo '<input type="file" style="display:none;" name="uploadfile[]" size=50 id="upfile" multiple="multiple" onchange="selectedFilesRail(this.id);">';
+            echo '<input class="btn btn-default btn-xs" type="button" value="'._browse.'..." onclick="clickOnFileInput();">';
+
+            echo '<div id="areaFileRail"><ul class="p-0 m-t-15" style="list-style-type:none;"></ul></div>';
         }
 
         echo '<table class="table table-bordered table-striped m-t-15">';
-//        $dir = dir($dir);
+        // $dir = dir($dir);
         // $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND file_info=\'stufile\''));
         $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND file_info=\'stufile\''));
         echo '<tbody>';
@@ -136,39 +208,7 @@ if (!$_REQUEST['modfunc']) {
         $gridClass = "";
         $file_no = 1;
 
-//        while ($filename = $dir->read()) {
-//            
-//            if ($filename) {
-//                if ($filename == '.' || $filename == '..')
-//                    continue;
-//
-//                $student_id_up = explode('-', $filename);                
-//
-//                if ($student_id_up[0] == UserStudentID()) {
-//                    $found = true;
-//                    
-//                    $sub = substr($filename, strpos($filename, '-') + 1);
-//
-//                    if (strstr($sub, '-_')) {
-//                        $file_display = substr($sub, 0, strrpos($sub, '-_'));
-//                    } else {
-//                        $file_display = $sub;
-//                    }
-//
-//                    echo '<tr class="' . $gridClass . '">
-//                          <td><a target="new" href="assets/studentfiles/' . $filename . '">' . str_replace("opensis_space_here", " ", $file_display) . '</a></td>
-//                          ';
-//
-//                    if (AllowEdit()) {
-//                        echo '<td><input type="hidden" name="del" value="assets/studentfiles/' . $filename . '"/ >
-//                          <a href=Modules.php?modname='.$_REQUEST['modname'].'&include=FilesInc&category_id='.$_REQUEST['category_id'].'&file=assets/studentfiles/' . urlencode($filename) . '&modfunc=delete><i class="fa fa-times"></i></a>
-//                              </td>';
-//                    }
-//
-//                    echo ' </tr>';
-//                }
-//            }
-//        }
+        
         foreach ($file_info as $key => $file_val) {
             if ($gridClass == "even") {
                 $gridClass = "odd";
@@ -179,14 +219,11 @@ if (!$_REQUEST['modfunc']) {
                 if ($file_val['NAME'] == '.' || $file_val['NAME'] == '..')
                     continue;
 
-//            $student_id_up = explode('-',$filename);
-//            if($student_id_up[0]==UserStudentID())
-//            {
+                // $student_id_up = explode('-',$filename);
+                // if($student_id_up[0]==UserStudentID())
+                // {
                 else {
                     $found = true;
-//                echo "<br>";
-//
-//                echo "<br>";
                     $sub = $file_val['NAME'];
 
                     if (strstr($sub, '-_')) {
@@ -212,13 +249,13 @@ if (!$_REQUEST['modfunc']) {
                     }
 
                     echo '<tr class="' . $gridClass . '">';
-                    echo '<td>';
-                    echo '<a href="DownloadWindow.php?down_id=' . $file_val['ID'] . '">' . $fileIcon . ' &nbsp; '. str_replace("opensis_space_here", " ", $file_display) . '</a>';
+                    echo '<td style="vertical-align: middle;">';
+                    echo '<a href="DownloadWindow.php?down_id=' . $file_val['DOWNLOAD_ID'] . '&studentfile=Y">' . $fileIcon . ' &nbsp; '. str_replace("opensis_space_here", " ", str_replace(UserStudentID()."-","",$file_display)) . '</a>';
                     echo '</td>';
 
                     if (AllowEdit()) {
                         echo '<td width="80"><input type="hidden" name="del" value="' . $file_val['ID'] . '"/>';
-                        echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&title=' . base64_encode($file_val['NAME']) . '&include=' . $_REQUEST['include'] . '&modfunc=delete&del=' . $file_val['ID'] . ' class="text-danger"><i class="icon-cross2"></i> Delete</a>
+                        echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&removefile=' . base64_encode($file_val['NAME']) . '&title=' . base64_encode(str_replace("opensis_space_here", " ", str_replace(UserStudentID()."-","",$file_val['NAME']))) . '&include=' . $_REQUEST['include'] . '&modfunc=delete&del=' . $file_val['ID'] . ' class="btn btn-danger btn-icon btn-xs" title="'._delete.'"><i class="icon-cross2"></i></a>
                               </td>';
                     }
 
@@ -226,11 +263,11 @@ if (!$_REQUEST['modfunc']) {
                 }
             }
         }
-//        $dir->close();
+        // $dir->close();
         echo '</tbody>';
         echo '</table>';
         if ($found != true) {
-            echo '<span class="text-danger">'._noFilesFound.'.</span>';
+            echo '<div id="nofiles" class="alert alert-danger">'._noFilesFound.'.</div>';
         }
     }
 }

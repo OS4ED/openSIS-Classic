@@ -372,7 +372,7 @@ define("_from", "De");
 define("_to", "À");
 define("_assignedDate", "date de Assigned");
 define("_ueDated", "UeDated");
-
+define("_powered By", "Powered By");
 define("_listOfEvents", "Liste des événements");
 define("_noCalendarsWereFound", "Aucun calendrier n'a été trouvé.");
 define("_weekdays", "Jours de la semaine");
@@ -478,7 +478,7 @@ define("_allAvailableClassesFor", "Toutes les classes disponibles pour");
 define("_studentSchedulesReport", "Rapport sur les horaires des étudiants");
 //PRINT CATALOG TERM
 define("_noCoursesAreFoundInThisTerm", "Aucun cours n'est trouvé dans ce terme");
-
+define("_printt", "Impression");
 define("_reportGeneratedFor", "Rapport généré pour");
 define("_term", "Terme");
 //Print ALL COURSES
@@ -493,12 +493,17 @@ define("_undo", "Annuler");
 define("_reAssignmentRecord", "Dossier de réaffectation");
 define("_reAssignmentRecords", "Registres de réaffectation");
 //STUDENTS
+define("_allFilesAreSuccessfullyUploaded", "Tous les fichiers sont téléchargés avec succès");
+define("_1File", "1 fichier");
+define("_cannotBeUploadedBecauseOfInvalidFileType", "ne peut pas être téléchargé en raison du type de fichier non valide");
+define("_cannotBeUploadedBecauseOfInvalidPermission", "ne peut pas être téléchargé à cause de l'autorisation non valide");
+define("_toUploadAdditionalFilesClickBrowseSelectFileAndClickSave", "Pour télécharger des fichiers supplémentaires, cliquez sur Parcourir, sélectionnez le fichier et cliquez sur Enregistrer");
+define("_browse", "Feuilleter");
 define("_custom", "Douane");
 define("_disabilityDescription", "description de l'invalidité");
 define("_streetAddress", "Adresse de rue");
 define("_find", "Trouver");
 define("_any", "Tout");
-define("_rollingRetentionOptions", "Roulement de rétention / Options");
 define("_selectedStudentsAreSuccessfullyReEnrolled", "Les étudiants sélectionnés sont re avec succès inscrits");
 define("_additionalInfo", "Information additionnelle");
 define("_requestArray", "demande tableau");
@@ -508,6 +513,7 @@ define("_enterDate", "entrer la date");
 define("_selectMultipleChoices", "Sélectionnez Choix multiples");
 define("_filter", "filtre");
 define("_filters", "filtres");
+define("_edit", "Éditer");
 define("_goal", "objectif");
 define("_progress", "Le progrès");
 define("_progresses", "progresse");
@@ -715,7 +721,6 @@ define("_name", "Nom");
 define("_birthdate", "Date de naissance");
 define("_primaryLanguage", "Langue principale");
 define("_custodyOfStudent", "La garde des étudiants");
-
 define("_dateMedicalNotes", "Date (Notes médicales)");
 define("_typeImmunizations", "Type (immunisations)");
 define("_dateImmunizations", "Date (immunisations)");
@@ -880,6 +885,7 @@ define("_theFilterHasBeenSuccessfullySaved", "Le filtre a été enregistré avec
 define("_cannotBeReenrolledBecauseReenrollDateAndDropDateAreSameOrReenrollmentDateIsBeforeEndDate", "ne peut pas être réincorporés parce que la date de réinscrire et la date de dépôt sont les mêmes ou la date de réinscription est avant la date de fin.");
 define("_selectImageFile", "Sélectionnez le fichier d'image");
 define("_wellDone", "Bien joué");
+define("_fileUploadedSuccessfull", "Fichier téléchargé avec succès");
 define("_maximumUploadFileSize_10Mb", "Taille du fichier de téléchargement maximum 10 Mo");
 define("_pleaseSelectAStudentFirst", "S'il vous plaît choisir un étudiant de première");
 define("_removeParent", "Supprimer Parent");
@@ -904,6 +910,9 @@ define("_medicalAlerts", "Alertes médicales");
 define("_nurseVisits", "Visites infirmières");
 //USERS
 define("_forDatesYyyyMmDdForCheckboxesYAmpForLongTextItWillBeIgnored", "pour les dates: AAAA-MM-JJ, pour les cases à cocher: O et pour le texte long, il sera ignoré");
+define("_newStaffField", "Nouveau personnel de terrain");
+define("_includeShouldBeLeftBlankForMostCategories", "Inclure (doit être laissée en blanc pour la plupart des catégories)");
+define("_forDatesYyyyMmDdForCheckboxesYAmpForLongTextItWillBeIgnored", "pour les dates: AAAA-MM-JJ, pour: Y & cases à cocher pour long texte, il sera ignoré");
 define("_newUserField", "Nouveau champ utilisateur");
 define("_staffs", "personnel");
 define("_newStaffFieldCategory", "Nouvelle catégorie de champ de personnel");
@@ -1004,9 +1013,6 @@ define("_missingAttendance", "La présence manquante");
 define("_enterExtracurricular", "Entrez parascolaire");
 define("_noAccess", "Pas d accès");
 //SCHEDULING
-define("_forDatesYyyyMmDdForCheckboxesY", "pour les dates: AAAA-MM-JJ, pour les cases à cocher: O");
-define("_newStaffField", "Nouveau champ de personnel");
-define("_includeShouldBeLeftBlankForMostCategories", "Inclure (doit être laissé vide pour la plupart des catégories)");
 define("_assignedDateCanNotBeLesserThanTodaysDate", "date assignée ne peut être inférieure à la date d'aujourd'hui");
 define("_hello", "Bonjour");
 define("_youReNotAllowedToUseThisProgram", "Vous n'êtes pas autorisé à utiliser ce programme");
@@ -1128,7 +1134,7 @@ define("_cannotSelectCoursePeriodAsNoPeriodHasBeenAssigned", "Impossible de sél
 //*****REPORTS*****//
 define("_noSubjectWasFound", "Aucun sujet n'a été trouvé.");
 define("_1SubjectWasFound", "1 Objet a été trouvé.");
-
+define("_subjectsWereFound.", "Les sujets ont été trouvés.");
 define("_schoolwideScheduleReport", "Rapport Schoolwide annexe");
 define("_subjectTeacher", "Professeur de matières");
 define("_noCoursePeriodFound", "Non Période cours trouvé.");
@@ -1207,14 +1213,10 @@ define("_addEditHistoricalReportCardGrades", "Ajouter / modifier les notes histo
 //ATTENDANCE
 define("_attendanceIsAlreadyTakenForTheStudentsOnSelectedDayAndPeriod", "La fréquentation est déjà prise pour les étudiants le jour et la période sélectionnés.");
 define("_thisStudentHasNoContactInformation", "Cet étudiant n'a pas d'informations de contact");
-define("_openSisStudentInformationSystem", "openSIS Système d'information scolaire");
 define("_studentGrades", "Grades étudiants");
 define("_configuration", "Configuration");
 define("_associatedParents", "Les parents associés");
 define("_backToMissingAttendanceList", "Retour à la liste de présence manquante");
-define("_student", "Étudiant");
-define("_studentId", "Carte d'étudiant");
-define("_grade", "Classe");
 define("_teachersHaveMissingAttendanceData", "Les enseignants ont les données manquantes de fréquentation");
 define("_youHaveTakenAttendanceTodayForThisPeriod", "Vous avez pris aujourd'hui la participation pour cette période");
 define("_secondaryTeacherHasTakenAttendanceTodayForThisPeriod", "enseignant du secondaire a pris aujourd'hui la participation pour cette période");
@@ -1222,7 +1224,6 @@ define("_primaryTeacherHasTakenAttendanceTodayForThisPeriod", "enseignant primai
 define("_youAreNotCurrentlyInAMarkingPeriod", "Vous n'êtes pas actuellement dans une période de notation");
 define("_thereIsAConflict", "Il y a un conflit");
 define("_youCannotAddThisCoursePeriod", "Vous ne pouvez pas ajouter cette période de cours");
-define("_checkingSchedulePleaseWait", "Vérification de calendrier Attendez S'il vous plaît");
 define("_officialInformation", "Informations officielles");
 define("_useLastYearsIfMissing", "Utilisez dernières années manquantes Si");
 define("_allTheGradesWithRespectToThisAssignmentWillBeDeleted", "Tous les grades par rapport à cette cession seront supprimés");
@@ -1231,14 +1232,12 @@ define("_duplicateFileFound", "Les fichiers en double Trouvées");
 define("_duplicateStudentFound", "Trouvé étudiant en double");
 define("_thereIsAlreadyAStudentWithTheSameInformation", "Il existe déjà un étudiant avec les mêmes informations");
 define("_doYouWantToProceed", "Voulez-vous poursuivre");
-define("_duplicateFileFound", "Les fichiers en double Trouvées");
 define("_thereIsAlreadyAFileWithTheSameName", "Il existe déjà un fichier avec le même nom");
 define("_addGroupMember", "Ajouter un membre Groupe");
 define("_member", "Membre");
 define("_selectSubject", "Sélectionnez Objet");
 define("_selectCourse", "Sélectionnez Cours");
 define("_noRecordsWereFound", "Aucun enregistrement n'a été trouvé");
-define("_date", "Date");
 define("_present", "Présent");
 define("_adminOfficeComment", "Admin & Office Commentaire");
 define("_teacherComment", "Commentaire enseignant");
@@ -1248,10 +1247,8 @@ define("_thisIsAnEmergencyContact", "Ceci est un contact d'urgence");
 define("_addNewContact", "Ajouter un nouveau contact");
 define("_cannotDeleteBecauseAttendanceCodesAreAssociated", "Impossible de supprimer car les codes de présence sont associés");
 define("_studentsList", "liste des étudiants");
-define('LANG_RECORDS_ADDED_CONFIRMATION', 'Absence records were added for the selected students.');
-define('LANG_CHOOSE_STUDENT_ERROR', 'You must choose at least one period and one student.');
-define('LANG_ABSENCE_CODE', 'Absence Code');
-define('LANG_ABSENCE_REASON', 'Absence Reason');
+define("_absenceRecordsWereAddedForTheSelectedStudents", "Des enregistrements d'absence ont été ajoutés pour les étudiants sélectionnés.");
+define("_youMustChooseAtLeastOnePeriodAndOneStudent", "Vous devez choisir au moins une période et un étudiant.");
 define("_attendanceRecords", "Records de fréquentation");
 define("_attendanceRecord", "Registre de présence");
 define("_avgAttendance", "La fréquentation moyenne");
@@ -1276,7 +1273,6 @@ define("_utilities", "Utilitaires");
 define("_recalculateDailyAttendance", "La fréquentation quotidienne recalcul");
 define("_deleteDuplicateAttendance", "Supprimer présence en double");
 define("_teacherSEntry", "Enseignant 'entrée s");
-define("_thisStudentHasNoContactInformation", "Cet étudiant n'a pas d'informations de contact");
 define("_unableToAddAbsenceRecordsFor", "Impossible d'ajouter des enregistrements d'absence pour");
 define("_addAbsenceToPeriods", "Ajouter absence aux périodes");
 define("_absenceCode", "Code d'absence");
@@ -1299,7 +1295,6 @@ define("_periodName", "période Nom");
 define("_attendanceStatus", "Statut de présence");
 define("_totalAttendance", "La fréquentation totale");
 define("_daysPossible", "jours possibles");
-define("_present", "Présent");
 define("_absent", "Absent");
 define("_ada", "ADA");
 define("_absences", "Absences");
@@ -1387,6 +1382,7 @@ define("_messageNotSent", "Message non envoyé");
 define("_asTheyDonTExist", "car ils n'existent pas");
 define("_doesnTExist", "n'existe pas");
 //TOOLS
+define("_savingDatabaseForBackupBeforeRolloverPleaseDonotClickAnywhere", "base de données pour l'enregistrement de sauvegarde avant de survol, s'il vous plaît DONOT Cliquez avec le bouton");
 define("_customFieldType", "Type de champ personnalisé");
 define("_customFieldName", "Champ Personnalisable Nom");
 define("_options", "options");
@@ -1488,12 +1484,12 @@ define("_choosePeriod", "Choisissez Période");
 define("_gradeReportingIsOpenForThisMarkingPeriodYouCanEditTheseGrades", "rapport qualité est ouvert pour cette période de marquage. Vous pouvez modifier ces notes.");
 define("_assignPercents", "ASSIGN POURCENTS");
 define("_getGradebookGrades", "Obtenir les notes du carnet de notes");
+define("_get", "Avoir");
 define("_clearAll", "TOUT EFFACER");
 define("_percent", "Pour cent");
 define("_assignGrade", "Assigner année");
 define("_noAssignmentsWereFound", "Aucune missions ont été trouvés.");
 define("_progresReports", "Rapports Progres");
-
 define("_excludeUngradedECAssignments", "Exclure de missions non classés E / C");
 define("_excludeUngradedAssignmentsNotDue", "Exclure ungraded missions non échu");
 define("_theSelectedDateIsNotInASchoolQuarter", "La date choisie est pas dans un quartier de l'école.");
@@ -1560,7 +1556,6 @@ define("_wed", "Mer");
 define("_thu", "Jeu");
 define("_fri", "Ven");
 define("_sat", "Sam");
-define("_youMustChooseAtLeastOnePeriodAndOneStudent", "Vous devez choisir au moins une période et un étudiant.");
 define("_tryAgain", "RÉESSAYER");
 define("_noAttendanceRecordsWereFound", "Aucun enregistrement de présence n'a été trouvé.");
 define("_attendancePossible", "participation possible");
@@ -1636,11 +1631,9 @@ define("_parents", "Parents");
 define("_availableSchoolFields", "Champs disponibles école");
 define("_creatReportForInstitutes", "CREAT RAPPORT POUR LES INSTITUTS");
 define("_noCustomFieldsWereFound", "Non Les champs personnalisés ont été trouvés.");
-define("_customFields", "Les champs personnalisés");
 define("_homeroom", "Homeroom");
 define("_secondaryLanguage", "Langue secondaire");
 //----------------------------------------------------------------------------------------------------------
-define("_première", "première");
 define("_disableUser", "Désactiver l'utilisateur");
 define("_includeDisabledUser", "Inclure les personnes handicapées utilisateur");
 define("_thisStaffIsNotScheduledToAnyCoursePeriodAndThereforeNoScheduleDataIsAvailable", "Ce personnel ne devrait une période de cours et, par conséquent, aucune donnée est disponible calendrier");
@@ -1660,7 +1653,7 @@ define("_birthdaySearch", "anniversaire Recherche");
 define("_ageSearch", "âge Recherche");
 define("_advancedFilter", "Filtre avancé");
 define("_closeAdvancedFilter", "Fermer Filtre avancé");
-
+define("_didNotRecieve", "N'a pas reçu");
 define("_toStudent", "pour l'étudiant");
 define("_toPrimaryEmergencyContact", "En cas d'urgence à l'enseignement primaire");
 define("_toSecondaryEmergencyContact", "En cas d'urgence au secondaire");
@@ -1856,7 +1849,6 @@ define("_studentInformationReport", "Rapport information sur les étudiants");
 define("_noContactsWereFound", "Aucun contact n'a été trouvé");
 define("_goalDetails", "Détails de l'objectif");
 define("_las", "Las");
-
 define("_nonTeachingStaff", "Non personnel enseignant");
 define("_custodian", "Gardien");
 define("_clerk", "Employé de bureau");
@@ -1882,12 +1874,9 @@ define("_excluded", "Exclu");
 define("_eC", "E/C");
 define("_whoHasCompletedAllTheAcademic", "Qui a terminé tous les universitaires");
 define("_requirementsFor", "exigences pour");
-define("_honorRoll", "Tableau d'honneur");
-define("_total", "Total");
-define("_academicProbationPleaseBeRemindedOfSectionOfTheAcademicHandbooKIfStudentsFailToRaiseTheirCGPAAboveForTwoConsecutiveSemestersTheDefaultActionIsDismissalFromTheProgram", "PROBATION ACADÉMIQUE
-         Veuillez vous rappeler la section 2.3.6 du manuel académique:
-         Si les étudiants ne parviennent pas à augmenter leur MPC au-dessus de 3,0 pendant deux semestres consécutifs
-         l'action par défaut est le rejet du programme");
+define("_academicProbation", "PROBATION ACADÉMIQUE");
+define("_pleaseBeRemindedOfSection_2_3_6OfTheAcademicHandbook", "S'il vous plaît être rappelé de la section 2.3.6 du manuel scolaire:");
+define("_ifStudentsFailToRaiseTheirCgpaAbove_3_0ForTwoConsecutiveSemestersTheDefaultActionIsDismissalFromTheProgram", "Si les élèves ne parviennent pas à élever leur ACMG au-dessus de 3,0 pour deux semestres consécutifs l'action par défaut est le renvoi du programme");
 
 define("_dateOfBirthh", "Date de naissance");
 define("_notRequested", "Non demandé");
@@ -1930,4 +1919,8 @@ define("_thisPasswordIsAlredyTaken", "Ce mot de passe est alredy prise");
 define("_yourCurrentPasswordWasIncorrect", "Votre mot de passe actuel est incorrect");
 define("_yourCurrentPasswordCanNotBeBlank", "Votre mot de passe actuel ne peut pas être vide");
 define("_yourNewPasswordWasSaved", "Votre nouveau mot de passe a été enregistré");
+
+define("_cannotGeneratePagination", "Impossible de générer la pagination!");
+define("_outOf", "hors de");
+define("_entries", "entrées");
 ?>

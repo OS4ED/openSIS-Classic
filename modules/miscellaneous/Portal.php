@@ -39,12 +39,11 @@ $this_portal_toggle = "";
 
 $current_hour = date('H');
 $welcome .= ''._user.' : ' . User('NAME');
+
 // if ($_SESSION['LAST_LOGIN'])
 //    $welcome .= ' | Last login : ' . ProperDate(substr($_SESSION['LAST_LOGIN'], 0, 10)) . ' at ' . substr($_SESSION['LAST_LOGIN'], 10);
 // if ($_SESSION['FAILED_LOGIN'])
 //    $welcome .= ' | <span class=red >' . $_SESSION['FAILED_LOGIN'] . '</b> failed login attempts</span>';
-
-// ----------------------------------------Update Missing Attendance_________________________________-
 
 // $det=DBGet(DBQuery('SELECT count(1) as REC_EX,STUDENT_ID,course_period_id FROM `schedule` GROUP By STUDENT_ID,course_period_id having count(1)>1'));
 // foreach($det as $dt){
@@ -55,8 +54,13 @@ $welcome .= ''._user.' : ' . User('NAME');
 //    }
 // }
 
-echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">'._pleaseWait.'.</span> '._compilingMissingAttendanceData.'. '._doNotClickAnywhere.'.</div>
-<div id="resp"></div>';
+# --------------------------- #
+#  Update Missing Attendance  #
+# --------------------------- #
+
+echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">'._pleaseWait.'.</span> '._compilingMissingAttendanceData.'. '._doNotClickAnywhere.'.</div>';
+echo '<div id="resp"></div>';
+
 $stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
 
 foreach ($stu_missing_atten as $k => $f) {
@@ -72,7 +76,10 @@ foreach ($stu_missing_atten as $k => $f) {
         DBQuery('DELETE FROM missing_attendance WHERE  TEACHER_ID=' . $staff_id . ' AND SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id);
     }
 }
-//-----------------------------------------Update missing attendance ends--------------------------------------------------
+
+# -------------------------------- #
+#  Update missing attendance ends  #
+# -------------------------------- #
 
 $userName = User('USERNAME');
 $link = array();
@@ -128,7 +135,6 @@ if ($_SESSION['PROFILE_ID'] == 0)
     $title1 = _superAdministrator;
 if ($_SESSION['PROFILE_ID'] == 1)
     $title1 = _administrator;
-// echo $_SESSION['PROFILE_ID'];
 
 switch (User('PROFILE')) {
 
@@ -152,7 +158,7 @@ switch (User('PROFILE')) {
 //
 
 
-$update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\'  AND program=\'UPDATENOTIFY\' AND title=\'display_school\' LIMIT 0, 1'));
+        $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\'' . UserSchool() . '\'  AND program=\'UPDATENOTIFY\' AND title=\'display_school\' LIMIT 0, 1'));
         if ($update_notify_s[1]['VALUE'] == 'Y') {
             $cal_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM school_calendars WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
             $mp_setup = DBGet(DBQuery('SELECT COUNT(*) as REC FROM marking_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
@@ -586,7 +592,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
             echo '</div>';
         }
         if ($att_qry[1]['count'] != 0)
-            echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <b>Users -> Teacher Programs -> Missing Attendance</b></div>';
+            echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">'._warning.'!!</span> - '._teachersHaveMissingAttendance.'. '._go_To.' : <b>'._users.' -> '._teacherPrograms.' -> '._missingAttendance.'</b></div>';
         if (Preferences('HIDE_ALERTS') != 'Y') {
             // warn if missing attendance
 
@@ -596,8 +602,8 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
 
 
 
-            $RET = DBGet(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,mi.SCHOOL_DATE,cp.TITLE AS TITLE,mi.COURSE_PERIOD_ID,mi.PERIOD_ID,cpv.ID AS CPV_ID 
-    FROM missing_attendance mi,schools s,course_periods cp,course_period_var cpv WHERE s.ID=mi.SCHOOL_ID AND  cp.COURSE_PERIOD_ID=mi.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND mi.period_id=cpv.period_id AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\' ) AND mi.SCHOOL_ID=\'' . UserSchool() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND mi.SCHOOL_DATE < \'' . DBDate() . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) ORDER BY cp.TITLE,mi.SCHOOL_DATE '), array('SCHOOL_DATE' => 'ProperDate'));
+            $RET = DBGet(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,mi.SCHOOL_DATE,cp.TITLE AS TITLE,mi.COURSE_PERIOD_ID,mi.PERIOD_ID,cpv.ID AS CPV_ID FROM missing_attendance mi,schools s,course_periods cp,course_period_var cpv WHERE s.ID=mi.SCHOOL_ID AND  cp.COURSE_PERIOD_ID=mi.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND mi.period_id=cpv.period_id AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND mi.SCHOOL_ID=\'' . UserSchool() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND mi.SCHOOL_DATE < \'' . DBDate() . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) AND IF(cp.SCHEDULE_TYPE=\'BLOCKED\', mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE, 1) ORDER BY mi.SCHOOL_DATE,cp.TITLE'), array('SCHOOL_DATE' => 'ProperDate'));
+
             $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'0\' ORDER BY SORT_ORDER'));
 
             if (count($RET) && $codes_RET_count[1]['CODES']) {

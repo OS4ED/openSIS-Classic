@@ -167,7 +167,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
 //
 //                echo (($i>0)?', ':'')."<a href='DownloadWindow.php?filename=$img_name[$i]&name=$img4[$i]' target='new' >" . $img3[$i] . "</a>";
 //            }
-            echo "<a href='DownloadWindow.php?down_id=".$img['ID']."'>".$img['NAME']."</a>";
+            echo "<a href='DownloadWindow.php?down_id=".$img['DOWNLOAD_ID']."'>".$img['NAME']."</a>";
             echo '<br>&nbsp;&nbsp;&nbsp;<br>';
         }
         }

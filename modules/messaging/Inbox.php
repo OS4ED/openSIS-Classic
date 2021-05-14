@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+require_once 'libraries\htmlpurifier\library\HTMLPurifier.auto.php';
+
   //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
     echo'<div class="alert bg-success alert-styled-left">'._messageDeletedSucessfully.'</div>';
@@ -301,7 +303,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
                 $to_bcc = $value['TO_BCC'];
                 $to_bcc_arr = explode(',', $to_bcc);
 
-
+                $update_to_user = "";
                 if (($key = array_search($userName, $arr)) !== false) {
                     unset($arr[$key]);
                     $update_to_user = implode(',', $arr);
@@ -314,13 +316,13 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
                     } else {
                         $trash_user = $userName;
                     }
-                    $query = "update msg_inbox set to_user='$update_to_user',istrash='$trash_user' where mail_id IN ($mail_id)";
+                    $query = 'update msg_inbox set to_user="'.$update_to_user.'",istrash="'.$trash_user.'" where mail_id IN ("'.$mail_id.'")';
 
                     $fetch_ex = DBQuery($query);
                 }
                 if (($key = array_search($userName, $to_cc_arr)) !== false) {
                     unset($to_cc_arr[$key]);
-                    echo $update_to_user = implode(',', $to_cc_arr);
+                    $update_to_user = implode(',', $to_cc_arr);
                     if ($value['ISTRASH'] != '') {
                         $to_arr = explode(',', $value['ISTRASH']);
 
@@ -663,6 +665,10 @@ if (!isset($_REQUEST['modfunc'])) {
 
 function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBCCs, $grpName) {
     $mailBody = singleQuoteReplace('', '', $mailBody);
+    $config = HTMLPurifier_Config::createDefault();
+    $purifier = new HTMLPurifier($config);
+    $mailBody = $purifier->purify($mailBody);
+
     $subject = singleQuoteReplace('', '', $subject);
     $grpName = str_replace("'", "\'", $grpName);
     $attachment = str_replace("'", "\'", $attachment);

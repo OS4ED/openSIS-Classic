@@ -29,12 +29,6 @@
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
-define('LANG_RECORDS_ADDED_CONFIRMATION', 'Absence records were added for the selected students.');
-define('LANG_CHOOSE_STUDENT_ERROR', 'You must choose at least one period and one student.');
-define('LANG_ABSENCE_CODE', 'Absence Code');
-define('LANG_ABSENCE_REASON', 'Absence Reason');
-
-
 if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 {
     $_REQUEST['search_modfunc'] = 'list';
@@ -159,7 +153,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
         $error_note = '';
 
         if (count($array_diff) == 0)
-            $note = LANG_RECORDS_ADDED_CONFIRMATION;
+            $note = _absenceRecordsWereAddedForTheSelectedStudents;
         if (count($array_diff) > 0 && count($taken_arr) == 0) {
             $note = '';
             $error_note = '&nbsp;Unable to add absence records for <br/>';
@@ -169,7 +163,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
             }
         }
         if (count($array_diff) > 0 && count($taken_arr) > 0) {
-            $note = LANG_RECORDS_ADDED_CONFIRMATION;
+            $note = _absenceRecordsWereAddedForTheSelectedStudents;
             $error_note = '&nbsp;Unable to add absence records for <br/>';
             foreach ($array_diff as $st_id) {
                 $get_stu_names = DBGet(DBQuery('SELECT CONCAT(LAST_NAME,\', \',FIRST_NAME) AS FULL_NAME FROM students WHERE STUDENT_ID=' . $st_id));
@@ -177,7 +171,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
             }
         }
     } else {
-        echo '<font color=red>' . LANG_CHOOSE_STUDENT_ERROR . '</font>';
+        echo '<font color=red>' . _youMustChooseAtLeastOnePeriodAndOneStudent . '</font>';
         for_error_sch();
     }
 }

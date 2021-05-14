@@ -2,7 +2,7 @@
 include("functions/ParamLibFnc.php");
 require_once("Data.php");
 include('RedirectRootInc.php');
-include 'ConfigInc.php';
+include'ConfigInc.php';
 include 'Warehouse.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,8 +11,8 @@ include 'Warehouse.php';
  */
 
 //----------------------- modal for event start---------------------//
-$connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort);
-$_REQUEST['event_id'] = mysqli_real_escape_string($connection, optional_param('event_id', '', PARAM_DATA));
+$connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+$_REQUEST['event_id'] = mysqli_real_escape_string($connection,optional_param('event_id', '', PARAM_DATA));
 if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST[assignment_id])) {
     if ($_REQUEST['event_id'] != 'new' && isset($_REQUEST['event_id'])) {
         $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,SCHOOL_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));
@@ -37,50 +37,52 @@ echo '<div class="modal-body">';
 echo '<div id=err_message ></div>';
 
 echo '<div class="form-group">';
-echo '<label class="control-label">Date : ' . $_REQUEST['school_date'] . '&nbsp;</label>';
+echo '<label class="control-label">Date : '.$_REQUEST['school_date'].'&nbsp;</label>';
 echo '</div>';
 
 if ($RET[1]['TITLE'] == '') {
     echo '<div class="form-group">';
-    echo '<label class="control-label">' . _title . ' : &nbsp;</label>';
-    echo (User('PROFILE') == 'admin' ? TextInputModal($RET[1]['TITLE'], 'values[TITLE]', '', 'id=title placeholder="' . _enterTitle . '"') : $RET[1]['TITLE']);
+    echo '<label class="control-label">'._title.' : &nbsp;</label>';
+    echo (User('PROFILE') == 'admin' ? TextInputModal($RET[1]['TITLE'], 'values[TITLE]', '', 'id=title placeholder="'._enterTitle.'"') : $RET[1]['TITLE']);
     echo '</div>';
 } else {
     echo '<div class="form-group">';
-    echo '<label class="control-label">' . _title . ' : &nbsp;</label>';
+    echo '<label class="control-label">'._title.' : &nbsp;</label>';
     //echo (User('PROFILE') == 'admin' ? TextInputCusIdModal($RET[1]['TITLE'], 'values[TITLE]', '', ' placeholder="'._enterTitle.'"', true, 'title') : $RET[1]['TITLE']);
-    echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[TITLE]" name="values[TITLE]" value="' . $RET[1]['TITLE'] . '" placeholder="' . _enterTitle . '" size="10" type="text">' : $RET[1]['TITLE']);
+    echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[TITLE]" name="values[TITLE]" value="' . $RET[1]['TITLE'] . '" placeholder="'._enterTitle.'" size="10" type="text">' : $RET[1]['TITLE']);
     echo '</div>';
 }
 
 if ($RET[1]['STAFF_ID']) {
-    echo '<div class="form-group"><label class="control-label">' . _teacher . ' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['STAFF_ID'], 'values[STAFF_ID]', '', 'placeholder="' . _enterTeacher . '"') : $RET[1]['STAFF_ID']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">'._teacher.' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['STAFF_ID'], 'values[STAFF_ID]', '', 'placeholder="'._enterTeacher.'"') : $RET[1]['STAFF_ID']) . '</div>';
 }
 
 if ($RET[1]['ASSIGNED_DATE']) {
-    echo '<div class="form-group"><label class="control-label">' . _assignedDate . ' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['ASSIGNED_DATE'], 'values[ASSIGNED_DATE]', '', 'placeholder="' . _enterAssignedDate . '"') : $RET[1]['ASSIGNED_DATE']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">'._assignedDate.' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['ASSIGNED_DATE'], 'values[ASSIGNED_DATE]', '', 'placeholder="'._enterAssignedDate.'"') : $RET[1]['ASSIGNED_DATE']) . '</div>';
 }
 
 if ($RET[1]['DUE_DATE']) {
-    echo '<div class="form-group"><label class="control-label">' . _dueDate . ' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['DUE_DATE'], 'values[DUE_DATE]', '', 'placeholder="' . _enterDueDate . '"') : $RET[1]['DUE_DATE']) . '</div>';
+    echo '<div class="form-group"><label class="control-label">'._dueDate.' : &nbsp;</label>' . (User('PROFILE') == 'admin' ? TextAreaInput($RET[1]['DUE_DATE'], 'values[DUE_DATE]', '', 'placeholder="'._enterDueDate.'"') : $RET[1]['DUE_DATE']) . '</div>';
 }
 echo '<div class="form-group">';
-echo '<label class="control-label">' . _notes . ' : &nbsp;</label>';
+echo '<label class="control-label">'._notes.' : &nbsp;</label>';
 //echo (User('PROFILE') == 'admin' ? TextAreaInputModal(html_entity_decode($RET[1]['DESCRIPTION']), 'values[DESCRIPTION]', '', 'style=height:200px;  placeholder="'._enterNotes.'"') : html_entity_decode($RET[1]['DESCRIPTION']));
 if ($RET[1]['DESCRIPTION'] != '') {
     $RET[1]['DESCRIPTION'] = html_entity_decode(html_entity_decode($RET[1]['DESCRIPTION']));
     $RET[1]['DESCRIPTION'] = strip_tags($RET[1]['DESCRIPTION']);
 }
-echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[DESCRIPTION]" name="values[DESCRIPTION]" value="' . $RET[1]['DESCRIPTION'] . '" placeholder="' . _enterNotes . '" size="10" type="textArea">' : $RET[1]['DESCRIPTION']);
+echo (User('PROFILE') == 'admin' ? '<input class="form-control" id="values[DESCRIPTION]" name="values[DESCRIPTION]" value="' . $RET[1]['DESCRIPTION'] . '" placeholder="'._enterNotes.'" size="10" type="textArea">' : $RET[1]['DESCRIPTION']);
 echo '</div>';
 
 //        if (AllowEdit())
-if (User('PROFILE') == 'admin') {
-    if ($_REQUEST['event_id'] != 'new') {
-        if ($RET[1]['CALENDAR_ID'] == 0)
-            $RET[1]['CALENDAR_ID'] = 1;
-        else
-            $RET[1]['CALENDAR_ID'] = 0;
+if (User('PROFILE') == 'admin')
+{
+    if($_REQUEST['event_id']!='new')
+    {
+    if($RET[1]['CALENDAR_ID']==0)
+    $RET[1]['CALENDAR_ID']=1;
+    else
+    $RET[1]['CALENDAR_ID']=0;
     }
     echo '<div class="form-group">' . CheckboxInputSwitchModal($RET[1]['CALENDAR_ID'], 'new', _showEventsSystemWide, '', false, 'Yes', 'No', '', 'switch-success') . '</div>';
 }
@@ -91,10 +93,10 @@ echo '</div>'; //.modal-body
 
 if (User('PROFILE') == 'admin') {
     echo '<div class="modal-footer">';
-    echo '<INPUT type=submit class="btn btn-primary" name=button value=' . _save . ' >';
+    echo '<INPUT type=submit class="btn btn-primary" name=button value='._save.' >';
     echo '&nbsp;';
     if ($_REQUEST['event_id'] != 'new') {
-        echo '<INPUT type=submit name=button class="btn btn-white" value=' . _delete . ' >';
+        echo '<INPUT type=submit name=button class="btn btn-white" value='._delete.' >';
     }
     echo '</div>'; //.modal-footer
 }

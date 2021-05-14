@@ -1,20 +1,20 @@
 <?php
 
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('../../RedirectModulesInc.php');
+include '../../RedirectModulesInc.php';
 ini_set('memory_limit', '120000000000M');
 ini_set('max_execution_time', '50000000');
 if ($_REQUEST['func'] == 'Basic') {
@@ -44,27 +44,31 @@ if ($_REQUEST['func'] == 'Basic') {
     $num_users = DBGet(DBQuery('SELECT COUNT(DISTINCT s.STAFF_ID) as TOTAL_USER,IF(PROFILE_ID=2,\'Teacher\',\'Staff\') as PROFILEID FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR = ' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND SCHOOL_ID IN (SELECT ID FROM schools ) GROUP BY PROFILEID'));
 
     foreach ($num_users as $gt_dt) {
-        if ($gt_dt['PROFILEID'] == 'Staff')
+        if ($gt_dt['PROFILEID'] == 'Staff') {
             $num_staff = $gt_dt['TOTAL_USER'];
-        else
+        } else {
             $num_teacher = $gt_dt['TOTAL_USER'];
+        }
+
     }
 
     $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ')'));
-    if ($num_parent[1]['TOTAL_PARENTS'] == '')
+    if ($num_parent[1]['TOTAL_PARENTS'] == '') {
         $num_parent = 0;
-    else
+    } else {
         $num_parent = $num_parent[1]['TOTAL_PARENTS'];
+    }
+
     echo '<div class="panel panel-default">';
     echo '<div class="tabbable">';
-    echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">'._atAGlance.'</a></li></ul>';
+    echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">' . _atAGlance . '</a></li></ul>';
     echo '<div class="panel-body institute-report">';
     echo '<div class="row">';
     echo '<div class="col-md-4">';
     echo ' <div class="well m-b-15">';
     echo '<div class="media-left media-middle"><span class="institute-report-icon icon-school"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">'._institutions.'<span class="display-block no-margin text-success">'.$num_schools.'</span></h6>';
+    echo '<h6 class="text-semibold no-margin">' . _institutions . '<span class="display-block no-margin text-success">' . $num_schools . '</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -72,7 +76,7 @@ if ($_REQUEST['func'] == 'Basic') {
     echo ' <div class="well m-b-15">';
     echo '<div class="media-left media-middle"><span class="institute-report-icon icon-student"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">'._students.'<span class="display-block no-margin text-success">'.$num_students.' <small class="no-margin">('._male.' : '.$male.'  &nbsp; | &nbsp;  '._female.' : '.$female.')</small></span></h6>';
+    echo '<h6 class="text-semibold no-margin">' . _students . '<span class="display-block no-margin text-success">' . $num_students . ' <small class="no-margin">(' . _male . ' : ' . $male . '  &nbsp; | &nbsp;  ' . _female . ' : ' . $female . ')</small></span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -80,7 +84,7 @@ if ($_REQUEST['func'] == 'Basic') {
     echo ' <div class="well m-b-15">';
     echo '<div class="media-left media-middle"><span class="institute-report-icon icon-teacher"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">'._teachers.'<span class="display-block no-margin text-success">'.$num_teacher.'</span></h6>';
+    echo '<h6 class="text-semibold no-margin">' . _teachers . '<span class="display-block no-margin text-success">' . $num_teacher . '</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -90,7 +94,7 @@ if ($_REQUEST['func'] == 'Basic') {
     echo ' <div class="well m-b-15">';
     echo '<div class="media-left media-middle"><span class="institute-report-icon icon-staff"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">'._staff.'<span class="display-block no-margin text-success">'.$num_staff.'</span></h6>';
+    echo '<h6 class="text-semibold no-margin">' . _staff . '<span class="display-block no-margin text-success">' . $num_staff . '</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -98,7 +102,7 @@ if ($_REQUEST['func'] == 'Basic') {
     echo ' <div class="well m-b-15">';
     echo '<div class="media-left media-middle"><span class="institute-report-icon icon-parent"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">'._parents.'<span class="display-block no-margin text-success">'.$num_parent.'</span></h6>';
+    echo '<h6 class="text-semibold no-margin">' . _parents . '<span class="display-block no-margin text-success">' . $num_parent . '</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -113,16 +117,15 @@ if ($_REQUEST['func'] == 'Basic') {
     //    echo '</TABLE></div>';
 
     echo '</div>';
-    echo '</div>';//.tabbable
-    echo '</div>';//.panel
+    echo '</div>'; //.tabbable
+    echo '</div>'; //.panel
 }
 
 if ($_REQUEST['func'] == 'Ins_r') {
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">"._instituteReports."</td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . _instituteReports . "</td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _poweredByOpenSis . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         echo "<table >";
-
 
         $arr = array();
 
@@ -136,26 +139,28 @@ if ($_REQUEST['func'] == 'Ins_r') {
             $columns = substr($columns, 0, -1);
             foreach ($arr as $m => $n) {
 
-                if ($m == 'E_MAIL')
+                if ($m == 'E_MAIL') {
                     $arr[$m] = 'Email';
-                elseif ($m == 'TITLE')
+                } elseif ($m == 'TITLE') {
                     $arr[$m] = 'School Name';
-                elseif ($m == 'REPORTING_GP_SCALE')
+                } elseif ($m == 'REPORTING_GP_SCALE') {
                     $arr[$m] = 'Base Grading Scale';
-                elseif ($m == 'MAIL_ADDRESS')
+                } elseif ($m == 'MAIL_ADDRESS') {
                     $arr[$m] = 'Mailling Address';
-                elseif ($m == 'MAIL_CITY')
+                } elseif ($m == 'MAIL_CITY') {
                     $arr[$m] = 'Mailling City';
-                elseif ($m == 'MAIL_STATE')
+                } elseif ($m == 'MAIL_STATE') {
                     $arr[$m] = 'Malling State';
-                elseif ($m == 'MAIL_ZIP')
+                } elseif ($m == 'MAIL_ZIP') {
                     $arr[$m] = 'Malling Zip';
-                elseif ($m == 'WWW_ADDRESS')
+                } elseif ($m == 'WWW_ADDRESS') {
                     $arr[$m] = 'Website';
-                else {
+                } else {
                     $col = explode('_', $m);
-                    if ($col[0] == 'CUSTOM' && $col[1] != '')
+                    if ($col[0] == 'CUSTOM' && $col[1] != '') {
                         $get_field_name = DBGet(DBQuery('SELECT TITLE FROM school_custom_fields WHERE ID=' . $col[1]));
+                    }
+
                     foreach ($col as $col_i => $col_d) {
 
                         $f_c = substr($col_d, 0, 1);
@@ -171,15 +176,17 @@ if ($_REQUEST['func'] == 'Ins_r') {
                     unset($col_d);
                     $col = implode(' ', $col);
 
-                    if ($get_field_name[1]['TITLE'] != '')
+                    if ($get_field_name[1]['TITLE'] != '') {
                         $arr[$m] = $get_field_name[1]['TITLE'];
-                    else
+                    } else {
                         $arr[$m] = $col;
+                    }
+
                     unset($get_field_name);
                 }
             }
             echo '<br>';
-            
+
             $get_school_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM schools'));
 
             echo '<br>';
@@ -187,12 +194,13 @@ if ($_REQUEST['func'] == 'Ins_r') {
 
                 foreach ($value as $i => $j) {
 
-
                     $column_check = explode('_', $i);
                     if ($column_check[0] == 'CUSTOM') {
-                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_school_info[$key]['ID'].' OR SCHOOL_ID=0)'));
-                        if ($check_validity[1]['REC_EX'] == 0)
+                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_school_info[$key]['ID'] . ' OR SCHOOL_ID=0)'));
+                        if ($check_validity[1]['REC_EX'] == 0) {
                             $j = 'NOT_AVAILABLE_FOR';
+                        }
+
                     }
                     $get_school_info[$key][$i] = trim($j);
                 }
@@ -220,26 +228,27 @@ if ($_REQUEST['func'] == 'Ins_r') {
         echo '<DIV id=fields_div></DIV>';
         echo '<br/>';
 
-        $fields_list['Available School Fields'] = array('TITLE' => _schoolName,
-         'ADDRESS' => _address,
-         'CITY' => _city,
-         'STATE' => _state,
-         'ZIPCODE' => _zipcode,
-         'PHONE' => _telephone,
-         'PRINCIPAL' => _principal,
-         'REPORTING_GP_SCALE' => _baseGradingScale,
-         'E_MAIL' => _email,
-         'WWW_ADDRESS' => _website,
+        $fields_list['Available School Fields'] = array(
+            'TITLE' => _schoolName,
+            'ADDRESS' => _address,
+            'CITY' => _city,
+            'STATE' => _state,
+            'ZIPCODE' => _zipcode,
+            'PHONE' => _telephone,
+            'PRINCIPAL' => _principal,
+            'REPORTING_GP_SCALE' => _baseGradingScale,
+            'E_MAIL' => _email,
+            'WWW_ADDRESS' => _website,
         );
         $get_schools_cf = DBGet(DBQuery('SELECT * FROM school_custom_fields'));
         if (count($get_schools_cf) > 0) {
             foreach ($get_schools_cf as $gsc) {
                 $fields_list['Available School Fields']['CUSTOM_' . $gsc[ID]] = $gsc['TITLE'];
             }
-        }        
-	echo '<div class="row">';
+        }
+        echo '<div class="row">';
         echo '<div class="col-md-8">';
-        PopTable('header','<i class=\"glyphicon glyphicon-tasks\"></i> &nbsp;'._selectFieldsToGenerateReport.'');
+        PopTable('header', '<i class=\"glyphicon glyphicon-tasks\"></i> &nbsp;' . _selectFieldsToGenerateReport . '');
 
         foreach ($fields_list as $category => $fields) {
 
@@ -247,33 +256,33 @@ if ($_REQUEST['func'] == 'Ins_r') {
             $i = 0;
             $j = 0;
             foreach ($fields as $field => $title) {
-                if($i==0 && $j==0){
+                if ($i == 0 && $j == 0) {
                     echo '<div class="row">';
-                }elseif($i==0 && $j>0){
+                } elseif ($i == 0 && $j > 0) {
                     echo '</div><div class="row">';
                 }
                 echo '<div class="col-md-6"><label class="checkbox-inline"><INPUT type=checkbox onclick="addHTML(\'<LI>' . $title . '</LI>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields[' . $field . '] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">' . $title . '<label></div>';
-                
+
                 /*if ($i % 2 == 0)
-                    echo '</TR><TR>';*/
+                echo '</TR><TR>';*/
                 $i++;
-                if($i==2){
+                if ($i == 2) {
                     $i = 0;
                 }
                 $j++;
             }
             echo '</div>';
             /*if ($i % 2 != 0) {
-                echo '<TD></TD></TR><TR>';
-                $i++;
-            }*/
+        echo '<TD></TD></TR><TR>';
+        $i++;
+        }*/
         }
         PopTable('footer');
         echo '</div><div class="col-md-4">';
-        PopTable("header","<i class=\"glyphicon glyphicon-saved\"></i> &nbsp;"._selectedFields);
-        echo '<div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">'._noFieldsSelected.'</div><ol id=names_div class="selected_report_list"></ol>';
-        
-        $btn = '<INPUT type=submit value=\''._createReportForInstitutes.'\' class="btn btn-primary">';
+        PopTable("header", "<i class=\"glyphicon glyphicon-saved\"></i> &nbsp;" . _selectedFields);
+        echo '<div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">' . _noFieldsSelected . '</div><ol id=names_div class="selected_report_list"></ol>';
+
+        $btn = '<INPUT type=submit value=\'' . _createReportForInstitutes . '\' class="btn btn-primary">';
         PopTable('footer', $btn);
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
@@ -281,7 +290,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
     }
 }
 if ($_REQUEST['func'] == 'Ins_cf') {
-    $get_schools_cf = DBGet(DBQuery('SELECT s.TITLE AS SCHOOL,s.ID,sc.* FROM schools s,school_custom_fields sc WHERE s.ID=sc.SCHOOL_ID ORDER BY sc.SCHOOL_ID'));
+    $get_schools_cf = DBGet(DBQuery('SELECT s.TITLE AS SCHOOL,s.ID,sc.* FROM schools s,school_custom_fields sc WHERE s.ID=sc.SCHOOL_ID OR sc.SCHOOL_ID=0 ORDER BY sc.SCHOOL_ID'));
     foreach ($get_schools_cf as $cf_i => $cf_d) {
         foreach ($cf_d as $cfd_i => $cfd_d) {
             if ($cfd_i == 'TYPE') {
@@ -296,8 +305,10 @@ if ($_REQUEST['func'] == 'Ins_cf') {
 
                 for ($i = 0; $i < strlen($cfd_d); $i++) {
                     $char = substr($cfd_d, $i, 1);
-                    if (ord($char) == '13')
+                    if (ord($char) == '13') {
                         $char = '<br/>';
+                    }
+
                     $new_char[] = $char;
                 }
 
@@ -306,11 +317,23 @@ if ($_REQUEST['func'] == 'Ins_cf') {
                 unset($char);
                 unset($new_char);
             }
-            if ($cfd_i == 'SYSTEM_FIELD' || $cfd_i == 'REQUIRED') {
-                if ($cfd_d == 'N')
+            if ($cfd_i == 'REQUIRED') {
+                if ($cfd_d == null) {
                     $get_schools_cf[$cf_i][$cfd_i] = 'No';
-                if ($cfd_d == 'Y')
+                }
+
+                if ($cfd_d == 'Y') {
                     $get_schools_cf[$cf_i][$cfd_i] = 'Yes';
+                }
+
+            }
+            if ($cfd_i == 'SCHOOL_ID') {
+                if ($cfd_d == 0) {
+                    $get_schools_cf[$cf_i]['SYSTEM_FIELD'] = 'Yes';
+                } else {
+                    $get_schools_cf[$cf_i]['SYSTEM_FIELD'] = 'No';
+                }
+
             }
         }
         unset($cfd_i);
@@ -321,16 +344,16 @@ if ($_REQUEST['func'] == 'Ins_cf') {
         $get_schools_cf[$g_i]['C_VALUE'] = $gt_fld_v[1]['FIELD'];
     }
 
-    $column = array('SCHOOL' => _school,
-     'TYPE' => _customFieldType,
-     'TITLE' => _customFieldName,
-     'SELECT_OPTIONS' => _options,
-     'SYSTEM_FIELD' => _systemField,
-     'REQUIRED' => _requiredField,
+    $column = array(
+        'SCHOOL' => _school,
+        'TYPE' => _customFieldType,
+        'TITLE' => _customFieldName,
+        'SELECT_OPTIONS' => _options,
+        'SYSTEM_FIELD' => _systemField,
+        'REQUIRED' => _requiredField,
     );
 
     echo '<div class="panel panel-default">';
     ListOutput($get_schools_cf, $column, _customField, _customFields);
     echo '</div>';
 }
-?>

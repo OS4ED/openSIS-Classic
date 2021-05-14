@@ -2124,6 +2124,7 @@ CREATE TABLE `user_file_upload` (
   `profile_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
+  `download_id` varchar(50) NOT NULL DEFAULT UUID(),
   `name` varchar(255) NOT NULL,
   `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,

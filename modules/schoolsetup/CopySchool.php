@@ -272,43 +272,47 @@ function _rollover($table) {
            break;
            
            
-           case 'courses':
-           $get_ts_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\''.$id.'\' '));
-           $get_cs_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE  SCHOOL_ID=\''.UserSchool().'\' '));
-           $get_ts_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id. '\''));     
-           $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'')); 
-           foreach($get_cs_subjects as $gcsi=>$gcsd)
-           {
-               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SUBJECT_ID=\''.$gcsd['SUBJECT_ID'].'\''));
-               foreach($get_course as $gc)
-               {
-                   $sql_columns=array('SUBJECT_ID','SCHOOL_ID');
-                   $sql_values=array($get_ts_subjects[$gcsi]['SUBJECT_ID'],$id);
-                   foreach($gc as $gcc=>$gcd)
-                   {
-                       if($gcd!='' && $gcc!='GRADE_LEVEL')
-                       {
-                       $sql_columns[]=$gcc;
-                       $sql_values[]="'".$gcd."'";
-                       }
-                       if($gcd!='' && $gcc=='GRADE_LEVEL')
-                       {
-                           foreach($get_cs_grade as $gcsgi=>$gcsgd)
-                           {
-                            if($gcd==$gcsd['ID']) 
-                            {
-                            
-                            $sql_columns[]='GRADE_LEVEL';
-                            $sql_values[]="'".$get_ts_grade[$gcsgi]['ID']."'";
-                            
+        case 'courses':
+            $get_ts_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\''.$id.'\' '));
+            $get_cs_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE  SCHOOL_ID=\''.UserSchool().'\' '));
+            $get_ts_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id. '\''));     
+            $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'')); 
+            foreach($get_cs_subjects as $gcsi=>$gcsd)
+            {
+                $get_course=DBGet(DBQuery('SELECT COURSE_ID,SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SUBJECT_ID=\''.$gcsd['SUBJECT_ID'].'\''));
+                foreach($get_course as $gc)
+                {
+                    $sql_columns=array('SUBJECT_ID','SCHOOL_ID');
+                    $sql_values=array($get_ts_subjects[$gcsi]['SUBJECT_ID'],$id);
+                    foreach($gc as $gcc=>$gcd)
+                    {
+                        if($gcd!='' && $gcc!='GRADE_LEVEL')
+                        {
+                            if($gcc != 'COURSE_ID' && $gcc != 'TITLE' && $gcc != 'SHORT_NAME') {
+                                $sql_columns[]=$gcc;
+                                $sql_values[]="'".addslashes($gcd)."'";
                             }
-                           }
-                       }
-                   }
-                   DBQuery('INSERT INTO courses ('.implode(',',$sql_columns).') VALUES ('.(implode(',',$sql_values)).')');
-               }
-           }
-           break;
+                        }
+                        if($gcd!='' && $gcc=='GRADE_LEVEL')
+                        {
+                            foreach($get_cs_grade as $gcsgi=>$gcsgd)
+                            {
+                                // if($gcd==$gcsd['ID']) 
+                                if($gcd==$gcsgd['ID'])
+                                {
+                                    $sql_columns[]='GRADE_LEVEL';
+                                    $sql_values[]="'".$get_ts_grade[$gcsgi]['ID']."'";
+                                }
+                            }
+                        }
+                    }
+                    
+                    DBQuery('INSERT INTO courses ('.implode(',',$sql_columns).') VALUES ('.(implode(',',$sql_values)).')');
+
+                    DBQuery('UPDATE courses SET TITLE = (SELECT TITLE FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\'), SHORT_NAME = (SELECT SHORT_NAME FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\') WHERE COURSE_ID = (SELECT MAX(COURSE_ID) AS COURSE_ID FROM courses)');
+                }
+            }
+            break;
     }
 }
 

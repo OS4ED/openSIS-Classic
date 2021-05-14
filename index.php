@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 error_reporting(0);
+ini_set('session.cookie_httponly', 1);
 include_once("functions/DelDirectoryFnc.php");
 include_once("functions/ParamLibFnc.php");
 require_once("functions/PragRepFnc.php");
@@ -77,21 +78,34 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     db_start();
     
     $username = mysqli_real_escape_string($connection,optional_param('USERNAME', '', PARAM_RAW));
+
+    $arr_cookie_options = array (
+        'expires' => time() + 60*60*24*100,
+        'path' => '/',
+        'secure' => true,     // or false
+        'httponly' => true,    // or false
+        'samesite' => 'None' // None || Lax  || Strict
+    );
+
     if($_REQUEST['remember']) 
-      {
-      $cName='remember_me_name';
-      $cPwd='remember_me_pwd';
-      $cLang='remember_me_lang';
-      setcookie($cName, $username, time()+60*60*24*100, "/");
-      setcookie($cPwd, optional_param('PASSWORD','',PARAM_RAW), time()+60*60*24*100, "/");
-      setcookie($cLang, optional_param('language','',PARAM_RAW), time()+60*60*24*100, "/");
-      }
-      else
-      {
-      setcookie('remember_me_name', 'gone', time()-60*60*24*100, "/");
-      setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
-      setcookie('remember_me_lang', 'gone', time()-60*60*24*100, "/");
-      } 
+    {
+        include_once "./AuthCryp.php";
+        
+        $cName='remember_me_name';
+        $cPwd='remember_me_pwd';
+        $cLang='remember_me_lang';
+        
+        setcookie($cName, cryptor($username, 'ENC'), $arr_cookie_options);
+        setcookie($cPwd, cryptor(optional_param('PASSWORD','',PARAM_RAW), 'ENC'), $arr_cookie_options);
+        setcookie($cLang, optional_param('language','',PARAM_RAW), time()+60*60*24*100, "/");
+    }
+    else
+    {
+        setcookie('remember_me_name', 'gone', time()-60*60*24*100, "/");
+        setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
+        setcookie('remember_me_lang', 'gone', time()-60*60*24*100, "/");
+    }
+
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
         $password = str_replace("\'", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
     $password = str_replace("&", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
@@ -304,7 +318,6 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     }
 
     if ($login_RET && $login_RET[1]['IS_DISABLE'] != 'Y') {
-        
         $_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
         $_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
 

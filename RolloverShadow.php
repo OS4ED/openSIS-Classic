@@ -33,20 +33,22 @@ $next_start_date=$_SESSION['roll_start_date'];
 $next_s_start_date=$_SESSION['roll_s_start_date'];
 $next_s_end_date=$_SESSION['roll_s_end_date'];
 //exit;
-$tables = array('staff'=>_users,
-'school_periods'=>_schoolPeriods,
-'school_years'=>_markingPeriods,
-'school_calendars'=>_calendars,
-'report_card_grade_scales'=>_reportCardGradeCodes,
-'course_subjects'=>_subjects,
-'courses'=>_courses,
-'course_periods'=>_coursePeriods,
-'student_enrollment'=>_students,
-'honor_roll'=>_honorRollSetup,
-'attendance_codes'=>_attendanceCodes,
-'student_enrollment_codes'=>_studentEnrollmentCodes,
-'report_card_comments'=>_reportCardCommentCodes,
-'NONE'=>_none,
+$tables = array('staff'=>'users','school_periods'=>'School Periods','school_years'=>'Marking Periods','school_calendars'=>'Calendars','report_card_grade_scales'=>'Report Card Grade Codes','course_subjects'=>'Subjects','courses'=>'Courses','course_periods'=>'Course Periods','student_enrollment'=>'Students','honor_roll'=>'Honor Roll Setup','attendance_codes'=>'Attendance Codes','student_enrollment_codes'=>'Student Enrollment Codes','report_card_comments'=>'Report Card Comment Codes','NONE'=>'none');
+$tablesDisplay = array(
+    'staff'=>_users,
+    'school_periods'=>_schoolPeriods,
+    'school_years'=>_markingPeriods,
+    'school_calendars'=>_calendars,
+    'report_card_grade_scales'=>_reportCardGradeCodes,
+    'course_subjects'=>_subjects,
+    'courses'=>_courses,
+    'course_periods'=>_coursePeriods,
+    'student_enrollment'=>_students,
+    'honor_roll'=>_honorRollSetup,
+    'attendance_codes'=>_attendanceCodes,
+    'student_enrollment_codes'=>_studentEnrollmentCodes,
+    'report_card_comments'=>_reportCardCommentCodes,
+    'NONE'=>_none,
 );
 $no_school_tables = array('student_enrollment_codes'=>true,'staff'=>true);
 switch($table)
@@ -58,7 +60,7 @@ switch($table)
                         DBQuery('INSERT INTO staff_school_relationship (staff_id,school_id,syear,start_date) SELECT staff_id,school_id,syear+1,start_date +INTERVAL 1 YEAR FROM staff_school_relationship WHERE school_id=\''.  UserSchool().'\' AND syear=\''. UserSyear().'\'');
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from staff_school_relationship WHERE SYEAR=\''.$next_syear.'\' AND SCHOOL_ID=\''.UserSchool().'\''));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['staff'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['staff'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
 
 		case 'school_periods':
@@ -67,7 +69,7 @@ switch($table)
                         DBQuery('INSERT INTO school_periods (SYEAR,SCHOOL_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,ATTENDANCE,ROLLOVER_ID,START_TIME,END_TIME) SELECT SYEAR+1,SCHOOL_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,ATTENDANCE,PERIOD_ID,START_TIME,END_TIME FROM school_periods WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['school_periods'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['school_periods'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
 		
 		case 'school_calendars':
@@ -95,7 +97,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
                         
-                        echo $tables['school_calendars'].'|'.'(|'.$total_rolled_data.'|)';                                      //-------------------end--------------------------------
+                        echo $tables['school_calendars'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];                                      //-------------------end--------------------------------
                     break;
 
 		case 'school_years':
@@ -163,7 +165,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                         }
                         $exists_RET[$table] = DBGet(DBQuery("SELECT count(*) AS COUNT from $table WHERE SYEAR='$next_syear'".(!$no_school_tables[$table]?" AND SCHOOL_ID='".UserSchool()."'":'')));             
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['school_years'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['school_years'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
 
                     case 'course_subjects':
@@ -171,7 +173,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                     DBQuery('INSERT INTO course_subjects (SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,ROLLOVER_ID) SELECT SYEAR+1,SCHOOL_ID,TITLE,SHORT_NAME,SUBJECT_ID FROM course_subjects WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                     $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                     $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                    echo $tables['course_subjects'].'|'.'(|'.$total_rolled_data.'|)';
+                    echo $tables['course_subjects'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
 
 		case 'courses':
@@ -180,7 +182,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                     DBQuery('INSERT INTO courses (SYEAR,SUBJECT_ID,SCHOOL_ID,GRADE_LEVEL,TITLE,SHORT_NAME,ROLLOVER_ID) SELECT SYEAR+1,(SELECT SUBJECT_ID FROM course_subjects s WHERE s.SYEAR=c.SYEAR+1 AND s.ROLLOVER_ID=c.SUBJECT_ID),SCHOOL_ID,GRADE_LEVEL,TITLE,SHORT_NAME,COURSE_ID FROM courses c WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                     $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                     $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                    echo $tables['courses'].'|'.'(|'.$total_rolled_data.'|)';
+                    echo $tables['courses'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
                    
                     case 'course_periods':
@@ -241,7 +243,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                         
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                    echo $tables['course_periods'].'|'.'(|'.$total_rolled_data.'|)';
+                    echo $tables['course_periods'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                         break;
 		case 'student_enrollment':
                    
@@ -258,7 +260,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                                                     
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['student_enrollment'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['student_enrollment'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
         
 		case 'report_card_grade_scales':
@@ -270,7 +272,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
 			DBQuery('INSERT INTO report_card_grades (SYEAR,SCHOOL_ID,TITLE,COMMENT,BREAK_OFF,GPA_VALUE,GRADE_SCALE_ID,UNWEIGHTED_GP,SORT_ORDER) SELECT SYEAR+1,SCHOOL_ID,TITLE,COMMENT,BREAK_OFF,GPA_VALUE,(SELECT ID FROM report_card_grade_scales WHERE ROLLOVER_ID=GRADE_SCALE_ID AND SCHOOL_ID=report_card_grades.SCHOOL_ID),UNWEIGHTED_GP,SORT_ORDER FROM report_card_grades WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['report_card_grade_scales'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['report_card_grade_scales'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                     break;
        
 		case 'report_card_comments':
@@ -279,7 +281,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
 			DBQuery('INSERT INTO report_card_comments (SYEAR,SCHOOL_ID,TITLE,SORT_ORDER,COURSE_ID) SELECT SYEAR+1,SCHOOL_ID,TITLE,SORT_ORDER,'.db_case(array('COURSE_ID',"''",'NULL',db_case(array('COURSE_ID','0','0','(SELECT COURSE_ID FROM courses WHERE ROLLOVER_ID=rc.COURSE_ID)')))).' FROM report_card_comments rc WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\'');
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['report_card_comments'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['report_card_comments'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                      break;
                   case 'honor_roll':
 		//case 'eligibility_activities':
@@ -296,7 +298,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                         
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['honor_roll'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['honor_roll'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                       break;
 
 		case 'attendance_codes':
@@ -325,7 +327,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                          
                          $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['attendance_codes'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['attendance_codes'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                       
                         break;
 
@@ -351,7 +353,7 @@ $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,ROLLOVER_ID FROM school_calen
                         }
                         $exists_RET[$table] = DBGet(DBQuery('SELECT count(*) AS COUNT from '.$table.' WHERE SYEAR=\''.$next_syear.'\''.(!$no_school_tables[$table]?' AND SCHOOL_ID=\''.UserSchool().'\'':'')));
                         $total_rolled_data=$exists_RET[$table][1]['COUNT'];
-                        echo $tables['student_enrollment_codes'].'|'.'(|'.$total_rolled_data.'|)';
+                        echo $tables['student_enrollment_codes'].'|'.'(|'.$total_rolled_data.'|)|'.$tablesDisplay[$table];
                       break;
 
                     case 'NONE' :

@@ -2027,15 +2027,15 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         }
         $header .= '<div class="col-sm-6 col-lg-4">';
         if ($_REQUEST['course_period_id'] != 'new' && $RET['AVAILABLE_SEATS'] != $RET['TOTAL_SEATS'])
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._primaryTeacher.'</label><div class="col-md-8">' . SelectInputDisabledMsg($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', '', $div, ""._toChangeTeacherGoToSchoolSetupCoursesTeacherReAssignment."") . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._primaryTeacher.'</label><div class="col-md-8">' . SelectInputDisabledMsg($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', '', $div, ""._toChangeTeacherGoToSchoolSetupCoursesTeacherReAssignment."") . '<input type="hidden" id="hidden_primary_teacher_id" value="' . $RET['TEACHER_ID'] . '"></div></div>';
         else
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._primaryTeacher.'</label><div class="col-md-8">' . SelectInput($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', '', $div) . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._primaryTeacher.'</label><div class="col-md-8">' . SelectInput($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', 'onchange="validate_cp_teacher_fields()"', $div) . '<input type="hidden" id="hidden_primary_teacher_id" value="' . $RET['TEACHER_ID'] . '"></div></div>';
         $header .= '</div>'; //.col-sm-6.col-lg-4
         $header .= '</div>'; //.row
 
         $header .= '<div class="clearfix">';
         $header .= '<div class="col-sm-6 col-lg-4">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._secondaryTeacher.'</label><div class="col-md-8">' . SelectInput($RET['SECONDARY_TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][SECONDARY_TEACHER_ID]', '', $teachers, 'N/A', '', $div) . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._secondaryTeacher.'</label><div class="col-md-8">' . SelectInput($RET['SECONDARY_TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][SECONDARY_TEACHER_ID]', '', $teachers, 'N/A', 'onchange="validate_cp_teacher_fields()"', $div) . '<input type="hidden" id="hidden_secondary_teacher_id" value="' . $RET['SECONDARY_TEACHER_ID'] . '"></div></div>';
         $header .= '</div>'; //.col-sm-6.col-lg-4
         $header .= '<div class="col-sm-6 col-lg-4">';
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._seats.'</label><div class="col-md-8"><div class="col-md-4">' . TextInput($RET['TOTAL_SEATS'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TOTAL_SEATS]', '', 'size=4 class=form-control', $div) . '</div>';
@@ -2545,10 +2545,37 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         echo '</div>'; // .col-md-4
 
         if (clean_param($_REQUEST['course_id'], PARAM_ALPHANUM) && $_REQUEST['course_id'] != 'new') {
-            $sql = "SELECT COURSE_PERIOD_ID,TITLE,COALESCE(TOTAL_SEATS-FILLED_SEATS,0) AS AVAILABLE_SEATS FROM course_periods WHERE COURSE_ID='$_REQUEST[course_id]' AND (marking_period_id IN(" . GetAllMP(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) ORDER BY TITLE";
+            $sql = "SELECT COURSE_PERIOD_ID,TITLE,COALESCE(TOTAL_SEATS-FILLED_SEATS,0) AS AVAILABLE_SEATS,BEGIN_DATE,END_DATE,MARKING_PERIOD_ID FROM course_periods WHERE COURSE_ID='$_REQUEST[course_id]' AND (marking_period_id IN(" . GetAllMP(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) ORDER BY TITLE";
 
             $QI = DBQuery($sql);
             $periods_RET = DBGet($QI);
+
+            $count_CP = 1;
+            $cp_RET = array();
+
+            foreach($periods_RET as $one_CP_k => $one_CP_v)
+            {
+                if($one_CP_v['MARKING_PERIOD_ID'] == '')
+                {
+                    $mp_DET = DBGet(DBQuery('SELECT GROUP_CONCAT(`marking_period_id`) AS `mp_ids` FROM `marking_periods` WHERE `start_date` >= (SELECT MAX(`start_date`) AS `start_date` FROM `marking_periods` WHERE \''.$one_CP_v['BEGIN_DATE'].'\' BETWEEN `start_date` AND `end_date`) AND `end_date` <= (SELECT MIN(`end_date`) AS `end_date` FROM `marking_periods` WHERE \''.$one_CP_v['END_DATE'].'\' BETWEEN `start_date` AND `end_date`)'));
+                    $mp_DET_combined = explode(",", $mp_DET[1]['MP_IDS']);
+
+                    if(in_array(UserMP(), $mp_DET_combined))
+                    {
+                        $cp_RET[$count_CP] = $one_CP_v;
+                        $count_CP++;
+                    }
+                }
+                else
+                {
+                    $cp_RET[$count_CP] = $one_CP_v;
+                    $count_CP++;
+                }
+            }
+
+            ## Overwriting the previous periods return with the filtered one
+            unset($periods_RET);
+            $periods_RET = $cp_RET;
 
             if (count($periods_RET)) {
                 if (clean_param($_REQUEST['course_period_id'], PARAM_ALPHANUM)) {
@@ -2637,6 +2664,18 @@ echo '</div>'; //.modal-body
 echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
+
+if ($_REQUEST['course_period_id'] == 'new') {
+    if($_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'fixed' || $_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'FIXED'){
+            echo "<script>show_cp_meeting_days('fixed','new');</script>";
+    }
+    if($_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'variable' || $_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'VARIABLE'){
+        echo "<script>show_cp_meeting_days('variable','new');</script>";
+    }
+    if($_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'blocked' || $_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'BLOCKED'){
+        echo "<script>show_cp_meeting_days('blocked','new');</script>";
+    }
+    }
 
 function conv_day($short_date, $type = '') {
     $days = array('U' => 'Sun', 'M' => 'Mon', 'T' => 'Tue', 'W' => 'Wed', 'H' => 'Thu', 'F' => 'Fri', 'S' => 'Sat');

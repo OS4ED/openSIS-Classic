@@ -697,6 +697,7 @@ function addseccheck_button(){
     }
 
 }
+
 function hide_filter_modal()
 {
     window.$('#modal_filter_edit').modal('toggle');
@@ -708,4 +709,53 @@ function closeThisModal(modal_ID = false)
     {
         window.$('#'+modal_ID).modal('toggle');
     }
+}
+
+function clickOnFileInput () {
+    document.getElementById("upfile").click();
+}
+
+function selectedFilesRail(inputFileID) {
+
+    var fileobj = [];
+    if(inputFileID && inputFileID != '') {
+        setFilesRail(document.getElementById(inputFileID).files);
+    }
+}
+
+function setFilesRail(files) {
+    fileobj = fileobj.concat(...files);
+
+    printFilesRail();
+}
+
+function printFilesRail() {
+    var fileListElement = document.querySelector("#areaFileRail ul");
+    
+    var fileList = '';
+    var storeFiles = '';
+    var fileCounter = 0;
+
+    fileobj.map((file, index) => {
+        // fileList += `<li class="m-t-5"><button class="btn btn-danger btn-icon btn-xs m-r-10" type="button" onclick="removeFromFilesRail(${index})"><i class="fa fa-times"></i></button>${file.name}</li>`;
+        fileList += `<li class="m-t-10"><i class="fa fa-file-o text-primary m-r-10"></i>${file.name}</li>`;
+
+        fileCounter++;
+    });
+    console.log(fileobj);
+
+    fileListElement.innerHTML = fileList;
+
+    if(fileCounter > 0) {
+        $("#nofiles").hide();
+    } else {
+        $("#nofiles").show();
+    }
+    fileobj = [];
+}
+
+function removeFromFilesRail(index) {
+    fileobj.splice(index, 1);
+
+    printFilesRail();
 }

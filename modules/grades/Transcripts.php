@@ -207,14 +207,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                         if ($trec['COURSE_PERIOD_ID']) {
                             $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
                             if ($mp_id[1]['MARKING_PERIOD_ID'] != '')
-                                $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id[1]['MARKING_PERIOD_ID']));
+                                $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $mp_id[1]['MARKING_PERIOD_ID'].'"'));
                             else {
                                 $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM student_report_card_grades WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
-                                $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id[1]['MARKING_PERIOD_ID']));
+                                $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $mp_id[1]['MARKING_PERIOD_ID'].'"'));
        }
-                            $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $trec['MP_ID']));
+                            $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $trec['MP_ID'].'"'));
                         } else {
-                            $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $trec['MP_ID']));
+                            $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $trec['MP_ID'].'"'));
                             $get_mp_tp[1]['MP_TYPE'] = $get_mp_tp_m[1]['MP_TYPE'];
            }
                         $course_html[$colnum] .= '<tr>';
@@ -321,6 +321,25 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <hr/>
 
                 <div class="transcript-header m-t-10 m-b-20">
+
+                    <?php
+                        $picturehtml_tx = '';
+
+                        if ($_REQUEST['show_photo']) {
+                            $stu_img_info_tx = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND FILE_INFO=\'stuimg\''));
+                            if (count($stu_img_info_tx) > 0) {
+                                $picturehtml_tx = '<img class="pic" src="data:image/jpeg;base64,' . base64_encode($stu_img_info_tx[1]['CONTENT']) . '" width="120">';
+                            } else {
+                                $picturehtml_tx = '<img class="pic" src="assets/noimage.jpg" width="120">';
+                            }
+                    ?>
+                    <div class="transcript-student-info m-r-10">
+                        <?php echo $picturehtml_tx; ?>
+                    </div>
+                    <?php
+                        }
+                    ?>
+
                     <div class="transcript-student-info f-s-15">
                         <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
                         <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
@@ -344,6 +363,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                             </tr>
                         </table>
                     </div>
+                    <?php
+                        $total_CGPA_attemp = $total_credit_earn = '';
+                    ?>
                 </div>
 
 
@@ -370,11 +392,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                         </div>
                     <?php } ?>
                 </div>-->
-		
-		<?php
-                if($_SESSION['PROFILE'] != 'student')
-		{
-		?>
+
+                <?php
+                    // Students shouldn't see the signature lines in the Transcript
+                    if($_SESSION['PROFILE'] != 'student')
+                    {
+                ?>
                 <div class="text-right m-t-40">
                     <table width="100%">
                         <tr>
@@ -395,7 +418,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                         </tr>
                     </table>
                 </div>
-		<?php } ?>
+                <?php
+                    }
+                ?>
+                
                 <div style="page-break-before: always;">&nbsp;</div>
 
 
@@ -431,46 +457,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <div style="page-break-before: always;">&nbsp;</div>
 
                 <?php
-                $picturehtml = '';
-                if ($_REQUEST['show_photo']) {
-                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
-                    if (count($stu_img_info) > 0) {
-                        $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
-                    } else {
-                        $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; border:1px solid #333333; background-color:#fff;" src="assets/noimage.jpg"></td>';
-                    }
-                }
-
-
-
-                if ($probation) {
-                    $general_info_html = $general_info_html .
-                            '<tr><td width="2%"></td><td width="3%" style="padding-bottom:15px">Status:</td><td width="95%"> '._academicProbationPleaseBeRemindedOfSectionOfTheAcademicHandbooKIfStudentsFailToRaiseTheirCGPAAboveForTwoConsecutiveSemestersTheDefaultActionIsDismissalFromTheProgram.'.</td></tr>' .
-                            '</table><BR><BR></td></tr>';
-                } else {
-                    $general_info_html = $general_info_html .
-                            '</table><BR><BR></td></tr>';
-                }
-                $student_html = '
-                <table border="0" style="font-family:Arial; font-size:12px;" cellpadding="0" cellspacing="0"><tr>' . $picturehtml .
-                        '<td width=70% valign=bottom>
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family:Arial; font-size:12px;">
-                        <tr><td valign=bottom><div style="font-family:Arial; font-size:13px; padding:0px 12px 0px 12px;"><div style="font-size:18px;">' . $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME'] . '</div>
-                            <div>' . $sinfo['ADDRESS'] . '</div>
-                            <div>' . $sinfo['CITY'] . ', ' . $sinfo['STATE'] . '  ' . $sinfo['ZIPCODE'] . '</div>
-                            <div><b>Phone:</b>  ' . $sinfo['STUDENT_PHONE'] . '</div>
-							<div><table cellspacing="0" cellpadding="3" border="1"  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>'._dateOfBirthh.'</b></td><td><b>'._gender.'</b></td><td><b>'._grade.'</b></td></tr><tr><td>' . str_replace('-', '/', $sinfo['BIRTHDATE']) . '</td><td>' . $sinfo['GENDER'] . '</td><td>' . $sinfo['GRADE_SHORT'] . '</td></tr></table>' . '</div>
-							</td>
-
-                        </tr></table></td></tr><tr><td colspan="2" style="padding:6px 0px 6px 0px;"><table width="100%" cellspacing="0" cellpadding="3" border="1" align=center  style="font-family:Arial; font-size:13px; border-collapse: collapse; text-align:center"><tr><td><b>'._cumulativeGpa.':</b> ' . sprintf("%01.2f", (($tot_qp) / ($total_CGPA_attemted))) . '&nbsp;&nbsp;&nbsp;&nbsp;
-                            
-                                </td></tr><tr><td><b>'._totalCreditAttempted.':</b> ' . sprintf("%01.2f", $total_CGPA_attemted) . '&nbsp;&nbsp;&nbsp;&nbsp;<b>'._totalCreditEarned.':</b> ' . sprintf("%01.2f", $total_credit_earned) . '</td></tr></table></td></tr></table>';
-
-
-
-
-                echo '';
-                echo '<!-- NEW PAGE -->';
+                    echo '';
+                    echo '<!-- NEW PAGE -->';
                 ?>
 
             </div>

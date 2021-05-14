@@ -872,7 +872,7 @@ function rollover_callback(roll_data)
     }
 
     if (total_data[0] == 'users') {
-        document.getElementById("staff").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("staff").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("staff").setAttribute("class", rollover_class);
         document.getElementById("staff").setAttribute("className", rollover_class);
         if (document.getElementById("chk_school_periods").value == 'Y')
@@ -884,13 +884,13 @@ function rollover_callback(roll_data)
         }
     } else if (total_data[0] == 'School Periods')
     {
-        document.getElementById("school_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("school_periods").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("school_periods").setAttribute("class", rollover_class);
         document.getElementById("school_periods").setAttribute("className", rollover_class);
         ajax_rollover('school_years');
     } else if (total_data[0] == 'Marking Periods')
     {
-        document.getElementById("school_years").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("school_years").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("school_years").setAttribute("class", rollover_class);
         document.getElementById("school_years").setAttribute("className", rollover_class);
 
@@ -916,13 +916,13 @@ function rollover_callback(roll_data)
 
     } else if (total_data[0] == 'Calendars')
     {
-        document.getElementById("attendance_calendars").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("attendance_calendars").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("attendance_calendars").setAttribute("class", rollover_class);
         document.getElementById("attendance_calendars").setAttribute("className", rollover_class);
         ajax_rollover('report_card_grade_scales');
     } else if (total_data[0] == 'Report Card Grade Codes')
     {
-        document.getElementById("report_card_grade_scales").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("report_card_grade_scales").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("report_card_grade_scales").setAttribute("class", rollover_class);
         document.getElementById("report_card_grade_scales").setAttribute("className", rollover_class);
         if (document.getElementById('chk_course_subjects').value == 'Y')
@@ -935,7 +935,7 @@ function rollover_callback(roll_data)
             ajax_rollover('student_enrollment_codes');
     } else if (total_data[0] == 'Subjects')
     {
-        document.getElementById("course_subjects").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("course_subjects").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("course_subjects").setAttribute("class", rollover_class);
         document.getElementById("course_subjects").setAttribute("className", rollover_class);
         if (document.getElementById('chk_courses').value == 'Y')
@@ -946,7 +946,7 @@ function rollover_callback(roll_data)
             ajax_rollover('student_enrollment_codes');
     } else if (total_data[0] == 'Courses')
     {
-        document.getElementById("courses").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("courses").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("courses").setAttribute("class", rollover_class);
         document.getElementById("courses").setAttribute("className", rollover_class);
         if (document.getElementById('chk_course_periods').value == 'Y')
@@ -955,19 +955,19 @@ function rollover_callback(roll_data)
             ajax_rollover('student_enrollment_codes');
     } else if (total_data[0] == 'Course Periods')
     {
-        document.getElementById("course_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("course_periods").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("course_periods").setAttribute("class", rollover_class);
         document.getElementById("course_periods").setAttribute("className", rollover_class);
         ajax_rollover('student_enrollment_codes');
     } else if (total_data[0] == 'Student Enrollment Codes')
     {
-        document.getElementById("student_enrollment_codes").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("student_enrollment_codes").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("student_enrollment_codes").setAttribute("class", rollover_class);
         document.getElementById("student_enrollment_codes").setAttribute("className", rollover_class);
         ajax_rollover('student_enrollment');
     } else if (total_data[0] == 'Students')
     {
-        document.getElementById("student_enrollment").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("student_enrollment").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("student_enrollment").setAttribute("class", rollover_class);
         document.getElementById("student_enrollment").setAttribute("className", rollover_class);
         if (document.getElementById("chk_honor_roll").value == 'Y')
@@ -985,7 +985,7 @@ function rollover_callback(roll_data)
         }
     } else if (total_data[0] == 'Honor Roll Setup')
     {
-        document.getElementById("honor_roll").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("honor_roll").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("honor_roll").setAttribute("class", rollover_class);
         document.getElementById("honor_roll").setAttribute("className", rollover_class);
         if (document.getElementById("chk_attendance_codes").value == 'Y')
@@ -1001,7 +1001,7 @@ function rollover_callback(roll_data)
 
     } else if (total_data[0] == 'Attendance Codes')
     {
-        document.getElementById("attendance_codes").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("attendance_codes").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("attendance_codes").setAttribute("class", rollover_class);
         document.getElementById("attendance_codes").setAttribute("className", rollover_class);
 
@@ -1014,7 +1014,7 @@ function rollover_callback(roll_data)
         }
     } else if (total_data[0] == 'Report Card Comment Codes')
     {
-        document.getElementById("report_card_comments").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("report_card_comments").innerHTML = total_data[4] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("report_card_comments").setAttribute("class", rollover_class);
         document.getElementById("report_card_comments").setAttribute("className", rollover_class);
         ajax_rollover('NONE');
@@ -3281,4 +3281,26 @@ function getSchoolScheduleReport(this_INC)
     }
 
     console.log(this_DATE);
+}
+
+function loadFilterList()
+{
+    window.$("#stuf_loader").show();
+
+    ajax_call("StudentFilterList.php", loadFilterListCallback, loadFilterListErrors);
+}
+
+function loadFilterListCallback(check_return)
+{
+    window.$("#stuf_loader").hide();
+
+    console.log(check_return);
+    window.$("#view_resp").html(check_return);
+}
+
+function loadFilterListErrors(exceptions)
+{
+    window.$("#stuf_loader").hide();
+    
+    console.log(exceptions);
 }

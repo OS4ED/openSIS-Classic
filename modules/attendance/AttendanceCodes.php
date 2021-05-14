@@ -215,11 +215,12 @@ if ($_REQUEST['modfunc'] != 'remove') {
             ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' =>false, 'search' =>false));
             echo "</div>";
             if ($_REQUEST['table'] != 0) {
-                echo '<div class="pt-15">' . button(_edit, 'Edit category title', "Modules.php?modname=$_REQUEST[modname]&modfunc=edit&table=$_REQUEST[table]") . ' &nbsp;';
-                echo button('remove', 'Delete this category', "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&table=$_REQUEST[table]") . '</div>';
+                echo '<div class="pt-15 text-right">' . button('', 'Edit category title', "Modules.php?modname=$_REQUEST[modname]&modfunc=edit&table=$_REQUEST[table]") . ' &nbsp;';
+                echo button('', 'Delete this category', "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&table=$_REQUEST[table]", '', '', 'btn-default') . '</div>';
             }
-            echo '<hr/>' . SubmitButton(_save, '', 'id="setupAttnCodeBtnOne" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
-            echo PopTable('footer');
+            // echo '<hr/>' . SubmitButton(_save, '', 'id="setupAttnCodeBtnOne" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
+            $attn_code_edit = SubmitButton(_save, '', 'id="setupAttnCodeBtnOne" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
+            echo PopTable('footer', $attn_code_edit);
         } else {
 
             PopTable_wo_header_attn_code('header', $tabs);
@@ -237,9 +238,11 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $code_cat = $code_cat[1]['TITLE'];
         $_openSIS['selected_tab'] = "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]";
         echo PopTable('header', $tabs);
-        echo '<CENTER>Category Title <INPUT type=text id=new_category_title name=new_category_title value="' . $code_cat . '"></CENTER>';
+        echo '<div class="form-group"><label class="control-label col-md-2">Category Title</label><div class="col-md-3"><INPUT type=text class="form-control" id=new_category_title name=new_category_title value="' . $code_cat . '"></div><div class="col-md-6">';
+        echo SubmitButton(_save, '', 'id="setupAttnCodeBtnFou" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</div></div>';
+
         echo '<input type=hidden name=cat_edit_id value=' . $_REQUEST['table'] . ' />';
-        echo '<BR><CENTER>' . SubmitButton(_save, '', 'id="setupAttnCodeBtnFou" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</CENTER>';
+
         echo PopTable('footer');
     }
     echo '</FORM>';

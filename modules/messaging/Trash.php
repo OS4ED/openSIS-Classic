@@ -107,6 +107,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
                  <td align='left'>
                   "._attachment.": ";
 //            $attach = explode(',', $v['MAIL_ATTACHMENT']);
+            $v['MAIL_ATTACHMENT'] = rtrim($v['MAIL_ATTACHMENT'], ", ");
              $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.$v['MAIL_ATTACHMENT'].')'));
             foreach ($attach as $user => $img) {
                 
@@ -135,7 +136,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
 //            }
         
             
-                echo "<a href='DownloadWindow.php?down_id=".$img['ID']."'>".$img['NAME']."</a>";
+                echo "<a href='DownloadWindow.php?down_id=".$img['DOWNLOAD_ID']."'>".$img['NAME']."</a>";
              
               echo '<br>&nbsp;&nbsp;&nbsp;<br>';
             }
