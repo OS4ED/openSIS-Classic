@@ -1,0 +1,46 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Passy
+*
+*  Styles for passy.min.js - password length checker and password generator
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Base
+.visual-password-indicator {
+    display: inline-block;
+    background-color: @gray-light;
+    width: 40px;
+    height: 4px;
+}
+
+// Inside input group addon
+.password-indicator-group.input-group-addon {
+    padding-left: @padding-base-horizontal;
+    padding-right: @padding-base-horizontal;
+    border-radius: @border-radius-base;
+}
+
+// Absolute positioned label
+.label-indicator-absolute {
+    position: relative;
+
+    // Absolute label
+    .password-indicator-label-absolute {
+        position: absolute;
+        top: 50%;
+        margin-top: -(@line-height-computed / 2);
+        right: 0;
+    }
+
+    // Inside horizontal form
+    .form-horizontal & {
+        .label {
+            right: (@grid-gutter-width + @padding-base-vertical);
+        }
+    }
+}

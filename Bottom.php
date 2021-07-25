@@ -39,7 +39,7 @@ if($url===FALSE)
 
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='print')
 {
-     $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+    // $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 	$_REQUEST = $_SESSION['_REQUEST_vars'];
 	$_REQUEST['_openSIS_PDF'] = true;
         $_REQUEST['_openSIS_PDF'] = mysqli_real_escape_string($connection,optional_param('_openSIS_PDF', '', PARAM_RAW));

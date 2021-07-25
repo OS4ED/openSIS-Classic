@@ -1,0 +1,240 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Pagination (multiple pages) component
+*
+*  Overrides for pagination bootstrap component
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Basic styles
+// -------------------------
+
+.pagination {
+    margin-top: 0;
+    margin-bottom: -6px;
+    
+    // Shadow. Use .has-shadow class to add shadow manually
+    &,
+    &.has-shadow {
+        .box-shadow(@shadow-depth1);
+    }
+
+    // Pagination nav item
+    > li {
+
+        // Links
+        > a,
+        > span {
+            min-width: @input-height-base;
+            padding: (@padding-base-vertical + 1);
+            text-align: center;
+            border-width: 0;
+        }
+
+        // Hover and active states
+        &:not(.disabled) {
+            > a,
+            > span {
+                &:hover,
+                &:focus {
+                    .box-shadow(0 0 0 100px fade(#000, 5%) inset);
+                }
+                &:active {
+                    .box-shadow(0 0 0 100px fade(#000, 10%) inset);
+                }
+            }
+        }
+    }
+    
+    // Remove shadow if inside panel
+    .panel & {
+        .box-shadow(none);
+    }
+
+    // Rounded corners
+    &.pagination-rounded {
+        > li {
+            &:first-child {
+                > a,
+                > span {
+                    .border-left-radius(100px);
+                }
+            }
+            &:last-child {
+                > a,
+                > span {
+                    .border-right-radius(100px);
+                }
+            }
+        }
+    }
+}
+
+
+// Pagination styles
+// -------------------------
+
+// Flat pagination
+.pagination-flat {
+    .box-shadow(none);
+    
+    > li > a,
+    > li > span {
+        margin-left: 1px;
+        border-radius: @border-radius-base;
+        min-width: @input-height-base;
+        background-color: transparent;
+
+        // Remove border
+        &,
+        &:hover,
+        &:focus {
+            border-color: transparent;
+        }
+    }
+
+    // Active state
+    > .active > a,
+    > .active > span {
+        &,
+        &:hover,
+        &:focus {
+            border-color: transparent;
+        }
+    }
+
+    // Disabled state
+    > .disabled {
+        > span,
+        > span:hover,
+        > span:focus,
+        > a,
+        > a:hover,
+        > a:focus {
+            border-color: transparent;
+            background-color: transparent;
+        }
+    }
+
+    // Rounded corners
+    &.pagination-rounded {
+        > li > a,
+        > li > span {
+            border-radius: 100px;
+            padding-left: ((@line-height-computed - @padding-base-vertical - 1));
+            padding-right: ((@line-height-computed - @padding-base-vertical - 1));
+        }
+    }
+
+    // Set min width for pagination links
+    &.pagination-lg {
+        > li > a,
+        > li > span {
+            min-width: @input-height-large;
+        }
+
+        // Rounded corners
+        &.pagination-rounded {
+            > li > a,
+            > li > span {
+                padding-left: ((@line-height-computed - @padding-large-vertical - 1));
+                padding-right: ((@line-height-computed - @padding-large-vertical - 1));
+            }
+        }
+    }
+    &.pagination-sm {
+        > li > a,
+        > li > span {
+            min-width: @input-height-small;
+        }
+
+        // Rounded corners
+        &.pagination-rounded {
+            > li > a,
+            > li > span {
+                padding-left: ((@line-height-computed - @padding-small-vertical - 1));
+                padding-right: ((@line-height-computed - @padding-small-vertical - 1));
+            }
+        }
+    }
+    &.pagination-xs {
+        > li > a,
+        > li > span {
+            min-width: @input-height-mini;
+        }
+
+        // Rounded corners
+        &.pagination-rounded {
+            > li > a,
+            > li > span {
+                padding-left: ((@line-height-computed - @padding-xs-vertical - 1));
+                padding-right: ((@line-height-computed - @padding-xs-vertical - 1));
+            }
+        }
+    }
+}
+
+// Separated pagination
+.pagination-separated {
+    > li > a,
+    > li > span {
+        margin-left: 2px;
+    }
+}
+
+
+// Sizing
+// -------------------------
+
+// Large
+.pagination-lg {
+    > li {
+        > a,
+        > span {
+            padding: (@padding-large-vertical + 1);
+            min-width: @input-height-large;
+        }
+
+        // Border radius
+        &:first-child {
+            > a,
+            > span {
+                .border-left-radius(@border-radius-base);
+            }
+        }
+        &:last-child {
+            > a,
+            > span {
+                .border-right-radius(@border-radius-base);
+            }
+        }
+    }
+}
+
+// Small
+.pagination-sm {
+    > li {
+        > a,
+        > span {
+            padding: (@padding-small-vertical + 1);
+            min-width: @input-height-small;
+        }
+    }
+}
+
+// Mini
+.pagination-xs {
+    .pagination-size(@padding-xs-vertical; @padding-xs-horizontal; @font-size-small; @line-height-small; @border-radius-base);
+    
+    > li {
+        > a,
+        > span {
+            padding: (@padding-xs-vertical + 1);
+            min-width: @input-height-mini;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+#select-file-input {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 20px;
+    background: #f9f9f9;
+    font-weight: normal;
+    min-width: 40%;
+    cursor: pointer;
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+#select-file-input input[type=file] {
+    display: none;
+}
+#select-file-input i {
+    font-size: 45px;
+    margin-bottom: 15px;
+}

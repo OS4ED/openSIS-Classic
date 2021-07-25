@@ -1,0 +1,565 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Buttons component
+*
+*  Overrides for buttons bootstrap component
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Base styles
+// -------------------------
+
+.btn {
+    position: relative;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-width: 0;
+    padding: (@padding-base-vertical + 1) (@padding-base-horizontal + 1);
+
+    // Remove outline
+    &,
+    &:active,
+    &.active {
+        &:focus,
+        &.focus {
+            outline: 0;
+        }
+    }
+
+    // Firefox fix
+    &::-moz-focus-inner {
+        border: 0;
+    }
+
+    // Hover state
+    &:hover,
+    &:focus,
+    &.focus {
+        .box-shadow(0 0 0 100px fade(#000, 5%) inset); // Use box shadow instead of color for all buttons - contextual and custom
+    }
+
+    // Active state
+    &:active,
+    &.active {
+        .box-shadow(0 0 0 100px fade(#000, 10%) inset); // The same as above - no color changes, only box shadow
+    }
+
+    // Custom color buttons
+    &[class*=bg-] {
+        &:hover,
+        &:focus,
+        &.focus {
+            color: #fff;
+        }
+    }
+
+    // Correct line heights in smaller text sizes
+    &.text-size-small {
+        line-height: @line-height-small;
+    }
+    &.text-size-mini {
+        line-height: @line-height-mini;
+    }
+}
+
+
+// Button styling
+// -------------------------
+
+// Raised button
+.btn-raised:not(.btn-flat):not(.btn-link) {
+    .box-shadow(@shadow-depth1);
+
+    &.btn-default {
+        background-color: #fcfcfc;
+
+        // Hover/focus states
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: #f8f8f8;
+        }
+
+        // Active state
+        &:active,
+        &.active,
+        .open > .dropdown-toggle& {
+            background-color: #f8f8f8;
+        }
+
+        // Dropdowns
+        .btn-group.open .dropdown-toggle&,
+        .input-group-btn.open .dropdown-toggle& {
+            .box-shadow(@shadow-depth2);
+        }
+
+        // Disabled state
+        &.disabled,
+        &[disabled],
+        fieldset[disabled] & {
+            &:hover,
+            &:focus,
+            &.focus {
+                background-color: #fcfcfc;
+            }
+        }
+    }
+
+    // Hover state
+    &:hover,
+    &:focus,
+    &.focus {
+        .box-shadow(@shadow-depth2);
+    }
+
+    // Active state
+    &:active,
+    &.active {
+        .box-shadow(@shadow-depth2);
+    }
+
+    // Opened dropdowns
+    .btn-group.open .dropdown-toggle&,
+    .input-group-btn.open .dropdown-toggle& {
+        .box-shadow(@shadow-depth2);
+    }
+
+    // Remove shadow in disabled buttons
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & {
+        .box-shadow(none);
+    }
+}
+
+// Labeled button
+.btn-labeled {
+    padding-left: (((@line-height-computed - @icon-font-size + @padding-base-vertical - 1) * 2) + @icon-font-size) + @padding-base-horizontal;
+
+    // Default button
+    &.btn-default {
+        > b {
+            background-color: @brand-primary;
+            color: #fff;
+        }
+    }
+
+    // Icon
+    > b {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: fade(#000, 15%);
+        display: block;
+        line-height: 1;
+        padding: ((@line-height-computed - @icon-font-size + @padding-base-vertical - 1));
+        .border-left-radius(@border-radius-base);
+
+        // Center icon vertically
+        > i {
+            top: 0;
+        }
+    }
+
+    // Right icon
+    &.btn-labeled-right {
+        padding-left: @padding-base-horizontal;
+        padding-right: (((@line-height-computed - @icon-font-size + @padding-base-vertical - 1) * 2) + @icon-font-size) + @padding-base-horizontal;
+
+        > b {
+            left: auto;
+            right: 0;
+            .border-left-radius(0);
+            .border-right-radius(@border-radius-base);
+        }
+    }
+
+    // Extra large
+    &.btn-xlg {
+        padding-left: (((@line-height-computed - @icon-font-size + @padding-xlarge-vertical - 1) * 2) + @icon-font-size) + @padding-xlarge-horizontal;
+
+        > b {
+            padding: ((@line-height-computed - @icon-font-size + @padding-xlarge-vertical - 1));
+        }
+
+        &.btn-labeled-right {
+            padding-left: @padding-xlarge-horizontal;
+            padding-right: (((@line-height-computed - @icon-font-size + @padding-xlarge-vertical - 1) * 2) + @icon-font-size) + @padding-xlarge-horizontal;
+        }
+    }
+
+    // Large
+    &.btn-lg {
+        padding-left: (((@line-height-computed - @icon-font-size + @padding-large-vertical - 1) * 2) + @icon-font-size) + @padding-large-horizontal;
+
+        > b {
+            padding: ((@line-height-computed - @icon-font-size + @padding-large-vertical - 1));
+        }
+
+        &.btn-labeled-right {
+            padding-left: @padding-large-horizontal;
+            padding-right: (((@line-height-computed - @icon-font-size + @padding-large-vertical - 1) * 2) + @icon-font-size) + @padding-large-horizontal;
+        }
+    }
+
+    // Small
+    &.btn-sm {
+        padding-left: (((@line-height-computed - @icon-font-size + @padding-small-vertical - 1) * 2) + @icon-font-size) + @padding-small-horizontal;
+
+        > b {
+            padding: ((@line-height-computed - @icon-font-size + @padding-small-vertical - 1));
+        }
+
+        &.btn-labeled-right {
+            padding-left: @padding-small-horizontal;
+            padding-right: (((@line-height-computed - @icon-font-size + @padding-small-vertical - 1) * 2) + @icon-font-size) + @padding-small-horizontal;
+        }
+    }
+
+    // Mini
+    &.btn-xs {
+        padding-left: (((@line-height-computed - @icon-font-size + @padding-xs-vertical - 1) * 2) + @icon-font-size) + @padding-xs-horizontal;
+
+        > b {
+            padding: ((@line-height-computed - @icon-font-size + @padding-xs-vertical - 1));
+        }
+
+        &.btn-labeled-right {
+            padding-left: @padding-xs-horizontal;
+            padding-left: (((@line-height-computed - @icon-font-size + @padding-xs-vertical - 1) * 2) + @icon-font-size) + @padding-xs-horizontal;
+        }
+    }
+}
+
+// Flat button
+.btn-flat {
+    border-width: 2px;
+    background-color: transparent;
+    .box-shadow(none);
+
+    // Hover/focus states
+    &:hover,
+    &:focus {
+        .opacity(0.8);
+        .box-shadow(none);
+    }
+
+    // Active state
+    &:active {
+        .opacity(0.95);
+    }
+
+    // Remove shadow in open dropdown button
+    .btn-group.open .dropdown-toggle& {
+        .box-shadow(none);
+    }
+}
+
+// Icon button
+.btn-icon {
+    padding-left: ((@line-height-computed - @icon-font-size + @padding-base-vertical - 1));
+    padding-right: ((@line-height-computed - @icon-font-size + @padding-base-vertical - 1));
+
+    &.icon-2x {
+        padding-left: (@padding-base-vertical + 1);
+        padding-right: (@padding-base-vertical + 1);
+
+        > i {
+            font-size: (@icon-font-size * 2);
+            top: 0;
+        }
+
+        // Sizing
+        &.btn-xlg {
+            padding-left: (@padding-xlarge-vertical + 1);
+            padding-right: (@padding-xlarge-vertical + 1);
+        }
+        &.btn-lg {
+            padding-left: (@padding-large-vertical + 1);
+            padding-right: (@padding-large-vertical + 1);
+        }
+        &.btn-sm {
+            padding-left: (@padding-small-vertical + 1);
+            padding-right: (@padding-small-vertical + 1);
+        }
+        &.btn-xs {
+            padding-left: (@padding-xs-vertical + 1);
+            padding-right: (@padding-xs-vertical + 1);
+        }
+    }
+
+    // Sizing
+    &.btn-xlg,
+    .input-group-xlg > .input-group-btn > & {
+        padding-left: ((@line-height-computed - @icon-font-size + @padding-xlarge-vertical - 1));
+        padding-right: ((@line-height-computed - @icon-font-size + @padding-xlarge-vertical - 1));
+    }
+    &.btn-lg,
+    .input-group-lg > .input-group-btn > & {
+        padding-left: ((@line-height-computed - @icon-font-size + @padding-large-vertical - 1));
+        padding-right: ((@line-height-computed - @icon-font-size + @padding-large-vertical - 1));
+    }
+    &.btn-sm,
+    .input-group-sm > .input-group-btn > & {
+        padding-left: ((@line-height-computed - @icon-font-size + @padding-small-vertical - 1));
+        padding-right: ((@line-height-computed - @icon-font-size + @padding-small-vertical - 1));
+    }
+    &.btn-xs,
+    .input-group-xs > .input-group-btn > .btn& {
+        padding-left: ((@line-height-computed - @icon-font-size + @padding-xs-vertical - 1));
+        padding-right: ((@line-height-computed - @icon-font-size + @padding-xs-vertical - 1));
+    }
+}
+
+// Float button
+.btn-float {
+    padding: @btn-float-padding;
+    white-space: normal;
+    border-radius: @border-radius-base;
+
+    // Transparent button
+    &.btn-link {
+        padding: (@btn-float-padding - 5);
+    }
+
+    // Icon
+    i {
+        display: block;
+        margin: 0;
+        top: 0;
+    }
+
+    // Image
+    img {
+        border-radius: @border-radius-base;
+    }
+
+    // Text
+    > span {
+        display: block;
+        padding-top: (@line-height-computed / 2);
+        margin-bottom: -((@line-height-computed / 2) - 4);
+    }
+
+    // Double icon size in large button
+    &.btn-float-lg i {
+        font-size: (@icon-font-size * 2);
+    }
+}
+
+// Link button
+.btn-link {
+    color: @text-color;
+    border-radius: @border-radius-base;
+
+    // Remove shadows
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        .box-shadow(none);
+    }
+}
+
+// Rounded button
+.btn-rounded {
+    &,
+    &.btn-labeled > b,
+    img {
+        border-radius: 100px;
+    }
+}
+
+// Block button
+.btn-block + .btn-block {
+    margin-top: (@line-height-computed / 2);
+}
+
+
+// Contextual classes.
+// Override all styles
+// to avoid BS mixin changes
+// -------------------------
+
+// Default appears as lighter grey
+.btn-default {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-default-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-default-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-default-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+// Primary appears as blue
+.btn-primary {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-primary-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-primary-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-primary-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+// Success appears as green
+.btn-success {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-success-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-success-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-success-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+// Info appears as light blue
+.btn-info {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-info-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-info-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-info-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+// Warning appears as orange
+.btn-warning {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-warning-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-warning-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-warning-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+// Danger and error appear as red
+.btn-danger {
+    &:focus,
+    &.focus,
+    &:hover {
+        background-color: @btn-danger-bg;
+    }
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+        background-color: @btn-danger-bg;
+
+        &:hover,
+        &:focus,
+        &.focus {
+            background-color: @btn-danger-bg;
+        }
+    }
+    &.disabled {
+        .box-shadow(none);
+    }
+}
+
+
+// Button size overrides
+// -------------------------
+
+// XLarge button
+.btn-xlg {
+    .button-size(@padding-xlarge-vertical + 1; @padding-xlarge-horizontal + 1; @font-size-xlarge; @line-height-xlarge; @border-radius-base);
+
+    &.btn-rounded {
+        border-radius: 100px;
+    }
+}
+
+// Large button
+.btn-lg {
+    padding: (@padding-large-vertical + 1) (@padding-large-horizontal + 1);
+    border-radius: @border-radius-base;
+
+    &.btn-rounded {
+        border-radius: 100px;
+    }
+}
+
+// Small button
+.btn-sm {
+    padding: (@padding-small-vertical + 1) (@padding-small-horizontal + 1);
+}
+
+// Mini button
+.btn-xs {
+    padding: (@padding-xs-vertical + 1) (@padding-xs-horizontal + 1);
+}
+
+// Border radius override
+.btn-sm:not(.btn-rounded),
+.btn-group-sm > .btn:not(.btn-rounded),
+.btn-xs:not(.btn-rounded),
+.btn-group-xs > .btn:not(.btn-rounded) {
+    border-radius: @border-radius-base;
+}

@@ -51,13 +51,24 @@ function db_start()
 	}
 	return $connection;
 }
+
+
+##### Connection help #####
+$connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+
+if (!$connection)
+{
+	die('Could Not Connect: ' . mysqli_error($connection) . mysqli_errno($connection));
+}
+
+
 // This function connects, and does the passed query, then returns a connection identifier.
 // Not receiving the return == unusable search.
 //		ie, $processable_results = DBQuery("select * from students");
 function DBQuery($sql)
-{	global $DatabaseType,$_openSIS;
+{	global $DatabaseType,$_openSIS,$connection;
 
-	$connection = db_start();
+	// $connection = db_start();
 
 	switch($DatabaseType)
 	{

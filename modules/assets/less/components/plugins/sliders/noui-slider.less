@@ -1,0 +1,554 @@
+/* ------------------------------------------------------------------------------
+*
+*  # NoUI slider
+*
+*  Styles for NoUI range slider plugin
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Functional styling
+// ------------------------------
+
+// Container
+.noUi-target {
+    border-radius: 100px;
+    position: relative;
+    direction: ltr;
+
+    &,
+    & * {
+        .user-select(none);
+    }
+}
+
+// Base
+.noUi-base {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+// Slider origin
+.noUi-origin {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    border-radius: 100px;
+}
+
+// Inherit cursor
+.noUi-state-drag * {
+    cursor: inherit !important;
+}
+
+// Background
+.noUi-background {
+    background-color: @gray-lighter;
+}
+
+// Connector
+.noUi-connect {
+    background-color: @color-indigo-400;
+}
+
+// Disabled state
+[disabled] {
+
+    // Background
+    .noUI-background {
+        .opacity(0.75);
+    }
+
+    // Handle
+    .noUi-handle {
+        cursor: @cursor-disabled;
+
+        &:focus,
+        &:active {
+            .scale(1.25);
+            .box-shadow(none);
+        }
+    }
+}
+
+
+// Orientations
+// ------------------------------
+
+// Horizontal orientation
+.noUi-horizontal {
+    height: @slider-base-size;
+
+    .noUi-handle {
+        top: -(@slider-base-size * 1.5) + (@slider-base-size / 2);
+        left: -(@slider-base-size * 1.5);
+    }
+
+    &.noUi-extended {
+        padding: 0 @content-padding-base;
+
+        .noUi-origin  {
+            right: -(@content-padding-base);
+        }
+    }
+
+    // If has pips
+    &.has-pips {
+        margin-bottom: 35px;
+    }
+}
+
+// Vertical orientation
+.noUi-vertical {
+    display: inline-block;
+    width: @slider-base-size;
+    height: 150px;
+
+    & + & {
+        margin-left: @content-padding-large;
+    }
+
+    .noUi-handle {
+        top: -(@slider-base-size * 1.5);
+        left: -(@slider-base-size * 1.5) + (@slider-base-size / 2);
+    }
+
+    &.noUi-extended {
+        padding: @content-padding-base 0;
+
+        .noUi-origin  {
+            bottom: -(@content-padding-base);
+        }
+    }
+
+    // If has pips
+    &.has-pips {
+        margin-right: 35px;
+    }
+}
+
+
+// Handles and cursors
+// ------------------------------
+
+// Draggable
+.noUi-dragable {
+    cursor: w-resize;
+
+    .noUi-vertical & {
+        cursor: n-resize;
+    }
+}
+
+// Handle
+.noUi-handle {
+    width: (@slider-base-size * 3);
+    height: (@slider-base-size * 3);
+    background-color: @color-indigo-400;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    border-radius: 50%;
+    .scale(1);
+
+    .noUi-stacking & {
+        z-index: 10; // this class is applied to the lower origin when its values is > 50%
+    }
+
+    // Hover state
+    &:hover {
+        .scale(1.25);
+    }
+
+    // Active state
+    &:focus,
+    &:active {
+        .scale(1.5);
+        .box-shadow(0 0 0 10px fade(@color-indigo-400, 10%));
+    }
+}
+
+// White handle
+.noui-slider-white {
+    .noUi-handle {
+        background-color: #fff!important;
+        .box-shadow(@shadow-depth1);
+
+        &:focus,
+        &:active {
+            .box-shadow(~"0 0 0 10px rgba(0,0,0,0.05), "@shadow-depth1)!important;
+        }
+    }
+}
+
+
+// Sizing
+// ------------------------------
+
+// Large
+.noui-slider-lg {
+
+    // Handle
+    .noUi-handle {
+        width: (@slider-large-size * 3);
+        height: (@slider-large-size * 3);
+        top: -(@slider-large-size);
+    }
+
+    &.noui-slider-circle .noUi-handle:after {
+        width: @slider-large-size;
+        height: @slider-large-size;
+        margin-top: -(@slider-large-size / 2);
+        margin-left: -(@slider-large-size / 2);
+    }
+
+    // Horizontal
+    &.noUi-horizontal {
+        height: @slider-large-size;
+
+        .noUi-handle {
+            left: -(@slider-large-size * 1.5);
+        }
+    }
+
+    // Vertical
+    &.noUi-vertical {
+        width: @slider-large-size;
+
+        .noUi-handle {
+            top: -(@slider-large-size * 1.5);
+            left: -(@slider-large-size * 1.5) + (@slider-large-size / 2);
+        }
+    }
+}
+
+// Small
+.noui-slider-sm {
+
+    // Horizontal
+    &.noUi-horizontal {
+        height: @slider-small-size;
+
+        .noUi-handle {
+            top: -(@slider-base-size * 1.5) + (@slider-small-size / 2);
+            left: -(@slider-base-size * 1.5);
+        }
+    }
+
+    // Vertical
+    &.noUi-vertical {
+        width: @slider-small-size;
+
+        .noUi-handle {
+            top: -(@slider-base-size * 1.5);
+            left: -(@slider-base-size * 1.5) + (@slider-small-size / 2);
+        }
+    }
+}
+
+// Mini
+.noui-slider-xs {
+
+    // Horizontal
+    &.noUi-horizontal {
+        height: @slider-mini-size;
+
+        .noUi-handle {
+            top: -(@slider-base-size * 1.5) + (@slider-mini-size / 2);
+            left: -(@slider-base-size * 1.5);
+        }
+    }
+
+    // Vertical
+    &.noUi-vertical {
+        width: @slider-mini-size;
+
+        .noUi-handle {
+            top: -(@slider-base-size * 1.5);
+            left: -(@slider-base-size * 1.5) + (@slider-mini-size / 2);
+        }
+    }
+}
+
+
+// Solid slider handle
+// ------------------------------
+
+.noui-slider-circle {
+
+    // Handle
+    .noUi-handle {
+        background-color: @gray-light;
+        border-color: @gray-light;
+        .box-shadow(none);
+
+        // Inner circle
+        &:after {
+            content: '';
+            display: inline-block;
+            width: @slider-base-size;
+            height: @slider-base-size;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -(@slider-base-size / 2);
+            margin-left: -(@slider-base-size / 2);
+            border-radius: 100px;
+        }
+    }
+}
+
+
+// Contextual colors
+// ------------------------------
+
+// Primary
+.noui-slider-primary {
+    .noUi-connect,
+    &.noUi-connect {
+        background-color: @brand-primary;
+    }
+
+    .noUi-handle {
+        background-color: @brand-primary;
+
+        &:focus,
+        &:active {
+            .box-shadow(0 0 0 10px fade(@brand-primary, 10%));
+        }
+    }
+}
+
+// Danger
+.noui-slider-danger {
+    .noUi-connect,
+    &.noUi-connect {
+        background-color: @brand-danger;
+    }
+
+    .noUi-handle {
+        background-color: @brand-danger;
+
+        &:focus,
+        &:active {
+            .box-shadow(0 0 0 10px fade(@brand-danger, 10%));
+        }
+    }
+}
+
+// Success
+.noui-slider-success {
+    .noUi-connect,
+    &.noUi-connect {
+        background-color: @brand-success;
+    }
+
+    .noUi-handle {
+        background-color: @brand-success;
+
+        &:focus,
+        &:active {
+            .box-shadow(0 0 0 10px fade(@brand-success, 10%));
+        }
+    }
+}
+
+// Warning
+.noui-slider-warning {
+    .noUi-connect,
+    &.noUi-connect {
+        background-color: @brand-warning;
+    }
+
+    .noUi-handle {
+        background-color: @brand-warning;
+
+        &:focus,
+        &:active {
+            .box-shadow(0 0 0 10px fade(@brand-warning, 10%));
+        }
+    }
+}
+
+// Info
+.noui-slider-info {
+    .noUi-connect,
+    &.noUi-connect {
+        background-color: @brand-info;
+    }
+
+    .noUi-handle {
+        background-color: @brand-info;
+
+        &:focus,
+        &:active {
+            .box-shadow(0 0 0 10px fade(@brand-info, 10%));
+        }
+    }
+}
+
+
+// Tooltip
+// ------------------------------
+
+.noUi-tooltip {
+    display: none;
+    position: absolute;
+    border-radius: @border-radius-base;
+    background: @gray-dark;
+    color: #fff;
+    top: -43px;
+    padding: @padding-base-vertical @padding-base-horizontal;
+    left: 50%;
+    margin-left: -27px;
+    text-align: center;
+    font-size: @font-size-small;
+    width: 54px;
+
+    &:after {
+        content: '';
+        width: 0;
+        height: 0;
+        border: 5px solid transparent;
+        border-top-color: @gray-dark;
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        margin-left: -5px;
+    }
+
+    .noUi-handle:active & {
+        display: block;
+        .scale(0.75);
+    }
+}
+
+
+// Pips
+// ------------------------------
+
+// Base
+.noUi-pips {
+    position: absolute;
+    color: @text-muted;
+}
+
+
+//
+// Values base
+//
+
+// Default
+.noUi-value {
+    width: 40px;
+    position: absolute;
+    text-align: center;
+    font-size: @font-size-mini;
+}
+
+// Sub
+.noUi-value-sub {
+    color: #ccc;
+    font-size: @font-size-mini;
+}
+
+
+//
+// Markings base
+//
+
+.noUi-marker {
+    position: absolute;
+    background-color: #ccc;
+}
+
+
+//
+// Horizontal layout
+//
+
+// Pips
+.noUi-pips-horizontal {
+    padding-top: 10px;
+    height: 35px;
+    top: 100%;
+    left: 0;
+    width: 100%;
+}
+
+// Values
+.noUi-value-horizontal {
+    margin-left: -20px;
+    padding-top: 15px;
+
+    &.noUi-value-sub {
+        padding-top: 10px;
+    }
+}
+
+// Markers
+.noUi-marker-horizontal {
+
+    // Default marker
+    &.noUi-marker {
+        width: 1px;
+        height: 3px;
+    }
+
+    // Sub marker
+    &.noUi-marker-sub {
+        height: 6px;
+    }
+
+    // Large marker
+    &.noUi-marker-large {
+        height: 10px;
+    }
+}
+
+
+//
+// Vertical layout
+//
+
+// Pips
+.noUi-pips-vertical {
+    padding-left: 10px;
+    height: 100%;
+    top: 0;
+    left: 100%;
+}
+
+// Values
+.noUi-value-vertical {
+    width: 15px;
+    margin-left: 15px;
+    margin-top: -6px;
+}
+
+// Markers
+.noUi-marker-vertical {
+
+    // Default marker
+    &.noUi-marker {
+        width: 3px;
+        height: 1px;
+    }
+
+    // Sub marker
+    &.noUi-marker-sub {
+        width: 6px;
+    }
+
+    // Large marker
+    &.noUi-marker-large {
+        width: 10px;
+    }
+}

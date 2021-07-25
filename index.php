@@ -53,12 +53,12 @@ if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
 if (isset($_GET['ins']))
     $install = optional_param('ins', '', PARAM_ALPHAEXT);
 
-if ($install == 'comp') {
-    if (is_dir('install')) {
-        $dir = 'install/'; // IMPORTANT: with '/' at the end
-         $remove_directory = delete_directory($dir);
-    }
-}
+ if ($install == 'comp') {
+     if (is_dir('install')) {
+         $dir = 'install/'; // IMPORTANT: with '/' at the end
+          $remove_directory = delete_directory($dir);
+     }
+ }
 
 require_once('Warehouse.php');
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
@@ -218,7 +218,10 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
         if ($usr_prof == 'student') {
-            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_uniform['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+            // $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_uniform['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+
+            //Students who are in the system should always be able to login unless they are disabled
+            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_uniform['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID) AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
             if (count($student_RET) > 0) {
                 $student_RET[1]['USERNAME'] = $login_uniform['USERNAME'];
                 $student_RET[1]['LAST_LOGIN'] = $login_uniform['LAST_LOGIN'];
@@ -275,7 +278,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                             }
                         }
                         if ($usr_prof == 'student') {
-                            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_unchk['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=" . $login_unchk['USER_ID'] . ") AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+                            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_unchk['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=" . $login_unchk['USER_ID'] . ") AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
                             if (count($student_RET) > 0) {
                                 $student_RET[1]['USERNAME'] = $login_unchk['USERNAME'];
                                 $student_RET[1]['LAST_LOGIN'] = $login_unchk['LAST_LOGIN'];
@@ -343,13 +346,13 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $r_id_min = DBGet(DBQuery("SELECT MIN(id) as MIN_ID FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'"));
         $row_id_min = $r_id_min[1]['MIN_ID'];
 
-        $val_min_id = DBGet(DBQuery("SELECT VALUE FROM log_maintain WHERE ID = $row_id_min"));
+        $val_min_id = DBGet(DBQuery("SELECT VALUE FROM log_maintain WHERE ID = '" . $row_id_min . "'"));
         $value_min_id = $val_min_id[1]['VALUE'];
 
         $r_id_max = DBGet(DBQuery("SELECT MAX(id) as MAX_ID FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'"));
         $row_id_max = $r_id_max[1]['MAX_ID'];
 
-        $val_max_id = DBGet(DBQuery("SELECT VALUE FROM log_maintain WHERE ID = $row_id_max"));
+        $val_max_id = DBGet(DBQuery("SELECT VALUE FROM log_maintain WHERE ID = '" . $row_id_max . "'"));
         $value_max_id = $val_max_id[1]['VALUE'];
                      ################################## For Inserting into Log tables  ######################################
 

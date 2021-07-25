@@ -134,6 +134,11 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '<script type="text/javascript" src="assets/js/plugins/notifications/jgrowl.min.js"></script>';
     echo '<script type="text/javascript" src="assets/js/plugins/notifications/noty.min.js"></script>';
 
+    // JS for Schoolwide Schedule Report
+    echo '<script type="text/javascript" src="assets/js/plugins/table2excel/table2excel.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/jspdf/jspdf.min.js"></script>';
+    echo '<script type="text/javascript" src="assets/js/plugins/jspdf/autotable/jspdf.plugin.autotable.min.js"></script>';
+    
     /* JS Initializers */
     echo '<script type="text/javascript" src="assets/js/core/app.js?v=' . rand(0000, 99999) . '"></script>';
     echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';

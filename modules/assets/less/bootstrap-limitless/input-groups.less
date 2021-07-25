@@ -1,0 +1,279 @@
+/* ------------------------------------------------------------------------------
+*
+*  # Input groups component
+*
+*  Overrides for input groups bootstrap component
+*
+*  Version: 1.1
+*  Latest update: Mar 10, 2016
+*
+* ---------------------------------------------------------------------------- */
+
+
+// Base
+// -------------------------
+
+.input-group {
+
+    // Make icon to be always on top
+    .form-control-feedback {
+        z-index: 3;
+    }
+}
+
+
+// Sizing options
+// -------------------------
+
+// XLarge size
+.input-group-xlg > .form-control,
+.input-group-xlg > .input-group-addon,
+.input-group-xlg > .input-group-btn > .btn {
+    .input-xlg();
+}
+.input-group-xlg > .input-group-addon {
+    padding-right: @padding-xlarge-horizontal;
+}
+.input-group-xlg > .input-group-btn > .btn {
+    padding-left: @padding-xlarge-horizontal;
+    padding-right: @padding-xlarge-horizontal;
+}
+
+// Large size
+.input-group-lg > .form-control,
+.input-group-lg > .input-group-addon,
+.input-group-lg > .input-group-btn > .btn {
+    .input-lg();
+}
+.input-group-lg > .input-group-addon {
+    padding-right: @padding-large-horizontal;
+}
+.input-group-lg > .input-group-btn > .btn {
+    padding: (@padding-large-vertical + 1) (@padding-large-horizontal + 1);
+}
+
+// Small size
+.input-group-sm > .form-control,
+.input-group-sm > .input-group-addon,
+.input-group-sm > .input-group-btn > .btn {
+    .input-sm();
+}
+.input-group-sm > .input-group-addon {
+    padding-right: @padding-small-horizontal;
+}
+.input-group-sm > .input-group-btn > .btn {
+    padding: (@padding-small-vertical + 1) (@padding-small-horizontal + 1);
+}
+
+// Mini size
+.input-group-xs > .form-control,
+.input-group-xs > .input-group-addon,
+.input-group-xs > .input-group-btn > .btn {
+    .input-xs();
+}
+.input-group-xs > .input-group-addon {
+    padding-right: @padding-xs-horizontal;
+}
+.input-group-xs > .input-group-btn > .btn {
+    padding: (@padding-xs-vertical + 1) (@padding-xs-horizontal + 1);
+}
+
+
+
+// Transparent input group
+// -------------------------
+
+.input-group-transparent {
+    .input-group-addon {
+        background-color: transparent;
+        border-color: transparent;
+        padding: 0;
+    }
+
+    .form-control {
+        background-color: transparent;
+        border-color: transparent;
+        cursor: pointer;
+        width: auto;
+        padding: 0;
+
+        &:hover,
+        &:focus {
+            border-color: transparent;
+            .box-shadow(none);
+        }
+    }
+}
+
+
+// Text input groups
+// -------------------------
+
+.input-group-addon {
+    padding-left: 0;
+
+    // Last item
+    &:last-child {
+        padding-right: 0;
+    }
+
+    // Icon
+    > i {
+        display: block;
+        top: 0;
+    }
+
+    // Checkbox, radio
+    .checker,
+    .choice {
+        display: block;
+        margin-top: ((@line-height-computed - @checkbox-size) / 2);
+    }
+
+    // Multiple items
+    .input-group input + &,
+    .input-group-btn + &,
+    .input-group > .fas-feedback + & {
+        padding-left: @padding-base-horizontal;
+    }
+
+    // Contextual classes
+    .has-warning &,
+    .has-success &,
+    .has-error & {
+        border-color: @input-group-addon-border-color;
+        background-color: @input-group-addon-bg;
+    }
+
+
+    //
+    // Sizing
+    //
+
+    // XLarge
+    .input-group-xlg > .form-control + & {
+        padding-left: @padding-xlarge-horizontal;
+    }
+
+    // Large
+    .input-group-lg > .form-control + & {
+        padding-left: @padding-large-horizontal;
+    }
+
+    // Small
+    .input-group-sm > .form-control + & {
+        padding-left: @padding-small-horizontal;
+    }
+
+    // Mini
+    .input-group-xs > .form-control + & {
+        padding-left: @padding-xs-horizontal;
+    }
+}
+
+
+// Button input groups
+// -------------------------
+
+// Button
+.input-group-btn {
+    padding-right: @padding-base-horizontal;
+
+    &:first-child {
+        > .btn,
+        > .btn-group {
+            margin-right: 0;
+        }
+    }
+
+    &:last-child {
+        padding-right: 0;
+    }
+
+    .input-group > .form-control + &,
+    .input-group > .has-feedback + & {
+        padding-left: @padding-base-horizontal;
+    }
+
+    & + .input-group-addon {
+        padding-left: 0;
+    }
+}
+
+
+//
+// Sizing
+//
+
+// XLarge
+.input-group-xlg {
+    .input-group-btn:not(:last-child) {
+        padding-right: @padding-xlarge-horizontal;
+    }
+
+    > .form-control + .input-group-btn {
+        padding-left: @padding-xlarge-horizontal;
+    }
+}
+
+// large
+.input-group-lg {
+    .input-group-btn:not(:last-child) {
+        padding-right: @padding-large-horizontal;
+    }
+
+    > .form-control + .input-group-btn {
+        padding-left: @padding-large-horizontal;
+    }
+}
+
+// Small
+.input-group-sm {
+    .input-group-btn:not(:last-child) {
+        padding-right: @padding-small-horizontal;
+    }
+
+    > .form-control + .input-group-btn {
+        padding-left: @padding-small-horizontal;
+    }
+}
+
+// Mini
+.input-group-xs {
+    .input-group-btn:not(:last-child) {
+        padding-right: @padding-xs-horizontal;
+    }
+
+    > .form-control + .input-group-btn {
+        padding-left: @padding-xs-horizontal;
+    }
+}
+
+
+//
+// Rounded corners
+//
+
+.input-group-btn > .btn,
+.input-group-btn > .btn-group > .btn {
+    border-radius: 0;
+}
+.input-group-btn > .btn-rounded {
+    border-radius: 100px!important;
+}
+
+// First items
+.input-group-btn:first-child > .btn:first-child,
+.input-group-btn:first-child > .btn-group > .btn,
+.input-group-btn > .btn-group:first-child > .btn,
+.input-group-btn > .btn:first-child {
+    .border-left-radius(@border-radius-base);
+}
+
+// Last items
+.input-group-btn > .btn:last-child,
+.input-group-btn:last-child > .btn-group > .btn,
+.input-group-btn > .btn-group:last-child > .btn,
+.input-group-btn > .btn:last-of-type {
+    .border-right-radius(@border-radius-base);
+}

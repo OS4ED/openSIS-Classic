@@ -32,7 +32,7 @@ include("functions/ParamLibFnc.php");
 echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
-echo '<script type="text/javascript" src="assets/js/plugins/forms/inputs/jquery.creditCardValidator.js"></script>';
+// echo '<script type="text/javascript" src="assets/js/plugins/forms/inputs/jquery.creditCardValidator.js"></script>';
 echo '<script>';
 echo '$(document).ready(function() {        
         // Animate loader off screen
@@ -90,6 +90,8 @@ echo '$(document).ready(function() {
         
       });';
 echo '</script>';
+
+echo '<input id="cframe" type="hidden" value="">';
 
 $url = validateQueryString(curPageURL());
 if ($url === FALSE) {
