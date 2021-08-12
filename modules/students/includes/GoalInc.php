@@ -383,12 +383,12 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             
 
             # ------------------------------ Delete ---------------------------------------- #
-            $header .= '<div class="form-horizontal">';
+            $header .= '<div class="form-horizontal well">';
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6">' . TextInput($RET['PROGRESS_NAME'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_NAME]', _progressPeriodName, 'size=60 maxlength=50') . '</div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['PROGRESS_NAME'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_NAME]', _progressPeriodName, 'size=60 maxlength=50') . '</div></div>';
             if (($_REQUEST['progress_id'] != 'new')) {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST[progress_id] . "'><b><i class=\"icon-trash\"></i></b> "._deleteThisProgress."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST[progress_id] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisProgress."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row
@@ -422,8 +422,8 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             $header .= '</div>'; //.row
             $header .= '</div>'; //.row
             
-            
-            DrawHeader($header);
+            echo $header;
+            // DrawHeader($header);
         } elseif ($_REQUEST['goal_id']) {
             if ($_REQUEST['goal_id'] != 'new') {
                 $sql = 'SELECT GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION
@@ -470,7 +470,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             
             if ($_REQUEST['goal_id'] != 'new') {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisGoal."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisGoal."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row

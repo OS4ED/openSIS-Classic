@@ -76,7 +76,7 @@ if (UserSchool()) {
 //	' . $msg . '
 //	<form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
 //            echo '<div align=center>Select Logo: <input name="file" type="file" /><br /><br>
-//<input type="submit" value="'._upload.'" name="Submit" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link(Modules.php?modname=schoolsetup/Schools.php);\'></div>
+//<input type="submit" value="'._upload.'" name="Submit" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="'._cancel.'" onclick=\'load_link(Modules.php?modname=schoolsetup/Schools.php);\'></div>
 //</form>';
 //            PopTable('footer');
 //        } 
@@ -111,7 +111,7 @@ if (UserSchool()) {
 	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
             echo '<div align=center>Select Logo: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="'._upload.'" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value="._cancel." onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
+<input type="submit" value="'._upload.'" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value="'._cancel.'" onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
 </form>';
             PopTable('footer');
         } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
@@ -120,7 +120,7 @@ if (UserSchool()) {
 	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
             echo '<div align=center>Select Logo: <input name="file" type="file" /> <b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" value="'._upload.'" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value="._cancel." onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
+<input type="submit" value="'._upload.'" name="Submit" class=btn_medium />&nbsp;<input type=button class=btn_medium value="'._cancel.'" onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
 </form>';
             PopTable('footer');
         } else {
@@ -167,7 +167,7 @@ if (UserSchool()) {
 ' . $msg . '
 <form enctype="multipart/form-data" action="Modules.php?modname=schoolsetup/UploadLogo.php&action=upload" method="POST">';
         echo '<div align=center>Select Logo: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-<input type="submit" name="Submit"  value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
+<input type="submit" name="Submit"  value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>
 </form>';
         PopTable('footer');
     }

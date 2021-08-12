@@ -102,25 +102,25 @@ else
 function hide_search_div()
 {
     $("#searchdiv").hide();
-    $("#addiv").css({'display': 'inline-block'});
+    $("#advancedSearchForStudentDiv, #advancedSearchDivForStudents, #attendanceAdvancedSearchDivForStudents").css({'display': 'inline-block'});
 }
 
 function hide_search_div1()
 {
     $("#searchdiv1").hide();
-    $("#addiv1").css({'display': 'inline-block'});
+    $("#advancedSearchDivForStudentsFilters, #advancedFilterDivForStudents").css({'display': 'inline-block'});
 }
 
 function show_search_div()
 {
     $("#searchdiv").show();
-    $("#addiv").hide();
+    $("#advancedSearchForStudentDiv, #advancedSearchDivForStudents, #attendanceAdvancedSearchDivForStudents").hide();
 }
 
 function show_search_div1()
 {
     $("#searchdiv1").show();
-    $("#addiv1").hide();
+    $("#advancedSearchDivForStudentsFilters, #advancedFilterDivForStudents").hide();
 }
 
 function hidediv()

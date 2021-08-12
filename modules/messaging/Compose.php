@@ -29,6 +29,8 @@
 include_once("fckeditor/fckeditor.php");
 include('lang/language.php');
 
+DrawBC(""._messaging." > " . ProgramTitle());
+
 //PopTable('header', 'Compose Message');
 if(isset($_SESSION['BODY_EMPTY']) && $_SESSION['BODY_EMPTY']!='')
 {

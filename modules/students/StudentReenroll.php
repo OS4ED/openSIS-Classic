@@ -27,6 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+unset($_SESSION['student_id']);
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
     $start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start'];
     

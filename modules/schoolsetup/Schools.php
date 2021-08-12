@@ -46,10 +46,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 $dt_ex = explode("_", $col);
                 if ($dt_ex[0] == 'month') {
                     if ($_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '' && $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] != '') {
-//                        $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . MonthFormatter($_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]]) . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
-               $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
-                        }
-            }
+                        // $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . MonthFormatter($_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]]) . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
+                        $_REQUEST['values']['CUSTOM_' . $dt_ex[1]] = $_REQUEST['year_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . "-" . $_REQUEST['month_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]] . '-' . $_REQUEST['day_' . $dt_ex[1]]['CUSTOM_' . $dt_ex[1]];
+                    }
+                }
             }
 
             foreach ($_REQUEST['values'] as $column => $value) {
@@ -59,19 +59,30 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
 
                     $custom = DBGet(DBQuery("SHOW COLUMNS FROM schools WHERE FIELD='" . $column . "'"));
                     $custom = $custom[1];
-                    if ($custom['NULL'] == 'NO' && trim($value) == '' && $custom['DEFAULT']) {
+
+                    if ($custom_RET[1]['TYPE'] == 'multiple') {
+                        $valueSize = count($value);
+                        if($valueSize == 0) {
+                            $valueSize = '';
+                        }
+                    } else {
+                        $valueSize = trim($value);
+                    }
+
+                    if ($custom['NULL'] == 'NO' && trim($valueSize) == '' && $custom['DEFAULT']) {
                         $value = $custom['DEFAULT'];
-                    } else if ($custom['NULL'] == 'NO' && $value == '' && $custom_RET[1]['REQUIRED'] == 'Y') {
+                    } else if ($custom['NULL'] == 'NO' && $valueSize == '' && $custom_RET[1]['REQUIRED'] == 'Y') {
                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                        echo "<font color=red><b>"._unableToSaveDataBecause."" . $custom_TITLE . ''._isRequired.'</b></font><br/>';
+                        echo "<div class='alert alert-danger'>". ucfirst(_unableToSaveDataBecause) ." " . $custom_TITLE . ' '._isRequired.'</div>';
                         $error = true;
                         break;
                     } else if ($custom_RET[1]['TYPE'] == 'numeric' && (!is_numeric($value) && $value != '')) {
                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                        echo "<font color=red><b>"._unableToSaveDataBecause."" . $custom_TITLE . ''. isNumericType.'</b></font><br/>';
+                        echo "<div class='alert alert-danger'>". ucfirst(_unableToSaveDataBecause) ." " . $custom_TITLE . ' '. isNumericType.'</div>';
                         $error = true;
                     } else {
-                        $m_custom_RET = DBGet(DBQuery("select ID,TITLE,TYPE from school_custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
+                        $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE FROM school_custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
+
                         if ($m_custom_RET) {
                             $str = "";
                             foreach ($value as $m_custom_val) {
@@ -88,7 +99,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 }  ###Custom Ends#####
                 if ($column != 'WWW_ADDRESS')
                 $value = paramlib_validation($column, trim($value));
-//                                ',\''.singleQuoteReplace('','',trim($value)).'\''
+                // ',\''.singleQuoteReplace('','',trim($value)).'\''
                 if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
                     $sql .= $column . '=\'' . singleQuoteReplace('', '', trim($value)) . '\',';
                 } else {
@@ -99,7 +110,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
            
             if ($error != 1)
                 DBQuery($sql);
-            //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             $note[] = _thisSchoolHasBeenModified; //This school has been modified.
             $_REQUEST['modfunc'] = '';
         }
@@ -142,7 +153,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                     if(count($staff_exists)==0)
                         DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ',"'.date('Y-m-d').'")');
                 }
-//                DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
+                // DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO system_preference(school_id, full_day_minute, half_day_minute) VALUES (' . $id . ', NULL, NULL)');
 
@@ -162,24 +173,24 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
 
                 unset($_REQUEST['new_school']);
             }
-echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).' method=POST>';
-	//echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            echo '<FORM action=Modules.php?modname='.strip_tags(trim($_REQUEST['modname'])).' method=POST>';
+	        // echo '<script language=JavaScript>parent.side.location="'.$_SESSION['Side_PHP_SELF'].'?modcat="+parent.side.document.forms[0].modcat.value;</script>';
 	
-        echo '<div class="panel panel-default">';
-        echo '<div class="panel-body text-center">';
-        echo '<div class="new-school-created  p-30">';
-        echo '<div class="icon-school">';
-        echo '<span></span>';
-        echo '</div>';
-        echo '<h5 class="p-20">A new school called <b class="text-success">'.GetSchool(UserSchool()).'</b> has been created. To finish the operation, click the button below.</h5>';
-        echo '<div class="text-right p-r-20"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
-        echo '</div>'; //.new-school-created
-        echo '</div>'; //.panel-body
-        echo '</div>'; //.panel
+            echo '<div class="panel panel-default">';
+            echo '<div class="panel-body text-center">';
+            echo '<div class="new-school-created  p-30">';
+            echo '<div class="icon-school">';
+            echo '<span></span>';
+            echo '</div>';
+            echo '<h5 class="p-20">A new school called <b class="text-success">'.GetSchool(UserSchool()).'</b> has been created. To finish the operation, click the button below.</h5>';
+            echo '<div class="text-right p-r-20"><INPUT type="submit" value="Finish Setup" class="btn btn-primary btn-lg"></div>';
+            echo '</div>'; //.new-school-created
+            echo '</div>'; //.panel-body
+            echo '</div>'; //.panel
         
-	//DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value="._ok." class="btn_medium">');
-	echo '<input type="hidden" name="copy" value="done"/>';
-	echo '</FORM>';
+	        // DrawHeaderHome('<IMG SRC=assets/check.gif> &nbsp; A new school called <strong>'.  GetSchool(UserSchool()).'</strong> has been created. To finish the operation, click OK button.','<INPUT  type=submit value="._ok." class="btn_medium">');
+            echo '<input type="hidden" name="copy" value="done"/>';
+	        echo '</FORM>';
         }
     } else {
         $_REQUEST['modfunc'] = '';
@@ -219,7 +230,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
     }
 }
 if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
-    echo '<br><strong>'._schoolHasBeenCreatedSuccessfully.'</strong>';
+    echo '<div class="alert alert-success alert-styled-left">' . _schoolHasBeenCreatedSuccessfully . '</div>';
 } else {
     if (!$_REQUEST['modfunc']) {
         if (!$_REQUEST['new_school']) {
@@ -314,9 +325,9 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
 
-//        $uploaded_sql = DBGet(DBQuery("SELECT VALUE FROM program_config WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR IS NULL AND TITLE='PATH'"));
-//        $_SESSION['logo_path'] = $uploaded_sql[1]['VALUE'];
-//        if (!$_REQUEST['new_school'] && file_exists($uploaded_sql[1]['VALUE']))
+        // $uploaded_sql = DBGet(DBQuery("SELECT VALUE FROM program_config WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR IS NULL AND TITLE='PATH'"));
+        // $_SESSION['logo_path'] = $uploaded_sql[1]['VALUE'];
+        // if (!$_REQUEST['new_school'] && file_exists($uploaded_sql[1]['VALUE']))
         
         $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserSchool().' AND FILE_INFO=\'schlogo\''));
     

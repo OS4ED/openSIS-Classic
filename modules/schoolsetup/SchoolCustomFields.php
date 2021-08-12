@@ -29,6 +29,8 @@
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
+echo '<input id="customFieldModule" type="hidden" value="school">';
+
 if(isset($_SESSION['assoc_err']) && $_SESSION['assoc_err']=='Y'){
     echo'<div class="alert alert-danger alert-bordered"><i class="icon-alert"></i>'._thisCustomFieldCannotBeDeletedBecauseThereIsDataAssociatedWithThisFieldInTheDatabase.'.</div>';
     unset($_SESSION['assoc_err']);
@@ -54,6 +56,15 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
 
             $sql = "UPDATE $table SET ";
+
+            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
+                $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
+            }
+
+            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
+                $columns['DEFAULT_SELECTION'] = '0.00';
+            }
+            
             $sort_oder_to_change=0;
             foreach ($columns as $column => $value) {
                 $value = paramlib_validation($column, $value);
@@ -73,7 +84,12 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 if ($chk_cus_data[1]['CUSTOM_' . $custom_field_id] != '') {
                     $flag = 1;
                 }
+
+                if ($go && $flag == 0)
+                    DBQuery($sql);
+
                 $custom_update = DBGet(DBQuery("SELECT TYPE,REQUIRED,DEFAULT_SELECTION,HIDE FROM school_custom_fields WHERE ID=$custom_field_id"));
+                
                 $custom_update = $custom_update[1];
                 switch ($custom_update['TYPE']) {
                     case 'radio':
@@ -91,7 +107,9 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         break;
 
                     case 'codeds':
-                        $Sql_modify_column = "ALTER TABLE schools MODIFY CUSTOM_$id VARCHAR(15)";
+                        $colLength = typeLength($custom_update['DEFAULT_SELECTION'], 15);
+
+                        $Sql_modify_column = "ALTER TABLE schools MODIFY CUSTOM_$id VARCHAR(".$colLength.")";
                         break;
 
                     case 'multiple':
@@ -114,7 +132,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                     case 'textarea':
                         $Sql_modify_column = "ALTER TABLE schools MODIFY CUSTOM_$id LONGTEXT";
-                        $not_default = true;
+                        // $not_default = true;
                         break;
                 }
                 if (!$custom_update['REQUIRED']) {
@@ -122,11 +140,21 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 } else {
                     $Sql_modify_column.=" NULL";
                 }
+                
                 if ($custom_update['DEFAULT_SELECTION'] && $not_default == false) {
-                    $Sql_modify_column.=" DEFAULT  '" . $custom_update['DEFAULT_SELECTION'] . "' ";
+                    if ($custom_update['TYPE'] == 'multiple')
+                        $Sql_modify_column.=" DEFAULT  '||" . $custom_update['DEFAULT_SELECTION'] . "||' ";
+                    else
+                        $Sql_modify_column.=" DEFAULT  '" . $custom_update['DEFAULT_SELECTION'] . "' ";
+                    
+                    $existing_column_updt = 'UPDATE `schools` SET CUSTOM_'.$id.' = \''.$custom_update['DEFAULT_SELECTION'].'\' WHERE (CUSTOM_'.$id.' IS NULL OR CUSTOM_'.$id.' = "")';
                 }
+
                 if ($flag == 0) {
                     DBQuery($Sql_modify_column);
+                    
+                    if($existing_column_updt)
+                        DBQuery($existing_column_updt);
                 } else{
                     if($sort_oder_to_change!=0){
                         DBQuery('UPDATE school_custom_fields SET SORT_ORDER=\''.$sort_oder_to_change.'\' WHERE ID='.$custom_field_id);
@@ -145,6 +173,16 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 if ($columns['CATEGORY_ID']) {
                     $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
                     unset($columns['CATEGORY_ID']);
+                }
+
+                if (isset($columns['TYPE']) && isset($columns['REQUIRED'])) {
+                    if ($columns['TYPE'] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
+                        $columns['DEFAULT_SELECTION'] = '0.00';
+                    }
+                }
+
+                if ($columns['TYPE'] == 'multiple') {
+                    $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
                 }
 
                 $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'school_custom_fields'"));
@@ -239,14 +277,16 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 }
             }
             $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
-        }
-//echo $sql;
-        if ($go && $flag == 0)
-            DBQuery($sql);
-    }
 
+            if ($go && $flag == 0)
+                DBQuery($sql);
+        }
+        // echo $sql;
+        // if ($go && $flag == 0)
+        //     DBQuery($sql);
+    }
     
-    echo '<script>window.location.href="Modules.php?modname=schoolsetup/SchoolCustomFields.php"</script>';
+    // echo '<script>window.location.href="Modules.php?modname=schoolsetup/SchoolCustomFields.php"</script>';
 
     unset($_REQUEST['tables']);
 }
@@ -282,10 +322,10 @@ if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
 
 if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
 
-    echo '<div class="col-md-6 col-md-offset-3">';
+    echo '<div class="col-md-8 col-md-offset-2">';
 
     if ($_REQUEST['id'] != 'new')
-        $delete_button = "<INPUT type=button value='._delete.' class=\"btn btn-danger pull-right\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&id=$_REQUEST[id]\"'>" . "&nbsp;";
+        $delete_button = "<INPUT type=button value='"._delete."' class=\"btn btn-danger pull-right\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&id=$_REQUEST[id]\"'>" . "&nbsp;";
     
     $action = "Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "";
     
@@ -303,6 +343,9 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $header .= '<li class="active">';
     $header .= '<a href="javascript:void(0);">' . $title . '</a>'; //'<INPUT type=submit value='._save.'>');
     $header .= '</li>';
+    $header .= '<li class="pull-right">';
+    $header .= '<a href="Modules.php?modname=schoolsetup/SchoolCustomFields.php"><i class="icon-square-left m-r-5"></i> ' . _backToSchoolCustomFields . '</a>';
+    $header .= '</li>';
     $header .= '</ul>';
     $header .= '</div>';
 
@@ -312,36 +355,41 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
 
     // You can't change a student field type after it has been created
     // mab - allow changing between select and autos and edits and text
+    
     echo "<input id=custom name=custom type=hidden value=" . strip_tags(trim($_REQUEST[id])) . " />";
+    
     if ($_REQUEST['id'] != 'new') {
-       
-
-        $type_options = array('select' => _pullDown,
-         'autos' => _autoPullDown,
-         'edits' => _editPullDown,
-         'text' => _text,
-         'radio' => _checkbox,
-         'codeds' => _codedPullDown,
-         'numeric' => _number,
-         'multiple' => _selectMultipleFromOptions,
-         'date' => _date,
-         'textarea' => _longText,
+        $type_options = array(
+            'select' => _pullDown,
+            'autos' => _autoPullDown,
+            'edits' => _editPullDown,
+            'text' => _text,
+            'radio' => _checkbox,
+            'codeds' => _codedPullDown,
+            'numeric' => _number,
+            'multiple' => _selectMultipleFromOptions,
+            'date' => _date,
+            'textarea' => _longText,
         );
     } else
-        $type_options = array('select' => _pullDown,
-         'autos' => _autoPullDown,
-         'edits' => _editPullDown,
-         'text' => _text,
-         'radio' => _checkbox,
-         'codeds' => _codedPullDown,
-         'numeric' => _number,
-         'multiple' => _selectMultipleFromOptions,
-         'date' => _date,
-         'textarea' => _longText,
+        $type_options = array(
+            'select' => _pullDown,
+            'autos' => _autoPullDown,
+            'edits' => _editPullDown,
+            'text' => _text,
+            'radio' => _checkbox,
+            'codeds' => _codedPullDown,
+            'numeric' => _number,
+            'multiple' => _selectMultipleFromOptions,
+            'date' => _date,
+            'textarea' => _longText,
         );
 
-    $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'</label><div class="col-lg-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
-    if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text') {
+    $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'<br>(' . ($_REQUEST['id'] != 'new' ? _thisValueCantBeChanged : _enterThisValueCarefullyAsThisCantBeChangedLater) . ')</label><div class="col-lg-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();" ' . ($_REQUEST['id'] != 'new' ? 'disabled' : '')) . '</div></div>';
+
+    $header .= '<input id="DEFAULT_DATATYPE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['TYPE'].'">';
+
+    if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'text' && $RET['TYPE'] != 'date' && $RET['TYPE'] != 'radio' && $RET['TYPE'] != 'numeric' && $RET['TYPE'] != 'textarea') {
         $_openSIS['allow_edit'] = $allow_edit;
         $_openSIS['AllowEdit'][$modname] = $AllowEdit;
     }
@@ -354,12 +402,72 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
         $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', ''._sortOrder.'', 'onkeydown=\"return numberOnly(event);\"') . '</div>';
     }
 
+    $defaultMessage = _default;
+    $exampleText = '';
+    if ($RET['TYPE'] == 'multiple') {
+        $RET['DEFAULT_SELECTION'] = str_replace('"', '&rdquo;', str_replace('||', ', ', substr($RET['DEFAULT_SELECTION'], 2, -2)));
+    }
+    if ($_REQUEST['id'] != 'new') {
+        if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'multiple') {
+            $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+        } else if ($RET['TYPE'] == 'codeds') {
+            $exampleText = _example.':<br/>0|Good<br/>1|Bad<br/>etc.';
+        } 
+        // else if ($RET['TYPE'] == 'multiple') {
+        //     $exampleText = _example':<br/>||Good||<br/>||Bad||<br/>etc.';
+        // }
+
+        if (trim($RET['SELECT_OPTIONS']) != '') {
+            if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'multiple') {
+                $selectOptionsArr = explode(PHP_EOL, $RET['SELECT_OPTIONS']);
+            } else if ($RET['TYPE'] == 'codeds') {
+                $selectOptionsArrP1 = explode(PHP_EOL, $RET['SELECT_OPTIONS']);
+                $selectOptionsArrP2 = array();
+                
+                foreach ($selectOptionsArrP1 as $sOA1) {
+                    $sOA1_v = explode('|', $sOA1)[0];
+                    array_push($selectOptionsArrP2, $sOA1_v);
+                }
+
+                $selectOptionsArr = $selectOptionsArrP2;
+            }
+
+            $filteredSelectOptArr = array();
+
+            foreach ($selectOptionsArr as $sOA2) {
+                array_push($filteredSelectOptArr, trim($sOA2));
+            }
+
+            if ($RET['DEFAULT_SELECTION'] != NULL && $RET['DEFAULT_SELECTION'] != '') {
+                if (!in_array(trim($RET['DEFAULT_SELECTION']), $filteredSelectOptArr)) {
+                    $defaultMessage = '<span class="text-warning"><b>'._warning.'!</b> '._defaultValueDoesNotMatchWithTheValuesOfPullDown.'!</span>';
+                }
+            }
+        }
+    } else {
+        $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+    }
+
     $colspan = 2;
     if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
-        $header .= '<div class="form-group" id="show_textarea" style="display:block">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', ''._pullDownAutoPullDownCodedPullDownSelectMultipleChoicesOnePerLine.'', 'rows=7 cols=40') . '</div>';
+        $header .= '<div class="form-group" id="show_textarea" style="display:block"><label class="control-label col-lg-4 text-right">'._pullDownAutoPullDownCodedPullDownSelectMultipleChoicesOnePerLine.'</label><div class="col-lg-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40 onkeyup=checkValidDefaultValue()') . '<p class="help-block">* '. ucfirst(_onePerLine) .'</p><p id="exmp" class="help-block">' . $exampleText . '</p></div></div>';
         $colspan = 1;
+
+        $header .= '<div style="display:none;"><textarea id="SELECT_OPTIONS_VALUE_'.$_REQUEST['id'].'">'.$RET['SELECT_OPTIONS'].'</textarea></div>';
     }
-    $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">'._default.'</p></div></div>';
+
+    if ($RET['TYPE'] == 'numeric')
+        $defaultValueFunc = 'onkeydown="return numberOnly(event);"';
+    else
+        $defaultValueFunc = 'onkeyup=checkValidDefaultValue()';
+    
+    if($RET['DEFAULT_SELECTION'] == NULL || $RET['DEFAULT_SELECTION'] == '') {
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._enterThisValueCarefullyAsThisCantBeChangedLater.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc) . '<p id="helpBlock" class="help-block">'._default.'</p></div></div>';
+    } else {
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._thisValueCantBeChanged.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc.' disabled') . '<p id="helpBlock" class="help-block">'. $defaultMessage .'</p></div></div>';
+    }
+
+    $header .= '<input id="DEFAULT_VALUE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['DEFAULT_SELECTION'].'">';
 
     $new = ($_REQUEST['id'] == 'new');
     $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', _required,'', false, 'Yes', 'No', '', 'switch-success') . '</div></div>';
@@ -368,8 +476,8 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
         $system_wide='N';
     else
          $system_wide='Y';
-//    print_r($RET);
-//    echo $system_wide;
+    // print_r($RET);
+    // echo $system_wide;
     $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($system_wide, 'SYSTEM_WIDE', ''._systemWide.'','', false, 'Yes','No', '', 'switch-success') . '</div></div>';
    
     $header .= '</div>';
@@ -427,4 +535,23 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     echo '</div>'; //.col-md-6
 }
 echo '</div>'; //.row
+
+function typeLength($defaultValue, $setLength) {
+    if($setLength == '') {
+        $setLength = 1;
+    }
+
+    if($defaultValue != '') {
+        if(strlen($defaultValue) > $setLength) {
+            $returnLength = strlen($defaultValue);
+        } else {
+            $returnLength = $setLength;
+        }
+    } else {
+        $returnLength = $setLength;
+    }
+
+    return $returnLength;
+}
+
 ?>

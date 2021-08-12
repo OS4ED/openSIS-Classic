@@ -45,7 +45,7 @@ echo '<div class="col-md-4">';
 echo '<div class="panel panel-white">';
 echo '<div class="panel-heading"><h5 class="panel-title">'._systemPreferences.'</h5></div>';
 echo '<div class="panel-body p-0">';
-echo '<ul class="nav nav-pills nav-stacked nav-pills-primary m-b-0">';
+echo '<ul class="nav nav-pills nav-stacked nav-pills-primary m-b-0 p-0">';
 echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=SystemPreference"><i class="icon-watch2"></i> &nbsp;'._setHalfDayAndFullDayMinutes.'</a></li>';
 echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'FAILURE') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=FAILURE"><i class="icon-key"></i> &nbsp;'._setLoginFailureAllowanceCount.'</a></li>';
 echo '<li ' . ((clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'INACTIVITY') ? 'class="active"' : '') . '><a href="Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&page_display=INACTIVITY"><i class="icon-calendar22"></i> &nbsp;'._setAllowableUserInactivityDays.'</a></li>';

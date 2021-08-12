@@ -392,6 +392,7 @@ function VerifyBlockedSchedule($columns, $course_period_id, $sec, $edit = false)
             }
             return true;
         }
+        return true;
     }
     else
     {

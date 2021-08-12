@@ -25,7 +25,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+ini_set('display_errors', 'Off');
 error_reporting(0);
+
 $page_name = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
@@ -52,7 +54,7 @@ $page_name = basename($_SERVER['PHP_SELF']);
     </head>
     <body class="outer-body"><?php
         $url = 'Step0.php';
-        if ($_GET["upreq"] == 'true') {
+        if (isset($_GET["upreq"]) && $_GET["upreq"] == 'true') {
             $url .= '?upreq=true';
         }
         ?><iframe id="mainIframe" src="<?php echo $url; ?>" onload="resizeIframe(this)" onresize="resizeIframe(this)" scrolling="no" frameborder="0" style="width:100%; height: 100vh"></iframe></body>

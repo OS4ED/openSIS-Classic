@@ -28,8 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 DrawBC(""._gradebook." > " . ProgramTitle());
-echo '<div class="panel panel-default">';
-echo '<div class="panel-body">';
+
 include_once 'functions/MakeLetterGradeFnc.php';
 include_once 'functions/MakePercentGradeFnc.php';
 $max_allowed = Preferences('ANOMALOUS_MAX', 'Gradebook') / 100;
@@ -66,15 +65,26 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
+
+    echo '<div class="panel ' . (UserStaffId() != '' ? 'm-b-0' : '') . '">';
+    echo '<div class="panel-heading">';
+
     if ($count_student_RET[1]['NUM'] > 1) {
         if (UserStaffId() != '' && SelfStaffProfile('PROFILE') == 'admin')
-            DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>'._backToStudentList.':</A>');
+            DrawHeaderHome('<h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6>  <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body><i class="icon-square-left"></i> ' . _backToStudentList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div></div>');
         else
-            DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>'._backToStudentList.':</A>');
-    }else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) ');
+            DrawHeaderHome('<h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> ' . _backToStudentList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div></div>');
+    } else if ($count_student_RET[1]['NUM'] == 1) {
+        DrawHeaderHome('<h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div></div>');
     }
+
+    echo '</div>'; //.panel-heading
+    echo '</div>'; //.panel
 }
+
+echo '<div class="panel panel-default">';
+echo '<div class="panel-heading">';
+
 ####################
 if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     if ($_REQUEST['student_id'] != $_SESSION['student_id']) {
@@ -293,27 +303,31 @@ foreach ($assignments_RET as $id => $assignment)
     $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
 $assignment_select .= '</SELECT>';
 
-echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST[student_id])) . "&cpv_id=" . CpvId() . " method=POST>";
+echo "<FORM class='m-b-0' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST[student_id])) . "&cpv_id=" . CpvId() . " method=POST>";
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
 if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
-    echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label></div></div>';
+    echo '<div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label></div>';
 else {
     if (!$_REQUEST['student_id']) {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>'._includeInactiveStudents.':</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
+        echo '<div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span> &nbsp; '._includeInactiveStudents.'</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') : '') . '</div>';
     } else {
-        echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') : '') . '</div></div>';
+        echo '<div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') : '') . '</div>';
     }
 }
+
+echo '</div>'; //.panel-heading
+echo '<div class="panel-body">';
+
 if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
     $options = array('yscroll' =>true);
 
-echo '<hr class="no-margin-bottom"/>';
+// echo '<hr class="no-margin-bottom"/>';
 ListOutput($stu_RET, $LO_columns, $item, $items, $link, array(), $options);
 
 if (count($assignments_RET) != 0)
-    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER>' : '';
+    echo $_REQUEST['assignment_id'] ? '</div> <div class="panel-footer"><CENTER>' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER></div>' : '';
 echo '</FORM>';
 
 echo '</div>'; //.panel-body

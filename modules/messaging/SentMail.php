@@ -25,6 +25,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
+DrawBC(""._messaging." > " . ProgramTitle());
+
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
     echo'<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>'._messageDeletedSucessfully.'</div>';
 }

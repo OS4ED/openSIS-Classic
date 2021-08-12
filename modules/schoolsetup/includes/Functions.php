@@ -88,7 +88,11 @@ function _makeSelectInputSchl($column, $name, $request = 'values') {
     }
 
     $extra = 'class=form-control';
-    return SelectInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $options, 'N/A', $extra, $div);
+
+    if (trim($name) != '')
+        return SelectInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $options, 'N/A', $extra, $div);
+    else
+        return SelectInput($value[$column], $request . '[' . $column . ']', '', $options, 'N/A', $extra, $div);
 }
 
 function _makeAutoSelectInputSchl($column, $name, $request = 'values') {
@@ -125,8 +129,13 @@ function _makeAutoSelectInputSchl($column, $name, $request = 'values') {
         if (isset($num_of_cus_field)) {
             $generated = true;
         }
-        $extra = 'style="max-width:250;"';
-        return SelectInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $options, 'N/A', $extra, $div);
+        
+        // $extra = 'style="max-width:250;"';
+
+        if (trim($name) != '')
+            return SelectInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $options, 'N/A', $extra, $div);
+        else
+            return SelectInput($value[$column], $request . '[' . $column . ']', '', $options, 'N/A', $extra, $div);
     } else
         return TextInput($value[$column] == '---' ? array('---', '<FONT color=red>---</FONT>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
 }
@@ -155,6 +164,59 @@ function _makeTextareaInputSchl($column, $name, $request = 'values') {
     return TextAreaInput($value[$column], $request . '[' . $column . ']', $name, '', $div);
 }
 
+// function _makeMultipleInputSchl($column, $name, $request = 'values') {
+//     global $value, $field, $_openSIS;
+
+//     if ((AllowEdit() || $_openSIS['allow_edit']) && !$_REQUEST['_openSIS_PDF']) {
+//         $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
+//         $select_options = explode("\r", $field['SELECT_OPTIONS']);
+//         if (count($select_options)) {
+//             foreach ($select_options as $option)
+//                 $options[$option] = $option;
+//         }
+
+//         if ($value[$column] != '')
+//             $m_input .= "<DIV id='div" . $request . "[" . $column . "]'><div onclick='javascript:addHTML(\"";
+//         $m_input .= '<TABLE border=0 cellpadding=3>';
+//         if (count($options) > 12) {
+//             $m_input .= '<TR><TD colspan=2>';
+//             $m_input .= '<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
+//             if ($value[$column] != '')
+//                 $m_input .= '<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
+//             else
+//                 $m_input .= '<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
+
+//             $m_input .= '</TD></TR>';
+//         }
+//         $m_input .= '<TR>';
+//         $i = 0;
+//         foreach ($options as $option) {
+//             if ($i % 2 == 0)
+//                 $m_input .= '</TR><TR>';
+//             if ($value[$column] != '') {
+
+//                 $m_input .= '<TD><INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><INPUT type=checkbox name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+//             } else {
+//                 $m_input .= '<TD><INPUT type=checkbox name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+//             }
+//             $i++;
+//         }
+//         $m_input .= '</TR><TR><TD colspan=2>';
+//         if ($value[$column] != '')
+//             $m_input .= '<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
+//         else
+//             $m_input .= '<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
+
+//         $m_input .= '</TD></TR></TABLE>';
+//         if ($value[$column] != '')
+//             $m_input .= "\",\"div" . $request . "[" . $column . "]" . "\",true);' >" . (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-') . "</div></DIV>";
+//     } else
+//         $m_input .= (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
+
+//     $m_input .= '<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
+//     return $m_input;
+// }
+
 function _makeMultipleInputSchl($column, $name, $request = 'values') {
     global $value, $field, $_openSIS;
 
@@ -166,45 +228,24 @@ function _makeMultipleInputSchl($column, $name, $request = 'values') {
                 $options[$option] = $option;
         }
 
-        if ($value[$column] != '')
-            $m_input .= "<DIV id='div" . $request . "[" . $column . "]'><div onclick='javascript:addHTML(\"";
-        $m_input .= '<TABLE border=0 cellpadding=3>';
         if (count($options) > 12) {
-            $m_input .= '<TR><TD colspan=2>';
-            $m_input .= '<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
-            if ($value[$column] != '')
-                $m_input .= '<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
-            else
-                $m_input .= '<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
-
-            $m_input .= '</TD></TR>';
+            $m_input .= '<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
         }
-        $m_input .= '<TR>';
+        
         $i = 0;
         foreach ($options as $option) {
-            if ($i % 2 == 0)
-                $m_input .= '</TR><TR>';
             if ($value[$column] != '') {
-
-                $m_input .= '<TD><INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><INPUT type=checkbox name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+                $m_input .= '<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value="">';
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             } else {
-                $m_input .= '<TD><INPUT type=checkbox name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '><small>' . $option . '</small></TD>';
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             }
             $i++;
         }
-        $m_input .= '</TR><TR><TD colspan=2>';
-        if ($value[$column] != '')
-            $m_input .= '<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
-        else
-            $m_input .= '<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
-
-        $m_input .= '</TD></TR></TABLE>';
-        if ($value[$column] != '')
-            $m_input .= "\",\"div" . $request . "[" . $column . "]" . "\",true);' >" . (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-') . "</div></DIV>";
     } else
         $m_input .= (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
 
-    $m_input .= '<small><FONT color=' . Preferences('TITLES') . '>' . $name . '</FONT></small>';
+    $m_input.='<p class=help-block>' . $name . '</p>';
     return $m_input;
 }
 

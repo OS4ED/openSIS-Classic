@@ -134,7 +134,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         }
                     } else {
                         if ($column == 'TITLE' && !isset($_REQUEST['values'][$id]['SHORT_NAME'])) {
-                            $exist_pr_title = DBGet(DBQuery('SELECT count(PERIOD_ID) AS TOT FROM  school_periods WHERE title=\'' . $value . '\' AND SHORT_NAME=\'' . $exist_pr[1]['SHORT_NAME'] . '\' and period_id<>\'' . $id . '\''));
+                            $exist_pr_title = DBGet(DBQuery('SELECT count(PERIOD_ID) AS TOT FROM  school_periods WHERE title=\'' . $value . '\' AND SHORT_NAME=\'' . $exist_pr[1]['SHORT_NAME'] . '\' AND SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND period_id<>\'' . $id . '\''));
 
                             if ($exist_pr_title[1]['TOT'] > 0) {
 
@@ -143,7 +143,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         }
 
                         if ($column == 'SHORT_NAME' && !isset($_REQUEST['values'][$id]['TITLE'])) {
-                            $exist_pr_title = DBGet(DBQuery('SELECT count(PERIOD_ID) AS TOT FROM  school_periods WHERE title=\'' . $exist_pr[1]['TITLE'] . '\' AND SHORT_NAME=\'' . $value . '\' and period_id<>\'' . $id . '\''));
+                            $exist_pr_title = DBGet(DBQuery('SELECT count(PERIOD_ID) AS TOT FROM  school_periods WHERE title=\'' . $exist_pr[1]['TITLE'] . '\' AND SHORT_NAME=\'' . $value . '\' AND SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND period_id<>\'' . $id . '\''));
 
                             if ($exist_pr_title[1]['TOT'] > 0) {
 
@@ -179,7 +179,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     }
                 }
                 if ($not_up == 1) {
-                    $err_msg = alreadyAPeriodIsCreatedWithSameTitleOrShortname.".";
+                    $err_msg = _alreadyAPeriodIsCreatedWithSameTitleOrShortname;
                 }
 
                 # -------------------------- Length Update Start -------------------------- #
@@ -213,7 +213,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $end_time[$i] = strtotime($periods[$i]['END_TIME']);
                 }
                 if (in_array(strtoupper(str_replace(' ', '', $columns['TITLE'])), $p_title) || in_array(strtoupper(str_replace(' ', '', $columns['SHORT_NAME'])), $shortname)) {
-                    $err = alreadyAPeriodIsCreatedWithSameTitleOrShortname.".";
+                    $err = _alreadyAPeriodIsCreatedWithSameTitleOrShortname;
                     break;
                 } elseif ($columns['START_TIME']) {
 //                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
@@ -228,7 +228,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $values = '\'' . UserSchool() . '\',\'' . UserSyear() . '\',';
                         $go = 0;
                         if ($columns['START_TIME'] == $columns['END_TIME']) {
-                            $err_msg = startTimeAndEndTimeCanNotBeSame.".";
+                            $err_msg = _startTimeAndEndTimeCanNotBeSame;
                             break;
                         }
                         foreach ($columns as $column => $value) {

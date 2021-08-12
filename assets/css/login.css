@@ -263,9 +263,9 @@ body {
     background-size: 20px;
 }
 
-.panel .panel-body .form-control.username:dir(rtl) {
-    background   : url(../images/user.svg) no-repeat right 10px center;
-    padding-left : 12px;
+html[dir="rtl"] .panel .panel-body .form-control.username {
+    background-position: calc(100% - 15px);
+    padding-left   : 0;
     padding-right: 50px;
 }
 
@@ -275,9 +275,9 @@ body {
     background-size: 18px;
 }
 
-.panel .panel-body .form-control.password:dir(rtl) {
-    background   : url(../images/lock.svg) no-repeat right 12px center;
-    padding-left : 12px;
+html[dir="rtl"] .panel .panel-body .form-control.password {
+    background-position: calc(100% - 15px);
+    padding-left   : 0;
     padding-right: 50px;
 }
 
@@ -295,9 +295,11 @@ body {
     top      : 10px;
 }
 
-.language-selection:dir(rtl) i {
+html[dir="rtl"] .language-selection i {
     margin-right: 0;
     margin-left : 5px;
+    left: auto;
+    right: 11px;
 }
 
 .select2-selection--single .select2-selection__rendered {
@@ -305,6 +307,12 @@ body {
     font-size     : 16px;
     padding-left  : 50px;
     padding-bottom: 0;
+}
+
+html[dir="rtl"] .select2-selection--single .select2-selection__rendered {
+    padding-left: 0;
+    padding-right: 50px;
+    text-align: right;
 }
 
 .select2-selection--single {
@@ -590,7 +598,7 @@ footer a:hove {
     margin : 0;
 }
 
-.checkbox.checkbox-switch label span:dir(rtl) {
+html[dir="rtl"] .checkbox.checkbox-switch label span {
     margin-right: 0;
     margin-left : 5px;
 }

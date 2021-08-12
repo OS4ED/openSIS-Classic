@@ -29,6 +29,12 @@ li.list-group-item:hover {
     background: #f5f5f5;
 }
 
+
+html[dir="rtl"] .table tr th,
+html[dir="rtl"] .table tr td[align="left"] {
+    text-align: right;
+}
+
 .table > thead > tr > th {
     white-space: nowrap;
 }
@@ -50,6 +56,14 @@ div.form-control {
 }
 .clockpicker input.form-control {
     min-width: 60px;
+}
+
+html[dir="rtl"] .pull-left {
+    float: right !important;
+}
+
+html[dir="rtl"] .pull-right {
+    float: left !important;
 }
 /* Bootstrap Overwrite End */
 
@@ -96,7 +110,7 @@ div.form-control {
     margin: 6px 0 6px 20px;
     background: #f3f3f3;
 }
-.sidebar-control:dir(rtl) {
+html[dir="rtl"] .sidebar-control {
     float: right;
     margin: 6px 0;
 }
@@ -127,8 +141,8 @@ label.radio {
     margin-left: 15px;
 }
 
-#navbar-mobile .form-group:dir(rtl),
-#navbar-mobile form:dir(rtl) {
+html[dir="rtl"] #navbar-mobile .form-group,
+html[dir="rtl"] #navbar-mobile form {
     margin-left: 0;
     margin-right: 15px
 }

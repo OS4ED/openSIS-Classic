@@ -467,24 +467,24 @@ if (!$_REQUEST['modfunc']) {
                     $pros = explode(',', str_replace("'", '', $pro));
                     foreach ($pros as $pro)
                         if (GetMP($pro, 'DOES_GRADES') == 'Y')
-                            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . '>' . GetMP($pro, 'SHORT_NAME') . '</label>';
+                            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $pro . ' onclick="reportCardGpaChk();">' . GetMP($pro, 'SHORT_NAME') . '</label>';
                 }
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $qtr['MARKING_PERIOD_ID'] . '>' . $qtr['SHORT_NAME'] . '</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $qtr['MARKING_PERIOD_ID'] . ' onclick="reportCardGpaChk();">' . $qtr['SHORT_NAME'] . '</label>';
               
                 if (GetMP($qtr1, 'DOES_EXAM') == 'Y')
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $qtr1 . '>' . GetMP($qtr1, 'SHORT_NAME') . ' Exam</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $qtr1 . ' onclick="reportCardGpaChk();">' . GetMP($qtr1, 'SHORT_NAME') . ' Exam</label>';
                 }
             if (GetMP($sem, 'DOES_EXAM') == 'Y')
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $sem . '>' . GetMP($sem, 'SHORT_NAME') . ' Exam</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $sem . ' onclick="reportCardGpaChk();">' . GetMP($sem, 'SHORT_NAME') . ' Exam</label>';
             if (GetMP($sem, 'DOES_GRADES') == 'Y' && $sem != $quarters[1]['MARKING_PERIOD_ID'])
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $sem . '>' . GetMP($sem, 'SHORT_NAME') . '</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $sem . ' onclick="reportCardGpaChk();">' . GetMP($sem, 'SHORT_NAME') . '</label>';
         }
         if ($sem) {
             $fy = GetParentMP('FY', $sem);
             if (GetMP($fy, 'DOES_EXAM') == 'Y')
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $fy . '>' . GetMP($fy, 'SHORT_NAME') . ' Exam</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=E' . $fy . ' onclick="reportCardGpaChk();">' . GetMP($fy, 'SHORT_NAME') . ' Exam</label>';
             if (GetMP($fy, 'DOES_GRADES') == 'Y')
-                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $fy . '>' . GetMP($fy, 'SHORT_NAME') . '</label>';
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=mp_arr[] value=' . $fy . ' onclick="reportCardGpaChk();">' . GetMP($fy, 'SHORT_NAME') . '</label>';
         }
         $extra['extra_header_left'] .= '</div>';
 

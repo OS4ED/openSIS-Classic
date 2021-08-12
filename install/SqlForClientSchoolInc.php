@@ -32,9 +32,9 @@ $text = "
 --
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '7.6'),
-('date', 'September 11, 2020'),
-('build', '20200811001'),
+('version', '8.0'),
+('date', 'July 12, 2021'),
+('build', '20210712001'),
 ('update', '0'),
 ('last_updated', 'September 11, 2020');
 
@@ -616,7 +616,95 @@ INSERT INTO `program_user_config` (`user_id`, `school_id`, `program`, `title`, `
 ('1', NULL, 'Preferences', 'YEAR', 'Y', '2019-07-28 09:56:33', NULL),
 ('1', NULL, 'Preferences', 'HIDDEN', 'Y', '2019-07-28 09:56:33', NULL),
 ('1', NULL, 'Preferences', 'CURRENCY', '1', '2019-07-28 09:56:33', NULL),
-('1', NULL, 'Preferences', 'HIDE_ALERTS', 'N', '2019-07-28 09:56:33', NULL);
+('1', NULL, 'Preferences', 'HIDE_ALERTS', 'N', '2019-07-28 09:56:33', NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-11 13:58:51',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-11 13:58:51',NULL),
+(2,1,'Gradebook','SEM-16',NULL,'2020-08-11 13:58:51',NULL),
+(2,1,'Gradebook','SEM-17',NULL,'2020-08-11 13:58:51',NULL),
+(2,1,'Gradebook','SEM-E13',NULL,'2020-08-11 13:58:51',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-11 14:27:03',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-11 14:27:03',NULL),
+(2,1,'Gradebook','SEM-16',NULL,'2020-08-11 14:27:03',NULL),
+(2,1,'Gradebook','SEM-17',NULL,'2020-08-11 14:27:03',NULL),
+(2,1,'Gradebook','SEM-E13',NULL,'2020-08-11 14:27:03',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','ASSIGNMENT_SORTING','ASSIGNMENT_ID_1','2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','ANOMALOUS_MAX','100_1','2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','LATENCY','0_1','2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','Q-14',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','Q-15',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','Q-16',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','Q-17',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','SEM-16',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','SEM-17',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','SEM-E13',NULL,'2020-08-11 14:27:21',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','ASSIGNMENT_SORTING','ASSIGNMENT_ID_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','WEIGHT','Y_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','ANOMALOUS_MAX','100_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','LATENCY','0_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','Q-14','100_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','Q-15','100_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','Q-16','100_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','Q-17','100_2','2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','SEM-16',NULL,'2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','SEM-17',NULL,'2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','SEM-E13',NULL,'2020-08-11 14:28:25',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','ASSIGNMENT_SORTING','ASSIGNMENT_ID_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','WEIGHT','Y_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','ANOMALOUS_MAX','100_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','LATENCY','0_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','Q-14','100_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','Q-15','100_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','Q-16','100_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','Q-17','100_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-14','40_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-15','40_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-E12','20_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-16','40_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-17','40_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','SEM-E13','20_18','2020-08-11 17:51:28',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','ASSIGNMENT_SORTING','ASSIGNMENT_ID_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','WEIGHT','Y_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','ANOMALOUS_MAX','100_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','LATENCY','0_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','Q-14','100_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','Q-15','100_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','Q-16','100_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','Q-17','100_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-14','40_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-15','40_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-E12','20_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-16','40_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-17','40_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','SEM-E13','20_19','2020-08-12 08:08:43',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2021-08-07 17:16:52',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2021-08-07 17:16:52',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2021-08-07 17:17:17',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2021-08-07 17:17:17',NULL),
+(2,1,'Gradebook','ROUNDING',NULL,'2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','ASSIGNMENT_SORTING','ASSIGNMENT_ID_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','WEIGHT','Y_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','DEFAULT_ASSIGNED','Y_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','ANOMALOUS_MAX','100_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','LATENCY','0_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','COMMENT_A',NULL,'2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','Q-21','100_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','Q-22','100_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','Q-23','100_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','Q-24','100_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-21','40_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-22','40_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-E19','20_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-23','40_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-24','40_28','2021-08-07 17:17:31',NULL),
+(2,1,'Gradebook','SEM-E20','20_28','2021-08-07 17:17:31',NULL);
 
 
 --
@@ -624,8 +712,8 @@ INSERT INTO `program_user_config` (`user_id`, `school_id`, `program`, `title`, `
 --
 
 
-INSERT INTO `schools` (`syear`, `title`, `address`, `city`, `state`, `zipcode`, `area_code`, `phone`, `principal`, `www_address`, `e_mail`, `reporting_gp_scale`, `last_updated`, `updated_by`) VALUES
-(".$_SESSION['syear'].", '".$_SESSION['sname']."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,'', NULL);
+INSERT INTO `schools` (`syear`, `title`, `address`, `city`, `state`, `zipcode`, `area_code`, `phone`, `principal`, `www_address`, `e_mail`, `reporting_gp_scale`, `updated_by`) VALUES
+(".$_SESSION['syear'].", '".$_SESSION['sname']."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Dumping data for table `login_authentication`
@@ -656,8 +744,8 @@ INSERT INTO `login_message` (`id`, `message`, `display`) VALUES
 --
 -- Dumping data for table `school_years`
 --
-INSERT INTO `school_years` (`marking_period_id`, `syear`, `school_id`, `title`, `short_name`, `sort_order`, `start_date`, `end_date`, `does_exam`, `rollover_id`, `last_updated`, `updated_by`) VALUES
-(1, '".$_SESSION['syear']."', 1, 'Full Year', 'FY', 1, '".$_SESSION['user_school_beg_date']."', '".$_SESSION['user_school_end_date']."', NULL, NULL, '2020-01-22 04:18:02', NULL);
+INSERT INTO `school_years` (`marking_period_id`, `syear`, `school_id`, `title`, `short_name`, `sort_order`, `start_date`, `end_date`, `does_exam`, `rollover_id`, `updated_by`) VALUES
+(1, '".$_SESSION['syear']."', 1, 'Full Year', 'FY', 1, '".$_SESSION['user_school_beg_date']."', '".$_SESSION['user_school_end_date']."', NULL, NULL, NULL);
 --
 -- Dumping data for table `marking_period_id_generator`
 --

@@ -179,9 +179,10 @@ if ($_REQUEST['action'] == 'delete_goal' || $_REQUEST['action'] == 'delete_goal_
     if (!isset($_REQUEST['ans'])) {
 
         PopTable('header',  _deleteConfirmation);
-        echo "<div class=clear></div><b>"._areYouSureWantToDeleteThisGoal."</b><div class=clear></div><div class=clear></div><center><a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal_ok&gid=" . $goal_id . "&ans=yes' style='text-decoration:none; padding:6px 24px 6px 25px;' class=\"btn btn-primary\"><strong>"._ok."</strong></a> 
+        echo "<CENTER class='m-b-15'><h4>"._areYouSureWantToDeleteThisGoal."</h4><BR/>
+        <a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal_ok&gid=" . $goal_id . "&ans=yes' style='text-decoration:none;' class=\"btn btn-danger\"><strong>"._ok."</strong></a> 
 		
-		<a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal_can&gid=" . $goal_id . "&ans=no' style='text-decoration:none; padding:6px 15px 6px 15px;' class=\"btn btn-primary\"><strong>"._cancel."</strong></a></center>";
+		<a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal_can&gid=" . $goal_id . "&ans=no' style='text-decoration:none;' class=\"btn btn-primary\"><strong>"._cancel."</strong></a></CENTER>";
 
         PopTable('footer');
     } elseif (isset($_REQUEST['ans']) && $_REQUEST['ans'] == 'yes') {
@@ -219,9 +220,10 @@ if ($_REQUEST['action'] == 'delete' || $_REQUEST['action'] == 'delete_can' || $_
         $_REQUEST['goal_id'] = $_REQUEST['gid'];
 
         PopTable('header',  _deleteConfirmation);
-        echo "<div class=clear></div><b>"._areYouSureWantToDeleteThisStudentGoalProgress."</b><div class=clear></div><div class=clear></div><center><a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_ok&gid=" . $goal_id . "&pid=" . $progress_id . "&ans=yes' style='text-decoration:none; padding:6px 24px 6px 25px;' class=\"btn btn-primary\"><strong>"._ok."</strong></a> 
+        echo "<CENTER class='m-b-15'><h4>"._areYouSureWantToDeleteThisStudentGoalProgress."</h4><BR/>
+        <a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_ok&gid=" . $goal_id . "&pid=" . $progress_id . "&ans=yes' style='text-decoration:none;' class=\"btn btn-danger\"><strong>"._ok."</strong></a> 
 		
-		<a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_can&gid=" . $goal_id . "&pid=" . $progress_id . "&ans=no' style='text-decoration:none; padding:6px 15px 6px 15px;' class=\"btn btn-primary\"><strong>"._cancel."</strong></a></center>";
+		<a href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_can&gid=" . $goal_id . "&pid=" . $progress_id . "&ans=no' style='text-decoration:none;' class=\"btn btn-primary\"><strong>"._cancel."</strong></a></CENTER>";
 
         PopTable('footer');
     } elseif (isset($_REQUEST['ans']) && $_REQUEST['ans'] == 'yes') {
@@ -653,17 +655,26 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     $custom_id = str_replace("CUSTOM_", "", $column_name);
                                     $custom_RET = DBGet(DBQuery("SELECT TITLE,TYPE FROM custom_fields WHERE ID=" . $custom_id));
 
+                                    if ($custom_RET[1]['TYPE'] == 'multiple') {
+                                        $valueSize = count($value);
+                                        if($valueSize == 0) {
+                                            $valueSize = '';
+                                        }
+                                    } else {
+                                        $valueSize = trim($value);
+                                    }
+
                                     $custom = DBGet(DBQuery("SHOW COLUMNS FROM students WHERE FIELD='" . $column_name . "'"));
                                     $custom = $custom[1];
-                                    if ($custom['NULL'] == 'NO' && trim($value) == '' && $custom['DEFAULT']) {
+                                    if ($custom['NULL'] == 'NO' && trim($valueSize) == '' && $custom['DEFAULT']) {
                                         $value = $custom['DEFAULT'];
-                                    } else if ($custom['NULL'] == 'NO' && $value == '') {
+                                    } else if ($custom['NULL'] == 'NO' && $valueSize == '') {
                                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                                        echo "<font color=red><b>"._unableToSaveDataBecause." " . $custom_TITLE . ' '._isRequired.'</b></font><br/>';
+                                        echo "<div class='alert alert-danger'>".ucfirst(strtolower(_unableToSaveDataBecause))." " . $custom_TITLE . ' '._isRequired.'</div>';
                                         $error = true;
                                     } else if ($custom_RET[1]['TYPE'] == 'numeric' && (!is_numeric($value) && $value != '')) {
                                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                                        echo "<font color=red><b>"._unableToSaveDataBecause." " . $custom_TITLE . ' '._isNumericType.'</b></font><br/>';
+                                        echo "<div class='alert alert-danger'>".ucfirst(strtolower(_unableToSaveDataBecause))." " . $custom_TITLE . ' '._isNumericType.'</div>';
                                         $error = true;
                                     } else {
                                         $m_custom_RET = DBGet(DBQuery("select ID,TITLE,TYPE from custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
@@ -786,6 +797,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     if ($upload->wrongFormat == 1) {
                                         $_FILES["file"]["error"] = 1;
                                     }
+                                    if ($fileSize > 10000000) {
+                                        echo "<font style='color:red'><b>"._FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb."</b></font><br>";
+                                    } 
 
                                     if ($_FILES["file"]["error"] > 0) {
                                         echo "<font style='color:red'><b>"._unsupportedFileFormatCannotUploadFile."</b></font><br>";
@@ -1644,7 +1658,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 if (User('PROFILE') == 'admin') {
                     $get_rollover_id = DBGet(DBQuery('SELECT ID FROM student_enrollment_codes WHERE SYEAR=' . UserSyear() . ' AND TYPE=\'Roll\' '));
                     $get_rollover_id = $get_rollover_id[1]['ID'];
-                    $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
+                    $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=\'' . $get_rollover_id . '\' ) ';
                 }
                 $_SESSION['s'] .= $_SESSION['inactive_stu_filter'];
             }

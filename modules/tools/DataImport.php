@@ -29,7 +29,7 @@
 
 echo "<div id='mapping'></div>";
 
-include('../../RedirectModules.php');
+include('../../RedirectModulesInc.php');
 include('Classes/PHPExcel.php');
 echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
 DrawBC(""._schoolSetup." > "._dataImport." >" . ProgramTitle());
@@ -91,9 +91,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-	echo '<thead>';
+    echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
-	echo '</thead>';
+    echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
         $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
         $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -107,11 +107,18 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
         $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
         for ($row = 1; $row <= $highestRow; ++$row) {
+            $arr_data_row = array();
             for ($col = 0; $col <= $highestColumnIndex; ++$col) {
                 $value = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-                if (is_array($arr_data)) {
-                    $arr_data[$row - 1][$col] = $value;
-                }
+                $arr_data_row[$col] = $value;
+            }
+
+            if (isEmptyArray($arr_data_row)) {
+                continue;
+            }
+
+            if (is_array($arr_data)) {
+                $arr_data[$row - 1] = $arr_data_row;
             }
         }
 
@@ -201,15 +208,15 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-	echo '<thead>';
+    echo '<thead>';
         echo '<tr class="bg-grey-200"><th style="word-wrap: break-word;">'._theseFieldsAreInYourExcelSpreadSheet.'</th><th width="200">&nbsp;</th><th>'._theseAreAvailableFieldsInOpenSis.'</th></tr>';
-	echo '</thead>';
+    echo '</thead>';
         echo '<tbody>';
 
         $options = array('FIRST_NAME' =>_firstName,
@@ -357,15 +364,15 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<form action="Modules.php?modname=' . $_REQUEST[modname] . '&action=display&page_display=STAFF_INFO" name="staff_form"  method="POST">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
         echo '</div>'; //.panel-heading
 
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-	echo '<thead>';
+    echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
-	echo '</thead>';
+    echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
         $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
         $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -379,11 +386,18 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
         $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
         for ($row = 1; $row <= $highestRow; ++$row) {
+            $arr_data_row = array();
             for ($col = 0; $col <= $highestColumnIndex; ++$col) {
                 $value = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-                if (is_array($arr_data)) {
-                    $arr_data[$row - 1][$col] = $value;
-                }
+                $arr_data_row[$col] = $value;
+            }
+
+            if (isEmptyArray($arr_data_row)) {
+                continue;
+            }
+
+            if (is_array($arr_data)) {
+                $arr_data[$row - 1] = $arr_data_row;
             }
         }
         $_SESSION['data'] = $arr_data;
@@ -450,15 +464,15 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
-        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadSheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
+        echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickConfirm.'.</h4>';
         echo '</div>'; //.panel-body
         
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-	echo '<thead>';
+    echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</th><th width="200">&nbsp;</th><th>'._theseAreAvailableFieldsInOpenSis.' (Click to change the field values)</th></tr>';
-	echo '</thead>';
+    echo '</thead>';
         echo '<tbody>';
         
 
@@ -563,5 +577,10 @@ else {
     echo '</div>'; //.panel
     echo '</div>';
     echo '</div>';
+}
+
+function isEmptyArray($array)
+{
+    return implode($array) === '';
 }
 ?>

@@ -134,3 +134,12 @@ CREATE TRIGGER `td_cal_missing_attendance`
     FOR EACH ROW
 	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.school_date;
 
+DROP TRIGGER IF EXISTS `ti_user_file_upload`;
+DELIMITER $$
+CREATE TRIGGER ti_user_file_upload
+BEFORE INSERT ON user_file_upload
+FOR EACH  ROW 
+BEGIN 
+    SET NEW.download_id = UUID(); 
+END;
+DELIMITER ;

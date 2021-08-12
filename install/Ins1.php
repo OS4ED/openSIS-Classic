@@ -71,12 +71,13 @@ $err .= '<!DOCTYPE html>
                                     <li>Choose Package</li>
                                     <li>System Requirements</li>
                                     <li class="active">Database Connection</li>
-                                    <li>Database Creation</li>
+                                    <li>Database Selection</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
                                 </ul>
                             </div><!-- /.installation-instructions -->
                             <div class="installation-steps">
+
                                 <h2 class="text-center">Couldn\'t connect to database server: ' . $_SESSION['host'].'</h2><br/>';
                                 if (clean_param($_REQUEST['mod'], PARAM_ALPHAMOD) == 'upgrade') {
                                     $err .= '<p class="text-center"><a href="Step1.php?mod=upgrade" class="btn btn-primary"><i class="fa fa-refresh"></i> Try Again</a></p>';

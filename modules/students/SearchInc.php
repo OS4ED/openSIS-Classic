@@ -36,14 +36,14 @@ if (Preferences('SEARCH') != 'Y' && !$extra['force_search'])
 if ($extra['skip_search'] == 'Y')
     $_REQUEST['search_modfunc'] = 'list';
 
-    // echo "<pre>";
-    // print_r($_REQUEST);
+// echo "<pre>"; print_r($_REQUEST); echo "</pre>";
+
 // if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
 if (($_REQUEST['search_modfunc'] == 'search_fnc' && !$_SESSION['student_id']) || (!$_REQUEST['search_modfunc'] && !$_SESSION['student_id']) || $_REQUEST['modname'] == 'students/Letters.php') 
 {
     if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
         unset($_SESSION['student_id']);
-//        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 
     switch (User('PROFILE')) {
@@ -190,7 +190,7 @@ if (($_REQUEST['search_modfunc'] == 'search_fnc' && !$_SESSION['student_id']) ||
             echo '<hr/>';
 
             $extra_footer = '<div class="text-right">';
-            $extra_footer .= '<a id="addiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-10"><i class="icon-cog"></i> '._advancedSearch.'</a>';
+            $extra_footer .= '<a id="advancedSearchForStudentDiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-10"><i class="icon-cog"></i> '._advancedSearch.'</a>';
             if ($extra['pdf'] != true)
                 $extra_footer .= "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch(this);formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
             else
@@ -253,7 +253,21 @@ else if($_REQUEST['search_modfunc'] == 'search_mod')
         $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
     }
 
-    // echo "<pre>";print_r($extra);echo "</pre>";
+    if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+        $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+        if($_REQUEST['LO_direction'] == '1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+        }
+        if($_REQUEST['LO_direction'] == '-1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+        }
+    }
+
+    # Set pagination params
+    keepRequestParams($_REQUEST);
+    keepExtraParams($extra);
+
     $students_RET = GetStuList($extra);
 
     if ($extra['array_function'] && function_exists($extra['array_function']))
@@ -340,7 +354,14 @@ else if($_REQUEST['search_modfunc'] == 'search_mod')
             $check_all_stu_list = implode(',', $check_all_arr);
             echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
             echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+
+            # Set pagination params
+            setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputUnscheduleRequests', ProgramTitle());
+
+            echo "<div id='tabs_resp'>";
             ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            echo '</div>';
+
             if (count($students_RET) > 0) {
                 echo '</div>'; //.table-responsive
             }
@@ -362,7 +383,21 @@ else if($_REQUEST['search_modfunc'] == 'search_mod')
             $check_all_stu_list = implode(',', $check_all_arr);
             echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
             echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
-            ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+
+            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php') {
+                ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            } else {
+                # Set pagination params
+                setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputExcelCustomDT', ProgramTitle());
+
+                echo "<div id='tabs_resp'>";
+
+                ListOutputExcelCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
+
+                echo '</div>';
+            }
+
+
             if (count($students_RET) > 0) {
                 echo '</div>'; //.table-responsive
             }
@@ -469,7 +504,23 @@ else {
         $extra['functions'] = array('SECTION_ID' => '_make_sections');
 
     if ($_REQUEST['section'] != '')
-        $extra['WHERE'] .= ' AND ssm.SECTION_ID=' . $_REQUEST['section'];  
+        $extra['WHERE'] .= ' AND ssm.SECTION_ID=' . $_REQUEST['section'];
+
+    if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+        $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+        if($_REQUEST['LO_direction'] == '1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+        }
+        if($_REQUEST['LO_direction'] == '-1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+        }
+    }
+
+    # Set pagination params
+    keepRequestParams($_REQUEST);
+    keepExtraParams($extra);
+
     $students_RET = GetStuList($extra);
 
     if ($_REQUEST['modname'] == 'grades/HonorRoll.php') {
@@ -586,7 +637,9 @@ else {
             $check_all_stu_list = implode(',', $check_all_arr);
             echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
             echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+
             ListOutputUnscheduleRequests($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+
             if (count($students_RET) > 0) {
                 echo '</div>'; //.table-responsive
             }
@@ -608,7 +661,18 @@ else {
             $check_all_stu_list = implode(',', $check_all_arr);
             echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
             echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
-            ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+
+            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php') {
+                ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+            } else {
+                # Set pagination params
+                setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputExcelCustomDT', ProgramTitle());
+
+                echo "<div id='tabs_resp'>";
+                ListOutputExcelCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
+                echo '</div>';
+            }
+
             if (count($students_RET) > 0) {
                 echo '</div>'; //.table-responsive
             }

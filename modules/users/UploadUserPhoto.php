@@ -75,17 +75,17 @@ if (UserStaffID()) {
             ' . $msg . '
             <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
                 echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
     </form>';
                 PopTable('footer');
             } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
 
-                $msg = "<font color=red><b>File too large. Maximum upload file size limit 10 MB.</b></font>";
+                $msg = "<font color=red><b>"._FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb."</b></font>";
                 echo '
             ' . $msg . '
             <form enctype="multipart/form-data" action="Modules.php?modname=users/UploadUserPhoto.php&action=upload" method="POST">';
                 echo '<div align=center>Select image file: <input name="file" type="file" /><b><span >(Maximum upload file size 10 MB)</span></b><br /><br>
-    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+    <input type="submit" value="'._upload.'" class="btn btn-primary" />&nbsp;<input type=button class="btn btn-default" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
     </form>';
                 PopTable('footer');
             } else {
@@ -137,7 +137,7 @@ if (UserStaffID()) {
             echo '</div>'; //.modal-dialog
             echo '</div>'; //.modal
 
-            echo '<input type=button class="btn btn-default" value="._cancel." onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
+            echo '<input type=button class="btn btn-default" value="'._cancel.'" onclick=\'load_link("Modules.php?modname=users/User.php");\'></div>
 </form>';
             PopTable('footer');
         }

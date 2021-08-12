@@ -222,7 +222,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
         echo '<table class="table table-bordered table-striped"><thead>';
         echo "<tr><th><INPUT type=checkbox value=Y name=controller onclick=checkAll(this.form,this.form.controller.checked,'deletecheck');></th>";
         echo "<th>"._student." ("._studentId.")</th>";
-        echo "<th>"._course." ("._coursePeriodId.")</th>";
+        echo "<th>"._course." ("._coursePeriodID.")</th>";
         echo "<th>"._course." "._startDate."</th>";
         echo "<th>"._course." "._endDate."</th>";
         echo "<th>"._attendanceDate."</th></tr></thead><tbody>";

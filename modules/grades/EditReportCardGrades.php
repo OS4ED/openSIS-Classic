@@ -37,12 +37,13 @@ if (isset($_REQUEST['student_id'])) {
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        echo '<div class="panel panel-default">';
-        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>'._selectedStudent.':</A>');
+        echo '<div class="panel">';
+        DrawHeader(''._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> ' . _backToStudentList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
+
         echo '</div>';
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        echo '<div class="panel panel-default">';
-        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>'._selectedStudent.':</font></A>) ');
+        echo '<div class="panel">';
+        DrawHeader(''._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
         echo '</div>';
     }
 }
@@ -169,12 +170,13 @@ if (UserStudentID()) {
        sgc.weighted_gpa, sgc.unweighted_gpa
        FROM marking_periods mp, student_gpa_calculated sgc, schools s
        WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.school_id and sgc.student_id = ' . $student_id . ' 
+             s.id = mp.school_id and
+             mp.mp_source != "History" and sgc.student_id = ' . $student_id . ' 
        AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
 
-        $last_posted = _null;
+        $last_posted = null;
         $gmp = array(); //grade marking_periods
         $grecs = array();  //grade records
         if ($GRET) {
@@ -209,7 +211,7 @@ if (UserStudentID()) {
         foreach ($gmp as $id => $mparray) {
             $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['schoolyear'] . ' ' . $mparray['mp_name'] . ', Grade ' . $mparray['grade_level'] . "</OPTION>";
         }
-        $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">"._addAnotherMarkingPeriod."</OPTION>";
+        // $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">Add another marking period</OPTION>";
         $mpselect .= '</SELECT>';
 
         $mpselect .= '</FORM>';
@@ -301,14 +303,14 @@ if (UserStudentID()) {
 
             $sql = 'SELECT ID,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
                     IF(ISNULL(UNWEIGHTED_GP),  WEIGHTED_GP,UNWEIGHTED_GP ) AS GP,WEIGHTED_GP as WEIGHTED_GP,
-                    GP_SCALE,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY
+                    GP_SCALE,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY, COURSE_PERIOD_ID
                        FROM student_report_card_grades WHERE STUDENT_ID = ' . $student_id . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
 
             //build forms based on tab selected
             if ($_REQUEST['tab_id'] == 'grades' || $_REQUEST['tab_id'] == '') {
                 $functions = array('COURSE_TITLE' => 'makeTextInput',
                     'GRADE_PERCENT' => 'makeTextInput',
-                    'GRADE_LETTER' => 'makeTextInput',
+                    'GRADE_LETTER' => 'makeLetterGrade',
                     'GP' => 'makeTextInput',
                     'WEIGHTED_GP' => 'makeCheckboxInput',
                     'GP_SCALE' => 'makeTextInput',
@@ -320,13 +322,13 @@ if (UserStudentID()) {
                     'WEIGHTED_GP' =>_weightedGp,
                     'GP_SCALE' =>_gradeScale,
                 );
-                $link['add']['html'] = array('COURSE_TITLE' => makeTextInput('', 'COURSE_TITLE'),
-                    'GRADE_PERCENT' => makeTextInput('', 'GRADE_PERCENT'),
-                    'GRADE_LETTER' => makeTextInput('', 'GRADE_LETTER'),
-                    'GP' => makeTextInput('', 'GP'),
-                    'WEIGHTED_GP' => makeCheckboxInput('', 'WEIGHTED_GP'),
-                    'GP_SCALE' => makeTextInput('', 'GP_SCALE'),
-                );
+                // $link['add']['html'] = array('COURSE_TITLE' => makeTextInput('', 'COURSE_TITLE'),
+                //     'GRADE_PERCENT' => makeTextInput('', 'GRADE_PERCENT'),
+                //     'GRADE_LETTER' => makeTextInput('', 'GRADE_LETTER'),
+                //     'GP' => makeTextInput('', 'GP'),
+                //     'WEIGHTED_GP' => makeCheckboxInput('', 'WEIGHTED_GP'),
+                //     'GP_SCALE' => makeTextInput('', 'GP_SCALE'),
+                // );
             } else {
                 $functions = array('COURSE_TITLE' => 'makeTextInput',
                     'CREDIT_ATTEMPTED' => 'makeTextInput',
@@ -338,15 +340,15 @@ if (UserStudentID()) {
                     'CREDIT_EARNED' =>_creditEarned,
                     'CREDIT_CATEGORY' =>_creditCategory,
                 );
-                $link['add']['html'] = array('COURSE_TITLE' => makeTextInput('', 'COURSE_TITLE'),
-                    'CREDIT_ATTEMPTED' => makeTextInput('', 'CREDIT_ATTEMPTED'),
-                    'CREDIT_EARNED' => makeTextInput('', 'CREDIT_EARNED'),
-                    'CREDIT_CATEGORY' => makeTextInput('', 'CREDIT_CATEGORY')
-                );
+                // $link['add']['html'] = array('COURSE_TITLE' => makeTextInput('', 'COURSE_TITLE'),
+                //     'CREDIT_ATTEMPTED' => makeTextInput('', 'CREDIT_ATTEMPTED'),
+                //     'CREDIT_EARNED' => makeTextInput('', 'CREDIT_EARNED'),
+                //     'CREDIT_CATEGORY' => makeTextInput('', 'CREDIT_CATEGORY')
+                // );
             }
             $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&mp_id=$mp_id";
             $link['remove']['variables'] = array('id' => 'ID');
-            $link['add']['html']['remove'] = button('add');
+            // $link['add']['html']['remove'] = button('add');
             $LO_ret = DBGet(DBQuery($sql), $functions);
 
             //PopTable_wo_header('header');
@@ -386,8 +388,11 @@ function makeTextInput($value, $name) {
     elseif ($name == 'GP') {
         $name = 'UNWEIGHTED_GP';
         $extra = 'size=5 maxlength=5 class=form-control';
-    } else
+    } elseif ($name = 'GP_SCALE'){
+        $extra = 'size=10 maxlength=10 class=form-control disabled';
+    } else {
         $extra = 'size=10 maxlength=10 class=form-control';
+    }
 
     return TextInput($value, "values[$id][$name]", '', $extra);
 }
@@ -410,6 +415,23 @@ function makeCheckboxInput($value, $name) {
         $no = 'No';
 
     return '<input type=hidden name=values[' . $id . '][' . $name . '] value="' . $value . '" />' . CheckboxInput($value, 'values[' . $id . '][' . $name . ']', '', '', ($id == 'new' ? true : false), $yes, $no, false);
+}
+
+function makeLetterGrade($value, $name) {
+    global $THIS_RET;
+
+    $grade_letters_RET = DBGet(DBQuery("SELECT TITLE FROM report_card_grades WHERE grade_scale_id = (SELECT grade_scale_id FROM course_periods WHERE course_period_id = '$THIS_RET[COURSE_PERIOD_ID]')"));
+    $grade_letter_select = array();
+    foreach ($grade_letters_RET as $id => $grade_letter) {
+        $grade_letter_select += array($grade_letter['TITLE'] => $grade_letter['TITLE']);
+    }
+
+    if ($THIS_RET['ID'])
+        $id = $THIS_RET['ID'];
+    else
+        $id = 'new';
+
+    return SelectInput($value, "values[$id][$name]", '', $grade_letter_select, false);
 }
 
 ?>

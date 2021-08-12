@@ -122,7 +122,7 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
         'students/GoalReport.php',
         'students/EnrollmentReport.php',
         // For Scheduling
-        'scheduling/Schedule.php', 
+        // 'scheduling/Schedule.php', 
         'scheduling/ViewSchedule.php', 
         'scheduling/Requests.php', 
         // 'scheduling/MassSchedule.php',
@@ -156,7 +156,7 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
         // For Students
         'students/Student.php', 
         // For Scheduling
-        'scheduling/Schedule.php', 
+        // 'scheduling/Schedule.php', 
         'scheduling/ViewSchedule.php', 
         'scheduling/Requests.php', 
         // For Grades

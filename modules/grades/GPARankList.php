@@ -35,7 +35,8 @@ if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 
 DrawBC(""._gradebook." > " . ProgramTitle());
 if (!$_REQUEST['LO_sort']) {
-    $_REQUEST['LO_sort'] = "CUM_RANK";
+    // $_REQUEST['LO_sort'] = "CUM_RANK";
+    $_REQUEST['LO_sort'] = "CLASS_RANK";
     $_REQUEST['LO_direction'] = 1;
 }
 if ($_REQUEST['search_modfunc'] == 'list') {

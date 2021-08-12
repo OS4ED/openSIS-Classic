@@ -650,7 +650,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit' || clean
     echo '<div class="row">';
     echo '<div class="col-sm-6 col-md-6 col-lg-6">';
 
-    echo '<a id="addiv1" href="javascript:void(0);" class="text-pink btn-block m-t-10" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
+    echo '<a id="advancedSearchDivForStudentsFilters" href="javascript:void(0);" class="text-pink btn-block m-t-10" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
     echo '</div>'; //.col-sm-6
 
     echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';

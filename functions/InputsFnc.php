@@ -65,8 +65,8 @@ function SearchDateInput($day, $month, $year, $allow_day, $allow_month, $allow_y
     $dt.= '<input id="date_' . $day . '" placeholder="'._selectDate.'" value="" class="form-control daterange-single" type="text">';
     $dt.= '</div>';
 
-    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
-    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $day . '" type="hidden">';
     $dt.= '<input value="" id="yearSelect_date_' . $day . '" name="' . $year . '" type="hidden">';
 
     /* if ($allow_day == 'Y') {
@@ -118,8 +118,8 @@ function SearchDateInputDob($day, $month, $year, $allow_day, $allow_month, $allo
     $dt.= '<input id="date_' . $day . '" placeholder="'._selectDate.'" value="" class="form-control daterange-single" type="text">';
     $dt.= '</div>';
 
-    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $day . '" type="hidden">';
-    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+    $dt.= '<input value="" id="monthSelect_date_' . $day . '" name="' . $month . '" type="hidden">';
+    $dt.= '<input value="" id="daySelect_date_' . $day . '" name="' . $day . '" type="hidden">';
    
 
     /* if ($allow_day == 'Y') {

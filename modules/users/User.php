@@ -141,10 +141,10 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
             
                   $disp_error = '';
             if ($_REQUEST['modfunc'] == 'update') {
-//                print_r($_REQUEST);
+                // print_r($_REQUEST);
                 $flag = 0;
                 $qry = 'UPDATE people SET ';
-//                print_r($_REQUEST['people']);
+                // print_r($_REQUEST['people']);
                 foreach ($_REQUEST['staff'] as $in => $d) {
 
                     $field_id = explode('_', $in);
@@ -155,7 +155,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                             $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
                             $flag++;
                         } else {
-                            $disp_error = '<font style="color:red"><b>' . $check_stat[1]['TITLE'] . ' is required.</b></font>';
+                            $disp_error = '<div class="alert alert-danger">' . $check_stat[1]['TITLE'] . ' is required.</div>';
                         }
                     } else {
                         if ($d != '')
@@ -265,21 +265,36 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
             $disp_error = '';
             if ($_REQUEST['modfunc'] == 'update') {
-//                print_r($_REQUEST);
+                // print_r($_REQUEST);
                 $flag = 0;
                 $qry = 'UPDATE people SET ';
-//                print_r($_REQUEST['people']);
+                // print_r($_REQUEST['people']);
                 foreach ($_REQUEST['staff'] as $in => $d) {
 
                     $field_id = explode('_', $in);
                     $field_id = $field_id[1];
                     $check_stat = DBGet(DBQuery('SELECT TITLE,REQUIRED FROM people_fields WHERE ID=\'' . $field_id . '\' '));
+
+                    $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE FROM people_fields WHERE ID='" . $field_id . "' AND TYPE='multiple'"));
+                    if ($m_custom_RET) {
+                        $str = "";
+
+                        foreach ($d as $m_custom_val) {
+                            if ($m_custom_val)
+                                $str.="||" . $m_custom_val;
+                        }
+                        if ($str)
+                            $d = $str . "||";
+                        else
+                            $d = '';
+                    }
+
                     if ($check_stat[1]['REQUIRED'] == 'Y') {
                         if ($d != '') {
                             $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
                             $flag++;
                         } else {
-                            $disp_error = '<font style="color:red"><b>' . $check_stat[1]['TITLE'] . ' is required.</b></font>';
+                            $disp_error = '<div class="alert alert-danger">' . $check_stat[1]['TITLE'] . ' is required.</div>';
                         }
                     } else {
                         if ($d != '')

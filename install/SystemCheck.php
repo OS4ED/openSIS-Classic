@@ -78,7 +78,7 @@ $err = 0;
                                     <li>Choose Package</li>
                                     <li class="active">System Requirements</li>
                                     <li>Database Connection</li>
-                                    <li>Database Creation</li>
+                                    <li>Database Selection</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
                                 </ul>
@@ -133,17 +133,17 @@ $err = 0;
                                     <div class="col-xs-8">
                                         Apache Version 2.4 or greater
                                         <?php
-                                        if (apacheVer() < 2.4) {
+                                       if (intval(apacheVer())>1 && apacheVer() < 2.4) {
                                             echo '<p class="text-danger">Upgrade Apache from here <A href="https://httpd.apache.org/download.cgi">https://httpd.apache.org/download.cgi</a></p>';
                                         }
                                         ?>
                                     </div>
                                     <div class="col-xs-4 text-right">
                                         <?php
-                                        if (apacheVer() >= 2.4) {
-                                            echo '<span class="text-success"><b>OK</b></span>';
+                                       if (intval(apacheVer())>1 && apacheVer()< 2.4) {
+                                                echo '<span class="text-danger"><b>FAIL</b></span>';
                                         } else {
-                                            echo '<span class="text-danger"><b>FAIL</b></span>';
+                                            echo '<span class="text-success"><b>OK</b></span>';
                                            // $err = 1;
                                         }
                                         ?>

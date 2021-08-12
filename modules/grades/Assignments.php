@@ -27,6 +27,12 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include_once("fckeditor/fckeditor.php") ;
+if($_REQUEST['assignment_type_id']=='new' && isset($_REQUEST['tables'])){
+    if(empty($_REQUEST['tables']['new']['TITLE'])){
+        echo '<div class="alert alert-danger">'._titleCannotBeBlank.'</div>';
+    }
+
+}
 if(isset($_REQUEST['tables']['new']) && $_REQUEST['tables']['new']['TITLE']=='' && $_REQUEST['table']=='gradebook_assignment_types')
 {
     unset($_REQUEST);
@@ -563,14 +569,24 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
 if(!$_REQUEST['modfunc'] && $course_id)
 {
 
-    // ASSIGNMENT TYPES
+    ## ASSIGNMENT TYPES
+    // $sql = ' SELECT ASSIGNMENT_TYPE_ID,TITLE 
+    //              FROM (
+    //                 ( select gat.ASSIGNMENT_TYPE_ID,gat.TITLE  FROM gradebook_assignment_types gat where gat.COURSE_PERIOD_ID=\''.$course_period_id.'\' )
+    //               UNION  
+    //                (SELECT gat.ASSIGNMENT_TYPE_ID as ASSIGNMENT_TYPE_ID,concat(gat.TITLE,\' (\',cp.title,\')\') as TITLE FROM gradebook_assignment_types gat , gradebook_assignments ga, course_periods cp
+    //                 where cp.course_period_id =gat.course_period_id and gat.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND ga.COURSE_ID IS NOT NULL 
+    //                 AND ga.COURSE_PERIOD_ID IS NULL AND ga.COURSE_ID=\''.UserCourse().'\' AND ga.STAFF_ID=\''.UserID().'\' ) 
+    //               )as t
+    //               GROUP BY ASSIGNMENT_TYPE_ID';
+
     $sql = ' SELECT ASSIGNMENT_TYPE_ID,TITLE 
                  FROM (
                     ( select gat.ASSIGNMENT_TYPE_ID,gat.TITLE  FROM gradebook_assignment_types gat where gat.COURSE_PERIOD_ID=\''.$course_period_id.'\' )
                   UNION  
-                   (SELECT gat.ASSIGNMENT_TYPE_ID as ASSIGNMENT_TYPE_ID,concat(gat.TITLE,\' (\',cp.title,\')\') as TITLE FROM gradebook_assignment_types gat , gradebook_assignments ga, course_periods cp
+                   (SELECT gat.ASSIGNMENT_TYPE_ID as ASSIGNMENT_TYPE_ID,concat(gat.TITLE,\' (\',TRIM(cp.title),\')\') as TITLE FROM gradebook_assignment_types gat , gradebook_assignments ga, course_periods cp
                     where cp.course_period_id =gat.course_period_id and gat.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND ga.COURSE_ID IS NOT NULL 
-                    AND ga.COURSE_PERIOD_ID IS NULL AND ga.COURSE_ID=\''.UserCourse().'\' AND ga.STAFF_ID=\''.UserID().'\' ) 
+                    AND ga.COURSE_ID=\''.UserCourse().'\' AND ga.STAFF_ID=\''.UserID().'\' ) 
                   )as t
                   GROUP BY ASSIGNMENT_TYPE_ID';
 
@@ -605,10 +621,18 @@ if(!$_REQUEST['modfunc'] && $course_id)
 	}
 	elseif($_REQUEST['assignment_type_id'] && $_REQUEST['assignment_type_id']!='new' && $_REQUEST['assignment_id']!='new')
 	{
+        // $sql = 'SELECT at.TITLE,at.FINAL_GRADE_PERCENT,
+				// (SELECT sum(FINAL_GRADE_PERCENT) FROM gradebook_assignment_types WHERE assignment_type_id in(select assignment_type_id from gradebook_assignment_types  where COURSE_PERIOD_ID=\''.$course_period_id.'\')) AS TOTAL_PERCENT
+				// FROM gradebook_assignment_types at
+				// WHERE at.ASSIGNMENT_TYPE_ID=\''.$_REQUEST['assignment_type_id'].'\'';
+
         $sql = 'SELECT at.TITLE,at.FINAL_GRADE_PERCENT,
-				(SELECT sum(FINAL_GRADE_PERCENT) FROM gradebook_assignment_types WHERE assignment_type_id in(select assignment_type_id from gradebook_assignment_types  where COURSE_PERIOD_ID=\''.$course_period_id.'\')) AS TOTAL_PERCENT
-				FROM gradebook_assignment_types at
-				WHERE at.ASSIGNMENT_TYPE_ID=\''.$_REQUEST['assignment_type_id'].'\'';
+                (SELECT SUM(FINAL_GRADE_PERCENT) FROM gradebook_assignment_types WHERE assignment_type_id IN(SELECT gat1.assignment_type_id FROM gradebook_assignment_types gat1 WHERE gat1.COURSE_PERIOD_ID=\''.$course_period_id.'\' 
+                    UNION SELECT gat2.assignment_type_id FROM gradebook_assignment_types gat2, gradebook_assignments ga, course_periods cp
+                    WHERE cp.course_period_id = gat2.course_period_id AND gat2.ASSIGNMENT_TYPE_ID = ga.ASSIGNMENT_TYPE_ID AND ga.COURSE_ID IS NOT NULL 
+                    AND ga.COURSE_ID=\''.UserCourse().'\' AND ga.STAFF_ID=\''.UserID().'\' )) AS TOTAL_PERCENT
+                FROM gradebook_assignment_types at
+                WHERE at.ASSIGNMENT_TYPE_ID=\''.$_REQUEST['assignment_type_id'].'\'';
 
         $QI = DBQuery($sql);
 		$RET = DBGet($QI,array('FINAL_GRADE_PERCENT'=>'_makePercent'));
@@ -622,8 +646,12 @@ if(!$_REQUEST['modfunc'] && $course_id)
 	}
 	elseif($_REQUEST['assignment_type_id']=='new')
 	{
+        // $sql='SELECT sum(FINAL_GRADE_PERCENT) AS TOTAL_PERCENT FROM gradebook_assignment_types WHERE assignment_type_id in(select assignment_type_id from gradebook_assignment_types  where COURSE_PERIOD_ID=\''.$course_period_id.'\')';
 
- $sql='SELECT sum(FINAL_GRADE_PERCENT) AS TOTAL_PERCENT FROM gradebook_assignment_types WHERE assignment_type_id in(select assignment_type_id from gradebook_assignment_types  where COURSE_PERIOD_ID=\''.$course_period_id.'\')';	
+        $sql='SELECT SUM(FINAL_GRADE_PERCENT) AS TOTAL_PERCENT FROM gradebook_assignment_types WHERE assignment_type_id IN(SELECT gat1.assignment_type_id FROM gradebook_assignment_types gat1 WHERE gat1.COURSE_PERIOD_ID=\''.$course_period_id.'\' 
+            UNION SELECT gat2.assignment_type_id FROM gradebook_assignment_types gat2, gradebook_assignments ga, course_periods cp
+                    WHERE cp.course_period_id = gat2.course_period_id AND gat2.ASSIGNMENT_TYPE_ID = ga.ASSIGNMENT_TYPE_ID AND ga.COURSE_ID IS NOT NULL 
+                    AND ga.COURSE_ID=\''.UserCourse().'\' AND ga.STAFF_ID=\''.UserID().'\' )';
 
         $QI = DBQuery($sql);
 		$RET = DBGet($QI,array('FINAL_GRADE_PERCENT'=>'_makePercent'));
@@ -674,17 +702,17 @@ if(!$_REQUEST['modfunc'] && $course_id)
             echo "&assignment_type_id=$_REQUEST[assignment_type_id]";
         echo " method=POST>";
         echo '<div class="panel panel-default">';
-        DrawHeader($title, $delete_button . '<INPUT type=submit id="setupAssgnTypeBtnTwo" class="btn btn-primary" value='._save.' onclick="formcheck_assignments(this);">');
+        DrawHeader($title, $delete_button . '<INPUT type=submit id="setupAssgnTypeBtnTwo" class="btn btn-primary" value='._save.' onclick="return formcheck_assignments(this);">');
         echo '<div class="panel-body">';
         
         echo "<INPUT type=hidden name=type_id value='$_REQUEST[assignment_id]' id=type_id>";
+        echo "<INPUT type=hidden name=assignment_type_id value='$_REQUEST[assignment_type_id]' id=assignment_type_id>";
         
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['assignment_type_id'] . '][TITLE]', _title, 'size=36') . '</div></div>';
 
         if($programconfig['WEIGHT']=='Y'){
-
-            $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['FINAL_GRADE_PERCENT'], 'tables[' . $_REQUEST['assignment_type_id'] . '][FINAL_GRADE_PERCENT]', ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '<FONT color=red>') . _weightPercent . ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '</FONT>')) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . TextInput(($RET['FINAL_GRADE_PERCENT'] != 0 ? $RET['FINAL_GRADE_PERCENT'] : ''), 'tables[' . $_REQUEST['assignment_type_id'] . '][FINAL_GRADE_PERCENT]', ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '<FONT color=red>') . _weightPercent . ($RET['FINAL_GRADE_PERCENT'] != 0 ? '' : '</FONT>')) . '</div></div>';
             $header .= '<div class="col-md-6"><div class="form-group">' . NoInput($RET['TOTAL_PERCENT'] == 1 ? '100%' : '<FONT COLOR=red>' . (100 * $RET['TOTAL_PERCENT']) . '%</FONT>', _percentTotal) . '</div></div>';
         }
         $header .= '</div>';

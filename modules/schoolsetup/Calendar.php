@@ -466,7 +466,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
 
         echo '<SCRIPT language=javascript> window.close();</script>';
     } elseif (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == _delete) {
-        if (DeletePrompt(_event, _delete, 'y')) {
+        if (DeletePromptCommon(_event, 'delete', 'y')) {
 
             DBQuery("DELETE FROM calendar_events WHERE ID='" . paramlib_validation($column = EVENT_ID, $_REQUEST[event_id]) . "'");
 

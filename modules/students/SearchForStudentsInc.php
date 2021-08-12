@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-//print_r($_REQUEST);
+// print_r($_REQUEST);
 include('../../RedirectModulesInc.php');
 if ($_openSIS['modules_search'] && $extra['force_search'])
     $_REQUEST['search_modfunc'] = '';
@@ -394,7 +394,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">'._medical.'</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_month', 'med_day', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('med_day', 'med_month', 'med_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._doctorSNote.'</label><div class="col-lg-8"><input type=text name="doctors_note_comments" placeholder="'._doctorSNote.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
@@ -405,7 +405,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._type.'</label><div class="col-lg-8"><input type=text name="type" placeholder="'._type.'" size=30 class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_month', 'imm_day', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('imm_day', 'imm_month', 'imm_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
 
@@ -418,7 +418,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">'._medicalAlert.'</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_month', 'ma_day', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('ma_day', 'ma_month', 'ma_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._alert.'</label><div class="col-lg-8"><input type=text name="med_alrt_title" placeholder="'._alert.'" size=30 class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
@@ -427,7 +427,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<h5 class="text-primary">'._nurseVisit.'</h5>';
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_month', 'nv_day', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._date.'</label><div class="col-lg-8"><div class="form-horizontal"><div class="row">' . SearchDateInput('nv_day', 'nv_month', 'nv_year', 'Y', 'Y', 'Y') . '</div></div></div></div>';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._reason.'</label><div class="col-lg-8"><input type=text name="reason" size=30 placeholder="'._reason.'" class="form-control"></div></div>';
             echo '</div>'; //.col-md-6
@@ -461,7 +461,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<hr/>';
             echo '<div class="text-right">';
-            echo '<a id="addiv" href="javascript:void(0);" class="text-pink m-r-15" onclick="show_search_div();"><i class="icon-cog"></i> '._advancedSearch.'</a>';
+            echo '<a id="advancedSearchDivForStudents" href="javascript:void(0);" class="text-pink m-r-15" onclick="show_search_div();"><i class="icon-cog"></i> '._advancedSearch.'</a>';
             if ($extra['pdf'] != true)
                 echo "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary m-r-10\" value='"._submit."' onclick='return formcheck_student_advnc_srch(this);formload_ajax(\"search\");'><INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>&nbsp; &nbsp; ";
             else
@@ -612,7 +612,23 @@ else {
         $extra['WHERE'].=' AND ssm.SECTION_ID=' . $_REQUEST['section'];
 
 
+    if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+        $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+        if($_REQUEST['LO_direction'] == '1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+        }
+        if($_REQUEST['LO_direction'] == '-1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+        }
+    }
+
+    # Set pagination params
+    keepRequestParams($_REQUEST);
+    keepExtraParams($extra);
+
     $students_RET = GetStuList($extra);
+    
     if ($_REQUEST['modname'] == 'grades/HonorRoll.php') {
         $i = 1;
         foreach ($students_RET as $key => $stuRET) {
@@ -1005,7 +1021,7 @@ else {
         echo '<div class="row">';
         echo '<div class="col-sm-6 col-md-6 col-lg-6">';
         echo '<input type="submit" class="btn btn-primary" value="'._applyFilter.'" onclick="self_disable(this);" /> &nbsp; <input class="btn btn-default" value="'._reset.'" type="button" onclick="clearSearching();">';
-        echo '<a id="addiv1" href="javascript:void(0);" class="text-pink" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
+        echo '<a id="advancedFilterDivForStudents" href="javascript:void(0);" class="text-pink" onclick="show_search_div1();">  &nbsp;<i class="icon-cog"></i> '._advancedFilter.'</a>';
         echo '</div>';
         echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
         echo '<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_filter" class="btn btn-primary display-inline-block" onClick="setFilterValues();">'._saveFilter.'</a>';
@@ -1201,11 +1217,13 @@ else {
         foreach ($students_RET as $si => $sd)
             $_SESSION['students_order'][$si] = $sd['STUDENT_ID'];
 
+        # Set pagination params
+        setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputCustomDT', ProgramTitle());
 
-        echo "<div id='students' class=\"table-responsive\">";
+        echo "<div id='tabs_resp'><div id='students' class=\"table-responsive\">";
 
-        ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
-        echo "</div>"; //.table-responsive
+        ListOutputCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
+        echo "</div></div>"; //.table-responsive
         echo "</div>"; //.panel.panel-default
 
         // form for filter student ends

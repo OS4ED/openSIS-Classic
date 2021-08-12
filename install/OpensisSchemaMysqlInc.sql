@@ -2124,7 +2124,7 @@ CREATE TABLE `user_file_upload` (
   `profile_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
-  `download_id` varchar(50) NOT NULL DEFAULT UUID(),
+  `download_id` varchar(50) NOT NULL,
   `name` varchar(255) NOT NULL,
   `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
@@ -2146,3 +2146,11 @@ ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_pa
 ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT 'Student Info -> search all';
 
 ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT 'Student Info -> search all';
+
+ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`);
+
+ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`);
+
+ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`);
+
+ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`);

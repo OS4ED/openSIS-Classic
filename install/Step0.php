@@ -65,7 +65,7 @@ if(page && page!="index.php"){
                                     <li class="active">Choose Package</li>
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
-                                    <li>Database Creation</li>
+                                    <li>Database Selection</li>
                                     <li>School Information</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
@@ -79,12 +79,12 @@ if(page && page!="index.php"){
                                 <table style="height:270px; width: 70%;" border="0" cellspacing="12" cellpadding="12" align="center">
                                     <tr>
                                         <?php
-                                        if ($_GET["upreq"] == 'true') {
+                                        if (isset($_REQUEST['upreq']) && $_REQUEST['upreq'] == 'true') {
                                             echo '<td>You were redirected to this page because an upgrade is needed.<br> Please, proceed using the action below.</td>';
                                             echo '</tr><tr>';
                                             echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS" /><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 4.7 thru 6.0)</small></h5></a></td>';
                                         } else {
-                                            echo '<td valign="middle" align="center"><a href="SystemCheck.php"><img src="assets/images/icon-package.png" alt="New Installation" /><br/><h5 class="text-black"><b>New Installation</b><br/><small>(Ver 7.6)</small></h5></a></td>';
+                                            echo '<td valign="middle" align="center"><a href="SystemCheck.php"><img src="assets/images/icon-package.png" alt="New Installation" /><br/><h5 class="text-black"><b>New Installation</b><br/><small>(Ver 8.0)</small></h5></a></td>';
                                             echo '<td valign="middle" align="center"><a href="Step0.1.php?mod=upgrade"><img src="assets/images/icon-upgrade.png" alt="Upgrade OpenSIS"/><br/><h5 class="text-black"><b>Upgrade</b><br/><small>(From ver 7.1 onwards)</small></h5></a></td>';
                                         }
                                         ?>

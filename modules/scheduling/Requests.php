@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('../../RedirectModules.php');
+include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
 DrawBC(""._scheduling." > " . ProgramTitle());

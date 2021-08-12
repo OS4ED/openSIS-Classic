@@ -61,21 +61,21 @@ $welcome .= ''._user.' : ' . User('NAME');
 echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">'._pleaseWait.'.</span> '._compilingMissingAttendanceData.'. '._doNotClickAnywhere.'.</div>';
 echo '<div id="resp"></div>';
 
-$stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
+// $stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
 
-foreach ($stu_missing_atten as $k => $f) {
+// foreach ($stu_missing_atten as $k => $f) {
 
-    $pr_id = $f['PERIOD_ID'];
-    $sch_date = $f['SCHOOL_DATE'];
-    $staff_id = $f['TEACHER_ID'];
-    $c_id = $f['COURSE_PERIOD_ID'];
-    $sch_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
-    $att_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM attendance_period  where SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
+//     $pr_id = $f['PERIOD_ID'];
+//     $sch_date = $f['SCHOOL_DATE'];
+//     $staff_id = $f['TEACHER_ID'];
+//     $c_id = $f['COURSE_PERIOD_ID'];
+//     $sch_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
+//     $att_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM attendance_period  where SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
 
-    if (count($sch_qr) == count($att_qr)) {
-        DBQuery('DELETE FROM missing_attendance WHERE  TEACHER_ID=' . $staff_id . ' AND SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id);
-    }
-}
+//     if (count($sch_qr) == count($att_qr)) {
+//         DBQuery('DELETE FROM missing_attendance WHERE  TEACHER_ID=' . $staff_id . ' AND SCHOOL_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id);
+//     }
+// }
 
 # -------------------------------- #
 #  Update missing attendance ends  #
@@ -362,28 +362,30 @@ switch (User('PROFILE')) {
 //                    echo ($mp_not!=''?$mp_not:'');
         ////////////////  end new //////////
 
-        $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE,COURSE_PERIOD_ID FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
-        foreach ($reassign_cp as $re_key => $reassign_cp_value) {
-            if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
+        ######################################### Teacher reassignment #################################################
+        // $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE,COURSE_PERIOD_ID FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
+        // foreach ($reassign_cp as $re_key => $reassign_cp_value) {
+        //     if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
 
-                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
-                $get_pname = $get_pname[1]['CP_NAME'];
-                DBQuery('UPDATE course_periods SET TITLE=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-                DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-                DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE TEACHER_ID=' . $reassign_cp_value['PRE_TEACHER_ID'] . ' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-            }
-        }
+        //         $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
+        //         $get_pname = $get_pname[1]['CP_NAME'];
+        //         DBQuery('UPDATE course_periods SET TITLE=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //         DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //         DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE TEACHER_ID=' . $reassign_cp_value['PRE_TEACHER_ID'] . ' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //     }
+        // }
+        ############################################# Teacher Reassignment End ##################################################
 
-        $schedule_exit = DBGet(DBQuery('SELECT ID FROM schedule WHERE syear=\'' . UserSyear() . '\' AND school_id=\'' . UserSchool() . '\'  LIMIT 0,1'));
+        // $schedule_exit = DBGet(DBQuery('SELECT ID FROM schedule WHERE syear=\'' . UserSyear() . '\' AND school_id=\'' . UserSchool() . '\'  LIMIT 0,1'));
 
-        if ($schedule_exit[1]['ID'] != '') {
-            $last_update = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE PROGRAM=\'MissingAttendance\' AND TITLE=\'LAST_UPDATE\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-            if ($last_update[1]['VALUE'] != '') {
-                if ($last_update[1]['VALUE'] < date('Y-m-d')) {
-                    echo '<script type=text/javascript>calculate_missing_atten();</script>';
-                }
-            }
-        }
+        // if ($schedule_exit[1]['ID'] != '') {
+        //     $last_update = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE PROGRAM=\'MissingAttendance\' AND TITLE=\'LAST_UPDATE\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        //     if ($last_update[1]['VALUE'] != '') {
+        //         if ($last_update[1]['VALUE'] < date('Y-m-d')) {
+        //             echo '<script type=text/javascript>calculate_missing_atten();</script>';
+        //         }
+        //     }
+        // }
 
 
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.published_profiles like\'%all%\',\'All School\',(SELECT TITLE FROM schools WHERE id=pn.school_id)) AS SCHOOL,pn.LAST_UPDATED,CONCAT(\'<b>\',pn.TITLE,\'</b>\') AS TITLE,pn.CONTENT 
@@ -502,7 +504,7 @@ switch (User('PROFILE')) {
         $last_date = strtotime($notice_date[1]['END_DATE']) - strtotime(DBDate());
         $last_date = $last_date / (60 * 60 * 24);
         if ($last_date <= 15 && $rolled == 0) {
-            echo '<div class="alert alert-danger alert-bordered"><i class="icon-alert"></i> '._schoolYearIsEndingOrHasEndedRolloverRequired.'.</div>';
+            echo '<div class="alert alert-warning alert-styled-left">'._schoolYearIsEndingOrHasEndedRolloverRequired.'.</div>';
         }
         //-------------------------------------------------------------------------------ROLLOVER NOTIFICATION ENDS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -515,26 +517,28 @@ switch (User('PROFILE')) {
                   IN (\'attendance/TakeAttendance.php\',\'attendance/DailySummary.php\',\'attendance/StudentSummary\') AND 
                   PROFILE_ID=' . User('PROFILE_ID') . ' AND CAN_USE=\'Y\' '));
 
-        $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
-        foreach ($reassign_cp as $re_key => $reassign_cp_value) {
-            if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
-                $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
-                $get_pname = $get_pname[1]['CP_NAME'];
-                DBQuery('UPDATE course_periods SET title=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-                DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-                DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE TEACHER_ID=' . $reassign_cp_value['PRE_TEACHER_ID'] . ' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
-            }
-        }
-        $schedule_exit = DBGet(DBQuery('SELECT ID FROM schedule WHERE syear=\'' . UserSyear() . '\' AND school_id=\'' . UserSchool() . '\' LIMIT 0,1'));
-        if ($schedule_exit[1]['ID'] != '') {
-            $last_update = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE PROGRAM=\'MissingAttendance\' AND TITLE=\'LAST_UPDATE\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-            if ($last_update[1]['VALUE'] != '') {
-                if ($last_update[1]['VALUE'] < date('Y-m-d')) {
+        ############################################### Teacher Reassignment ########################################## 
+        // $reassign_cp = DBGet(DBQuery('SELECT COURSE_PERIOD_ID ,TEACHER_ID,PRE_TEACHER_ID,ASSIGN_DATE FROM teacher_reassignment WHERE ASSIGN_DATE <= \'' . date('Y-m-d') . '\' AND UPDATED=\'N\' '));
+        // foreach ($reassign_cp as $re_key => $reassign_cp_value) {
+        //     if (strtotime($reassign_cp_value['ASSIGN_DATE']) <= strtotime(date('Y-m-d'))) {
+        //         $get_pname = DBGet(DBQuery("SELECT CONCAT(sp.title,IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(' - ',mp.short_name),' '),' - Custom'),IF(CHAR_LENGTH(cpv.days)<5,CONCAT(' - ',cpv.days),' '),' - ',cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id=" . $reassign_cp_value['TEACHER_ID'] . "  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=" . $reassign_cp_value['COURSE_PERIOD_ID']));
+        //         $get_pname = $get_pname[1]['CP_NAME'];
+        //         DBQuery('UPDATE course_periods SET title=\'' . $get_pname . '\', teacher_id=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //         DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //         DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $reassign_cp_value['TEACHER_ID'] . ' WHERE TEACHER_ID=' . $reassign_cp_value['PRE_TEACHER_ID'] . ' AND COURSE_PERIOD_ID=' . $reassign_cp_value['COURSE_PERIOD_ID']);
+        //     }
+        // }
+        ############################################# Teacher Reassignment End ##################################################
+        // $schedule_exit = DBGet(DBQuery('SELECT ID FROM schedule WHERE syear=\'' . UserSyear() . '\' AND school_id=\'' . UserSchool() . '\' LIMIT 0,1'));
+        // if ($schedule_exit[1]['ID'] != '') {
+        //     $last_update = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE PROGRAM=\'MissingAttendance\' AND TITLE=\'LAST_UPDATE\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        //     if ($last_update[1]['VALUE'] != '') {
+        //         if ($last_update[1]['VALUE'] < date('Y-m-d')) {
 
-                    echo '<script type=text/javascript>calculate_missing_atten();</script>';
-                }
-            }
-        }
+        //             echo '<script type=text/javascript>calculate_missing_atten();</script>';
+        //         }
+        //     }
+        // }
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.school_id IS NULL,\'All School\',(SELECT TITLE FROM schools WHERE id=pn.school_id)) AS SCHOOL,pn.LAST_UPDATED,CONCAT(\'<b>\',pn.TITLE,\'</b>\') AS TITLE,pn.CONTENT 
                             FROM portal_notes pn
                             WHERE pn.SYEAR=\'' . UserSyear() . '\' AND pn.START_DATE<=CURRENT_DATE AND 

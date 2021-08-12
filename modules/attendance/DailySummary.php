@@ -190,7 +190,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '</div>';
     echo '</div>'; //.panel
 } else {
-    echo '</div>'; //.panel
+    // echo '</div>'; //.panel
 
 
     if (!$_REQUEST['period_id']) {

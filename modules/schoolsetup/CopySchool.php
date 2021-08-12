@@ -309,7 +309,7 @@ function _rollover($table) {
                     
                     DBQuery('INSERT INTO courses ('.implode(',',$sql_columns).') VALUES ('.(implode(',',$sql_values)).')');
 
-                    DBQuery('UPDATE courses SET TITLE = (SELECT TITLE FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\'), SHORT_NAME = (SELECT SHORT_NAME FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\') WHERE COURSE_ID = (SELECT MAX(COURSE_ID) AS COURSE_ID FROM courses)');
+                    DBQuery('UPDATE courses SET TITLE = (SELECT * FROM (SELECT TITLE FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\') AS T1), SHORT_NAME = (SELECT * FROM (SELECT SHORT_NAME FROM courses WHERE COURSE_ID=\''.$gc['COURSE_ID'].'\') AS T2) WHERE COURSE_ID = (SELECT * FROM (SELECT MAX(COURSE_ID) AS COURSE_ID FROM courses) AS T3)');
                 }
             }
             break;

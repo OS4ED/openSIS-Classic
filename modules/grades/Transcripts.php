@@ -89,7 +89,16 @@ if ($_REQUEST['modfunc'] == 'save') {
             $stu_ret = DBGet(DBQuery($studataquery . $student_id), array('BIRTHDATE' => 'ProperDate'));
             $sinfo = $stu_ret[1];
 
-            $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
+            $gradelevel_addon = '';
+
+            if (isset($_REQUEST['grade_levels']) && count($_REQUEST['grade_levels']) > 0) {
+                $selected_gradelevels = implode("','", $_REQUEST['grade_levels']);
+                $selected_gradelevels = "'" . $selected_gradelevels . "'";
+                $gradelevel_addon = ' HAVING gradelevel_ret IN (' . $selected_gradelevels . ') ';
+            }
+
+            // $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
+            $tquery = "SELECT tg.*, IF(tg.gradelevel IS NULL, CONCAT('O', TRIM((SELECT sg.ID FROM school_gradelevels sg, student_enrollment se WHERE se.STUDENT_ID = tg.STUDENT_ID AND se.SCHOOL_ID = tg.SCHOOL_ID AND se.SYEAR = tg.SYEAR AND se.GRADE_ID = sg.ID ORDER BY se.ID DESC LIMIT 0,1))), CONCAT('H', TRIM(tg.gradelevel))) AS gradelevel_ret FROM transcript_grades tg WHERE student_id = " . $student_id . $gradelevel_addon . " ORDER BY tg.mp_id";
 
             $TRET = DBGet(DBQuery($tquery));
             $course_html = array(0 => '', 1 => '', 2 => '');
@@ -475,9 +484,37 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] = '<div class="form-inline">';
         $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="show_photo" id="show_photo" /><span></span> '._includeStudentPicture.'</label></div></div>';
         $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="incl_mp_grades" id="" checked disabled /><span></span> '._includeMarkingPeriodGrades.'</label></div></div>';
-        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" checked /> '._twoColumnTemplate.'</label>';
-        $extra['extra_header_left'] .= '<label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" /> '._singleColumnTemplate.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" checked /> '._twoColumnTemplate.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" /> '._singleColumnTemplate.'</label></div>';
         $extra['extra_header_left'] .= '</div>';
+
+        $extra['extra_header_left'] .= '<h6 class="m-t-20">'._includeGradeLevelsInTranscript.'</h6>';
+
+        $get_sis_gradelevels = DBGet(DBQuery('SELECT ID,TITLE,SHORT_NAME,SORT_ORDER FROM `school_gradelevels` WHERE SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER'));
+
+        if (count($get_sis_gradelevels) > 0) {
+            $extra['extra_header_left'] .= '<h6 class="text-primary">'._openSISGradeLevels.':</h6>';
+            $extra['extra_header_left'] .= '<div class="form-group">';
+
+            foreach ($get_sis_gradelevels as $one_gradel) {
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type="checkbox" name="grade_levels[]" value="O' . $one_gradel['ID'] . '">' . $one_gradel['TITLE'] . '</label>';
+            }
+
+            $extra['extra_header_left'] .= '</div>';
+        }
+
+        $get_hist_gradelevels = DBGet(DBQuery('SELECT DISTINCT(GRADELEVEL) AS TITLE FROM `transcript_grades` WHERE SCHOOL_ID=\''.UserSchool().'\' AND MP_SOURCE = \'History\' AND GRADELEVEL IS NOT NULL'));
+
+        if (count($get_hist_gradelevels) > 0) {
+            $extra['extra_header_left'] .= '<h6 class="text-primary">'._historicalGradeLevels.':</h6>';
+            $extra['extra_header_left'] .= '<div class="form-group">';
+
+            foreach ($get_hist_gradelevels as $one_hist_gradel) {
+                $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT class="styled" type="checkbox" name="grade_levels[]" value="H' . trim($one_hist_gradel['TITLE']) . '">' . $one_hist_gradel['TITLE'] . '</label>';
+            }
+
+            $extra['extra_header_left'] .= '</div>';
+        }
     }
     $extra['link'] = array('FULL_NAME' =>false);
     $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
@@ -486,8 +523,8 @@ if (!$_REQUEST['modfunc']) {
         $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
     }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
-//    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['new'] = true;
     $extra['options']['search'] = false;

@@ -78,7 +78,7 @@ session_start();
                                     <li>Choose Package</li>
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
-                                    <li>Database Creation</li>
+                                    <li>Database Selection</li>
                                     <li class="active">School Information</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>

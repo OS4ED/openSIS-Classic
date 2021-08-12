@@ -68,7 +68,7 @@ if (count($fields_RET)) {
                 echo '<div class="form-group">';
                 echo '<label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'].'">' . $field['TITLE'] . ' ' . $req . '</label>';
                 echo '<div class="col-lg-8">';
-                echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], 'class=form-control');
+                echo _makeAutoSelectInput('CUSTOM_' . $field['ID'], '');
                 echo '</div>'; //.col-lg-8
                 echo '</div>'; //.form-group
                 echo '</div>'; //.col-md-6
@@ -90,7 +90,7 @@ if (count($fields_RET)) {
                 echo '<div class="form-group">';
                 echo '<label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'].'">' . $field['TITLE'] . ' ' . $req . '</label>';
                 echo '<div class="col-lg-8">';
-                echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'maxlength=10 class=form-control');
+                echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'maxlength=10 '. ($value['CUSTOM_'.$field['ID']] != '' ? 'onkeydown=\"return numberOnly(event);\"' : 'onkeydown="return numberOnly(event);"'));
                 echo '</div>'; //.col-lg-8
                 echo '</div>'; //.form-group
                 echo '</div>'; //.col-md-6
@@ -101,7 +101,7 @@ if (count($fields_RET)) {
                 echo '<div class="form-group">';
                 echo '<label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'].'">' . $field['TITLE'] . ' ' . $req . '</label>';
                 echo '<div class="col-lg-8">';
-                echo DateInputAY($value['CUSTOM_' . $field['ID']], 'CUSTOM_' . $field['ID'], $field['ID']);
+                echo DateInputAY(($value['CUSTOM_' . $field['ID']] == '0000-00-00' ? '' : $value['CUSTOM_' . $field['ID']]), 'CUSTOM_' . $field['ID'], $field['ID']);
                 echo '<input type=hidden name=custom_date_id[] value="' . $field['ID'] . '" />';
                 echo '</div>'; //.col-lg-8
                 echo '</div>'; //.form-group

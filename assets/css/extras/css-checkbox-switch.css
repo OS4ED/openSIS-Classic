@@ -41,6 +41,11 @@ Release Dtae : 15 November, 2017
     margin-right: 5px;
     position: relative;
 }
+html[dir="rtl"] .checkbox.checkbox-switch label span,
+.checkbox-inline.checkbox-switch span {
+    margin-right: 0;
+    margin-left: 5px;
+}
 .checkbox.checkbox-switch label span:before,
 .checkbox-inline.checkbox-switch span:before {
     display: inline-block;
@@ -55,9 +60,18 @@ Release Dtae : 15 November, 2017
     transition: all 0.3s ease;
     box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
+html[dir="rtl"] .checkbox.checkbox-switch label span:before,
+html[dir="rtl"] .checkbox-inline.checkbox-switch span:before {
+    left: 14px;
+}
 .checkbox.checkbox-switch label > input:checked + span:before,
 .checkbox-inline.checkbox-switch > input:checked + span:before {
     left: 14px;
+}
+
+html[dir="rtl"] .checkbox.checkbox-switch label > input:checked + span:before,
+html[dir="rtl"] .checkbox-inline.checkbox-switch > input:checked + span:before {
+    left: 0;
 }
 
 

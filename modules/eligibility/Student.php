@@ -104,7 +104,10 @@ if ($_REQUEST['modfunc'] == 'add' && AllowEdit()) {
         echo'<p style=color:red>'._duplicateEntryOfActivityIsNotPermissible.'</p>';
         unset($_REQUEST['modfunc']);
     } else {
-        DBQuery('INSERT INTO student_eligibility_activities (STUDENT_ID,ACTIVITY_ID,SYEAR) values(\'' . UserStudentID() . '\',\'' . $_REQUEST['new_activity'] . '\',\'' . UserSyear() . '\')');
+        if($_REQUEST['new_activity'] != ''){
+            DBQuery('INSERT INTO student_eligibility_activities (STUDENT_ID,ACTIVITY_ID,SYEAR) values(\'' . UserStudentID() . '\',\'' . $_REQUEST['new_activity'] . '\',\'' . UserSyear() . '\')');
+            echo '<div class="alert bg-success alert-styled-left">' . _theActivityHasBeenAdded . '</div>';
+        }
         unset($_REQUEST['modfunc']);
     }
 }
@@ -191,16 +194,18 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
     
     echo '<div class="row">';
     echo '<div class="col-md-6">';
+    
     $qr = 'SELECT em.STUDENT_ID,em.ACTIVITY_ID,ea.TITLE,ea.START_DATE,ea.END_DATE FROM eligibility_activities ea,student_eligibility_activities em WHERE  em.STUDENT_ID=' . UserStudentID() . ' AND em.SYEAR=\'' . UserSyear() . '\'';
     if ($_REQUEST['start_date']) {
         $dates = explode('-', $_REQUEST['start_date']);
         $st_date = date('Y-m-d', $dates[0]);
-
+        $end_date = date('Y-m-d', $dates[0]+(86400*6));
 
         if ($dates[1] != '') {
             $qr.= ' AND ((\'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date) OR (\'' . date('Y-m-d', $dates[1]) . '\' BETWEEN ea.start_date AND ea.end_date))';
         } else
-            $qr.= ' AND \'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date';
+            $qr.= ' AND ((\'' . $st_date . '\' <= ea.start_date AND ea.end_date) AND (\'' . $end_date . '\' >= ea.start_date AND ea.end_date))';
+            // $qr.= ' AND \'' . $st_date . '\' BETWEEN ea.start_date AND ea.end_date';
     }
     else {
 

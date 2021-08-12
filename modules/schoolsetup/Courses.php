@@ -335,7 +335,7 @@ if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['subject_id']) {
 if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
     PopTable('header',  _search);
     echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search method=POST>";
-    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class="btn btn-primary m-l-10" value='._search.' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class="btn btn-primary m-l-10" value='._search.' onclick=\'formload_ajax("F1");\'></TD></TR></TABLE>';
     echo '</FORM>';
     PopTable('footer');
 
@@ -375,7 +375,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
 if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'standard_search') {
     PopTable('header', ''._search.'');
     echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search method=POST>";
-    echo '<TABLE><TR><TD><INPUT type=text class=cell_floating name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class=btn_medium value='._search.' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+    echo '<TABLE><TR><TD><INPUT type=text class=cell_floating name=search_term value="' . $_REQUEST['search_term'] . '"></TD><TD><INPUT type=submit class=btn_medium value='._search.' onclick=\'formload_ajax("F1");\'></TD></TR></TABLE>';
     echo '</FORM>';
     PopTable('footer');
 
@@ -1552,8 +1552,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
 
         if ($course1['COURSE_PERIOD_ID'] != '') {
             PopTable('header', ''._unableToDelete.'');
-            DrawHeaderHome('<font color=red>'._courseCannotBeDeleted.'</font>');
-            echo '<div align=right><a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . $subject_id . '&course_id=' . $course_id . ' style="text-decoration:none"><b>'._backToCourse.'</b></a></div>';
+            echo '<CENTER class="m-b-15"><h4>' . _courseCannotBeDeleted . '</h4> <BR/> <a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . $subject_id . '&course_id=' . $course_id . ' style="text-decoration:none;" class="btn btn-primary">' . _backToCourse . '</a></CENTER>';
             PopTable('footer');
         } else {
             if (DeletePromptCommon($table)) {
@@ -1596,8 +1595,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
             }
         if ($subject1['COURSE_ID'] != '') {
             PopTable('header', ''._unableToDelete.'');
-            DrawHeaderHome('<font color=red>'._subjectCannotBeDeleted.'</font>');
-            echo '<div align=right><a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . $subject_id . ' style="text-decoration:none"><b>'._backToSubject.'</b></a></div>';
+            echo '<CENTER class="m-b-15"><h4>' . _subjectCannotBeDeleted . '</h4> <BR/> <a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . $subject_id . ' style="text-decoration:none;" class="btn btn-primary">' . _backToSubject . '</a></CENTER>';
             PopTable('footer');
         } else {
             if (DeletePromptCommon($table)) {
@@ -2284,7 +2282,9 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             $header .= '<div class="col-md-6"><div class="form-group"><label class="col-md-4">&nbsp;</label><div class="col-md-8">' . CheckboxInputSwitch($RET['DOES_ATTENDANCE'], 'tables[course_period_var][' . $_REQUEST['course_period_id'] . '][DOES_ATTENDANCE]', _takesAttendance, $checked, $new, 'Yes', 'No', ' id=' . $day . '_does_attendance onclick="formcheck_periods_attendance_F2(' . (($day != '') ? 2 : 1) . ',this);"', 'switch-success') . '<div id="ajax_output"></div></div></div></div>';
             $header .= '</div>'; //.row
             echo '<input type="hidden" name="fixed_day" id="fixed_day" value="' . $day . '" />';
-        }elseif ($RET['SCHEDULE_TYPE'] == 'BLOCKED') {
+
+            $header .= '</div>'; //.panel-body
+        } elseif ($RET['SCHEDULE_TYPE'] == 'BLOCKED') {
             $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE  SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND CALENDAR_ID=\'' . $RET['CALENDAR_ID'] . '\''), array(), array('SCHOOL_DATE'));
 
             if ($RET['MARKING_PERIOD_ID'] != '') {
@@ -2376,10 +2376,11 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
         DrawHeaderHome($header);
         if (UserProfileID() != 2) {
-        echo '<div class="clearfix m-t-15">
-        <h6 class="pull-left"><b>' . $title . '</b></h6>
-        <div class="pull-right">' . $delete_button . SubmitButton(_save, '', 'id=save_cps class="btn btn-primary m-l-5" onclick="return validate_course_period();"') . '</div>
-        </div>';
+            echo '<hr class="no-margin">';
+            echo '<div class="clearfix p-20">
+            <h6 class="pull-left m-b-0"><b>' . $title . '</b></h6>
+            <div class="pull-right">' . $delete_button . SubmitButton(_save, '', 'id=save_cps class="btn btn-primary m-l-5" onclick="return validate_course_period();"') . '</div>
+            </div>';
         }
         echo '</div>'; //.panel-body
         echo '</FORM>';
@@ -2409,7 +2410,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         echo "<FORM name=F3 id=F3 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id] method=POST>";
         echo '<div class="panel-heading">
                 <h6 class="panel-title">' . $title . '</h6>
-                <div class="heading-elements">' . $delete_button . SubmitButton(_save, '', 'id="setupCourseBtn" class="btn btn-primary" onclick="return formcheck_Timetable_course_F3(this);"') . '</div>
+                <div class="heading-elements">' . $delete_button . SubmitButton(_save, '', 'id="setupCourseBtn" class="btn btn-primary m-l-5" onclick="return formcheck_Timetable_course_F3(this);"') . '</div>
             </div>';
         echo '<hr class="no-margin"/>';
         echo '<div class="panel-body">';
@@ -2465,7 +2466,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         echo "<FORM name=F4 id=F4 class=form-horizontal action=Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id] method=POST>";
         echo '<div class="panel-heading">
                 <h6 class="panel-title">' . $title . '</h6>
-                <div class="heading-elements">' . $delete_button . SubmitButton(_save, '', 'id="setupSubjectBtn" class="btn btn-primary" onclick="formcheck_Timetable_course_F4(this);"') . '</div>
+                <div class="heading-elements">' . $delete_button . SubmitButton(_save, '', 'id="setupSubjectBtn" class="btn btn-primary m-l-5" onclick="formcheck_Timetable_course_F4(this);"') . '</div>
             </div>';
         echo '<hr class="no-margin"/>';
 
@@ -2489,7 +2490,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
     if (!$_REQUEST['subject_id']) {
         echo '<div class="panel panel-default">';
         echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search method=POST>";
-        DrawHeader(_courses, '<div class="form-group"><div class="input-group"><INPUT placeholder="'._searchCourse.'" type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"><span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value='._search.' onclick=\'formload_ajax("F1")\';></span></div></div>');
+        DrawHeader(_courses, '<div class="form-group"><div class="input-group"><INPUT placeholder="'._searchCourse.'" type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"><span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value='._search.' onclick=\'formload_ajax("F1");\'></span></div></div>');
         echo '</FORM>';
         echo '</div>';
     }

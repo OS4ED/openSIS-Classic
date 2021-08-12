@@ -68,7 +68,7 @@ error_reporting(0);
                                     <li>Choose Package</li>
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
-                                    <li>Database Creation</li>
+                                    <li>Database Selection</li>
                                     <li>School Information</li>
                                     <li class="active">Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>

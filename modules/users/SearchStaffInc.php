@@ -45,7 +45,7 @@ if (User('PROFILE') == 'admin') {
 
         if ($_SESSION['staff_id']) {
             unset($_SESSION['staff_id']);
-//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
         }
 
         echo '<div class="row">';
@@ -66,10 +66,13 @@ if (User('PROFILE') == 'admin') {
         echo '<div class="col-md-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">'._username.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._username.'" class=form-control name=username></div></div>';
         echo '</div><div class="col-md-6">';
+        
         if (User('PROFILE_ID') == 1)
             $qry1 = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile <> \'' . 'student' . '\' AND profile <> \'' . 'parent' . '\' AND id !=0'));
         if (User('PROFILE_ID') == 0)
             $qry1 = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile <> \'' . 'student' . '\' AND profile <> \'' . 'parent' . '\''));
+        if (User('PROFILE_ID') != 0 && User('PROFILE') == 'admin')
+            $qry1 = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile <> \'' . 'student' . '\' AND profile <> \'' . 'parent' . '\' AND id !=0'));
 
         $options[''] = 'N/A';
         foreach ($qry1 as $index => $value) {

@@ -28,14 +28,6 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
-if($_SESSION['language'] === 'fr'){
-    define("_teacherWhoHasnTTaken", "Maître qui n 'a t pris");
-    define("_teachersWhoHaventTaken", "Les enseignants qui n 'pris");
-}
-else {
-    define("_teacherWhoHasntTaken", "Teacher who hasn\'t taken");
-    define("_teachersWhoHaventTaken ", "Teachers who haven\'t taken ");
-}
 
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
 //    $date = $_REQUEST['year_date'] . '-' . MonthFormatter($_REQUEST['month_date']) . '-' . $_REQUEST['day_date'];

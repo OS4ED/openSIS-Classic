@@ -32,7 +32,7 @@ function GetStaffList(& $extra)
 	{
 		case 'admin':
 		$profiles_RET = DBGet(DBQuery('SELECT * FROM user_profiles'),array(),array('ID'));
-                     $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
+                     $sql = 'SELECT DISTINCT CONCAT(TRIM(s.LAST_NAME),\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
                         la.USERNAME,s.PROFILE,s.IS_DISABLE,s.PROFILE_ID,s.IS_DISABLE,s.STAFF_ID '.$extra['SELECT'].'
                         FROM
                         people s '.$extra['FROM'].',login_authentication la,students st,student_enrollment ssm
@@ -88,7 +88,7 @@ function GetUserStaffList(& $extra)
 	{
 		case 'admin':
 		$profiles_RET = DBGet(DBQuery('SELECT * FROM user_profiles'),array(),array('ID'));
-                  $sql = 'SELECT DISTINCT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
+                  $sql = 'SELECT DISTINCT CONCAT(TRIM(s.LAST_NAME),\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
 					s.PROFILE,s.IS_DISABLE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID '.$extra['SELECT'].'
                 FROM
 					staff s INNER JOIN staff_school_relationship ssr USING(staff_id) '.$extra['FROM'].',login_authentication la
@@ -191,7 +191,7 @@ function GetStaffList_Miss_Atn(& $extra)
 		{
 			case 'admin':
 			$profiles_RET = DBGet(DBQuery('SELECT * FROM user_profiles'));
-			$sql = 'SELECT CONCAT(s.LAST_NAME, \' \', s.FIRST_NAME) AS FULL_NAME,
+			$sql = 'SELECT CONCAT(TRIM(s.LAST_NAME),\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,
 						s.PROFILE,s.PROFILE_ID,s.STAFF_ID '.$extra['SELECT'].'
 					FROM
 						staff s INNER JOIN staff_school_relationship ssr USING(staff_id) '.$extra['FROM'].'
@@ -257,7 +257,7 @@ function GetStaffListNoAccess()
 	switch(User('PROFILE'))
 	{
 		case 'admin':
-                $sql='SELECT DISTINCT CONCAT(s.LAST_NAME, \' \' ,s.FIRST_NAME) AS FULL_NAME,CONCAT(UPPER(MID(s.PROFILE,1,1)),MID(s.PROFILE,2,LENGTH(s.PROFILE)-1)) AS PROFILE,s.PROFILE_ID,s.IS_DISABLE,
+                $sql='SELECT DISTINCT CONCAT(TRIM(s.LAST_NAME),\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,CONCAT(UPPER(MID(s.PROFILE,1,1)),MID(s.PROFILE,2,LENGTH(s.PROFILE)-1)) AS PROFILE,s.PROFILE_ID,s.IS_DISABLE,
                       s.STAFF_ID FROM people s ,students st,student_enrollment ssm WHERE st.STUDENT_ID=ssm.STUDENT_ID AND
                       ssm.SYEAR='.UserSyear().' AND s.PROFILE IS NOT NULL AND s.PROFILE_ID=4
                       AND '.($_REQUEST['_search_all_schools']=='Y'?'ssm.SCHOOL_ID IN (SELECT SCHOOL_ID FROM school_years WHERE SYEAR='.UserSyear().')':'ssm.SCHOOL_ID='.UserSchool()).' 

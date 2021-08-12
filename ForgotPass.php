@@ -34,6 +34,7 @@ include("functions/MonthNwSwitchFnc.php");
 include("functions/ProperDateFnc.php");
 require_once("functions/PragRepFnc.php");
 include("lang/language.php");
+include("functions/langFnc.php");
 
 
 function DateInputAY($value, $name, $counter = 1, $placeholder = _enterDate) {
@@ -278,9 +279,12 @@ function db_show_error($sql, $failnote, $additional = '') {
 }
 
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
+
+$dir = '';
+if(langDirection()=='rtl') { $dir="rtl"; }else{ $dir="ltr"; }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="<?php echo $dir; ?>">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">

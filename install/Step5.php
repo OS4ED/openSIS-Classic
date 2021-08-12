@@ -35,8 +35,8 @@ if(page && page!="index.php"){
 	}
 
 </script>';
-
-if ($_SESSION['mod'] == 'upgrade') {
+$string='';
+if (isset($_SESSION['mod']) && $_SESSION['mod']== 'upgrade') {
 
     $myFile = "../Data.php";
     $fh = fopen($myFile, 'w');
@@ -86,7 +86,7 @@ if ($_SESSION['mod'] == 'upgrade') {
                                         <li>Choose Package</li>
                                         <li>System Requirements</li>
                                         <li>Database Connection</li>
-                                        <li>Database Creation</li>
+                                        <li>Database Selection</li>
                                         <li>School Information</li>
                                         <li>Site Admin Account Setup</li>
                                         <li class="active">Ready to Go!</li>
@@ -181,7 +181,7 @@ You need to follow the instructions in the administrator manual for setting up t
                                         <li>Choose Package</li>
                                         <li>System Requirements</li>
                                         <li>Database Connection</li>
-                                        <li>Database Creation</li>
+                                        <li>Database Selection</li>
                                         <li>School Information</li>
                                         <li>Site Admin Account Setup</li>
                                         <li class="active">Ready to Go!</li>

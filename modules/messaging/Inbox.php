@@ -27,7 +27,9 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-require_once 'libraries\htmlpurifier\library\HTMLPurifier.auto.php';
+require_once('libraries/htmlpurifier/library/HTMLPurifier.auto.php');
+
+DrawBC(""._messaging." > " . ProgramTitle());
 
   //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {

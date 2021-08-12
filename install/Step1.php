@@ -74,7 +74,7 @@ if(page && page!="index.php" ){
                                 <div class="logo">
                                     <img src="assets/images/opensis_logo.png" alt="openSIS">
                                 </div>
-                                <?php if ($_REQUEST['mod'] != 'upgrade') { ?>
+                                <?php if (isset($_REQUEST['mod']) && $_REQUEST['mod']!='upgrade') { ?>
                                     <h3>openSIS Installation - Database Connection</h3>
                                 <?php } else { ?>
                                     <h3>openSIS Installation - Database Connection</h3>
@@ -103,12 +103,12 @@ if(page && page!="index.php" ){
                         <div class="installation-steps-wrapper">
                             <div class="installation-instructions">
 
-                                <?php if ($_REQUEST['mod'] != 'upgrade') { ?>
+                                <?php if (isset($_REQUEST['mod']) && $_REQUEST['mod']!='upgrade') { ?>
                                     <ul class="installation-steps-label">
                                         <li>Choose Package</li>
                                         <li>System Requirements</li>
                                         <li class="active">Database Connection</li>
-                                        <li>Database Creation</li>
+                                        <li>Database Selection</li>
                                         <li>School Information</li>
                                         <li>Site Admin Account Setup</li>
                                         <li>Ready to Go!</li>
@@ -206,12 +206,24 @@ if(page && page!="index.php" ){
                                 else
                                 // hide Connection information fields
                                     echo '<div id="divConnInfo" style="display:none;">';
-                                ?>
-                                <form name='step1' id='step1' method="post" <?php if ($ver_comp == 'true') { ?>action="Ins1.php<?php
-                                    echo ($_REQUEST['mod'] == 'upgrade') ? '?mod=upgrade' :
-                                            '';
+				if ($ver_comp == 'true') {
+				 $action='Ins1.php';
+				}
+
+
+
+
+                                if(isset($_REQUEST['mod']))
+                                {
+                                echo '<form name="step1" id="step1" method="post" action="'.$action.'?mod=upgrade">';
+
+					
                                 }
-                                ?> ">
+                                else
+                                {
+                                    echo '<form name="step1" id="step1" method="post" action="'.$action.'">';
+                                }
+                                ?> 
 
                                     <h4 class="m-t-0 m-b-25">Please Enter MySQL Connection Information</h4>
                                     <div class="row">
@@ -231,13 +243,13 @@ if(page && page!="index.php" ){
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label">Admin Username</label>
+                                                <label class="control-label">MySQL Username</label>
                                                 <input type="text" name="addusername" size="20" value="root" class="form-control" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label">Admin Password</label>
+                                                <label class="control-label">MySQL Password</label>
                                                 <input type="password" name="addpassword" size="20" class="form-control" />
                                             </div>
                                         </div>

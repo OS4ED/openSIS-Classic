@@ -268,6 +268,7 @@ function formcheck_school_setup_portalnotes(this_DET) {
 }
 
 function formcheck_student_advnc_srch(this_DET) {
+  self_disable(this_DET);
   var this_button_id = this_DET.id;
 
   var day_to = $("day_to_birthdate");
@@ -281,9 +282,9 @@ function formcheck_student_advnc_srch(this_DET) {
     !day_from.value &&
     !month_from.value
   ) {
-    setTimeout(function () {
-      document.getElementById(this_button_id).disabled = true;
-    }, 50);
+    // setTimeout(function () {
+    //   document.getElementById(this_button_id).disabled = true;
+    // }, 50);
 
     return true;
   }
@@ -329,9 +330,9 @@ function formcheck_student_advnc_srch(this_DET) {
     return false;
   }
 
-  setTimeout(function () {
-    document.getElementById(this_button_id).disabled = true;
-  }, 50);
+  // setTimeout(function () {
+  //   document.getElementById(this_button_id).disabled = true;
+  // }, 50);
 
   return true;
 }
@@ -2021,25 +2022,89 @@ function formcheck_student_studentField_F1(this_DET) {
 }
 
 function formcheck_student_studentField_F1_defalut() {
-  var type = document.getElementById("type");
-  var style = document.getElementById("show_textarea").style;
-  //    if (type.value == 'textarea')
-  //        document.getElementById('tables[new][DEFAULT_SELECTION]').disabled = true;
-  //    else
-  //        document.getElementById('tables[new][DEFAULT_SELECTION]').disabled = false;
-  if (
-    type.value == "textarea" ||
-    type.value == "numeric" ||
-    type.value == "date" ||
-    type.value == "text" ||
-    type.value == "radio"
-  ) {
-    if (style.display == "block")
-      document.getElementById("show_textarea").style = "display:none";
-  } else {
-    if (style.display == "none")
-      document.getElementById("show_textarea").style = "display:block";
-  }
+    var type = document.getElementById("type");
+    var style = document.getElementById("show_textarea").style;
+    // if (type.value == 'textarea')
+    //    document.getElementById('tables[new][DEFAULT_SELECTION]').disabled = true;
+    // else
+    
+    if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+        document.getElementById('tables[new][DEFAULT_SELECTION]').disabled = false;
+        document.getElementById('tables[new][DEFAULT_SELECTION]').value = null;
+    }
+
+    if (type.value == "textarea" || type.value == "numeric" || type.value == "date" || type.value == "text" || type.value == "radio") {
+        if (style.display == "block") {
+            document.getElementById("show_textarea").style = "display:none";
+            document.getElementById("exmp").style = "display:none";
+        }
+    } else {
+        if (style.display == "none") {
+            document.getElementById("show_textarea").style = "display:block";
+            document.getElementById("exmp").style = "display:block";
+        }
+    }
+
+    if(type.value == "codeds") {
+        document.getElementById("helpBlock").innerHTML = 'You need to enter the value of the codes here not the entire text e.g. if the coded option is \'0|Good\' the default value will be \'0\' not \'Good\'';
+        document.getElementById("exmp").innerHTML = `Example:<br/>0|Good<br/>1|Bad<br/>etc.`;
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeydown');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('maxlength');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').setAttribute('onkeyup', 'checkValidDefaultValue()');
+        }
+    }
+    else if (type.value == 'select' || type.value == 'autos' || type.value == 'edits' || type.value == 'multiple') {
+        document.getElementById("helpBlock").innerHTML = 'Default';
+        document.getElementById("exmp").innerHTML = `Example:<br/>Good<br/>Bad<br/>etc.`;
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeydown');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('maxlength');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').setAttribute('onkeyup', 'checkValidDefaultValue()');
+        }
+    }
+    // else if (type.value == 'multiple') {
+    //     document.getElementById("helpBlock").innerHTML = 'You need to enter the value of the options here not the entire text e.g. if the coded option is \'||Good||\' the default value will be \'Good\' not \'||Good||\'';
+    //     document.getElementById("exmp").innerHTML = `Example:<br/>||Good||<br/>||Bad||<br/>etc.`;
+    // }
+    else if(type.value == "numeric") {
+        document.getElementById("helpBlock").innerHTML = 'Default number only';
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeyup');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('maxlength');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').setAttribute('onkeydown', 'return numberOnly(event);');
+        }
+    }
+    else if(type.value == "date") {
+        document.getElementById("helpBlock").innerHTML = '';
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeyup');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeydown');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('maxlength');
+        }
+    }
+    else if(type.value == "radio") {
+        document.getElementById("helpBlock").innerHTML = 'Default value should be any letter (e.g. \'Y\') if you want to keep the checkbox checked by default otherwise keep it blank';
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeyup');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeydown');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').setAttribute('maxlength', '1');
+        }
+    }
+    else {
+        document.getElementById("helpBlock").innerHTML = 'Default';
+
+        if (document.getElementById('tables[new][DEFAULT_SELECTION]')) {
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeyup');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('onkeydown');
+            document.getElementById('tables[new][DEFAULT_SELECTION]').removeAttribute('maxlength');
+        }
+    }
 }
 
 ///////////////////////////////////////// Student Field End ////////////////////////////////////////////////////////////
@@ -2317,7 +2382,7 @@ function formcheck_user_userfields_F1(this_DET) {
 function formcheck_schoolfields(this_DET) {
   var this_button_id = this_DET.id;
 
-  var frmvalidator1 = new Validator("SF1", this_button_id);
+  var frmvalidator1 = new Validator("SF1");
 
   if (document.getElementById("custom")) {
     var custom_id = document.getElementById("custom").value;
@@ -3292,6 +3357,7 @@ function ValidateTime_eligibility_entrytimes() {
 ///////////////////////////////////////// Entry Times End //////////////////////////////////////////////////
 
 function formcheck_mass_drop(this_DET) {
+  self_disable(this_DET);
   var this_button_id = this_DET.id;
 
   if (document.getElementById("course_div").innerHTML == "") {
@@ -3301,9 +3367,9 @@ function formcheck_mass_drop(this_DET) {
 
     return false;
   } else {
-    setTimeout(function () {
-      document.getElementById(this_button_id).disabled = true;
-    }, 50);
+    // setTimeout(function () {
+    //   document.getElementById(this_button_id).disabled = true;
+    // }, 50);
 
     return true;
   }
@@ -3501,6 +3567,25 @@ function formcheck_assignments(this_DET) {
   var frmvalidator = new Validator("F3", this_button_id);
 
   var type_id = document.getElementById("type_id").value;
+  var assignment_type_id = document.getElementById("assignment_type_id").value;
+
+  var data = document.getElementsByName(
+    "tables[" + assignment_type_id + "][FINAL_GRADE_PERCENT]"
+  )[0];
+  if (data.value == "") {
+    $("#divErr").html(
+      '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent cannot be blank</div>'
+    );
+    return false;
+  }
+  if (data.value <= 0) {
+    $("#divErr").html(
+      '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent should be greater than zero</div>'
+    );
+    data.value = "";
+    data.focus();
+    return false;
+  }
 
   if (type_id.trim() == "") {
     frmvalidator.addValidation(
@@ -3555,6 +3640,7 @@ function formcheck_assignments(this_DET) {
       "Due date cannot be blank"
     );
   }
+  return true;
 }
 //-------------------------------------------------assignments Title Validation Ends---------------------------------------------
 
@@ -3851,6 +3937,7 @@ function passwordMatch() {
   }
 }
 function pass_check(this_DET) {
+  self_disable(this_DET);
   var this_button_id = this_DET.id;
 
   var new_pass = document.getElementById("new_pass");
@@ -3876,9 +3963,9 @@ function pass_check(this_DET) {
         return false;
       }
 
-      setTimeout(function () {
-        document.getElementById(this_button_id).disabled = true;
-      }, 50);
+      // setTimeout(function () {
+      //   document.getElementById(this_button_id).disabled = true;
+      // }, 50);
 
       return true;
     } else {
@@ -3891,9 +3978,9 @@ function pass_check(this_DET) {
     }
   }
 
-  setTimeout(function () {
-    document.getElementById(this_button_id).disabled = true;
-  }, 50);
+  // setTimeout(function () {
+  //   document.getElementById(this_button_id).disabled = true;
+  // }, 50);
 
   return true;
 }
@@ -4224,7 +4311,7 @@ function validate_group_schedule() {
 
 function validate_group_request(this_DET) {
   var this_button_id = this_DET.id;
-
+  self_disable(this_DET);
   var x = document.getElementById("qq").elements.length;
   var counter = 0;
   for (var i = 0; i <= x; i++) {
@@ -4254,9 +4341,9 @@ function validate_group_request(this_DET) {
   } else {
     // formload_ajax("qq");
 
-    setTimeout(function () {
-      document.getElementById(this_button_id).disabled = true;
-    }, 50);
+    // setTimeout(function () {
+    //   document.getElementById(this_button_id).disabled = true;
+    // }, 50);
 
     return true;
   }
@@ -4840,7 +4927,7 @@ function formcheck_ada_dates() {
 function toggle_attendance_code() {
   var p_c = document.getElementById("p_c").value;
   var base = document.getElementById("base").value;
-  if (p_c < base) {
+  if (Number(p_c) < Number(base)) {
     document.getElementById("click_plus").click();
   }
   document.getElementById("p_c").value = parseInt(p_c) + 1;
@@ -5005,6 +5092,136 @@ function save_student_filters() {
   }
 }
 
+function checkValidDefaultValue() {
+    var customFieldModule = document.getElementById("customFieldModule").value;
+
+    switch(customFieldModule) {
+        case 'school':
+
+            var cusomFieldID = document.getElementById("custom").value;
+
+            if(document.getElementById('tables[' + cusomFieldID + '][DEFAULT_SELECTION]'))
+                var defaultVal = document.getElementById('tables[' + cusomFieldID + '][DEFAULT_SELECTION]').value;
+            else if(document.getElementById('inputtables[' + cusomFieldID + '][DEFAULT_SELECTION]'))
+                var defaultVal = document.getElementById('inputtables[' + cusomFieldID + '][DEFAULT_SELECTION]').value;
+            else if (document.getElementById("DEFAULT_VALUE_" + cusomFieldID))
+                var defaultVal = document.getElementById("DEFAULT_VALUE_" + cusomFieldID).value;
+            else
+                var defaultVal = '';
+
+            if(defaultVal != '') {
+                if(document.getElementById("type"))
+                    var dataType = document.getElementById("type").value;
+                else
+                    var dataType = document.getElementById("DEFAULT_DATATYPE_" + cusomFieldID).value;
+
+
+                if(document.getElementById("tables[" + cusomFieldID + "][SELECT_OPTIONS]"))
+                    var selectOptionsData = document.getElementById("tables[" + cusomFieldID + "][SELECT_OPTIONS]").value;
+                else if(document.getElementById("textareatables[" + cusomFieldID + "][SELECT_OPTIONS]"))
+                    var selectOptionsData = document.getElementById("textareatables[" + cusomFieldID + "][SELECT_OPTIONS]").value;
+                else if (document.getElementById("SELECT_OPTIONS_VALUE_" + cusomFieldID))
+                    var selectOptionsData = document.getElementById("SELECT_OPTIONS_VALUE_" + cusomFieldID).value;
+                else
+                    var selectOptionsData = '';
+
+                if(selectOptionsData != '') {
+                    var selectOptions = selectOptionsData.split('\n');
+                    var validChecker = 0;
+
+                    for(var eachLine = 0;eachLine < selectOptions.length;eachLine++) {
+                        if(dataType == 'select' || dataType == 'autos' || dataType == 'edits' || dataType == 'multiple') {
+                            var selectOptionsVal = selectOptions[eachLine];
+                        } else if(dataType == 'codeds') {
+                            var selectOptionsVal = selectOptions[eachLine].split("|")[0];
+                        } else {
+                            var selectOptionsVal = '';
+                        }
+                        
+                        if(defaultVal == selectOptionsVal) {
+                            validChecker++;
+                        }
+                    }
+
+                    if(validChecker == 0) {
+                        document.getElementById("helpBlock").innerHTML = `<span class="text-warning"><b>Warning!</b> Default value does not match with the values of pull-down!</span>`;
+                    } else {
+                        document.getElementById("helpBlock").innerHTML = `Default`;
+                    }
+                } else {
+                    document.getElementById("helpBlock").innerHTML = `Default`;
+                }
+            } else {
+                document.getElementById("helpBlock").innerHTML = `Default`;
+            }
+        break;
+
+        case 'student':
+        case 'staff':
+        case 'people':
+
+            var cusomFieldID = document.getElementById("f_id").value;
+
+            if(document.getElementById('tables[' + cusomFieldID + '][DEFAULT_SELECTION]'))
+                var defaultVal = document.getElementById('tables[' + cusomFieldID + '][DEFAULT_SELECTION]').value;
+            else if(document.getElementById('inputtables[' + cusomFieldID + '][DEFAULT_SELECTION]'))
+                var defaultVal = document.getElementById('inputtables[' + cusomFieldID + '][DEFAULT_SELECTION]').value;
+            else if (document.getElementById("DEFAULT_VALUE_" + cusomFieldID))
+                var defaultVal = document.getElementById("DEFAULT_VALUE_" + cusomFieldID).value;
+            else
+                var defaultVal = '';
+
+            var helpBlockText = document.getElementById("helpBlock").innerHTML;
+
+            if(defaultVal != '') {
+                if(document.getElementById("type"))
+                    var dataType = document.getElementById("type").value;
+                else
+                    var dataType = document.getElementById("DEFAULT_DATATYPE_" + cusomFieldID).value;
+
+
+                if(document.getElementById("tables[" + cusomFieldID + "][SELECT_OPTIONS]"))
+                    var selectOptionsData = document.getElementById("tables[" + cusomFieldID + "][SELECT_OPTIONS]").value;
+                else if(document.getElementById("textareatables[" + cusomFieldID + "][SELECT_OPTIONS]"))
+                    var selectOptionsData = document.getElementById("textareatables[" + cusomFieldID + "][SELECT_OPTIONS]").value;
+                else if (document.getElementById("SELECT_OPTIONS_VALUE_" + cusomFieldID))
+                    var selectOptionsData = document.getElementById("SELECT_OPTIONS_VALUE_" + cusomFieldID).value;
+                else
+                    var selectOptionsData = '';
+
+                if(selectOptionsData != '') {
+                    var selectOptions = selectOptionsData.split('\n');
+                    var validChecker = 0;
+
+                    for(var eachLine = 0;eachLine < selectOptions.length;eachLine++) {
+                        if(dataType == 'select' || dataType == 'autos' || dataType == 'edits' || dataType == 'multiple') {
+                            var selectOptionsVal = selectOptions[eachLine];
+                        } else if(dataType == 'codeds') {
+                            var selectOptionsVal = selectOptions[eachLine].split("|")[0];
+                        } else {
+                            var selectOptionsVal = '';
+                        }
+                        
+                        if(defaultVal == selectOptionsVal) {
+                            validChecker++;
+                        }
+                    }
+
+                    if(validChecker == 0) {
+                        document.getElementById("helpBlock").innerHTML = `<span class="text-warning"><b>Warning!</b> Default value does not match with the values of pull-down!</span>`;
+                    } else {
+                        document.getElementById("helpBlock").innerHTML = ``;
+                    }
+                } else {
+                    document.getElementById("helpBlock").innerHTML = helpBlockText;
+                }
+            } else {
+                document.getElementById("helpBlock").innerHTML = helpBlockText;
+            }
+        break;
+    }
+}
+
 function clearSearching()
 {
     var formName = 'search';
@@ -5048,9 +5265,32 @@ function clearSearching()
 }
 
 function self_disable(this_DET) {
-  /* Directl triggering "self disable" when on button click no JS validation is occuring. */
+  this_DET.form.addEventListener("submit", function (e) {
+    if (!$(this_DET).data('submitted')) {
+      $(this_DET).data('submitted', true).addClass('disabled');
+    }else{
+      e.preventDefault();
+    }
+    setTimeout(function () {
+      remove_self_disable(this_DET)
+    }, 5000);
+  });
+}
 
-  setTimeout(function () {
-    this_DET.setAttribute("disabled", true);
-  }, 50);
+function remove_self_disable(this_DET){
+  $(this_DET).data('submitted', false).removeClass('disabled')
+}
+
+function reportCardGpaChk() 
+{
+  var totalMPCount = $('input[name="mp_arr[]"]:checked').length;
+  if(totalMPCount>1)
+  {
+    document.getElementsByName("elements[gpa]")[0].checked = false;
+    document.getElementsByName("elements[gpa]")[0].disabled = true;
+  }
+  if(totalMPCount==1)
+  {
+    document.getElementsByName("elements[gpa]")[0].disabled = false;
+  }
 }

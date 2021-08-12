@@ -320,7 +320,10 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 
     //--------- if end --------------//
     //------------------------------ Date Edit End -------------------------------------------//		  
-    DrawHeader('<div class="form-inline">' . (count($codes_RET) > 0 ? "<a href=# onclick=toggle_attendance_code() class='btn btn-primary pull-left btn-lg mr-15 mt-2'><i class='fa fa-plus text-white'></i></a><a id=click_plus href=# onclick='javascript:addHTML(\"" . str_replace('"', '\"', _makeCodeSearch()) . "\",\"code_pulldowns\");'></a>" : '') . '<DIV id=code_pulldowns>' . $code_pulldowns . '</DIV></div>', '<div class="input-group">' . DateInputAY($date, 'date', 1) . '<span class="input-group-btn">' . SubmitButton(_go, '', 'class="btn btn-primary"') . '</span></div>');
+    DrawHeader('<div class="form-inline">' . (count($codes_RET) > 0 ? "<a href=# onclick=toggle_attendance_code() class='btn btn-primary pull-left btn-lg mr-15 mt-2'><i class='fa fa-plus text-white'></i></a><a id=click_plus href=# onclick='javascript:addHTML(\"" . str_replace('"', '\"', _makeCodeSearch()) . "\",\"code_pulldowns\");'></a>" : '') . '<DIV id=code_pulldowns>' . $code_pulldowns . '</DIV></div>', '<div class="input-group">' . DateInputAY($date, 'date', 1) . '<span class="input-group-btn">' . SubmitButton(_go, '', 'class="btn btn-primary m-l-15"') . '</span></div>');
+    
+    echo '<hr class="no-margin"/>';
+
     echo"<input type='hidden' name='p_c' value='" . (isset($_REQUEST['p_c']) ? $_REQUEST['p_c'] : 0) . "' id='p_c'>";
     echo"<input type='hidden' value='" . count($codes_RET) . "' id='base'>";
     $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -330,47 +333,55 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 
 
     $tmp_PHP_SELF = PreparePHP_SELF($tmp_REQUEST);
-    if (count($categories_RET)) {
-        echo '<center><div style="margin-bottom:-25px;"><TABLE border=0 cellpadding=0 cellspacing=0 style="border:1;border-style: none none solid none;"><TR><TD>';
-        echo '<TABLE height=1><TR><TD height=1></TD></TR></TABLE>';
-        $header = '<TABLE border=0 cellpadding=0 cellspacing=0 height=14><TR>';
-        if ($_REQUEST['table'] !== '0') {
-            $tabcolor = '#DFDFDF';
-            $textcolor = '#999999';
-        } else {
-            $tabcolor = Preferences('HIGHLIGHT');
-            $textcolor = '#000000';
-        }
+    // if (count($categories_RET)) {
+    //     echo '<center><div style="margin-bottom:-25px;"><TABLE border=0 cellpadding=0 cellspacing=0 style="border:1;border-style: none none solid none;"><TR><TD>';
+    //     echo '<TABLE height=1><TR><TD height=1></TD></TR></TABLE>';
+    //     $header = '<TABLE border=0 cellpadding=0 cellspacing=0 height=14><TR>';
+    //     if ($_REQUEST['table'] !== '0') {
+    //         $tabcolor = '#DFDFDF';
+    //         $textcolor = '#999999';
+    //     } else {
+    //         $tabcolor = Preferences('HIGHLIGHT');
+    //         $textcolor = '#000000';
+    //     }
 
-        $header .= '<TD width=10></TD><TD>' . DrawTab(_attendance, $tmp_PHP_SELF . '&amp;table=0', $tabcolor, $textcolor, '_circle', array('textcolor' => '#000000')) . '</TD>';
-        foreach ($categories_RET as $category) {
-            if ($_REQUEST['table'] !== $category['ID']) {
-                $tabcolor = '#DFDFDF';
-                $textcolor = '#999999';
-            } else {
-                $tabcolor = Preferences('HIGHLIGHT');
-                $textcolor = '#000000';
-            }
+    //     $header .= '<TD width=10></TD><TD>' . DrawTab(_attendance, $tmp_PHP_SELF . '&amp;table=0', $tabcolor, $textcolor, '_circle', array('textcolor' => '#000000')) . '</TD>';
+    //     foreach ($categories_RET as $category) {
+    //         if ($_REQUEST['table'] !== $category['ID']) {
+    //             $tabcolor = '#DFDFDF';
+    //             $textcolor = '#999999';
+    //         } else {
+    //             $tabcolor = Preferences('HIGHLIGHT');
+    //             $textcolor = '#000000';
+    //         }
 
-            $header .= '<TD>' . DrawTab($category['TITLE'], $tmp_PHP_SELF . '&amp;table=' . $category['ID'], $tabcolor, $textcolor, '_circle', array('textcolor' => '#000000')) . '</TD>';
-        }
-        $header .= '</TR></TABLE>';
-        echo $header;
-        echo '<TABLE height=1><TR><TD height=1></TD></TR></TABLE>';
-        echo '</TD></TR></TABLE></div></center>';
-    }
+    //         $header .= '<TD>' . DrawTab($category['TITLE'], $tmp_PHP_SELF . '&amp;table=' . $category['ID'], $tabcolor, $textcolor, '_circle', array('textcolor' => '#000000')) . '</TD>';
+    //     }
+    //     $header .= '</TR></TABLE>';
+    //     echo $header;
+    //     echo '<TABLE height=1><TR><TD height=1></TD></TR></TABLE>';
+    //     echo '</TD></TR></TABLE></div></center>';
+    // }
+    $tabs[] = array('title' => 'Attendance', 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
+
+    foreach ($categories_RET as $category)
+        $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&table=$category[ID]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
+
+    if (count($categories_RET))
+        echo '<CENTER>' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]") . '</CENTER>';
 
 
     $_REQUEST['search_modfunc'] = 'list';
-    $extra['DEBUG'] = true;
+    // $extra['DEBUG'] = true;
 
-
+    echo '<div class="panel panel-default">';
     Search('student_id', $extra);
 
     echo '<div class="panel-footer text-right p-r-20">' . SubmitButton(_update, 'admin_update', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 
 
     echo "</FORM>";
+    echo '</div>';
     echo '</div>';
 }
 
@@ -463,7 +474,7 @@ function _makeReasonInput($value, $title) {
 
 function _makeCodeSearch($value = '') {
     global $codes_RET, $code_search_selected;
-    $return = '<SELECT class="form-control" name=codes[]><OPTION value="A"' . (($value == 'A') ? ' SELECTED' : '') . '>'._notPresent.'</OPTION>';
+    $return = '<SELECT class="form-control m-r-15" name=codes[]><OPTION value="A"' . (($value == 'A') ? ' SELECTED' : '') . '>'._notPresent.'</OPTION>';
     if (count($codes_RET)) {
         foreach ($codes_RET as $code) {
 

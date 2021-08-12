@@ -1,5 +1,7 @@
 <?php
 
+DrawBC(""._messaging." > " . ProgramTitle());
+
 if (isset($_REQUEST['msg']) && $_REQUEST['msg'] == 4) {
     echo'<p style=color:red>'._messageDeletedSucessfully.'.</p>';
 }

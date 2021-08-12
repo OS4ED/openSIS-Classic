@@ -784,4 +784,19 @@ function singleQuoteReplace($param1 = false, $param2 = false, $param3) {
     return str_replace("'", "''", str_replace("\'", "'", $param3));
 }
 
+function isDateInMarkingPeriodWorkingDates($marking_period, $date){
+    $markingPeriodHasDate = DBGet(DBQuery("SELECT * FROM `marking_periods` WHERE `marking_period_id` = '$marking_period' AND ('$date' BETWEEN `start_date` AND `end_date`)"));
+
+    if(count($markingPeriodHasDate) === 0) return false;
+    
+    $childMarkingPeriods = DBGet(DBQuery("SELECT * FROM marking_periods WHERE parent_id = '$marking_period';"));
+
+    if(count($childMarkingPeriods) === 0) return true;
+
+    foreach($childMarkingPeriods as $id => $childMarkingPeriod){
+        if(isDateInMarkingPeriodWorkingDates($childMarkingPeriod['MARKING_PERIOD_ID'], $date)) return true;
+    }
+    
+    return false;
+}
 ?>

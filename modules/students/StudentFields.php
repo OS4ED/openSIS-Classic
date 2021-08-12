@@ -29,6 +29,9 @@
 include('../../RedirectModulesInc.php');
 DrawBC(""._students." > " . ProgramTitle());
 $_openSIS['allow_edit'] = true;
+
+echo '<input id="customFieldModule" type="hidden" value="student">';
+
 $not_default = false;
 $err_msg = '';
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax'])) {
@@ -39,6 +42,14 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
 
             $sql = "UPDATE $table SET ";
+
+            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
+                $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
+            }
+
+            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
+                $columns['DEFAULT_SELECTION'] = '0.00';
+            }
 
             foreach ($columns as $column => $value) {
                 if ($column == 'TITLE' && $value != '') {
@@ -71,6 +82,16 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 if ($columns['CATEGORY_ID']) {
                     $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
                     unset($columns['CATEGORY_ID']);
+                }
+
+                if (isset($columns['TYPE']) && isset($columns['REQUIRED'])) {
+                    if ($columns['TYPE'] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
+                        $columns['DEFAULT_SELECTION'] = '0.00';
+                    }
+                }
+
+                if ($columns['TYPE'] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
+                    $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
                 }
 
                 $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'custom_fields'"));
@@ -133,7 +154,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     $Sql_add_column.=" DEFAULT  '" . $columns['DEFAULT_SELECTION'] . "' ";
                 }
                 DBQuery($Sql_add_column);
-//                                                                      
+                //                                                                      
                 unset($table);
             } elseif ($table == 'student_field_categories') {
                 if (trim($_REQUEST['tables']['new']['TITLE']) != '') {
@@ -166,7 +187,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
             foreach ($columns as $column => $value) {
                 if (trim($value)) {
-//                                   
+                    //                                   
                     $fields .= $column . ',';
                     if ($column == 'TITLE' && $value != '') {
                         $value = str_replace("'", "''", clean_param(trim($value), PARAM_SPCL));
@@ -229,7 +250,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                 case 'textarea':
                     $Sql_modify_column = "ALTER TABLE students MODIFY CUSTOM_$id LONGTEXT";
-                    $not_default = true;
+                    // $not_default = true;
                     break;
             }
             if ($custom_update['REQUIRED']) {
@@ -239,9 +260,14 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
             }
             if ($custom_update['DEFAULT_SELECTION'] && $not_default == false) {
                 $Sql_modify_column.=" DEFAULT  '" . $custom_update['DEFAULT_SELECTION'] . "' ";
+
+                $existing_column_updt = 'UPDATE `students` SET CUSTOM_'.$id.' = \''.$custom_update['DEFAULT_SELECTION'].'\' WHERE (CUSTOM_'.$id.' IS NULL OR CUSTOM_'.$id.' = "")';
             }
 
             DBQuery($Sql_modify_column);
+
+            if($existing_column_updt)
+                DBQuery($existing_column_updt);
         }
     }
     unset($_REQUEST['tables']);
@@ -314,7 +340,7 @@ if (!$_REQUEST['modfunc']) {
     $categories_RET = DBGet($QI);
 
     if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 7))
-        $delete_button = "<INPUT type=button value="._delete." class=\"btn btn-danger\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
+        $delete_button = "<INPUT type=button value="._delete." class=\"btn btn-danger m-r-10\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
 
     // ADDING & EDITING FORM
     if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
@@ -366,36 +392,42 @@ if (!$_REQUEST['modfunc']) {
         // You can't change a student field type after it has been created
         // mab - allow changing between select and autos and edits and text
         if ($_REQUEST['id'] != 'new') {
-            $type_options = array('select' => _pullDown,
-             'autos' => _autoPullDown,
-             'edits' => _editPullDown,
-             'text' => _text,
-             'radio' => _checkbox,
-             'codeds' => _codedPullDown,
-             'numeric' => _number,
-             'multiple' => _selectMultipleFromOptions,
-             'date' => _date,
-             'textarea' => _longText,
+            $type_options = array(
+                'select' => _pullDown,
+                'autos' => _autoPullDown,
+                'edits' => _editPullDown,
+                'text' => _text,
+                'radio' => _checkbox,
+                'codeds' => _codedPullDown,
+                'numeric' => _number,
+                'multiple' => _selectMultipleFromOptions,
+                'date' => _date,
+                'textarea' => _longText,
             );
         } else {
-            $type_options = array('select' => _pullDown,
-             'autos' => _autoPullDown,
-             'edits' => _editPullDown,
-             'text' => _text,
-             'radio' => _checkbox,
-             'codeds' => _codedPullDown,
-             'numeric' => _number,
-             'multiple' => _selectMultipleFromOptions,
-             'date' => _date,
-             'textarea' => _longText,
+            $type_options = array(
+                'select' => _pullDown,
+                'autos' => _autoPullDown,
+                'edits' => _editPullDown,
+                'text' => _text,
+                'radio' => _checkbox,
+                'codeds' => _codedPullDown,
+                'numeric' => _number,
+                'multiple' => _selectMultipleFromOptions,
+                'date' => _date,
+                'textarea' => _longText,
             );
         }
 
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
-        if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text') {
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'<br>(' . ($_REQUEST['id'] != 'new' ? _thisValueCantBeChanged : _enterThisValueCarefullyAsThisCantBeChangedLater) . ')</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();" '. ($_REQUEST['id'] != 'new' ? 'disabled' : '')) . '</div></div>';
+
+        $header .= '<input id="DEFAULT_DATATYPE_'.$_REQUEST['id'].'" name="DEFAULT_DATATYPE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['TYPE'].'">';
+
+        if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text' && $RET['TYPE'] != 'date' && $RET['TYPE'] != 'radio' && $RET['TYPE'] != 'numeric' && $RET['TYPE'] != 'textarea') {
             $_openSIS['allow_edit'] = $allow_edit;
             $_openSIS['AllowEdit'][$modname] = $AllowEdit;
         }
+        
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row   
 
@@ -414,22 +446,85 @@ if (!$_REQUEST['modfunc']) {
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row
 
+        $defaultMessage = '';
+        $exampleText = '';
+        if ($RET['TYPE'] == 'multiple') {
+            $RET['DEFAULT_SELECTION'] = str_replace('"', '&rdquo;', str_replace('||', ', ', substr($RET['DEFAULT_SELECTION'], 2, -2)));
+        }
+        if ($_REQUEST['id'] != 'new') {
+            if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'multiple') {
+                $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+            } else if ($RET['TYPE'] == 'codeds') {
+                $exampleText = _example.':<br/>0|Good<br/>1|Bad<br/>etc.';
+            } 
+            // else if ($RET['TYPE'] == 'multiple') {
+            //     $exampleText = _example.':<br/>||Good||<br/>||Bad||<br/>etc.';
+            // }
+
+            if (trim($RET['SELECT_OPTIONS']) != '') {
+                if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'multiple') {
+                    $selectOptionsArr = explode(PHP_EOL, $RET['SELECT_OPTIONS']);
+                } else if ($RET['TYPE'] == 'codeds') {
+                    $selectOptionsArrP1 = explode(PHP_EOL, $RET['SELECT_OPTIONS']);
+                    $selectOptionsArrP2 = array();
+                    
+                    foreach ($selectOptionsArrP1 as $sOA1) {
+                        $sOA1_v = explode('|', $sOA1)[0];
+                        array_push($selectOptionsArrP2, $sOA1_v);
+                    }
+
+                    $selectOptionsArr = $selectOptionsArrP2;
+                }
+
+                $filteredSelectOptArr = array();
+
+                foreach ($selectOptionsArr as $sOA2) {
+                    array_push($filteredSelectOptArr, trim($sOA2));
+                }
+
+                if ($RET['DEFAULT_SELECTION'] != NULL && $RET['DEFAULT_SELECTION'] != '') {
+                    if (!in_array(trim($RET['DEFAULT_SELECTION']), $filteredSelectOptArr)) {
+                        $defaultMessage = '<span class="text-warning"><b>'._warning.'!</b> '._defaultValueDoesNotMatchWithTheValuesOfPullDown.'!</span>';
+                    }
+                }
+            }
+        } else {
+            $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+        }
+
         $colspan = 2;
 
         $header .= '<div class="row">';
 
         if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
             $header .= '<div class="col-lg-6" id="show_textarea" style="display:block">';
-            $header .= '<label class="control-label col-md-4 text-right">'._pullDown.'/'._autoPullDown.'/'._codedPullDown.'/'._selectMultipleChoices.'</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40').'<p class="help-block">* '._onePerLine.'</p></div>';
+            $header .= '<label class="control-label col-md-4 text-right">'._pullDown.'/'._autoPullDown.'/'._codedPullDown.'/'._selectMultipleChoices.'</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40 onkeyup=checkValidDefaultValue()').'<p class="help-block">* '. ucfirst(_onePerLine) .'</p><p id="exmp" class="help-block">' . $exampleText . '</p></div>';
             $colspan = 1;
             $header .= '</div>';
+
+            $header .= '<div style="display:none;"><textarea id="SELECT_OPTIONS_VALUE_'.$_REQUEST['id'].'">'.$RET['SELECT_OPTIONS'].'</textarea></div>';
         }
+
+        if ($RET['TYPE'] == 'numeric')
+            $defaultValueFunc = 'onkeydown=\"return numberOnly(event);\"';
+        else
+            $defaultValueFunc = 'onkeyup=checkValidDefaultValue()';
+
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '') . '<p class="help-block">* '._forDatesYyyyMmDdForCheckboxesYForLongTextItWillBeIgnored.'</p></div></div>';
+
+        if (($RET['DEFAULT_SELECTION'] == NULL || $RET['DEFAULT_SELECTION'] == '') && $RET['TYPE'] != 'date') {
+            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._enterThisValueCarefullyAsThisCantBeChangedLater.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc) . '<p class="help-block">* '._forDatesYyyyMmDdForCheckboxesYForLongTextItWillBeIgnored.'</p><p id="helpBlock" class="help-block"></p></div>';
+        } else {
+            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._thisValueCantBeChanged.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc.' disabled') . '<p id="helpBlock" class="help-block">'.$defaultMessage.'</p></div>';
+        }
+
+        $header .= '<input id="DEFAULT_VALUE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['DEFAULT_SELECTION'].'">';
+
+        $header .= '</div>';
         $new = ($_REQUEST['id'] == 'new');
         $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">&nbsp;</label><div class="col-lg-8">';
-        $header .= CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', _required, '', $new);
-        $header .= CheckboxInputSwitch($RET['HIDE'], 'tables[' . $_REQUEST['id'] . '][HIDE]', _hide, '', $new);
+        $header .= CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', _required, '', $new, 'Yes', 'No', '', 'switch-success');
+        $header .= CheckboxInputSwitch($RET['HIDE'], 'tables[' . $_REQUEST['id'] . '][HIDE]', _hide, '', $new, 'Yes', 'No', '', 'switch-success');
         $header .= '</div></div>';
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row
@@ -528,7 +623,7 @@ if (!$_REQUEST['modfunc']) {
     foreach ($categories_RET as $key => $value) {
         switch ($value['TITLE']) {
             case 'General Info':
-                $categories_RET[$key]['TITLE'] = _generalInfo;
+                $categories_RET[$key]['TITLE'] = ucwords(strtolower(_generalInfo));
                 break;
             case 'Addresses &amp; Contacts':
                 $categories_RET[$key]['TITLE'] = _addressesContacts;
@@ -540,10 +635,10 @@ if (!$_REQUEST['modfunc']) {
                 $categories_RET[$key]['TITLE'] = _comments;
                 break;
             case 'Goals':
-                $categories_RET[$key]['TITLE'] = _goals;
+                $categories_RET[$key]['TITLE'] = ucwords(strtolower(_goals));
                 break;
             case 'Enrollment Info':
-                $categories_RET[$key]['TITLE'] = _enrollmentInfo;
+                $categories_RET[$key]['TITLE'] = ucwords(strtolower(_enrollmentInfo));
                 break;
             case 'Files':
                 $categories_RET[$key]['TITLE'] = _files;
@@ -587,7 +682,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-md-6">';
         echo '<div class="panel">';
-        $columns = array('TITLE' =>_studentField,
+        $columns = array('TITLE' => ucwords(strtolower(_studentField)),
          'SORT_ORDER' =>_order,
          'FEILD' =>_fieldType,
         );
@@ -598,15 +693,15 @@ if (!$_REQUEST['modfunc']) {
         switch ($_REQUEST[category_id]) {
             case 1:
                 $arr = array(
-                 _name,
-                 _estimatedGradDate,
-                 _gender,
-                 _ethnicity,
-                 _commonName,
-                 _birthdate,
-                 _primaryLanguage,
-                 _email,
-                 _phone,
+                    _name,
+                    _estimatedGradDate,
+                    _gender,
+                    _ethnicity,
+                    _commonName,
+                    _birthdate,
+                    _primaryLanguage,
+                    _email,
+                    _phone,
                 );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
@@ -615,22 +710,22 @@ if (!$_REQUEST['modfunc']) {
                 break;
             case 2:
                 $arr = array(
-                 _primaryCarePhysician,
-                 _physicianSPhone,
-                 _preferredMedicalFacility,
-                 _dateMedicalNotes,
-                 _medicalNotes,
-                 _typeImmunizations,
-                 _dateImmunizations,
-                 _commentsImmunizations,
-                 _alertDate,
-                 _medicalAlert,
-                 _dateNurseVisits,
-                 _timeIn,
-                 _timeOut,
-                 _reason,
-                 _result,
-                 _commentsNurseVisits,
+                    _primaryCarePhysician,
+                    _physicianSPhone,
+                    _preferredMedicalFacility,
+                    _dateMedicalNotes,
+                    _medicalNotes,
+                    _typeImmunizations,
+                    _dateImmunizations,
+                    _commentsImmunizations,
+                    _alertDate,
+                    _medicalAlert,
+                    _dateNurseVisits,
+                    _timeIn,
+                    _timeOut,
+                    _reason,
+                    _result,
+                    _commentsNurseVisits,
                 );
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]";
                 $link['add']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&category_id=$_REQUEST[category_id]&id=new\");'";
@@ -655,7 +750,7 @@ if (!$_REQUEST['modfunc']) {
                     _cellMobilePhone,
                     _email,
                     _custodyOfStudent,
-                    );
+                );
 
                 break;
             case 4:
@@ -732,16 +827,17 @@ if (!$_REQUEST['modfunc']) {
 }
 
 function _makeType($value, $name) {
-    $options = array('radio' => _checkbox,
-     'text' => _text,
-     'autos' => _autoPullDown,
-     'edits' => _editPullDown,
-     'select' => _pullDown,
-     'codeds' => _codedPullDown,
-     'date' => _date,
-     'numeric' => _number,
-     'textarea' => _longText,
-     'multiple' => _selectMultiple,
+    $options = array(
+        'radio' => _checkbox,
+        'text' => _text,
+        'autos' => _autoPullDown,
+        'edits' => _editPullDown,
+        'select' => _pullDown,
+        'codeds' => _codedPullDown,
+        'date' => _date,
+        'numeric' => _number,
+        'textarea' => _longText,
+        'multiple' => _selectMultiple,
     );
     return $options[$value];
 }

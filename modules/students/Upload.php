@@ -74,7 +74,7 @@ if (UserStudentID()) {
 </form>';
             PopTable('footer');
         } else if ($_FILES["file"]["error"] > 0 && $upload->wrongSize == 1) {
-            $msg = "<font color=red><b>"._fileTooLargeMaximumUploadFileSizeLimit_10Mb."</b></font>";
+            $msg = "<font color=red><b>"._FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb."</b></font>";
             echo '
 	' . $msg . '
 	<form enctype="multipart/form-data" action="Modules.php?modname=students/Upload.php&action=upload" method="POST">';

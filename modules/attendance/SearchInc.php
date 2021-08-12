@@ -64,9 +64,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             }
             PopTable('header', _findAStudent);
             if ($extra['pdf'] != true)
-                echo "<FORM class='form-horizontal' name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+                echo "<FORM class='form-horizontal m-b-0' name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
-                echo "<FORM class='form-horizontal' name=search id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
+                echo "<FORM class='form-horizontal m-b-0' name=search id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
 
             Search_absence_summary('general_info');
             if ($extra['search'])
@@ -75,7 +75,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             # ---   Advanced Search Start ---------------------------------------------------------- #
             echo '<div style="height:10px;"></div>';
             echo '<input type=hidden name=sql_save_session value=true />';
-            echo '<div id="addiv" class="pt-20">';
+            echo '<div class="pt-20">';
             echo '</div>';
 
             echo '<div id="searchdiv" class="pt-20 mt-20 well" style="display:none;">';
@@ -183,11 +183,13 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '</div>'; //.col-md-12
             echo '</div>'; //.row
             echo '<hr/>';
+            echo '<div class="text-right">';
+            echo '<a id="attendanceAdvancedSearchDivForStudents" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-15"><i class="icon-cog"></i> '._advancedSearch.'</a>';
             if ($extra['pdf'] != true)
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch();formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
+                echo "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch(this);formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
             else
-                echo "<INPUT type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch();'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
-            echo '<a href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-l-10"><i class="icon-cog"></i> '._advancedSearch.'</a>';
+                echo "<INPUT id=\"searchStuBtn\" type=SUBMIT class=\"btn btn-primary\" value='"._submit."' onclick='return formcheck_student_advnc_srch(this);'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'>";
+            echo '</div>';
             echo '</FORM>';
             // set focus to last name text box
             echo '<script type="text/javascript"><!--
@@ -223,6 +225,22 @@ else {
             $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\')' . $extra['FROM'];
         $extra['group'] = array('ADDRESS_ID');
     }
+
+    if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+        $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+        if($_REQUEST['LO_direction'] == '1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+        }
+        if($_REQUEST['LO_direction'] == '-1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+        }
+    }
+
+    # Set pagination params
+    keepRequestParams($_REQUEST);
+    keepExtraParams($extra);
+    
     $students_RET = GetStuList_Absence_Summary($extra);
     if ($_REQUEST['address_group']) {
         // if address_group specified but only one address returned then convert to ungrouped
@@ -290,11 +308,14 @@ else {
                 $extra['plural'] = 'students';
             }
 
-        echo '<div class="panel-body">';
+        # Set pagination params
+        setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputCustomDT', ProgramTitle());
+
+        echo '<div id="tabs_resp">';
         echo "<div id='students'>";
-        ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+        ListOutputCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
         echo "</div>"; //#students
-        echo "</div>"; //.panel-body
+        echo "</div>";
         echo "</div>"; //.panel
     } elseif (count($students_RET) == 1) {
         if (count($link['FULL_NAME']['variables'])) {

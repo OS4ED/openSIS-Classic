@@ -130,8 +130,12 @@ function _makeAutoSelectInput($column, $name, $request = 'students') {
         }
         $extra = '';
         return SelectInput($value[$column], $request . '[' . $column . ']', '', $options, 'N/A', $extra, $div);
-    } else
-        return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
+    } else {
+        if (trim($name) != '')
+            return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
+        else
+            return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', '', $size, $div);
+    }
 }
 
 function _makeCheckboxInput($column, $name, $request = 'students') {
@@ -158,6 +162,59 @@ function _makeTextareaInput($column, $name, $request = 'students') {
     return TextAreaInput($value[$column], $request . '[' . $column . ']', $name, '', $div);
 }
 
+// function _makeMultipleInput($column, $name, $request = 'students') {
+//     global $value, $field, $_openSIS;
+
+//     if ((AllowEdit() || $_openSIS['allow_edit']) && !$_REQUEST['_openSIS_PDF']) {
+//         $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
+//         $select_options = explode("\r", $field['SELECT_OPTIONS']);
+//         if (count($select_options)) {
+//             foreach ($select_options as $option)
+//                 $options[$option] = $option;
+//         }
+
+//         if ($value[$column] != '')
+//             $m_input.="<DIV id='div" . $request . "[" . $column . "]'><div readonly='readonly' class='form-control' onclick='javascript:addHTML(\"";
+//         //$m_input.='<TABLE border=0 cellpadding=3>';
+//         if (count($options) > 12) {
+//             //$m_input.='<TR><TD colspan=2>';
+//             $m_input.='<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
+//             /* if ($value[$column] != '')
+//               $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
+//               else
+//               $m_input.='<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
+
+//               $m_input.='</TD></TR>'; */
+//         }
+//         //$m_input.='<TR>';
+//         $i = 0;
+//         foreach ($options as $option) {
+//             //if ($i % 2 == 0)
+//             //$m_input.='</TR><TR>';
+//             if ($value[$column] != '') {
+
+//                 $m_input.='<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+//             } else {
+//                 $m_input.='<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+//             }
+//             $i++;
+//         }
+//         /* $m_input.='</TR><TR><TD colspan=2>';
+//           if ($value[$column] != '')
+//           $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
+//           else
+//           $m_input.='<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
+
+//           $m_input.='</TD></TR></TABLE>'; */
+//         if ($value[$column] != '')
+//             $m_input.="\",\"div" . $request . "[" . $column . "]" . "\",true);' >" . (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-') . "</div></DIV>";
+//     } else
+//         $m_input.=(($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
+
+//     $m_input.='<p class=help-block>' . $name . '</p>';
+//     return $m_input;
+// }
+
 function _makeMultipleInput($column, $name, $request = 'students') {
     global $value, $field, $_openSIS;
 
@@ -169,43 +226,22 @@ function _makeMultipleInput($column, $name, $request = 'students') {
                 $options[$option] = $option;
         }
 
-        if ($value[$column] != '')
-            $m_input.="<DIV id='div" . $request . "[" . $column . "]'><div readonly='readonly' class='form-control' onclick='javascript:addHTML(\"";
-        //$m_input.='<TABLE border=0 cellpadding=3>';
         if (count($options) > 12) {
-            //$m_input.='<TR><TD colspan=2>';
-            $m_input.='<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
-            /* if ($value[$column] != '')
-              $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: solid solid none solid;\"><TR><TD></TD></TR></TABLE>';
-              else
-              $m_input.='<TABLE width=100% height=7 style="border:1;border-style: solid solid none solid;"><TR><TD></TD></TR></TABLE>';
-
-              $m_input.='</TD></TR>'; */
+            $m_input .= '<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
         }
-        //$m_input.='<TR>';
+
         $i = 0;
         foreach ($options as $option) {
-            //if ($i % 2 == 0)
-            //$m_input.='</TR><TR>';
             if ($value[$column] != '') {
-
-                $m_input.='<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value=\"\"><label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value=\"' . str_replace('"', '&quot;', $option) . '\"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+                $m_input .= '<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value="">';
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             } else {
                 $m_input.='<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             }
             $i++;
         }
-        /* $m_input.='</TR><TR><TD colspan=2>';
-          if ($value[$column] != '')
-          $m_input.='<TABLE width=100% height=7 style=\"border:1;border-style: none solid solid solid;\"><TR><TD></TD></TR></TABLE>';
-          else
-          $m_input.='<TABLE width=100% height=7 style="border:1;border-style: none solid solid solid;"><TR><TD></TD></TR></TABLE>';
-
-          $m_input.='</TD></TR></TABLE>'; */
-        if ($value[$column] != '')
-            $m_input.="\",\"div" . $request . "[" . $column . "]" . "\",true);' >" . (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-') . "</div></DIV>";
     } else
-        $m_input.=(($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
+        $m_input .= (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
 
     $m_input.='<p class=help-block>' . $name . '</p>';
     return $m_input;

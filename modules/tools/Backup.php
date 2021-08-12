@@ -46,7 +46,8 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
     $print_form = 0;
     $date_time = date("m-d-Y");
     $Export_FileName = $name . 'Backup' . $date_time . '.sql';
-    $dbconn = new mysqli($host, $user, $pass, $name, $port);
+    // $dbconn = new mysqli($host, $user, $pass, $name, $port);
+    $dbconn = $connection;
     if ($dbconn->connect_errno != 0)
         exit($dbconn->error);
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -114,7 +115,7 @@ if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
     <?php
 }
 
-function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name = false) {
+function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name = false,$connection) {
 
     // $backup_name=$name;
 //    $backup_name=$name."(".date("H:i:s d-m-Y").").sql";
@@ -123,7 +124,9 @@ function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name
     else
         $backup_name = 'opensis1' . $name . "_" . str_replace("-", '_', date("m-d-Y")) . ".sql";
     set_time_limit(3000);
-    $mysqli = new mysqli($host, $user, $pass, $name, $port);
+    // $mysqli = new mysqli($host, $user, $pass, $name, $port);
+    $mysqli = $connection;
+
     $mysqli->query("SET NAMES 'utf8'");
     $queryTables = $mysqli->query("SHOW TABLES");
     while ($row = $queryTables->fetch_row()) {
@@ -247,6 +250,74 @@ CREATE VIEW transcript_grades AS
 --
 -- Procedures
 --
+
+DROP FUNCTION IF EXISTS`isDateInMarkingPeriodWorkingDates`;
+DELIMITER $$
+CREATE FUNCTION `isDateInMarkingPeriodWorkingDates`(`marking_period` INT(10), `date` DATE) RETURNS TINYINT(1) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+    IF NOT EXISTS(
+        SELECT *
+        FROM `marking_periods`
+        WHERE `marking_period_id` = marking_period
+            AND (
+                date BETWEEN `start_date` AND `end_date`
+            )
+    ) THEN RETURN FALSE;
+    END IF;
+
+    IF NOT EXISTS(
+        SELECT *
+        FROM `marking_periods`
+        WHERE `parent_id` = marking_period
+    ) THEN RETURN TRUE;
+    END IF;
+
+    IF NOT EXISTS(
+        SELECT *
+        FROM `marking_periods`
+        WHERE `parent_id` = marking_period
+            AND (
+                date BETWEEN `start_date` AND `end_date`
+            )
+    ) THEN RETURN FALSE;
+    END IF;
+
+    IF NOT EXISTS(
+        SELECT *
+        FROM `marking_periods`
+        WHERE `grandparent_id` = marking_period
+            AND `parent_id` = (
+                SELECT `marking_period_id`
+                FROM `marking_periods`
+                WHERE `parent_id` = marking_period
+                    AND (
+                        date BETWEEN `start_date` AND `end_date`
+                    )
+            )
+    ) THEN RETURN TRUE;
+    END IF;
+
+    IF NOT EXISTS(
+        SELECT *
+        FROM `marking_periods`
+        WHERE `grandparent_id` = marking_period
+            AND `parent_id` = (
+                SELECT `marking_period_id`
+                FROM `marking_periods`
+                WHERE `parent_id` = marking_period
+                    AND (
+                        date BETWEEN `start_date` AND `end_date`
+                    )
+            )
+            AND (
+                date BETWEEN `start_date` AND `end_date`
+            )
+    ) THEN RETURN FALSE;
+    END IF;
+
+    RETURN TRUE;
+END$$
+DELIMITER ;
+
 CREATE PROCEDURE `ATTENDANCE_CALC`(IN cp_id INT)
 BEGIN
 DELETE FROM missing_attendance WHERE COURSE_PERIOD_ID=cp_id;
@@ -259,14 +330,14 @@ INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERI
         AND (cp.MARKING_PERIOD_ID IS NOT NULL AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_semesters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_quarters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE) OR (cp.MARKING_PERIOD_ID IS NULL AND acc.school_date BETWEEN cp.begin_date AND cp.end_date))
         AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.SCHOOL_DATE<CURDATE() AND cp.course_period_id=cp_id 
         AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.SCHOOL_DATE=acc.SCHOOL_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID 
-        AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id)) 
+        AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id))  AND isDateInMarkingPeriodWorkingDates(cp.marking_period_id, acc.SCHOOL_DATE) 
         GROUP BY acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID;
 END$$
 
 CREATE PROCEDURE `ATTENDANCE_CALC_BY_DATE`(IN sch_dt DATE,IN year INT,IN school INT)
 BEGIN
- DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID= _school;
- INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID  AND cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE='Y' LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cpv.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE )  LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=year AND acc.SCHOOL_ID=school AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE=sch_dt AND ac.STAFF_ID IS NULL GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID;
+ DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID=school;
+ INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID  AND cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE='Y' LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cpv.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE )  LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=year AND acc.SCHOOL_ID=school AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE=sch_dt AND ac.STAFF_ID IS NULL AND isDateInMarkingPeriodWorkingDates(cp.marking_period_id, acc.SCHOOL_DATE) GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID;
 END$$
 
 CREATE PROCEDURE `SEAT_COUNT`() 

@@ -94,15 +94,72 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
         if (strtotime($assign_date) >= strtotime(date('Y-m-d'))) {
             if (scheduleAssociation($id)) {
                 $reassigned = DBGet(DBQuery('SELECT COURSE_PERIOD_ID,TEACHER_ID,ASSIGN_DATE,PRE_TEACHER_ID,MODIFIED_DATE,MODIFIED_BY,UPDATED FROM teacher_reassignment WHERE course_period_id=\'' . $id . '\' AND assign_date=\'' . $assign_date . '\''));
+                $title_RET = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $id . '\'')); // Teacher Reassignment New change
+
                 if ($reassigned) {
                     DBQuery('UPDATE teacher_reassignment SET teacher_id=\'' . $staff_id . '\',pre_teacher_id=\'' . $pre_staff_id . '\',modified_date=\'' . $today . '\',modified_by=\'' . User('STAFF_ID') . '\',updated=\'N\' WHERE course_period_id=\'' . $id . '\' AND assign_date=\'' . $assign_date . '\'');
                     $_SESSION['undo'] = 'UPDATE teacher_reassignment SET teacher_id=\'' . $pre_staff_id . '\',pre_teacher_id=\'' . $reassigned[1]['PRE_TEACHER_ID'] . '\',modified_date=\'' . $reassigned[1]['MODIFIED_DATE'] . '\',modified_by=\'' . $reassigned[1]['MODIFIED_BY'] . '\',updated=\'' . $reassigned[1]['UPDATED'] . '\' WHERE course_period_id=\'' . $id . '\' AND assign_date=\'' . $assign_date . '\'';
                 } else {
                     DBQuery('INSERT INTO teacher_reassignment(course_period_id,teacher_id,assign_date,pre_teacher_id,modified_date,modified_by)VALUES(\'' . $id . '\',\'' . $staff_id . '\',\'' . $assign_date . '\',\'' . $pre_staff_id . '\',\'' . $today . '\',\'' . User('STAFF_ID') . '\')');
                     $_SESSION['undo'] = 'DELETE FROM teacher_reassignment WHERE course_period_id=\'' . $id . '\' AND teacher_id=\'' . $staff_id . '\' AND assign_date=\'' . $assign_date . '\'';
+                    ####################################Teacher Reassignment New change################################
+                    if(User('PROFILE') == 'admin' && strtotime($assign_date) <= strtotime(date('Y-m-d'))){
+                        $data_sql = "SELECT period_id,days FROM course_period_var WHERE course_period_id=$id";
+                        $data_RET = DBGet(DBQuery($data_sql));
+                        foreach ($data_RET as $count => $data) {
+                            if ($data['PERIOD_ID'] != '') {
+                                $period = '';
+                                $qry = "SELECT short_name FROM school_periods WHERE period_id=$data[PERIOD_ID]";
+                                $period = DBGet(DBQuery($qry));
+                                $period = $period[1];
+                                $p.=$period['SHORT_NAME'];
+                }
+                            if ($data['DAYS'] != '')
+                                $d.=$data['DAYS'];
+                        }
+                        $cp_data_sql = "SELECT mp,short_name,marking_period_id,teacher_id FROM course_periods WHERE course_period_id=$id";
+                        $cp_data_RET = DBGet(DBQuery($cp_data_sql));
+                        $cp_data_RET = $cp_data_RET[1];
+                        if($cp_data_RET['MARKING_PERIOD_ID'] != '') 
+                        {
+                            if ($cp_data_RET['MP'] == 'FY')
+                                $table = 'school_years';
+                            if ($cp_data_RET['MP'] == 'SEM')
+                                $table = 'school_semesters';
+                            if ($cp_data_RET['MP'] == 'QTR')
+                                $table = 'school_quarters';
+
+                            if($table != 'school_years') {
+                                $mp_sql = "SELECT short_name FROM ".$table." WHERE marking_period_id=".$cp_data_RET['MARKING_PERIOD_ID'];
+                                $mp = DBGet(DBQuery($mp_sql));
+                                $mp = $mp[1]['SHORT_NAME'];
+                            } else {
+                                $mp = '';
+                            }
+                        } else
+                            $mp = 'Custom';
+                        $teacher_sql = "SELECT first_name,last_name,middle_name FROM staff WHERE staff_id=$staff_id";
+                        $teacher_RET = DBGet(DBQuery($teacher_sql));
+                        $teacher_RET = $teacher_RET[1];
+                        $teacher.=$teacher_RET['FIRST_NAME'];
+                        if ($teacher_RET['MIDDLE_NAME'] != '')
+                            $teacher.=' ' . $teacher_RET['MIDDLE_NAME'];
+                        $teacher.=' ' . $teacher_RET['LAST_NAME'];
+
+                        if($mp != '')
+                            $title_full = $mp . ' - ' . $cp_data_RET['SHORT_NAME'] . ' - ' . $teacher;
+                        else
+                            $title_full = $cp_data_RET['SHORT_NAME'] . ' - ' . $teacher;
+                        // $title_full = $p . $mp . ' - ' . $d . ' - ' . $cp_data_RET['SHORT_NAME'] . ' - ' . $teacher;
+
+                        DBQuery('UPDATE course_periods SET TITLE=\'' . $title_full . '\', teacher_id=' . $staff_id . ' WHERE COURSE_PERIOD_ID=' . $id);
+                        DBQuery('UPDATE teacher_reassignment SET updated=\'Y\' WHERE assign_date <=CURDATE() AND updated=\'N\' AND COURSE_PERIOD_ID=' . $id);
+                        DBQuery('UPDATE missing_attendance SET TEACHER_ID=' . $staff_id . ' WHERE TEACHER_ID=' . $pre_staff_id . ' AND COURSE_PERIOD_ID=' . $id);
+                    }
                 }
                 $undo_possible = true;
-                $title_RET = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $id . '\''));
+                // $title_RET = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $id . '\''));
+                ####################################Teacher Reassignment New change end#########################################
                 $_SESSION['undo_title'] = $title_RET[1]['TITLE'];
             } else {
                 ShowErrPhp(''._thereIsNoAssociationsInHisCoursePeriodYouCanDeleteItFromSchoolSetUpCourseManager.'');

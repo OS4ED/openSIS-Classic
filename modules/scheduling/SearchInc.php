@@ -102,7 +102,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     }
 }
 else {
-    echo '<script>massScheduleCourseToAdd();</script>;';
+    echo '<script>massScheduleCourseToAdd();</script>';
     if (!$_REQUEST['next_modname'])
         $_REQUEST['next_modname'] = 'students/Student.php';
 
@@ -129,6 +129,22 @@ else {
 
     if ($_REQUEST['section'] != '')
         $extra['WHERE'] .= ' AND ssm.SECTION_ID=' . $_REQUEST['section'];
+
+    if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+        $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+        if($_REQUEST['LO_direction'] == '1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+        }
+        if($_REQUEST['LO_direction'] == '-1') {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+        }
+    }
+
+    # Set pagination params
+    keepRequestParams($_REQUEST);
+    keepExtraParams($extra);
+
     $students_RET = GetStuList($extra);
     if ($_REQUEST['address_group']) {
         // if address_group specified but only one address returned then convert to ungrouped
@@ -196,7 +212,7 @@ else {
             }
         
         echo "<div id='students' >";
-         echo '<div id="hidden_checkboxes" />';
+        echo '<div id="hidden_checkboxes"></div>';
         $check_all_arr=array();
         foreach($students_RET as $xy)
         {
@@ -207,8 +223,13 @@ else {
         echo '<br>';
         echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
 
-      
-        ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
+        # Set pagination params
+        setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputCustomDT', ProgramTitle());
+
+        echo "<div id='tabs_resp'>";
+        ListOutputCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
+        echo "</div>";
+
         echo "</div>";
         echo "</div>";
         echo "</div>";

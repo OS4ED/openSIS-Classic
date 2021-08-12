@@ -565,8 +565,8 @@ function ListOutputFloat($result,$column_names,$singular='',$plural='',$link=fal
 					}
 					echo "</TR>";
 				}
-				if($count==0)
-					$count = $br;
+				// if($count==0)
+				// 	$count = $br;
 
 				echo "<TR>";
 				$count++;

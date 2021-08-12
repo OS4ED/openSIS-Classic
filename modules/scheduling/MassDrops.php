@@ -69,7 +69,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
             if ($inactive_schedule_found == 1)
                 echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> ' . $inactive_schedule . ' '._hasLaterScheduleDate.'</div>';
             if ($inactive_schedule_found == 2)
-                echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> '._droppedDateCanNotBeChangedFor.' ' . $inactive_schedule2 . ''._droppedDateCanNotBeChangedFor.'</div>';
+                echo '<div class="alert alert-warning alert-bordered"><i class="fa fa-exclamation-triangle"></i> '._droppedDateCanNotBeChangedFor.' ' . $inactive_schedule2 . '</div>';
         }
         else {
             unset($_REQUEST['modfunc']);
@@ -123,9 +123,25 @@ if (!$_REQUEST['modfunc']) {
     } else {
         DrawBC(""._scheduling." > " . ProgramTitle());
         echo '<input type="hidden" name="marking_period_id" value=' . strip_tags(trim($_REQUEST['marking_period_id'])) . ' >';
+
+        if(isset($_REQUEST['LO_sort']) && $_REQUEST['LO_sort'] != '' && $_REQUEST['LO_sort'] != NULL && isset($_REQUEST['LO_direction'])) {
+            $extra['ORDER_BY'] = $_REQUEST['LO_sort'];
+
+            if($_REQUEST['LO_direction'] == '1') {
+                $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' ASC';
+            }
+            if($_REQUEST['LO_direction'] == '-1') {
+                $extra['ORDER_BY'] = $_REQUEST['LO_sort'].' DESC';
+            }
+        }
+
+        # Set pagination params
+        keepRequestParams($_REQUEST);
+        keepExtraParams($extra);
+
         $students_RET = GetStuList($extra);
 
-        $LO_columns = array('FULL_NAME' =>_student, 'STUDENT_ID' =>_studentID, 'ALT_ID' =>_alternateID, 'GRADE_ID' =>_grade, 'PHONE' =>_phone);
+        $LO_columns = array('FULL_NAME' =>_student, 'STUDENT_ID' =>_studentId, 'ALT_ID' =>_alternateId, 'GRADE_ID' =>_grade, 'PHONE' =>_phone);
 
 
         if (is_array($extra['columns_before'])) {
@@ -158,9 +174,12 @@ if (!$_REQUEST['modfunc']) {
                 $extra['singular'] = ''._student.'';
             $extra['plural'] = ''._students.'';
 
-            echo "<div id='students' class=\"table-responsive\">";
-            ListOutput($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
-            echo "</div>";
+            # Set pagination params
+            setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputCustomDT', ProgramTitle());
+
+            echo "<div id='tabs_resp'><div id='students' class=\"table-responsive\">";
+            ListOutputCustomDT($students_RET, $columns, $extra['singular'], $extra['plural'], $link, '', $extra['LO_group'], $extra['options']);
+            echo "</div></div>";
         }
 
         if (count($students_RET) > 0) {

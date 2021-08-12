@@ -137,21 +137,40 @@ a.badge,
     -o-transition: -webkit-transform ease-in-out 0.15s;
     transition: -webkit-transform ease-in-out 0.15s;
 }
-.navbar-right:dir(rtl) {
+html[dir="rtl"] .navbar-right {
     float: left !important;
 }
-.navbar-header:dir(rtl) {
+html[dir="rtl"] .navbar-header {
     float: right;
 }
-.navbar-nav > li:dir(rtl) {
+html[dir="rtl"] .navbar-nav > li {
     float: right;
 }
-.navbar-brand:dir(rtl) {
+html[dir="rtl"] .navbar-brand {
     float: right;
 }
-.navbar-text.pull-right:dir(rtl) {
+html[dir="rtl"] .navbar-text.pull-right {
     float: left !important;
 }
+
+@media (min-width: 1025px) {
+    /* COmmon RTL Styles */
+    html[dir="rtl"] .col-md-1,
+    html[dir="rtl"] .col-md-2,
+    html[dir="rtl"] .col-md-3,
+    html[dir="rtl"] .col-md-4,
+    html[dir="rtl"] .col-md-5,
+    html[dir="rtl"] .col-md-6,
+    html[dir="rtl"] .col-md-7,
+    html[dir="rtl"] .col-md-8,
+    html[dir="rtl"] .col-md-9,
+    html[dir="rtl"] .col-md-10,
+    html[dir="rtl"] .col-md-11,
+    html[dir="rtl"] .col-md-1 {
+        float: right;
+    }
+}
+
 /* ------------------------------------------------------------------------------
  *
  *  # Sidebar layouts
@@ -177,14 +196,13 @@ a.badge,
     .sidebar {
         display: block;
         float: left;
-        vertical-align: top;
         width: 280px;
         padding-right: 20px;
     }
-    .sidebar:dir(rtl) {
-        float: right;
-        padding-left: 20px;
-        padding-right: 0;
+    html[dir="rtl"] .sidebar {
+        float: right !important;
+        padding-left: 20px !important;
+        padding-right: 0 !important;
     }
 }
 .sidebar-main {
@@ -413,6 +431,11 @@ a.badge,
     -o-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out;
 }
+html[dir="rtl"] .navigation li a > i {
+    float: right;
+    margin-right: 0;
+    margin-left: 15px;
+}
 .navigation li a > i.pull-right {
     margin-right: 0;
     margin-left: 15px;
@@ -431,6 +454,12 @@ a.badge,
     padding-right: 36px;
     z-index: 2;
 }
+html[dir="rtl"] .navigation li > .has-ul {
+    position: relative;
+    padding-left: 36px;
+    padding-right: 20px;
+    z-index: 2;
+}
 .navigation li > .has-ul:after {
     content: "\e9c7";
     font-family: "icomoon";
@@ -447,6 +476,19 @@ a.badge,
     -ms-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
+    -webkit-transition: -webkit-transform 0.2s ease-in-out;
+    -o-transition: -webkit-transform 0.2s ease-in-out;
+    transition: -webkit-transform 0.2s ease-in-out;
+}
+html[dir="rtl"] .navigation li > .has-ul:after {
+    right: auto;
+    left: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
     -webkit-transition: -webkit-transform 0.2s ease-in-out;
     -o-transition: -webkit-transform 0.2s ease-in-out;
     transition: -webkit-transform 0.2s ease-in-out;
@@ -825,6 +867,11 @@ a.badge,
         -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
+    html[dir="rtl"] .sidebar-xs .sidebar-main .navigation > li > a > span {
+        right: auto;
+        left: -260px;
+        text-align: right;
+    }
     .sidebar-xs .sidebar-main .navigation > li > a > span .label,
     .sidebar-xs .sidebar-main .navigation > li > a > span .badge {
         background-color: transparent;
@@ -877,6 +924,10 @@ a.badge,
         -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         z-index: 2;
+    }
+    html[dir="rtl"] .sidebar-xs .sidebar-main .navigation > li > ul {
+        left: -260px;
+        right: auto;
     }
     .sidebar-xs .sidebar-main .navigation > li > ul > li > a {
         padding-left: 20px;
@@ -1183,7 +1234,7 @@ a.badge,
         width: calc(100% - 280px);
         float: right;    
     }
-    .content-wrapper:dir(rtl) {
+    html[dir="rtl"] .content-wrapper {
         float: left;    
     }
     .sidebar-xs .content-wrapper {
@@ -2799,6 +2850,10 @@ label.checkbox-switch.checkbox-inline {
     white-space: nowrap;
     text-align: right;
 }
+html[dir="rtl"] .select2-selection--single .select2-selection__rendered{
+    padding-left: 16px;
+    padding-right: 0;
+}
 .select2-selection--single .select2-selection__rendered > i {
     margin-right: 16px;
 }
@@ -2841,6 +2896,10 @@ label.checkbox-switch.checkbox-inline {
     color: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+html[dir="rtl"] .select2-selection--single .select2-selection__arrow:after {
+    left: 0;
+    right: auto;
 }
 .select2-container--open .select2-selection--single .select2-selection__arrow:after {
     content: '\e9c6';
@@ -17061,6 +17120,25 @@ thead .htCollapseButton:after {
 .dataTables_paginate .paginate_button:first-child {
     margin-left: 0;
 }
+.opensis-dataTable .dataTables_paginate .paginate_button:hover,
+.opensis-dataTable .dataTables_paginate .paginate_button:focus {
+    background-color: #f5f5f5;
+    color: #333333 !important;
+}
+.opensis-dataTable .dataTables_paginate .paginate_button:active{
+    background: #f5f5f5;
+    color: #333333 !important;
+    box-shadow: none;
+}
+.opensis-dataTable .dataTables_filter > label:after{
+    color: #2196F3;
+    right: 1px;
+    font-size: 13px;
+}
+.opensis-dataTable .dataTables_filter input:focus{
+    border-bottom-color: #2196F3;
+    box-shadow: 0 1px 0 #2196F3;
+}
 .dataTables_paginate .paginate_button:hover,
 .dataTables_paginate .paginate_button:focus {
     background-color: #f5f5f5;
@@ -17068,8 +17146,13 @@ thead .htCollapseButton:after {
 .dataTables_paginate .paginate_button.current,
 .dataTables_paginate .paginate_button.current:hover,
 .dataTables_paginate .paginate_button.current:focus {
-    color: #fff;
+    color: #ffffff;
     background-color: #5090C1;
+}
+.opensis-dataTable .dataTables_paginate .paginate_button.current:active{
+    color: #ffffff;
+    background: #5090C1;
+    box-shadow: none;
 }
 .dataTables_paginate .paginate_button.disabled,
 .dataTables_paginate .paginate_button.disabled:hover,
@@ -19269,6 +19352,10 @@ thead .htCollapseButton:after {
     right: 20px;
     height: 38px;
     margin-top: -19px;
+}
+html[dir="rtl"] .heading-elements {
+    left: 0;
+    right: auto;
 }
 @media (max-width: 768px) {
     .heading-elements {

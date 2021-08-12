@@ -36,119 +36,119 @@ if(UserSchool())
 	$custom_RET = DBGet(DBQuery("SELECT * FROM schools WHERE ID='".  UserSchool()."'"));
 	$value = $custom_RET[1];
 }
+
 $num_field_gen= true;
+
 if(count($fields_RET))
 {
-
-$i = 1;
-foreach($fields_RET as $field)
-{
-    if($field['HIDE']=='Y')
-        continue;
-
-	switch($field['TYPE'])
+	$i = 1;
+	foreach($fields_RET as $field)
 	{
-		case 'text':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-                        echo '<div class="col-md-8">';
-                        echo _makeTextInputSchl('CUSTOM_'.$field['ID'],'','');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+	    if($field['HIDE']=='Y')
+	        continue;
+
+		switch($field['TYPE'])
+		{
+			case 'text':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+	            echo '<div class="col-md-8">';
+	            echo _makeTextInputSchl('CUSTOM_'.$field['ID'],'','');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'autos':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'autos':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'edits':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'edits':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeAutoSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'numeric':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeTextInputSchl('CUSTOM_'.$field['ID'],'','size=5 maxlength=10 class=form-control');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'numeric':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeTextInputSchl('CUSTOM_'.$field['ID'],'','size=5 maxlength=10 '. ($value['CUSTOM_'.$field['ID']] != '' ? 'onkeydown=\"return numberOnly(event);\"' : 'onkeydown="return numberOnly(event);"'));
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'date':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeDateInput_modSchl('CUSTOM_'.$field['ID'],'',$field['ID']);
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'date':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeDateInput_modSchl('CUSTOM_'.$field['ID'],'',$field['ID']);
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'codeds':
-		case 'select':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'codeds':
+			case 'select':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeSelectInputSchl('CUSTOM_'.$field['ID'],'','values');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'multiple':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeMultipleInputSchl('CUSTOM_'.$field['ID'],'','values');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'multiple':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeMultipleInputSchl('CUSTOM_'.$field['ID'],'','values');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-		case 'radio':
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-			echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-			echo '<div class="col-md-8">';
-                        echo _makeCheckboxInputSchl('CUSTOM_'.$field['ID'],'');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
+			case 'radio':
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+				echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+				echo '<div class="col-md-8">';
+	            echo _makeCheckboxInputSchl('CUSTOM_'.$field['ID'],'');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
 			break;
 
-               case 'textarea':	
-			echo '<div class="col-md-6">';
-			echo '<div class="form-group">';
-                        echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].':'.($field['REQUIRED']=='Y'?'<span class="text-danger">*</span>':'') .'</label>';
-                        echo '<div class="col-md-8">';
-                        echo _makeTextareaInputSchl('CUSTOM_'.$field['ID'],'');
-			echo '</div>'; //.col-md-8
-			echo '</div>'; //.form-group
-			echo '</div>'; //.col-md-6
-                       break;
+	        case 'textarea':	
+				echo '<div class="col-md-6">';
+				echo '<div class="form-group">';
+	            echo '<label class="col-md-4 control-label text-right">'.$req.$field['TITLE'].''.($field['REQUIRED']=='Y'?'<span class="text-danger"> *</span>':'') .'</label>';
+	            echo '<div class="col-md-8">';
+	            echo _makeTextareaInputSchl('CUSTOM_'.$field['ID'],'');
+				echo '</div>'; //.col-md-8
+				echo '</div>'; //.form-group
+				echo '</div>'; //.col-md-6
+	        break;
+		}
 	}
-}
-
 }
 ?>

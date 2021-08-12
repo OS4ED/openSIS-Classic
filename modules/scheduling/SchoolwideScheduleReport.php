@@ -35,7 +35,7 @@ ini_set('max_execution_time', '500000');
 
 session_start();
 
-DrawBC(""._scheduling." > Reports > " . ProgramTitle());
+DrawBC(""._scheduling." > "._reports." > " . ProgramTitle());
 
 $this_mp = UserMP();
 
@@ -218,7 +218,7 @@ echo '<span class="heading-text">'.$show_subject_count.'</span>';
 
 if($subject_count != 0)
 {
-    echo ' &nbsp; <a href="#" class="btn btn-success btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Download Spreadsheet"><i class="icon-file-excel"></i></a> &nbsp; <a href="#" class="btn btn-danger btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Download PDF"><i class="icon-file-pdf"></i></a> &nbsp; <a href="#" class="btn btn-primary btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Print"><i class="fa fa-print f-s-16"></i></a>';
+    echo ' &nbsp; <a onclick="exportAsSpreadsheet(\'Schoolwide-Schedule-Report-'.$todays_date.'\')" href="javascript:void(0);" class="btn btn-success btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Download Spreadsheet"><i class="icon-file-excel"></i></a> &nbsp; <a onclick="exportAsPDF(\'Schoolwide-Schedule-Report-'.$todays_date.'\');" href="javascript:void(0);" class="btn btn-danger btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Download PDF"><i class="icon-file-pdf"></i></a> &nbsp; <a onclick="exportAsPrint(\'Schoolwide-Schedule-Report-'.$todays_date.'\')" href="javascript:void(0);" class="btn btn-primary btn-xs btn-icon text-white" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="Print"><i class="fa fa-print f-s-16"></i></a>';
 }
 
 echo '</h6></div>';
@@ -256,7 +256,7 @@ if(!empty($get_school_days) && $get_school_days != '')
 {
     if(!empty($get_periods) && $get_periods != '')
     {
-        echo '<div class="table-responsive">
+        echo '<div id="ssr-table" class="table-responsive">
                 <table class="table table-bordered" id="schedule-markup">
                     <thead>
                         <tr>
@@ -317,7 +317,7 @@ if(!empty($get_school_days) && $get_school_days != '')
                             }
                             else
                             {
-                                echo '<tr><td colspan="'.(1 + count($get_periods)).'" class="text-center text-danger">'._noCoursePeriodFound.'</td></tr>';
+                                echo '<tr><td style="text-align:center;" colspan="'.(1 + count($get_periods)).'" class="text-center text-danger">'._noCourseFound.'</td></tr>';
                             }
                         }
                     }

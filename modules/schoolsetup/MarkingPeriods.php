@@ -110,7 +110,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     {
                         $chk_tbl='school_semesters';
                         $nm="semester";
-                        $date_sql='SELECT MIN(START_DATE) AS START_DATE,MAX(END_DATE) AS END_DATE FROM '.$chk_tbl.' WHERE YEAR_ID = '.$_REQUEST['marking_period_id'].' AND SCHOOL_ID =\''.  UserSchool().'\' AND SYEAR = \''.  UserSyear().'\'';
+                        $date_sql='SELECT MIN(START_DATE) AS START_DATE,MAX(END_DATE) AS END_DATE FROM '.$chk_tbl.' WHERE YEAR_ID = \''.$_REQUEST['marking_period_id'].'\' AND SCHOOL_ID =\''.  UserSchool().'\' AND SYEAR = \''.  UserSyear().'\'';
                         $dates=  DBGet(DBQuery($date_sql));
                         $dates=$dates[1];
                         $value= date('Y-m-d',strtotime($columns['START_DATE']));

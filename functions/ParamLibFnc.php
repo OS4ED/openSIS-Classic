@@ -204,7 +204,7 @@ define('PARAM_ALPHAEXTS', 0x2200);
  * suitable for include() and require()
  * @TODO: should we rename this function to PARAM_SAFEDIRS??
  */
-define(PARAM_ALPHANUMS, 0x2300);
+define('PARAM_ALPHANUMS', 0x2300);
 /**
  * PARAM_ALPHAEXT the same contents as PARAM_ALPHA plus the chars in quotes: "@." allowed,
  * suitable for include() and require()
@@ -430,8 +430,8 @@ function clean_param($param, $type) {
             return par_rep('/[^a-zA-Z0-9_-]/i', '', $param);
            // return replace_croatain($param);
 
-         case PARAM_NAME:     // Remove everything not a-zA-Z/_-
-            return par_rep('/[^a-zA-Z0-9-#&._\']/i', '', $param);
+         // case PARAM_NAME:     // Remove everything not a-zA-Z/_-
+         //    return par_rep('/[^a-zA-Z0-9-#&._\']/i', '', $param);
 
         case PARAM_ALPHAEXT:     // Remove everything not a-zA-Z/_-
             return par_rep('/[^a-zA-Z\/_#-&]/i', '', $param);

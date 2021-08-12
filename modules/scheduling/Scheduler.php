@@ -1,20 +1,20 @@
 <?php
 
 #**************************************************************************
-#  openSIS is a free student information system for public and non-public 
+#  openSIS is a free student information system for public and non-public
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
 #
-#  openSIS is  web-based, open source, and comes packed with features that 
-#  include student demographic info, scheduling, grade book, attendance, 
-#  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.   
+#  openSIS is  web-based, open source, and comes packed with features that
+#  include student demographic info, scheduling, grade book, attendance,
+#  report cards, eligibility, transcripts, parent portal,
+#  student portal and more.
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
-#  If you have question regarding this system or the license, please send 
+#  If you have question regarding this system or the license, please send
 #  an email to info@os4ed.com.
 #
-#  This program is released under the terms of the GNU General Public License as  
-#  published by the Free Software Foundation, version 2 of the License. 
+#  This program is released under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, version 2 of the License.
 #  See license.txt.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -26,8 +26,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('../../RedirectModulesInc.php');
-include('lang/language.php');
+include '../../RedirectModulesInc.php';
+include 'lang/language.php';
 
 if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
     $name = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
@@ -41,19 +41,23 @@ if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) 
 if ($_REQUEST['modname'] == 'scheduling/Scheduler.php' && !$_REQUEST['run']) {
 
     $function = 'Prompt_Home_Schedule';
-    DrawBC(""._scheduling." > " . ProgramTitle());
-} else
+    DrawBC("" . _scheduling . " > " . ProgramTitle());
+} else {
     $function = '_returnTrue';
-if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '        
-    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=test_mode   value=Y onclick=showhidediv("div1",this);><span></span>'._scheduleUnscheduledRequests.'</label></div>
-    <div id=div1 class="text-center" style=display:none><label>'._selectDate.'</label><div class="form-inline m-b-20">' . PrepareDateSchedule($date, '_date', false, '') . '</div></div> 
-    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=delete_mode value=Y><span></span>'._deleteCurrentSchedules.'</label></div></div>')) {
+}
 
-    PopTable('header', ''._schedulerProgress.'');
+if ($function('' . _confirmSchedulerRun . '', '' . _confirmSchedulerRun . '', '
+    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=test_mode   value=Y onclick=showhidediv("div1",this);><span></span>' . _scheduleUnscheduledRequests . '</label></div>
+    <div id=div1 class="text-center" style=display:none><label>' . _selectDate . '</label><div class="form-inline m-b-20">' . PrepareDateSchedule($date, '_date', false, '') . '</div></div>
+    <div class="form-group"><div class="checkbox checkbox-switch switch-xs switch-success"><label><INPUT type=checkbox name=delete_mode value=Y><span></span>' . _deleteCurrentSchedules . '</label></div></div>')) {
+
+    PopTable('header', '' . _schedulerProgress . '');
     echo '<CENTER><TABLE cellpadding=0 cellspacing=0><TR><TD><TABLE cellspacing=0 border=0><TR>';
-    for ($i = 1; $i <= 100; $i++)
+    for ($i = 1; $i <= 100; $i++) {
         echo '<TD id=cell' . $i . ' width=3 ></TD>';
-    echo '</TR></TABLE></TD></TR></TABLE><BR><DIV id=percentDIV><IMG SRC=assets/spinning.gif> '._processingRequests.' ... </DIV></CENTER>';
+    }
+
+    echo '</TR></TABLE></TD></TR></TABLE><BR><DIV id=percentDIV><IMG SRC=assets/spinning.gif> ' . _processingRequests . ' ... </DIV></CENTER>';
     PopTable('footer');
     ob_flush();
     flush();
@@ -73,7 +77,7 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
         $not_delete = DBGet(DBQuery('SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,attendance_period AP WHERE (SC.STUDENT_ID=AP.STUDENT_ID AND SC.COURSE_PERIOD_ID=AP.COURSE_PERIOD_ID AND SC.SCHOOL_ID=\'' . UserSchool() . '\' AND SC.SYEAR=\'' . UserSyear() . '\') UNION SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,gradebook_grades SRCG WHERE (SC.STUDENT_ID=SRCG.STUDENT_ID AND SC.COURSE_PERIOD_ID=SRCG.COURSE_PERIOD_ID AND SC.SCHOOL_ID=\'' . UserSchool() . '\' AND SC.SYEAR=\'' . UserSyear() . '\')'));
         $notin = '';
         foreach ($not_delete as $value) {
-            $notin.=$value['NOT_DEL'] . ",";
+            $notin .= $value['NOT_DEL'] . ",";
         }
         if ($notin != '') {
             $notin = substr($notin, 0, -1);
@@ -87,11 +91,11 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
         // FIX THIS
     }
 
-
     if ($_REQUEST['test_mode'] == 'Y') {
 
         $schedule = array();
-        $s_date = $_REQUEST['year__date'] . '-' . MonthFormatter($_REQUEST['month__date']) . '-' . $_REQUEST['day__date'];
+        // $s_date = $_REQUEST['year__date'] . '-' . MonthFormatter($_REQUEST['month__date']) . '-' . $_REQUEST['day__date'];
+        $s_date = $_REQUEST['year__date'] . '-' . $_REQUEST['month__date'] . '-' . $_REQUEST['day__date'];
         $seats_availabe = array();
         foreach ($requests_RET as $rid => $rd) {
             $parent_mps = array();
@@ -116,33 +120,37 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
                 $total_p = DBGet(DBQuery('SELECT COUNT(1) as TOTAL_P FROM course_period_var WHERE COURSE_PERIOD_ID=' . $cd['COURSE_PERIOD_ID']));
                 $total_p = $total_p[1]['TOTAL_P'];
 
-
                 if ($rd[1]['WITH_PERIOD_ID'] != '' && $rd[1]['NOT_PERIOD_ID'] != '') {
                     $get_periods = DBGet(DBQuery('SELECT COUNT(1) as REC_EX FROM course_period_var WHERE PERIOD_ID=' . $rd[1]['WITH_PERIOD_ID'] . ' AND PERIOD_ID!=' . $rd[1]['NOT_PERIOD_ID'] . ' AND COURSE_PERIOD_ID=' . $cd['COURSE_PERIOD_ID']));
-                    if ($cd['GENDER_RESTRICTION'] == 'N' && $total_p == $get_periods[1]['REC_EX'])
+                    if ($cd['GENDER_RESTRICTION'] == 'N' && $total_p == $get_periods[1]['REC_EX']) {
                         $cps_main[] = $cd;
-                    elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $total_p == $get_periods[1]['REC_EX'])
+                    } elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $total_p == $get_periods[1]['REC_EX']) {
                         $cps_main[] = $cd;
-                }
-                elseif ($rd[1]['WITH_PERIOD_ID'] == '' && $rd[1]['NOT_PERIOD_ID'] != '') {
+                    }
+
+                } elseif ($rd[1]['WITH_PERIOD_ID'] == '' && $rd[1]['NOT_PERIOD_ID'] != '') {
                     $get_periods = DBGet(DBQuery('SELECT COUNT(1) as REC_EX FROM course_period_var WHERE  PERIOD_ID!=' . $rd[1]['NOT_PERIOD_ID'] . ' AND COURSE_PERIOD_ID=' . $cd['COURSE_PERIOD_ID']));
-                    if ($cd['GENDER_RESTRICTION'] == 'N' && $get_periods[1]['REC_EX'] == 0)
+                    if ($cd['GENDER_RESTRICTION'] == 'N' && $get_periods[1]['REC_EX'] == 0) {
                         $cps_main[] = $cd;
-                    elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $get_periods[1]['REC_EX'] == 0)
+                    } elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $get_periods[1]['REC_EX'] == 0) {
                         $cps_main[] = $cd;
-                }
-                elseif ($rd[1]['WITH_PERIOD_ID'] != '' && $rd[1]['NOT_PERIOD_ID'] == '') {
+                    }
+
+                } elseif ($rd[1]['WITH_PERIOD_ID'] != '' && $rd[1]['NOT_PERIOD_ID'] == '') {
                     $get_periods = DBGet(DBQuery('SELECT COUNT(1) as REC_EX FROM course_period_var WHERE  PERIOD_ID=' . $rd[1]['WITH_PERIOD_ID'] . ' AND COURSE_PERIOD_ID=' . $cd['COURSE_PERIOD_ID']));
-                    if ($cd['GENDER_RESTRICTION'] == 'N' && $get_periods[1]['REC_EX'] > 0)
+                    if ($cd['GENDER_RESTRICTION'] == 'N' && $get_periods[1]['REC_EX'] > 0) {
                         $cps_main[] = $cd;
-                    elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $get_periods[1]['REC_EX'] > 0)
+                    } elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1) && $get_periods[1]['REC_EX'] > 0) {
                         $cps_main[] = $cd;
-                }
-                else {
-                    if ($cd['GENDER_RESTRICTION'] == 'N')
+                    }
+
+                } else {
+                    if ($cd['GENDER_RESTRICTION'] == 'N') {
                         $cps_main[] = $cd;
-                    elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1))
+                    } elseif ($rd[1]['GENDER'] != '' && $cd['GENDER_RESTRICTION'] == substr($rd[1]['GENDER'], 0, 1)) {
                         $cps_main[] = $cd;
+                    }
+
                 }
             }
 
@@ -158,16 +166,26 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
                         foreach ($get_det as $gi => $gd) {
                             $get_new = DBGet(DBQuery('SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID=' . $cpd['COURSE_PERIOD_ID']));
                             foreach ($get_new as $gni => $gnd) {
-                                if ($gd['PERIOD_ID'] == $gnd['PERIOD_ID'] && strpos($gd['DAYS'], $gnd['DAYS']) != '')
+                                if ($gd['PERIOD_ID'] == $gnd['PERIOD_ID'] && strpos($gd['DAYS'], $gnd['DAYS']) != '') {
                                     $flag++;
-                                if (strtotime($gd['START_TIME']) == strtotime($gnd['START_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '')
+                                }
+
+                                if (strtotime($gd['START_TIME']) == strtotime($gnd['START_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '') {
                                     $flag++;
-                                if (strtotime($gd['END_TIME']) == strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '')
+                                }
+
+                                if (strtotime($gd['END_TIME']) == strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '') {
                                     $flag++;
-                                if (strtotime($gd['START_TIME']) >= strtotime($gnd['START_TIME']) && strtotime($gd['START_TIME']) <= strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '')
+                                }
+
+                                if (strtotime($gd['START_TIME']) >= strtotime($gnd['START_TIME']) && strtotime($gd['START_TIME']) <= strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '') {
                                     $flag++;
-                                if (strtotime($gd['END_TIME']) >= strtotime($gnd['START_TIME']) && strtotime($gd['END_TIME']) <= strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '')
+                                }
+
+                                if (strtotime($gd['END_TIME']) >= strtotime($gnd['START_TIME']) && strtotime($gd['END_TIME']) <= strtotime($gnd['END_TIME']) && strpos($gd['DAYS'], $gnd['DAYS']) != '') {
                                     $flag++;
+                                }
+
                             }
                         }
                     }
@@ -199,8 +217,12 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
                     for ($j = strtotime($s_date); $j < strtotime(date('Y-m-d')); $j = $j + 86400) {
                         $chk_date = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_calendar WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_DATE=\'' . date('Y-m-d', $j) . '\' AND CALENDAR_ID=' . $cp_id['CALENDAR_ID']));
                         if ($chk_date[1]['REC_EX'] != 0) {
-                            foreach ($check_d_att as $catt)
-                                DBQuery('INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID) VALUES (' . UserSchool() . ',' . UserSyear() . ',' . date('Y-m-d', $j) . ',' . $cp_id['COURSE_PERIOD_ID'] . ',' . $catt['PERIOD_ID'] . ',' . $cp_id['TEACHER_ID'] . ')');
+                            foreach ($check_d_att as $catt) {
+                                $cpsMarkingPeriod = DBGet(DBQuery("select marking_period_id from course_periods where course_period_id = $cp_id[COURSE_PERIOD_ID];"))[1]['MARKING_PERIOD_ID'];
+                                if (isDateInMarkingPeriodWorkingDates($cpsMarkingPeriod, $dates_all)) {
+                                    DBQuery('INSERT INTO missing_attendance (SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID) VALUES (' . UserSchool() . ',' . UserSyear() . ',' . date('Y-m-d', $j) . ',' . $cp_id['COURSE_PERIOD_ID'] . ',' . $catt['PERIOD_ID'] . ',' . $cp_id['TEACHER_ID'] . ')');
+                                }
+                            }
                         }
                     }
                 }
@@ -210,7 +232,7 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
         }
 
         echo '<script language="javascript">' . "\r";
-        echo 'addHTML("<IMG SRC=assets/spinning.gif> '._savingSchedules.' ... ","percentDIV",true);' . "\r";
+        echo 'addHTML("<IMG SRC=assets/spinning.gif> ' . _savingSchedules . ' ... ","percentDIV",true);' . "\r";
         echo '</script>';
         echo str_pad(' ', 4096);
         ob_flush();
@@ -219,7 +241,7 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
     }
     if ($_REQUEST['test_mode'] != 'Y' || $_REQUEST['delete_mode'] == 'Y') {
         echo '<script language="javascript">' . "\r";
-        echo 'addHTML("<IMG SRC=assets/spinning.gif> '._optimizing.' ... ","percentDIV",true);' . "\r";
+        echo 'addHTML("<IMG SRC=assets/spinning.gif> ' . _optimizing . ' ... ","percentDIV",true);' . "\r";
         echo '</script>';
         echo str_pad(' ', 4096);
         ob_flush();
@@ -228,31 +250,33 @@ if ($function(''._confirmSchedulerRun.'', ''._confirmSchedulerRun.'', '
 
     $check_request = DBGet(DBQuery("SELECT REQUEST_ID FROM schedule_requests WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "'"));
     $check_request = $check_request[1]['REQUEST_ID'];
-    if (count($check_request) > 0)
-        $warn = ''._followingStudentsCannotBeAccommodatedAsNoMoreSeatsAvailableOrPeriodsConflict.'';
+    if (count($check_request) > 0) {
+        $warn = '' . _followingStudentsCannotBeAccommodatedAsNoMoreSeatsAvailableOrPeriodsConflict . '';
+    }
 
     if ($_REQUEST['delete_mode'] == 'Y' || count($check_request) == 0) {
         echo '<script language="javascript">' . "\r";
-        echo 'addHTML("<IMG SRC=assets/check.gif> <B>'._done.'.</B>","percentDIV",true);' . "\r";
+        echo 'addHTML("<IMG SRC=assets/check.gif> <B>' . _done . '.</B>","percentDIV",true);' . "\r";
         echo '</script>';
         ob_end_flush();
     } elseif ($warn) {
         echo '<script language="javascript">' . "\r";
-        echo 'addHTML("<B><font color=red>'._warning.'</font><br>' . $warn . '</B>","percentDIV",true);' . "\r";
+        echo 'addHTML("<B><font color=red>' . _warning . '</font><br>' . $warn . '</B>","percentDIV",true);' . "\r";
         echo '</script>';
         ob_end_flush();
     } else {
         echo '<script language="javascript">' . "\r";
-        echo 'addHTML("<B><font color=red>'._error.'</font><br>'._error.'</B>","percentDIV",true);' . "\r";
+        echo 'addHTML("<B><font color=red>' . _error . '</font><br>' . _error . '</B>","percentDIV",true);' . "\r";
         echo '</script>';
         ob_end_flush();
     }
     $_REQUEST['modname'] = 'scheduling/UnfilledRequests.php';
     $_REQUEST['search_modfunc'] = 'list';
-    include('modules/scheduling/UnfilledRequests.php');
+    include 'modules/scheduling/UnfilledRequests.php';
 }
 
-function _scheduleRequest($request, $not_parent_id = false) {
+function _scheduleRequest($request, $not_parent_id = false)
+{
     global $requests_RET, $cp_parent_RET, $cp_course_RET, $mps_RET, $schedule, $filled, $unfilled;
     $possible = array();
     if (count($cp_course_RET[$request['COURSE_ID']])) {
@@ -305,60 +329,78 @@ function _scheduleRequest($request, $not_parent_id = false) {
         // CHOOSE THE BEST CP
         _scheduleBest($request, $possible);
         return true;
-    } else
-        return false; // if this point is reached, the request could not be scheduled
+    } else {
+        return false;
+    }
+    // if this point is reached, the request could not be scheduled
 }
 
-function _moveRequest($request, $not_request = false, $not_parent_id = false) {
+function _moveRequest($request, $not_request = false, $not_parent_id = false)
+{
     global $requests_RET, $cp_parent_RET, $cp_course_RET, $mps_RET, $schedule, $filled, $unfilled;
-    if (!$not_request && !is_array($not_request))
+    if (!$not_request && !is_array($not_request)) {
         $not_request = array();
+    }
+
     if (count($cp_course_RET[$request['COURSE_ID']])) {
         foreach ($cp_course_RET[$request['COURSE_ID']] as $course_period) {
             // CLEAR OUT A SLOT FOR EACH $slice
             foreach ($cp_parent_RET[$course_period['PARENT_ID']] as $slice) {
                 /* Don't bother to move courses around if request can't be scheduled here anyway. */
                 // SEAT COUNTS
-                if ($slice['AVAILABLE_SEATS'] <= 0)
+                if ($slice['AVAILABLE_SEATS'] <= 0) {
                     continue 2;
+                }
+
                 // SLICE VIOLATES GENDER RESTRICTION
-                if ($slice['GENDER_RESTRICTION'] != 'N' && $slice['GENDER_RESTRICTION'] != substr($request['GENDER'], 0, 1))
+                if ($slice['GENDER_RESTRICTION'] != 'N' && $slice['GENDER_RESTRICTION'] != substr($request['GENDER'], 0, 1)) {
                     continue 2;
+                }
+
                 // PARENT VIOLATES TEACHER / PERIOD REQUESTS
-                if ($slice['PARENT_ID'] == $slice['COURSE_PERIOD_ID'] && (($request['WITH_TEACHER_ID'] != '' && $slice['TEACHER_ID'] != $request['WITH_TEACHER_ID']) || ($request['WITH_PERIOD_ID'] && $slice['PERIOD_ID'] != $request['WITH_PERIOD_ID']) || ($request['NOT_TEACHER_ID'] && $slice['TEACHER_ID'] == $request['NOT_TEACHER_ID']) || ($request['NOT_PERIOD_ID'] && $slice['PERIOD_ID'] == $request['NOT_PERIOD_ID'])))
+                if ($slice['PARENT_ID'] == $slice['COURSE_PERIOD_ID'] && (($request['WITH_TEACHER_ID'] != '' && $slice['TEACHER_ID'] != $request['WITH_TEACHER_ID']) || ($request['WITH_PERIOD_ID'] && $slice['PERIOD_ID'] != $request['WITH_PERIOD_ID']) || ($request['NOT_TEACHER_ID'] && $slice['TEACHER_ID'] == $request['NOT_TEACHER_ID']) || ($request['NOT_PERIOD_ID'] && $slice['PERIOD_ID'] == $request['NOT_PERIOD_ID']))) {
                     continue 2;
+                }
+
                 if (count($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']])) {
                     foreach ($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']] as $existing_slice) {
-                        if (in_array($existing_slice['REQUEST_ID'], $not_request))
+                        if (in_array($existing_slice['REQUEST_ID'], $not_request)) {
                             continue 3;
+                        }
+
                         if (true) {
                             $not_request_temp = $not_request;
                             $not_request_temp[] = $existing_slice['REQUEST_ID'];
                             if (!$scheduled = _scheduleRequest($requests_RET[$existing_slice['REQUEST_ID']][1], $existing_slice['PARENT_ID'])) {
-                                if (!$moved = _moveRequest($requests_RET[$existing_slice['REQUEST_ID']][1], $not_request_temp, $existing_slice['PARENT_ID']))
+                                if (!$moved = _moveRequest($requests_RET[$existing_slice['REQUEST_ID']][1], $not_request_temp, $existing_slice['PARENT_ID'])) {
                                     continue 3;
+                                }
+
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     // WTF???
                 }
             }
-            if (_scheduleRequest($request, $not_parent_id))
+            if (_scheduleRequest($request, $not_parent_id)) {
                 return true;
+            }
+
         }
     }
     return false; // if this point is reached, the request could not be scheduled
 }
 
-function _isConflict($existing_slice, $slice) {
+function _isConflict($existing_slice, $slice)
+{
     global $requests_RET, $cp_parent_RET, $cp_course_RET, $mps_RET, $schedule, $filled, $unfilled, $fy_id;
 
     return false; // There is no conflict
 }
 
-function _scheduleBest($request, $possible) {
+function _scheduleBest($request, $possible)
+{
     global $cp_parent_RET, $schedule, $filled;
     $best = $possible[0];
     if (count($possible) > 1) {
@@ -374,27 +416,34 @@ function _scheduleBest($request, $possible) {
     }
 }
 
-function _returnTrue($arg1, $arg2 = '', $arg3 = '') {
+function _returnTrue($arg1, $arg2 = '', $arg3 = '')
+{
     return true;
 }
 
-function Prompt_Home_Schedule($title = 'Confirm', $question = '', $message = '', $pdf = '') {
+function Prompt_Home_Schedule($title = 'Confirm', $question = '', $message = '', $pdf = '')
+{
     $tmp_REQUEST = $_REQUEST;
     unset($tmp_REQUEST['delete_ok']);
-    if ($pdf == true)
+    if ($pdf == true) {
         $tmp_REQUEST['_openSIS_PDF'] = true;
+    }
+
     $PHP_tmp_SELF = PreparePHP_SELF($tmp_REQUEST);
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
-         PopTable('header', $title);
+        PopTable('header', $title);
 
-        echo "<CENTER><h4>$question</h4><FORM name=run_schedule action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST onSubmit='return confirmAction();'>$message<INPUT type=submit class=\"btn btn-primary\" value="._ok."> &nbsp; <INPUT type=button class=\"btn btn-default\" name=delete_cancel value="._cancel." onclick='window.location=\"Modules.php?modname=miscellaneous/Portal.php\"'></FORM></CENTER>";
+        echo "<CENTER><h4>$question</h4><FORM name=run_schedule action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST onSubmit='return confirmAction();'>$message<INPUT type=submit class=\"btn btn-primary\" value=" . _ok . "> &nbsp; <INPUT type=button class=\"btn btn-default\" name=delete_cancel value=" . _cancel . " onclick='window.location=\"Modules.php?modname=miscellaneous/Portal.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
-    } else
+    } else {
         return true;
+    }
+
 }
 
-function get_min($time) {
+function get_min($time)
+{
     $org_tm = $time;
     $stage = substr($org_tm, -2);
     $main_tm = substr($org_tm, 0, 5);
@@ -405,50 +454,54 @@ function get_min($time) {
     if ($hr == 12) {
         $hr = $hr;
     } else {
-        if ($stage == 'AM')
+        if ($stage == 'AM') {
             $hr = $hr;
-        if ($stage == 'PM')
+        }
+
+        if ($stage == 'PM') {
             $hr = $hr + 12;
+        }
+
     }
 
     $time_min = (($hr * 60) + $min);
     return $time_min;
 }
 
-function con_date($date) {
+function con_date($date)
+{
     $mother_date = $date;
     $year = substr($mother_date, 7, 4);
     $temp_month = substr($mother_date, 3, 3);
 
-    if ($temp_month == 'JAN')
+    if ($temp_month == 'JAN') {
         $month = '-01-';
-    elseif ($temp_month == 'FEB')
+    } elseif ($temp_month == 'FEB') {
         $month = '-02-';
-    elseif ($temp_month == 'MAR')
+    } elseif ($temp_month == 'MAR') {
         $month = '-03-';
-    elseif ($temp_month == 'APR')
+    } elseif ($temp_month == 'APR') {
         $month = '-04-';
-    elseif ($temp_month == 'MAY')
+    } elseif ($temp_month == 'MAY') {
         $month = '-05-';
-    elseif ($temp_month == 'JUN')
+    } elseif ($temp_month == 'JUN') {
         $month = '-06-';
-    elseif ($temp_month == 'JUL')
+    } elseif ($temp_month == 'JUL') {
         $month = '-07-';
-    elseif ($temp_month == 'AUG')
+    } elseif ($temp_month == 'AUG') {
         $month = '-08-';
-    elseif ($temp_month == 'SEP')
+    } elseif ($temp_month == 'SEP') {
         $month = '-09-';
-    elseif ($temp_month == 'OCT')
+    } elseif ($temp_month == 'OCT') {
         $month = '-10-';
-    elseif ($temp_month == 'NOV')
+    } elseif ($temp_month == 'NOV') {
         $month = '-11-';
-    elseif ($temp_month == 'DEC')
+    } elseif ($temp_month == 'DEC') {
         $month = '-12-';
+    }
 
     $day = substr($mother_date, 0, 2);
 
     $select_date = $year . $month . $day;
     return $select_date;
 }
-
-?>

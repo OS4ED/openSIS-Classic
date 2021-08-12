@@ -322,32 +322,52 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                         $go = true;
                         $custom = DBGet(DBQuery("SHOW COLUMNS FROM staff WHERE FIELD='" . $column_name . "'"));
                         $custom = $custom[1];
-                        if ($custom['NULL'] == 'NO' && trim($value) == '' && $custom['DEFAULT']) {
-                            $value = $custom['DEFAULT'];
-                        } elseif ($custom['NULL'] == 'NO' && (is_array($value) ? count($value) == 0 : trim($value) == '')) {
-                            $custom_id = str_replace("CUSTOM_", "", $column_name);
-                            $custom_TITLE = DBGet(DBQuery("SELECT TITLE FROM staff_fields WHERE ID=" . $custom_id));
-                            $custom_TITLE = $custom_TITLE[1]['TITLE'];
-                            if ($custom_TITLE != '')
-                                echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is required.</b></font><br/>';
-                            else
-                                echo "<font color=red><b>Unable to save data, because " . $custom_TITLE . ' is required.</b></font><br/>';
-                            //$error= true;
-                        }else {
 
+                        if (substr($column_name, 0, 6) == 'CUSTOM') {
                             $custom_id = str_replace("CUSTOM_", "", $column_name);
-                            $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE from staff_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
-                            if ($m_custom_RET) {
-                                $str = "";
+                            $custom_RET = DBGet(DBQuery("SELECT TITLE,TYPE,REQUIRED FROM staff_fields WHERE ID=" . $custom_id));
 
-                                foreach ($value as $m_custom_val) {
-                                    if ($m_custom_val)
-                                        $str.="||" . $m_custom_val;
+                            if ($custom_RET[1]['TYPE'] == 'multiple') {
+                                $valueSize = count($value);
+                                if($valueSize == 0) {
+                                    $valueSize = '';
                                 }
-                                if ($str)
-                                    $value = $str . "||";
+                            } else {
+                                $valueSize = trim($value);
+                            }
+
+                            if ($custom_RET[1]['TYPE'] == 'date') {
+                                if ($value != '') {
+                                    $dateValue = explode('-', $value);
+                                    $value = $dateValue[2].'-'.$dateValue[1].'-'.$dateValue[0];
+                                }
+                            }
+
+                            if ($custom['NULL'] == 'NO' && trim($valueSize) == '' && $custom['DEFAULT']) {
+                                $value = $custom['DEFAULT'];
+                            } elseif ($custom['NULL'] == 'NO' && (is_array($value) ? count($value) == 0 : trim($value) == '')) {
+                                $custom_TITLE = DBGet(DBQuery("SELECT TITLE FROM staff_fields WHERE ID=" . $custom_id));
+                                $custom_TITLE = $custom_TITLE[1]['TITLE'];
+                                if ($custom_TITLE != '')
+                                    echo "<div class='alert alert-danger'>Unable to save data, because " . $custom_TITLE . ' is required.</div>';
                                 else
-                                    $value = '';
+                                    echo "<div class='alert alert-danger'>Unable to save data, because " . $custom_TITLE . ' is required.</div>';
+                                //$error= true;
+                            }else {
+                                $custom_id = str_replace("CUSTOM_", "", $column_name);
+                                $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE from staff_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
+                                if ($m_custom_RET) {
+                                    $str = "";
+
+                                    foreach ($value as $m_custom_val) {
+                                        if ($m_custom_val)
+                                            $str.="||" . $m_custom_val;
+                                    }
+                                    if ($str)
+                                        $value = $str . "||";
+                                    else
+                                        $value = '';
+                                }
                             }
                         }
                     }
@@ -445,7 +465,9 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                         if ($upload->wrongFormat == 1) {
                             $_FILES["file"]["error"] = 1;
                         }
-
+                        if ($fileSize > 10000000) {
+                            echo "<font style='color:red'><b>"._FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb."</b></font><br>";
+                        } 
                         if ($_FILES["file"]["error"] > 0) {
                             echo "cannot upload file";
                         } else {

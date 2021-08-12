@@ -3294,7 +3294,7 @@ function loadFilterListCallback(check_return)
 {
     window.$("#stuf_loader").hide();
 
-    console.log(check_return);
+    //console.log(check_return);
     window.$("#view_resp").html(check_return);
 }
 
@@ -3303,4 +3303,30 @@ function loadFilterListErrors(exceptions)
     window.$("#stuf_loader").hide();
     
     console.log(exceptions);
+}
+
+function loadDataTablePagination(pageCount)
+{
+    window.$("#loading-image").show();
+
+    ajax_call("PrepareDataTable.php?loadpage="+pageCount, loadDataTablePaginationCallback, loadDataTablePaginationErrors);
+}
+
+function loadDataTablePaginationCallback(check_return)
+{
+    window.$("#loading-image").hide();
+
+    window.$("#tabs_resp").html(check_return);
+}
+
+function loadDataTablePaginationErrors(exceptions)
+{
+    window.$("#loading-image").hide();
+    
+    console.warn(exceptions);
+}
+
+function generateDataTableSpreadsheet()
+{
+    window.open("ExportDataTable.php", '_blank');
 }

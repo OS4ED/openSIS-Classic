@@ -58,7 +58,7 @@ if(page && page!="index.php"){
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>
-                        <h3>openSIS Installation - Database Creation</h3>
+                        <h3>openSIS Installation - Database Selection</h3>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
@@ -67,7 +67,7 @@ if(page && page!="index.php"){
                                     <li>Choose Package</li>
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
-                                    <li class="active">Database Creation</li>
+                                    <li class="active">Database Selection</li>
                                     <li>School Information</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
@@ -75,23 +75,26 @@ if(page && page!="index.php"){
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
                                 <p>Installer has successfully connected to MySQL.</p>
                                 <p>It is a good practice to name the database &quot;opensis&quot; so that it can be identified easily if you have many databases running in the same server.</p>
-                                <p>Remember the database creation takes some time, so please be patient and do not close the browser.</p>-->
+                                <p>Remember the Database Selection takes some time, so please be patient and do not close the browser.</p>-->
                             </div>
                             <div class="installation-steps">
-                                <h4 class="m-t-0 m-b-5">System needs to create a new database</h4>
-                                <p class=" m-b-25 text-muted">(This could take up to a minute or two to complete)</p>
-                                <div id="calculating" class="loading clearfix"><div><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Creating Database. Please wait...</div></div>
-                                <?php if ($_REQUEST['err']) { ?>
+                                <h4 class="m-t-0 m-b-5">System needs a new database</h4>
+                                <p class=" m-b-20 text-muted">(This could take up to a minute or two to complete)</p>
+                                <div id="error" class="m-b-5"></div>
+                                <div id="calculating" class="loading clearfix"><div><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Preparing Database. Please wait...</div></div>
+                                <?php if (isset($_REQUEST['err'])) { ?>
                                     <script type='text/javascript'>
                                         swal({
                                             title: 'Oops!',
                                             text: '<?php echo $_REQUEST['err']; ?>',
                                             type: 'error',
                                             confirmButtonText: 'Close'
-                                        });
+                                        }).then(function (){
+                                                history.back();
+                                            });
                                     </script>
                                 <?php } ?>
-                                <form name='step2' id='step2' method="post" action="Ins2.php">
+                                <form name='step2' id='step2' method='post' onsubmit='return db_validate()' action='Ins2.php'>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -102,15 +105,19 @@ if(page && page!="index.php"){
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="control-label">&nbsp;</label>
-                                                <div class="m-t-5">
+                                                <div class="m-t-0">
                                                     <label class="checkbox-inline"><input type="checkbox" name="purgedb" value="opensis" /> Remove data from existing database</label>
+                                                    <br>
+                                                    <label class="control-label m-0">OR</label>
+                                                    <br>
+                                                    <label class="checkbox-inline"><input type="checkbox" name="newdb" value="opensis" /> Create new database</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <hr/>
                                     <div class="text-right">
-                                        <input type="submit" value="Save & Next" class="btn btn-success" name="Add_DB" onClick="return db_validate();"  />
+                                        <input type="submit" value="Save & Next" class="btn btn-success" name="Add_DB" />
                                     </div>
                                 </form>
                             </div>
@@ -126,14 +133,9 @@ if(page && page!="index.php"){
 
             function db_validate()
             {
-                var db_name = document.getElementById('db');
-                if (db_name.value.trim() == '')
-                {
-                    document.getElementById("error").innerHTML = '<font style="color:red"><b>Database name cannot be blank</b></font>';
-                    db_name.focus();
-                    return false;
-                }
-                else {
+	        //sessionStorage.setItem("step_2_complete", false);
+                var db_name = document.getElementById('db').value;
+                if (db_name.trim() != ''){
                     document.getElementById('calculating').style.display = 'block';
                     document.getElementById('step_container').style.display = 'none';
                 }

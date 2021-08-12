@@ -117,11 +117,11 @@
                                     $dbconn->query('DELETE FROM custom_fields WHERE system_field=\'Y\' ') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 3</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                     $dbconn->query('TRUNCATE app') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 4</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                    ('version', '6.4'),
-                    ('date', 'July 26, 2017'),
-                    ('build', '20170726001'),
-                    ('update', '0'),
-                    ('last_updated', 'July 26, 2017');";
+                                        ('version', '6.4'),
+                                        ('date', 'July 26, 2017'),
+                                        ('build', '20170726001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'July 26, 2017');";
                                     $dbconn->query($app_insert) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . 'error at 96</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                     $get_schools = $dbconn->query('SELECT DISTINCT id FROM schools');
@@ -184,11 +184,11 @@
                                     }
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-('version', '6.4'),
-('date', 'July 26, 2017'),
-('build', '20170726001'),
-('update', '0'),
-('last_updated', 'July 26, 2017');";
+                                        ('version', '6.4'),
+                                        ('date', 'July 26, 2017'),
+                                        ('build', '20170726001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'July 26, 2017');";
                                     $dbconn->query($app_insert);
                                     header('Location: Step5.php');
                                     exit;
@@ -197,11 +197,11 @@
                                 else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.6'),
-                                        ('date', 'September 11, 2020'),
-                                        ('build', '20200811001'),
+                                        ('version', '8.0'),
+                                        ('date', 'August 09, 2021'),
+                                        ('build', '20210809008'),
                                         ('update', '0'),
-                                        ('last_updated', 'September 11, 2020');";
+                                        ('last_updated', 'August 09, 2021');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
@@ -214,7 +214,7 @@
                                       `profile_id` int(11) NOT NULL,
                                       `school_id` int(11) NOT NULL,
                                       `syear` int(11) NOT NULL,
-                                      `download_id` varchar(50) NOT NULL DEFAULT UUID(),
+                                      `download_id` varchar(50) NOT NULL,
                                       `name` varchar(255) NOT NULL,
                                       `size` int(11) NOT NULL,
                                       `type` varchar(255) NOT NULL,
@@ -314,6 +314,18 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Functions/Procedures/Triggers/Events - Start ###
+
+                                    $this_db = $_SESSION['db'];
+
+                                    $SQL_Procs = "OpensisProcsMysqlInc.sql";
+                                    $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
+                                    
+                                    executeSQL($SQL_Procs, $this_db);
+                                    executeSQL($SQL_Trigger, $this_db);
+
+                                    ### for Functions/Procedures/Triggers/Events - End ###
+
 
                                     ### for Keys - Start ###
 
@@ -326,6 +338,14 @@
                                     $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                     ### for Keys - End ###
 
@@ -340,11 +360,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.6'),
-                                        ('date', 'September 11, 2020'),
-                                        ('build', '20200811001'),
+                                        ('version', '8.0'),
+                                        ('date', 'August 09, 2021'),
+                                        ('build', '20210809008'),
                                         ('update', '0'),
-                                        ('last_updated', 'September 11, 2020');";
+                                        ('last_updated', 'August 09, 2021');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('CREATE TABLE `api_info` (
@@ -405,6 +425,18 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Functions/Procedures/Triggers/Events - Start ###
+
+                                    $this_db = $_SESSION['db'];
+
+                                    $SQL_Procs = "OpensisProcsMysqlInc.sql";
+                                    $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
+                                    
+                                    executeSQL($SQL_Procs, $this_db);
+                                    executeSQL($SQL_Trigger, $this_db);
+
+                                    ### for Functions/Procedures/Triggers/Events - End ###
+
                                     ### for Keys - Start ###
 
                                     $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
@@ -417,9 +449,17 @@
 
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
+                                    
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
+
                                     ### for Keys - End ###
 
-                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -431,11 +471,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                    ('version', '7.6'),
-                                    ('date', 'September 11, 2020'),
-                                    ('build', '20200811001'),
+                                    ('version', '8.0'),
+                                    ('date', 'August 09, 2021'),
+                                    ('build', '20210809008'),
                                     ('update', '0'),
-                                    ('last_updated', 'September 11, 2020');";
+                                    ('last_updated', 'August 09, 2021');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
@@ -488,6 +528,18 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Functions/Procedures/Triggers/Events - Start ###
+
+                                    $this_db = $_SESSION['db'];
+
+                                    $SQL_Procs = "OpensisProcsMysqlInc.sql";
+                                    $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
+                                    
+                                    executeSQL($SQL_Procs, $this_db);
+                                    executeSQL($SQL_Trigger, $this_db);
+
+                                    ### for Functions/Procedures/Triggers/Events - End ###
+
                                     ### for Keys - Start ###
 
                                     $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
@@ -500,9 +552,17 @@
 
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
+                                    
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
+
                                     ### for Keys - End ###
 
-                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -513,11 +573,11 @@
                                 {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.6'),
-                                        ('date', 'September 11, 2020'),
-                                        ('build', '20200811001'),
+                                        ('version', '8.0'),
+                                        ('date', 'August 09, 2021'),
+                                        ('build', '20210809008'),
                                         ('update', '0'),
-                                        ('last_updated', 'September 11, 2020');";
+                                        ('last_updated', 'August 09, 2021');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     ### for Language - Start ###
@@ -589,6 +649,18 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Functions/Procedures/Triggers/Events - Start ###
+
+                                    $this_db = $_SESSION['db'];
+
+                                    $SQL_Procs = "OpensisProcsMysqlInc.sql";
+                                    $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
+                                    
+                                    executeSQL($SQL_Procs, $this_db);
+                                    executeSQL($SQL_Trigger, $this_db);
+
+                                    ### for Functions/Procedures/Triggers/Events - End ###
+
                                     ### for Keys - Start ###
 
                                     $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
@@ -601,9 +673,17 @@
 
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
+                                    
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
+
                                     ### for Keys - End ###
 
-                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -614,11 +694,11 @@
                                 {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.6'),
-                                        ('date', 'September 11, 2020'),
-                                        ('build', '20200811001'),
+                                        ('version', '8.0'),
+                                        ('date', 'August 09, 2021'),
+                                        ('build', '20210809008'),
                                         ('update', '0'),
-                                        ('last_updated', 'September 11, 2020');";
+                                        ('last_updated', 'August 09, 2021');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     ### for Language - Start ###
@@ -690,6 +770,18 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Functions/Procedures/Triggers/Events - Start ###
+
+                                    $this_db = $_SESSION['db'];
+
+                                    $SQL_Procs = "OpensisProcsMysqlInc.sql";
+                                    $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
+                                    
+                                    executeSQL($SQL_Procs, $this_db);
+                                    executeSQL($SQL_Trigger, $this_db);
+
+                                    ### for Functions/Procedures/Triggers/Events - End ###
+
                                     ### for Keys - Start ###
 
                                     $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
@@ -702,9 +794,17 @@
 
                                     $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
+
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
+                                    
+                                    $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
+
                                     ### for Keys - End ###
 
-                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL DEFAULT UUID() AFTER `syear`');
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
