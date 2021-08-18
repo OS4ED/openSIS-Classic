@@ -690,7 +690,7 @@
                                     // $_SESSION['mod'] = 'upgrade';
                                     exit; 
                                 }
-                                else if ($v == '7.4' || $v == '7.5')
+                                else if ($v == '7.4' || $v == '7.5' || $v == '7.6')
                                 {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
