@@ -27,6 +27,13 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
+require_once('functions/purifier.php');
+
+$_REQUEST = purify($_REQUEST);
+$_POST = purify($_POST);
+$_GET = purify($_GET);
+
 include("Data.php");
 include("Warehouse.php");
 $keyword = $_REQUEST['str'];

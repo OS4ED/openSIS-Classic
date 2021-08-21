@@ -26,7 +26,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(0);
+error_reporting(1);
+require_once('functions/purifier.php');
+
+$_REQUEST = purify($_REQUEST);
+$_POST = purify($_POST);
+$_GET = purify($_GET);
 ini_set('session.cookie_httponly', 1);
 include_once("functions/DelDirectoryFnc.php");
 include_once("functions/ParamLibFnc.php");

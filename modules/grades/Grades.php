@@ -29,6 +29,10 @@
 include('../../RedirectModulesInc.php');
 DrawBC(""._gradebook." > " . ProgramTitle());
 
+// echo "<PRE>";
+// print_r($_REQUEST);
+// echo "<PRE>";
+
 include_once 'functions/MakeLetterGradeFnc.php';
 include_once 'functions/MakePercentGradeFnc.php';
 $max_allowed = Preferences('ANOMALOUS_MAX', 'Gradebook') / 100;
@@ -83,7 +87,10 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
 }
 
 echo '<div class="panel panel-default">';
-echo '<div class="panel-heading">';
+// echo '<div class="panel-heading">';
+
+// echo '</div>'; //.panel-heading
+
 
 ####################
 if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
@@ -302,7 +309,7 @@ if ($_REQUEST['student_id'])
 foreach ($assignments_RET as $id => $assignment)
     $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
 $assignment_select .= '</SELECT>';
-
+echo '<div class="panel-body">';
 echo "<FORM class='m-b-0' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST[student_id])) . "&cpv_id=" . CpvId() . " method=POST>";
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
@@ -317,8 +324,7 @@ else {
     }
 }
 
-echo '</div>'; //.panel-heading
-echo '<div class="panel-body">';
+
 
 if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
     $options = array('yscroll' =>true);
@@ -327,7 +333,7 @@ if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
 ListOutput($stu_RET, $LO_columns, $item, $items, $link, array(), $options);
 
 if (count($assignments_RET) != 0)
-    echo $_REQUEST['assignment_id'] ? '</div> <div class="panel-footer"><CENTER>' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER></div>' : '';
+    echo $_REQUEST['assignment_id'] ? '<CENTER>' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</CENTER>' : '';
 echo '</FORM>';
 
 echo '</div>'; //.panel-body

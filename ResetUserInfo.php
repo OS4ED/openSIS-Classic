@@ -26,6 +26,13 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
+require_once('functions/purifier.php');
+
+$_REQUEST = purify($_REQUEST);
+$_POST = purify($_POST);
+$_GET = purify($_GET);
+
 session_start();
 include("functions/ParamLibFnc.php");
 include("Data.php");
