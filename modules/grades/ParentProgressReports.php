@@ -372,5 +372,5 @@ function _makeWtg($value, $column)
 {
     global $THIS_RET, $student_points, $total_points, $percent_weights;
     $wtdper = ($THIS_RET['POINTS'] / $THIS_RET['TOTAL_POINTS']) * $THIS_RET['FINAL_GRADE_PERCENT'];
-    return (($THIS_RET['LETTERWTD_GRADE'] != -1.00 && $THIS_RET['LETTERWTD_GRADE'] != '' && $THIS_RET['ASSIGN_TYP_WG'] != 'N/A') ? _makeLetterGrade($wtdper, "", $THIS_RET['CP_TEACHER_ID'], '%') . '%' : 'N/A');
+    return (($THIS_RET['LETTERWTD_GRADE'] != -1.00 && $THIS_RET['LETTERWTD_GRADE'] != '' && $THIS_RET['ASSIGN_TYP_WG'] != 'N/A') ? _makeLetterGrade($wtdper, $THIS_RET['COURSE_PERIOD_ID'], $THIS_RET['CP_TEACHER_ID'], '%') . '%' : 'N/A');
 }

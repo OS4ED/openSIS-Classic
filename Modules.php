@@ -960,7 +960,7 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
         unset($_SESSION['student_id']);
     /*     * ********************************************* */
     if ($_REQUEST['_openSIS_PDF'] == 'true')
-        ob_start();
+        // ob_start();
     if (strpos($_REQUEST['modname'], '?') !== false) {
 
         $modname = substr(optional_param('modname', '', PARAM_NOTAGS), 0, strpos(optional_param('modname', '', PARAM_NOTAGS), '?'));

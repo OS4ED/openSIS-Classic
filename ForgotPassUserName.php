@@ -275,8 +275,8 @@ function db_show_error($sql,$failnote,$additional='')
         $used_for=$_GET['used_for'];
         if($used_for=='username')
         {
-            $username = $_GET['u'];
-            $usr_type = $_GET['user_type'];
+            $username = mysqli_real_escape_string($connection,trim($_GET['u']));
+            $usr_type = mysqli_real_escape_string($connection,trim($_GET['user_type']));
             $found= false;
             if($usr_type=='student')
             {
@@ -299,20 +299,20 @@ function db_show_error($sql,$failnote,$additional='')
         }
         else
         {
-            $email = $_GET['u'];
-            $usr_type = $_GET['user_type'];
+			$email = mysqli_real_escape_string($connection,trim($_GET['u']));
+            $usr_type = mysqli_real_escape_string($connection,trim($_GET['user_type']));
             $found= false;
             if($usr_type=='staff') 
             {
                 if($_GET['username']!='')
-                    $check_email=  DBGet(DBQuery('SELECT * FROM staff s,login_authentication la WHERE EMAIL = \''.$email.'\' AND s.STAFF_ID=la.USER_ID AND la.username=\''.$_GET['username'].'\''));
+                    $check_email=  DBGet(DBQuery('SELECT * FROM staff s,login_authentication la WHERE EMAIL = \''.$email.'\' AND s.STAFF_ID=la.USER_ID AND la.username=\''.mysqli_real_escape_string($connection,trim($_GET['username'])).'\''));
                 else
                     $check_email=  DBGet(DBQuery('SELECT * FROM staff WHERE EMAIL = \''.$email.'\''));
             }
             else
             {
                 if($_GET['username']!='')
-                    $check_email=  DBGet(DBQuery('SELECT * FROM people p,login_authentication la WHERE EMAIL = \''.$email.'\' AND p.STAFF_ID=la.USER_ID AND la.username=\''.$_GET['username'].'\''));
+                    $check_email=  DBGet(DBQuery('SELECT * FROM people p,login_authentication la WHERE EMAIL = \''.$email.'\' AND p.STAFF_ID=la.USER_ID AND la.username=\''.mysqli_real_escape_string($connection,trim($_GET['username'])).'\''));
                 else
                     $check_email=  DBGet(DBQuery('SELECT * FROM people WHERE EMAIL = \''.$email.'\''));
             }

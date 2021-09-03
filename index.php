@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 error_reporting(1);
-require_once('functions/purifier.php');
+require_once('functions/PurifierFnc.php');
 
 $_REQUEST = purify($_REQUEST);
 $_POST = purify($_POST);
@@ -82,7 +82,7 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
 if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
     db_start();
     
-    $username = mysqli_real_escape_string($connection,optional_param('USERNAME', '', PARAM_RAW));
+    $username = mysqli_real_escape_string($connection,trim(optional_param('USERNAME', '', PARAM_RAW)));
 
     $arr_cookie_options = array (
         'expires' => time() + 60*60*24*100,
@@ -504,7 +504,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     }
     else {
 
-        DBQuery("UPDATE login_authentication SET FAILED_LOGIN=FAILED_LOGIN+1 WHERE UPPER(USERNAME)=UPPER('" . optional_param('USERNAME', 0, PARAM_RAW) . "')");
+        $openSIS_uname=mysqli_real_escape_string($connection,trim(optional_param('USERNAME', 0, PARAM_RAW)));
+        DBQuery("UPDATE login_authentication SET FAILED_LOGIN=FAILED_LOGIN+1 WHERE UPPER(USERNAME)=UPPER('" . $openSIS_uname. "')");
 
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -515,19 +516,19 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
         $faillog_time = date("Y-m-d h:i:s");
 
-
-        DBQuery("INSERT INTO login_records (USER_NAME,FAILLOG_TIME,IP_ADDRESS,SYEAR,STATUS) values('" . optional_param('USERNAME', '', PARAM_ALPHAEXT) . "','$faillog_time','$ip','$_SESSION[UserSyear]','Failed')");
+        $openSIS2_uname=mysqli_real_escape_string($connection,trim(optional_param('USERNAME', 0, PARAM_ALPHAEXT)));
+        DBQuery("INSERT INTO login_records (USER_NAME,FAILLOG_TIME,IP_ADDRESS,SYEAR,STATUS) values('" . $openSIS2_uname . "','$faillog_time','$ip','$_SESSION[UserSyear]','Failed')");
 
 
         $max_id = DBGet(DBQuery("SELECT MAX(id) FROM login_records"));
         $m_id = $max_id[1]['MAX'];
         if ($faillog_time)
-            DBQuery("UPDATE login_records SET LOGIN_TIME=FAILLOG_TIME WHERE USER_NAME='" . optional_param('USERNAME', '', PARAM_ALPHAEXT) . "' AND ID='" . $m_id . "'");
+            DBQuery("UPDATE login_records SET LOGIN_TIME=FAILLOG_TIME WHERE USER_NAME='" . $openSIS2_uname . "' AND ID='" . $m_id . "'");
 
         $admin_failed_count = DBGet(DBQuery("SELECT FAIL_COUNT FROM system_preference_misc"));
         $ad_f_cnt = $admin_failed_count[1]['FAIL_COUNT'];
-
-        $res = DBGet(DBQuery("SELECT USER_ID,FAILED_LOGIN,up.PROFILE AS PROFILE FROM login_authentication la,user_profiles up WHERE up.ID=la.PROFILE_ID AND UPPER(USERNAME)=UPPER('" . optional_param('USERNAME', 0, PARAM_RAW) . "')"));
+        
+        $res = DBGet(DBQuery("SELECT USER_ID,FAILED_LOGIN,up.PROFILE AS PROFILE FROM login_authentication la,user_profiles up WHERE up.ID=la.PROFILE_ID AND UPPER(USERNAME)=UPPER('" . $openSIS_uname . "')"));
         $failed_login_staff = $res[1]['FAILED_LOGIN'];
         $failed_login_stu = $res[1]['FAILED_LOGIN'];
         if ($failed_login_stu != '' && $res[1]['PROFILE'] == 'student') {

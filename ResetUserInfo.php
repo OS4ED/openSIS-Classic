@@ -27,7 +27,7 @@
 #***************************************************************************************
 error_reporting(0);
 
-require_once('functions/purifier.php');
+require_once('functions/PurifierFnc.php');
 
 $_REQUEST = purify($_REQUEST);
 $_POST = purify($_POST);
