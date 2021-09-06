@@ -25,14 +25,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('RedirectRootInc.php'); 
-
-	include 'Warehouse.php';
-	include 'Data.php';
-// include('functions/SqlSecurityFnc.php');
+include('RedirectRootInc.php');
+include 'Warehouse.php';
+include 'Data.php';
 
 $email = sqlSecurityFilter($_REQUEST['email']);
 $id = sqlSecurityFilter($_REQUEST['id']);
+$_REQUEST['type'] = htmlentities($_REQUEST['type']);
 
         if(isset($_REQUEST['email']) && $_REQUEST['email']!='')
         {
