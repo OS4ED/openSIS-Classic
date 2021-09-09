@@ -26,14 +26,16 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('RedirectRootInc.php');
-include'ConfigInc.php';
+
+include 'RedirectRootInc.php';
+include 'ConfigInc.php';
 include 'Warehouse.php';
 
+$id = sqlSecurityFilter($_REQUEST['id']);
 
 if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
 
-    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
+    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='".$id."' ORDER BY c.TITLE";
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html = 'course_modal_request||';

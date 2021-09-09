@@ -25,10 +25,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include("functions/ParamLibFnc.php");
-include("data.php");
-include("functions/DbGetFnc.php");
-require_once("functions/PragRepFnc.php");
+
+include "functions/ParamLibFnc.php";
+include "data.php";
+include "functions/DbGetFnc.php";
+require_once "functions/PragRepFnc.php";
+
 function db_start()
 {	global $DatabaseServer,$DatabaseUsername,$DatabasePassword,$DatabaseName,$DatabasePort,$DatabaseType;
 
@@ -272,13 +274,15 @@ function db_show_error($sql,$failnote,$additional='')
 	die();
 }
 
-$res_pass_chk = DBGet(DBQuery("SELECT * FROM login_authentication WHERE PASSWORD = '".md5($_GET['password'])."' AND USERNAME!='".$_GET['usrid']."' AND PROFILE_ID!='".$_GET['prof_id']."'"));
-                        if($res_pass_chk[1]['USER_ID']!='')
-                        {
-                            echo '1';
-                            
-                        }
-                        else
-                        {
-                            echo '0';
-                        }
+$usrid = sqlSecurityFilter($_GET['usrid']);
+$prof_id = sqlSecurityFilter($_GET['prof_id']);
+
+$res_pass_chk = DBGet(DBQuery("SELECT * FROM login_authentication WHERE PASSWORD = '".md5($_GET['password'])."' AND USERNAME!='".$usrid."' AND PROFILE_ID!='".$prof_id."'"));
+if($res_pass_chk[1]['USER_ID']!='')
+{
+    echo '1';
+}
+else
+{
+    echo '0';
+}

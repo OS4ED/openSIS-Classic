@@ -25,14 +25,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('RedirectRootInc.php'); 
+
+include 'RedirectRootInc.php';
 include 'Warehouse.php';
 include 'Data.php';
 
-if(isset($_REQUEST['table_name']) && isset($_REQUEST['field_name']) && isset($_REQUEST['val']) && isset($_REQUEST['field_id']) && isset($_REQUEST['msg']))
+$table_name = sqlSecurityFilter($_REQUEST['table_name']);
+$field_name = sqlSecurityFilter($_REQUEST['field_name']);
+$val = sqlSecurityFilter($_REQUEST['val']);
+$id = sqlSecurityFilter($_REQUEST['id']);
+$msg = sqlSecurityFilter($_REQUEST['msg']);
+$field_id = sqlSecurityFilter($_REQUEST['field_id']);
+
+if(isset($table_name) && isset($field_name) && isset($val) && isset($field_id) && isset($msg))
 {
-  
-   $check_query=DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM '.$_REQUEST['table_name'].' WHERE UPPER('.$_REQUEST['field_name'].')=UPPER(\''.singleQuoteReplace('','',trim($_REQUEST['val'])).'\') AND ID <>\''.$_REQUEST['id'].'\' '));
-   echo $check_query[1]['REC_EXISTS'].'_'.$_REQUEST['field_id'].'_'.$_REQUEST['msg'];
+   $check_query=DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM '.$table_name.' WHERE UPPER('.$field_name.')=UPPER(\''.singleQuoteReplace('','',trim($val)).'\') AND ID <>\''.$id.'\' '));
+
+   echo $check_query[1]['REC_EXISTS'].'_'.$field_id.'_'.$msg;
 }
+
 ?>

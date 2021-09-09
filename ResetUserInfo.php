@@ -34,12 +34,12 @@ $_POST = purify($_POST);
 $_GET = purify($_GET);
 
 session_start();
-include("functions/ParamLibFnc.php");
-include("Data.php");
-include("functions/DbGetFnc.php");
-require_once("functions/PragRepFnc.php");
-include("AuthCryp.php");
-include('functions/SqlSecurityFnc.php');
+include "functions/ParamLibFnc.php";
+include "Data.php";
+include "functions/DbGetFnc.php";
+require_once "functions/PragRepFnc.php";
+include "AuthCryp.php";
+include 'functions/SqlSecurityFnc.php';
 
 function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
@@ -265,12 +265,13 @@ function db_show_error($sql, $failnote, $additional = '') {
     die();
 }
 
-$uname = sqlSecurityFilterChk($_REQUEST['uname']);
-$password_stn_id = sqlSecurityFilterChk($_REQUEST['password_stn_id']);
-$password_stf_email = sqlSecurityFilterChk($_REQUEST['password_stf_email']);
-$pass = sqlSecurityFilterChk($_REQUEST['pass']);
-$username_stn_id = sqlSecurityFilterChk($_REQUEST['username_stn_id']);
-$username_stf_email = sqlSecurityFilterChk($_REQUEST['username_stf_email']);
+$user_info = sqlSecurityFilter($_REQUEST['user_info']);
+$uname = sqlSecurityFilter($_REQUEST['uname']);
+$password_stn_id = sqlSecurityFilter($_REQUEST['password_stn_id']);
+$password_stf_email = sqlSecurityFilter($_REQUEST['password_stf_email']);
+$pass = sqlSecurityFilter($_REQUEST['pass']);
+$username_stn_id = sqlSecurityFilter($_REQUEST['username_stn_id']);
+$username_stf_email = sqlSecurityFilter($_REQUEST['username_stf_email']);
 
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 if ($_REQUEST['pass_type_form'] == 'password') {
@@ -298,6 +299,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'stu_pass';
+                $_SESSION['PageAccess'] = $flag;
             }
         }
     }
@@ -321,6 +323,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'stf_pass';
+                $_SESSION['PageAccess'] = $flag;
             }
         }
     }
@@ -343,6 +346,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             } else {
                 $flag = 'par_pass';
+                $_SESSION['PageAccess'] = $flag;
             }
         }
     }
@@ -425,7 +429,7 @@ if ($_REQUEST['user_type_form'] == 'username') {
     }
 }
 if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
-    $get_vals = explode(",", $_REQUEST['user_info']);
+    $get_vals = explode(",", $user_info);
     $flag = 'submited_value';
 
     $get_vals[0] = cryptor($get_vals[0], 'DEC', '');
@@ -437,9 +441,17 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
     } else {
         DBQuery('UPDATE login_authentication SET password=\'' . md5($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
         $_SESSION['conf_msg'] = '<font color="red" ><b>Password updated successfully.</b></font>';
+         unset($_SESSION['PageAccess']);
         echo'<script>window.location.href="index.php"</script>';
     }
 }
+
+//page access validation code start
+if ($_SESSION['PageAccess']!= 'stu_pass' && $_SESSION['PageAccess']!= 'stf_pass' && $_SESSION['PageAccess']!= 'par_pass')
+    {
+        echo'<script>window.location.href="ForgotPass.php"</script>';
+    }   
+//end
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -539,7 +551,7 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
                             }
                             if ($flag == 'submited_value') {
                                 ?>
-                                <input type="hidden" name="user_info" value="<?php echo $_REQUEST['user_info']; ?>"/>
+                                <input type="hidden" name="user_info" value="<?php echo $user_info; ?>"/>
                                 <?php
                             }
                             ?>

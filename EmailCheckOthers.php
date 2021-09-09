@@ -25,17 +25,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('RedirectRootInc.php');
+
+include 'RedirectRootInc.php';
 include 'Warehouse.php';
 include 'Data.php';
 
 $email = sqlSecurityFilter($_REQUEST['email']);
 $id = sqlSecurityFilter($_REQUEST['id']);
-$_REQUEST['type'] = htmlentities($_REQUEST['type']);
+$type = sqlSecurityFilter($_REQUEST['type']);
 
         if(isset($_REQUEST['email']) && $_REQUEST['email']!='')
         {
-            if($_REQUEST['type']=='3')
+            if($type=='3')
             {
                 if($_REQUEST['id']==0)
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
@@ -45,7 +46,7 @@ $_REQUEST['type'] = htmlentities($_REQUEST['type']);
         $result_pe=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM people WHERE EMAIL=\''.$email.'\''));
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM staff WHERE EMAIL=\''.$email.'\''));
             }
-            if($_REQUEST['type']=='2')
+            if($type=='2')
             {
                 if($_REQUEST['id']==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM staff WHERE EMAIL=\''.$email.'\''));
@@ -56,7 +57,7 @@ $_REQUEST['type'] = htmlentities($_REQUEST['type']);
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
             }
             
-            if($_REQUEST['type']=='4')
+            if($type=='4')
             {
                 if($_REQUEST['id']==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM people WHERE EMAIL=\''.$email.'\''));
@@ -69,11 +70,11 @@ $_REQUEST['type'] = htmlentities($_REQUEST['type']);
             
             if($result_stf[1]['EMAIL_EX']==0 && $result_pe[1]['EMAIL_EX']==0 && $result_stu[1]['EMAIL_EX']==0 )
             {
-                echo '0_'.$_REQUEST['type'];
+                echo '0_'.$type;
             }
             else
             {
-                echo '1_'.$_REQUEST['type'];
+                echo '1_'.$type;
             }
             exit;
         }
