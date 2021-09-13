@@ -29,14 +29,14 @@
 include('../../RedirectModulesInc.php');
 require_once('libraries/htmlpurifier/library/HTMLPurifier.auto.php');
 
-DrawBC(""._messaging." > " . ProgramTitle());
+DrawBC("" . _messaging . " > " . ProgramTitle());
 
-  //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
+//echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
-    echo'<div class="alert bg-success alert-styled-left">'._messageDeletedSucessfully.'</div>';
+    echo '<div class="alert bg-success alert-styled-left">' . _messageDeletedSucessfully . '</div>';
 }
 if ($_REQUEST['failed_user'] == 'Y')
-    echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentAsNoUsersWereFound.'.</div>';
+    echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSentAsNoUsersWereFound . '.</div>';
 if ($_REQUEST['button'] == 'Send') {
     if (User('PROFILE') == 'teacher' && $_REQUEST['cp_id'] != '') {
         if ($_REQUEST['list_gpa_student'] == 'Y') {
@@ -58,8 +58,7 @@ if ($_REQUEST['button'] == 'Send') {
                 $_REQUEST['txtToUser'] = $_REQUEST['txtToUser'] . ',' . implode(',', $sch_p_arr);
             elseif (count($sch_stu_arr) == 0 && count($sch_p_arr) > 0)
                 $_REQUEST['txtToUser'] = implode(',', $sch_p_arr);
-        }
-        else {
+        } else {
             echo "<script type='text/javascript'>load_link('Modules.php?modname=messaging/Inbox.php&failed_user=Y');</script>";
         }
     }
@@ -318,7 +317,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
                     } else {
                         $trash_user = $userName;
                     }
-                    $query = 'update msg_inbox set to_user="'.$update_to_user.'",istrash="'.$trash_user.'" where mail_id IN ("'.$mail_id.'")';
+                    $query = 'update msg_inbox set to_user="' . $update_to_user . '",istrash="' . $trash_user . '" where mail_id IN ("' . $mail_id . '")';
 
                     $fetch_ex = DBQuery($query);
                 }
@@ -362,15 +361,16 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
     } else {
         echo '<BR>';
         PopTable('header', _alertMessage);
-        echo "<h4 class=\"text-danger\">"._pleaseSelectAtleastOneMessageToDelete."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=messaging/Inbox.php\"'></FORM>";
+        echo "<h4 class=\"text-danger\">" . _pleaseSelectAtleastOneMessageToDelete . "</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=" . _ok . " onclick='window.location=\"Modules.php?modname=messaging/Inbox.php\"'></FORM>";
         PopTable('footer');
         return false;
     }
 }
 
-if (count($toArray) > 1)
-    CheckAuthenticMail($userName, $_REQUEST["txtToUser"], $_REQUEST["txtToCCUser"], $_REQUEST["txtToBCCUser"]);
-else {
+if (count($toArray) > 1) {
+    $txtToUser = sqlSecurityFilter($_REQUEST["txtToUser"]);
+    CheckAuthenticMail($userName, $txtToUser, $_REQUEST["txtToCCUser"], $_REQUEST["txtToBCCUser"]);
+} else {
     if (count($toArray) == 1) {
         if ($_SESSION['course_period_id'] != '') {
             if (User('PROFILE') == 'teacher') {
@@ -404,9 +404,8 @@ else {
                 if ($finalList != "")
                     CheckAuthenticMail($userName, $finalList, $_REQUEST["txtToCCUser"], $_REQUEST["txtToBCCUser"]);
             }
-        }
-        else {
-            $to = str_replace("'", "\'", trim($_REQUEST["txtToUser"]));
+        } else {
+            $to = sqlSecurityFilter(str_replace("'", "\'", trim($_REQUEST["txtToUser"])));
             $q = "SELECT mail_group.*, GROUP_CONCAT(gm.user_name) AS members FROM mail_group INNER JOIN mail_groupmembers gm ON(mail_group.group_id = gm.group_id) where mail_group.user_name='$userName' AND group_name ='$to' GROUP BY gm.group_id";
             $group_list = DBGet(DBQuery($q));
             if (count($group_list) != 0) {
@@ -419,7 +418,8 @@ else {
                 }
             } else {
                 if (trim($_REQUEST["txtToUser"]) != "") {
-                    CheckAuthenticMail($userName, $_REQUEST["txtToUser"], $_REQUEST["txtToCCUser"], $_REQUEST["txtToBCCUser"]);
+                    $txtToUser = sqlSecurityFilter($_REQUEST["txtToUser"]);
+                    CheckAuthenticMail($userName, $txtToUser, $_REQUEST["txtToCCUser"], $_REQUEST["txtToBCCUser"]);
                 }
             }
         }
@@ -442,7 +442,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         if (in_array($userName, $read_unread_Arr)) {
             $user_name = $mail_body_info[1]['MAIL_READ_UNREAD'];
         } else {
-            $mail_body_info[1]['MAIL_READ_UNREAD'].=',' . $userName;
+            $mail_body_info[1]['MAIL_READ_UNREAD'] .= ',' . $userName;
             $user_name = $mail_body_info[1]['MAIL_READ_UNREAD'];
         }
     }
@@ -451,18 +451,13 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
 
     foreach ($mail_body_info as $k => $v) {
         $fromUser = $v['FROM_USER'];
-        if($fromUser!='')
-        $login_authentication=DBGet(DBQuery('SELECT * FROM login_authentication WHERE username=\''.$fromUser.'\' '));
-        $profile=DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID='.$login_authentication[1]['PROFILE_ID']));
-        if($profile[1]['PROFILE']!='parent')
-        {
-            if($profile[1]['PROFILE']=='student')
-            {
-                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $login_authentication[1]['USER_ID']. ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
-                           
-            }
-             else
-            {
+        if ($fromUser != '')
+            $login_authentication = DBGet(DBQuery('SELECT * FROM login_authentication WHERE username=\'' . $fromUser . '\' '));
+        $profile = DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID=' . $login_authentication[1]['PROFILE_ID']));
+        if ($profile[1]['PROFILE'] != 'parent') {
+            if ($profile[1]['PROFILE'] == 'student') {
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $login_authentication[1]['USER_ID'] . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+            } else {
                 $staff = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . $login_authentication[1]['USER_ID']));
             }
         }
@@ -470,12 +465,12 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         echo '<hr class="no-margin-top"/>';
 
         echo '<div class="media">';
-        if($stu_img_info[1]['CONTENT']!='')
-        echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" alt="" /></div>';
-        elseif($staff[1]['IMG_NAME']!='')
-        echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($staff[1]['IMG_CONTENT']) . '" alt="" /></div>';
+        if ($stu_img_info[1]['CONTENT'] != '')
+            echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" alt="" /></div>';
+        elseif ($staff[1]['IMG_NAME'] != '')
+            echo '<div class="media-left"><img class="img-circle" src="data:image/jpeg;base64,' . base64_encode($staff[1]['IMG_CONTENT']) . '" alt="" /></div>';
         else
-        echo '<div class="media-left"><img class="img-circle" src="assets/images/placeholder.jpg" alt="" /></div>';
+            echo '<div class="media-left"><img class="img-circle" src="assets/images/placeholder.jpg" alt="" /></div>';
         echo '<div class="media-body">';
         echo '<div class="pull-right"><div class="input-group-btn">';
         echo '<a href="javascript:void(0);" class="btn btn-default btn-xs" disabled="disabled"><i class="icon-calendar3"></i> ' . $v['MAIL_DATETIME'] . '</a>';
@@ -503,62 +498,59 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         }
 
         echo '<div class="mt-20">' . str_replace('<a href=', '<a target="_blank" href=', $v['MAIL_BODY']) . '</div>';
-        if($v['MAIL_ATTACHMENT']!='')
-         {
-               echo "
-                  "._attachment.": ";
-//          $attach=explode(',',$v['MAIL_ATTACHMENT']);
-               $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.substr($v['MAIL_ATTACHMENT'],0,-1).')'));
-          foreach($attach as $user=>$img)
-          {
-//              $img_pos=strrpos($img,'/');
-//              $img_name[]=substr($img,$img_pos+1,strlen($img));
-//              $pos=strpos($img,'_');
-//              
-//              $img_src[]=substr($img,$pos+1,strlen($img));
-//              for($i=0;$i<(count($img_src));$i++)
-//              {
-//              $img1=$img_src[$i];
-//              $m=array_keys(str_word_count($img1, 2));
-//              $a=$m[0];
-//              $img3[$i]=substr($img1,$a,strlen($img1));
-//              }
-//              
-//          }
-//         for($i=0;$i<(count($attach));$i++)
-//         {
-                             echo "<a href='DownloadWindow.php?down_id=".$img['ID']."'>".$img['NAME']."</a>";
-             
-              echo '<br>&nbsp;&nbsp;&nbsp;<br>';
-             
-         }
-         echo "</td></tr>";
-         }
+        if ($v['MAIL_ATTACHMENT'] != '') {
+            echo "
+                  " . _attachment . ": ";
+            //          $attach=explode(',',$v['MAIL_ATTACHMENT']);
+            $attach = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN (' . substr($v['MAIL_ATTACHMENT'], 0, -1) . ')'));
+            foreach ($attach as $user => $img) {
+                //              $img_pos=strrpos($img,'/');
+                //              $img_name[]=substr($img,$img_pos+1,strlen($img));
+                //              $pos=strpos($img,'_');
+                //              
+                //              $img_src[]=substr($img,$pos+1,strlen($img));
+                //              for($i=0;$i<(count($img_src));$i++)
+                //              {
+                //              $img1=$img_src[$i];
+                //              $m=array_keys(str_word_count($img1, 2));
+                //              $a=$m[0];
+                //              $img3[$i]=substr($img1,$a,strlen($img1));
+                //              }
+                //              
+                //          }
+                //         for($i=0;$i<(count($attach));$i++)
+                //         {
+                echo "<a href='DownloadWindow.php?down_id=" . $img['ID'] . "'>" . $img['NAME'] . "</a>";
 
-//        if ($v['MAIL_ATTACHMENT'] != '') {
-//            echo '<hr/>';
-//            echo '<h6 class="text-bold"><i class="icon-attachment2"></i> Attachments</h6>';
-//            $attach = explode(',', $v['MAIL_ATTACHMENT']);
-//            foreach ($attach as $user => $img) {
-//                $img_pos = strrpos($img, '/');
-//                $img_name[] = substr($img, $img_pos + 1, strlen($img));
-//                $pos = strpos($img, '_');
-//
-//                $img_src[] = substr($img, $pos + 1, strlen($img));
-//                for ($i = 0; $i < (count($img_src)); $i++) {
-//                    $img1 = $img_src[$i];
-//                    $m = array_keys(str_word_count($img1, 2));
-//                    $a = $m[0];
-//                    $img3[$i] = substr($img1, $a, strlen($img1));
-//                }
-//            }
-//            for ($i = 0; $i < (count($attach)); $i++) {
-//
-//                $img_name[$i] = urlencode($img_name[$i]);
-//                $img4[$i] = urlencode($img3[$i]);
-//                echo (($i>0)?', ':'')."<a href='DownloadWindow.php?filename=$img_name[$i]&name=$img4[$i]' target='new' >" . $img3[$i] . "</a>";
-//            }
-//        }
+                echo '<br>&nbsp;&nbsp;&nbsp;<br>';
+            }
+            echo "</td></tr>";
+        }
+
+        //        if ($v['MAIL_ATTACHMENT'] != '') {
+        //            echo '<hr/>';
+        //            echo '<h6 class="text-bold"><i class="icon-attachment2"></i> Attachments</h6>';
+        //            $attach = explode(',', $v['MAIL_ATTACHMENT']);
+        //            foreach ($attach as $user => $img) {
+        //                $img_pos = strrpos($img, '/');
+        //                $img_name[] = substr($img, $img_pos + 1, strlen($img));
+        //                $pos = strpos($img, '_');
+        //
+        //                $img_src[] = substr($img, $pos + 1, strlen($img));
+        //                for ($i = 0; $i < (count($img_src)); $i++) {
+        //                    $img1 = $img_src[$i];
+        //                    $m = array_keys(str_word_count($img1, 2));
+        //                    $a = $m[0];
+        //                    $img3[$i] = substr($img1, $a, strlen($img1));
+        //                }
+        //            }
+        //            for ($i = 0; $i < (count($attach)); $i++) {
+        //
+        //                $img_name[$i] = urlencode($img_name[$i]);
+        //                $img4[$i] = urlencode($img3[$i]);
+        //                echo (($i>0)?', ':'')."<a href='DownloadWindow.php?filename=$img_name[$i]&name=$img4[$i]' target='new' >" . $img3[$i] . "</a>";
+        //            }
+        //        }
         echo '</div>';
         echo '</div>';
     }
@@ -600,7 +592,6 @@ if (!isset($_REQUEST['modfunc'])) {
         if (in_array($userName, $arr) || in_array($userName, $arr_cc) || in_array($userName, $arr_bcc)) {
             array_push($id, $value['MAIL_ID']);
         } else {
-            
         }
     }
     $count = count($id);
@@ -631,9 +622,10 @@ if (!isset($_REQUEST['modfunc'])) {
     }
 
     echo '<div id="students" class="panel panel-default">';
-    $columns = array('FROM_USER' => _from,
-     'MAIL_SUBJECT' => _subject,
-     'MAIL_DATETIME' => _dateTime,
+    $columns = array(
+        'FROM_USER' => _from,
+        'MAIL_SUBJECT' => _subject,
+        'MAIL_DATETIME' => _dateTime,
     );
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['LO_group'] = array('MAIL_ID');
@@ -654,10 +646,10 @@ if (!isset($_REQUEST['modfunc'])) {
         $inbox_info[$id] = $extra['columns_before'] + $value;
     }
     if (count($inbox_info) != 0) {
-        $custom_header = '<h6 class="panel-title text-pink">'._inbox.'</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> '._delete.'</button></div>';
+        $custom_header = '<h6 class="panel-title text-pink">' . _inbox . '</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> ' . _delete . '</button></div>';
     }
 
-    ListOutput($inbox_info, $columns, '', '', $link, array(), array('search' =>false), TRUE, $custom_header);
+    ListOutput($inbox_info, $columns, '', '', $link, array(), array('search' => false), TRUE, $custom_header);
 
     echo "</div>";
     //PopTable('footer');
@@ -665,7 +657,8 @@ if (!isset($_REQUEST['modfunc'])) {
     echo '</FORM>';
 }
 
-function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBCCs, $grpName) {
+function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBCCs, $grpName)
+{
     $mailBody = singleQuoteReplace('', '', $mailBody);
     $config = HTMLPurifier_Config::createDefault();
     $purifier = new HTMLPurifier($config);
@@ -675,16 +668,13 @@ function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBC
     $grpName = str_replace("'", "\'", $grpName);
     $attachment = str_replace("'", "\'", $attachment);
 
-    if($mailBody=="")
-    {
-        $_SESSION['BODY_EMPTY']='1';
+    if ($mailBody == "") {
+        $_SESSION['BODY_EMPTY'] = '1';
         echo '<script>window.location="Modules.php?modname=messaging/Compose.php"
         </script>';
-        return false;  
-    }
-    else if($mailBody!="")
-    {
-    $inbox_query = DBQuery('INSERT INTO msg_inbox(to_user,from_user,mail_Subject,mail_body,isdraft,mail_attachment,to_multiple_users,to_cc_multiple,to_cc,to_bcc,to_bcc_multiple,mail_datetime) VALUES(\'' . $to . '\',\'' . $userName . '\',\'' . $subject . '\',\'' . $mailBody . '\',\'' . $isdraft . '\',\'' . $attachment . '\',\'' . $to . '\',\'' . $toCC . '\',\'' . $toCC . '\',\'' . $toBCCs . '\',\'' . $toBCCs . '\',now())');
+        return false;
+    } else if ($mailBody != "") {
+        $inbox_query = DBQuery('INSERT INTO msg_inbox(to_user,from_user,mail_Subject,mail_body,isdraft,mail_attachment,to_multiple_users,to_cc_multiple,to_cc,to_bcc,to_bcc_multiple,mail_datetime) VALUES(\'' . $to . '\',\'' . $userName . '\',\'' . $subject . '\',\'' . $mailBody . '\',\'' . $isdraft . '\',\'' . $attachment . '\',\'' . $to . '\',\'' . $toCC . '\',\'' . $toCC . '\',\'' . $toBCCs . '\',\'' . $toBCCs . '\',now())');
     }
     if ($grpName == 'false')
         $outbox_query = DBQuery('INSERT INTO msg_outbox(to_user,from_user,mail_Subject,mail_body,mail_attachment,to_cc,to_bcc,mail_datetime) VALUES(\'' . $to . '\',\'' . $userName . '\',\'' . $subject . '\',\'' . $mailBody . '\',\'' . $attachment . '\',\'' . $toCC . '\',\'' . $toBCCs . '\',NOW())');
@@ -693,15 +683,17 @@ function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBC
 
         $outbox_query = DBQuery($q);
     }
-    echo '<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>'._yourMessageHasBeenSent.'.</div>';
+    echo '<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>' . _yourMessageHasBeenSent . '.</div>';
 }
 
-function array_push_assoc($array, $key, $value) {
+function array_push_assoc($array, $key, $value)
+{
     $array[$key] = $value;
     return $array;
 }
 
-function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpName = 'false') {
+function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpName = 'false')
+{
 
     if ($toUsers != '')
         $to_array = explode(',', $toUsers);
@@ -799,52 +791,45 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
 
         if ($subject == '')
             $subject = 'No Subject';
-
-        $mailBody = $_POST['txtBody'];
-
-
-
-
+        $mailBody = sqlSecurityFilter($_POST['txtBody']);
         $uploaded_file_count = count($_FILES['f']['name']);
         for ($i = 0; $i < $uploaded_file_count; $i++) {
-            
-            if($_FILES['f']['name'][$i]!=''){
-            
-//            $name = $_FILES['f']['name'][$i];
-//            if ($name) {
-//                $path = $userName . '_' . time() . rand(00, 99) . $name;
-//                $folder = "./assets/" . $path;
-//                $temp = $_FILES['f']['tmp_name'][$i];
-//                move_uploaded_file($temp, $folder);
-//                $arr[$i] = $folder;
-//            } else
-//                $attachment = "";
-            $fileName=$_FILES['f']['name'][$i];
-                  $tmpName  = $_FILES['f']['tmp_name'][$i];
-                  $fileSize = $_FILES['f']['size'][$i];
-                  $fileType = $_FILES['f']['type'][$i];
-                    $fp      = fopen($tmpName, 'r');
-                    $content = fread($fp, filesize($tmpName));
-                    $content = addslashes($content);
-                    fclose($fp);
 
-                    if(!get_magic_quotes_gpc())
-                    {
-                        $fileName = addslashes($fileName);
-                    }
-                    if(User('PROFILE')=='student')
-                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES ('.UserStudentID().',\'3\','.UserSchool().','.UserSyear().',\''.$fileName.'\', \''.$fileSize.'\', \''.$fileType.'\', \''.$content.'\',\'intmsg\')');
-                    else
-                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES ('.User('STAFF_ID').','.User('PROFILE_ID').','.UserSchool().','.UserSyear().',\''.$fileName.'\', \''.$fileSize.'\', \''.$fileType.'\', \''.$content.'\',\'intmsg\')');
-    
-                    $file_id= DBGet(DBQuery('SELECT MAX(ID) AS ID FROM user_file_upload WHERE FILE_INFO =\'intmsg\''));
-                    if(count($file_id)>0)
-                    $attachment.=$file_id[1]['ID'].',';
-        }
-            
+            if ($_FILES['f']['name'][$i] != '') {
+
+                //            $name = $_FILES['f']['name'][$i];
+                //            if ($name) {
+                //                $path = $userName . '_' . time() . rand(00, 99) . $name;
+                //                $folder = "./assets/" . $path;
+                //                $temp = $_FILES['f']['tmp_name'][$i];
+                //                move_uploaded_file($temp, $folder);
+                //                $arr[$i] = $folder;
+                //            } else
+                //                $attachment = "";
+                $fileName = $_FILES['f']['name'][$i];
+                $tmpName  = $_FILES['f']['tmp_name'][$i];
+                $fileSize = $_FILES['f']['size'][$i];
+                $fileType = $_FILES['f']['type'][$i];
+                $fp      = fopen($tmpName, 'r');
+                $content = fread($fp, filesize($tmpName));
+                $content = addslashes($content);
+                fclose($fp);
+
+                if (!get_magic_quotes_gpc()) {
+                    $fileName = addslashes($fileName);
+                }
+                if (User('PROFILE') == 'student')
+                    DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'intmsg\')');
+                else
+                    DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . User('STAFF_ID') . ',' . User('PROFILE_ID') . ',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'intmsg\')');
+
+                $file_id = DBGet(DBQuery('SELECT MAX(ID) AS ID FROM user_file_upload WHERE FILE_INFO =\'intmsg\''));
+                if (count($file_id) > 0)
+                    $attachment .= $file_id[1]['ID'] . ',';
+            }
         }
 
-//        $attachment = implode(',', $arr);
+        //        $attachment = implode(',', $arr);
 
         $multipleUser = implode(",", $to_av_user);
 
@@ -861,23 +846,23 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         SendMail($multipleUser, $userName, $subject, $mailBody, $attachment, $multipleCCUser, $multipleBCCUser, $grpName);
 
         if (count($to_uav_user) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_user) . ' '._asTheyDonTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSentTo . ' ' . implode(',', $to_uav_user) . ' ' . _asTheyDonTExist . '.</div><br>';
         if (count($to_uav_cc) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_cc) . ' '._asTheyDonTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSentTo . ' ' . implode(',', $to_uav_cc) . ' ' . _asTheyDonTExist . '.</div><br>';
         if (count($to_uav_bcc) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_bcc) . ' '._asTheyDonTExist.'.</div><br>';
-    }
-    else {
+            echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSentTo . ' ' . implode(',', $to_uav_bcc) . ' ' . _asTheyDonTExist . '.</div><br>';
+    } else {
         if (count($to_uav_user) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentAs.' ' . implode(',', $to_uav_user) . ' '._doesnTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSentAs . ' ' . implode(',', $to_uav_user) . ' ' . _doesnTExist . '.</div><br>';
         elseif ($toUsers == '')
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSent.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">' . _messageNotSent . '.</div><br>';
     }
 }
 
-function output_file($file, $name, $mime_type = '', $mod_file) {
+function output_file($file, $name, $mime_type = '', $mod_file)
+{
     if (!is_readable($file))
-        die(''._fileNotFoundOrInaccessible.'!');
+        die('' . _fileNotFoundOrInaccessible . '!');
 
     $size = filesize($file);
     $name = rawurldecode($name);
@@ -944,9 +929,10 @@ function output_file($file, $name, $mime_type = '', $mod_file) {
         if (isset($_SERVER['HTTP_RANGE']))
             fseek($file, $range);
 
-        while (!feof($file) &&
-        (!connection_aborted()) &&
-        ($bytes_send < $new_length)
+        while (
+            !feof($file) &&
+            (!connection_aborted()) &&
+            ($bytes_send < $new_length)
         ) {
             $buffer = fread($file, $chunksize);
             print($buffer);
@@ -958,5 +944,3 @@ function output_file($file, $name, $mime_type = '', $mod_file) {
         die('Error - can not open file.');
     die();
 }
-
-?>

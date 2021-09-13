@@ -27,8 +27,10 @@
 #
 #***************************************************************************************
 
-include("functions/ParamLibFnc.php");
+session_start();
+isset($_SESSION['login']) or die('Access denied!');
 
+include "functions/ParamLibFnc.php";
 echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/picker_date.js"></script>';
 echo '<script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>';
@@ -164,7 +166,6 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
         // For Eligibility
         'eligibility/Student.php'
     );
-    // echo "<pre>";print_r($_REQUEST);echo "</pre>";
     
     if ($count_student_RET[1]['NUM'] > 1) {
         $title_set = 'y';
@@ -258,7 +259,8 @@ if (clean_param($_REQUEST['modname'], PARAM_NOTAGS)) {
         if (Preferences('SEARCH') != 'Y' && substr(clean_param($modname, PARAM_NOTAGS), 0, 6) != 'users/')
             $_REQUEST['search_modfunc'] = 'list';
 
-        include('modules/' . $modname);
+        if (preg_match('/\.\./', $modname) !== 1)
+            include 'modules/' . $modname;
     }
     else {
         if (User('USERNAME')) {

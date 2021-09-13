@@ -116,11 +116,13 @@ if (isset($_SESSION['mod']) && $_SESSION['mod']== 'upgrade') {
 
     if ($fh == TRUE) {
 
-        $THIS_server = sqlSecurityFilterIns($_SESSION['server']);
-        $THIS_username = sqlSecurityFilterIns($_SESSION['username']);
-        $THIS_password = sqlSecurityFilterIns($_SESSION['password']);
-        $THIS_db = sqlSecurityFilterIns($_SESSION['db']);
-        $THIS_port = sqlSecurityFilterIns($_SESSION['port']);
+        include '../functions/SqlSecurityFnc.php';
+
+        $THIS_server = sqlSecurityFilter($_SESSION['server'], 'no');
+        $THIS_username = sqlSecurityFilter($_SESSION['username'], 'no');
+        $THIS_password = sqlSecurityFilter($_SESSION['password'], 'no');
+        $THIS_db = sqlSecurityFilter($_SESSION['db'], 'no');
+        $THIS_port = sqlSecurityFilter($_SESSION['port'], 'no');
 
         $string .= "<" . "?php \n";
         $string .= "$" . "DatabaseType = 'mysqli'; \n";
@@ -229,106 +231,8 @@ You need to follow the instructions in the administrator manual for setting up t
 </body></html>
 ";
 }
+
 session_unset();
 session_destroy();
-
-function sqlSecurityFilterIns($variableName = '')
-{
-    $variable = $variableName;
-    $check_stream = array('union ', 'select ', 'concat',  'concat_ws', 'create ', 'update ', 'insert ', 'delete ', 'extract ', 'drop ', 'truncate ', 'where ', 'trim ', 'format ', 'union%20', 'select%20', 'create%20', 'update%20', 'insert%20', 'delete%20', 'extract%20', 'drop%20', 'truncate%20', 'where%20', 'trim%20', 'format%20', ';', '\'', '--', '../', '..%2f', 'skip-grant-tables');
-
-    if ($variable != '') {
-        $checker = 0;
-        $checker_k = 0;
-        $checker_v = 0;
-        if (is_array($variable)) {
-
-            $filter_data = array();
-            $neat_key = '';
-            $neat_val = '';
-
-            foreach ($variable as $onekey => $oneval) {
-
-                $k_check_1      =   strip_tags($onekey);
-                $k_check_2      =   addslashes($k_check_1);
-                // $k_check_3      =   mysqli_real_escape_string($connection, $k_check_2);
-                $k_check_4      =   strtolower($k_check_2);
-
-                $v_check_1      =   strip_tags($oneval);
-                $v_check_2      =   addslashes($v_check_1);
-                // $v_check_3      =   mysqli_real_escape_string($connection, $v_check_2);
-                $v_check_4      =   strtolower($v_check_2);
-
-                foreach ($check_stream as $one_check) {
-                    if (strpos($k_check_4, $one_check) !== false)
-                    {
-                        $checker_k++;
-                    }
-                    
-                    if(strpos($v_check_4, $one_check) !== false)
-                    {
-                        $checker_v++;
-                    }
-                }
-
-                if(is_array($oneval))
-                {
-                    $get_child_ret = sqlSecurityFilterIns($oneval); // being recursive
-
-                    $filter_data[$k_check_3] = $get_child_ret;
-                }
-                else
-                {
-                    if($checker_k != 0 || $checker_v != 0)
-                    {
-                        unset($variable[$onekey]);
-                    }
-                    else
-                    {
-                        unset($variable[$onekey]);
-
-                        // if(is_array($oneval))
-                        // {
-                        //  $get_child_ret = sqlSecurityFilter($oneval); // being recursive
-
-                        //  $filter_data[$k_check_3] = $get_child_ret;
-                        // }
-                        // else
-                        // {
-                            $filter_data[$k_check_3] = $v_check_3;
-                        // }
-                    }
-                }
-
-                // $filter_data[] = $variable;
-            }
-
-            return $filter_data;
-
-            unset($checker);
-            unset($checker_k);
-            unset($checker_v);
-        } else {
-            $check_1    =   strip_tags($variable);
-            $check_2    =   addslashes($check_1);
-            // $check_3    =   mysqli_real_escape_string($connection, $check_2);
-            $check_4    =   strtolower($check_2);
-
-            foreach ($check_stream as $one_check) {
-                if (strpos($check_4, $one_check) !== false) {
-                    $checker++;
-                }
-            }
-
-            if ($checker == 0) {
-                return $check_2;
-            } else {
-                return '';
-            }
-        }
-    } else {
-        return $variableName;
-    }
-}
 
 ?>

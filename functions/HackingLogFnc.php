@@ -25,7 +25,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
+session_start();
+isset($_SESSION['login']) or die('Access denied!');
 		function HackingLog()
         {
         echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";

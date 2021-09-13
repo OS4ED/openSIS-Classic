@@ -25,10 +25,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include("functions/ParamLibFnc.php");
+
+session_start();
+isset($_SESSION['login']) or die('Access denied!');
+include "functions/ParamLibFnc.php";
 //include("functions/UrlFnc.php");
-include('RedirectRootInc.php');
-// include('functions/SqlSecurityFnc.php');
+include 'RedirectRootInc.php';
+
 //$url=validateQueryString(curPageURL());
 //if($url===FALSE)
 // {
@@ -123,7 +126,9 @@ if(optional_param('modname','',PARAM_NOTAGS))
 	{
 		if(Preferences('SEARCH')!='Y')
 			$_REQUEST['search_modfunc'] = 'list';
-		include('modules/'.$modname);
+		
+		if (preg_match('/\.\./', $modname) !== 1)
+			include 'modules/' . $modname;
 	}
 	else
 	{

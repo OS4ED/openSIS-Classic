@@ -26,16 +26,23 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+session_start();
+isset($_SESSION['login']) or die('Access denied!');
+include "functions/ParamLibFnc.php";
 
-include("functions/ParamLibFnc.php");
 $url = validateQueryString(curPageURL());
 if ($url === FALSE) {
     header('Location: index.php');
 }
-include('RedirectRootInc.php');
+
+include 'RedirectRootInc.php';
+
 error_reporting(E_ERROR);
+
 $start_time = time();
+
 include 'Warehouse.php';
+
 array_rwalk($_REQUEST, 'strip_tags');
 
 $css = getCSS();
@@ -109,7 +116,9 @@ if (clean_param($_REQUEST['modname'], PARAM_NOTAGS)) {
     if ($allowed) {
         if (Preferences('SEARCH') != 'Y')
             $_REQUEST['search_modfunc'] = 'list';
-        include('modules/' . $modname);
+
+        if (preg_match('/\.\./', $modname) !== 1)
+            include 'modules/' . $modname;
     }
     else {
         if (User('USERNAME')) {
