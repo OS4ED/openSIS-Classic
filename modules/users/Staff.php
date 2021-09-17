@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 session_start();
-isset($_SESSION['login']) or die('Access denied!');
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
 
 if ($_SESSION['staff_id']== '' && $_REQUEST['staff_id'] != 'new')

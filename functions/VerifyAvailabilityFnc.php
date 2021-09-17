@@ -75,7 +75,9 @@ function VerifyFixedSchedule($columns, $columns_var, $update = false)
     }
     $mp_append_sql = " AND begin_date<='$end_date' AND '$start_date'<=end_date AND IF (schedule_type='BLOCKED',course_period_date BETWEEN '$start_date' AND '$end_date','1')";
 
-    $period_append_sql = " AND period_id IN(SELECT period_id from school_periods WHERE start_time<='$end_time' AND '$start_time'<=end_time)";
+    // $period_append_sql = " AND period_id IN(SELECT period_id from school_periods WHERE start_time<='$end_time' AND '$start_time'<=end_time)";
+    $period_append_sql = " AND period_id IN(SELECT period_id from school_periods WHERE start_time >= '$start_time' AND end_time <= '$end_time')";
+
     $days_append_sql = ' AND (';
     $days_room_append_sql = ' AND (';
     $days_arr = str_split($days);
@@ -164,13 +166,19 @@ function VerifyVariableSchedule($columns)
             $flag = 1;
         if ($cp_id == 'new')
         {
-            $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time<='" . $days['n']['END_TIME'] . "' AND '" . $days['n']['START_TIME'] . "'<=end_time) OR ";
-            $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time<='" . $days['n']['END_TIME'] . "' AND '" . $days['n']['START_TIME'] . "'<=end_time) OR ";
+            // $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time<='" . $days['n']['END_TIME'] . "' AND '" . $days['n']['START_TIME'] . "'<=end_time) OR ";
+            $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time >= '" . $days['n']['START_TIME'] . "' AND end_time <= '" . $days['n']['END_TIME'] . "') OR ";
+
+            // $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time<='" . $days['n']['END_TIME'] . "' AND '" . $days['n']['START_TIME'] . "'<=end_time) OR ";
+            $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time >= '" . $days['n']['START_TIME'] . "' AND end_time <= '" . $days['n']['END_TIME'] . "') OR ";
         }
         else
         {
-            $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time<='$days[END_TIME]' AND '$days[START_TIME]'<=end_time) OR ";
-            $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time<='$days[END_TIME]' AND '$days[START_TIME]'<=end_time) OR ";
+            // $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time<='$days[END_TIME]' AND '$days[START_TIME]'<=end_time) OR ";
+            $days_append_sql .= "(days like '%$days[DAYS]%' AND start_time >= '$days[START_TIME]' AND end_time <= '$days[END_TIME]') OR ";
+
+            // $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time<='$days[END_TIME]' AND '$days[START_TIME]'<=end_time) OR ";
+            $days_room_append_sql .= "(days like '%$days[DAYS]%' AND room_id=$days[ROOM_ID] AND start_time >= '$days[START_TIME]' AND end_time <= '$days[END_TIME]') OR ";
         }
         }
     }
@@ -253,8 +261,11 @@ function VerifyVariableSchedule_Update($columns)
 
         if ($columns['SELECT_DAYS'] == '' && ($columns['PERIOD_ID'] == '' || $columns['ROOM_ID'] == '')) return 'Please input valid data';
 
-        $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
-        $days_room_append_sql .= "(days like '%$columns[DAYS]%' AND room_id=$columns[ROOM_ID] AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
+        // $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
+        $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time >= '$columns[START_TIME]' AND end_time <= '$columns[END_TIME]') OR ";
+
+        // $days_room_append_sql .= "(days like '%$columns[DAYS]%' AND room_id=$columns[ROOM_ID] AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
+        $days_room_append_sql .= "(days like '%$columns[DAYS]%' AND room_id=$columns[ROOM_ID] AND start_time >= '$columns[START_TIME]' AND end_time <= '$columns[END_TIME]') OR ";
 
         $days_append_sql = substr($days_append_sql, 0, -4) . ')';
         $days_room_append_sql = substr($days_room_append_sql, 0, -4) . ')';
@@ -304,7 +315,8 @@ function VerifyVariableSchedule_Update($columns)
         {
             $days_append_sql = ' AND (';
 
-            $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
+            // $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time<='$columns[END_TIME]' AND '$columns[START_TIME]'<=end_time) OR ";
+            $days_append_sql .= "(days like '%$columns[DAYS]%' AND start_time >= '$columns[START_TIME]' AND end_time <= '$columns[END_TIME]') OR ";
 
             $days_append_sql = substr($days_append_sql, 0, -4) . ')';
         }
@@ -372,8 +384,12 @@ function VerifyBlockedSchedule($columns, $course_period_id, $sec, $edit = false)
         }
         $mp_append_sql = " AND begin_date<='$end_date' AND '$start_date'<=end_date";
 
-        $days_append_sql .= " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND start_time<='$end_time' AND '$start_time'<=end_time,'$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])) , 'key') . "%' AND start_time<='$end_time' AND '$start_time'<=end_time)";
-        $days_room_append_sql .= " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time,'$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])) , 'key') . "%' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time)";
+        // $days_append_sql .= " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND start_time<='$end_time' AND '$start_time'<=end_time,'$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])) , 'key') . "%' AND start_time<='$end_time' AND '$start_time'<=end_time)";
+        $days_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND start_time >= '$start_time' AND end_time <= '$end_time','$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])), 'key') . "%' AND start_time >= '$start_time' AND end_time <= '$end_time')";
+
+        // $days_room_append_sql .= " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time,'$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])) , 'key') . "%' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time)";
+        $days_room_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='" . $_REQUEST['meet_date'] . "' AND room_id=$room AND start_time >= '$start_time' AND end_time <= '$end_time','$_REQUEST[meet_date]' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($_REQUEST['meet_date'])), 'key') . "%' AND room_id=$room AND start_time >= '$start_time' AND end_time <= '$end_time')";
+
         if ($pre_ing != 'Y')
         {
         $cp_RET = DBGet(DBQuery("SELECT cp.COURSE_PERIOD_ID FROM course_periods  cp LEFT JOIN course_period_var cpv ON (cp.course_period_id=cpv.course_period_id) WHERE (secondary_teacher_id IN ($all_teacher) OR teacher_id IN ($all_teacher)){$mp_append_sql}{$days_append_sql}{$cp_id}"));
@@ -426,8 +442,11 @@ function VerifyBlockedSchedule($columns, $course_period_id, $sec, $edit = false)
             $pre_ing = $period_time['IGNORE_SCHEDULING'];
             $mp_append_sql = " AND begin_date<='$end_date' AND '$start_date'<=end_date";
 
-            $days_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND start_time<='$end_time' AND '$start_time'<=end_time,'$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)) , 'key') . "%' AND start_time<='$end_time' AND '$start_time'<=end_time)";
-            $days_room_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time,'$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)) , 'key') . "%' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time)";
+            // $days_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND start_time<='$end_time' AND '$start_time'<=end_time,'$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)) , 'key') . "%' AND start_time<='$end_time' AND '$start_time'<=end_time)";
+            $days_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND start_time >= '$start_time' AND end_time <= '$end_time','$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)), 'key') . "%' AND start_time >= '$start_time' AND end_time <= '$end_time')";
+
+            // $days_room_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time,'$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)) , 'key') . "%' AND room_id=$room AND start_time<='$end_time' AND '$start_time'<=end_time)";
+            $days_room_append_sql = " AND IF (schedule_type='BLOCKED', course_period_date ='$meet_date' AND room_id=$room AND start_time >= '$start_time' AND end_time <= '$end_time','$meet_date' BETWEEN begin_date AND end_date AND days like '%" . conv_day(date('D', strtotime($meet_date)), 'key') . "%' AND room_id=$room AND start_time >= '$start_time' AND end_time <= '$end_time')";
             $cp_id = " AND cp.COURSE_PERIOD_ID!={$course_period_id}";
             if ($pre_ing != 'Y')
             {
@@ -515,7 +534,9 @@ function VerifyStudentSchedule($course_RET, $student_id = '')
         $start_time = $course_RET[1]['START_TIME'];
         $end_time = $course_RET[1]['END_TIME'];
 
-        $period_days_append_sql = " AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND sp.start_time<='$end_time' AND '$start_time'<=sp.end_time AND (";
+        // $period_days_append_sql = " AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND sp.start_time<='$end_time' AND '$start_time'<=sp.end_time AND (";
+        $period_days_append_sql = " AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND sp.start_time >= '$start_time' AND sp.end_time <= '$end_time' AND (";
+
         $days_arr = str_split($days);
         foreach ($days_arr as $day)
         {
@@ -528,7 +549,8 @@ function VerifyStudentSchedule($course_RET, $student_id = '')
         $period_days_append_sql = " AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
         foreach ($course_RET as $period_day)
         {
-            $period_days_append_sql .= "(sp.start_time<='$period_day[END_TIME]' AND '$period_day[START_TIME]'<=sp.end_time AND DAYS LIKE '%$period_day[DAYS]%') OR ";
+            // $period_days_append_sql .= "(sp.start_time<='$period_day[END_TIME]' AND '$period_day[START_TIME]'<=sp.end_time AND DAYS LIKE '%$period_day[DAYS]%') OR ";
+            $period_days_append_sql .= "(sp.start_time >= '$period_day[START_TIME]' AND sp.end_time <=  '$period_day[END_TIME]' AND DAYS LIKE '%$period_day[DAYS]%') OR ";
         }
         $period_days_append_sql = substr($period_days_append_sql, 0, -4) . '))';
     }
@@ -538,7 +560,7 @@ function VerifyStudentSchedule($course_RET, $student_id = '')
         foreach ($course_RET as $period_date)
         {
             // $period_days_append_sql .="(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND IF(course_period_date IS NULL, course_period_date='$period_date[COURSE_PERIOD_DATE]',DAYS LIKE '%$period_date[DAYS]%')) OR ";
-            $period_days_append_sql .= "(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND (cpv.course_period_date IS NULL OR cpv.course_period_date='$period_date[COURSE_PERIOD_DATE]') AND cpv.DAYS LIKE '%$period_date[DAYS]%') OR ";
+            $period_days_append_sql .= "(sp.start_time >= '$period_date[START_TIME]' AND sp.end_time <= '$period_date[END_TIME]' AND (cpv.course_period_date IS NULL OR cpv.course_period_date='$period_date[COURSE_PERIOD_DATE]') AND cpv.DAYS LIKE '%$period_date[DAYS]%') OR ";
         }
         $period_days_append_sql = substr($period_days_append_sql, 0, -4) . '))';
     }

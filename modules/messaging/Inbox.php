@@ -26,6 +26,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+session_start();
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
 require_once('libraries/htmlpurifier/library/HTMLPurifier.auto.php');
 

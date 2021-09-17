@@ -28,7 +28,7 @@
 #***************************************************************************************
 
 session_start();
-isset($_SESSION['login']) or die('Access denied!');
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 
 include "functions/ParamLibFnc.php";
 echo '<script type="text/javascript" src="assets/js/pages/components_popups.js"></script>';

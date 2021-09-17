@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 session_start();
-isset($_SESSION['login']) or die('Access denied!');
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {

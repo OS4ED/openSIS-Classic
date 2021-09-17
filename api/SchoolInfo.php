@@ -270,8 +270,10 @@ function db_show_error($sql, $failnote, $additional = '') {
 }
 function GetMP($mp='',$column='TITLE',$syear,$school)
 {	global $_openSIS;
+    $school=sqlSecurityFilter($school);
 	// mab - need to translate marking_period_id to title to be useful as a function call from dbget
 	// also, it doesn't make sense to ask for same thing you give
+    
 	if($column=='MARKING_PERIOD_ID')
 		$column='TITLE';
 

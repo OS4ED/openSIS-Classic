@@ -27,7 +27,7 @@
 #***************************************************************************************
 
 session_start();
-isset($_SESSION['login']) or die('Access denied!');
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 include "functions/ParamLibFnc.php";
 //include("functions/UrlFnc.php");
 include 'RedirectRootInc.php';
