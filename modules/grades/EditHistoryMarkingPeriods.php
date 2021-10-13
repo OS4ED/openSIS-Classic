@@ -38,7 +38,7 @@ if ($_REQUEST['modfunc'] == 'update') {
                 $_REQUEST['values'][$id][$colname] = $_REQUEST['day_values'][$id][$colname] . '-' . $_REQUEST['month_values'][$id][$colname] . '-' . $_REQUEST['year_values'][$id][$colname];
         }
     }
-    foreach ($_REQUEST['values'] as $id => $columns) {
+    foreach (sqlSecurityFilter($_REQUEST['values']) as $id => $columns) {
         if ($id != 'new') {
 
             $sql = 'UPDATE history_marking_periods SET ';

@@ -384,7 +384,7 @@ else if($_REQUEST['search_modfunc'] == 'search_mod')
             echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
             echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
 
-            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php') {
+            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php' || $_REQUEST['modname'] == 'attendance/Administration.php') {
                 ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
             } else {
                 # Set pagination params
@@ -662,7 +662,7 @@ else {
             echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
             echo'<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
 
-            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php') {
+            if($_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'attendance/DailySummary.php' || $_REQUEST['modname'] == 'attendance/Administration.php') {
                 ListOutputExcel($students_RET, $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options']);
             } else {
                 # Set pagination params

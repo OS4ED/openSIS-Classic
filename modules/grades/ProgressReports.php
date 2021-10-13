@@ -193,19 +193,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                 }
                 $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
                 if ($flag) {
-//                            $link['add']['html'] = array('TITLE'=>'<B>Total</B>','LETTER_GRADE'=>'( '.$total_stpoints.' / '.$total_asgnpoints.' ) '._makeLetterGrade(($total_stpoints/$total_asgnpoints),"",User('STAFF_ID'),"%").'%&nbsp;'._makeLetterGrade($total_stpoints/$total_asgnpoints,"",User('STAFF_ID')),'WEIGHT_GRADE'=>$programconfig[User('STAFF_ID')]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID')):'N/A');
+                    // $link['add']['html'] = array('TITLE'=>'<B>Total</B>','LETTER_GRADE'=>'( '.$total_stpoints.' / '.$total_asgnpoints.' ) '._makeLetterGrade(($total_stpoints/$total_asgnpoints),"",User('STAFF_ID'),"%").'%&nbsp;'._makeLetterGrade($total_stpoints/$total_asgnpoints,"",User('STAFF_ID')),'WEIGHT_GRADE'=>$programconfig[User('STAFF_ID')]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID')):'N/A');
                     $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>'._total.'</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), "", User('STAFF_ID'), "%") . '%&nbsp;' . _makeLetterGrade($total_stpoints / $total_asgnpoints, "", User('STAFF_ID')) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($programconfig[User('STAFF_ID')]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", User('STAFF_ID'), '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, "", User('STAFF_ID')) : ''._nA.'') . '</font>');
                 } else {
                     $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>'._total.'</B></font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">'._notGraded.'</font>');
                 }
-//                        $link['add']['html']['ASSIGNED_DATE'] = $link['add']['html']['DUE_DATE'] = $link['add']['html']['POINTS'] = $link['add']['html']['COMMENT'] = ' &nbsp; ';
+                // $link['add']['html']['ASSIGNED_DATE'] = $link['add']['html']['DUE_DATE'] = $link['add']['html']['POINTS'] = $link['add']['html']['COMMENT'] = ' &nbsp; ';
                 $link['add']['html']['ASSIGNED_DATE'] = $link['add']['html']['DUE_DATE'] = $link['add']['html']['COMMENT'] = ' &nbsp; ';
                 echo '</table>';
 
-                // echo '<pre>';
-                // print_r($grades_RET);
-                // echo '</pre>';
-                ListOutputPrint($grades_RET, $columns, _assignment, _assignments, $link, array('ASSIGN_TYP','ASSIGN_TYP_WG'), array('center' =>false, 'add' =>true));
+                ListOutputPrint($grades_RET, $columns, _assignment, _assignments, $link, array(), array('center' =>false, 'add' =>true));
                 echo '<div style="page-break-before: always;">&nbsp;</div>';
             }
 

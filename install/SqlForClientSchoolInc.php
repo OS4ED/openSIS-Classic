@@ -715,13 +715,6 @@ INSERT INTO `program_user_config` (`user_id`, `school_id`, `program`, `title`, `
 INSERT INTO `schools` (`syear`, `title`, `address`, `city`, `state`, `zipcode`, `area_code`, `phone`, `principal`, `www_address`, `e_mail`, `reporting_gp_scale`, `updated_by`) VALUES
 (".$_SESSION['syear'].", '".$_SESSION['sname']."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
---
--- Dumping data for table `login_authentication`
---
-
-INSERT INTO `login_authentication` (`id`, `user_id`, `profile_id`, `username`, `password`, `last_login`, `failed_login`, `last_updated`, `updated_by`) VALUES
-(1, 1, 0, 'os4ed', 'f7658b271318b97a17e625f875ea5a24', '2019-08-19 23:59:43', 0, '2019-07-28 09:56:33', NULL);
-
 
 --
 -- Dumping data for table `system_preference`
@@ -907,5 +900,8 @@ INSERT INTO `user_profiles` (`id`, `profile`, `title`, `last_updated`, `updated_
 			}
 		}
 	}
+
+$dbconn->query('INSERT INTO `login_authentication` (`id`, `user_id`, `profile_id`, `username`, `password`, `last_login`, `failed_login`, `last_updated`, `updated_by`) VALUES
+(1, 1, 0, "os4ed", "$2y$10$yR8cf7lao0ed9HAyzsD1wuxerYtxXAuhPGrp5nHXI8lFoWh.ZaxJC", "2019-08-19 23:59:43", 0, "2019-07-28 09:56:33", NULL);');
 
 ?>

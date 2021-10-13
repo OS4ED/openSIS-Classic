@@ -28,6 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include("UploadClassFnc.php");
+include_once("../../functions/PasswordHashFnc.php");
 ini_set('memory_limit', '1200000000M');
 ini_set('max_execution_time', '500000');
 unset($flag);
@@ -720,9 +721,14 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 if ($column_name == 'PASSWORD' && $value != '') {
                                     $log_go = true;
                                     if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-                                        $log_sql .= "$column_name='" . str_replace("'", "''", str_replace("`", "''", md5(trim($value)))) . "',";
-                                    } else
-                                        $log_sql .= "$column_name='" . str_replace("'", "''", str_replace("`", "''", md5(trim($value)))) . "',";
+                                        $password = str_replace("'", "''", str_replace("`", "''",(trim($value))));
+                                        $new_password = GenerateNewHash($password);
+                                        $log_sql .= "$column_name='" . $new_password . "',";
+                                    } else {
+                                        $password = str_replace("'", "''", str_replace("`", "''",(trim($value))));
+                                        $new_password = GenerateNewHash($password);
+                                        $log_sql .= "$column_name='" . $new_password . "',";
+                                    }  
                                 }
                                 elseif ($column_name == 'USERNAME' && $value != '') {
                                     $log_go = true;
@@ -1155,9 +1161,14 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 if ($column == 'PASSWORD') {
 
                                     if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-                                        $log_values .= "'" . str_replace("'", "''", md5(trim(str_replace("\'", "'", $value)))) . "',";
-                                    } else
-                                        $log_values .= "'" . str_replace("'", "''", md5(trim(str_replace("\'", "'", $value)))) . "',";
+                                        $password = str_replace("'", "''",(trim(str_replace("\'", "'", $value))));
+                                        $new_password = GenerateNewHash($password);
+                                        $log_values .= "'" . $new_password . "',";
+                                    } else {
+                                        $password = str_replace("'", "''",(trim(str_replace("\'", "'", $value))));
+                                        $new_password = GenerateNewHash($password);
+                                        $log_values .= "'" . $new_password . "',";
+                                    }
                                 }
                                 if (strtoupper($column) == 'USERNAME')
                                     $log_values .= "'" . str_replace("'", "''", str_replace("\'", "'", $value)) . "',";

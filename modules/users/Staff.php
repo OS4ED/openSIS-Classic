@@ -29,6 +29,7 @@
 session_start();
 !empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
+include_once("../../functions/PasswordHashFnc.php");
 
 if ($_SESSION['staff_id']== '' && $_REQUEST['staff_id'] != 'new')
         $_SESSION['staff_id'] = $_REQUEST['staff_id'];
@@ -376,7 +377,9 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
                     if ($column_name == 'PASSWORD') {
                         if ($value != "") {
-                            $sql .= "$column_name='" . str_replace("\'", "''", str_replace("`", "''", md5($value))) . "',";
+                            $password = str_replace("\'", "''", str_replace("`", "''",($value)));
+                            $new_password = GenerateNewHash($password);
+                            $sql .= "$column_name='" . $new_password . "',";
                             $execute = 'yes';
                         }
                     }
@@ -529,7 +532,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
             unset($_REQUEST['month_staff']);
             unset($_REQUEST['year_staff']);
             
-            foreach ($_REQUEST['staff'] as $column => $value) {
+            foreach (sqlSecurityFilter($_REQUEST['staff']) as $column => $value) {
                 if ($column == 'BIRTHDATE' && $value!='')
                 {
                     $value = date("Y-m-d", strtotime($value));

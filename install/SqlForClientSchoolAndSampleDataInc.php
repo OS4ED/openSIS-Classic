@@ -7410,57 +7410,6 @@ INSERT INTO `language` (`language_id`, `language_name`, `sort_order`, `last_upda
 (20,'Vietnamese',20,'2019-07-28 19:26:33',NULL);
 
 --
--- Dumping data for table `login_authentication`
---
-
-INSERT INTO `login_authentication` (`id`, `user_id`, `profile_id`, `username`, `password`, `last_login`, `failed_login`, `last_updated`, `updated_by`) VALUES
-(1,1,0,'admin','e6e061838856bf47e1de730719fb2609','2020-08-17 14:24:24',1,'2019-07-28 13:56:33',NULL),
-(2,1,3,'wang','b87cd2f47df9abce28b91254f578088c',NULL,0,'2020-08-10 13:06:15',NULL),
-(3,2,3,'liwei','ce928aa57e86f7d415e7811abe119969',NULL,0,'2020-08-10 13:28:39',NULL),
-(4,3,3,'akari','c0a1a1c69e50ea709261356efc59b12d',NULL,0,'2020-08-10 13:32:28',NULL),
-(5,4,3,'akio','38e93f0b111baea47d6a3ea6f210020e',NULL,0,'2020-08-10 13:34:14',NULL),
-(6,5,3,'kwame','3ffa4d80232bf7342b2d6ef7ea9e4630',NULL,0,'2020-08-10 13:56:54',NULL),
-(7,6,3,'audre','c5c77ecc47b13271cd7bc5b65d8377fa',NULL,0,'2020-08-10 13:58:35',NULL),
-(8,7,3,'oliver','111f0101a91d1672cdef0a757bc76718',NULL,0,'2020-08-10 14:01:10',NULL),
-(9,8,3,'amelia','a14256f0dffae9c7e2f0aabec8d5c1eb',NULL,0,'2020-08-10 14:02:45',NULL),
-(10,9,3,'sophia','6c380c627cd7c54734bd917eee656eb7',NULL,0,'2020-08-10 14:04:18',NULL),
-(11,10,3,'james','7cd2fc39f1b866d314bd17348e554ec2',NULL,0,'2020-08-10 14:05:28',NULL),
-(12,11,3,'clare','3ee7633352635ba287241d0c83e6b35e',NULL,0,'2020-08-10 14:08:21',NULL),
-(13,12,3,'luis','98d691407f65997e7fdd8a45ed8c1b42',NULL,0,'2020-08-10 14:09:23',NULL),
-(14,2,2,'teacher','316e82ab49fbbff2a8eaf302d8d76a32','2020-08-25 16:07:27',0,'2020-08-10 14:14:30',NULL),
-(15,3,2,'ekon','7783a60e24ae7e8c7c146a18ed74129f',NULL,0,'2020-08-10 14:17:51',NULL),
-(16,13,3,'student','6c2528eac36ef7200b91dae6af8adbc7','2020-08-12 14:07:21',0,'2020-08-10 14:23:12',NULL),
-(17,1,4,'parent','8041e64c7ff78b82bcc753b01e49cdf1','2020-08-20 13:08:49',0,'2020-08-10 14:28:47',NULL),
-(18,2,4,'danielle','8bd605156d998ba1f93fe8919b778484',NULL,0,'2020-08-10 14:28:47',NULL),
-(19,3,4,'andrew','2e6da5e8a97b8d0a951b3c3d09932b05',NULL,0,'2020-08-11 07:19:45',NULL),
-(20,4,4,'ella','08c4c87b997b42d3d88a0e7b7b51e1ca',NULL,0,'2020-08-11 07:19:45',NULL),
-(21,5,4,'zhang','8526ef6792e08462d3c5dda704ac39f7',NULL,0,'2020-08-11 11:57:15',NULL),
-(22,6,4,'lian','ed6dbd2ce5a9495e4f213dc4d87ce408',NULL,0,'2020-08-11 11:57:15',NULL),
-(23,7,4,'adriana','2319db82a52d29a8764b5e95b87124f7',NULL,0,'2020-08-11 11:59:08',NULL),
-(24,8,4,'elijah','5a47862ad839eb0f046e198d0b7f05ce',NULL,0,'2020-08-11 12:01:39',NULL),
-(25,9,4,'olivia','519346e03cbb0a2462c501f143c5c9bc',NULL,0,'2020-08-11 12:01:39',NULL),
-(26,10,4,'amare','6bd4a0253df38512ff40405ff7931573',NULL,0,'2020-08-11 12:04:38',NULL),
-(27,11,4,'amber','3a21ea01c03553d233d363780e17de87',NULL,0,'2020-08-11 12:04:38',NULL),
-(28,12,4,'alyssa','8735b43681026c9d178f1805c570ea0f',NULL,0,'2020-08-11 12:06:11',NULL),
-(29,13,4,'robert','ca0110b7af9d27bbcb407ac428d16db4',NULL,0,'2020-08-11 12:08:35',NULL),
-(30,14,4,'sophia1','59512ca56be95ea8d887d3d24db175d4',NULL,0,'2020-08-11 12:08:35',NULL),
-(31,15,4,'enrique','3b632d1fe434774131b85127fab4f594',NULL,0,'2020-08-11 12:16:36',NULL),
-(32,16,4,'aaron','4d35e4f170cd085272197067dd1a7053',NULL,0,'2020-08-11 12:18:31',NULL),
-(33,17,4,'gabriela','6e4f4e4fd5698ea88f5009fcd398faa5',NULL,0,'2020-08-11 12:18:31',NULL),
-(34,18,4,'eiichi','f2e0acf46e4bf81f261a2247b56a7362',NULL,0,'2020-08-11 12:21:03',NULL),
-(35,19,4,'sakura','f3836c392951d1e705ac314ed5273990',NULL,0,'2020-08-11 12:21:03',NULL),
-(36,20,4,'lee','40e21a40f4b36790b40f473f2838f77f',NULL,0,'2020-08-11 12:23:28',NULL),
-(37,22,4,'Daichi','8a8fa87b641fe7525aa5e70ebf25c648',NULL,0,'2020-08-11 12:25:44',NULL),
-(38,23,4,'Ichika','c1f06f202bc622699d925f02f670603f',NULL,0,'2020-08-11 12:25:44',NULL),
-(39,14,3,'aarohi','e6a4b35b89b1db784d853971f4a66f27',NULL,0,'2020-08-11 12:50:03',NULL),
-(40,24,4,'madhav','ca698272ab5d7e80e6dfea09a9004558',NULL,0,'2020-08-11 12:55:34',NULL),
-(41,25,4,'ambika','7604b8605e67067f4e866c98d204ea34',NULL,0,'2020-08-11 12:55:34',NULL),
-(42,15,3,'Vihaan','aed76c8c2bfa8baf442ce0f160e9b16d',NULL,0,'2020-08-11 12:57:38',NULL),
-(43,26,4,'bhavna','34c023949e8506c10d48bd11e577d118',NULL,0,'2020-08-11 13:00:18',NULL),
-(44,4,2,'charlotte','a62d08322973755a343722f4535ca7b2',NULL,0,'2020-08-12 06:42:27',NULL);
-
-
---
 -- Dumping data for table `login_message`
 --
 
@@ -9247,5 +9196,50 @@ INSERT INTO `user_profiles` (`id`, `profile`, `title`, `last_updated`, `updated_
 (75,2,17,19,NULL,6,'Quiz- Week 3','2021-03-29','2021-03-31',20,NULL,1,'2021-04-13 12:11:15',NULL),
 (76,2,21,28,NULL,7,'Reading chapter 1 and write summary','2021-08-04','2021-08-06',10,'&lt;p&gt;Reading chapter 1 of the main text book and write summary.&lt;/p&gt;\r\n',1,'2021-08-07 17:20:02',NULL);");
 
+$dbconn->query('INSERT INTO `login_authentication` (`id`, `user_id`, `profile_id`, `username`, `password`, `last_login`, `failed_login`, `last_updated`, `updated_by`) VALUES
+(1,1,0,"admin","$2y$10$yR8cf7lao0ed9HAyzsD1wuxerYtxXAuhPGrp5nHXI8lFoWh.ZaxJC","2020-08-17 14:24:24",1,"2019-07-28 13:56:33",NULL),
+(2,1,3,"wang","$2y$10$WbcAiMjvjke2BS7mE/iijeOzJte6uUEp6DpcXnA4mxocAvxdC97PC",NULL,0,"2020-08-10 13:06:15",NULL),
+(3,2,3,"liwei","$2y$10$SGBwmvN7ai2g0xjls9kfHOS/SzG.7sNCNYuoslB0hPa1DRk8QR0S6",NULL,0,"2020-08-10 13:28:39",NULL),
+(4,3,3,"akari","$2y$10$YnUEHgt8JkEvk033ahxe5OwsZI2CYz52YJK6xGMzjcqT6hjO0egye",NULL,0,"2020-08-10 13:32:28",NULL),
+(5,4,3,"akio","$2y$10$Mn/ExYFQRVLjmddwQ0wJPeBb0KgE1KUNMDTsnVYE5tXcPmXGD7TMK",NULL,0,"2020-08-10 13:34:14",NULL),
+(6,5,3,"kwame","$2y$10$MT70iRdH141LsxXaSkdLTuNFCfBgbejpLxGY1w0L0Y/GeOUUgLO22",NULL,0,"2020-08-10 13:56:54",NULL),
+(7,6,3,"audre","$2y$10$PfvOCa/c63PnzUZctRsZKOXcFL8vV2HffRo.bbHVRKIJYi7wqmsau",NULL,0,"2020-08-10 13:58:35",NULL),
+(8,7,3,"oliver","$2y$10$RxxzWLVqvDKlPUNuqjTi/upflCKiIn4lqDaeA1zTfGFVkifYyVbgG",NULL,0,"2020-08-10 14:01:10",NULL),
+(9,8,3,"amelia","$2y$10$khTzSPtuTS1nzO5RGbkeUecRYtLQ8DqetUcTgBa40TPGqJcg9PhnC",NULL,0,"2020-08-10 14:02:45",NULL),
+(10,9,3,"sophia","$2y$10$LrxO.V04fbWbFs8vEscvnOG/1JKgHX2soQRQPys3PrddZNLRiCrfC",NULL,0,"2020-08-10 14:04:18",NULL),
+(11,10,3,"james","$2y$10$aDxCieI3sOSL4MaBn1Ho.unFl2IydP5aaeb8OGylvS3wqfEwP/9RS",NULL,0,"2020-08-10 14:05:28",NULL),
+(12,11,3,"clare","$2y$10$cZqxmUpDo8CJlrRbRn0CdOTwkGLecl2Nm4hCp83SuUNIQR186DzfS",NULL,0,"2020-08-10 14:08:21",NULL),
+(13,12,3,"luis","$2y$10$lkwkDOrrBv51tmX9eq1wW.N9UaBCodxWEDD4sQWFEobl/8vMWlo42",NULL,0,"2020-08-10 14:09:23",NULL),
+(14,2,2,"teacher","$2y$10$AfT2RE4u6UzeTsd0J4W9iefUw.LI.XgWgfxHrUKZQ2S4YoWgH.dOO","2020-08-25 16:07:27",0,"2020-08-10 14:14:30",NULL),
+(15,3,2,"ekon","$2y$10$ORn7R2MFOc60JCFgKdQrMeCFe7htJewhAGQrDiYE2H54AuruaY2iq",NULL,0,"2020-08-10 14:17:51",NULL),
+(16,13,3,"student","$2y$10$EoOZITBjFmBInzcL0Ut3DOsMmKdcUtMPdneYvADHLSvSUH8Xk4k9S","2020-08-12 14:07:21",0,"2020-08-10 14:23:12",NULL),
+(17,1,4,"parent","$2y$10$1m/GDlXctfz8pJysJaYFMOrep8boxfq.a2ep4F16JFy43.J0zryLK","2020-08-20 13:08:49",0,"2020-08-10 14:28:47",NULL),
+(18,2,4,"danielle","$2y$10$r/oVxgn1qXkSAoI.6FIZkO5tB9JtmW3kGlaL8JB1OLLhoDVJz1Aey",NULL,0,"2020-08-10 14:28:47",NULL),
+(19,3,4,"andrew","$2y$10$gvD3vO4I6Wq2jB8CDVzaVOfGNwSfF4/e0JGeMR0fmOqN/r9jUInda",NULL,0,"2020-08-11 07:19:45",NULL),
+(20,4,4,"ella","$2y$10$r4gg7whOeVlUN5q9mszDNeGQ2/kkrRlBVmQ6THB8f0wsl30xjzKBm",NULL,0,"2020-08-11 07:19:45",NULL),
+(21,5,4,"zhang","$2y$10$R8pPfc5ynLhP7aMD8b/lw.ilYwoT8NctLa91bDJNnQrf18riIz1MK",NULL,0,"2020-08-11 11:57:15",NULL),
+(22,6,4,"lian","$2y$10$.mi15dKiF2/qt8A.b3H.LOGNflQhM4Suw6fEGBL49ly6d0uAS0FKC",NULL,0,"2020-08-11 11:57:15",NULL),
+(23,7,4,"adriana","$2y$10$6LHUfqDB8PQuMZd0RecD7.AY3bSisDcQlJTDFhzcuXpEiTC7qc2VO",NULL,0,"2020-08-11 11:59:08",NULL),
+(24,8,4,"elijah","$2y$10$IsTDbWN/fkoDr/mwfItZbuTg8n/UdjkkkMmR1psjjdV7vU.UJm.P6",NULL,0,"2020-08-11 12:01:39",NULL),
+(25,9,4,"olivia","$2y$10$FUraxNDqdg4x81R0lntJ5.O41MDcxEozNROAgaogVOMeu08Q.7e02",NULL,0,"2020-08-11 12:01:39",NULL),
+(26,10,4,"amare","$2y$10$UxtxF1kgW36HwscQFAWTsu6C5BJt5Zyf5LNNd4rx010gC6xRzWaGK",NULL,0,"2020-08-11 12:04:38",NULL),
+(27,11,4,"amber","$2y$10$WXK13jExe7N.RCH6o5Hd7eRLn2tCxOgKTKrN.3wpAAg8/a1BNfA9u",NULL,0,"2020-08-11 12:04:38",NULL),
+(28,12,4,"alyssa","$2y$10$Fz6Qy5VPJfaywqTQtNjGfupK6kd4.0bQGa7lJjAskJEtJIXLKUr3y",NULL,0,"2020-08-11 12:06:11",NULL),
+(29,13,4,"robert","$2y$10$b5iT/Yr0oXO3p1Cosan6.OUbMNHkYo9RgDiQMydf7irjCQrbdUftu",NULL,0,"2020-08-11 12:08:35",NULL),
+(30,14,4,"sophia1","$2y$10$pjV8qHA95tG/e8UUNDJb.OiHIh8prfQ3Ex7kdD1jpmO9TM0NYkZ0y",NULL,0,"2020-08-11 12:08:35",NULL),
+(31,15,4,"enrique","$2y$10$lLZm8ca.MGAuJCj4IY4fp.O.fiDd6nZe53MliQbZW5HoYv4TZ6Hgy",NULL,0,"2020-08-11 12:16:36",NULL),
+(32,16,4,"aaron","$2y$10$Ke3izyetV5jyglNuZWsh7O3UwbDw1PKRXmHnSX/3LZ1QhQsM4Qq82",NULL,0,"2020-08-11 12:18:31",NULL),
+(33,17,4,"gabriela","$2y$10$XDKcXyUpSnhp6gLn1QRBX.hOyPqfQhSWcn8Z33V4le9bUo4fAUQEu",NULL,0,"2020-08-11 12:18:31",NULL),
+(34,18,4,"eiichi","$2y$10$.iyrx4H5V7FntYPHp3qxkOI.rF93eJbXQON8oLOzRmA0mUNcyZvla",NULL,0,"2020-08-11 12:21:03",NULL),
+(35,19,4,"sakura","$2y$10$eIekvIR1EoF5fDAtfeOBvO3iduMcMecTP2iyQvf1U6yKGHyvFUyaW",NULL,0,"2020-08-11 12:21:03",NULL),
+(36,20,4,"lee","$2y$10$Mk1IYlP1TUpqFgbV5jQNvuK.87zh/IjR2dNahS/Y.FklAK01id1sO",NULL,0,"2020-08-11 12:23:28",NULL),
+(37,22,4,"Daichi","$2y$10$aYk13CBuZu8GBBGnyWUPROVC8CBjLUOG6AtkoqGZkogB93E29mdN2",NULL,0,"2020-08-11 12:25:44",NULL),
+(38,23,4,"Ichika","$2y$10$/8lzO09u6A88AW.LRaPKlOiODmZZkKtYbpGkUk17GQv9iTq1hiUqK",NULL,0,"2020-08-11 12:25:44",NULL),
+(39,14,3,"aarohi","$2y$10$ENiX5vk23.24wyqYhW09leld/lP.sDZOXKfktCJGLu5p6a0YAQ7le",NULL,0,"2020-08-11 12:50:03",NULL),
+(40,24,4,"madhav","$2y$10$AQTzSLPRrKw2Iy7PFiOR7eN9kj8uWcirEizMjfDbfl4HWuwvOHJ9e",NULL,0,"2020-08-11 12:55:34",NULL),
+(41,25,4,"ambika","$2y$10$qg7AxldFIN808WtqsXc4HOLl2BzPL6pjwVCVaYlAIVmPS1q49OtVq",NULL,0,"2020-08-11 12:55:34",NULL),
+(42,15,3,"Vihaan","$2y$10$8yzwIhjzabtcYaFcFoF7LuAhhgPpfO5RKKwOdHkCUBfv6hX6V1/VO",NULL,0,"2020-08-11 12:57:38",NULL),
+(43,26,4,"bhavna","$2y$10$9fTeQLTESGA7mVtbDdSVKeB0YPcYpYjfQC4sTUS2I8Hk5YUJA.ORu",NULL,0,"2020-08-11 13:00:18",NULL),
+(44,4,2,"charlotte","$2y$10$3R31ttPfpCduMAw4uHiIjexmZlqRFLh7ivABZSxWl59u.J1pVKcN6",NULL,0,"2020-08-12 06:42:27",NULL);');
 ?>
 

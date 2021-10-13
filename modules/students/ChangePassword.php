@@ -26,6 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+include_once("../../functions/PasswordHashFnc.php");
 DrawBC(""._schoolSetup." > " . ProgramTitle());
 if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && (User('PROFILE') == 'parent' || User('PROFILE') == 'student')) {
     $stu_PASS = DBGet(DBQuery('SELECT la.PASSWORD FROM login_authentication la, students s WHERE s.STUDENT_ID=\'' . UserStudentId() . '\' AND la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID=3'));
@@ -39,12 +40,28 @@ if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_par
         $pass_new = paramlib_validation($column_name, $_REQUEST['new']);
 
         $pass_retype = paramlib_validation($column_name, $_REQUEST['retype']);
-        $pass_old = str_replace("\'", "''", md5($pass_old));
-        $pass_new = str_replace("\'", "''", md5($pass_new));
-        $pass_retype = str_replace("\'", "''", md5($pass_retype));
-        if ($stu_PASS[1]['PASSWORD'] == $pass_old) {
-            if ($pass_new == $pass_retype) {
-                $sql = 'UPDATE login_authentication SET PASSWORD=\'' . $pass_new . '\' WHERE USER_ID=\'' . UserStudentId() . '\' AND PROFILE_ID=3 ';
+
+        $pass_old = str_replace("\'", "''",($pass_old));
+        $pass_new = str_replace("\'", "''",($pass_new));
+        $pass_retype = str_replace("\'", "''",($pass_retype));
+
+        //code for match old password
+        $student_old_pass =  $stu_PASS[1]['PASSWORD'];
+        $old_password_status = VerifyHash($pass_old,$student_old_pass); //match password
+        //end 
+        
+        //code for match new password & retype password
+        $pass_new_hash = GenerateNewHash($pass_new); //converted New password in hash
+        $pass_verify_status = VerifyHash($pass_retype,$pass_new_hash);
+        //end
+
+        /*if ($stu_PASS[1]['PASSWORD'] == $pass_old) */
+        if($old_password_status == 1)
+        {
+            /*if ($pass_new == $pass_retype) */
+            if ($pass_verify_status == 1) 
+            {
+                $sql = 'UPDATE login_authentication SET PASSWORD=\'' . $pass_new_hash . '\' WHERE USER_ID=\'' . UserStudentId() . '\' AND PROFILE_ID=3 ';
                 DBQuery($sql);
                 $note[] = _passwordSucessfullyChanged;
                 echo ErrorMessage($note, 'note');

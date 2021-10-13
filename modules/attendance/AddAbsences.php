@@ -76,11 +76,14 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
                 $course_periods_RET = DBGet(DBQuery('SELECT s.COURSE_PERIOD_ID,cpv.PERIOD_ID,cpv.id as cpv_id FROM schedule s,course_periods cp,course_period_var cpv,attendance_calendar ac,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND ac.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.CALENDAR_ID=cp.CALENDAR_ID AND (ac.BLOCK=sp.BLOCK OR sp.BLOCK IS NULL) AND s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND s.STUDENT_ID=' . $student_id . ' AND cpv.PERIOD_ID IN ' . $periods_list . ' AND cpv.DOES_ATTENDANCE=\'Y\' AND (ac.SCHOOL_DATE BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND ac.SCHOOL_DATE>=s.START_DATE)) AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(ac.SCHOOL_DATE)  FOR 1) IN cpv.DAYS)>0 AND (cp.MARKING_PERIOD_ID IN (' . $all_mp . ') OR cp.MARKING_PERIOD_ID IS NULL) AND (s.MARKING_PERIOD_ID IN (' . $all_mp . ') OR s.MARKING_PERIOD_ID IS NULL) AND NOT (cp.HALF_DAY=\'Y\' AND (SELECT STATE_CODE FROM attendance_codes WHERE ID=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\')=\'H\')'), array());
 
-
+                $period_key = array_keys($_REQUEST['period']);
                 $c = 0;
                 foreach ($course_periods_RET as $course_periods_RET) {
 //                                    	
-                    foreach ($_REQUEST['period'] as $period_id => $yes) {
+                    // foreach ($_REQUEST['period'] as $period_id => $yes) {
+                    if(in_array($course_periods_RET['PERIOD_ID'], $period_key))
+                    {
+                        $period_id = $course_periods_RET['PERIOD_ID'];
                         $course_period_id = $course_periods_RET['COURSE_PERIOD_ID'];
 //                               
                         $cp_arr[$course_periods_RET['CPV_ID']] = $course_period_id;
@@ -100,7 +103,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
                                 {
                                 $absence_reason=optional_param('absence_reason', '', PARAM_SPCL);
                                 $absence_reason= singleQuoteReplace("","",$absence_reason);
-                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . $absence_reason . '\',ADMIN=\'Y\'
+                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . $absence_reason . '\',ADMIN=\'Y\',COURSE_PERIOD_ID=\'' . $course_period_id . '\'
 								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';   
                                 }
                                  DBQuery($sql);

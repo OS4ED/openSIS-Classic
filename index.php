@@ -27,17 +27,13 @@
 #
 #***************************************************************************************
 error_reporting(1);
-require_once('functions/PurifierFnc.php');
-
-$_REQUEST = purify($_REQUEST);
-$_POST = purify($_POST);
-$_GET = purify($_GET);
 ini_set('session.cookie_httponly', 1);
 include_once("functions/DelDirectoryFnc.php");
 include_once("functions/ParamLibFnc.php");
 require_once("functions/PragRepFnc.php");
 include_once("RemoveBackup.php");
 include('lang/language.php');
+include_once("functions/PasswordHashFnc.php");
 
 $index_commit_in    =   "";
 $index_commit_out   =   "";
@@ -112,12 +108,24 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     }
 
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
-        $password = str_replace("\'", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
-    $password = str_replace("&", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
-    $password = str_replace("\\", "", md5(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+        $password = str_replace("\'", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("&", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("\\", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
 
-    $login_uniform = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));
-
+    //verify password and username code
+    $login_uniform = [];
+    $validate_username = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') '));
+    if (count($validate_username) > 0) {
+        $login_uniform = $validate_username[1];
+        $user_password =  $login_uniform['PASSWORD'];
+        $login_status = VerifyHash($password,$user_password);
+        if($login_status==1) {  $login_uniform = $validate_username; }
+        else { $login_uniform = []; }
+    }
+    //end
+    
+    /*$login_uniform = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));*/
+    
     if (count($login_uniform) > 0) {
 
         $login_uniform = $login_uniform[1];
@@ -245,9 +253,24 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             }
         }
     } else {
-
         if (!$login_RET && !$student_RET) {
-            $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE UPPER(PASSWORD)=UPPER('$password') AND PROFILE_ID=0"));
+
+            //check superadmin login code start
+            $log_as_admin =[];
+            $superadmin_login = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID,PASSWORD FROM login_authentication WHERE PROFILE_ID=0"));
+            foreach($superadmin_login as $val)
+            {
+                $super_admin_password = $val['PASSWORD'];
+                $super_admin_userid = $val['USER_ID'];
+                $login_status = VerifyHash($password,$super_admin_password);
+                if($login_status==1) 
+                    { 
+                        $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USER_ID=$super_admin_userid AND PROFILE_ID=0"));
+                    }
+            }
+            //end
+
+            /*$log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE UPPER(PASSWORD)=UPPER('$password') AND PROFILE_ID=0"));*/
             if (count($log_as_admin)) {
                 $log_as_admin = $log_as_admin[1];
                 $usr_prof = DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID=' . $log_as_admin['PROFILE_ID']));
@@ -297,7 +320,24 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                         $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
                     }
                 } else {
-                    $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));  
+
+                    //checking user id and password code start
+                    $admin_RET =[];
+                    $admin_RET_Validation = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=la.USER_ID"));  
+                    foreach($admin_RET_Validation as $val)
+                    {
+                        $user_validate_password = $val['PASSWORD'];
+                        $user_validate_id = $val['STAFF_ID'];
+                        $login_status = VerifyHash($password,$user_validate_password);
+                        if($login_status==1) 
+                            { 
+                                $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=$user_validate_id")); 
+                            }
+                    }
+                    //end
+
+                    /*$admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));*/ 
+
                     // Uid and Password Checking
 
                     if ($admin_RET) {
@@ -319,8 +359,6 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
             }
         } else {
-
-
             $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
         }
     }
@@ -385,7 +423,21 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
         if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login > $ad_f_cnt && ($profile_id != 1 && $profile_id != 0)) {
-            $staff_info = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));
+
+            //verify password and username code
+            $staff_info = [];
+            $validate_staff_info = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') '));
+            if (count($validate_staff_info) > 0) {
+                $validate_staff_info = $validate_staff_info[1];
+                $staff_info_password =  $validate_staff_info['PASSWORD'];
+                $staff_info_password_status = VerifyHash($password,$staff_info_password);
+                if($staff_info_password_status==1) {  $staff_info = $validate_staff_info; }
+                else { $staff_info = []; }
+            }
+            //end
+
+            /*$staff_info = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));*/
+
             if ($staff_info[1]['PROFILE_ID'] == 2 || $staff_info[1]['PROFILE_ID'] == 6)
                 DBQuery("UPDATE staff s,staff_school_relationship ssp SET s.IS_DISABLE='Y' WHERE s.STAFF_ID=ssp.STAFF_ID AND s.STAFF_ID='" . $staff_info[1]['USER_ID'] . "' AND s.PROFILE_ID='" . $staff_info[1]['PROFILE_ID'] . " ' AND ssp.SYEAR='$_SESSION[UserSyear]' AND s.PROFILE_ID NOT IN (0,1)"); //pinki
             if ($staff_info[1]['PROFILE_ID'] == 4)

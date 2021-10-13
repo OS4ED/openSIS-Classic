@@ -26,13 +26,6 @@
 #
 #***************************************************************************************
 error_reporting(0);
-
-require_once('functions/PurifierFnc.php');
-
-$_REQUEST = purify($_REQUEST);
-$_POST = purify($_POST);
-$_GET = purify($_GET);
-
 session_start();
 include "functions/ParamLibFnc.php";
 include "Data.php";
@@ -40,6 +33,7 @@ include "functions/DbGetFnc.php";
 require_once "functions/PragRepFnc.php";
 include "AuthCryp.php";
 include 'functions/SqlSecurityFnc.php';
+include_once("functions/PasswordHashFnc.php");
 
 function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
@@ -368,7 +362,23 @@ if ($_REQUEST['user_type_form'] == 'username') {
 
         if ($_REQUEST['username_stn_id'] != '' && $_REQUEST['pass'] != '' && $_REQUEST['month_username_dob'] != '' && $_REQUEST['day_username_dob'] != '' && $_REQUEST['year_username_dob'] != '') {
             $stu_dob = $_REQUEST['year_username_dob'] . '-' . $_REQUEST['month_username_dob'] . '-' . $_REQUEST['day_username_dob'];
-            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $username_stn_id . ''));
+            /*$stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $username_stn_id . ''));*/
+
+            //code started for match password & birthdate & student id 
+            $get_stu_info = DBGet(DBQuery('SELECT la.PASSWORD FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID  AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND la.PROFILE_ID=3 AND s.STUDENT_ID=' . $username_stn_id . ''));
+            $student_old_password = $get_stu_info[1]['PASSWORD'];
+            $entered_password =  $_REQUEST['pass'];
+            $password_match_status = VerifyHash($entered_password,$student_old_password);
+            
+            if($password_match_status==1)
+            {
+                $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND la.PROFILE_ID=3 AND s.STUDENT_ID=' . $username_stn_id . ''));
+            }
+            else
+            {
+                $stu_info = [];
+            }
+            //end 
 
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -381,7 +391,6 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
     }
     if ($_REQUEST['uname_user_type'] == 'uname_staff') {
-
         if ($_REQUEST['pass'] == '') {
             $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
             echo'<script>window.location.href="ForgotPass.php"</script>';
@@ -392,7 +401,24 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
-            $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.EMAIL=\'' . $username_stf_email . '\''));
+            /*$stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.EMAIL=\'' . $username_stf_email . '\''));*/
+
+            //code started for match password & EMAIL
+            $get_stf_info = DBGet(DBQuery('SELECT la.PASSWORD FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PROFILE_ID IN ("0","1","2","5") AND s.EMAIL=\'' . $username_stf_email . '\''));
+            
+            $stf_old_password = $get_stf_info[1]['PASSWORD'];
+            $stf_entered_password =  $_REQUEST['pass'];
+            $stf_password_match_status = VerifyHash($stf_entered_password,$stf_old_password);
+            
+            if($stf_password_match_status==1)
+            {
+                $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID  AND la.PROFILE_ID IN ("0","1","2","5") AND s.EMAIL=\'' . $username_stf_email . '\''));
+            }
+            else
+            {
+                $stf_info = [];
+            }
+            //end
 
             if ($stf_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -415,7 +441,23 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
 
         if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
-            $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND p.EMAIL=\'' . $username_stf_email . '\' '));
+            /*$par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND p.EMAIL=\'' . $username_stf_email . '\' '));*/
+
+            //code started for match password & EMAIL
+            $get_par_info = DBGet(DBQuery('SELECT la.PASSWORD FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID=4 AND p.EMAIL=\'' . $username_stf_email . '\' '));
+            $par_old_password = $get_par_info[1]['PASSWORD'];
+            $par_entered_password =  $_REQUEST['pass'];
+            $par_password_match_status = VerifyHash($par_entered_password,$par_old_password);
+
+            if($par_password_match_status==1)
+            {
+                $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID=4 AND p.EMAIL=\'' . $username_stf_email . '\' '));
+            }
+            else
+            {
+                $par_info = [];
+            }
+            //end
 
             if ($par_info[1]['STAFF_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -435,11 +477,28 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
     $get_vals[0] = cryptor($get_vals[0], 'DEC', '');
     $get_vals[1] = cryptor($get_vals[1], 'DEC', '');
 
-    $get_info = DBGet(DBQuery('SELECT COUNT(*) AS EX_REC FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' AND password=\'' . md5($_REQUEST['ver_pass']) . '\' '));
-    if ($get_info[1]['EX_REC'] > 0) {
+    /*$get_info = DBGet(DBQuery('SELECT COUNT(*) AS EX_REC FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' AND password=\'' . md5($_REQUEST['ver_pass']) . '\' '));*/
+
+    //code started for match password 
+    $total_password = 0;
+    $all_users = DBGet(DBQuery('SELECT * FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' '));
+        foreach($all_users as $val)
+            {
+                $user_ex_password = $val['PASSWORD'];
+                $user_new_password = $_REQUEST['ver_pass'];
+                $user_pass_status = VerifyHash($user_new_password,$user_ex_password);
+                if($user_pass_status==1) 
+                    { 
+                        $total_password = $total_password+1;
+                    }
+            }
+    //end
+    
+    /*if ($get_info[1]['EX_REC'] > 0)*/ 
+    if($total_password!=0) {
         $_SESSION['err_msg_mod'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
-    } else {
-        DBQuery('UPDATE login_authentication SET password=\'' . md5($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
+    } else { 
+        DBQuery('UPDATE login_authentication SET password=\'' . GenerateNewHash($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
         $_SESSION['conf_msg'] = '<font color="red" ><b>Password updated successfully.</b></font>';
          unset($_SESSION['PageAccess']);
         echo'<script>window.location.href="index.php"</script>';

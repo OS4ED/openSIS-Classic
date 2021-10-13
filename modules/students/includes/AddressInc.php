@@ -29,6 +29,7 @@
 
 
 include('../../../RedirectIncludes.php');
+include_once("../../functions/PasswordHashFnc.php");
 include 'modules/students/ConfigInc.php';
 
 // echo "<pre>";
@@ -319,19 +320,20 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     {
                         if ($col == 'PASSWORD' && $col_v != '')
                         {
-                            $password = md5(singleQuoteReplace('', '', $col_v));
+                            $user_password =addslashes($col_v);
+                            $password = GenerateNewHash(addslashes($col_v));
                         }
                         elseif ($col == 'USER_NAME' && $col_v != '')
                         {
-                            $user_name_val = singleQuoteReplace('', '', $col_v);
+                            $user_name_val = addslashes($col_v);
                         }
                         elseif ($col == 'RELATIONSHIP' && $col_v != '')
                         {
-                            $rel_stu[] = $col . '=\'' . singleQuoteReplace('', '', $col_v) . '\'';
+                            $rel_stu[] = $col . '=\'' . addslashes($col_v) . '\'';
                         }
                         elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'Y')
                         {
-                            $rel_stu[] = 'IS_EMERGENCY=\'' . singleQuoteReplace('', '', $col_v) . '\'';
+                            $rel_stu[] = 'IS_EMERGENCY=\'' . addslashes($col_v) . '\'';
                         }
                         elseif ($col == 'IS_EMERGENCY_HIDDEN' && $col_v == 'N')
                         {
@@ -341,7 +343,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         {
                             if ($col != 'USER_NAME' && $col != 'RELATIONSHIP' && $col != 'PASSWORD' && $col != 'IS_EMERGENCY' && $col != 'IS_EMERGENCY_HIDDEN')
                             {
-                                $set_arr[] = $col . "='" . singleQuoteReplace('', '', $col_v) . "'";
+                                $set_arr[] = $col . "='" . addslashes($col_v) . "'";
                             }
                         }
                         
@@ -480,16 +482,32 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 {
                     if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '')
                     {
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');*/
+
+                        // count password in db start
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
+
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
                         
                         $num_user = DBGet($res_user_chk);
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$num_pass = DBGet($res_pass_chk);*/
 
                         
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0)
+                            /*if (count($num_pass) == 0)*/
+                            if ($countpass == 0)
                             {
                                 // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
 
@@ -527,13 +545,28 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
                         $num_user = DBGet($res_user_chk);
                         
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
+                        $num_pass = DBGet($res_pass_chk);*/
+
+                        // count password in db start
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
 
                         
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0)
+                            /*if (count($num_pass) == 0)*/
+                            if ($countpass == 0)
                             {
                                 // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
 
@@ -572,13 +605,27 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $user_name_val . '\'');
                         $num_user = DBGet($res_user_chk);
                         
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
+                        $num_pass = DBGet($res_pass_chk);*/
                         
+                        // count password in db start
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
 
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0)
+                            /*if (count($num_pass) == 0)*/
+                            if ($countpass == 0)
                             {
                                 // CHECK IF ENTRY IS EXISTING IN `login_authentication` - [D: 19/12/03]
 
@@ -637,7 +684,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                 if ($ind == 'PRIMARY' || $ind == 'SECONDARY')
                 {
-                    $pri_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['PRIMARY']['LAST_NAME']) . '\' AND EMAIL=\'' . $_REQUEST['values']['people']['PRIMARY']['EMAIL'] . '\''));
+                    $pri_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . addslashes($_REQUEST['values']['people']['PRIMARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . addslashes($_REQUEST['values']['people']['PRIMARY']['LAST_NAME']) . '\' AND EMAIL=\'' . $_REQUEST['values']['people']['PRIMARY']['EMAIL'] . '\''));
                     //  if(count($pri_people_exists)>0)
 
                     if ($_REQUEST['hidden_primary'] != '')
@@ -652,7 +699,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     }
 
 
-                    $sec_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['SECONDARY']['EMAIL']) . '\''));
+                    $sec_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . addslashes($_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . addslashes($_REQUEST['values']['people']['SECONDARY']['LAST_NAME']) . '\' AND EMAIL=\'' . addslashes($_REQUEST['values']['people']['SECONDARY']['EMAIL']) . '\''));
                     
                     if($_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']=='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']=='')
                     {
@@ -674,7 +721,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                 if ($ind == 'OTHER' && $table == 'people')
                 {
-                    $oth_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['LAST_NAME']) . '\' AND EMAIL=\'' . singleQuoteReplace('', '', $_REQUEST['values']['people']['OTHER']['EMAIL']) . '\''));
+                    $oth_people_exists = DBGet(DBQuery('SELECT * FROM people WHERE FIRST_NAME=\'' . addslashes($_REQUEST['values']['people']['OTHER']['FIRST_NAME']) . '\' AND LAST_NAME=\'' . addslashes($_REQUEST['values']['people']['OTHER']['LAST_NAME']) . '\' AND EMAIL=\'' . addslashes($_REQUEST['values']['people']['OTHER']['EMAIL']) . '\''));
                     // if(count($oth_people_exists)>0)
                     // {
                     
@@ -702,7 +749,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         {
                             $fields[] = $col;
 
-                            $field_vals[] = "'" . singleQuoteReplace('', '', $col_v) . "'";
+                            $field_vals[] = "'" . addslashes($col_v) . "'";
 
                             $go = 'true';
                         }
@@ -722,7 +769,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                                 if ($col != 'PASSWORD' && $col != 'USER_NAME' && $col != 'IS_EMERGENCY_HIDDEN')
                                 {
                                     $peo_fields[] = $col;
-                                    $peo_field_vals[] = "'" . singleQuoteReplace('', '', $col_v) . "'";
+                                    $peo_field_vals[] = "'" . addslashes($col_v) . "'";
                                     $log_go = true;
                                 }
                             }
@@ -855,23 +902,39 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 {
                     if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y')
                     {
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['PRIMARY']['PASSWORD']) . '\'');
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['PRIMARY']['PASSWORD']) . '\'');
+                        $num_pass = DBGet($res_pass_chk);*/
                         
+                        // count password in db start
+                        $user_new_password = $type['PRIMARY']['PASSWORD'];
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_new_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
+
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['PRIMARY']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
 
 
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0) 
+                            /*if (count($num_pass) == 0) */
+                            if ($countpass == 0) 
                             {
                                 if ($_REQUEST['values']['people']['PRIMARY']['PROFILE_ID'] != '')
                                     $pri_prof_id = $_REQUEST['values']['people']['PRIMARY']['PROFILE_ID'];
                                 else
                                     $pri_prof_id = 4;
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . md5($type['PRIMARY']['PASSWORD']) . '\',' . $pri_prof_id . ')');
+                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $pri_person_id . ',\'' . $type['PRIMARY']['USER_NAME'] . '\',\'' . GenerateNewHash($type['PRIMARY']['PASSWORD']) . '\',' . $pri_prof_id . ')');
                             }
                             else
                             {
@@ -908,8 +971,23 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                     if (clean_param($_REQUEST['secondary_portal'], PARAM_ALPHAMOD) == 'Y' && $type['SECONDARY']['USER_NAME'] != '')
                     {
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['SECONDARY']['PASSWORD']) . '\'');
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['SECONDARY']['PASSWORD']) . '\'');
+                        $num_pass = DBGet($res_pass_chk);*/
+
+                        // count password in db start
+                        $user_new_password = $type['SECONDARY']['PASSWORD'];
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_new_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
 
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['SECONDARY']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
@@ -917,14 +995,15 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0)
+                            /*if (count($num_pass) == 0)*/
+                            if ($countpass == 0)
                             {
                                 if ($_REQUEST['values']['people']['SECONDARY']['PROFILE_ID'] != '')
                                     $sec_prof_id = $_REQUEST['values']['people']['SECONDARY']['PROFILE_ID'];
                                 else
                                     $sec_prof_id = 4;
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['SECONDARY']['USER_NAME'] . '\',\'' . md5($type['SECONDARY']['PASSWORD']) . '\',' . $sec_prof_id . ')');
+                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $sec_person_id . ',\'' . $type['SECONDARY']['USER_NAME'] . '\',\'' . GenerateNewHash($type['SECONDARY']['PASSWORD']) . '\',' . $sec_prof_id . ')');
                             }
                             else
                             {
@@ -961,23 +1040,39 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                     if (clean_param($_REQUEST['other_portal'], PARAM_ALPHAMOD) == 'Y' && $type['OTHER']['USER_NAME'] != '')
                     {
-                        $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['OTHER']['PASSWORD']) . '\'');
-                        $num_pass = DBGet($res_pass_chk);
+                        /*$res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . md5($type['OTHER']['PASSWORD']) . '\'');
+                        $num_pass = DBGet($res_pass_chk);*/
                         
+                        // count password in db start
+                        $user_new_password = $type['OTHER']['PASSWORD'];
+                        $countpass=0;
+                        $all_users = DBGet(DBQuery("SELECT * FROM login_authentication"));
+                        foreach($all_users as $val)
+                        {
+                            $user_pass = $val['PASSWORD'];
+                            $pass_status = VerifyHash($user_new_password,$user_pass);
+                            if($pass_status==1) 
+                                { 
+                                    $countpass = $countpass+1;
+                                }
+                        }
+                        // end
+
                         $res_user_chk = DBQuery('SELECT * FROM login_authentication WHERE USERNAME = \'' . $type['OTHER']['USER_NAME'] . '\'');
                         $num_user = DBGet($res_user_chk);
                         
 
                         if (count($num_user) == 0)
                         {
-                            if (count($num_pass) == 0)
+                            /*if (count($num_pass) == 0)*/
+                            if ($countpass == 0)
                             {
                                 if ($_REQUEST['values']['people']['OTHER']['PROFILE_ID'] != '')
                                     $oth_prof_id = $_REQUEST['values']['people']['OTHER']['PROFILE_ID'];
                                 else
                                     $oth_prof_id = 4;
 
-                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['OTHER']['USER_NAME'] . '\',\'' . md5($type['OTHER']['PASSWORD']) . '\',' . $oth_prof_id . ')');
+                                DBQuery('INSERT INTO login_authentication (USER_ID,USERNAME,PASSWORD,PROFILE_ID) VALUES (' . $oth_person_id . ',\'' . $type['OTHER']['USER_NAME'] . '\',\'' . GenerateNewHash($type['OTHER']['PASSWORD']) . '\',' . $oth_prof_id . ')');
                             }
                             else
                             {
@@ -1345,10 +1440,10 @@ if (!$_REQUEST['modfunc'])
                 $extra_sql = '';
 
                 if ($m_addr[1]['STREET'] != '')
-                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $m_addr[1]['STREET']) . '\' ';
+                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . addslashes($m_addr[1]['STREET']) . '\' ';
                 else
                     $extra_sql      = 'AND STREET_ADDRESS_2 is NULL ';
-                    $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
+                    $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . addslashes($m_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . addslashes($m_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . addslashes($m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
                     // $s_mail_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $m_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $m_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\' ' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $m_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $m_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $m_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
                 
                 if ($s_mail_address[1]['TOTAL'] != 0)
@@ -1533,13 +1628,13 @@ if (!$_REQUEST['modfunc'])
             {
                 $extra_sql = '';
                 if ($p_addr[1]['STREET'] != '')
-                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $m_addr[1]['STREET']) . '\' ';
+                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . addslashes($m_addr[1]['STREET']) . '\' ';
                 else
                     $extra_sql = 'AND STREET_ADDRESS_2 is NULL ';
 
                 // $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
 
-                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND student_id = \''.$_REQUEST['student_id'].'\' AND TYPE=\'Home Address\' '));
+                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . addslashes($p_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . addslashes($p_addr[1]['ZIPCODE']) . '\' AND student_id = \''.$_REQUEST['student_id'].'\' AND TYPE=\'Home Address\' '));
 
 
                 if ($s_prim_address[1]['TOTAL'] != 0)
@@ -1686,7 +1781,7 @@ if (!$_REQUEST['modfunc'])
 
             echo '<hr/>';
 
-            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\'    ' . ($s_addr[1]['STREET'] != '' ? 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $s_addr[1]['STREET']) . '\'' : ' ') . '  AND CITY=\'' . singleQuoteReplace('', '', $s_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND STUDENT_ID=' . UserStudentID()));
+            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . addslashes($s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . addslashes($p_addr[1]['ADDRESS']) . '\'    ' . ($s_addr[1]['STREET'] != '' ? 'AND STREET_ADDRESS_2=\'' . addslashes($s_addr[1]['STREET']) . '\'' : ' ') . '  AND CITY=\'' . addslashes($s_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND STUDENT_ID=' . UserStudentID()));
             if ($s_sec_address[1]['TOTAL'] != 0)
                 $s_checked = " CHECKED=CHECKED ";
             else

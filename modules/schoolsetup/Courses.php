@@ -1012,10 +1012,10 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         $mp_title .= paramlib_validation($column = SHORT_NAME, $short_name) . ' - ';
 
                     $title = str_replace("'", "''", str_replace("\'", "'", $mp_title) . $teacher[1]['FIRST_NAME'] . ' ' . $teacher[1]['MIDDLE_NAME'] . ' ' . $teacher[1]['LAST_NAME']);
-                    $sql .= "TITLE='$title',calendar_id='$calendar_id',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
+                    $sql .= "TITLE='".addslashes($title)."',calendar_id='$calendar_id',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
                     $days = '';
                     if ($table_name == 'course_periods')
-                        $sql1.="TITLE='$title',SHORT_NAME='$short_name',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
+                        $sql1.="TITLE='".addslashes($title)."',SHORT_NAME='".addslashes($short_name)."',last_updated=NOW(),MODIFIED_BY=" . User('STAFF_ID') . ",";
                 }
 
                 if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {

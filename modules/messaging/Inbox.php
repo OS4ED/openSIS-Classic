@@ -29,7 +29,6 @@
 session_start();
 !empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
-require_once('libraries/htmlpurifier/library/HTMLPurifier.auto.php');
 
 DrawBC("" . _messaging . " > " . ProgramTitle());
 
@@ -662,9 +661,7 @@ if (!isset($_REQUEST['modfunc'])) {
 function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBCCs, $grpName)
 {
     $mailBody = singleQuoteReplace('', '', $mailBody);
-    $config = HTMLPurifier_Config::createDefault();
-    $purifier = new HTMLPurifier($config);
-    $mailBody = $purifier->purify($mailBody);
+    $mailBody = ($mailBody);
 
     $subject = singleQuoteReplace('', '', $subject);
     $grpName = str_replace("'", "\'", $grpName);

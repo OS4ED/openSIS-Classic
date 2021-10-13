@@ -26,36 +26,16 @@
 #
 #***************************************************************************************
 
-error_reporting(0);
-session_start();
-
-require_once "../functions/PasswordHashFnc.php";
-
-$_SESSION['admin_name'] = $_POST['auname'];
-$_SESSION['admin_pwd'] = GenerateNewHash($_POST['apassword']);
-
-require_once "../functions/PragRepFnc.php";
-//mysql_select_db($_SESSION['db']);
-$dbconn = new mysqli($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db'],$_SESSION['port']);
-if($dbconn->connect_errno!=0)
+function VerifyHash($pwd,$hash)
 {
-    echo "<h2>" . $dbconn->error . "</h2>\n";
-    exit;
+	$details = password_verify($pwd,$hash);
+	if(empty($details)) { $details=0; }
+	return $details;
 }
 
-$_POST['fname'] = strip_tags(urldecode($_POST['fname']));
-$_POST['lname'] = strip_tags(urldecode($_POST['lname']));
-$_POST['mname'] = strip_tags(urldecode($_POST['mname']));
-
-$sql = "UPDATE staff SET first_name = '" . $_POST['fname'] . "', last_name = '" . $_POST['lname'] . "', middle_name = '" . $_POST['mname'] . "', profile_id = 0 WHERE staff_id = 1";
-$result = $dbconn->query($sql);
-
-$sql = "UPDATE login_authentication SET username='".$_SESSION['admin_name']."', password='".$_SESSION['admin_pwd']."' WHERE user_id=1 AND profile_id=0";
-$dbconn->query($sql);
-
-$dbconn->close();
-//mysqli_close($dbconn);
-
-header('Location: Step5.php');
-
+function GenerateNewHash($pwd)
+{
+	$newpassword = password_hash($pwd,PASSWORD_DEFAULT);
+	return $newpassword; 
+}
 ?>

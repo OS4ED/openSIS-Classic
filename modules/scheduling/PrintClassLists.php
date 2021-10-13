@@ -476,17 +476,27 @@ function _makeChooseCheckbox($value, $title) {
 
 function GetActualCpName($cp_array) {
     $cp_name = $cp_array['TITLE'];
-    $teacher_name = $cp_array['TEACHER_F'];
-    $cp_name = explode('-', $cp_name);
-    return $cp_name[0] . ' - ' . $cp_name[1];
+    // $teacher_name = $cp_array['TEACHER_F'];
+    // $cp_name = explode('-', $cp_name);
+    // return $cp_name[0] . ' - ' . $cp_name[1];
+    $pos = strrpos($cp_name, "-");
+    $rest = substr($cp_name,0, $pos-1);
+    return $rest;
 }
 
 function GetPeriodOcc($cp_id) {
     $period_name = array();
-    $days = array('M' =>_monday, 'T' =>_monday, 'W' =>_monday, 'H' =>_monday, 'F' =>_monday, 'S' =>_monday, 'U' =>_sunday);
+    $days = array('M' =>_monday, 'T' =>_tuesday, 'W' =>_wednesday, 'H' =>_thursday, 'F' =>_friday, 'S' =>_saturday, 'U' =>_sunday);
     $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.START_TIME,cpv.END_TIME,sp.TITLE FROM course_period_var cpv,school_periods sp WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $cp_id . ' GROUP BY cpv.DAYS,sp.PERIOD_ID,cpv.COURSE_PERIOD_ID'));
     foreach ($get_det as $gd) {
-        $period_name[] = $days[$gd['DAYS']] . ' - ' . $gd['TITLE'] . ' (' . date("g:i A", strtotime($gd['START_TIME'])) . ' - ' . date("g:i A", strtotime($gd['END_TIME'])) . ')';
+        if(in_array($gd['DAYS'],['M','T','W','H','F','S','U'])){
+            $period_name[] = $days[$gd['DAYS']] . ' - ' . $gd['TITLE'] . ' (' . date("g:i A", strtotime($gd['START_TIME'])) . ' - ' . date("g:i A", strtotime($gd['END_TIME'])) . ')';
+        } else {
+            $day_array = str_split($gd['DAYS']);
+            foreach($day_array as $key => $value){
+                $period_name[] = $days[$value] . ' - ' . $gd['TITLE'] . ' (' . date("g:i A", strtotime($gd['START_TIME'])) . ' - ' . date("g:i A", strtotime($gd['END_TIME'])) . ')';
+            }
+        } 
     }
     return implode(',', $period_name);
 }

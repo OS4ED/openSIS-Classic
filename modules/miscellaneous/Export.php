@@ -198,11 +198,7 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
 
             foreach ($RET as $stu_key => $stu_val) {
 
-               $add_reslt = "SELECT CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2)  as ADDRESS ,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' limit 0,1),sa.STREET_ADDRESS_1) AS 
-
-                            MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' limit 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' limit 0,1),sa.STATE) AS MAIL_STATE,
-
-                            COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' limit 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa   WHERE  sa.TYPE='HOME ADDRESS' AND sa.STUDENT_ID=" . $stu_val['STUDENT_ID'];
+                 $add_reslt = "SELECT CASE WHEN (sa.STREET_ADDRESS_1 IS NOT NULL && sa.STREET_ADDRESS_2 IS NOT NULL) THEN CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2) ELSE sa.STREET_ADDRESS_1 END as ADDRESS, sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STREET_ADDRESS_1) AS MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STATE) AS MAIL_STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa WHERE sa.TYPE='HOME ADDRESS' AND sa.STUDENT_ID = '" . $stu_val['STUDENT_ID'] ."' ORDER BY syear DESC";
                
                 $res = DBGet(DBQuery($add_reslt));
 

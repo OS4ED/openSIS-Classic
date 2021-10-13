@@ -317,14 +317,30 @@ if ($select == '') {
                     $sql_staff .= $field . "='" . singleQuoteReplace('', '', $value) . "',";
                 }
             } elseif ($field == 'PASSWORD') {
-                $password = md5($value);
-                $sql = DBQuery('SELECT PASSWORD FROM login_authentication  WHERE PASSWORD=\'' . $password . '\'');
-                $number = $sql->num_rows;
+                $password = ($value);
+                /*
+                    $sql = DBQuery('SELECT PASSWORD FROM login_authentication  WHERE PASSWORD=\'' . $password . '\'');
+                    $number = $sql->num_rows;
+                */
+
+                //code for match password in login table
+                $number=0;
+                $sqlquery = DBQuery('SELECT PASSWORD FROM login_authentication');
+                foreach($sqlquery as $val)
+                {
+                    $sqloldpass = $val['PASSWORD'];
+                    $login_status = VerifyHash($password,$sqloldpass);
+                    if($login_status==1) { $number =$number+1; }
+                }
+                //end
+                
                 if ($number == 0) {
                     if ((!$staff['USERNAME']) && (!$staff['PASSWORD'])) {
                         $sql_staff_pwd = $field . "=NULL";
                     } else {
-                        $sql_staff_pwd = $field . "='" . singleQuoteReplace('', '', md5($value)) . "'";
+                        $value = singleQuoteReplace('', '',($value));
+                        $new_password = GenerateNewHash($value);
+                        $sql_staff_pwd = $field . "='" . $new_password . "'";
                     }
                 }
             }
@@ -353,9 +369,11 @@ if ($select == '') {
         if ($update_staff['OPENSIS_PROFILE'] != '')
             DBQuery($sql_staff_prf);
         if ((!$staff['USERNAME']) && (!$staff['PASSWORD']) && $_REQUEST['USERNAME'] != '' && $_REQUEST['PASSWORD'] != '') {
+            
+            $new_password_hash = GenerateNewHash($_REQUEST['PASSWORD']);
             $sql_staff_algo = "UPDATE login_authentication l,staff s, staff_school_info ssi SET
                                 l.username = '" . $_REQUEST['USERNAME'] . "',
-                               l.password ='" . md5($_REQUEST['PASSWORD']) . "' 
+                               l.password ='" . $new_password_hash . "' 
                                 WHERE s.staff_id = ssi.staff_id AND l.user_id=s.staff_id AND l.profile_id NOT IN (3,4) AND s.staff_id = " . UserStaffID();
 
             DBQuery($sql_staff_algo);
@@ -512,14 +530,28 @@ if ($select == '') {
                     $sql_staff .= $field . "='" . singleQuoteReplace('', '', $value) . "',";
                 }
             } elseif ($field == 'PASSWORD') {
-                $password = md5($value);
-                $sql = DBQuery('SELECT PASSWORD FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
-                $number = $sql->num_rows;
+                $password =($value);
+                /*$sql = DBQuery('SELECT PASSWORD FROM login_authentication WHERE PASSWORD=\'' . $password . '\'');
+                $number = $sql->num_rows;*/
+
+                //code for match password in login table
+                $number=0;
+                $sqlquery = DBQuery('SELECT PASSWORD FROM login_authentication');
+                foreach($sqlquery as $val)
+                {
+                    $sqloldpass = $val['PASSWORD'];
+                    $login_status = VerifyHash($password,$sqloldpass);
+                    if($login_status==1) { $number = $number+1; }
+                }
+                //end
+                
                 if ($number == 0) {
                     if ((!$staff['USERNAME']) && (!$staff['PASSWORD'])) {
                         $sql_staff_pwd = $field . "=NULL";
                     } else {
-                        $sql_staff_pwd = $field . "='" . singleQuoteReplace('', '', md5($value)) . "'";
+                        $value = singleQuoteReplace('', '',($value));
+                        $new_password = GenerateNewHash($value);
+                        $sql_staff_pwd = $field . "='" . $new_password . "'";
                     }
                 }
             }
@@ -544,11 +576,11 @@ if ($select == '') {
             DBQuery($sql_staff_prf);
 
         if ((!$staff['USERNAME']) && (!$staff['PASSWORD']) && $_REQUEST['USERNAME'] != '' && $_REQUEST['PASSWORD'] != '') {
-
-
+            
+            $new_password_hash = GenerateNewHash($_REQUEST['PASSWORD']);
             $sql_staff_algo = "UPDATE login_authentication l,staff s, staff_school_info ssi SET
                                 l.username = '" . $_REQUEST['USERNAME'] . "',
-                               l.password ='" . md5($_REQUEST['PASSWORD']) . "' 
+                               l.password ='" . $new_password_hash . "' 
                                 WHERE s.staff_id = ssi.staff_id AND l.user_id=s.staff_id AND l.profile_id NOT IN (3,4) AND s.staff_id = " . UserStaffID();
 
 

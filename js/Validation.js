@@ -4156,6 +4156,9 @@ function formcheck_add_staff(staff_school_chkbox_id, this_DET) {
         "Max length for password is 20 characters"
       );
     }
+    else {
+      frmvalidator.clearAllValidations();
+    }
   }
   if (document.getElementById("no_date_fields")) {
     var no_date_fields = document.getElementById("no_date_fields").value;

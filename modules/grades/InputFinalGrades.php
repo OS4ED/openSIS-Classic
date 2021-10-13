@@ -63,11 +63,12 @@ if ((!$_REQUEST['mp'] || strpos($str = "'" . UserMP() . "','" . $sem . "','" . $
     $full_year_mp = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
     $_REQUEST['mp'] = $full_year_mp[1]['MARKING_PERIOD_ID'];
 }
-if ($_REQUEST['period'] == '')
-    $_REQUEST['period'] = CpvId();
+$period=sqlSecurityFilter($_REQUEST['period']);
+if ($period == '')
+    $period = CpvId();
 $custom_p = 'n';
-if ($_REQUEST['period'] != '' && $_REQUEST['mp'] != '') {
-    $check_custom = DBGet(DBQuery('SELECT cp.MARKING_PERIOD_ID  FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ID=' . $_REQUEST['period']));
+if ($period != '' && $_REQUEST['mp'] != '') {
+    $check_custom = DBGet(DBQuery('SELECT cp.MARKING_PERIOD_ID  FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ID="' . $period . '"'));
     if ($check_custom[1]['MARKING_PERIOD_ID'] == '') {
 
         $get_syear_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));

@@ -1121,8 +1121,10 @@ function appendAllSQL($allSQL, & $extra) {
     if ($_REQUEST['first']) {
         $allSQL .= ' AND LOWER(s.FIRST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['first']))) . '%\' ';
     }
+    
     if ($_REQUEST['grade']) {
-        $allSQL .= ' AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= \'' . singleQuoteReplace("'", "\'", $_REQUEST[grade]) . '\')';
+        $grade=sqlSecurityFilter($_REQUEST['grade']);
+        $allSQL .= ' AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= \'' . singleQuoteReplace("'", "\'", $grade) . '\')';
     }
     if ($_REQUEST['addr']) {
         $allSQL .= ' AND (LOWER(sam.STREET_ADDRESS_1) LIKE \'%' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '%\' OR LOWER(sam.CITY) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '%\' OR LOWER(sam.STATE)=\'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '\' OR ZIPCODE LIKE \'' . trim(singleQuoteReplace("'", "\'", $_REQUEST['addr'])) . '%\')';

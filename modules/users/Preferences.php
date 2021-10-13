@@ -37,15 +37,50 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         $pass_new = paramlib_validation($column_name, $_REQUEST['values']['new']);
         $pass_verify = paramlib_validation($column_name, $_REQUEST['values']['verify']);
 
-        $pass_new_after = md5($pass_new);
+        /*$pass_new_after = md5($pass_new);*/
+        $pass_new_after = $pass_new;
 
         $profile_RET = DBGet(DBQuery('SELECT s.PROFILE FROM staff s , staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.STAFF_ID=\'' . User('STAFF_ID') . '\' AND ssr.SYEAR=\'' . UserSyear() . '\''));
 
         if (User('PROFILE') == 'parent')
-            $sql = DBQuery('SELECT l.PASSWORD FROM people p,login_authentication l WHERE l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=p.STAFF_ID AND l.password=\'' . $pass_new_after . '\' AND l.PROFILE_ID=p.PROFILE_ID');
+        {
+            /*$sql = DBQuery('SELECT l.PASSWORD FROM people p,login_authentication l WHERE l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=p.STAFF_ID AND l.password=\'' . $pass_new_after . '\' AND l.PROFILE_ID=p.PROFILE_ID');*/
+
+            //code for checking password in table
+            $parentlist = DBGet(DBQuery('SELECT l.PASSWORD FROM people p,login_authentication l WHERE l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=p.STAFF_ID  AND l.PROFILE_ID=p.PROFILE_ID'));
+            $user_password_count=0;
+            foreach($parentlist as $val)
+            {
+                $parent_password = $val['PASSWORD'];
+                $password_status = VerifyHash($pass_new_after,$parent_password);
+                if($password_status==1) 
+                    { 
+                       $user_password_count=$user_password_count+1; 
+                    }
+            }
+            //end 
+        }
         else
-            $sql = DBQuery('SELECT l.PASSWORD FROM staff s , staff_school_relationship ssr,login_authentication l where l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=s.STAFF_ID AND l.password=\'' . $pass_new_after . '\'  AND ssr.STAFF_ID=s.STAFF_ID AND ssr.SYEAR=\'' . UserSyear() . '\' AND l.PROFILE_ID=s.PROFILE_ID');
-        $number = $sql->num_rows;
+        {
+            /*$sql = DBQuery('SELECT l.PASSWORD FROM staff s , staff_school_relationship ssr,login_authentication l where l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=s.STAFF_ID AND l.password=\'' . $pass_new_after . '\'  AND ssr.STAFF_ID=s.STAFF_ID AND ssr.SYEAR=\'' . UserSyear() . '\' AND l.PROFILE_ID=s.PROFILE_ID');*/
+
+            //code for checking password in table
+            $userslist = DBGet(DBQuery('SELECT l.PASSWORD FROM staff s , staff_school_relationship ssr,login_authentication l where l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=s.STAFF_ID AND ssr.STAFF_ID=s.STAFF_ID AND ssr.SYEAR=\'' . UserSyear() . '\' AND l.PROFILE_ID=s.PROFILE_ID'));
+            $user_password_count=0;
+            foreach($userslist as $val)
+            {
+                $parent_password = $val['PASSWORD'];
+                $password_status = VerifyHash($pass_new_after,$parent_password);
+                if($password_status==1) 
+                    { 
+                       $user_password_count=$user_password_count+1; 
+                    }
+            }
+            //end
+        }
+
+        /*$number = $sql->num_rows;*/
+        $number = $user_password_count;
 
         if ($pass_new != $pass_verify)
             $error = ''._yourNewPasswordsDidNotMatch.'.';
@@ -59,14 +94,23 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $password_RET = DBGet(DBQuery('SELECT l.PASSWORD FROM staff s , staff_school_relationship ssr,login_authentication l where l.USER_ID=\'' . User('STAFF_ID') . '\' AND l.USER_ID=s.STAFF_ID AND ssr.STAFF_ID=s.STAFF_ID AND ssr.SYEAR=\'' . UserSyear() . '\' AND l.PROFILE_ID=s.PROFILE_ID'));
             }
 
-            if ($pass_current != '' && $password_RET[1]['PASSWORD'] != md5($pass_current))
-                $error = ''._yourCurrentPasswordWasIncorrect.'.';
+            $user_old_password = $password_RET[1]['PASSWORD'];
+            $old_password_status = VerifyHash($pass_current,$user_old_password);
+
+            /*if ($pass_current != '' && $password_RET[1]['PASSWORD'] != md5($pass_current))*/
+            if ($pass_current != '' && $old_password_status==0)
+                {
+                    $error = ''._yourCurrentPasswordWasIncorrect.'.';
+                }
             elseif ($pass_current == '')
-                $error = ''._yourCurrentPasswordCanNotBeBlank.'.';
-            else {
-                DBQuery('UPDATE login_authentication SET PASSWORD=\'' . md5($pass_new) . '\' WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROFILE_ID=\'' . User('PROFILE_ID') . '\' ');
-                $note = ''._yourNewPasswordWasSaved.'.';
-            }
+                {
+                    $error = ''._yourCurrentPasswordCanNotBeBlank.'.';
+                }
+            else 
+                {
+                    DBQuery('UPDATE login_authentication SET PASSWORD=\'' . GenerateNewHash($pass_new) . '\' WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROFILE_ID=\'' . User('PROFILE_ID') . '\' ');
+                    $note = ''._yourNewPasswordWasSaved.'.';
+                }
         }
     } else {
         $current_RET = DBGet(DBQuery('SELECT TITLE,VALUE,PROGRAM FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM IN (\'' . 'Preferences' . '\',\'' . 'StudentFieldsSearch' . '\',\'' . 'StudentFieldsView' . '\') '), array(), array('PROGRAM', 'TITLE'));

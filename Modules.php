@@ -29,7 +29,7 @@
 
 error_reporting(0);
 session_start();
-isset($_SESSION['login']) or die('Access denied!');
+!empty($_SESSION['USERNAME']) or die('Access denied!');
 
 include 'RedirectRootInc.php';
 include "functions/ParamLibFnc.php";

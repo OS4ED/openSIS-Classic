@@ -59,7 +59,7 @@ if ($_REQUEST['values']) {
 
     $start = $_REQUEST['values']['START_DAY'] . $_REQUEST['values']['START_HOUR'] . $_REQUEST['values']['START_MINUTE'];
     $end = $_REQUEST['values']['END_DAY'] . $_REQUEST['values']['END_HOUR'] . $_REQUEST['values']['END_MINUTE'];
-    foreach ($_REQUEST['values'] as $key => $value) {
+    foreach (sqlSecurityFilter($_REQUEST['values']) as $key => $value) {
         if($key!='START_TIME' && $key!='END_TIME')
         {
         if (isset($$key)) {
