@@ -1108,7 +1108,7 @@ define("_capacityIsLowerThanYourRequestedSeats", "capacity is lower than your re
 define("_youCannotScheduleAStudentIntoChatCourseDuringTheMarkingPeriodThatYouChoseThisCourseMeetsOn", "You cannot schedule a student into that course during the marking period that you chose.  This course meets on");
 define("_cannotScheduleStudentsBeforeSchoolStartDate", "Cannot schedule students before school start date");
 define("_studentsScheduleDateShouldBeBetweenCourseStartDateAndEndDate", "students schedule date should be between course start date and end date");
-define("_thereIsNoAvailableSeatsInThisPeriod", "There is no available seats in this period.");
+define("_thereAreNoAvailableSeatsInThisPeriod", "There are no available seats in this period.");
 define("_manualOverride", "Manual Override");
 define("_incompleteCoursePeriodCourses", "Incomplete course period Courses ");
 define("_courseToAdd", "Course to Add");

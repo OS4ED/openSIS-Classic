@@ -1108,7 +1108,7 @@ define("_capacityIsLowerThanYourRequestedSeats", "السعة أقل من الم�
 define("_youCannotScheduleAStudentIntoChatCourseDuringTheMarkingPeriodThatYouChoseThisCourseMeetsOn", "لا يمكنك جدولة طالب في تلك الدورة التدريبية خلال فترة التصحيح التي اخترتها. تجتمع هذه الدورة على");
 define("_cannotScheduleStudentsBeforeSchoolStartDate", "لا يمكن جدولة الطلاب قبل تاريخ بدء المدرسة");
 define("_studentsScheduleDateShouldBeBetweenCourseStartDateAndEndDate", "يجب أن يكون تاريخ جدول الطلاب بين تاريخ بدء الدورة وتاريخ الانتهاء");
-define("_thereIsNoAvailableSeatsInThisPeriod", "لا توجد مقاعد متاحة في هذه الفترة.");
+define("_thereAreNoAvailableSeatsInThisPeriod", "لا توجد مقاعد شاغرة في هذه الفترة");
 define("_manualOverride", "تجاوز يدوي");
 define("_incompleteCoursePeriodCourses", "دورات مدة الدورة غير مكتملة");
 define("_courseToAdd", "بالطبع للإضافة");

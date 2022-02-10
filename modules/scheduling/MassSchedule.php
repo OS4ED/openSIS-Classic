@@ -494,7 +494,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             }
                         }
                         else {
-                            $no_seat = ''._thereIsNoAvailableSeatsInThisPeriod.'<br>';
+                            $no_seat = ''._thereAreNoAvailableSeatsInThisPeriod.'<br>';
 
                             $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_SESSION['MassSchedule.php']['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='"._manualOverride."'></strong></A></TD></TR>";
                         }
@@ -553,7 +553,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     }
                     else {
 
-                        $no_seat = ''._thereIsNoAvailableSeatsInThisPeriod.'<br>';
+                        $no_seat = ''._thereAreNoAvailableSeatsInThisPeriod.'<br>';
 
                         $no_seat .= '</DIV>' . "<A HREF=javascript:void(0) onclick='window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=seats&course_period_id=" . $_REQUEST['course_period_id'] . "\",\"\",\"scrollbars=no,status=no,screenX=500,screenY=500,resizable=no,width=500,height=200\");'style=\"text-decoration:none;\"><strong><input type=button class=btn_large value='"._manualOverride."'></strong></A></TD></TR>";
                     }
