@@ -1107,7 +1107,7 @@ define("_capacityIsLowerThanYourRequestedSeats", "la capacité est inférieure �
 define("_youCannotScheduleAStudentIntoThatCourseDuringTheMarkingPeriodThatYouChoseThisCourseMeetsOn", "Vous ne pouvez pas planifier un étudiant dans ce cours pendant la période de notation que vous avez choisi. Ce cours se réunit");
 define("_cannotScheduleStudentsBeforeSchoolStartDate", "Impossible de planifier les étudiants avant la date de début de l'école");
 define("_studentsScheduleDateShouldBeBetweenCourseStartDateAndEndDate", "les étudiants date de calendrier devrait être entre la date de début du cours et la date de fin");
-define("_thereIsNoAvailableSeatsInThisPeriod", "Il n'y a pas de sièges disponibles sur cette période.");
+define("_thereAreNoAvailableSeatsInThisPeriod", "Il n'y a pas de places disponibles pour cette période.");
 define("_manualOverride", "Contrôle manuel");
 define("_incompleteCoursePeriodCourses", "Cours période de cours incomplet");
 define("_courseToAdd", "Cours à Ajouter");
