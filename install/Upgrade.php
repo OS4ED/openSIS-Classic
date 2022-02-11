@@ -769,7 +769,7 @@
 
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
-
+                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
                                     ### for Functions/Procedures/Triggers/Events - Start ###
 
                                     $this_db = $_SESSION['db'];
@@ -804,7 +804,7 @@
 
                                     ### for Keys - End ###
 
-                                    $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -1183,7 +1183,7 @@ WHERE value='4.6' OR value='4.7' OR value LIKE '4.8%' OR value='4.9' OR value='5
                                                 }
                                                 if (par_rep_mt('/.+;/', $l) != 0 && !$delim) {
 
-                                                    $result = $dbconncus->query($cmd) or die(mysqli_error($dbconn) . ' Show Error 7');
+                                                    $result = $dbconncus->query($cmd) or die(mysqli_error($dbconncus) . ' Show Error 7');
                                                     $cmd = '';
                                                 }
                                             }
