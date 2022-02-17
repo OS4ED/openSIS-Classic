@@ -26,8 +26,16 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-//print_r($_REQUEST);
+
 include 'lang/language.php';
+
+if (isset($_SESSION['student_id']) && ($_SESSION['student_id'] == UserStudentID())) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+
+    echo '<div class="panel panel-default">';
+    DrawHeader('' . _selectedStudent . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
+    echo '</div>';
+}
 
 if ($_REQUEST['modfunc'] == 'cp_insert') {
 
