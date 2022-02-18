@@ -826,7 +826,11 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                 // echo "$category[TITLE]<br>";
                 // // echo "<"
                 // echo "$categoryTitle<br>";
+                if($category['ID'] == '5'){
+                   $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']."&LO_sort=DURATION&LO_direction=1"); 
+                }else{
                 $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']);
+                }
             }
         }
         unset($new_tabs);

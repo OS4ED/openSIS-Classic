@@ -28,7 +28,10 @@
 #***************************************************************************************
 
 include 'lang/language.php';
-
+if(!isset($_REQUEST['search_modfunc'])){
+    unset($_SESSION['MassDrops.php']);
+}
+//echo "<pre>"; print_r($_REQUEST); echo "</pre>";
 if (isset($_SESSION['student_id']) && ($_SESSION['student_id'] == UserStudentID())) {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
 

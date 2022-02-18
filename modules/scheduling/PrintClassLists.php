@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
-
+//echo "<pre>"; print_r($_REQUEST); echo "</pre>";
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
@@ -457,7 +457,7 @@ function mySearch($extra) {
         echo '<div class="alert bg-danger alert-styled-left">'._noStudentFound.'.</div>';
     }
     $course_periods_RET = DBGet(DBQuery($sql), array('COURSE_PERIOD_ID' => '_makeChooseCheckbox', 'STU_COURSE_PERIOD_ID' => '_make_no_student'));
-    $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => ''._coursePeriod.'', 'STU_COURSE_PERIOD_ID' => ''._coursePeriod.'');
+    $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => ''._coursePeriod.'', 'STU_COURSE_PERIOD_ID' => ''._noOfScheduleStudent.'');
 
     echo '<INPUT type=hidden name=relation>';
 

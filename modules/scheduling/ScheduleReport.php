@@ -31,6 +31,7 @@ include('lang/language.php');
 
 DrawBC(""._scheduling." > " . ProgramTitle());
 //echo '<div class="panel panel-default">';
+ //echo "<pre>"; print_r($_REQUEST); echo "</pre>";
 if ($_REQUEST['subject_id']) {
     $RET = DBGet(DBQuery("SELECT TITLE FROM course_subjects WHERE SUBJECT_ID='" . $_REQUEST['subject_id'] . "'"));
     $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]>Top</A></li><li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=courses&subject_id=$_REQUEST[subject_id]>" . $RET[1]['TITLE'] . '</A></li>';
@@ -105,7 +106,7 @@ if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
     }
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=course_periods&subject_id=$_REQUEST[subject_id]";
     $link['TITLE']['variables'] = array('course_id' => 'COURSE_ID');
-    ListOutput($RET, array('TITLE' =>_course, 'COUNT_REQUESTS' =>_course, 'OPEN_SEATS' =>_course, 'TOTAL_SEATS' =>_total), _course, _courses, $link, array(), $LO_options);
+    ListOutput($RET, array('TITLE' =>_course, 'COUNT_REQUESTS' =>_requests, 'OPEN_SEATS' =>_open, 'TOTAL_SEATS' =>_total), _course, _courses, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
@@ -141,7 +142,7 @@ if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=students&students=course_periods&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]";
     $link['TITLE']['variables'] = array('course_period_id' => 'COURSE_PERIOD_ID');
-    ListOutput($RET, array('TITLE' =>_periodTeacher, 'OPEN_SEATS' =>_periodTeacher, 'TOTAL_SEATS' =>_total), _coursePeriod, _coursePeriods, $link, array(), $LO_options);
+    ListOutput($RET, array('TITLE' =>_periodTeacher, 'OPEN_SEATS' =>_open, 'TOTAL_SEATS' =>_total), _coursePeriod, _coursePeriods, $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
