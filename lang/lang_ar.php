@@ -1144,6 +1144,10 @@ define("_includeAdvanceSchedule", "تضمين الجدول الزمني المس
 define("_originalView", "العرض الأصلي");
 define("_dropCourseForSelectedStudents", "إسقاط الدورة لطلاب مختارين");
 define("_cannotSelectCoursePeriodAsNoPeriodHasBeenAssigned", "لا يمكن تحديد فترة الدورة حيث لم يتم تحديد فترة.");
+define("_findStudentsToDelete", "ابحث عن الطلاب المراد حذفهم");
+define("_deleteCourseForSelectedStudents", "حذف المقرر الدراسي للطلاب المختارين");
+define("_theAboveStudentHasBeenDeletedFromTheCoursePeriod", "تم حذف الطالب أعلاه من فترة الدورة");
+define("_theAboveStudentsHaveBeenDeletedFromTheCoursePeriod", "تم حذف الطلاب أعلاه من فترة الدورة");
 //*****REPORTS*****//
 define("_noSubjectWasFound", "لم يتم العثور على موضوع.");
 define("_oneSubjectWasFound", "تم العثور على 1 موضوع.");

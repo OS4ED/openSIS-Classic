@@ -1144,6 +1144,11 @@ define("_includeAdvanceSchedule", "Include advance schedule");
 define("_originalView", "Original View");
 define("_dropCourseForSelectedStudents", "Drop Course for Selected Students");
 define("_cannotSelectCoursePeriodAsNoPeriodHasBeenAssigned", "Cannot select course period as no period has been assigned.");
+define("_findStudentsToDelete", "Find Students to Delete");
+define("_deleteCourseForSelectedStudents", "Delete Course for Selected Students");
+define("_theAboveStudentHasBeenDeletedFromTheCoursePeriod", "The Above student has been deleted from the course period");
+define("_theAboveStudentsHaveBeenDeletedFromTheCoursePeriod", "The Above students have been deleted from the course period");
+define("_groupDelete", "Group Delete");
 //*****REPORTS*****//
 define("_noSubjectWasFound", "No Subject was found.");
 define("_oneSubjectWasFound", "1 Subject Was Found.");

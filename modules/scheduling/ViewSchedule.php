@@ -28,7 +28,9 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
-
+if(!$_REQUEST['modfunc'] && !isset($_REQUEST['search_modfunc'])){
+    unset($_SESSION['MassDrops.php']);
+}
 DrawBC(""._scheduling." > " . ProgramTitle());
 unset($sql);
 
