@@ -1144,6 +1144,11 @@ define("_includeAdvanceSchedule", "Incluir horario anticipado");
 define("_originalView", "Vista original");
 define("_dropCourseForSelectedStudents", "Abandono del curso para estudiantes seleccionados");
 define("_cannotSelectCoursePeriodAsNoPeriodHasBeenAssigned", "No se puede seleccionar el período del curso porque no se ha asignado ningún período.");
+define("_findStudentsToDelete", "Buscar estudiantes para eliminar");
+define("_deleteCourseForSelectedStudents", "Eliminar curso para estudiantes seleccionadas");
+define("_theAboveStudentHasBeenDeletedFromTheCoursePeriod", "El estudiante anterior ha sido eliminado del período del curso.");
+define("_theAboveStudentsHaveBeenDeletedFromTheCoursePeriod", "Los estudiantes anteriores han sido eliminados del período del curso.");
+define("_groupDelete", "Eliminar grupo");
 //*****REPORTS*****//
 define("_noSubjectWasFound", "No se encontró ningún sujeto.");
 define("_oneSubjectWasFound", "Se encontró 1 sujeto.");

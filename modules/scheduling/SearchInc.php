@@ -119,7 +119,8 @@ else {
                  $extra['WHERE'] .=' AND sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id'; 
        }
        $extra['WHERE'] .= ' AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\'';
-        unset($_SESSION['MassSchedule.php']['course_period_id']);
+       if ($_REQUEST['modname'] !='scheduling/MassSchedule.php')  
+       unset($_SESSION['MassSchedule.php']['course_period_id']);
     }
     $extra['SELECT'] .= ' ,ssm.SECTION_ID';
     if (count($extra['functions']) > 0)

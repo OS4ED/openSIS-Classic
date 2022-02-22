@@ -33,6 +33,7 @@ $menu['scheduling']['admin'] = array(
 						'scheduling/MassSchedule.php'=>_groupSchedule,
 						'scheduling/MassRequests.php'=>_groupRequests,
 						'scheduling/MassDrops.php'=>_groupDrops,
+						'scheduling/MassDelete.php'=>_groupDelete,
 						1=>_reports,
 						'scheduling/SchoolwideScheduleReport.php'=>_schoolwideScheduleReport,
 						'scheduling/PrintSchedules.php'=>_printSchedules,

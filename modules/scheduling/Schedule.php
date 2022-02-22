@@ -28,7 +28,7 @@
 #***************************************************************************************
 
 include 'lang/language.php';
-if(!isset($_REQUEST['search_modfunc'])){
+if(!$_REQUEST['modfunc'] && !isset($_REQUEST['search_modfunc'])){
     unset($_SESSION['MassDrops.php']);
 }
 //echo "<pre>"; print_r($_REQUEST); echo "</pre>";
