@@ -1408,6 +1408,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
             Search('student_id_from_student');
 
+            if(isset($_REQUEST['last'])){
+                $_REQUEST['last']=sqlSecurityFilter($_REQUEST['last']);
+            }
             if ($_REQUEST['stuid']) {
                 $select .= " AND ssm.STUDENT_ID = '" . str_replace("'", "''", $_REQUEST[stuid]) . "' ";
             }
@@ -1705,6 +1708,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
             if (UserStudentID() || $_REQUEST['student_id'] == 'new') {
                 if ($_REQUEST['student_id'] != 'new') {
+                    $_REQUEST['last']=sqlSecurityFilter($_REQUEST['last']);
                     if (User('PROFILE') == 'admin') {
                         $s_ln = DBGet(DBQuery("SELECT LAST_NAME,FIRST_NAME,s.STUDENT_ID " . $admin_COMMON . " AND s.STUDENT_ID =" . UserStudentID() . "  " . $_SESSION['s'] . " " . $_SESSION['custom_count_sql']));
 
