@@ -83,9 +83,10 @@ echo' </div>
 </div>';
 }
 if ($_REQUEST['modfunc'] == 'add' || $_REQUEST['student_id']) {
-    if ($_REQUEST['student_id'])
+    if ($_REQUEST['student_id']){
+        $student_id = sqlSecurityFilter($_REQUEST['student_id']);
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\''));
-    else
+    }else
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
