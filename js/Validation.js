@@ -4114,17 +4114,17 @@ function formcheck_add_staff(staff_school_chkbox_id, this_DET) {
   frmvalidator.addValidation(
     "month_values[JOINING_DATE]",
     "req",
-    "Please select the joining date's month"
+    "Please select the joining date"
   );
   frmvalidator.addValidation(
     "day_values[JOINING_DATE]",
     "req",
-    "Please select the joining date's date"
+    "Please select the joining date"
   );
   frmvalidator.addValidation(
     "year_values[JOINING_DATE]",
     "req",
-    "Please select the joining date's year"
+    "Please select the joining date"
   );
 
   var end_date = document.getElementById("end_date_school").value;
