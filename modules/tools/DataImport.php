@@ -26,19 +26,38 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(E_ALL);
+error_reporting(0);
+
+$extension_error = '';
+
+if (!extension_loaded('mbstring'))
+    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>mbstring</code></b> extension installed and enabled to use the Data Import Utility. </div>';
+
+if (!extension_loaded('zip'))
+    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>zip</code></b> extension installed and enabled to use the Data Import Utility. </div>';
+
+if ($extension_error != '') {
+    echo '<div class="panel">';
+    echo '<div class="panel-body">';
+    echo $extension_error;
+    echo '</div>'; //.panel-body
+    echo '</div>'; //.panel
+
+    exit();
+}
+
 echo "<div id='mapping'></div>";
 
-include('../../RedirectModulesInc.php');
-//include('Classes/PHPExcel.php');
-include('Classes/vendor/autoload.php');
+include '../../RedirectModulesInc.php';
+include 'libraries/PhpSpreadsheet/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 //$spreadsheet = new Spreadsheet();
-echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
-DrawBC("" . _schoolSetup . " > " .  _dataImport . " >" . ProgramTitle());
 
+echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
+
+DrawBC("" . _schoolSetup . " > " .  _dataImport . " >" . ProgramTitle());
 
 function add_person($first, $middle, $last, $email) {
     global $data;
@@ -97,9 +116,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-    echo '<thead>';
+        echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
-    echo '</thead>';
+        echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
         //        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
         //        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -389,12 +408,14 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '<div class="panel-body p-0">';
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
-    echo '<thead>';
+        echo '<thead>';
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
-    echo '</thead>';
+        echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
-        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
-        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+        // $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+        // $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($inputFileName);
+        $objReader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
         $objReader->setReadDataOnly(true);
         /**  Load $inputFileName to a PHPExcel Object  * */
         $objPHPExcel = $objReader->load($inputFileName);
@@ -403,7 +424,8 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         $objWorksheet = $objPHPExcel->setActiveSheetIndex(0); // first sheet  
         $highestRow = $objWorksheet->getHighestRow(); // here 5  
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
-        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
+        // $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); 
         for ($row = 1; $row <= $highestRow; ++$row) {
             $arr_data_row = array();
             for ($col = 0; $col <= $highestColumnIndex; ++$col) {
