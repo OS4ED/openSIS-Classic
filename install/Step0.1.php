@@ -25,7 +25,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(E_ALL);
+error_reporting(0);
 session_start();
 session_destroy();
 echo '<script type="text/javascript">

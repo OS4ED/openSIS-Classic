@@ -26,13 +26,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
+error_reporting(E_ALL);
 echo "<div id='mapping'></div>";
 
 include('../../RedirectModulesInc.php');
-include('Classes/PHPExcel.php');
+//include('Classes/PHPExcel.php');
+include('Classes/vendor/autoload.php');
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+//$spreadsheet = new Spreadsheet();
 echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
-DrawBC(""._schoolSetup." > "._dataImport." >" . ProgramTitle());
+DrawBC("" . _schoolSetup . " > " .  _dataImport . " >" . ProgramTitle());
 
 
 function add_person($first, $middle, $last, $email) {
@@ -51,7 +56,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
     if ($_REQUEST['action'] != 'insert' && $_REQUEST['action'] != 'display' && $_REQUEST['action'] != 'process') {
         echo '<div class="row">';
         echo '<div class="col-md-6 col-md-offset-3">';
-        echo '<form enctype="multipart/form-data" action="Modules.php?modname=' . $_REQUEST[modname] . '&action=insert&page_display=STUDENT_INFO" method="POST" onSubmit="return map_upload_validation();">';
+        echo '<form enctype="multipart/form-data" action="Modules.php?modname=' . $_REQUEST['modname'] . '&action=insert&page_display=STUDENT_INFO" method="POST" onSubmit="return map_upload_validation();">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body text-center">';
 
@@ -60,10 +65,11 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<input type="hidden"  name="MAX_FILE_SIZE" value="2000000" />';
         echo '<div class="text-center"><label id="select-file-input"><input type="file" class="upload" id="file_id" name="file" /><i class="icon-upload"></i><br/><span>'._clickHereToSelectAFile.'</span></label></div>';
         echo '<p class="help-block">'._supportedFileTypesXlsXlsx.'</p>';
+        echo '<p class="help-block">'. _note . ': ' . _theFirstRowMustContainColumnNames .'</p>';
         echo '</div>';
 
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
+        echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">'._cancel.'</a></div>';
         echo '</div>'; //.panel
         echo '</form>';
         echo '</div>'; //.col-md-6
@@ -82,7 +88,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
 
     } elseif ($_REQUEST['action'] == 'insert') {
         $arr_data = array();
-        echo '<form action="Modules.php?modname=' . $_REQUEST[modname] . '&action=display&page_display=STUDENT_INFO" name="student_form"  method="POST">';
+        echo '<form action="Modules.php?modname=' . $_REQUEST['modname'] . '&action=display&page_display=STUDENT_INFO" name="student_form"  method="POST">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
         echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
@@ -95,9 +101,11 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '<tr class="bg-grey-200"><th width="260">'._theseFieldsAreInYourExcelSpreadSheet.'</td><td width="200">&nbsp;</td><td>'._theseAreAvailableFieldsInOpenSis.'</td></tr>';
     echo '</thead>';
         $inputFileName = $_FILES['file']['tmp_name'];
-        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
-        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-        $objReader->setReadDataOnly(true);
+        //        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+        //        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($inputFileName);
+        $objReader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+               $objReader->setReadDataOnly(true);
         /**  Load $inputFileName to a PHPExcel Object  * */
         $objPHPExcel = $objReader->load($inputFileName);
         $total_sheets = $objPHPExcel->getSheetCount(); // here 4  
@@ -105,7 +113,8 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         $objWorksheet = $objPHPExcel->setActiveSheetIndex(0); // first sheet  
         $highestRow = $objWorksheet->getHighestRow(); // here 5  
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
-        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
+         //        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);  // here 5  
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); 
         for ($row = 1; $row <= $highestRow; ++$row) {
             $arr_data_row = array();
             for ($col = 0; $col <= $highestColumnIndex; ++$col) {
@@ -181,6 +190,14 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         }
         $class = "odd";
         $i = 0;
+        
+        foreach ($arr_data[0] as $key => $value) {
+            $arr_data[0][$key] = str_replace(
+                ' ',
+                '_',
+                trim($value)
+            );
+        }
         foreach ($arr_data[0] as $key => $value) {
 
             if ($class == "odd")
@@ -197,14 +214,14 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
-        echo '<div class="panel-footer text-center"><input id="mapItStuBtnOne" type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStuBtnOne" type="submit" value="Map it" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
 
         echo "</form>";
     }
     elseif ($_REQUEST['action'] == 'display') {
         
-        echo '<form action="Modules.php?modname='.$_REQUEST[modname].'&action=process&page_display=STUDENT_INFO" name="STUDENT_INFO_CONFIRM" method="POST">';
+        echo '<form action="Modules.php?modname='.$_REQUEST['modname'].'&action=process&page_display=STUDENT_INFO" name="STUDENT_INFO_CONFIRM" method="POST">';
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
@@ -300,10 +317,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</table>';
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input id="mapItStuBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStuBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_student('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
-        echo '</form>';
-        
+        echo '</form>';      
     } elseif ($_REQUEST['action'] == 'process') {
 
         echo '<div class="row">';
@@ -319,8 +335,11 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         echo '</div>'; //.row
 
         $_SESSION['student'] = $_POST['student_map_value'];
-
-        echo "<script>ajax_progress('student');</script>";
+  ?>
+        <script type="text/javascript">
+            ajax_progress('student');
+        </script>
+    <?php
     }
 }
 //================================Student info Ends==============================================
@@ -330,7 +349,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         
     echo '<div class="row">';
     echo '<div class="col-md-6 col-md-offset-3">';
-    echo '<form enctype="multipart/form-data" action="Modules.php?modname='.$_REQUEST[modname].'&action=insert&page_display=STAFF_INFO" method="POST" onSubmit="return map_upload_validation();">';
+    echo '<form enctype="multipart/form-data" action="Modules.php?modname='.$_REQUEST['modname'].'&action=insert&page_display=STAFF_INFO" method="POST" onSubmit="return map_upload_validation();">';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center">';
 
@@ -342,7 +361,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
     echo '</div>';
 
     echo '</div>'; //.panel-body
-    echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
+    echo '<div class="panel-footer text-center"><input type="submit" class="btn btn-primary" value="'._upload.'" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">'._cancel.'</a></div>';
     echo '</div>'; //.panel
     echo '</form>';
     echo '</div>'; //.col-md-6
@@ -361,7 +380,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         
     } elseif ($_REQUEST['action'] == 'insert') {
         $arr_data = array();
-        echo '<form action="Modules.php?modname=' . $_REQUEST[modname] . '&action=display&page_display=STAFF_INFO" name="staff_form"  method="POST">';
+        echo '<form action="Modules.php?modname=' . $_REQUEST['modname'] . '&action=display&page_display=STAFF_INFO" name="staff_form"  method="POST">';
         echo '<div class="panel panel-default">';
         echo '<div class="panel-heading">';
         echo '<h4 class="text-center">'._pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn.'. '._afterYouAreDoneClickMapIt.'.</h4>';
@@ -437,6 +456,14 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         $class = "odd";
         //  print_r($arr_data);
         $i = 0;
+        
+        foreach ($arr_data[0] as $key => $value) {
+            $arr_data[0][$key] = str_replace(
+                ' ',
+                '_',
+                trim($value)
+            );
+        }
         foreach ($arr_data[0] as $key => $value) {
             if ($class == "odd")
                 $class = "even";
@@ -452,7 +479,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
         echo '<input type=hidden name="filename"  value='.$inputFileName.'/>';
-        echo '<div class="panel-footer text-center"><input id="mapItStaBtnOne" type="submit" value="'._mapIt.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">'._cancel.'</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStaBtnOne" type="submit" value="'._mapIt.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);"  /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">'._cancel.'</a></div>';
         echo "</form>";
     }
     elseif ($_REQUEST['action'] == 'display') {
@@ -460,7 +487,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         $staff_keys_string = implode(',', $staff_keys);
         $staff_values = implode(',', $_REQUEST['staff']);
         echo "<script>ajax_mapping('" . $staff_keys_string . "','" . $staff_values . "','staff');</script>";
-        echo '<form action="Modules.php?modname='.$_REQUEST[modname].'&action=process&page_display=STAFF_INFO" name="STAFF_INFO_CONFIRM" method="POST">';
+        echo '<form action="Modules.php?modname='.$_REQUEST['modname'].'&action=process&page_display=STAFF_INFO" name="STAFF_INFO_CONFIRM" method="POST">';
         echo '<div class="panel panel-default">';
         
         echo '<div class="panel-heading">';
@@ -531,10 +558,9 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</table>';
         echo '</div>'; //.table-responsive
         echo '</div>'; //.panel-body
-        echo '<div class="panel-footer text-center"><input id="mapItStaBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST[modname] . '" class="btn btn-default">Cancel</a></div>';
+        echo '<div class="panel-footer text-center"><input id="mapItStaBtnTwo" type="submit" value="'._confirm.'" class="btn btn-primary" onClick="return valid_mapping_staff('.$i.', this);" /> &nbsp; <a href="Modules.php?modname=' . $_REQUEST['modname'] . '" class="btn btn-default">Cancel</a></div>';
         echo '</div>'; //.panel
-        echo '</form>';
-        
+        echo '</form>';       
     } elseif ($_REQUEST['action'] == 'process') {
         
         
@@ -565,14 +591,14 @@ else {
     echo '<div class="col-md-3 col-md-offset-3">';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center p-t-35">';
-    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STUDENT_INFO><img src="modules/tools/assets/images/student.svg" width="60%" /><h4>'._importStudentData.'</h4></a>';
+    echo '<a href=Modules.php?modname=' . $_REQUEST['modname'] . '&page_display=STUDENT_INFO><img src="modules/tools/assets/images/student.svg" width="60%" /><h4>'._importStudentData.'</h4></a>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-3
     echo '<div class="col-md-3">';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body text-center p-t-35">';
-    echo '<a href=Modules.php?modname=' . $_REQUEST[modname] . '&page_display=STAFF_INFO><img src="modules/tools/assets/images/faculty.svg" width="60%" /><h4>'._importStaffData.'</h4></a>';
+    echo '<a href=Modules.php?modname=' . $_REQUEST['modname'] . '&page_display=STAFF_INFO><img src="modules/tools/assets/images/faculty.svg" width="60%" /><h4>'._importStaffData.'</h4></a>';
     echo '</div>'; //.panel-body
     echo '</div>'; //.panel
     echo '</div>';

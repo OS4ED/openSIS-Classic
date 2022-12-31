@@ -231,11 +231,11 @@ function valid_mapping_student(option, this_DET)
     {
         if (error != '')
         {
-            error = error + ', START DATE';
+            error = error + ', STUDENT ENROLLMENT DATE';
         }
         else
         {
-            error = 'START DATE';
+            error = 'STUDENT ENROLLMENT DATE';
         }
     }
 

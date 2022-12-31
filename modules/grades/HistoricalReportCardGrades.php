@@ -273,17 +273,24 @@ if (UserStudentID()) {
 
 
 
+        // $gquery = 'SELECT mp.syear, mp.marking_period_id as mp_id, mp.title as mp_name, mp.post_end_date as posted, sgc.grade_level_short as GRADE_LEVEL, 
+        // sgc.weighted_gpa, sgc.unweighted_gpa
+        // FROM marking_periods mp, student_gpa_calculated sgc, schools s
+        // WHERE sgc.marking_period_id = mp.marking_period_id and
+        //      s.id = mp.school_id and sgc.student_id = ' . $student_id . ' AND mp.marking_period_id IN (SELECT marking_period_id FROM  history_marking_periods)
+        // AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
+
         $gquery = 'SELECT mp.syear, mp.marking_period_id as mp_id, mp.title as mp_name, mp.post_end_date as posted, sgc.grade_level_short as GRADE_LEVEL, 
-       sgc.weighted_gpa, sgc.unweighted_gpa
-       FROM marking_periods mp, student_gpa_calculated sgc, schools s
-       WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.school_id and sgc.student_id = ' . $student_id . ' AND mp.marking_period_id IN (SELECT marking_period_id FROM  history_marking_periods)
-       AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
+        sgc.weighted_gpa, sgc.unweighted_gpa
+        FROM marking_periods mp, student_gpa_calculated sgc, schools s
+        WHERE sgc.marking_period_id = mp.marking_period_id and
+            s.id = mp.school_id and sgc.student_id = ' . $student_id . ' 
+        AND mp.school_id = \'' . UserSchool() . '\' order by mp.syear, mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
 
 
-        $last_posted = _null;
+        //$last_posted = _null;
         $gmp = array(); //grade marking_periodso
         $grecs = array();  //grade records
         if ($GRET) {
@@ -322,7 +329,7 @@ if (UserStudentID()) {
         $mpselect = "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&tab_id=" . $_REQUEST['tab_id'] . " method=POST id=F2 name=F2>";
         $mpselect .= "<SELECT class=\"form-control\" name=mp_id onchange='this.form.submit();'>";
         foreach ($gmp as $id => $mparray) {
-            $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['schoolyear'] . ' ' . $mparray['mp_name'] . ', Grade ' . $mparray['grade_level'] . "</OPTION>";
+            $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['schoolyear'] . ' | ' . $mparray['mp_name'] . "</OPTION>";
         }
         $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">"._addAnotherMarkingPeriod."</OPTION>";
         $mpselect .= '</SELECT>';
@@ -330,7 +337,7 @@ if (UserStudentID()) {
         echo '</FORM>';
 
         echo '<div class="panel">';
-        echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
+        echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST['tab_id'])) . "&mp_id=$mp_id method=POST>";
 
         $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=25  class=form-control');
 
@@ -359,16 +366,47 @@ if (UserStudentID()) {
         if ($mp_id == "0") {
             $syear = UserSyear();
             $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserSchool() .
-                    '\' ORDER BY POST_END_DATE';
+                    '\' AND MARKING_PERIOD_ID NOT IN (SELECT MARKING_PERIOD_ID FROM history_marking_periods) ORDER BY SYEAR, POST_END_DATE';
             $MPRET = DBGet(DBQuery($sql));
-            if ($MPRET) {
+
+            $hist_mp_sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserSchool() .
+                    '\' AND MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM history_marking_periods) ORDER BY SYEAR, POST_END_DATE';
+            $HIST_MPRET = DBGet(DBQuery($hist_mp_sql));
+
+            if ($MPRET || $HIST_MPRET) {
                 $mpoptions = array();
                 foreach ($MPRET as $id => $mp) {
-                    $mpoptions[$mp['MARKING_PERIOD_ID']] = formatSyear($mp['SYEAR']) . ' ' . $mp['TITLE'];
+                    $mpoptions[$mp['MARKING_PERIOD_ID']] = formatSyear($mp['SYEAR']) . ' | ' . $mp['TITLE'];
                 }
 
+                $hist_mpoptions = array();
+                foreach ($HIST_MPRET as $hid => $hmp) {
+                    $hist_mpoptions[$hmp['MARKING_PERIOD_ID']] = formatSyear($hmp['SYEAR']) . ' | ' . $hmp['TITLE'];
+                }
+
+                $new_MP_RET_OPT = '<select name="new_sms" class="form-control">';
+                
+                if (count($MPRET) > 0) {
+                    $new_MP_RET_OPT .= '<option value="0" disabled>▼ ' . _schoolMarkingPeriods . '</option>';
+
+                    foreach ($mpoptions as $s_mp_key => $s_mp_val) {
+                        $new_MP_RET_OPT .= '<option value="' . $s_mp_key . '">' . $s_mp_val . '</option>';
+                    }
+                }
+
+                if (count($HIST_MPRET) > 0) {
+                    $new_MP_RET_OPT .= '<option value="0" disabled>▼ ' . _historyMarkingPeriods . '</option>';
+
+                    foreach ($hist_mpoptions as $h_mp_key => $h_mp_val) {
+                        $new_MP_RET_OPT .= '<option value="' . $h_mp_key . '">' . $h_mp_val . '</option>';
+                    }
+                }
+
+                $new_MP_RET_OPT .= '</select>';
+
                 echo '<div class="form-group">';
-                echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
+                // echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . $new_MP_RET_OPT . '</div>';
                 echo '<div class="col-md-4"><label class="control-label">'._schoolName.'</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
                 echo '<div class="col-md-4"><label class="control-label">'._gradeLevel.'</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
@@ -382,9 +420,9 @@ if (UserStudentID()) {
                 $school_name = $historyschool[1]['SCHOOL_NAME'];
             else {
                 $get_schoolid = DBGet(DBQuery("SELECT school_id FROM  marking_periods  WHERE marking_period_id = $selectedmp"));
-                if ($get_schoolid[1]['school_id']) {
-                    $get_schoolid = DBGet(DBQuery("SELECT title FROM  schools  WHERE id = $get_schoolid[1][school_id]"));
-                    $school_name = $get_schoolid[1]['title'];
+                if ($get_schoolid[1]['SCHOOL_ID']) {
+                    $get_school_name = DBGet(DBQuery('SELECT title FROM  schools  WHERE id = \'' . $get_schoolid[1]['SCHOOL_ID'] . '\''));
+                    $school_name = $get_school_name[1]['TITLE'];
                 }
             }
             echo '<div class="form-group clearfix">';
@@ -473,12 +511,14 @@ function makeTextInput($value, $name) {
     elseif ($name == 'COURSE_CODE')
         $extra = 'size=10 maxlength=20 class=form-control';
     elseif ($name == 'GRADE_PERCENT')
-        $extra = 'size=6 maxlength=6 class=form-control';
+        $extra = 'size=6 maxlength=6 class=form-control onkeydown="return numberOnlyMod(event);"';
     elseif ($name == 'GRADE_LETTER')
         $extra = 'size=5 maxlength=5 class=form-control';
+    elseif ($name == 'GP_SCALE' || $name == 'CREDIT_ATTEMPTED' || $name == 'CREDIT_EARNED')
+        $extra = 'size=6 maxlength=6 class=form-control onkeydown="return numberOnlyMod(event);"';
     elseif ($name == 'GP') {
         $name = 'UNWEIGHTED_GP';
-        $extra = 'size=5 maxlength=5 class=form-control';
+        $extra = 'size=5 maxlength=5 class=form-control onkeydown="return numberOnlyMod(event);"';
     } else
         $extra = 'size=10 maxlength=10 class=form-control';
 

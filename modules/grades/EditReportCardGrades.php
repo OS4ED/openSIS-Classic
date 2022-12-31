@@ -221,7 +221,7 @@ if (UserStudentID()) {
         echo '<div class="panel panel-default">';
         DrawHeader(_editReportCardGrades, '<div class="form-group">' . $mpselect . '</div>');
 
-        echo "<FORM class=\"form-horizontal m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=" . $mp_id . " method=POST>";
+        echo "<FORM class=\"form-horizontal m-b-0\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST['tab_id'])) . "&mp_id=" . $mp_id . " method=POST>";
 
         echo '<div class="panel-body alpha-grey">';
         echo '<div class="media">';
@@ -353,7 +353,7 @@ if (UserStudentID()) {
 
             //PopTable_wo_header('header');
 
-            ListOutput($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>true, 'download' =>true, 'search' =>true));
+            ListOutputWithStudentInfo($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>true, 'download' =>true, 'search' =>true));
             //PopTable('footer');
         }
 

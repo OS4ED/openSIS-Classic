@@ -133,7 +133,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'filter_edit_save' && $
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove' && $_REQUEST['filter_id'] != '') {
     if (DeletePrompt_Filter('filter')) {
-        $filter_id = paramlib_validation($colmn = FILTER_ID, $_REQUEST['filter_id']);
+        $filter_id = paramlib_validation($colmn = 'FILTER_ID', $_REQUEST['filter_id']);
         DBQuery('DELETE FROM filters WHERE FILTER_ID=\'' . $filter_id . '\'');
         DBQuery('DELETE FROM filter_fields WHERE FILTER_ID=\'' . $filter_id . '\'');
         unset($_REQUEST['modfunc']);

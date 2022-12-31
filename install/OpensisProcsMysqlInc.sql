@@ -8,7 +8,7 @@ BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE marking_period_id INT;
 DECLARE student_id INT;
-DECLARE rank NUMERIC;
+DECLARE var_rank NUMERIC;
 
 declare cur1 cursor for
 select
@@ -26,26 +26,26 @@ select
                                                 and se2.syear = se.syear
                                                 group by gpa
                                 )
-  ) as rank
+  ) as var_rank
   from student_enrollment se, student_gpa_calculated sgc, marking_periods mp
   where se.student_id = sgc.student_id
     and sgc.marking_period_id = mp.marking_period_id
     and mp.marking_period_id = mp_id
     and se.syear = mp.syear
     and not sgc.gpa is null
-  order by grade_id, rank;
+  order by grade_id, var_rank;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
 open cur1;
-fetch cur1 into marking_period_id,student_id,rank;
+fetch cur1 into marking_period_id,student_id,var_rank;
 
 while not done DO
 	update student_gpa_calculated sgc
 	  set
-	    class_rank = rank
+	    class_rank = var_rank
 	where sgc.marking_period_id = marking_period_id
 	  and sgc.student_id = student_id;
-	fetch cur1 into marking_period_id,student_id,rank;
+	fetch cur1 into marking_period_id,student_id,var_rank;
 END WHILE;
 CLOSE cur1;
 
@@ -322,7 +322,8 @@ IF EXISTS(SELECT student_id FROM student_gpa_calculated WHERE marking_period_id=
     SET
       gpa            = @gpa,
       weighted_gpa   =@weighted_gpa,
-      unweighted_gpa =@unweighted_gpa
+      unweighted_gpa =@unweighted_gpa,
+ 	   grade_level_short =@grade_level_short
 
     WHERE marking_period_id=mp_id AND student_id=s_id;
   ELSE
@@ -429,7 +430,8 @@ IF EXISTS(SELECT student_id FROM student_gpa_calculated WHERE marking_period_id=
     SET
       gpa            = @gpa,
       weighted_gpa   =@weighted_gpa,
-      unweighted_gpa =@unweighted_gpa
+      unweighted_gpa =@unweighted_gpa,
+ 	   grade_level_short =@grade_level_short
 
     WHERE marking_period_id=mp_id AND student_id=s_id;
   ELSE
@@ -655,6 +657,8 @@ WHILE inc < count_schools DO
 
     SET inc_miss_att = 0;
 
+    CREATE TABLE IF NOT EXISTS `temp_missing_attendance_delete`(`del_ma_staff_id` INT(11), `del_ma_school_date` DATE, `del_ma_period_id` INT(11));
+
     WHILE inc_miss_att < count_missing_attendance DO 
 
         SELECT PERIOD_ID, SCHOOL_DATE, TEACHER_ID, COURSE_PERIOD_ID INTO pr_id, sch_date, staff_id, c_id FROM missing_attendance WHERE syear = schoolyear LIMIT inc_miss_att,1;
@@ -662,8 +666,6 @@ WHILE inc < count_schools DO
         SELECT COUNT(DISTINCT(student_id)) INTO sch_qr FROM schedule WHERE (END_DATE IS NULL OR END_DATE >= sch_date) AND START_DATE <= sch_date AND course_period_id = c_id;
 
         SELECT COUNT(DISTINCT(student_id)) INTO att_qr FROM attendance_period WHERE SCHOOL_DATE = sch_date AND PERIOD_ID = pr_id AND course_period_id = c_id;
-
-        CREATE TABLE IF NOT EXISTS `temp_missing_attendance_delete`(`del_ma_staff_id` INT(11), `del_ma_school_date` DATE, `del_ma_period_id` INT(11));
 
         IF sch_qr = att_qr THEN 
             INSERT INTO `temp_missing_attendance_delete` (`del_ma_staff_id`, `del_ma_school_date`, `del_ma_period_id`) VALUES (staff_id, sch_date, pr_id);
@@ -675,7 +677,7 @@ WHILE inc < count_schools DO
 
     DELETE FROM missing_attendance WHERE (TEACHER_ID, SCHOOL_DATE, PERIOD_ID) IN (SELECT `del_ma_staff_id` AS TEACHER_ID, `del_ma_school_date` AS SCHOOL_DATE, `del_ma_period_id` AS PERIOD_ID FROM `temp_missing_attendance_delete`);
 
-    DROP TABLE `temp_missing_attendance_delete`;
+    DROP TABLE IF EXISTS `temp_missing_attendance_delete`;
 
     --
     -- FOR Deleting Missing Attendance - END
@@ -706,7 +708,7 @@ WHILE inc < count_schools DO
                     AND sch.student_id IN(SELECT student_id FROM student_enrollment se WHERE sch.school_id=se.school_id AND sch.syear=se.syear AND start_date<=acc.school_date AND (end_date IS NULL OR end_date>=acc.school_date))
                     AND (cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_semesters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM school_quarters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE) or cp.MARKING_PERIOD_ID is NULL OR acc.school_date BETWEEN cp.begin_date AND cp.end_date)
                     AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.SCHOOL_DATE<=CURDATE() AND acc.SCHOOL_DATE > last_update AND acc.syear = schoolyear AND acc.SCHOOL_ID = userschool 
-                    AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.SCHOOL_DATE=acc.SCHOOL_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID) 
+                    AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.SCHOOL_DATE=acc.SCHOOL_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID) AND isDateInMarkingPeriodWorkingDates(cp.MARKING_PERIOD_ID, acc.SCHOOL_DATE) 
                     GROUP BY acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID;
 
                 UPDATE `program_config` SET VALUE=CURDATE() WHERE PROGRAM='MissingAttendance' AND SCHOOL_ID = userschool AND TITLE='LAST_UPDATE';
@@ -753,11 +755,11 @@ SELECT COUNT(*) INTO count_teacher_reassignment FROM teacher_reassignment WHERE 
 
 SET inc_tech_reassn = 0;
 
+CREATE TABLE IF NOT EXISTS `temp_teacher_reassignment`(`ra_cp_id` INT(11));
+
 WHILE inc_tech_reassn < count_teacher_reassignment DO 
 
     SELECT COURSE_PERIOD_ID, TEACHER_ID, PRE_TEACHER_ID, ASSIGN_DATE INTO reassign_cp_value_course_period_id, reassign_cp_value_teacher_id, reassign_cp_value_pre_teacher_id, reassign_cp_value_assign_date FROM teacher_reassignment WHERE ASSIGN_DATE <= CURDATE() AND UPDATED = 'N' LIMIT inc_tech_reassn,1;
-
-    CREATE TABLE IF NOT EXISTS `temp_teacher_reassignment`(`ra_cp_id` INT(11));
 
     IF reassign_cp_value_assign_date <= CURDATE() THEN 
         SELECT CONCAT(IF(cp.marking_period_id!='',IF(cp.mp!='FY',CONCAT(mp.short_name),''),'Custom - '),cp.short_name,' - ',CONCAT_WS(' ',st.first_name,st.middle_name,st.last_name)) AS CP_NAME INTO get_pname_cp_name FROM course_periods cp,course_period_var cpv,school_periods sp,marking_periods mp,staff st WHERE cpv.period_id=sp.period_id and (cp.marking_period_id=mp.marking_period_id or cp.marking_period_id is NULL) and st.staff_id = reassign_cp_value_teacher_id  AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID = reassign_cp_value_course_period_id LIMIT 1;
@@ -775,7 +777,7 @@ END WHILE;
 
 UPDATE teacher_reassignment SET UPDATED = 'Y', LAST_UPDATED = CURRENT_TIMESTAMP WHERE assign_date <= CURDATE() AND UPDATED = 'N' AND COURSE_PERIOD_ID IN(SELECT `ra_cp_id` AS COURSE_PERIOD_ID FROM `temp_teacher_reassignment`);
 
-DROP TABLE `temp_teacher_reassignment`;
+DROP TABLE IF EXISTS `temp_teacher_reassignment`;
 
 --
 -- FOR Teacher Reassignment - END
@@ -783,6 +785,13 @@ DROP TABLE `temp_teacher_reassignment`;
 
 END$$
 DELIMITER ;
+
+--
+-- EVENT: SET EVENT SCHEDULER ON TEMPORARILY. TO DO IT PERMANENTLY, YOU NEED TO SET THE MYSQL CONFIG
+--
+
+SET @@GLOBAL.event_scheduler = ON;
+SET GLOBAL log_bin_trust_function_creators = 1;
 
 --
 -- EVENT: ES_HANDLER_MISSING_ATTENDANCE

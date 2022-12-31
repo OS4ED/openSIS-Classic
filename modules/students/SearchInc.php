@@ -27,7 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-session_start();
 if ($_openSIS['modules_search'] && $extra['force_search'])
     $_REQUEST['search_modfunc'] = '';
 
@@ -187,7 +186,7 @@ if (($_REQUEST['search_modfunc'] == 'search_fnc' && !$_SESSION['student_id']) ||
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> '._includeInactiveStudents.'</label>';
             echo '</div>'; //.col-md-12
             echo '</div>'; //.row
-            echo '<hr/>';
+            // echo '<hr/>';
 
             $extra_footer = '<div class="text-right">';
             $extra_footer .= '<a id="advancedSearchForStudentDiv" href="javascript:void(0);" onclick="show_search_div();" class="text-pink m-r-10"><i class="icon-cog"></i> '._advancedSearch.'</a>';
@@ -453,7 +452,7 @@ else {
 
     if ($_REQUEST['address_group']) {
         $extra['SELECT'] = $extra['SELECT'] . ',ssm.student_id AS CHILD';
-        if (count($extra['functions']) > 0)
+        if (!empty($extra['functions']))
             $extra['functions'] += array('CHILD' => '_make_Parents');
         else
             $extra['functions'] = array('CHILD' => '_make_Parents');
@@ -498,7 +497,7 @@ else {
     }
 
     $extra['SELECT'] .= ' ,ssm.SECTION_ID';
-    if (count($extra['functions']) > 0)
+    if (is_countable($extra['functions']) && count($extra['functions']) > 0)
         $extra['functions'] += array('SECTION_ID' => '_make_sections');
     else
         $extra['functions'] = array('SECTION_ID' => '_make_sections');
@@ -566,16 +565,16 @@ else {
     if (!$extra['columns_before'] && !$extra['columns_after'])
         $columns = $LO_columns;
 
-    if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+    if ((is_countable($students_RET) && count($students_RET) > 1) || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && (is_countable($students_RET) && count($students_RET) == 0)) || ($extra['Redirect'] === false && (is_countable($students_RET) && count($students_RET) == 1))) {
         if ($_REQUEST['modname'] != 'attendance/Administration.php')
             echo '<div class="panel panel-default">';
 
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);
-        if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0) {
+        if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && (is_countable($students_RET) && count($students_RET) != 0)) {
             DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> "._expandedView."</A>", $extra['header_right']);
             DrawHeader(str_replace('<BR>', '', substr($_openSIS['SearchTerms'], 0, -4)));
-        } elseif (!UserStudentID() && count($students_RET) != 0) {
+        } elseif (!UserStudentID() && (is_countable($students_RET) && count($students_RET) != 0)) {
             DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false><i class=\"icon-square-up-left\"></i> "._originalView."</A>", $extra['header_right']);
             DrawHeader(str_replace('<BR>', '', substr($_openSIS['Search'], 0, -4)));
         }
@@ -650,7 +649,7 @@ else {
             }
             echo '<div class="panel-body">';
             $stu_ids_for_hidden = array();
-            if (count($students_RET) > 0) {
+            if (is_countable($students_RET) && count($students_RET) > 0) {
                 echo '<div class="table-responsive">';
             }
             echo '<div id="hidden_checkboxes"></div>';
@@ -673,7 +672,7 @@ else {
                 echo '</div>';
             }
 
-            if (count($students_RET) > 0) {
+            if (is_countable($students_RET) && count($students_RET) > 0) {
                 echo '</div>'; //.table-responsive
             }
             echo '</div>'; //.panel-body
@@ -795,8 +794,19 @@ echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
 echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
 echo '</div>'; //.modal-header
-if ($_REQUEST['modname'] == 'scheduling/Schedule.php')
-echo '<FORM class="m-b-0" name="courses" method="post" action="Modules.php?modname=scheduling/Schedule.php?modfunc=cp_insert">';
+if ($_REQUEST['modname'] == 'scheduling/Schedule.php') {
+    if (isset($_SESSION['schedule_selected_date']) && $_SESSION['schedule_selected_date'] != '') {
+        $orderdate = explode('-', $_SESSION['schedule_selected_date']);
+        $year = $orderdate[0];
+        $month = $orderdate[1];
+        $day  = $orderdate[2];
+        unset($_SESSION['schedule_selected_date']);
+
+        echo '<FORM class="m-b-0" name="courses" method="post" action="Modules.php?modname=scheduling/Schedule.php?modfunc=cp_insert&month_date=' . $month . '&day_date=' . $day . '&year_date=' . $year . '">';
+    } else {
+        echo '<FORM class="m-b-0" name="courses" method="post" action="Modules.php?modname=scheduling/Schedule.php?modfunc=cp_insert">';
+    }
+}
 echo '<div class="modal-body">';
 
 echo '<div id=conf_div1 class=text-center></div>';
@@ -835,12 +845,10 @@ echo '</div>'; //.modal-content
 echo '</div>'; //.modal-dialog
 echo '</div>'; //.modal
 
-function _make_sections($value) {
-    if ($value != '') {
-        $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
-        return $get[1]['NAME'];
-    } else
-        return '';
-}
-
-?>
+// function _make_sections($value) {
+//     if ($value != '') {
+//         $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+//         return $get[1]['NAME'];
+//     } else
+//         return '';
+// }

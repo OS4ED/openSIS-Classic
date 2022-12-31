@@ -122,7 +122,7 @@ if (!$_REQUEST['modfunc']) {
                         $fileName = str_replace($dir.'/', '', $target_path);
                         $content = 'IN_DIR';
 
-                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
+                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . addslashes($fileName) . '\', \'' . addslashes($fileSize) . '\', \'' . addslashes($fileType) . '\', \'' . addslashes($content) . '\',\'stufile\')');
 
                         $uploadedFiles++;
 

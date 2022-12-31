@@ -44,9 +44,9 @@ if (isset($_REQUEST['email']) && $_REQUEST['email'] != '') {
         $res_stu = DBGet(DBQuery('SELECT STUDENT_ID FROM students WHERE EMAIL=\'' . $email . '\''));
     }
     if (count($result) > 0 || count($res_stf) > 0 || count($res_stu) > 0) {
-        echo '0_' . urlencode($_REQUEST['opt']) {0};
+        echo '0_' . urlencode($_REQUEST['opt'])[0];
     } else {
-        echo '1_' . urlencode($_REQUEST['opt']) {0};
+        echo '1_' . urlencode($_REQUEST['opt'])[0];
     }
     exit;
 }

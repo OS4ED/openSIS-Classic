@@ -42,8 +42,10 @@ if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) 
 } else {
     $date = DBDate('mysql');
     $_REQUEST['day_date'] = date('d');
-    $_REQUEST['month_date'] = strtoupper(date('M'));
-    $_REQUEST['year_date'] = date('y');
+    // $_REQUEST['month_date'] = strtoupper(date('M'));
+    // $_REQUEST['year_date'] = date('y');
+    $_REQUEST['month_date'] = date('m');
+    $_REQUEST['year_date'] = date('Y');
 }
 if (!$_REQUEST['table'])
     $_REQUEST['table'] = '0';
@@ -53,7 +55,7 @@ if ($_REQUEST['table'] == 0) {
     $extra_sql = '';
 } else {
     $table = 'lunch_period';
-    $extra_sql = ' AND TABLE_NAME=\'' . $_REQUEST[table] . '\'';
+    $extra_sql = ' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'';
 }
 $_SESSION['Administration.php']['date'] = $date;
 $current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,STUDENT_ID,ADMIN,COURSE_PERIOD_ID,PERIOD_ID FROM ' . $table . ' WHERE SCHOOL_DATE=\'' . $date . '\'' . $extra_sql), array(), array('STUDENT_ID', 'COURSE_PERIOD_ID'));
@@ -130,7 +132,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
     unset($_SESSION['_REQUEST_vars']['attendance']);
     unset($_SESSION['_REQUEST_vars']['attendance_day']);
 }
-if (count($_REQUEST['attendance_day'])) {
+if (!empty($_REQUEST['attendance_day'])) {
     foreach ($_REQUEST['attendance_day'] as $student_id => $comment) {
 
         $val = $comment['COMMENT'];
@@ -140,7 +142,7 @@ if (count($_REQUEST['attendance_day'])) {
     unset($_REQUEST['attendance_day']);
 }
 
-$codes_RET = DBGet(DBQuery('SELECT ID,SHORT_NAME,TITLE,STATE_CODE FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND TABLE_NAME=\'' . $_REQUEST[table] . '\''));
+$codes_RET = DBGet(DBQuery('SELECT ID,SHORT_NAME,TITLE,STATE_CODE FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\''));
 $periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,SHORT_NAME,TITLE FROM school_periods WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND EXISTS (SELECT * FROM course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=school_periods.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\') ORDER BY SORT_ORDER'));
 if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALPHANUM) != 'new') {
 
@@ -176,13 +178,13 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
         if ($count_student_RET[1]['NUM'] > 1) {
             #-----------------------------------------------------newly added attendance code and the date in back to list--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
           echo '<div class="panel panel-default">';
-            DrawHeader(''._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&codes[]=' . $_SESSION[code][0] . '&ajax=true&bottom_back=true&month_date=' . $_REQUEST[month_date] . '&day_date=' . $_REQUEST[day_date] . '&year_date=' . $_REQUEST[year_date] . ' target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+            DrawHeader(''._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&codes[]=' . $_SESSION['code'][0] . '&ajax=true&bottom_back=true&month_date=' . $_REQUEST['month_date'] . '&day_date=' . $_REQUEST['day_date'] . '&year_date=' . $_REQUEST['year_date'] . ' target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
             echo '</div>';
             #-----------------------------------------------------newly added attendance code and the date in back to list--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         }
     }
     echo '<div class="panel panel-default">';
-    ListOutput($schedule_RET, $columns, _course, _courses);
+    ListOutputWithStudentInfo($schedule_RET, $columns, _course, _courses);
     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_update, '', 'class="btn btn-primary heading-btn pull-right" onclick="self_disable(this);"') . '</div></div>';
     echo '</div>';
     echo '</FORM>';
@@ -221,7 +223,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
             $extra['WHERE'] = substr($extra['WHERE'], 0, -1) . ')';
     }
     elseif ($abs) {
-        $RET = DBGet(DBQuery('SELECT ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (DEFAULT_CODE!=\'' . 'Y' . '\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'' . $_REQUEST[table] . '\''));
+        $RET = DBGet(DBQuery('SELECT ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (DEFAULT_CODE!=\'' . 'Y' . '\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'' . $_REQUEST['table'] . '\''));
         if (count($RET)) {
             $extra['WHERE'] .= 'AND ac.ID IN (';
             foreach ($RET as $code)
@@ -387,7 +389,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 
 function _makePhone($value, $column) {
     global $THIS_RET, $contacts_RET;
-
+    $tipmessage='';
     if (count($contacts_RET[$THIS_RET['STUDENT_ID']])) {
         foreach ($contacts_RET[$THIS_RET['STUDENT_ID']] as $person) {
             if ($person[1]['FIRST_NAME'] || $person[1]['LAST_NAME'])
@@ -465,7 +467,7 @@ function _makeCode($value, $title) {
 }
 
 function _makeReasonInput($value, $title) {
-    global $THIS_RET, $codes_RET, $current_RET;
+    global $THIS_RET, $codes_RET, $current_RET,$options;
 
     $val = $current_RET[$THIS_RET['STUDENT_ID']][$THIS_RET['COURSE_PERIOD_ID']][1]['ATTENDANCE_REASON'];
 

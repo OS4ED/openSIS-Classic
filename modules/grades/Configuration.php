@@ -31,6 +31,7 @@ include 'modules/grades/ConfigInc.php';
 $q_total = array();
 $s_total = array();
 $f_total = 0;
+$marking_sem_id = array();
 
 foreach ($_REQUEST['teacher_grade'] as $ktitle => $data) {
     $cp_id = explode('-', $ktitle);
@@ -40,14 +41,14 @@ foreach ($_REQUEST['values'] as $key => $val) {
     $k = explode('-', $key);
     if ($k[0] == 'Q') {
 
-        $q_total[$k[1]] = $q_total[$k[1]] + $val;
+        $q_total[$k[1]] = intval($q_total[$k[1]]) + intval($val);
     }
     if ($k[0] == 'SEM') {
         if (substr($k[1], 0, 1) != 'E')
             $s_total[] = $k[1];
     }
     if ($k[0] == 'FY') {
-        $f_total = $f_total + $val;
+        $f_total = intval($f_total) + intval($val);
     }
 }
 
@@ -61,23 +62,25 @@ if (!empty($s_total)) {
     foreach ($_REQUEST['values'] as $key => $val) {
         $k = explode('-', $key);
         if ($k[0] == 'SEM') {
-            if (in_array($k[1], $marking_sem_id))
-                $marking_sem_val[$k[1]] = $marking_sem_val[$k[1]] + $val;
-            else {
+            if (is_array($marking_sem_id)) {
+                if (in_array($k[1], $marking_sem_id))
+                    $marking_sem_val[$k[1]] = $marking_sem_val[$k[1]] + $val;
+                else {
 
-                if (substr($k[1], 0, 1) != 'E') {
-                    $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='$k[1]'"));
-                    $parent_mp_id = $pr_qr[1]['PARENT_ID'];
-                    $marking_sem_val[$parent_mp_id] = $marking_sem_val[$parent_mp_id] + $val;
-                }
-                if (substr($k[1], 0, 1) == 'E' && in_array(substr($k[1], 1), $marking_sem_id)) {
+                    if (substr($k[1], 0, 1) != 'E') {
+                        $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='$k[1]'"));
+                        $parent_mp_id = $pr_qr[1]['PARENT_ID'];
+                        $marking_sem_val[$parent_mp_id] = intval($marking_sem_val[$parent_mp_id]) + intval($val);
+                    }
+                    if (substr($k[1], 0, 1) == 'E' && is_array($marking_sem_id) && in_array(substr($k[1], 1), $marking_sem_id)) {
 
-                    $marking_sem_val[substr($k[1], 1)] = $marking_sem_val[substr($k[1], 1)] + $val;
-                }
-                if (substr($k[1], 0, 1) == 'E' && !in_array(substr($k[1], 1), $marking_sem_id)) {
-                    $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='" . substr($k[1], 1) . "'"));
-                    $parent_mp_id = $pr_qr[1]['PARENT_ID'];
-                    $marking_sem_val[$parent_mp_id] = $marking_sem_val[$parent_mp_id] + $val;
+                        $marking_sem_val[substr($k[1], 1)] = intval($marking_sem_val[substr($k[1], 1)]) + intval($val);
+                    }
+                    if (substr($k[1], 0, 1) == 'E' && is_array($marking_sem_id) && !in_array(substr($k[1], 1), $marking_sem_id)) {
+                        $pr_qr = DBGet(DBQuery("select parent_id from marking_periods where marking_period_id='" . substr($k[1], 1) . "'"));
+                        $parent_mp_id = $pr_qr[1]['PARENT_ID'];
+                        $marking_sem_val[$parent_mp_id] = intval($marking_sem_val[$parent_mp_id]) + intval($val);
+                    }
                 }
             }
         }
@@ -203,24 +206,25 @@ echo '</fieldset>';
 
 if (count($grades) > 0) {
     echo '<fieldset>';
-    echo '<legend><b>'._scoreBreakoffPoints.'</b></legend>';
-    echo '<TABLE cellspacing=1><TR><TD>';
+    echo '<h5 class="text-primary">'._scoreBreakoffPoints.'</h5>';
+    echo '<TABLE width="100%" cellspacing=1><TR><TD>';
     foreach ($grades as $course_period_id => $cp_grades) {
-        $table = '<TABLE>';
-        $table .= '<TR><TD rowspan=2 align=right width=100>' . $cp_grades[1]['COURSE_TITLE'] . ' - ' . substr($cp_grades[1]['CP_TITLE'], 0, strrpos(str_replace(' - ', ' ^ ', $cp_grades[1]['CP_TITLE']), '^')) . '</TD>';
+        $table = '<TABLE width="100%">';
+        $table .= '<TR><TD rowspan=2 align=left width=20%>' . $cp_grades[1]['COURSE_TITLE'] . ' - ' . substr($cp_grades[1]['CP_TITLE'], 0, strrpos(str_replace(' - ', ' ^ ', $cp_grades[1]['CP_TITLE']), '^')) . '</TD>';
         foreach ($cp_grades as $grade)
-            $table .= '<TD><B>' . $grade['TITLE'] . '</B></TD>';
+            $table .= '<TD align=center><B>' . $grade['TITLE'] . '</B></TD>';
         $table .= '</TR>';
         $table .= '<TR>';
         foreach ($cp_grades as $grade)
-            $table .= '<TD><INPUT type=text name=values[' . $course_period_id . '-' . $grade['ID'] . '] value="' . $programconfig[$course_period_id . '-' . $grade['ID']] . '" size=3 maxlength=5></TD>';
+            $table .= '<TD><INPUT type=text class="form-control text-center" name=values[' . $course_period_id . '-' . $grade['ID'] . '] value="' . $programconfig[$course_period_id . '-' . $grade['ID']] . '" size=3 maxlength=5></TD>';
         $table .= '</TR>';
         $table .= '</TABLE>';
-        echo DrawRoundedRect($table);
+        echo $table;
+        // echo DrawRoundedRect($table);
         echo '</TD></TR><TR><TD>';
     }
     echo '</TD></TR></TABLE>';
-    echo '</fieldset></TD>';
+    echo '</fieldset>';
 }
 
 $quarters_dt = DBGet(DBQuery('SELECT TITLE,MARKING_PERIOD_ID,SEMESTER_ID,DOES_GRADES,DOES_EXAM FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));

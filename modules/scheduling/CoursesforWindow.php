@@ -152,28 +152,28 @@ if ($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit(
 
                 if ($table_name == 'course_subjects') {
 
-                    $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'course_subjects'"));
-                    $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'course_subjects'"));
+                    // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
                     $fields = 'SCHOOL_ID,SYEAR,';
                     $values = "'" . UserSchool() . "','" . UserSyear() . "',";
-                    $_REQUEST['subject_id'] = $id[1]['ID'];
+                    // $_REQUEST['subject_id'] = $id[1]['ID'];
                 } elseif ($table_name == 'courses') {
 
-                    $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'courses'"));
-                    $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                    $_REQUEST['course_id'] = $id[1]['ID'];
+                    // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'courses'"));
+                    // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    // $_REQUEST['course_id'] = $id[1]['ID'];
                     $fields = 'SUBJECT_ID,SCHOOL_ID,SYEAR,';
                     $values = "'$_REQUEST[subject_id]','" . UserSchool() . "','" . UserSyear() . "',";
                 } elseif ($table_name == 'course_periods') {
 
-                    $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'course_periods'"));
-                    $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'course_periods'"));
+                    // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
                     $fields = 'SYEAR,SCHOOL_ID,COURSE_ID,TITLE,';
                     $teacher = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME FROM staff WHERE SYEAR='" . UserSyear() . "' AND STAFF_ID='$columns[TEACHER_ID]'"));
                     $period = DBGet(DBQuery("SELECT TITLE FROM school_periods WHERE PERIOD_ID='$columns[PERIOD_ID]' AND SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "'"));
 
-                    if (!isset($columns['PARENT_ID']))
-                        $columns['PARENT_ID'] = $id[1]['ID'];
+                    // if (!isset($columns['PARENT_ID']))
+                    //     $columns['PARENT_ID'] = $id[1]['ID'];
 
                     if (isset($columns['MARKING_PERIOD_ID'])) {
                         if (GetMP($columns['MARKING_PERIOD_ID'], 'TABLE') == 'school_years')
@@ -194,7 +194,7 @@ if ($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit(
                     $title = str_replace("'", "''", $period[1]['TITLE'] . ' - ' . $mp_title . $teacher[1]['FIRST_NAME'] . ' ' . $teacher[1]['MIDDLE_NAME'] . ' ' . $teacher[1]['LAST_NAME']);
 
                     $values = "'" . UserSyear() . "','" . UserSchool() . "','$_REQUEST[course_id]','$title',";
-                    $_REQUEST['course_period_id'] = $id[1]['ID'];
+                    // $_REQUEST['course_period_id'] = $id[1]['ID'];
                 }
 
                 $go = 0;
@@ -207,8 +207,20 @@ if ($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit(
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
-                if ($go)
+                if ($go){
                     DBQuery($sql);
+                    if ($table_name == 'course_subjects') {
+                        $_REQUEST['subject_id'] = mysqli_insert_id($connection);
+                    } else if ($table_name == 'courses') {
+                        $_REQUEST['course_id'] = mysqli_insert_id($connection);
+                    } else if ($table_name == 'course_periods') {
+                        $_REQUEST['course_period_id'] = mysqli_insert_id($connection);
+                        if (!isset($columns['PARENT_ID'])) {
+                            $update_parent_id = "UPDATE course_periods SET PARENT_ID=" . $_REQUEST['course_period_id'] . " WHERE COURSE_PERIOD_ID = " . $_REQUEST['course_period_id'];
+                            DBQuery($update_parent_id);
+                        }
+                    }
+                }
             }
         }
     }

@@ -47,36 +47,37 @@ if (!$extra['functions'])
     $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSectionVal');
 if ($_REQUEST['search_modfunc'] == 'list') {
     if (!$fields_list) {
-        $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
-         'FIRST_NAME' =>_first,
-         'FIRST_INIT' =>_firstInitial,
-         'LAST_NAME' =>_last,
-         'MIDDLE_NAME' =>_middle,
-         'ETHNICITY_ID' =>_ethnicity,
-        'LANGUAGE_ID'=>_language,
-        'NAME_SUFFIX' =>_suffix,
-         'GENDER'=>_gender,
-        'STUDENT_ID' =>_studentId,
-         'GRADE_ID' =>_grade,
-        'SECTION_ID' =>_section,
-         'SCHOOL_ID' =>_school,
-         'NEXT_SCHOOL' =>_rollingRetentionOptions,
-         'CALENDAR_ID' =>_calendar,
-         'USERNAME' =>_username,
-         'PASSWORD' =>_password,
-         'ALT_ID' =>_alternateId,
-         'BIRTHDATE' =>_dob,
-         'EMAIL' =>_emailId,
-         'ADDRESS' =>_address,
-         'CITY' =>_city,
-         'STATE' =>_state,
-         'ZIPCODE' =>_zipCode,
-         'PHONE' =>_phone,
-         'MAIL_ADDRESS' =>_mailingAddress,
-         'MAIL_CITY' =>_mailingCity,
-         'MAIL_STATE' =>_mailingState,
-         'MAIL_ZIPCODE' =>_mailingZipcode,
-         'PARENTS' => contacts
+        $fields_list = array(
+            'FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
+            'FIRST_NAME' => _first,
+            'FIRST_INIT' => _firstInitial,
+            'LAST_NAME' => _last,
+            'MIDDLE_NAME' => _middle,
+            'ETHNICITY_ID' => _ethnicity,
+            'LANGUAGE_ID' => _language,
+            'NAME_SUFFIX' => _suffix,
+            'GENDER' => _gender,
+            'STUDENT_ID' => _studentId,
+            'GRADE_ID' => _grade,
+            'SECTION_ID' => _section,
+            'SCHOOL_ID' => _school,
+            'NEXT_SCHOOL' => _rollingRetentionOptions,
+            'CALENDAR_ID' => _calendar,
+            'USERNAME' => _username,
+            'PASSWORD' => _password,
+            'ALT_ID' => _alternateId,
+            'BIRTHDATE' => _dob,
+            'EMAIL' => _emailId,
+            'ADDRESS' => _address,
+            'CITY' => _city,
+            'STATE' => _state,
+            'ZIPCODE' => _zipCode,
+            'PHONE' => _phone,
+            'MAIL_ADDRESS' => _mailingAddress,
+            'MAIL_CITY' => _mailingCity,
+            'MAIL_STATE' => _mailingState,
+            'MAIL_ZIPCODE' => _mailingZipcode,
+            'PARENTS' => 'contacts'
         );
         if ($extra['field_names'])
             $fields_list += $extra['field_names'];
@@ -126,11 +127,10 @@ if ($_REQUEST['search_modfunc'] == 'list') {
             $extra['SELECT'] .= ',(SELECT fsa.BALANCE FROM FOOD_SERVICE_ACCOUNTS fsa WHERE fsa.ACCOUNT_ID=fssa.ACCOUNT_ID) AS FS_BALANCE';
         $fields_list += array('FS_ACCOUNT_ID' => 'F/S Account ID', 'FS_DISCOUNT' => 'F/S Discount', 'FS_STATUS' => 'F/S Status', 'FS_BARCODE' => 'F/S Barcode', 'FS_BALANCE' => 'F/S Balance',);
     }
-    if ($_REQUEST['fields']['USERNAME'] == 'Y')
-    {
-$extra['SELECT'] .= ',la.username';
-$extra['FROM'].=', login_authentication la';
-$extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
+    if ($_REQUEST['fields']['USERNAME'] == 'Y') {
+        $extra['SELECT'] .= ',la.username';
+        $extra['FROM'] .= ', login_authentication la';
+        $extra['WHERE'] .= ' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
     }
     if ($_REQUEST['fields']) {
         foreach ($_REQUEST['fields'] as $field => $on) {
@@ -155,106 +155,102 @@ $extra['WHERE'].=' AND la.USER_ID=s.STUDENT_ID AND la.profile_id=3  ';
             }
         }
         $RET = GetStuList($extra);
-//        echo '<pre>';
-//        print_r($RET);
-//        echo $RET[1]['ETHNICITY_ID'];
-//        exit;
-        $i=1;
+        //        echo '<pre>';
+        //        print_r($RET);
+        //        echo $RET[1]['ETHNICITY_ID'];
+        //        exit;
+        $i = 1;
         foreach ($RET as $value) {
-            if($RET[$i]['LANGUAGE_ID'] != ''){
-            $sql_language= DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=".$RET[$i]['LANGUAGE_ID']));
-            $RET[$i]['LANGUAGE_ID']=$sql_language[1]['LANGUAGE_NAME'];
+            if ($RET[$i]['LANGUAGE_ID'] != '') {
+                $sql_language = DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=" . $RET[$i]['LANGUAGE_ID']));
+                $RET[$i]['LANGUAGE_ID'] = $sql_language[1]['LANGUAGE_NAME'];
             }
-             if($RET[$i]['ETHNICITY_ID'] != ''){
-            $sql_ethinicity= DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=".$RET[$i]['ETHNICITY_ID']));
-            $RET[$i]['ETHNICITY_ID']= $sql_ethinicity[1]['ETHNICITY_NAME'];
+            if ($RET[$i]['ETHNICITY_ID'] != '') {
+                $sql_ethinicity = DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=" . $RET[$i]['ETHNICITY_ID']));
+                $RET[$i]['ETHNICITY_ID'] = $sql_ethinicity[1]['ETHNICITY_NAME'];
             }
-            $i=$i+1;
+            $i = $i + 1;
         }
         $list_attr = DBGet(DBQuery("SHOW COLUMNS FROM `students` "));
         foreach ($list_attr as $data) {
 
             $list_attr_val[] = strtoupper($data['FIELD']);
         }
-        
-        
-        foreach($columns as $stu_indx=> $stu_data)
-                    {
-            $f=0;
-                      
-                    if(!in_array($stu_indx,$list_attr_val))
-                    {
-                      $f=1;
 
-                    }
- else {
-     $f=0;
-     break;
- }
-                   } 
+
+        foreach ($columns as $stu_indx => $stu_data) {
+            $f = 0;
+
+            if (!in_array($stu_indx, $list_attr_val)) {
+                $f = 1;
+            } else {
+                $f = 0;
+                break;
+            }
+        }
 
         if ($_REQUEST['ADDRESS_ID'] || $_REQUEST['fields']['ADDRESS'] || $_REQUEST['fields']['CITY'] || $_REQUEST['fields']['STATE'] || $_REQUEST['fields']['ZIPCODE'] || $_REQUEST['fields']['PHONE'] || $_REQUEST['fields']['MAIL_ADDRESS'] || $_REQUEST['fields']['MAIL_CITY'] || $_REQUEST['fields']['MAIL_STATE'] || $_REQUEST['fields']['MAIL_ZIPCODE'] || $_REQUEST['fields']['PARENTS']) {
 
 
             foreach ($RET as $stu_key => $stu_val) {
 
-                 $add_reslt = "SELECT CASE WHEN (sa.STREET_ADDRESS_1 IS NOT NULL && sa.STREET_ADDRESS_2 IS NOT NULL) THEN CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2) ELSE sa.STREET_ADDRESS_1 END as ADDRESS, sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STREET_ADDRESS_1) AS MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STATE) AS MAIL_STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa WHERE sa.TYPE='HOME ADDRESS' AND sa.STUDENT_ID = '" . $stu_val['STUDENT_ID'] ."' ORDER BY syear DESC";
-               
+                $add_reslt = "SELECT CASE WHEN (sa.STREET_ADDRESS_1 IS NOT NULL && sa.STREET_ADDRESS_2 IS NOT NULL) THEN CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2) ELSE sa.STREET_ADDRESS_1 END as ADDRESS, sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STREET_ADDRESS_1) AS MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.STATE) AS MAIL_STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['STUDENT_ID'] . " AND TYPE='MAIL' ORDER BY syear DESC LIMIT 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa WHERE sa.TYPE='HOME ADDRESS' AND sa.STUDENT_ID = '" . $stu_val['STUDENT_ID'] . "' ORDER BY syear DESC";
+
                 $res = DBGet(DBQuery($add_reslt));
 
-                    foreach ($res[1] as $add_key => $add_val) {
-                        $RET[$stu_key][$add_key] = $add_val;
-                       
-                    }
-                     
-                        if(empty($res[1]) && $f==1)
-                            unset($RET[$stu_key]);
-               
+                foreach ($res[1] as $add_key => $add_val) {
+                    $RET[$stu_key][$add_key] = $add_val;
+                }
+
+                if (empty($res[1]) && $f == 1)
+                    unset($RET[$stu_key]);
             }
-        } echo "<br><br>";
+        }
+        echo "<br><br>";
 
         if ($extra['array_function'] && function_exists($extra['array_function']))
             $extra['array_function']($RET);
         echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
-       
-        ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : student, $extra['plural'] ? $extra['plural'] : students, array(), $extra['LO_group'], $extra['LO_options']);
+
+        ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : _student, $extra['plural'] ? $extra['plural'] : students, array(), $extra['LO_group'], $extra['LO_options']);
 
         echo "</body></html>";
     }
-}
-else {
+} else {
     if (!$fields_list) {
         if (AllowUse('students/Student.php&category_id=1'))
-            $fields_list['General'] = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
-             'FIRST_NAME' =>_first,
-             'FIRST_INIT' =>_firstInitial,
-             'LAST_NAME' =>_last,
-             'MIDDLE_NAME' =>_middle,
-             'ETHNICITY_ID' =>_ethnicity,
-             'LANGUAGE_ID'=>_language,
-             'NAME_SUFFIX' =>_suffix,
-             'GENDER' =>_gender,
-             'STUDENT_ID' =>_studentId,
-             'GRADE_ID' =>_grade,
-             'SECTION_ID' =>_section,
-             'SCHOOL_ID' =>_school,
-             'NEXT_SCHOOL' =>_rollingRetentionOptions,
-             'CALENDAR_ID' =>_calendar,
-             'USERNAME' =>_username,
-             'ALT_ID' =>_alternateId,
-             'BIRTHDATE' =>_dob,
-             'EMAIL' =>_emailId,
-             'PHONE' =>_phone,
-        );
+            $fields_list['General'] = array(
+                'FULL_NAME' => (Preferences('NAME') == 'Common' ? _lastCommon : _lastFirstM),
+                'FIRST_NAME' => _first,
+                'FIRST_INIT' => _firstInitial,
+                'LAST_NAME' => _last,
+                'MIDDLE_NAME' => _middle,
+                'ETHNICITY_ID' => _ethnicity,
+                'LANGUAGE_ID' => _language,
+                'NAME_SUFFIX' => _suffix,
+                'GENDER' => _gender,
+                'STUDENT_ID' => _studentId,
+                'GRADE_ID' => _grade,
+                'SECTION_ID' => _section,
+                'SCHOOL_ID' => _school,
+                'NEXT_SCHOOL' => _rollingRetentionOptions,
+                'CALENDAR_ID' => _calendar,
+                'USERNAME' => _username,
+                'ALT_ID' => _alternateId,
+                'BIRTHDATE' => _dob,
+                'EMAIL' => _emailId,
+                'PHONE' => _phone,
+            );
         if (AllowUse('students/Student.php&category_id=3')) {
-            $fields_list['Address'] = array('ADDRESS' =>_address,
-             'CITY' =>_city,
-             'STATE' =>_state,
-             'ZIPCODE' =>_zipCode,
-             'MAIL_ADDRESS' =>_mailingAddress,
-             'MAIL_CITY' =>_mailingCity,
-             'MAIL_STATE' =>_mailingState,
-             'MAIL_ZIPCODE' =>_mailingZipcode,
+            $fields_list['Address'] = array(
+                'ADDRESS' => _address,
+                'CITY' => _city,
+                'STATE' => _state,
+                'ZIPCODE' => _zipCode,
+                'MAIL_ADDRESS' => _mailingAddress,
+                'MAIL_CITY' => _mailingCity,
+                'MAIL_STATE' => _mailingState,
+                'MAIL_ZIPCODE' => _mailingZipcode,
             );
         }
         if ($extra['field_names'])
@@ -279,24 +275,24 @@ else {
             }
             foreach ($custom_RET1[$category['ID']] as $field) {
                 $fields_list[$category['TITLE']]['CUSTOM_' . $field['ID']] = $field['TITLE'];
-                if($fields_list[generalInfo] !=''){
-                    $fields_list['General']+=$fields_list[generalInfo];
+                if ($fields_list[generalInfo] != '') {
+                    $fields_list['General'] += $fields_list[generalInfo];
                 }
             }
         }
     }
     unset($fields_list[generalInfo]);
-    $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''.($_REQUEST['period_id']!=''?" AND PERIOD_ID=".$_REQUEST['period_id']."":"").' ORDER BY SORT_ORDER'));
+    $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'' . ($_REQUEST['period_id'] != '' ? " AND PERIOD_ID=" . $_REQUEST['period_id'] . "" : "") . ' ORDER BY SORT_ORDER'));
     foreach ($periods_RET as $period)
         $fields_list['Schedule']['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'] . ' Teacher - Room';
 
     if ($openSISModules['Food_Service'])
-        $fields_list['Food_Service'] = array('FS_ACCOUNT_ID' => ''._accountID.'', 'FS_DISCOUNT' => ''._discount.'', 'FS_STATUS' => ''._status.'', 'FS_BARCODE' => ''._barcode.'', 'FS_BALANCE' => ''._balance.'');
+        $fields_list['Food_Service'] = array('FS_ACCOUNT_ID' => '' . _accountID . '', 'FS_DISCOUNT' => '' . _discount . '', 'FS_STATUS' => '' . _status . '', 'FS_BARCODE' => '' . _barcode . '', 'FS_BALANCE' => '' . _balance . '');
 
     echo '<div class="row">';
     echo '<div class="col-md-6">';
     //DrawHeader("<div></div>", $extra['header_right']);
-    PopTable_wo_header('header', '<i class="glyphicon glyphicon-tasks"></i> &nbsp;'._selectFieldsToGenerateReport.'');
+    PopTable_wo_header('header', '<i class="glyphicon glyphicon-tasks"></i> &nbsp;' . _selectFieldsToGenerateReport . '');
     //echo '<ul class="list-group">';
     foreach ($fields_list as $category => $fields) {
         $i = 1;
@@ -333,34 +329,17 @@ else {
                 $categoryTitle = _files;
                 break;
             default:
-                $categoryTitle = $category ;
+                $categoryTitle = $category;
                 break;
-            // case 'Demographic Info':
-            //     $categoryTitle = _demographicInfo;
-            //     break;
-            // case 'Addresses &amp; Contacts':
-            //     $categoryTitle = _addressesContacts;
-            //     break;
-            // case 'School Information':
-            //     $categoryTitle = _schoolInformation;
-            //     break;
-            // case 'Certification Information':
-            //     $categoryTitle = _certificationInformation;
-            //     break;
-            // case 'Schedule':
-            //     $categoryTitle = _schedule;
-            //     break;
         }
         echo '<h4>' . $categoryTitle . '</h4>';
         foreach ($fields as $field => $title) {
             if ($i == 1 && $j == 1) {
                 echo '<div class="row">';
-            }elseif($i == 1 && $j > 1){
+            } elseif ($i == 1 && $j > 1) {
                 echo '</div><div class="row">';
             }
-            echo '<div class="col-md-6"><div class="checkbox"><label><INPUT type=checkbox onclick="addHTML(\'<li class=col-lg-6>' . $title . '</li>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields[' . $field . '] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">' . $title . '</label></div>' . ($field == 'PARENTS' ? '<BR>(<small>'._relation.': </small><input type=text id=relation name=relation size=8>)' : '') . '</div>';
-            //if ($i % 2 == 0)
-            //echo '</TR><TR>';
+            echo '<div class="col-md-6"><div class="checkbox"><label><INPUT type=checkbox onclick="addHTML(\'<li class=col-lg-6>' . $title . '</li>\',\'names_div\',false);addHTML(\'<INPUT type=hidden name=fields[' . $field . '] value=Y>\',\'fields_div\',false);addHTML(\'\',\'names_div_none\',true);this.disabled=true">' . $title . '</label></div>' . ($field == 'PARENTS' ? '<BR>(<small>' . _relation . ': </small><input type=text id=relation name=relation size=8>)' : '') . '</div>';
             $i++;
             $j++;
             if ($i == 3) {
@@ -382,11 +361,11 @@ else {
 
     echo '<div class="panel">';
     echo '<div class="panel-heading">';
-    echo '<h6 class="panel-title text-pink text-uppercase"><i class="glyphicon glyphicon-saved"></i> &nbsp;'._selectedFields.'</h6>';
+    echo '<h6 class="panel-title text-pink text-uppercase"><i class="glyphicon glyphicon-saved"></i> &nbsp;' . _selectedFields . '</h6>';
     echo '</div>'; //.panel-heading
     echo '<div class="panel-body">';
     //DrawHeader("<div><a class=big_font><i class=\"glyphicon glyphicon-saved\"></i> &nbsp;'._selectedFields.'</a></div>", $extra['header_right']);
-    echo '<div class="well"><div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">'._noFieldsSelected.'</div><ol id=names_div class=row></ol></div>';
+    echo '<div class="well"><div id="names_div_none" class="error_msg" style="padding:6px 0px 0px 6px;">' . _noFieldsSelected . '</div><ol id=names_div class=row></ol></div>';
 
     if ($Search && function_exists($Search))
         $Search($extra);
@@ -398,13 +377,10 @@ else {
 }
 function _makeSectionVal($value)
 {
-  if($value!='')
-  {
-  $section=DBGet(DBQuery('SELECT * FROM school_gradelevel_sections WHERE ID='.$value));
-  $section=$section[1]['NAME'];
-  }
-  else
-      $section='';
+    if ($value != '') {
+        $section = DBGet(DBQuery('SELECT * FROM school_gradelevel_sections WHERE ID=' . $value));
+        $section = $section[1]['NAME'];
+    } else
+        $section = '';
     return $section;
 }
-?>

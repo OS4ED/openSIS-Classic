@@ -29,8 +29,7 @@
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
-if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-{
+if (isset($_SESSION['student_id']) && $_SESSION['student_id'] != '') {
     $_REQUEST['search_modfunc'] = 'list';
 }
 
@@ -49,7 +48,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
     $_REQUEST['student'] = sqlSecurityFilter($_REQUEST['student']);
 
-    if (count($_REQUEST['period']) && count($_REQUEST['student']) && count($_REQUEST['dates'])) {
+    if (!empty($_REQUEST['period']) && !empty($_REQUEST['student']) && !empty($_REQUEST['dates'])) {
         $not_taken_arr = array();
         $taken_arr = array();
         foreach ($_REQUEST['period'] as $period_id => $yes)
@@ -60,7 +59,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
             $students_list .= ",'" . $student_id . "'";
         $students_list = '(' . substr($students_list, 1) . ')';
 
-        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,COURSE_PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST[year] . '\' AND PERIOD_ID IN ' . $periods_list . ' AND STUDENT_ID IN ' . $students_list . ''), array(), array('STUDENT_ID', 'SCHOOL_DATE', 'PERIOD_ID', 'COURSE_PERIOD_ID'));
+        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,COURSE_PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST['year'] . '\' AND PERIOD_ID IN ' . $periods_list . ' AND STUDENT_ID IN ' . $students_list . ''), array(), array('STUDENT_ID', 'SCHOOL_DATE', 'PERIOD_ID', 'COURSE_PERIOD_ID'));
 
         $cp_arr = array();
         foreach ($_REQUEST['student'] as $student_id => $yes) {
@@ -79,34 +78,30 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
                 $period_key = array_keys($_REQUEST['period']);
                 $c = 0;
                 foreach ($course_periods_RET as $course_periods_RET) {
-//                                    	
+                    //                                    	
                     // foreach ($_REQUEST['period'] as $period_id => $yes) {
-                    if(in_array($course_periods_RET['PERIOD_ID'], $period_key))
-                    {
+                    if (in_array($course_periods_RET['PERIOD_ID'], $period_key)) {
                         $period_id = $course_periods_RET['PERIOD_ID'];
                         $course_period_id = $course_periods_RET['COURSE_PERIOD_ID'];
-//                               
+                        //                               
                         $cp_arr[$course_periods_RET['CPV_ID']] = $course_period_id;
                         if (!$current_RET[$student_id][$date][$period_id][$course_period_id]) {
 
                             if ($course_period_id) {
                                 $att_dup = DBQuery('delete from attendance_period where student_id=' . $student_id . ' and school_date=' . $date . ' and period_id=' . $period_id . '');
-                                
-                                $check_dup_continues=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period WHERE STUDENT_ID='.$student_id.' AND SCHOOL_DATE=\''.$date.'\' AND PERIOD_ID=\''.$period_id.'\' AND MARKING_PERIOD_ID=\''.$current_mp.'\''));
-                                if($check_dup_continues[1]['REC_EX']==0)
-                                {
-                                $absence_reason=optional_param('absence_reason', '', PARAM_SPCL);
-                                $absence_reason= singleQuoteReplace("","",$absence_reason);
-                                $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' .$absence_reason. '\',\'Y\')';                               
+
+                                $check_dup_continues = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period WHERE STUDENT_ID=' . $student_id . ' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\' AND MARKING_PERIOD_ID=\'' . $current_mp . '\''));
+                                if ($check_dup_continues[1]['REC_EX'] == 0) {
+                                    $absence_reason = optional_param('absence_reason', '', PARAM_SPCL);
+                                    $absence_reason = singleQuoteReplace("", "", $absence_reason);
+                                    $sql = 'INSERT INTO attendance_period (STUDENT_ID,SCHOOL_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,ATTENDANCE_REASON,ADMIN)values(\'' . $student_id . '\',\'' . $date . '\',\'' . $period_id . '\',\'' . $current_mp . '\',\'' . $course_period_id . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',\'' . $absence_reason . '\',\'Y\')';
+                                } else {
+                                    $absence_reason = optional_param('absence_reason', '', PARAM_SPCL);
+                                    $absence_reason = singleQuoteReplace("", "", $absence_reason);
+                                    $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . $absence_reason . '\',ADMIN=\'Y\',COURSE_PERIOD_ID=\'' . $course_period_id . '\'
+								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';
                                 }
-                                else
-                                {
-                                $absence_reason=optional_param('absence_reason', '', PARAM_SPCL);
-                                $absence_reason= singleQuoteReplace("","",$absence_reason);
-                                  $sql = 'UPDATE attendance_period SET ATTENDANCE_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_TEACHER_CODE=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\',ATTENDANCE_REASON=\'' . $absence_reason . '\',ADMIN=\'Y\',COURSE_PERIOD_ID=\'' . $course_period_id . '\'
-								WHERE STUDENT_ID=\'' . $student_id . '\' AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . $period_id . '\'';   
-                                }
-                                 DBQuery($sql);
+                                DBQuery($sql);
                                 $taken_arr[$student_id] = $student_id;
                             } else {
                                 $not_taken_arr[$student_id] = $student_id;
@@ -130,7 +125,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
         //-----------------------For update attendance_completed----------------------------------------
 
         foreach ($cp_arr as $cpv_id => $cp_id) {
-            $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE course_period_id=' . $cp_id . ' AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST[year] . '\''), array(), array('SCHOOL_DATE', 'PERIOD_ID'));
+            $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,PERIOD_ID,SCHOOL_DATE,ATTENDANCE_CODE FROM attendance_period WHERE course_period_id=' . $cp_id . ' AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\' AND EXTRACT(YEAR FROM SCHOOL_DATE)=\'' . $_REQUEST['year'] . '\''), array(), array('SCHOOL_DATE', 'PERIOD_ID'));
             foreach ($_REQUEST['dates'] as $date => $yes) {
 
                 $course_periods_RET = DBGet(DBQuery('SELECT s.COURSE_PERIOD_ID,cpv.PERIOD_ID,cp.TEACHER_ID FROM schedule s,course_periods cp,course_period_var cpv,attendance_calendar ac,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND ac.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.CALENDAR_ID=cp.CALENDAR_ID AND (ac.BLOCK=sp.BLOCK OR sp.BLOCK IS NULL) AND s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=' . $cp_id . ' AND cpv.DOES_ATTENDANCE=\'Y\' AND (ac.SCHOOL_DATE BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND ac.SCHOOL_DATE>=s.START_DATE)) AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(ac.SCHOOL_DATE)  FOR 1) IN cpv.DAYS)>0 AND cp.MARKING_PERIOD_ID IN (' . $all_mp . ') AND s.MARKING_PERIOD_ID IN (' . $all_mp . ') AND NOT (cp.HALF_DAY=\'Y\' AND (SELECT STATE_CODE FROM attendance_codes WHERE ID=\'' . optional_param('absence_code', '', PARAM_NUMBER) . '\')=\'H\')'), array(), array('PERIOD_ID'));
@@ -182,16 +177,15 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
 
 if (!$_REQUEST['modfunc']) {
-    $extra['link'] = array('FULL_NAME' =>false);
+    $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ",NULL AS CHECKBOX";
-    if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-    {
+    if (isset($_SESSION['student_id']) && $_SESSION['student_id'] != '') {
         $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
     }
     // if (optional_param('search_modfunc', '', PARAM_NOTAGS) == 'list') {
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($note)
-            echo "<div class='alert alert-success alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;&nbsp;&nbsp;</a>".$note."</div>";
+            echo "<div class='alert alert-success alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;&nbsp;&nbsp;</a>" . $note . "</div>";
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save  METHOD=POST name=addAbsences>";
 
         //PopTable_wo_header('header');
@@ -201,7 +195,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="col-lg-12">';
 
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-2">'._addAbsenceToPeriods.'</label>';
+        echo '<label class="control-label col-lg-2">' . _addAbsenceToPeriods . '</label>';
         echo '<div class="col-lg-10">';
 
         $periods_RET = DBGet(DBQuery('SELECT SHORT_NAME,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND EXISTS (SELECT * FROM course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=school_periods.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'' . 'Y' . '\') ORDER BY SORT_ORDER'));
@@ -213,7 +207,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-3">'._absenceCode.'</label>';
+        echo '<label class="control-label col-lg-3">' . _absenceCode . '</label>';
         echo '<div class="col-lg-9">';
         echo '<SELECT class="form-control" name=absence_code>';
         $codes_RET = DBGet(DBQuery('SELECT TITLE,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=0'));
@@ -226,7 +220,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-3">'._absenceReason.'</label>';
+        echo '<label class="control-label col-lg-3">' . _absenceReason . '</label>';
         echo '<div class="col-lg-9">';
         echo '<INPUT type=text name=absence_reason class="form-control">';
         echo '</div>'; //.col-lg-8
@@ -242,56 +236,54 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="panel-body">';
 
-        $months=array("01"=>'January',"02"=>'February',"03"=>'March',"04"=>'April',"05"=>'May',"06"=>'June',"07"=>'July',"08"=>'August',"09"=>'September',"10"=>'October',"11"=>'November',"12"=>'December');
+        $months = array("01" => 'January', "02" => 'February', "03" => 'March', "04" => 'April', "05" => 'May', "06" => 'June', "07" => 'July', "08" => 'August', "09" => 'September', "10" => 'October', "11" => 'November', "12" => 'December');
         $time = mktime(0, 0, 0, $_REQUEST['month'] * 1, 1, substr($_REQUEST['year'], 2));
-//        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' =>true)) . '</div></div></div>';
-        
-        
-        $date = $_REQUEST['year'].'-'.$_REQUEST['month'].'-1';
+        //        echo '<div class="clearfix"><div class="col-md-12"><div class="form-inline">' . PrepareDate(strtoupper(date("d-M-y", $time)), '', false, array('M' => 1, 'Y' => 1, 'submit' =>true)) . '</div></div></div>';
+
+
+        $date = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-1';
         $prev_month = date('m', strtotime('-1 month', strtotime($date)));
         $prev_year = date('Y', strtotime('-1 month', strtotime($date)));
         $next_month = date('m', strtotime('+1 month', strtotime($date)));
         $next_year = date('Y', strtotime('+1 month', strtotime($date)));
-        
+
         echo '<div class="row m-b-15">';
         echo '<div class="col-xs-2 col-md-4 text-left">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$prev_month.'&year='.$prev_year.'"><i class="icon-arrow-left8 position-left"></i> <span class="hidden-xs">'._prevMonth.'</span></a>';
+        echo '<a class="btn" href="' . PreparePHP_SELF($_REQUEST) . '&month=' . $prev_month . '&year=' . $prev_year . '"><i class="icon-arrow-left8 position-left"></i> <span class="hidden-xs">' . _prevMonth . '</span></a>';
         echo '</div>';
         echo '<div class="col-xs-8 col-md-4 text-center">';
         echo '<div class="form-inline">';
-        echo "<SELECT class=\"form-control inline-block m-r-10\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&month=\"+this.form.monthSelect.value;'>";
-        foreach($months as $mi=>$md){
-            if($_REQUEST['month']==$mi)
-            echo "<OPTION value=".$mi." SELECTED >$md</OPTION>";
+        echo "<SELECT class=\"form-control inline-block m-r-10\" NAME=month id=monthSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST) . "&month=\"+this.form.monthSelect.value;'>";
+        foreach ($months as $mi => $md) {
+            if ($_REQUEST['month'] == $mi)
+                echo "<OPTION value=" . $mi . " SELECTED >$md</OPTION>";
             else
-            echo "<OPTION value=".$mi." >$md</OPTION>";
-            
+                echo "<OPTION value=" . $mi . " >$md</OPTION>";
         }
         echo '</SELECT>';
-        echo "<SELECT class=\"form-control inline-block\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST)."&year=\"+this.form.yearSelect.value;'>";
-        for($years=1959;$years<=date('Y')+30;$years++){
-            if($_REQUEST['year']==$years)
-            echo "<OPTION value=".$years." SELECTED >$years</OPTION>";
+        echo "<SELECT class=\"form-control inline-block\" NAME=year id=yearSelect  onchange='document.location.href=\"" . PreparePHP_SELF($_REQUEST) . "&year=\"+this.form.yearSelect.value;'>";
+        for ($years = 1959; $years <= date('Y') + 30; $years++) {
+            if ($_REQUEST['year'] == $years)
+                echo "<OPTION value=" . $years . " SELECTED >$years</OPTION>";
             else
-            echo "<OPTION value=".$years." >$years</OPTION>";
-            
+                echo "<OPTION value=" . $years . " >$years</OPTION>";
         }
         echo '</SELECT>';
         echo '</div>'; //.form-inline
         echo '</div>'; //.col-md-4
         echo '<div class="col-xs-2 col-md-4 text-right">';
-        echo '<a class="btn" href="'.PreparePHP_SELF($_REQUEST).'&month='.$next_month.'&year='.$next_year.'"><span class="hidden-xs">'._nextMonth.'</span> <i class="icon-arrow-right8 position-right"></i></a>';
+        echo '<a class="btn" href="' . PreparePHP_SELF($_REQUEST) . '&month=' . $next_month . '&year=' . $next_year . '"><span class="hidden-xs">' . _nextMonth . '</span> <i class="icon-arrow-right8 position-right"></i></a>';
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
-        
-        
+
+
         $skip = date("w", $time);
         $last = 31;
         while (!checkdate($_REQUEST['month'] * 1, $last, substr($_REQUEST['year'], 2)))
             $last--;
-        
+
         echo '<div class="table-responsive"><table class="table table-bordered table-condensed" width="100%"><thead><tr>';
-        echo '<th>'._sun.'</th><th>'._mon.'</th><th>'._tue.'</th><th>'._wed.'</th><th>'._thu.'</th><th>'._fri.'</th><th>'._sat.'</th></tr></thead><tbody><tr>';
+        echo '<th>' . _sun . '</th><th>' . _mon . '</th><th>' . _tue . '</th><th>' . _wed . '</th><th>' . _thu . '</th><th>' . _fri . '</th><th>' . _sat . '</th></tr></thead><tbody><tr>';
         $calendar_RET = DBGet(DBQuery('SELECT SCHOOL_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND MINUTES!=0 AND EXTRACT(MONTH FROM SCHOOL_DATE)=\'' . ($_REQUEST['month'] * 1) . '\''), array(), array('SCHOOL_DATE'));
         for ($i = 1; $i <= $skip; $i++)
             echo '<td class="alpha-grey"></td>';
@@ -322,7 +314,7 @@ if (!$_REQUEST['modfunc']) {
         }
         echo '</tr></tbody></table>';
         echo '</div>'; //.table-responsive
-        
+
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
     } elseif ($note)
@@ -351,12 +343,13 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'student\',\'Y\');"><A>');
     $extra['new'] = true;
-    
+
     // if (optional_param('search_modfunc', '', PARAM_ALPHA) == 'list')
-    if ($_REQUEST['search_modfunc'] == 'list')   
-        $extra['footer'] = '<div class="panel-footer text-right p-r-20">'.SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
+    if ($_REQUEST['search_modfunc'] == 'list')
+        $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"') . '</div>';
 
     Search('student_id', $extra);
 
@@ -370,7 +363,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h4 class="modal-title">'._chooseCourse.'</h4>';
+    echo '<h4 class="modal-title">' . _chooseCourse . '</h4>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -381,7 +374,7 @@ if (!$_REQUEST['modfunc']) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' found.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' ' . _subjectWas : ' ' . _subjectsWere) . ' found.</h6>';
     if (count($subjects_RET) > 0) {
         echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
         foreach ($subjects_RET as $val) {
@@ -399,10 +392,16 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>'; //.modal
 }
 
-function _makeChooseCheckbox($value, $title) {
+function _makeChooseCheckbox($value, $title)
+{
     global $THIS_RET;
+    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=Y  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID], \"Y\");' />";
 }
+// function _makeChooseCheckbox($value, $title)
+// {
+//     global $THIS_RET;
 
-?>
+//     return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+// }

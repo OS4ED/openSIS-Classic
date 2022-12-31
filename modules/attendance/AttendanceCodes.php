@@ -151,7 +151,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'remove') {
             }
         } elseif ($_REQUEST['table']) {
             if (DeletePromptCommon('category')) {
-                DBQuery('DELETE FROM attendance_code_categories WHERE ID=\'' . $_REQUEST[table] . '\'');
+                DBQuery('DELETE FROM attendance_code_categories WHERE ID=\'' . $_REQUEST['table'] . '\'');
 
                 unset($_REQUEST['modfunc']);
                 $_REQUEST['table'] = '0';
@@ -188,7 +188,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
     $link['remove']['variables'] = array('id' => 'ID', 'table' => 'TABLE_NAME');
 
-    echo "<FORM class=\"form-horizontal\" name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&table=" . strip_tags(trim($_REQUEST[table])) . " method=POST>";
+    echo "<FORM class=\"form-horizontal\" name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&table=" . strip_tags(trim($_REQUEST['table'])) . " method=POST>";
 
     echo '<input type="hidden" name="h1" id="h1" value="' . $attandance_id . '">';
 
@@ -204,7 +204,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $tabs[] = array('title' => button('add'), 'link' => "Modules.php?modname=$_REQUEST[modname]&table=new");
 
     $max_id = DBGet(DBQuery("select max(ID) maxid from attendance_codes"));
-    $max_id = $max_id[1][MAXID];
+    $max_id = $max_id[1]['MAXID'];
     echo "<input type=hidden value=" . $max_id . " id=count >";
     if ($_REQUEST['table'] !== 'new' && $_REQUEST['modfunc'] != 'edit') {
         if (count($attendance_codes_RET) == 0) {

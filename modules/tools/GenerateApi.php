@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 include('../../RedirectModulesInc.php');
 
 if($_REQUEST['modfunc']=='generate')
@@ -50,7 +51,7 @@ $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove
 $link['remove']['variables'] = array('id' => 'ID');
 ListOutput($get_token, $columns, _token, _tokens,$link);
 
-echo '<br><br><div class="text-center"><a class="btn btn-primary" href="Modules.php?modname='.$_REQUEST[modname].'&modfunc=generate" onclick="grabA(this); return false;">'._generate.'</a></div>';
+echo '<br><br><div class="text-center"><a class="btn btn-primary" href="Modules.php?modname='.$_REQUEST['modname'].'&modfunc=generate" onclick="grabA(this); return false;">'._generate.'</a></div>';
 function generateAPI() 
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC(""._students." > " . ProgramTitle());
+DrawBC("" . _students . " > " . ProgramTitle());
 $_openSIS['allow_edit'] = true;
 
 echo '<input id="customFieldModule" type="hidden" value="student">';
@@ -43,11 +43,11 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
             $sql = "UPDATE $table SET ";
 
-            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
-                $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
+            if ($_REQUEST['DEFAULT_DATATYPE_' . $id] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
+                $columns['DEFAULT_SELECTION'] = '||' . $columns['DEFAULT_SELECTION'] . '||';
             }
 
-            if ($_REQUEST['DEFAULT_DATATYPE_'.$id] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
+            if ($_REQUEST['DEFAULT_DATATYPE_' . $id] == 'numeric' && $columns['REQUIRED'] == 'Y' && ($columns['DEFAULT_SELECTION'] == NULL || $columns['DEFAULT_SELECTION'] == '')) {
                 $columns['DEFAULT_SELECTION'] = '0.00';
             }
 
@@ -64,7 +64,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
             if ($chk_title[1]['TITLE_FOUND'] != 0) {
 
-                echo $err_msg = "<div class=\"alert bg-danger alert-styled-left\">"._titleAlreadyExists."</div>";
+                echo $err_msg = "<div class=\"alert bg-danger alert-styled-left\">" . _titleAlreadyExists . "</div>";
             } else {
                 $sql = substr($sql, 0, -1) . " WHERE ID='$id'";
 
@@ -74,8 +74,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 $sql;
                 DBQuery($sql);
             }
-        }
-        else {
+        } else {
             $sql = "INSERT INTO $table ";
 
             if ($table == 'custom_fields') {
@@ -91,95 +90,95 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 }
 
                 if ($columns['TYPE'] == 'multiple' && $columns['DEFAULT_SELECTION'] != '') {
-                    $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
+                    $columns['DEFAULT_SELECTION'] = '||' . $columns['DEFAULT_SELECTION'] . '||';
                 }
 
-                $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'custom_fields'"));
-                $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                $id = $id[1]['ID'];
+                // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'custom_fields'"));
+                // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                // $id = $id[1]['ID'];
                 $fields = "CATEGORY_ID,SYSTEM_FIELD,";
                 $values = "'" . $_REQUEST['category_id'] . "','N',";
-                $_REQUEST['id'] = $id;
+                // $_REQUEST['id'] = $id;
 
-                switch ($columns['TYPE']) {
-                    case 'radio':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(1) ";
-                        break;
+                // switch ($columns['TYPE']) {
+                //     case 'radio':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(1) ";
+                //         break;
 
-                    case 'text':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
-                        break;
+                //     case 'text':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
+                //         break;
 
-                    case 'select':
-                    case 'autos':
-                    case 'edits':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(100)";
-                        break;
+                //     case 'select':
+                //     case 'autos':
+                //     case 'edits':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(100)";
+                //         break;
 
-                    case 'codeds':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(15)";
-                        break;
+                //     case 'codeds':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(15)";
+                //         break;
 
-                    case 'multiple':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
-                        break;
+                //     case 'multiple':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
+                //         break;
 
-                    case 'numeric':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id NUMERIC(20,2)";
-                        if (!is_numeric($columns['DEFAULT_SELECTION'])) {
-                            $not_default = true;
-                            $columns['DEFAULT_SELECTION'] = '';
-                        }
-                        break;
+                //     case 'numeric':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id NUMERIC(20,2)";
+                //         if (!is_numeric($columns['DEFAULT_SELECTION'])) {
+                //             $not_default = true;
+                //             $columns['DEFAULT_SELECTION'] = '';
+                //         }
+                //         break;
 
-                    case 'date':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id  DATE";
-                        if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $columns['DEFAULT_SELECTION']) === 0) {
-                            $not_default = true;
-                            $columns['DEFAULT_SELECTION'] = '';
-                        }
-                        break;
+                //     case 'date':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id  DATE";
+                //         if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $columns['DEFAULT_SELECTION']) === 0) {
+                //             $not_default = true;
+                //             $columns['DEFAULT_SELECTION'] = '';
+                //         }
+                //         break;
 
-                    case 'textarea':
-                        $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id LONGTEXT";
-                        $not_default = true;
-                        break;
-                }
-                if ($columns['REQUIRED']) {
-                    $Sql_add_column.=" NOT NULL ";
-                } else {
-                    $Sql_add_column.=" NULL ";
-                }
-                if ($columns['DEFAULT_SELECTION'] && $not_default == false) {
-                    $Sql_add_column.=" DEFAULT  '" . $columns['DEFAULT_SELECTION'] . "' ";
-                }
-                DBQuery($Sql_add_column);
+                //     case 'textarea':
+                //         $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id LONGTEXT";
+                //         $not_default = true;
+                //         break;
+                // }
+                // if ($columns['REQUIRED']) {
+                //     $Sql_add_column .= " NOT NULL ";
+                // } else {
+                //     $Sql_add_column .= " NULL ";
+                // }
+                // if ($columns['DEFAULT_SELECTION'] && $not_default == false) {
+                //     $Sql_add_column .= " DEFAULT  '" . $columns['DEFAULT_SELECTION'] . "' ";
+                // }
+                // DBQuery($Sql_add_column);
                 //                                                                      
-                unset($table);
+                // unset($table);
             } elseif ($table == 'student_field_categories') {
                 if (trim($_REQUEST['tables']['new']['TITLE']) != '') {
                     $chk_title = DBGet(DBQuery('SELECT COUNT(*) AS TITLE_FOUND FROM student_field_categories WHERE TITLE=\'' . str_replace("'", "''", trim($_REQUEST['tables']['new']['TITLE'])) . '\''));
                     if ($chk_title[1]['TITLE_FOUND'] != 0)
-                        $err_msg = "<div class=\"alert bg-danger alert-styled-left\">"._titleAlreadyExists."</div>";
-                    else {
+                        $err_msg = "<div class=\"alert bg-danger alert-styled-left\">" . _titleAlreadyExists . "</div>";
+                    // else {
 
 
-                        $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'student_field_categories'"));
-                        $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                        $id = $id[1]['ID'];
-                        $fields = "";
-                        $values = "";
-                        $_REQUEST['category_id'] = $id;
-                        // add to profile or permissions of user creating it
-                        if (User('PROFILE_ID') != '')
-                            DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . User('PROFILE_ID') . "','students/Student.php&category_id=$id','Y','Y')");
-                        else {
-                            $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')));
-                            $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
-                            if ($profile_id_mod != '')
-                                DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . $profile_id_mod . "','students/Student.php&category_id=$id','Y','Y')");
-                        }
-                    }
+                    //     $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'student_field_categories'"));
+                    //     $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    //     $id = $id[1]['ID'];
+                    //     $fields = "";
+                    //     $values = "";
+                    //     $_REQUEST['category_id'] = $id;
+                    //     // add to profile or permissions of user creating it
+                    //     if (User('PROFILE_ID') != '')
+                    //         DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . User('PROFILE_ID') . "','students/Student.php&category_id=$id','Y','Y')");
+                    //     else {
+                    //         $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')));
+                    //         $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
+                    //         if ($profile_id_mod != '')
+                    //             DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . $profile_id_mod . "','students/Student.php&category_id=$id','Y','Y')");
+                    //     }
+                    // }
                 }
             }
 
@@ -202,6 +201,76 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
         if ($go) {
             if ($err_msg == '') {
                 DBQuery($sql);
+                if ($id == 'new') {
+                    if ($table == 'student_field_categories') {
+                        $_REQUEST['category_id'] = mysqli_insert_id($connection);
+                        if (User('PROFILE_ID') != '')
+                            DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . User('PROFILE_ID') . "','students/Student.php&category_id=$_REQUEST[category_id]','Y','Y')");
+                        else {
+                            $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')));
+                            $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
+                            if ($profile_id_mod != '')
+                                DBQuery("INSERT INTO profile_exceptions (PROFILE_ID,MODNAME,CAN_USE,CAN_EDIT) values('" . $profile_id_mod . "','students/Student.php&category_id=$_REQUEST[category_id]','Y','Y')");
+                        }
+                    } else if ($table == 'custom_fields') {
+                        $_REQUEST['id'] = $id = mysqli_insert_id($connection);
+
+                        switch ($columns['TYPE']) {
+                            case 'radio':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(1) ";
+                                break;
+
+                            case 'text':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
+                                break;
+
+                            case 'select':
+                            case 'autos':
+                            case 'edits':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(100)";
+                                break;
+
+                            case 'codeds':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(15)";
+                                break;
+
+                            case 'multiple':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id VARCHAR(255)";
+                                break;
+
+                            case 'numeric':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id NUMERIC(20,2)";
+                                if (!is_numeric($columns['DEFAULT_SELECTION'])) {
+                                    $not_default = true;
+                                    $columns['DEFAULT_SELECTION'] = '';
+                                }
+                                break;
+
+                            case 'date':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id  DATE";
+                                if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $columns['DEFAULT_SELECTION']) === 0) {
+                                    $not_default = true;
+                                    $columns['DEFAULT_SELECTION'] = '';
+                                }
+                                break;
+
+                            case 'textarea':
+                                $Sql_add_column = "ALTER TABLE students ADD CUSTOM_$id LONGTEXT";
+                                $not_default = true;
+                                break;
+                        }
+                        if ($columns['REQUIRED']) {
+                            $Sql_add_column .= " NOT NULL ";
+                        } else {
+                            $Sql_add_column .= " NULL ";
+                        }
+                        if ($columns['DEFAULT_SELECTION'] && $not_default == false) {
+                            $Sql_add_column .= " DEFAULT  '" . $columns['DEFAULT_SELECTION'] . "' ";
+                        }
+                        DBQuery($Sql_add_column);
+                        unset($table);
+                    }
+                }
             } else {
                 if ($id == 'new')
                     echo '<script>window.location.href="Modules.php?modname=' . $_REQUEST[modname] . '&table=student_field_categories&category_id=new&err=true"</script>';
@@ -254,19 +323,19 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     break;
             }
             if ($custom_update['REQUIRED']) {
-                $Sql_modify_column.=" NOT NULL";
+                $Sql_modify_column .= " NOT NULL";
             } else {
-                $Sql_modify_column.=" NULL";
+                $Sql_modify_column .= " NULL";
             }
             if ($custom_update['DEFAULT_SELECTION'] && $not_default == false) {
-                $Sql_modify_column.=" DEFAULT  '" . $custom_update['DEFAULT_SELECTION'] . "' ";
+                $Sql_modify_column .= " DEFAULT  '" . $custom_update['DEFAULT_SELECTION'] . "' ";
 
-                $existing_column_updt = 'UPDATE `students` SET CUSTOM_'.$id.' = \''.$custom_update['DEFAULT_SELECTION'].'\' WHERE (CUSTOM_'.$id.' IS NULL OR CUSTOM_'.$id.' = "")';
+                $existing_column_updt = 'UPDATE `students` SET CUSTOM_' . $id . ' = \'' . $custom_update['DEFAULT_SELECTION'] . '\' WHERE (CUSTOM_' . $id . ' IS NULL OR CUSTOM_' . $id . ' = "")';
             }
 
             DBQuery($Sql_modify_column);
 
-            if($existing_column_updt)
+            if ($existing_column_updt)
                 DBQuery($existing_column_updt);
         }
     }
@@ -290,7 +359,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 
         $deletable_category = TRUE;
         for ($i = 1; $i <= count($customFields_for_catIdArr); $i++) {
-            $customId = $customFields_for_catIdArr[$i][CUSTOMID];
+            $customId = $customFields_for_catIdArr[$i]['CUSTOMID'];
             $assigned_RET = DBGet(DBQuery("SELECT COUNT(CUSTOM_$customId) AS TOTAL_ASSIGNED FROM students WHERE CUSTOM_$customId<>''"));
             $assigned = $assigned_RET[1]['TOTAL_ASSIGNED'];
             if ($assigned > 0) {
@@ -340,7 +409,7 @@ if (!$_REQUEST['modfunc']) {
     $categories_RET = DBGet($QI);
 
     if (AllowEdit() && $_REQUEST['id'] != 'new' && $_REQUEST['category_id'] != 'new' && ($_REQUEST['id'] || $_REQUEST['category_id'] > 7))
-        $delete_button = "<INPUT type=button value="._delete." class=\"btn btn-danger m-r-10\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
+        $delete_button = "<INPUT type=button value=" . _delete . " class=\"btn btn-danger m-r-10\" onClick='javascript:window.location=\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&category_id=$_REQUEST[category_id]&id=$_REQUEST[id]\"'>" . "&nbsp;";
 
     // ADDING & EDITING FORM
     if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
@@ -366,8 +435,7 @@ if (!$_REQUEST['modfunc']) {
             $RET['SORT_ORDER'] = 5;
         if ($id == 5)
             $RET['SORT_ORDER'] = 6;
-    }
-    elseif ($_REQUEST['id'] == 'new')
+    } elseif ($_REQUEST['id'] == 'new')
         $title = _newStudentField;
     elseif ($_REQUEST['category_id'] == 'new')
         $title = _newStudentFieldCategory;
@@ -419,15 +487,15 @@ if (!$_REQUEST['modfunc']) {
             );
         }
 
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dataType.'<br>(' . ($_REQUEST['id'] != 'new' ? _thisValueCantBeChanged : _enterThisValueCarefullyAsThisCantBeChangedLater) . ')</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();" '. ($_REQUEST['id'] != 'new' ? 'disabled' : '')) . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _dataType . '<br>(' . ($_REQUEST['id'] != 'new' ? _thisValueCantBeChanged : _enterThisValueCarefullyAsThisCantBeChangedLater) . ')</label><div class="col-md-8">' . SelectInput($RET['TYPE'], 'tables[' . $_REQUEST['id'] . '][TYPE]', '', $type_options, false, 'id=type onchange="formcheck_student_studentField_F1_defalut();" ' . ($_REQUEST['id'] != 'new' ? 'disabled' : '')) . '</div></div>';
 
-        $header .= '<input id="DEFAULT_DATATYPE_'.$_REQUEST['id'].'" name="DEFAULT_DATATYPE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['TYPE'].'">';
+        $header .= '<input id="DEFAULT_DATATYPE_' . $_REQUEST['id'] . '" name="DEFAULT_DATATYPE_' . $_REQUEST['id'] . '" type="hidden" value="' . $RET['TYPE'] . '">';
 
         if ($_REQUEST['id'] != 'new' && $RET['TYPE'] != 'multiple' && $RET['TYPE'] != 'codeds' && $RET['TYPE'] != 'select' && $RET['TYPE'] != 'autos' && $RET['TYPE'] != 'edits' && $RET['TYPE'] != 'text' && $RET['TYPE'] != 'date' && $RET['TYPE'] != 'radio' && $RET['TYPE'] != 'numeric' && $RET['TYPE'] != 'textarea') {
             $_openSIS['allow_edit'] = $allow_edit;
             $_openSIS['AllowEdit'][$modname] = $AllowEdit;
         }
-        
+
         $header .= '</div>'; //.col-lg-6
         $header .= '</div>'; //.row   
 
@@ -437,7 +505,7 @@ if (!$_REQUEST['modfunc']) {
 
         $header .= '<div class="row">';
         $header .= '<div class="col-lg-6">';
-        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._studentFieldCategory.'</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
+        $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _studentFieldCategory . '</label><div class="col-md-8">' . SelectInput($RET['CATEGORY_ID'] ? $RET['CATEGORY_ID'] : $_REQUEST['category_id'], 'tables[' . $_REQUEST['id'] . '][CATEGORY_ID]', '', $categories_options, false, 'onchange="formcheck_student_studentField_F1_defalut();"') . '</div></div>';
         $header .= '</div><div class="col-lg-6">';
         if ($_REQUEST['id'] == 'new' || $RET['SORT_ORDER'] == '')
             $header .= '<div class="form-group">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 onkeydown="return numberOnly(event);"') . '</div>';
@@ -453,10 +521,10 @@ if (!$_REQUEST['modfunc']) {
         }
         if ($_REQUEST['id'] != 'new') {
             if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'multiple') {
-                $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+                $exampleText = _example . ':<br/>Good<br/>Bad<br/>etc.';
             } else if ($RET['TYPE'] == 'codeds') {
-                $exampleText = _example.':<br/>0|Good<br/>1|Bad<br/>etc.';
-            } 
+                $exampleText = _example . ':<br/>0|Good<br/>1|Bad<br/>etc.';
+            }
             // else if ($RET['TYPE'] == 'multiple') {
             //     $exampleText = _example.':<br/>||Good||<br/>||Bad||<br/>etc.';
             // }
@@ -467,7 +535,7 @@ if (!$_REQUEST['modfunc']) {
                 } else if ($RET['TYPE'] == 'codeds') {
                     $selectOptionsArrP1 = explode(PHP_EOL, $RET['SELECT_OPTIONS']);
                     $selectOptionsArrP2 = array();
-                    
+
                     foreach ($selectOptionsArrP1 as $sOA1) {
                         $sOA1_v = explode('|', $sOA1)[0];
                         array_push($selectOptionsArrP2, $sOA1_v);
@@ -484,12 +552,12 @@ if (!$_REQUEST['modfunc']) {
 
                 if ($RET['DEFAULT_SELECTION'] != NULL && $RET['DEFAULT_SELECTION'] != '') {
                     if (!in_array(trim($RET['DEFAULT_SELECTION']), $filteredSelectOptArr)) {
-                        $defaultMessage = '<span class="text-warning"><b>'._warning.'!</b> '._defaultValueDoesNotMatchWithTheValuesOfPullDown.'!</span>';
+                        $defaultMessage = '<span class="text-warning"><b>' . _warning . '!</b> ' . _defaultValueDoesNotMatchWithTheValuesOfPullDown . '!</span>';
                     }
                 }
             }
         } else {
-            $exampleText = _example.':<br/>Good<br/>Bad<br/>etc.';
+            $exampleText = _example . ':<br/>Good<br/>Bad<br/>etc.';
         }
 
         $colspan = 2;
@@ -498,11 +566,11 @@ if (!$_REQUEST['modfunc']) {
 
         if ($RET['TYPE'] == 'autos' || $RET['TYPE'] == 'edits' || $RET['TYPE'] == 'select' || $RET['TYPE'] == 'codeds' || $RET['TYPE'] == 'multiple' || $_REQUEST['id'] == 'new') {
             $header .= '<div class="col-lg-6" id="show_textarea" style="display:block">';
-            $header .= '<label class="control-label col-md-4 text-right">'._pullDown.'/'._autoPullDown.'/'._codedPullDown.'/'._selectMultipleChoices.'</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40 onkeyup=checkValidDefaultValue()').'<p class="help-block">* '. ucfirst(_onePerLine) .'</p><p id="exmp" class="help-block">' . $exampleText . '</p></div>';
+            $header .= '<label class="control-label col-md-4 text-right">' . _pullDown . '/' . _autoPullDown . '/' . _codedPullDown . '/' . _selectMultipleChoices . '</label><div class="col-md-8">' . TextAreaInput($RET['SELECT_OPTIONS'], 'tables[' . $_REQUEST['id'] . '][SELECT_OPTIONS]', '', 'rows=7 cols=40 onkeyup=checkValidDefaultValue()') . '<p class="help-block">* ' . ucfirst(_onePerLine) . '</p><p id="exmp" class="help-block">' . $exampleText . '</p></div>';
             $colspan = 1;
             $header .= '</div>';
 
-            $header .= '<div style="display:none;"><textarea id="SELECT_OPTIONS_VALUE_'.$_REQUEST['id'].'">'.$RET['SELECT_OPTIONS'].'</textarea></div>';
+            $header .= '<div style="display:none;"><textarea id="SELECT_OPTIONS_VALUE_' . $_REQUEST['id'] . '">' . $RET['SELECT_OPTIONS'] . '</textarea></div>';
         }
 
         if ($RET['TYPE'] == 'numeric')
@@ -513,12 +581,12 @@ if (!$_REQUEST['modfunc']) {
         $header .= '<div class="col-lg-6">';
 
         if (($RET['DEFAULT_SELECTION'] == NULL || $RET['DEFAULT_SELECTION'] == '') && $RET['TYPE'] != 'date') {
-            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._enterThisValueCarefullyAsThisCantBeChangedLater.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc) . '<p class="help-block">* '._forDatesYyyyMmDdForCheckboxesYForLongTextItWillBeIgnored.'</p><p id="helpBlock" class="help-block"></p></div>';
+            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _default . '<br>(' . _enterThisValueCarefullyAsThisCantBeChangedLater . ')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc) . '<p class="help-block">* ' . _forDatesYyyyMmDdForCheckboxesYForLongTextItWillBeIgnored . '</p><p id="helpBlock" class="help-block"></p></div>';
         } else {
-            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._default.'<br>('._thisValueCantBeChanged.')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc.' disabled') . '<p id="helpBlock" class="help-block">'.$defaultMessage.'</p></div>';
+            $header .= '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _default . '<br>(' . _thisValueCantBeChanged . ')</label><div class="col-lg-8">' . TextInput_mod_a($RET['DEFAULT_SELECTION'], 'tables[' . $_REQUEST['id'] . '][DEFAULT_SELECTION]', '', $defaultValueFunc . ' disabled') . '<p id="helpBlock" class="help-block">' . $defaultMessage . '</p></div>';
         }
 
-        $header .= '<input id="DEFAULT_VALUE_'.$_REQUEST['id'].'" type="hidden" value="'.$RET['DEFAULT_SELECTION'].'">';
+        $header .= '<input id="DEFAULT_VALUE_' . $_REQUEST['id'] . '" type="hidden" value="' . $RET['DEFAULT_SELECTION'] . '">';
 
         $header .= '</div>';
         $new = ($_REQUEST['id'] == 'new');
@@ -530,29 +598,29 @@ if (!$_REQUEST['modfunc']) {
         $header .= '</div>'; //.row
     } elseif ($_REQUEST['category_id']) {
         if ($_REQUEST['err'] == true)
-            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>"._titleAlreadyExists."</b></font>';</script>";
+            echo "<script>document.getElementById('divErr').innerHTML='<font color=red><b>" . _titleAlreadyExists . "</b></font>';</script>";
         echo "<FORM class=\"form-horizontal m-b-0\" name=F2 id=F2 action=Modules.php?modname=$_REQUEST[modname]&table=student_field_categories";
         if ($_REQUEST['category_id'] != 'new')
             echo "&category_id=$_REQUEST[category_id]";
         echo " method=POST>";
 
         echo '<div class="panel panel-default">';
-        if ($_REQUEST[category_id] > 7 || $_REQUEST['category_id'] == 'new')
+        if ($_REQUEST['category_id'] > 7 || $_REQUEST['category_id'] == 'new')
             DrawHeader($title, $delete_button . SubmitButton(_save, '', 'id="setupStuCatBtn" class="btn btn-primary" onclick="formcheck_student_studentField_F2(this);"'));
 
         echo '<div class="panel-body">';
         $header .= '<input type=hidden id=t_id value="' . $_REQUEST['category_id'] . '"/>';
         $header .= '<div class="row">';
-        $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], _title) : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title, 'placeholder="'._title.'"')) . '</div></div>';
+        $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['TITLE'], _title) : TextInput($RET['TITLE'], 'tables[' . $_REQUEST['category_id'] . '][TITLE]', _title, 'placeholder=' . _title . '')) . '</div></div>';
 
         if ($_REQUEST['category_id'] == 'new' || $RET['SORT_ORDER'] == '')
-            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder="'._sortOrder.'" onkeydown="return numberOnly(event);"')) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder="' . _sortOrder . '" onkeydown="return numberOnly(event);"')) . '</div></div>';
         else
-            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder="'._sortOrder.'" onkeydown=\"return numberOnly(event);\"')) . '</div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group">' . (($_REQUEST['category_id'] <= 7 && $_REQUEST['category_id'] != 'new') ? NoInput($RET['SORT_ORDER'], _sortOrder) : TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['category_id'] . '][SORT_ORDER]', _sortOrder, 'maxlength=5 placeholder=\"' . _sortOrder . '\" onkeydown=\"return numberOnly(event);\"')) . '</div></div>';
 
         $new = ($_REQUEST['category_id'] == 'new');
         if ($_REQUEST['category_id'] > 7 || $new)
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-md-4 text-right">'._include.'</label><div class="col-md-8">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', '', 'placeholder="'._include.'"') . '<p class="help-block">'._shouldBeLeftBlankForMostCategories.'</p></div></div></div>';
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-md-4 text-right">' . _include . '</label><div class="col-md-8">' . TextInput($RET['INCLUDE'], 'tables[' . $_REQUEST['category_id'] . '][INCLUDE]', '', 'placeholder="' . _include . '"') . '<p class="help-block">' . _shouldBeLeftBlankForMostCategories . '</p></div></div></div>';
 
         $header .= '</div>'; //.form-group
     } else
@@ -566,7 +634,7 @@ if (!$_REQUEST['modfunc']) {
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' =>false, 'search' =>false, 'add' =>true);
+    $LO_options = array('save' => false, 'search' => false, 'add' => true);
 
     echo '<div class="row">';
 
@@ -610,8 +678,9 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="col-md-6">';
     echo '<div class="panel">';
-    $columns = array('TITLE' =>_category,
-     'SORT_ORDER' =>_order,
+    $columns = array(
+        'TITLE' => _category,
+        'SORT_ORDER' => _order,
     );
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
@@ -644,23 +713,23 @@ if (!$_REQUEST['modfunc']) {
                 $categories_RET[$key]['TITLE'] = _files;
                 break;
             default:
-                $categories_RET[$key]['TITLE'] = $value['TITLE'] ;
+                $categories_RET[$key]['TITLE'] = $value['TITLE'];
                 break;
-            // case 'Demographic Info':
-            //     $categories_RET[$key]['TITLE'] = _demographicInfo;
-            //     break;
-            // case 'Addresses &amp; Contacts':
-            //     $categories_RET[$key]['TITLE'] = _addressesContacts;
-            //     break;
-            // case 'School Information':
-            //     $categories_RET[$key]['TITLE'] = _schoolInformation;
-            //     break;
-            // case 'Certification Information':
-            //     $categories_RET[$key]['TITLE'] = _certificationInformation;
-            //     break;
-            // case 'Schedule':
-            //     $categories_RET[$key]['TITLE'] = _schedule;
-            //     break;
+                // case 'Demographic Info':
+                //     $categories_RET[$key]['TITLE'] = _demographicInfo;
+                //     break;
+                // case 'Addresses &amp; Contacts':
+                //     $categories_RET[$key]['TITLE'] = _addressesContacts;
+                //     break;
+                // case 'School Information':
+                //     $categories_RET[$key]['TITLE'] = _schoolInformation;
+                //     break;
+                // case 'Certification Information':
+                //     $categories_RET[$key]['TITLE'] = _certificationInformation;
+                //     break;
+                // case 'Schedule':
+                //     $categories_RET[$key]['TITLE'] = _schedule;
+                //     break;
         }
     }
     ListOutput($categories_RET, $columns, _studentFieldCategory, _studentFieldCategories, $link, array(), $LO_options);
@@ -682,15 +751,16 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="col-md-6">';
         echo '<div class="panel">';
-        $columns = array('TITLE' => ucwords(strtolower(_studentField)),
-         'SORT_ORDER' =>_order,
-         'FEILD' =>_fieldType,
+        $columns = array(
+            'TITLE' => ucwords(strtolower(_studentField)),
+            'SORT_ORDER' => _order,
+            'FEILD' => _fieldType,
         );
         $link = array();
 
         $count = 0;
         $count++;
-        switch ($_REQUEST[category_id]) {
+        switch ($_REQUEST['category_id']) {
             case 1:
                 $arr = array(
                     _name,
@@ -754,15 +824,15 @@ if (!$_REQUEST['modfunc']) {
 
                 break;
             case 4:
-                $arr = array(enteredBy, date, comments);
+                $arr = array(_enteredBy, _date, _comments);
 
                 break;
             case 5:
                 $arr = array(
-                 goalIncTitle,
-                 beginDate,
-                 endDate,
-                 goalIncDescription,
+                    _goalIncTitle,
+                    _beginDate,
+                    _endDate,
+                    _goalIncDescription,
                 );
                 break;
             case 6:
@@ -796,7 +866,7 @@ if (!$_REQUEST['modfunc']) {
                 break;
         }
         foreach ($arr as $key => $value) {
-            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'FEILD' => '<span style="color:#ea8828;">'._default.'</span>');
+            $fields_RET1[$count] = array('ID' => '', 'SORT_ORDER' => ($key + 1), 'TITLE' => $value, 'FEILD' => '<span style="color:#ea8828;">' . _default . '</span>');
             $count++;
         }
         $count2 = 1;
@@ -814,7 +884,7 @@ if (!$_REQUEST['modfunc']) {
                 case 'Custom':
                     $dd[$key]['FEILD'] = _custom;
                     break;
-                
+
                 default:
                     break;
             }
@@ -826,7 +896,8 @@ if (!$_REQUEST['modfunc']) {
     echo '</div>'; //.row
 }
 
-function _makeType($value, $name) {
+function _makeType($value, $name)
+{
     $options = array(
         'radio' => _checkbox,
         'text' => _text,
@@ -841,5 +912,3 @@ function _makeType($value, $name) {
     );
     return $options[$value];
 }
-
-?>

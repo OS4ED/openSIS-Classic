@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+error_reporting(E_ALL ^ E_WARNING);
 include('../../RedirectModulesInc.php');
 if ($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) {
     foreach ($_REQUEST['month_values'] as $id => $columns) {
@@ -182,13 +183,13 @@ DrawBC(""._extracurricular." > " . ProgramTitle());
 
 
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'remove') {
-    $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST[id] . '\''));
+    $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST['id'] . '\''));
     $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
     if ($has_assigned > 0) {
         UnableDeletePrompt(_cannotDeleteBecauseEligibilityActivitiesAreAssociated);
     } else {
         if (DeletePrompt_activity('activity')) {
-            DBQuery('DELETE FROM eligibility_activities WHERE ID=\'' . $_REQUEST[id] . '\'');
+            DBQuery('DELETE FROM eligibility_activities WHERE ID=\'' . $_REQUEST['id'] . '\'');
             unset($_REQUEST['modfunc']);
         }
     }
@@ -221,7 +222,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     foreach ($activities_RET as $ci => $cd) {
         $id_arr[$cd['ID']] = $cd['ID'];
     }
-    if (count($id_arr) > 0)
+    if (is_countable($id_arr) && count($id_arr) > 0)
         $id_arr = implode(',', $id_arr);
     else
         $id_arr = 0;

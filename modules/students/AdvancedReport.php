@@ -26,22 +26,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-// if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-// {
-//     if(clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call')
-//     {
-//         $_REQUEST['search_modfunc'] = '';
-//     }
-//     else if(clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save')
-//     {
-//         $_REQUEST['search_modfunc'] = 'list';
-//     }
-//     else
-//     {
-//         $_REQUEST['search_modfunc'] = 'search_mod';
-//     }
-// }
-if(isset($_SESSION['student_id'])){
+
+if (isset($_SESSION['student_id'])) {
     $_REQUEST['stuid'] = $_SESSION['student_id'];
 }
 include('../../RedirectModulesInc.php');
@@ -56,18 +42,18 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         }
 
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentAdvancedReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentAdvancedReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentAdvancedReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentAdvancedReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         echo "<table >";
         include('modules/miscellaneous/Export.php');
     }
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call' || isset($_SESSION['student_id'])) {
-    if(isset($_SESSION['student_id'])){
-        $_SESSION['st_arr'] = Array("0" => $_SESSION['student_id']);
-    }else{
+    if (isset($_SESSION['student_id'])) {
+        $_SESSION['st_arr'] = array("0" => $_SESSION['student_id']);
+    } else {
         $_SESSION['st_arr'] = $_REQUEST['st_arr'];
     }
-    
+
     echo "<FORM action=ForExport.php?modname=$_REQUEST[modname]&head_html=Student+Advanced+Report&modfunc=save&search_modfunc=list&_openSIS_PDF=true&include_inactive=$_REQUEST[include_inactive]&_search_all_schools=$_REQUEST[_search_all_schools] onsubmit=document.forms[0].relation.value=document.getElementById(\"relation\").value; method=POST target=_blank>";
     echo '<DIV id=fields_div></DIV>';
     echo '<INPUT type=hidden name=relation>';
@@ -87,10 +73,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call' || isset($_SESSI
     $extra['search'] .= '</div>'; //.row
 
 
-    $extra['search'] .= '<div class="form-group"><label>'._includeCoursesActiveAsOf.'</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
+    $extra['search'] .= '<div class="form-group"><label>' . _includeCoursesActiveAsOf . '</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
     include('modules/miscellaneous/Export.php');
-    echo '<BR><CENTER><INPUT type=submit value=\''._createReportForSelectedStudents.'\' class="btn btn-primary"></CENTER>';
+    echo '<BR><CENTER><INPUT type=submit value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary"></CENTER>';
     echo "</FORM>";
 }
 $modal_flag = 1;
@@ -102,7 +88,7 @@ if ($modal_flag == 1) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
+    echo '<h5 class="modal-title">' . _chooseCourse . '</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -114,9 +100,9 @@ if ($modal_flag == 1) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' '._found.'.</h6>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' ' . _subjectWas : ' ' . _subjectsWere) . ' ' . _found . '.</h6>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>' . _subject . '</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearch(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
@@ -140,7 +126,7 @@ if ($modal_flag == 1) {
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
+    echo '<h5 class="modal-title">' . _chooseCourse . '</h5>';
     echo '</div>';
 
     echo '<div class="modal-body">';
@@ -152,9 +138,9 @@ if ($modal_flag == 1) {
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
-    echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas : ' '._subjectsWere) . ' found.<br>';
+    echo count($subjects_RET) . ((count($subjects_RET) == 1) ? ' ' . _subjectWas : ' ' . _subjectsWere) . ' found.<br>';
     if (count($subjects_RET) > 0) {
-        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead><tbody>';
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>' . _subject . '</th></tr></thead><tbody>';
         foreach ($subjects_RET as $val) {
             echo '<tr><td><a href=javascript:void(0); onclick="chooseCpModalSearchRequest(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
         }
@@ -171,15 +157,15 @@ if ($modal_flag == 1) {
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC(""._students." > " . ProgramTitle());
+    DrawBC("" . _students . " > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list' || $_REQUEST['search_modfunc'] == 'select') {
         $_REQUEST['search_modfunc'] = 'select';
 
-        $extra['link'] = array('FULL_NAME' =>false);
+        $extra['link'] = array('FULL_NAME' => false);
         $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-//        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.STUDENT_ID,' checked>') AS CHECKBOX";
+        //        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.STUDENT_ID,' checked>') AS CHECKBOX";
 
         // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
         $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod2(this,\'st_arr\');"><A>');
@@ -203,7 +189,7 @@ if (!$_REQUEST['modfunc']) {
         Widgets('absences');
         Widgets('class_rank');
         Widgets('eligibility');
-        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4">'._includeCoursesActiveAsOf.' </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 2) . '</div></div>';
+        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4">' . _includeCoursesActiveAsOf . ' </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 2) . '</div></div>';
         $extra['search'] .= '</div>'; //.col-lg-6
         $extra['search'] .= '</div>'; //.row
 
@@ -213,13 +199,13 @@ if (!$_REQUEST['modfunc']) {
 
         if ($_SESSION['count_stu'] != '0') {
             unset($_SESSION['count_stu']);
-            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\''._createReportForSelectedStudents.'\' class="btn btn-primary"></div>';
+            echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary"></div>';
         }
         echo "</FORM>";
     } else {
         $extra['search'] .= '<div class="row">';
         $extra['search'] .= '<div class="col-lg-6">';
-        
+
         Widgets('course');
         Widgets('activity');
         $extra['search'] .= '<div class="well mb-20">';
@@ -228,10 +214,10 @@ if (!$_REQUEST['modfunc']) {
         $extra['search'] .= '<div class="well mb-20">';
         Widgets('gpa');
         $extra['search'] .= '</div>'; //.well
-        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">'._includeCoursesActiveAsOf.' </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 3) . '</div></div>';
-        
+        $extra['search'] .= '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _includeCoursesActiveAsOf . ' </label><div class="col-lg-8">' . DateInputAY('', 'include_active_date', 3) . '</div></div>';
+
         $extra['search'] .= '</div><div class="col-lg-6">';
-        
+
         Widgets('request');
         Widgets('eligibility');
         $extra['search'] .= '<div class="well mb-20">';
@@ -240,24 +226,16 @@ if (!$_REQUEST['modfunc']) {
         $extra['search'] .= '<div class="well mb-20">';
         Widgets('letter_grade');
         $extra['search'] .= '</div>'; //.well
-        
+
         $extra['search'] .= '</div>'; //.col-lg-6
         $extra['search'] .= '</div>'; //.row
-
-
-
         $extra['new'] = true;
-
         Search('student_id', $extra);
     }
 }
 
-function _makeChooseCheckbox($value, $title) {
+function _makeChooseCheckbox($value, $title)
+{
     global $THIS_RET;
-    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
-    
-    // return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
-
-    return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
-?>

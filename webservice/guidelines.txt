@@ -1,0 +1,5 @@
+For configuring Webservice folder in any server steps to follow are :
+
+1. Copy the "webservice" folder and "CheckUrlWs.php" page, paste at the root.
+
+2. Within webservice folder, there's a subfolder called "DB", holding one .sql file. Please add it to the project's database.

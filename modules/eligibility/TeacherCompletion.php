@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+error_reporting(E_ALL ^ E_WARNING);
 include('../../RedirectModulesInc.php');
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
 if (count($start_end_RET)) {
@@ -95,7 +96,7 @@ echo '</div>'; //.col-md-4
 echo '</div>'; //.row
 echo '</div>'; //.panel-heading
 echo '</FORM>';
-+
+//+
 $mp = GetAllMP('QTR', UserMP());
 
 if (!isset($mp))

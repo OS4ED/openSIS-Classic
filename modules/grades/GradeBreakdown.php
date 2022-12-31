@@ -57,7 +57,8 @@ if (count($grouped_RET)) {
         $i++;
         $teachers_RET[$i]['FULL_NAME'] = $grades[key($grades)][1]['FULL_NAME'];
         foreach ($grades_RET as $grade)
-            $teachers_RET[$i][$grade['ID']] = count($grades[$grade['ID']]);
+            $teachers_RET[$i][$grade['ID']] = (is_countable($grades[$grade['ID']])) ? count($grades[$grade['ID']]) : 0;
+        
     }
 }
 

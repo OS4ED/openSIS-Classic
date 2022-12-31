@@ -26,6 +26,7 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
 session_start();
 include "functions/ParamLibFnc.php";
 include "Data.php";

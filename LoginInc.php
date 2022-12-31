@@ -27,6 +27,7 @@
 #***************************************************************************************
 error_reporting(0);
 
+
 include('lang/supportedLanguages.php');
 
 if(isset($_REQUEST['language'])){

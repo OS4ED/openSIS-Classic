@@ -37,7 +37,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $sql = 'UPDATE student_enrollment_codes SET ';
 
             foreach ($columns as $column => $value) {
-                if (($select_enroll[1][TYPE] == 'Roll' || $select_enroll[1][TYPE] == 'TrnD' || $select_enroll[1][TYPE] == 'TrnE' || $value == 'Roll' || $value == 'TrnD' || $value == 'TrnE') && $column == 'TYPE') {
+                if (($select_enroll[1]['TYPE'] == 'Roll' || $select_enroll[1]['TYPE'] == 'TrnD' || $select_enroll[1]['TYPE'] == 'TrnE' || $value == 'Roll' || $value == 'TrnD' || $value == 'TrnE') && $column == 'TYPE') {
                     $error = true;
                     continue;
                 }
@@ -53,7 +53,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 ShowErrPhp(_canTEditTypeBecauseItIsNotEditable);
             }
         } else {
-            if ($columns[TYPE] != 'Roll' && $columns[TYPE] != 'TrnD' && $columns[TYPE] != 'TrnE') {
+            if ($columns['TYPE'] != 'Roll' && $columns['TYPE'] != 'TrnD' && $columns['TYPE'] != 'TrnE') {
                 $sql = 'INSERT INTO student_enrollment_codes ';
 
                 $fields = 'SYEAR,';
@@ -83,16 +83,16 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 DrawBC(""._students." > " . ProgramTitle());
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
-    $select_enroll = DBGet(DBQuery('SELECT TYPE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST[id] . '\''));
+    $select_enroll = DBGet(DBQuery('SELECT TYPE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST['id'] . '\''));
 
-    if ($select_enroll[1][TYPE] != 'Roll' && $select_enroll[1][TYPE] != 'TrnD' && $select_enroll[1][TYPE] != 'TrnE') {
-        $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE  ENROLLMENT_CODE=\'' . $_REQUEST[id] . '\''));
+    if ($select_enroll[1]['TYPE'] != 'Roll' && $select_enroll[1]['TYPE'] != 'TrnD' && $select_enroll[1]['TYPE'] != 'TrnE') {
+        $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE  ENROLLMENT_CODE=\'' . $_REQUEST['id'] . '\''));
         $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
         if ($has_assigned > 0) {
             UnableDeletePrompt(_cannotDeleteBecauseEnrollmentCodesAreAssociated);
         } else {
             if (DeletePromptMod('enrollment code', $_REQUEST['modname'])) {
-                DBQuery('DELETE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST[id] . '\'');
+                DBQuery('DELETE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST['id'] . '\'');
                 unset($_REQUEST['modfunc']);
             }
         }

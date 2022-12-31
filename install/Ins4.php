@@ -46,8 +46,9 @@ if($dbconn->connect_errno!=0)
 $_POST['fname'] = strip_tags(urldecode($_POST['fname']));
 $_POST['lname'] = strip_tags(urldecode($_POST['lname']));
 $_POST['mname'] = strip_tags(urldecode($_POST['mname']));
+$_POST['emailid'] = strip_tags(urldecode($_POST['emailid']));
 
-$sql = "UPDATE staff SET first_name = '" . $_POST['fname'] . "', last_name = '" . $_POST['lname'] . "', middle_name = '" . $_POST['mname'] . "', profile_id = 0 WHERE staff_id = 1";
+$sql = "UPDATE staff SET first_name = '" . $_POST['fname'] . "', last_name = '" . $_POST['lname'] . "', middle_name = '" . $_POST['mname'] . "', email = '" . $_POST['emailid'] . "',  profile_id = 0 WHERE staff_id = 1";
 $result = $dbconn->query($sql);
 
 $sql = "UPDATE login_authentication SET username='".$_SESSION['admin_name']."', password='".$_SESSION['admin_pwd']."' WHERE user_id=1 AND profile_id=0";

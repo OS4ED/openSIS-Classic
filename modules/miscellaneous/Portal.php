@@ -697,10 +697,11 @@ switch (User('PROFILE')) {
             $staff_id = $course['STAFF_ID'];
             $assignments_Graded = DBGet(DBQuery('SELECT gg.STUDENT_ID,ga.ASSIGNMENT_ID,gg.POINTS,gg.COMMENT,ga.TITLE,ga.DESCRIPTION,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY
                                                    FROM gradebook_assignments ga LEFT OUTER JOIN gradebook_grades gg
-                                                  ON (gg.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.STUDENT_ID=\'' . UserStudentID() . '\'),gradebook_assignment_types at
-                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=\'' . $course[COURSE_ID] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'
+                                                  ON (gg.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.STUDENT_ID=\'' . UserStudentID() . '\'),gradebook_assignment_types at
+                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND (gg.POINTS IS NOT NULL) AND (ga.POINTS!=\'0\' OR gg.POINTS IS NOT NULL AND gg.POINTS!=\'-1\') ORDER BY ga.ASSIGNMENT_ID DESC'));
 
+            $GRADED_ASSIGNMENT_ID = array();
             foreach ($assignments_Graded AS $assignments_Graded)
                 $GRADED_ASSIGNMENT_ID[] = $assignments_Graded['ASSIGNMENT_ID'];
             $ASSIGNMENT_ID_GRADED = implode(",", $GRADED_ASSIGNMENT_ID);
@@ -717,15 +718,15 @@ switch (User('PROFILE')) {
                                                  ,gradebook_assignment_types at
                                                   WHERE ga.ASSIGNMENT_ID NOT IN ' . $GRADED_ASSIGNMENT . ' AND (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=' . $course[COURSE_ID] . ' AND ga.STAFF_ID=' . $staff_id . ') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND(  CURRENT_DATE>=ga.ASSIGNED_DATE OR CURRENT_DATE<=ga.ASSIGNED_DATE )AND ga.DUE_DATE IS NOT NULL AND CURRENT_DATE<=ga.DUE_DATE
-                                                   AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'));
+                                                   AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'), array('ASSIGNED_DATE' => 'ProperDate', 'DUE_DATE' => 'ProperDate'));
             } else {
 
                 $assignments_RET = DBGet(DBQuery('SELECT ga.ASSIGNMENT_ID,ga.TITLE,ga.DESCRIPTION as COMMENT,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY
                                                    FROM gradebook_assignments ga
                                                  ,gradebook_assignment_types at
-                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=\'' . $course[COURSE_ID] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\' or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
+                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\' or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND( CURRENT_DATE>=ga.ASSIGNED_DATE OR CURRENT_DATE<=ga.ASSIGNED_DATE)AND ga.DUE_DATE IS NOT NULL AND CURRENT_DATE<=ga.DUE_DATE
-                                                   AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'));
+                                                   AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'), array('ASSIGNED_DATE' => 'ProperDate', 'DUE_DATE' => 'ProperDate'));
             }
 
 
@@ -805,7 +806,7 @@ switch (User('PROFILE')) {
 			AND cp.TEACHER_ID=s.STAFF_ID AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE  UNION SELECT MARKING_PERIOD_ID FROM school_semesters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE  UNION SELECT MARKING_PERIOD_ID FROM school_quarters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE )
 			AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND s.PROFILE=\'teacher\'
 			' . (($_REQUEST['period']) ? ' AND cp.PERIOD_ID=\'' . $_REQUEST[period] . '\'' : '') . '
-			AND NOT EXISTS (SELECT \'\' FROM grades_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.MARKING_PERIOD_ID=\'' . $_REQUEST[mp] . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)
+			AND NOT EXISTS (SELECT \'\' FROM grades_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)
 		';
 
 
@@ -817,13 +818,13 @@ switch (User('PROFILE')) {
 
             $assignments_Graded = DBGet(DBQuery('SELECT gg.STUDENT_ID,ga.ASSIGNMENT_ID,gg.POINTS,gg.COMMENT,ga.TITLE,ga.DESCRIPTION,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY
                                                    FROM gradebook_assignments ga LEFT OUTER JOIN gradebook_grades gg
-                                                  ON (gg.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.STUDENT_ID=\'' . UserStudentID() . '\'),gradebook_assignment_types at
-                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=\'' . $course[COURSE_ID] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'
+                                                  ON (gg.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.STUDENT_ID=\'' . UserStudentID() . '\'),gradebook_assignment_types at
+                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND (gg.POINTS IS NOT NULL) AND (ga.POINTS!=\'0\' OR gg.POINTS IS NOT NULL AND gg.POINTS!=\'-1\') ORDER BY ga.ASSIGNMENT_ID DESC'));
 
             foreach ($assignments_Graded AS $assignments_Graded)
                 $GRADED_ASSIGNMENT_ID[] = $assignments_Graded['ASSIGNMENT_ID'];
-            $ASSIGNMENT_ID_GRADED = implode(",", $GRADED_ASSIGNMENT_ID);
+            $ASSIGNMENT_ID_GRADED = is_array($GRADED_ASSIGNMENT_ID) ? implode(",", $GRADED_ASSIGNMENT_ID) : '';
 
             $GRADED_ASSIGNMENT = '( ' . $ASSIGNMENT_ID_GRADED . ' )';
 
@@ -832,7 +833,7 @@ switch (User('PROFILE')) {
             $full_year_mp = $full_year_mp[1]['MARKING_PERIOD_ID'];
 
             if (count($assignments_Graded)) {
-                $assignments_RET = DBGet(DBQuery('SELECT ga.ASSIGNMENT_ID,ga.TITLE,ga.DESCRIPTION as COMMENT,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY FROM gradebook_assignments ga, gradebook_assignment_types at    WHERE ga.ASSIGNMENT_ID NOT IN ' . $GRADED_ASSIGNMENT . ' AND (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=\'' . $course[COURSE_ID] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
+                $assignments_RET = DBGet(DBQuery('SELECT ga.ASSIGNMENT_ID,ga.TITLE,ga.DESCRIPTION as COMMENT,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY FROM gradebook_assignments ga, gradebook_assignment_types at    WHERE ga.ASSIGNMENT_ID NOT IN ' . $GRADED_ASSIGNMENT . ' AND (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\'or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND( CURRENT_DATE>=ga.ASSIGNED_DATE OR CURRENT_DATE<=ga.ASSIGNED_DATE)AND ga.DUE_DATE IS NOT NULL AND CURRENT_DATE<=ga.DUE_DATE
                                                    AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'));
             } else {
@@ -841,7 +842,7 @@ switch (User('PROFILE')) {
                 $assignments_RET = DBGet(DBQuery('SELECT ga.ASSIGNMENT_ID,ga.TITLE,ga.DESCRIPTION as COMMENT,ga.ASSIGNED_DATE,ga.DUE_DATE,ga.POINTS AS POINTS_POSSIBLE,at.TITLE AS CATEGORY
                                                    FROM gradebook_assignments ga
                                                  ,gradebook_assignment_types at
-                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course[COURSE_PERIOD_ID] . '\' OR ga.COURSE_ID=\'' . $course[COURSE_ID] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\' or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
+                                                  WHERE (ga.COURSE_PERIOD_ID=\'' . $course['COURSE_PERIOD_ID'] . '\' OR ga.COURSE_ID=\'' . $course['COURSE_ID'] . '\' AND ga.STAFF_ID=\'' . $staff_id . '\') AND (ga.MARKING_PERIOD_ID=\'' . UserMP() . '\' or ga.MARKING_PERIOD_ID=' . $full_year_mp . ')
                                                    AND at.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND( CURRENT_DATE>=ga.ASSIGNED_DATE OR CURRENT_DATE<=ga.ASSIGNED_DATE)AND ga.DUE_DATE IS NOT NULL AND CURRENT_DATE<=ga.DUE_DATE
                                                    AND (ga.POINTS!=\'0\') ORDER BY ga.ASSIGNMENT_ID DESC'));
             }

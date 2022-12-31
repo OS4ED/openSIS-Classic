@@ -26,9 +26,761 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+// function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+// {
+//     // global $i;
+//     // global $output;
+//     // global $pages;
+//     // $i = 0;
+//     // $pages = '';
+//     // $output = '';
+//     if (!isset($options['save']))
+//         $options['save'] = true;
+//     if (!isset($options['print']))
+//         $options['print'] = true;
+//     if (!isset($options['search']))
+//         $options['search'] = true;
+//     if (!isset($options['center']))
+//         $options['center'] = true;
+//     if (!isset($options['count']))
+//         $options['count'] = true;
+//     if (!isset($options['sort']))
+//         $options['sort'] = true;
+//     if (!$link)
+//         $link = array();
 
-function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
-//    print_r($result);
+//     if (!isset($options['add'])) {
+//         if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
+//             if ($link) {
+//                 unset($link['add']);
+//                 unset($link['remove']);
+//             }
+//         }
+//     }
+
+//     // PREPARE LINKS ---
+//     $result_count = $display_count = count($result);
+//     $num_displayed = 100000;
+//     $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
+
+//     $tmp_REQUEST = $_REQUEST;
+//     unset($tmp_REQUEST['page']);
+//     unset($tmp_REQUEST['LO_sort']);
+//     unset($tmp_REQUEST['LO_direction']);
+//     unset($tmp_REQUEST['LO_search']);
+//     unset($tmp_REQUEST['remove_prompt']);
+//     unset($tmp_REQUEST['remove_name']);
+//     unset($tmp_REQUEST['LO_save']);
+//     unset($tmp_REQUEST['PHPSESSID']);
+
+
+//     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
+
+//     // END PREPARE LINKS ---
+//     // UN-GROUPING
+//     $group_count = (is_countable($group)) ? count($group) : 0;
+//     if (!is_array($group))
+//         $group_count = false;
+//     $side_color = 'bgcolor="#f5f5f5"';
+
+//     if ($group_count && $result_count) {
+//         $color = 'style=" background-color:#fff; padding:3px 4px 3px 4px;"';
+//         $group_result = $result;
+//         unset($result);
+//         $result[0] = '';
+
+//         foreach ($group_result as $item1) {
+//             if ($group_count == 1) {
+//                 if ($color == 'bgcolor="#f5f5f5"')
+//                     $color = $side_color;
+//                 else
+//                     $color = 'bgcolor="#f5f5f5"';
+//             }
+
+//             foreach ($item1 as $item2) {
+//                 if ($group_count == 1) {
+//                     $i++;
+//                     if (count($group[0]) && $i != 1) {
+//                         foreach ($group[0] as $column)
+//                             $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
+//                     }
+//                     $item2['row_color'] = $color;
+//                     $result[] = $item2;
+//                 } else {
+//                     if ($group_count == 2) {
+//                         if ($color == 'bgcolor="#ffffff"')
+//                             $color = $side_color;
+//                         else
+//                             $color = 'bgcolor="#ffffff"';
+//                     }
+
+//                     foreach ($item2 as $item3) {
+//                         if ($group_count == 2) {
+//                             $i++;
+//                             if (count($group[0]) && $i != 1) {
+//                                 foreach ($group[0] as $column)
+//                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
+//                             }
+//                             if (count($group[1]) && $i != 1) {
+//                                 foreach ($group[1] as $column)
+//                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
+//                             }
+//                             $item3['row_color'] = $color;
+//                             $result[] = $item3;
+//                         } else {
+//                             if ($group_count == 3) {
+//                                 if ($color == 'bgcolor="#ffffff"')
+//                                     $color = $side_color;
+//                                 else
+//                                     $color = 'bgcolor="#ffffff"';
+//                             }
+
+//                             foreach ($item3 as $item4) {
+//                                 if ($group_count == 3) {
+//                                     $i++;
+//                                     if (count($group[2]) && $i != 1) {
+//                                         foreach ($group[2] as $column)
+//                                             unset($item4[$column]);
+//                                     }
+//                                     $item4['row_color'] = $color;
+//                                     $result[] = $item4;
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             $i = 0;
+//         }
+//         unset($result[0]);
+//         $result_count = count($result);
+
+//         unset($_REQUEST['LO_sort']);
+//     }
+//     // END UN-GROUPING
+//     $_LIST['output'] = true;
+
+
+//     // PRINT HEADINGS, PREPARE PDF, AND SORT THE LIST ---
+//     if ($_LIST['output'] != false) {
+//         if ($result_count != 0) {
+//             $count = 0;
+//             $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
+//             $cols = count($column_names);
+
+//             // HANDLE SEARCHES ---
+//             if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') {
+//                 $_REQUEST['LO_search'] = $search_term = str_replace('\\\"', '"', $_REQUEST['LO_search']);
+//                 $_REQUEST['LO_search'] = $search_term = par_rep_cb('[^a-zA-Z0-9 _"]*', '', strtolower($search_term));
+
+//                 if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') {
+//                     $search_term = par_rep_cb('"', '', $search_term);
+//                     while ($space_pos = strpos($search_term, ' ')) {
+//                         $terms[strtolower(substr($search_term, 0, $space_pos))] = 1;
+//                         $search_term = substr($search_term, ($space_pos + 1));
+//                     }
+//                     $terms[trim($search_term)] = 1;
+//                 } else {
+//                     $search_term = par_rep_cb('"', '', $search_term);
+//                     $terms[trim($search_term)] = 1;
+//                 }
+
+//                 unset($terms['of']);
+//                 unset($terms['the']);
+//                 unset($terms['a']);
+//                 unset($terms['an']);
+//                 unset($terms['in']);
+
+//                 foreach ($result as $key => $value) {
+//                     $values[$key] = 0;
+//                     foreach ($value as $name => $val) {
+//                         $val = par_rep_cb('[^a-zA-Z0-9 _]+', '', strtolower($val));
+//                         if (strtolower($_REQUEST['LO_search']) == $val)
+//                             $values[$key] += 25;
+//                         foreach ($terms as $term => $one) {
+//                             if (strpos($val, $term) !== FALSE)
+//                                 $values[$key] += 3;
+//                         }
+//                     }
+//                     if ($values[$key] == 0) {
+//                         unset($values[$key]);
+//                         unset($result[$key]);
+//                         $result_count--;
+//                         $display_count--;
+//                     }
+//                 }
+//                 if ($result_count) {
+//                     array_multisort($values, SORT_DESC, $result);
+//                     $result = ReindexResults($result);
+//                     $values = ReindexResults($values);
+
+//                     $last_value = 1;
+//                     $scale = (100 / $values[$last_value]);
+
+//                     for ($i = $last_value; $i <= $result_count; $i++)
+//                         $result[$i]['RELEVANCE'] = '<!--' . ((int) ($values[$i] * $scale)) . '--><IMG SRC="assets/pixel_grey.gif" width=' . ((int) ($values[$i] * $scale)) . ' height=10>';
+//                 }
+//                 $column_names['RELEVANCE'] = "Relevance";
+
+//                 if (is_array($group) && count($group)) {
+//                     $options['count'] == false;
+//                     $display_zero = true;
+//                 }
+//             }
+
+
+//             // END SEARCHES ---
+
+//             if ($_REQUEST['LO_sort']) {
+//                 foreach ($result as $sort) {
+//                     if (substr($sort[$_REQUEST['LO_sort']], 0, 4) != '<!--')
+//                         $sort_array[] = $sort[$_REQUEST['LO_sort']];
+//                     else
+//                         $sort_array[] = substr($sort[$_REQUEST['LO_sort']], 4, strpos($sort[$_REQUEST['LO_sort']], '-->') - 5);
+//                 }
+//                 if ($_REQUEST['LO_direction'] == -1)
+//                     $dir = SORT_DESC;
+//                 else
+//                     $dir = SORT_ASC;
+
+//                 if ($result_count > 1) {
+//                     if (is_int($sort_array[1]) || is_double($sort_array[1]))
+//                         array_multisort($sort_array, $dir, SORT_NUMERIC, $result);
+//                     else
+//                         array_multisort($sort_array, $dir, $result);
+//                     for ($i = $result_count - 1; $i >= 0; $i--)
+//                         $result[$i + 1] = $result[$i];
+//                     unset($result[0]);
+//                 }
+//             }
+//         }
+//         // HANDLE SAVING THE LIST ---
+
+//         if ($_REQUEST['LO_save'] == '1') {
+//             if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
+//                 $options['save_delimiter'] = 'comma';
+//             switch ($options['save_delimiter']) {
+//                 case 'comma':
+//                     $extension = 'csv';
+//                     break;
+//                 case 'xml':
+//                     $extension = 'xml';
+//                     break;
+//                 default:
+//                     $extension = 'xls';
+//                     break;
+//             }
+//             ob_end_clean();
+//             if ($options['save_delimiter'] != 'xml') {
+//                 $output .= '<table><tr>';
+//                 foreach ($column_names as $key => $value)
+//                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('<BR>', ' ', par_rep_cb('<!--.*-->', '', $value))) . '</td>';
+//                 $output .= '</tr>';
+//                 foreach ($result as $item) {
+//                     $output .= '<tr>';
+//                     foreach ($column_names as $key => $value) {
+//                         $output .= '<td>' . par_rep_cb('<[^>]+>', '', par_rep_cb("<div onclick='[^']+'>", '', par_rep_cb(' +', ' ', par_rep_cb('&[^;]+;', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+//                     }
+//                     $output .= '</tr>';
+//                 }
+//                 $output .= '</table>';
+//             }
+//             foreach ($result as $item) {
+//                 foreach ($column_names as $key => $value) {
+//                     if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+//                         $item[$key] = str_replace(',', ';', $item[$key]);
+//                     $item[$key] = par_rep_cb('<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>', '\\1', $item[$key]);
+//                     $item[$key] = par_rep_cb('<SELECT.*</SELECT\>', '', $item[$key]);
+//                     $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('<[^>]+>', '', par_rep_cb("<div onclick='[^']+'>", '', par_rep_cb(' +', ' ', par_rep_cb('&[^;]+;', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+//                 }
+//                 $output .= "\n";
+//             }
+
+//             header("Cache-Control: public");
+//             header("Pragma: ");
+//             header("Content-Type: application/$extension");
+//             header("Content-Disposition: inline; filename=\"" . ProgramTitle() . ".$extension\"\n");
+//             if ($options['save_eval'])
+//                 eval($options['save_eval']);
+//             echo $output;
+//             exit();
+//         }
+//         // END SAVING THE LIST ---
+//         if ($options['center'])
+//             #echo '<CENTER>';
+//             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
+
+//                 if (isset($_REQUEST['_openSIS_PDF']))
+//                     echo " <TR><TD align=center>";
+//             }
+
+//         if ($options['count'] || $display_zero) {
+//             if (($result_count == 0 || $display_count == 0) && $plural)
+//                 echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>" . _no . " $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+//             elseif ($result_count == 0 || $display_count == 0)
+//                 echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+//         }
+//         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
+//             if (!isset($_REQUEST['_openSIS_PDF'])) {
+//                 if (!$_REQUEST['page'])
+//                     $_REQUEST['page'] = 1;
+//                 if (!$_REQUEST['LO_direction'])
+//                     $_REQUEST['LO_direction'] = 1;
+//                 $start = ($_REQUEST['page'] - 1) * $num_displayed + 1;
+//                 $stop = $start + ($num_displayed - 1);
+//                 if ($stop > $result_count)
+//                     $stop = $result_count;
+
+//                 if ($result_count > $num_displayed) {
+//                     $where_message = "<SMALL>Displaying $start through $stop</SMALL>";
+//                     echo "Go to Page ";
+//                     //$pages = '';
+//                     if (ceil($result_count / $num_displayed) <= 10) {
+//                         for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
+//                             if ($i != $_REQUEST['page'])
+//                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
+//                             else
+//                                 $pages .= "$i, ";
+//                         }
+//                         $pages = substr($pages, 0, -2) . "<BR>";
+//                     } else {
+//                         for ($i = 1; $i <= 7; $i++) {
+//                             if ($i != $_REQUEST['page'])
+//                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
+//                             else
+//                                 $pages .= "$i, ";
+//                         }
+//                         $pages = substr($pages, 0, -2) . " ... ";
+//                         for ($i = ceil($result_count / $num_displayed) - 2; $i <= ceil($result_count / $num_displayed); $i++) {
+//                             if ($i != $_REQUEST['page'])
+//                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
+//                             else
+//                                 $pages .= "$i, ";
+//                         }
+//                         $pages = substr($pages, 0, -2) . " &nbsp;<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=" . ($_REQUEST['page'] + 1) . ">Next Page</A><BR>";
+//                     }
+//                     echo $pages;
+//                     echo '</TD></TR></TABLE>';
+//                     echo '<BR>';
+//                 }
+//             } else {
+//                 $start = 1;
+//                 $stop = $result_count;
+//                 if ($cols > 8 || $_REQUEST['expanded_view']) {
+//                     $_SESSION['orientation'] = 'landscape';
+//                     $repeat_headers = 16;
+//                 } else
+//                     $repeat_headers = 26;
+//                 if ($options['print']) {
+//                     //$html = explode(' ', strtolower(ob_get_contents()));
+//                     $html = str_split(strtolower(ob_get_contents()));
+//                     $html = $html[count($html) - 1];
+//                     echo '</TD></TR></TABLE>';
+//                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
+//                     if ($br % 2 != 0) {
+//                         $br++;
+//                         echo '<BR>';
+//                     }
+//                 } else
+//                     echo '</TD></TR></TABLE>';
+//             }
+//             // END MISC ---
+//             // WIDTH = 100%
+//             echo '<TABLE width=98% border=0 cellspacing=0 cellpadding=0><TR>';
+
+//             // SEARCH BOX & MORE HEADERS
+//             if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
+//                 echo '<TD align=center>';
+
+//                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
+//                     echo '</TD>';
+//                 $colspan = 1;
+//                 if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
+//                     $tmp_REQUEST = $_REQUEST;
+//                     unset($tmp_REQUEST['LO_search']);
+//                     unset($tmp_REQUEST['page']);
+//                     echo '<TD height="50" align=right valign=middle>';
+//                     echo "<INPUT type=text class='cell_medium' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+//                     $colspan++;
+//                 }
+//                 echo "</TR>";
+//                 echo '<TR style="height:0;"><TD width=100% align=center colspan=' . $colspan . '><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV></TD></TR></TABLE>';
+//             } else
+//                 echo '<TD width=100% align=right><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+//             // END SEARCH BOX ----
+//             echo '</TD></TR><TR><TD>';
+
+//             // SHADOW
+//             if (!isset($_REQUEST['_openSIS_PDF']))
+//                 echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+//             echo "<TABLE cellpadding=6 width=100% cellspacing=1 border=\"1px solid #a9d5e9 \" style=\"border-collapse:collapse\" align=center>";
+//             if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+//                 echo '<THEAD>';
+//             if (!isset($_REQUEST['_openSIS_PDF']))
+//                 echo '<TR>';
+
+//             $i = 1;
+//             if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
+
+//                 //THIS LINE IS FOR COLUMN HEADING
+//                 echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV></TD>";
+//                 $i++;
+//             }
+
+//             if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) {
+//                 foreach ($column_names as $key => $value) {
+//                     if ($_REQUEST['LO_sort'] == $key)
+//                         $direction = -1 * $_REQUEST['LO_direction'];
+//                     else
+//                         $direction = 1;
+//                     //THIS LINE IS FOR COLUMN HEADING
+//                     echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV>";
+//                     echo "<A ";
+//                     if ($options['sort'])
+//                         echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
+//                     echo " class=column_heading><b>$value</b></A>";
+//                     if ($i == 1)
+//                         echo "<DIV id=LOy0 style='position: relative;'></DIV>";
+//                     echo "</TD>";
+//                     $i++;
+//                 }
+
+//                 echo "</TR>";
+//             }
+
+//             $color = 'bgcolor="#ffffff"';
+
+//             if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+//                 echo '</THEAD><TBODY>';
+
+
+//             // mab - enable add link as first or last
+//             if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
+
+//                 if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+//                     echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left class=even>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
+//                 elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+//                     echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left class=even>" . button('add') . $link['add']['span'] . "</TD></TR>";
+//                 elseif ($link['add']['html'] && $cols) {
+//                     echo "<TR $color>";
+//                     if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
+//                         echo "<TD class=even align=left>" . $link['add']['html']['remove'] . "</TD>";
+//                     elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
+//                         echo "<TD class=even align=left>" . button('add') . "</TD>";
+
+//                     foreach ($column_names as $key => $value) {
+//                         echo "<TD class=even align=left >" . $link['add']['html'][$key] . "</TD>";
+//                     }
+//                     echo "</TR>";
+//                     $count++;
+//                 }
+//             }
+//             $val_cp = array();
+//             $val_cp_day = array();
+
+//             foreach ($result as $val_cp1) {
+//                 if ((isset($old_cp) && $old_cp  == $val_cp1['COURSE_PERIOD_ID']) || array_search($val_cp1['COURSE_PERIOD_ID'], $val_cp1)) {
+//                     $val_cp[$val_cp1['COURSE_PERIOD_ID']] = $val_cp[$val_cp1['COURSE_PERIOD_ID']] + 1;
+//                     if (isset($old_cp_day) && $old_cp_day == $val_cp1['DAYS']) {
+//                         $val_cp_day[$val_cp1['COURSE_PERIOD_ID']][$val_cp1['DAYS']] = $val_cp_day[$val_cp1['COURSE_PERIOD_ID']][$val_cp1['DAYS']] + 1;
+//                     } else {
+//                         $val_cp_day[$val_cp1['COURSE_PERIOD_ID']][$val_cp1['DAYS']] = 1;
+//                     }
+//                 } else {
+//                     $val_cp[$val_cp1['COURSE_PERIOD_ID']] = 1;
+//                     $val_cp_day[$val_cp1['COURSE_PERIOD_ID']][$val_cp1['DAYS']] = 1;
+//                 }
+//                 $old_cp_day = $val_cp1['DAYS'];
+//                 $old_cp = $val_cp1['COURSE_PERIOD_ID'];
+//             }
+
+//             for ($i = $start; $i <= $stop; $i++) {
+//                 $item = $result[$i];
+//                 if (isset($_REQUEST['_openSIS_PDF']) && $options['print'] && count($item)) {
+//                     foreach ($item as $key => $value) {
+//                         $value = par_rep_cb('<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>', '\\1', $value);
+//                         $value = par_rep_cb('<SELECT.*</SELECT\>', '', $value);
+
+//                         if (strpos($value, 'LO_field') === false)
+//                             $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("<div onclick='[^']+'>", '', $value));
+//                         else
+//                             $item[$key] = par_rep_cb("<div onclick='[^']+'>", '', $value);
+//                     }
+//                 }
+
+//                 if ($item['row_color'])
+//                     $color = $item['row_color'];
+//                 elseif ($color == 'bgcolor="#ffffff"')
+//                     $color = $side_color;
+//                 else
+//                     $color = 'bgcolor="#ffffff"';
+
+//                 if (isset($_REQUEST['_openSIS_PDF']) && $count % $repeat_headers == 0) {
+//                     if ($count != 0) {
+//                         echo '</TABLE>';
+//                         echo "<div style=\"page-break-after: always;\"></div>";
+//                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+//                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
+//                             echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentProgressReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentProgressReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+//                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
+//                             echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentReportCard . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentReportCard . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+//                         else
+//                             echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _addDropReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _addDropReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+//                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
+//                     }
+//                     echo "<TR>";
+//                     if ($remove && !isset($_REQUEST['_openSIS_PDF']))
+//                         echo "<TD bgcolor=#d3d3d3></TD>";
+
+//                     if ($cols) {
+//                         foreach ($column_names as $key => $value) {
+//                             echo "<TD bgcolor=#d3d3d3 >" . str_replace(' ', '&nbsp;', $value) . "</TD>";
+//                         }
+//                     }
+//                     echo "</TR>";
+//                 }
+//                 if ($count == 0)
+//                     $count = $br;
+
+//                 echo "<TR $color>";
+//                 $count++;
+//                 if ($remove && !isset($_REQUEST['_openSIS_PDF'])) {
+//                     $button_title = $link['remove']['title'];
+//                     $button_link = $link['remove']['link'];
+//                     if (count($link['remove']['variables'])) {
+//                         foreach ($link['remove']['variables'] as $var => $val)
+//                             $button_link .= "&$var=" . ($item[$val]);
+//                     }
+
+//                     echo "<TD $color>" . button('remove', $button_title, $button_link) . "</TD>";
+//                 }
+//                 if ($cols) {
+//                     foreach ($column_names as $key => $value) {
+//                         if ($link[$key] && !isset($_REQUEST['_openSIS_PDF'])) {
+//                             echo "<TD $color >";
+//                             if ($key == 'FULL_NAME')
+//                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
+//                             if ($link[$key]['js'] === true) {
+//                                 echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
+//                                 if (count($link[$key]['variables'])) {
+//                                     foreach ($link[$key]['variables'] as $var => $val)
+//                                         echo "&$var=" . urlencode($item[$val]);
+//                                 }
+//                                 echo "\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'";
+//                                 if ($link[$key]['extra'])
+//                                     echo ' ' . $link[$key]['extra'];
+//                                 echo ">";
+//                             } else {
+//                                 echo "<A HREF={$link[$key]['link']}";
+//                                 if (count($link[$key]['variables'])) {
+//                                     foreach ($link[$key]['variables'] as $var => $val)
+//                                         echo "&$var=" . urlencode($item[$val]);
+//                                 }
+//                                 if ($link[$key]['extra'])
+//                                     echo ' ' . $link[$key]['extra'];
+//                                 echo " onclick='grabA(this); return false;'>";
+//                             }
+//                             if ($color == Preferences('HIGHLIGHT'))
+//                                 echo '';
+//                             else
+//                                 echo '<b>';
+//                             echo $item[$key];
+//                             echo '</b>';
+//                             if (!$item[$key])
+//                                 echo '***';
+//                             echo "</A>";
+//                             if ($key == 'FULL_NAME')
+//                                 echo '</DIV>';
+//                             echo "</TD>";
+//                         } else {
+
+//                             //$crs_arr = $item['COURSE_PERIOD_ID'];
+//                             if (($key == 'COURSE' || $key == 'MARKING_PERIOD_ID') && $crs_arr[0] != $item['COURSE_PERIOD_ID']) {
+//                                 echo "<TD $color rowspan=" . $val_cp[$item['COURSE_PERIOD_ID']] . ">";
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
+//                                 if ($color == Preferences('HIGHLIGHT'))
+//                                     echo '';
+//                                 echo $item[$key];
+//                                 if (!$item[$key])
+//                                     echo '&nbsp;';
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV>';
+//                                 echo "</TD>";
+//                                 //$kim++;
+//                             }
+
+
+//                             if ((isset($crs_arr_day) && $key == 'DAYS') && (!in_array($item['DAYS'], $crs_arr_day) || $crs_arr[0] != $item['COURSE_PERIOD_ID'])) {
+//                                 //echo $key;
+//                                 //echo '<br>';
+//                                 echo "<TD $color rowspan=" . $val_cp_day[$item['COURSE_PERIOD_ID']][$item['DAYS']] . ">";
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
+//                                 if ($color == Preferences('HIGHLIGHT'))
+//                                     echo '';
+//                                 echo DaySnameMod($item[$key], 2);
+//                                 if (!$item[$key])
+//                                     echo '&nbsp;';
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV>';
+//                                 echo "</TD>";
+//                                 //$kim++;
+//                             } elseif ($key != 'COURSE' && $key != 'DAYS' && $key != 'MARKING_PERIOD_ID') {
+//                                 echo "<TD $color>";
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
+//                                 if ($color == Preferences('HIGHLIGHT'))
+//                                     echo '';
+//                                 echo $item[$key];
+//                                 if (!$item[$key])
+//                                     echo '&nbsp;';
+//                                 if ($key == 'FULL_NAME')
+//                                     echo '<DIV>';
+//                                 echo "</TD>";
+//                             }
+//                         }
+//                     }
+//                 }
+//                 echo "</TR>";
+
+//                 $crs_arr[0] = $item['COURSE_PERIOD_ID'];
+//                 //echo $item['DAYS'];
+//                 $crs_arr_day[0] = trim($item['DAYS']);
+//             }
+
+//             if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
+
+//                 if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+//                     echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left class=even>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
+//                 elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+//                     echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left class=even>" . button('add') . $link['add']['span'] . "</TD></TR>";
+//                 elseif ($link['add']['html'] && $cols) {
+//                     if ($count % 2)
+//                         $color = 'bgcolor=#ffffff';
+//                     else
+//                         $color = $side_color;
+
+//                     echo "<TR $color>";
+//                     if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
+//                         echo "<TD bgcolor=#ffffff align=left>" . $link['add']['html']['remove'] . "</TD>";
+//                     elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
+//                         echo "<TD bgcolor=#ffffff align=left >" . button('add') . "</TD>";
+
+//                     foreach ($column_names as $key => $value) {
+//                         echo "<TD bgcolor=#ffffff align=left  valign=top>" . $link['add']['html'][$key] . "</TD>";
+//                     }
+//                     echo "</TR>";
+//                 }
+//             }
+//             if ($result_count != 0) {
+//                 if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+//                     echo '</TBODY>';
+//                 echo "</TABLE>";
+//                 if (!isset($_REQUEST['_openSIS_PDF']))
+//                     echo '</TD ></TR></TABLE>';
+//                 echo "</TD ></TR>";
+//                 echo "</TABLE>";
+
+//                 if ($options['center'])
+//                     echo '';
+//             }
+//         }
+//         if ($result_count == 0) {
+//             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0))))
+//                 if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+//                     echo '<table width=120px cellspacing=8 cellpadding=6 ><tr><TD align=left class=lone_add >' . button('add', $link['add']['title'], $link['add']['link']) . '</td></tr></table>';
+//                 elseif (($link['add']['html'] || $link['add']['span']) && count($column_names) && !isset($_REQUEST['_openSIS_PDF'])) {
+//                     $color = $side_color;
+
+//                     if ($options['center'])
+//                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+//                     if ($link['add']['html']) {
+//                         echo "<TABLE cellpadding=6 cellspacing=1 width=96% class=\"grid\"><TR><TD class=subtabs></TD>";
+//                         foreach ($column_names as $key => $value) {
+//                             echo "<TD class=subtabs><A><b>" . str_replace(' ', '&nbsp;', $value) . "</b></A></TD>";
+//                         }
+//                         echo "</TR>";
+
+//                         echo "<TR class=odd>";
+
+//                         if ($link['add']['html']['remove'])
+//                             echo "<TD >" . $link['add']['html']['remove'] . "</TD>";
+//                         else
+//                             echo "<TD>" . button('add') . "</TD>";
+
+//                         foreach ($column_names as $key => $value) {
+//                             echo "<TD >" . $link['add']['html'][$key] . "</TD>";
+//                         }
+//                         echo "</TR>";
+//                         echo "</TABLE>";
+//                     } elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+//                         echo "<TABLE><TR><TD align=center>" . button('add') . $link['add']['span'] . "</TD></TR></TABLE>";
+//                     echo "</TD></TR></TABLE>";
+//                     if ($options['center'])
+//                         echo '</CENTER>';
+//                 }
+//         }
+//         if ($result_count != 0) {
+//             if ($options['yscroll']) {
+//                 echo '<div id="LOy_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
+//                 echo '<TABLE cellpadding=6 id=LOy_table>';
+//                 $i = 1;
+
+//                 if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
+//                     $color = $side_color;
+//                     foreach ($result as $item) {
+//                         echo "<TR><TD $color  id=LO_row$i>";
+//                         if ($color == Preferences('HIGHLIGHT'))
+//                             echo '';
+//                         echo $item['FULL_NAME'];
+//                         if (!$item['FULL_NAME'])
+//                             echo '&nbsp;';
+//                         if ($color == Preferences('HIGHLIGHT'))
+//                             echo '';
+//                         echo "</TD></TR>";
+//                         $i++;
+
+//                         if ($item['row_color'])
+//                             $color = $item['row_color'];
+//                         elseif ($color == 'class=even')
+//                             $color = $side_color;
+//                         else
+//                             $color = 'class=even';
+//                     }
+//                 }
+//                 echo '</TABLE>';
+//                 echo '</div>';
+//             }
+
+//             echo '<div id="LOx_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
+//             echo '<div style="page-break-before: inherit;">&nbsp;</div>';
+//             echo '<TABLE cellpadding=6 id=LOx_table><TR>';
+//             $i = 1;
+//             if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
+//                 echo "<TD class=grid id=LO_col$i></TD>";
+//                 $i++;
+//             }
+
+//             if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
+//                 foreach ($column_names as $key => $value) {
+
+//                     echo '<TD class=grid id=LO_col' . $i . '><A class=column_heading><b>' . str_replace('controller', '', $value) . '</b></A></TD>';
+//                     $i++;
+//                 }
+//             }
+//             echo '</TR></TABLE>';
+//             echo '</div>';
+//         }
+//     }
+// }
+
+
+
+
+function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) 
+{
+    //    print_r($result);
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -54,7 +806,8 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
     }
 
     // PREPARE LINKS ---
-    $result_count = $display_count = count($result);
+    $result_count = $display_count = (is_countable($result)) ? count($result): 0;
+
     $num_displayed = 100000;
     $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
 
@@ -73,7 +826,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group): 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -151,7 +904,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
             $i = 0;
         }
         unset($result[0]);
-        $result_count = count($result);
+        $result_count = (is_countable($result)) ? count($result): 0;
 
         unset($_REQUEST['LO_sort']);
     }
@@ -163,7 +916,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -473,8 +1226,8 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                     $count++;
                 }
             }
-//
-//                        $crs= array_count_values(array_column($result, 'COURSE_PERIOD_ID'));
+            //
+            //$crs= array_count_values(array_column($result, 'COURSE_PERIOD_ID'));
 
             $val_cp = array();
             $val_cp_day = array();
@@ -600,7 +1353,7 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                             //$crs_arr=$item['COURSE_PERIOD_ID'];
 
                             if (($key == 'COURSE' || $key == 'MARKING_PERIOD_ID') && $crs_arr[0] != $item['COURSE_PERIOD_ID']) {
-                                echo "<TD $color rowspan=" . $val_cp[$item[COURSE_PERIOD_ID]] . ">";
+                                echo "<TD $color rowspan=" . $val_cp[$item['COURSE_PERIOD_ID']] . ">";
                                 if ($key == 'FULL_NAME')
                                     echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
                                 if ($color == Preferences('HIGHLIGHT'))
@@ -613,17 +1366,20 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                                 echo "</TD>";
                                 //$kim++;
                             }
+                            // echo "<PRE>";
+                            // print_r($crs_arr_day);
+                            // echo "</PRE>";
 
-
-                            if ($key == 'DAYS' && (!in_array($item['DAYS'], $crs_arr_day) || $crs_arr[0] != $item['COURSE_PERIOD_ID'])) {
-//                                                         echo $crs_arr_day[0].'=!'.$item['DAYS'];
-//                                                    echo '<br>';
-//                                                    echo $key; echo '<br>';
-                                echo "<TD $color rowspan=" . $val_cp_day[$item[COURSE_PERIOD_ID]][$item['DAYS']] . ">";
+                            if ($key == 'DAYS' && (is_array($crs_arr_day) && !in_array($item['DAYS'], $crs_arr_day) || $crs_arr[0] != $item['COURSE_PERIOD_ID'])) {
+                                // echo $crs_arr_day[0].'=!'.$item['DAYS'];
+                                // echo '<br>';
+                                // echo $key; echo '<br>';
+                                echo "<TD $color rowspan=" . $val_cp_day[$item['COURSE_PERIOD_ID']][$item['DAYS']] . ">";
                                 if ($key == 'FULL_NAME')
                                     echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
                                 if ($color == Preferences('HIGHLIGHT'))
                                     echo '';
+                                //echo $item[$key]
                                 echo DaySnameMod($item[$key], 2);
                                 if (!$item[$key])
                                     echo '&nbsp;';
@@ -782,7 +1538,16 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
     }
 }
 
-function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true) {
+
+
+function ListOutput($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -813,7 +1578,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
         }
     }
     // PREPARE LINKS ---
-    $result_count = $display_count = count($result);
+    $result_count = $display_count = (is_countable($result)) ? count($result): 0;
     $num_displayed = 100000;
     $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
     $tmp_REQUEST = $_REQUEST;
@@ -825,13 +1590,11 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
     unset($tmp_REQUEST['remove_name']);
     unset($tmp_REQUEST['LO_save']);
     unset($tmp_REQUEST['PHPSESSID']);
-
-
     //$PHP_tmp_SELF = PreparePHP_SELF($tmp_REQUEST);
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -850,15 +1613,20 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                 else
                     $color = '';
             }
-
+            $i = 0;
             foreach ($item1 as $item2) {
                 if ($group_count == 1) {
                     $i++;
-                    if (count($group[0]) && $i != 1) {
+                    if (is_countable($group[0]) && count($group[0]) && $i != 1) {
                         foreach ($group[0] as $column)
                             $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
                     }
-                    $item2['row_color'] = $color;
+
+                    if(is_array($item2))
+                    {
+                    	$item2['row_color'] = $color;
+                    }
+                    
                     $result[] = $item2;
                 } else {
                     if ($group_count == 2) {
@@ -871,11 +1639,11 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                     foreach ($item2 as $item3) {
                         if ($group_count == 2) {
                             $i++;
-                            if (count($group[0]) && $i != 1) {
+                            if (is_countable($group[0]) && count($group[0]) && $i != 1) {
                                 foreach ($group[0] as $column)
                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
                             }
-                            if (count($group[1]) && $i != 1) {
+                            if (is_countable($group[0]) && count($group[1]) && $i != 1) {
                                 foreach ($group[1] as $column)
                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
                             }
@@ -892,7 +1660,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                             foreach ($item3 as $item4) {
                                 if ($group_count == 3) {
                                     $i++;
-                                    if (count($group[2]) && $i != 1) {
+                                    if (is_countable($group[0]) && count($group[2]) && $i != 1) {
                                         foreach ($group[2] as $column)
                                             unset($item4[$column]);
                                     }
@@ -919,7 +1687,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : '';
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -1039,9 +1807,855 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                     break;
             }
             ob_end_clean();
-
+            $output = '';
             if ($options['save_delimiter'] != 'xml') {
                 $output .= '<table><tr>';
+                foreach ($column_names as $key => $value)
+                    $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                $output .= '</tr>';
+                foreach ($result as $item) {
+                    $output .= '<tr>';
+                    foreach ($column_names as $key => $value) {
+                        if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
+                            $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
+                        $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                    }
+                    $output .= '</tr>';
+                }
+                $output .= '</table>';
+            }
+
+            if ($options['save_delimiter'] == 'xml') {
+                foreach ($result as $item) {
+                    foreach ($column_names as $key => $value) {
+                        if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                            $item[$key] = str_replace(',', ';', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                        $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                        $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                    }
+                    $output .= "\n";
+                }
+            }
+            header("Cache-Control: public");
+            header("Pragma: ");
+            header("Content-Type: application/$extension");
+            header("Content-Disposition: inline; filename=\"" . ProgramTitle() . ".$extension\"\n");
+            if ($options['save_eval'])
+                eval($options['save_eval']);
+            echo $output;
+            exit();
+        }
+        // END SAVING THE LIST ---
+        if ($options['center'])
+            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
+
+                if (isset($_REQUEST['_openSIS_PDF']))
+                    echo " <TR><TD align=center>";
+            }
+
+        if ($options['count'] || $display_zero) {
+
+            if (($result_count == 0 || $display_count == 0) && $plural) {
+                echo '<div class="panel-body">';
+                echo "<div class=\"alert alert-danger no-border m-b-0\">" . _no . " $plural " . _wereFound . ".</div>";
+                echo '</div>';
+            } elseif ($result_count == 0 || $display_count == 0) {
+                echo '<div class="panel-body">';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
+                echo '</div>';
+            }
+        }
+        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
+            if (!isset($_REQUEST['_openSIS_PDF'])) {
+                if (!$Request_page)
+                    $Request_page = 1;
+                if (!$_REQUEST['LO_direction'])
+                    $_REQUEST['LO_direction'] = 1;
+                $start = ($Request_page - 1) * $num_displayed + 1;
+                $stop = $start + ($num_displayed - 1);
+                if ($stop > $result_count)
+                    $stop = $result_count;
+
+                if ($result_count > $num_displayed) {
+
+                    echo $where_message = "<strong><br>
+									    $start through $stop</strong>";
+                    echo "<div style=text-align:right;margin-top:-14px;padding-right:15px><strong>Go to Page ";
+                    $pages = '';
+                    if (ceil($result_count / $num_displayed) <= 10) {
+                        for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
+                            if ($i != $Request_page) {
+                                if ($ForWindow == 'ForWindow') {
+                                    $pages .= "<A HREF=" . str_replace('Modules.php', 'ForWindow.php', $PHP_tmp_SELF) . "&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
+                                } else {
+                                    $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
+                                }
+                            } else {
+                                $pages .= "$i, ";
+                            }
+                        }
+                        $pages = substr($pages, 0, -2);
+                    } else {
+                        for ($i = 1; $i <= 7; $i++) {
+                            if ($i != $Request_page)
+                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
+                            else
+                                $pages .= "$i, ";
+                        }
+                        $pages = substr($pages, 0, -2) . " ... ";
+                        for ($i = ceil($result_count / $num_displayed) - 2; $i <= ceil($result_count / $num_displayed); $i++) {
+                            if ($i != $Request_page)
+                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
+                            else
+                                $pages .= "$i, ";
+                        }
+                        $pages = substr($pages, 0, -2) . " &nbsp;<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=" . ($Request_page + 1) . ">Next Page</A><BR>";
+                    }
+                    echo $pages;
+
+                    echo '</strong></div>';
+                }
+            } else {
+                $start = 1;
+                $stop = $result_count;
+                if ($cols > 8 || $_REQUEST['expanded_view']) {
+                    $_SESSION['orientation'] = 'landscape';
+                    $repeat_headers = 16;
+                } else
+                    $repeat_headers = 27;
+                if ($options['print']) {
+                    $html = explode('<!-- new page -->', strtolower(ob_get_contents()));
+                    $html = $html[count($html) - 1];
+                    echo '</TD></TR></TABLE>';
+                    $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
+                    if ($br % 2 != 0) {
+                        $br++;
+                        echo '<BR>';
+                    }
+                } else
+                    echo '</TD></TR></TABLE>';
+            }
+            // END MISC ---
+            // WIDTH = 100%
+
+            if ($headerVisibility == true) {
+                echo '<div class="panel-heading">';
+                if ($custom_header != false) {
+                    echo $custom_header;
+                } else {
+
+                    // SEARCH BOX & MORE HEADERS
+                    if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
+                        echo "<h6 class=\"panel-title\">";
+                        if ($singular && $plural && $options['count']) {
+                            if ($display_count > 1)
+                                echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
+                            elseif ($display_count == 1)
+                                echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
+                        } else {
+                            echo '&nbsp;';
+                        }
+                        if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0) {
+                            $lo_save_id = isset($options['LO_save_id']) ? "&LO_save_id=" . $options['LO_save_id'] : "";
+                            echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true" . $lo_save_id . " class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
+                        }
+
+                        echo '</h6>';
+                        $colspan = 1;
+                        if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
+                            $_REQUEST['portal_search'] = 'true';
+                            $tmp_REQUEST = $_REQUEST;
+                            unset($tmp_REQUEST['LO_search']);
+                            unset($tmp_REQUEST['page']);
+                            echo "<div class=\"heading-elements\">";
+                            echo '<div class="form-group">';
+                            echo "<INPUT type=hidden id=hidden_field >";
+                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                            echo '</div>'; //.input-group
+                            echo '</div>'; //.form-group
+                            echo "</div>"; //.heading-elements
+                            $colspan++;
+                        }
+                        echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+                    } else {
+                        echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+                    }
+                }
+                // END SEARCH BOX ----
+                echo '</div>'; //.panel-heading
+            } // $headerVisibility
+            // SHADOW
+            if (!isset($_REQUEST['_openSIS_PDF'])) {
+                echo '<div id="pagerNavPosition" class="clearfix"></div>';
+                //echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+            }
+
+            echo '<div class="panel-body">';
+            echo '<div class="table-responsive">';
+            echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
+            //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
+            echo '<THEAD>';
+            //if(!isset($_REQUEST['_openSIS_PDF']))
+            echo '<TR class="bg-grey-200">';
+
+            $i = 1;
+            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
+                //THIS LINE IS FOR COLUMN HEADING
+                echo "<th><DIV id=LOx$i style='position: relative;'></DIV></th>";
+                $i++;
+            }
+
+            if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) {
+                foreach ($column_names as $key => $value) {
+                    if ($_REQUEST['LO_sort'] == $key)
+                        $direction = -1 * $_REQUEST['LO_direction'];
+                    else
+                        $direction = 1;
+                    //THIS LINE IS FOR COLUMN HEADING
+                    echo "<th " . (($i == 1) ? ' data-toggle="true"' : ' data-hide="phone"') . "><DIV id=LOx$i style='position: relative;'></DIV>";
+                    echo "<A class='text-grey-800'";
+                    if ($options['sort']) {
+                        if ($ForWindow == 'ForWindow') {
+                            echo "HREF=#";
+                        } else {
+                            echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
+                        }
+                    }
+                    echo " class=column_heading><b>$value</b></A>";
+                    if ($i == 1)
+                        echo "<DIV id=LOy0 style='position: relative;'></DIV>";
+                    echo "</th>";
+                    $i++;
+                }
+
+                echo "</TR>";
+            }
+
+            $color = '';
+
+            //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
+            echo '</THEAD><TBODY>';
+
+
+            // mab - enable add link as first or last
+            if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
+
+                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
+                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
+                elseif ($link['add']['html'] && $cols) {
+                    echo "<TR $color>";
+                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
+                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
+                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
+                        echo "<TD align=left>" . button('add') . "</TD>";
+
+                    foreach ($column_names as $key => $value) {
+                        echo "<TD align=left >" . $link['add']['html'][$key] . "</TD>";
+                    }
+                    echo "</TR>";
+                    $count++;
+                }
+            }
+
+            
+            for ($i = $start; $i <= $stop; $i++) {
+                $item = $result[$i];
+                if (isset($_REQUEST['_openSIS_PDF']) && $options['print'] && count($item)) {
+                    foreach ($item as $key => $value) {
+                        $value = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $value);
+                        $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
+
+                        if (strpos($value, 'LO_field') === false)
+                            $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
+                        else
+                            $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
+                    }
+                }
+
+                if (is_array($item) && $item['row_color'])
+                    $color = $item['row_color'];
+                elseif ($color == '')
+                    $color = $side_color;
+                else
+                    $color = '';
+
+                if (isset($_REQUEST['_openSIS_PDF']) && $count % $repeat_headers == 0) {
+                    if ($count != 0) {
+                        echo '</TABLE><TABLE class=\"table table-bordered\">';
+                        echo '<!-- NEW PAGE -->';
+                    }
+                    echo "<TR>";
+                    if ($remove && !isset($_REQUEST['_openSIS_PDF']))
+                        echo "<TD></TD>";
+
+                    if ($cols) {
+                        foreach ($column_names as $key => $value) {
+                            echo "<TD >" . str_replace(' ', '&nbsp;', $value) . "</TD>";
+                        }
+                    }
+                    echo "</TR>";
+                }
+                if ($count == 0)
+                    $count = $br;
+
+                echo "<TR  class=\"$color\">";
+                $count++;
+                if ($remove && !isset($_REQUEST['_openSIS_PDF'])) {
+                    $button_title = $link['remove']['title'];
+
+                    $button_link = $link['remove']['link'];
+                    if (count($link['remove']['variables'])) {
+                        foreach ($link['remove']['variables'] as $var => $val)
+                            $button_link .= "&$var=" . ($item[$val]);
+                    }
+
+                    echo "<TD>" . button('remove', $button_title, $button_link) . "</TD>";
+                }
+
+                if ($cols) {
+                    foreach ($column_names as $key => $value) {
+                        if ($link[$key] && !isset($_REQUEST['_openSIS_PDF'])) {
+                            echo "<TD>";
+                            if ($key == 'FULL_NAME')
+                                echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
+                            if ($link[$key]['js'] === true) {
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
+                                if (count($link[$key]['variables'])) {
+                                    foreach ($link[$key]['variables'] as $var => $val)
+                                        echo "&$var=" . urlencode($item[$val]);
+                                }
+                                echo "\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'";
+                                if ($link[$key]['extra'])
+                                    echo ' ' . $link[$key]['extra'];
+                                echo ">";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
+                                if (count($link[$key]['variables'])) {
+                                    foreach ($link[$key]['variables'] as $var => $val)
+                                        echo "&$var=" . urlencode($item[$val]);
+                                }
+                                if ($link[$key]['extra'])
+                                    echo ' ' . $link[$key]['extra'];
+                                echo " onclick='grabA(this); return false;'>";
+                            }
+                            if ($color == Preferences('HIGHLIGHT'))
+                                echo '';
+                            else
+                                echo '<b>';
+                            echo $item[$key];
+                            echo '</b>';
+                            if (!$item[$key])
+                                echo '***';
+                            echo "</A>";
+                            if ($key == 'FULL_NAME')
+                                echo '</DIV>';
+                            echo "</TD>";
+                        } else {
+                            echo "<TD $color >";
+                            if ($key == 'FULL_NAME')
+                                echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
+                            if ($color == Preferences('HIGHLIGHT'))
+                                echo '';
+                            echo $item[$key];
+                            if (!$item[$key])
+                                echo '&nbsp;';
+                            if ($key == 'FULL_NAME')
+                                echo '<DIV>';
+                            echo "</TD>";
+                        }
+                    }
+                }
+                echo "</TR>";
+            }
+
+            if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
+
+                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
+                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
+                elseif ($link['add']['html'] && $cols) {
+                    if ($count % 2)
+                        $color = '';
+                    else
+                        $color = $side_color;
+
+                    echo "<TR $color>";
+                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
+                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
+                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
+                        echo "<TD align=left>" . button('add') . "</TD>";
+
+                    foreach ($column_names as $key => $value) {
+                        echo "<TD align=left  valign=top>" . $link['add']['html'][$key] . "</TD>";
+                    }
+                    echo "</TR>";
+                }
+            }
+            if ($result_count != 0) {
+                //if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+                // SHADOW
+                if (!isset($_REQUEST['_openSIS_PDF'])) {
+                    //echo '</TD ></TR></TABLE>';
+
+                    $number_rec = 50;
+                    if ($result_count > $number_rec) {
+                        echo "<script language='javascript' type='text/javascript'>\n";
+                        echo "var table = $('#results').DataTable({"
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
+                            search: '<span>Filter:</span> _INPUT_',
+                            lengthMenu: '<span>Show:</span> _MENU_',
+                            paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+                        },
+                        drawCallback: function () {
+                            if(document.getElementById('hidden_checkboxes')){
+                                $('#hidden_checkboxes > input').each(function() {
+                                    let checkboxId = $(this).data('checkbox-hidden-id')
+                                    window.$('[value= '+checkboxId + ']').each(function() {
+                                        $(this).attr('checked', true)
+                                    })
+                                    window.$('[id= '+checkboxId + ']').each(function() {
+                                        $(this).attr('checked', true)
+                                    })
+                                })
+                            }
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+                        },
+                        preDrawCallback: function() {
+                            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+                        },
+                        columnDefs: [
+                            {
+                                orderable: false,
+                                targets: 0
+                            }
+                        ],
+                        'iDisplayLength': " . $number_rec . ""
+                            . "});";
+                        echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
+                                var elCheckbox = oArgs.target;
+                                var newValue = elCheckbox.checked;
+                                var record = this.getRecord(elCheckbox);
+                                var column = this.getColumn(elCheckbox);
+                                record.setData(column.key,newValue);
+                                }); ";
+                        // echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
+                        echo "$('.dataTables_length select').select2({
+                            minimumResultsForSearch: Infinity,
+                            width: 'auto'
+                        });";
+                        echo "</script>\n";
+                    }
+                }
+
+                if ($options['center'])
+                    echo '';
+            }
+
+            echo '</TBODY>';
+            echo "</TABLE>";
+            echo '</div>'; //.table-responsive
+            echo '</div>'; //.panel-body
+            // END PRINT THE LIST ---
+        }
+        if ($result_count == 0) {
+            // mab - problem with table closing if not opened above - do same conditional?
+            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0))))
+                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
+                    echo '<hr class="no-margin"/><table class="table"><tr><TD align=left>' . button('add', $link['add']['title'], $link['add']['link']) . '</td></tr></table>';
+                elseif (($link['add']['html'] || $link['add']['span']) && count($column_names) && !isset($_REQUEST['_openSIS_PDF'])) {
+                    $color = $side_color;
+
+                    if ($options['center'])
+
+                        // WIDTH=100%
+                        // SHADOW
+                        echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+                    if ($link['add']['html']) {
+                        /* Here also change the colour for left corner */
+                        echo "<TABLE class=\"table table-bordered table-striped\"><TR><TD></TD>";
+                        foreach ($column_names as $key => $value) {
+                            //Here to change the ListOutput Header Colour
+                            echo "<TD><A><b>" . $value . "</b></A></TD>";
+                        }
+                        echo "</TR>";
+
+                        echo "<TR>";
+
+                        if ($link['add']['html']['remove'])
+                            echo "<TD >" . $link['add']['html']['remove'] . "</TD>";
+                        else
+                            echo "<TD>" . button('add') . "</TD>";
+
+                        foreach ($column_names as $key => $value) {
+                            echo "<TD >" . $link['add']['html'][$key] . "</TD>";
+                        }
+                        echo "</TR>";
+                        echo "</TABLE>";
+                    } elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
+                        echo "<TABLE><TR><TD align=center>" . button('add') . $link['add']['span'] . "</TD></TR></TABLE>";
+
+                    // SHADOW
+
+                    echo "</TD></TR></TABLE>";
+                    if ($options['center'])
+                        echo '</CENTER>';
+                }
+        }
+        if ($result_count != 0) {
+
+
+            if ($options['yscroll']) {
+                echo '<div id="LOy_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
+                echo '<TABLE cellpadding=6 id=LOy_table>';
+                $i = 1;
+
+                if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
+                    $color = $side_color;
+                    foreach ($result as $item) {
+                        echo "<TR><TD $color  id=LO_row$i>";
+                        if ($color == Preferences('HIGHLIGHT'))
+                            echo '';
+                        echo $item['FULL_NAME'];
+                        if (!$item['FULL_NAME'])
+                            echo '&nbsp;';
+                        if ($color == Preferences('HIGHLIGHT'))
+                            echo '';
+                        echo "</TD></TR>";
+                        $i++;
+
+                        if ($item['row_color'])
+                            $color = $item['row_color'];
+                        elseif ($color == '')
+                            $color = $side_color;
+                        else
+                            $color = '';
+                    }
+                }
+                echo '</TABLE>';
+                echo '</div>';
+            }
+
+            echo '<div id="LOx_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
+            echo '<TABLE cellpadding=6 id=LOx_table><TR>';
+            $i = 1;
+            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
+                echo "<TD id=LO_col$i></TD>";
+                $i++;
+            }
+
+            if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
+                foreach ($column_names as $key => $value) {
+                    echo '<TD id=LO_col' . $i . '><A class=column_heading><b>' . str_replace('controller', '', $value) . '</b></A></TD>';
+                    $i++;
+                }
+            }
+            echo '</TR></TABLE>';
+            echo '</div>';
+        }
+    }
+}
+
+function ListOutputWithStudentInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true, $selectedStudentId = '') {
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
+
+    if($selectedStudentId == '') $selectedStudentId = UserStudentID();
+    $studataquery = 'select 
+    s.first_name
+    , s.last_name
+    , s.middle_name
+    , s.birthdate
+    , sg.short_name as grade_short
+    from students s
+    inner join student_enrollment e on e.student_id=s.student_id and (e.start_date <= e.end_date or e.end_date is null) and e.syear = ' . UserSyear() . '
+    inner join school_gradelevels sg on sg.id=e.grade_id
+    inner join schools sch on sch.id=e.school_id
+    left join student_address a on (a.student_id=s.student_id and a.type=\'Home Address\')
+    where  s.student_id = \''. $selectedStudentId .'\'';
+
+    $stu_ret = DBGet(DBQuery($studataquery . $student_id));
+    $sinfo = $stu_ret[1];
+    if (!isset($options['save']))
+        $options['save'] = true;
+    if (!isset($options['print']))
+        $options['print'] = true;
+    if (!isset($options['search']))
+        $options['search'] = true;
+    if (!isset($options['center']))
+        $options['center'] = true;
+    if (!isset($options['count']))
+        $options['count'] = true;
+    if (!isset($options['sort']))
+        $options['sort'] = true;
+    if (!$link)
+        $link = array();
+
+    if (isset($_REQUEST['page'])) {
+        if ($_REQUEST['list_type'] == $singular) {
+            $Request_page = $_REQUEST['page'];
+        }
+    }
+
+    if (!isset($options['add'])) {
+        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
+            if ($link) {
+                unset($link['add']);
+                unset($link['remove']);
+            }
+        }
+    }
+    // PREPARE LINKS ---
+    $result_count = $display_count = (is_countable($result)) ? count($result): 0;
+    $num_displayed = 100000;
+    $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
+    $tmp_REQUEST = $_REQUEST;
+    unset($tmp_REQUEST['page']);
+    unset($tmp_REQUEST['LO_sort']);
+    unset($tmp_REQUEST['LO_direction']);
+    unset($tmp_REQUEST['LO_search']);
+    unset($tmp_REQUEST['remove_prompt']);
+    unset($tmp_REQUEST['remove_name']);
+    unset($tmp_REQUEST['LO_save']);
+    unset($tmp_REQUEST['PHPSESSID']);
+
+
+    //$PHP_tmp_SELF = PreparePHP_SELF($tmp_REQUEST);
+    $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
+    // END PREPARE LINKS ---
+    // UN-GROUPING
+    $group_count = (is_countable($group)) ? count($group) : 0;
+    if (!is_array($group))
+        $group_count = false;
+
+    $side_color = '';
+
+    if ($group_count && $result_count) {
+        $color = '';
+        $group_result = $result;
+        unset($result);
+        $result[0] = '';
+
+        foreach ($group_result as $item1) {
+            if ($group_count == 1) {
+                if ($color == '')
+                    $color = $side_color;
+                else
+                    $color = '';
+            }
+            $i = 0;
+            foreach ($item1 as $item2) {
+                if ($group_count == 1) {
+                    $i++;
+                    if (is_countable($group[0]) && count($group[0]) && $i != 1) {
+                        foreach ($group[0] as $column)
+                            $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
+                    }
+
+                    if(is_array($item2))
+                    {
+                    	$item2['row_color'] = $color;
+                    }
+
+                    $result[] = $item2;
+                } else {
+                    if ($group_count == 2) {
+                        if ($color == '')
+                            $color = $side_color;
+                        else
+                            $color = '';
+                    }
+
+                    foreach ($item2 as $item3) {
+                        if ($group_count == 2) {
+                            $i++;
+                            if (is_countable($group[0]) && count($group[0]) && $i != 1) {
+                                foreach ($group[0] as $column)
+                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
+                            }
+                            if (is_countable($group[0]) && count($group[1]) && $i != 1) {
+                                foreach ($group[1] as $column)
+                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
+                            }
+                            $item3['row_color'] = $color;
+                            $result[] = $item3;
+                        } else {
+                            if ($group_count == 3) {
+                                if ($color == '')
+                                    $color = $side_color;
+                                else
+                                    $color = '';
+                            }
+
+                            foreach ($item3 as $item4) {
+                                if ($group_count == 3) {
+                                    $i++;
+                                    if (is_countable($group[0]) && count($group[2]) && $i != 1) {
+                                        foreach ($group[2] as $column)
+                                            unset($item4[$column]);
+                                    }
+                                    $item4['row_color'] = $color;
+                                    $result[] = $item4;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $i = 0;
+        }
+        unset($result[0]);
+        $result_count = count($result);
+
+        unset($_REQUEST['LO_sort']);
+    }
+    // END UN-GROUPING
+    $_LIST['output'] = true;
+
+
+    // PRINT HEADINGS, PREPARE PDF, AND SORT THE LIST ---
+    if ($_LIST['output'] != false) {
+        if ($result_count != 0) {
+            $count = 0;
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : '';
+            $cols = count($column_names);
+
+            // HANDLE SEARCHES ---
+            if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') {
+                $_REQUEST['LO_search'] = $search_term = str_replace('\\\"', '"', $_REQUEST['LO_search']);
+                $_REQUEST['LO_search'] = $search_term = par_rep_cb('/[^a-zA-Z0-9 _"]*/', '', strtolower($search_term));
+
+                if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') {
+                    $search_term = par_rep_cb('/"/', '', $search_term);
+                    while ($space_pos = strpos($search_term, ' ')) {
+                        $terms[strtolower(substr($search_term, 0, $space_pos))] = 1;
+                        $search_term = substr($search_term, ($space_pos + 1));
+                    }
+                    $terms[trim($search_term)] = 1;
+                } else {
+                    $search_term = par_rep_cb('/"/', '', $search_term);
+                    $terms[trim($search_term)] = 1;
+                }
+                $t_in = array_keys($terms);
+
+                unset($t_in);
+                unset($terms['of']);
+                unset($terms['the']);
+
+                unset($terms['an']);
+                unset($terms['in']);
+
+                foreach ($result as $key => $value) {
+                    $values[$key] = 0;
+                    foreach ($value as $name => $val) {
+
+                        if (strtolower($_REQUEST['LO_search']) == $val)
+                            $values[$key] += 25;
+                        foreach ($terms as $term => $one) {
+
+                            $search_q_res = DBGet(DBQuery('SELECT COUNT(1) AS RES FROM (SELECT \'c\') as Y WHERE \'' . strtolower(strip_tags(str_replace("'", "''", $val))) . '\' like \'%' . $term . '%\' '));
+                            if ($search_q_res[1]['RES'] != 0)
+                                $values[$key] += 3;
+                        }
+                    }
+                    if ($values[$key] == 0) {
+                        unset($values[$key]);
+                        unset($result[$key]);
+                        $result_count--;
+                        $display_count--;
+                    }
+                }
+                if ($result_count) {
+                    array_multisort($values, SORT_DESC, $result);
+                    // print_r($values);
+                    $result = ReindexResults($result);
+                    $values = ReindexResults($values);
+
+                    $last_value = 1;
+                    $scale = (100 / $values[$last_value]);
+
+                    for ($i = $last_value; $i <= $result_count; $i++)
+                        $result[$i]['RELEVANCE'] = '<!--' . ((int) ($values[$i] * $scale)) . '--><IMG SRC="assets/pixel_grey.gif" width=' . ((int) ($values[$i] * $scale)) . ' height=10>';
+                }
+                $column_names['RELEVANCE'] = "Relevance";
+
+                if (is_array($group) && count($group)) {
+                    $options['count'] == false;
+                    $display_zero = true;
+                }
+            }
+
+            // END SEARCHES ---
+
+            if ($_REQUEST['LO_sort']) {
+                foreach ($result as $sort) {
+                    if (substr($sort[$_REQUEST['LO_sort']], 0, 4) != '<!--')
+                        $sort_array[] = $sort[$_REQUEST['LO_sort']];
+                    else
+                        $sort_array[] = substr($sort[$_REQUEST['LO_sort']], 4, strpos($sort[$_REQUEST['LO_sort']], '-->') - 5);
+                }
+                if ($_REQUEST['LO_direction'] == -1)
+                    $dir = SORT_DESC;
+                else
+                    $dir = SORT_ASC;
+
+                if ($result_count > 1) {
+                    if (is_int($sort_array[1]) || is_double($sort_array[1]))
+                        array_multisort($sort_array, $dir, SORT_NUMERIC, $result);
+                    elseif (VerifyDate_sort($sort_array[1]))
+                        array_multisort(date_to_timestamp($sort_array), $dir, SORT_NUMERIC, $result);
+                    elseif ($_REQUEST['LO_sort'] == 'POINTS')
+                        array_multisort(point_to_number($sort_array), $dir, SORT_NUMERIC, $result);
+                    elseif ($_REQUEST['LO_sort'] == 'PERCENT' || $_REQUEST['LO_sort'] == 'LETTER_GRADE' || $_REQUEST['LO_sort'] == 'GRADE_PERCENT')
+                        array_multisort(percent_to_number($sort_array), $dir, SORT_NUMERIC, $result);
+                    elseif ($_REQUEST['LO_sort'] == 'BAR1')
+                        array_multisort(range_to_number($sort_array), $dir, SORT_NUMERIC, $result);
+                    elseif ($_REQUEST['LO_sort'] == 'BAR2')
+                        array_multisort(rank_to_number($sort_array), $dir, SORT_NUMERIC, $result);
+                    else
+                        array_multisort($sort_array, $dir, $result);
+                    for ($i = $result_count - 1; $i >= 0; $i--)
+                        $result[$i + 1] = $result[$i];
+                    unset($result[0]);
+                }
+            }
+        }
+        // HANDLE SAVING THE LIST ---
+
+        if ($_REQUEST['LO_save'] == '1' && $options['save'] == true && (!isset($_REQUEST['LO_save_id']) || $_REQUEST['LO_save_id'] == $options['LO_save_id'])) {
+            if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
+                $options['save_delimiter'] = 'comma';
+            switch ($options['save_delimiter']) {
+                case 'comma':
+                    $extension = 'csv';
+                    break;
+                case 'xml':
+                    $extension = 'xml';
+                    break;
+                default:
+                    $extension = 'xls';
+                    break;
+            }
+            ob_end_clean();
+            $output = '';
+            if ($options['save_delimiter'] != 'xml') {
+
+                $output .= '<table>';
+                $output .= '<tr><td>'.$sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME'].'</td></tr>';
+                $output .= '<tr><td>Date of Birth:</td><td>'.str_replace('-', '/', ProperDate($sinfo['BIRTHDATE'])).'</td></tr>';
+                $output .= '<tr><td>Student ID:</td><td>'.$selectedStudentId.'</td></tr>';
+                $output .= '<tr><td>Grade Level:</td><td>'.$sinfo['GRADE_SHORT'].'</td></tr>';
+                $output .= '<tr></tr>';
+                $output .= '<tr>';
                 foreach ($column_names as $key => $value)
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
                 $output .= '</tr>';
@@ -1114,6 +2728,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                     echo $where_message = "<strong><br>
 									    $start through $stop</strong>";
                     echo "<div style=text-align:right;margin-top:-14px;padding-right:15px><strong>Go to Page ";
+                    $pages = '';
                     if (ceil($result_count / $num_displayed) <= 10) {
                         for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
                             if ($i != $Request_page) {
@@ -1308,7 +2923,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                     }
                 }
 
-                if ($item['row_color'])
+                if (is_array($item) && $item['row_color'])
                     $color = $item['row_color'];
                 elseif ($color == '')
                     $color = $side_color;
@@ -1355,7 +2970,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -1366,7 +2981,7 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
                                 echo ">";
                             }
                             else {
-                                echo "<A HREF={$link[$key][link]}";
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -1584,7 +3199,14 @@ function ListOutput($result, $column_names, $singular = '', $plural = '', $link 
     }
 }
 
-function ListOutputCustomDT($result, $column_names, $singular = '', $plural = '', $link = false, $EntryCounts = '', $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true) {
+function ListOutputCustomDT($result, $column_names, $singular = '', $plural = '', $link = false, $EntryCounts = '', $group = false, $options = false, $ForWindow = '', $custom_header = false, $headerVisibility = true)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -1615,7 +3237,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
         }
     }
     // PREPARE LINKS ---
-    $result_count = $display_count = count($result);
+    $result_count = $display_count = (is_countable($result)) ? count($result) : 0;
     $num_displayed = 100000;
     $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
     $tmp_REQUEST = $_REQUEST;
@@ -1633,7 +3255,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -1652,11 +3274,11 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                 else
                     $color = '';
             }
-
+            $i = '';
             foreach ($item1 as $item2) {
                 if ($group_count == 1) {
                     $i++;
-                    if (count($group[0]) && $i != 1) {
+                    if (is_countable($group[0]) && count($group[0]) && $i != 1) {
                         foreach ($group[0] as $column)
                             $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
                     }
@@ -1721,7 +3343,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = is_countable($link['remove']['variables']) ? count($link['remove']['variables']): false;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -1824,62 +3446,6 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                 }
             }
         }
-        // HANDLE SAVING THE LIST ---
-
-        // if ($_REQUEST['LO_save'] == '1') {
-        //     if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
-        //         $options['save_delimiter'] = 'comma';
-        //     switch ($options['save_delimiter']) {
-        //         case 'comma':
-        //             $extension = 'csv';
-        //             break;
-        //         case 'xml':
-        //             $extension = 'xml';
-        //             break;
-        //         default:
-        //             $extension = 'xls';
-        //             break;
-        //     }
-        //     ob_end_clean();
-
-        //     if ($options['save_delimiter'] != 'xml') {
-        //         $output .= '<table border=\'1\'><tr>';
-        //         foreach ($column_names as $key => $value)
-        //             $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-        //         $output .= '</tr>';
-        //         foreach ($result as $item) {
-        //             $output .= '<tr>';
-        //             foreach ($column_names as $key => $value) {
-        //                 if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
-        //                     $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
-        //                 $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-        //             }
-        //             $output .= '</tr>';
-        //         }
-        //         $output .= '</table>';
-        //     }
-
-        //     if ($options['save_delimiter'] == 'xml') {
-        //         foreach ($result as $item) {
-        //             foreach ($column_names as $key => $value) {
-        //                 if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-        //                     $item[$key] = str_replace(',', ';', $item[$key]);
-        //                 $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-        //                 $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-        //                 $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-        //             }
-        //             $output .= "\n";
-        //         }
-        //     }
-        //     header("Cache-Control: public");
-        //     header("Pragma: ");
-        //     header("Content-Type: application/$extension");
-        //     header("Content-Disposition: inline; filename=\"" . ProgramTitle() . ".$extension\"\n");
-        //     if ($options['save_eval'])
-        //         eval($options['save_eval']);
-        //     echo $output;
-        //     exit();
-        // }
         // END SAVING THE LIST ---
         if ($options['center'])
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
@@ -1892,11 +3458,11 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">"._no." $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">" . _no . " $plural " . _wereFound . ".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
                 echo '</div>';
             }
         }
@@ -1949,8 +3515,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -1984,12 +3549,12 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                         echo "<h6 class=\"panel-title\">";
                         if ($singular && $plural && $options['count']) {
                             // if ($display_count > 1)
-                            if($_SESSION['AL_RES_COUNT'] > 1)
-                                echo "<span class=\"heading-text\">$_SESSION[AL_RES_COUNT] $plural "._wereFound.".</span>";
+                            if ($_SESSION['AL_RES_COUNT'] > 1)
+                                echo "<span class=\"heading-text\">$_SESSION[AL_RES_COUNT] $plural " . _wereFound . ".</span>";
                             // elseif ($display_count == 1)
-                            elseif($_SESSION['AL_RES_COUNT'] == 1)
-                                echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
-                        }else {
+                            elseif ($_SESSION['AL_RES_COUNT'] == 1)
+                                echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
+                        } else {
                             echo '&nbsp;';
                         }
                         if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0) {
@@ -2007,8 +3572,8 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                             echo "<div class=\"heading-elements\">";
                             echo '<div class="form-group">';
                             echo "<INPUT type=hidden id=hidden_field value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "'>";
-                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                            echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                             echo '</div>'; //.input-group
                             echo '</div>'; //.form-group
                             echo "</div>"; //.heading-elements
@@ -2033,8 +3598,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
 
             $href_req_pages = array('users/TeacherPrograms.php?include=grades/InputFinalGrades.php', 'grades/InputFinalGrades.php', 'users/TeacherPrograms.php?include=grades/Grades.php', 'grades/Grades.php', 'users/TeacherPrograms.php?include=grades/ProgressReports.php', 'grades/ProgressReports.php');
 
-            if(empty($EntryCounts) || $EntryCounts == '')
-            {
+            if (empty($EntryCounts) || $EntryCounts == '') {
                 $EntryCounts = array(
                     "aaIni" =>  1,
                     "aaEnd" =>  50,
@@ -2043,8 +3607,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                     "fxRow" =>  50
                 );
 
-                if($result_count < $EntryCounts['aaEnd'])
-                {
+                if ($result_count < $EntryCounts['aaEnd']) {
                     $EntryCounts['aaEnd'] = $result_count;
                 }
             }
@@ -2052,12 +3615,9 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
             $clean_div = floor($EntryCounts['aaTot'] / $EntryCounts['fxRow']);
             $resultant = ($EntryCounts['aaTot'] % $EntryCounts['fxRow']);
 
-            if($resultant == 0)
-            {
+            if ($resultant == 0) {
                 $pages = $clean_div;
-            }
-            else
-            {
+            } else {
                 $pages = ($clean_div + 1);
             }
 
@@ -2067,77 +3627,61 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
             $paginate_prev_event = '';
 
             $page_requests = '?';
-            foreach($_SESSION['PAGE_REQUESTS'] as $one_req_k => $one_req_v)
-            {
-                if(!is_array($one_req_v))
-                {
-                    $page_requests .= $one_req_k.'='.$one_req_v.'&';
+            foreach ($_SESSION['PAGE_REQUESTS'] as $one_req_k => $one_req_v) {
+                if (!is_array($one_req_v)) {
+                    $page_requests .= $one_req_k . '=' . $one_req_v . '&';
                 }
             }
             $page_requests = rtrim($page_requests, '&');
 
-            if($EntryCounts['aaCur'] == 1)
-            {
+            if ($EntryCounts['aaCur'] == 1) {
                 $paginate_prev_disable = 'disabled';
-            }
-            else
-            {
-                if(in_array($_REQUEST['modname'], $href_req_pages))
-                {
-                    $paginate_prev_event = 'href="Modules.php'.$page_requests.'&loadpage='.($EntryCounts['aaCur'] - 1).'"';
-                }
-                else
-                {
-                    $paginate_prev_event = 'onclick="loadDataTablePagination('.($EntryCounts['aaCur'] - 1).')"';
+            } else {
+                if (in_array($_REQUEST['modname'], $href_req_pages)) {
+                    $paginate_prev_event = 'href="Modules.php' . $page_requests . '&loadpage=' . ($EntryCounts['aaCur'] - 1) . '"';
+                } else {
+                    $paginate_prev_event = 'onclick="loadDataTablePagination(' . ($EntryCounts['aaCur'] - 1) . ')"';
                 }
             }
 
-            if($EntryCounts['aaCur'] == $pages)
-            {
+            if ($EntryCounts['aaCur'] == $pages) {
                 $paginate_next_disable = 'disabled';
-            }
-            else
-            {
-                if(in_array($_REQUEST['modname'], $href_req_pages))
-                {
-                    $paginate_next_event = 'href="Modules.php'.$page_requests.'&loadpage='.($EntryCounts['aaCur'] + 1).'"';
-                }
-                else
-                {
-                    $paginate_next_event = 'onclick="loadDataTablePagination('.($EntryCounts['aaCur'] + 1).')"';
+            } else {
+                if (in_array($_REQUEST['modname'], $href_req_pages)) {
+                    $paginate_next_event = 'href="Modules.php' . $page_requests . '&loadpage=' . ($EntryCounts['aaCur'] + 1) . '"';
+                } else {
+                    $paginate_next_event = 'onclick="loadDataTablePagination(' . ($EntryCounts['aaCur'] + 1) . ')"';
                 }
             }
 
             $format_paginate = '';
 
             $format_paginate .= '<div class="dataTables_paginate paging_simple_numbers">';
-            $format_paginate .= '<a class="paginate_button previous '.$paginate_prev_disable.'" '.$paginate_prev_event.'>&larr;</a>';
+            $format_paginate .= '<a class="paginate_button previous ' . $paginate_prev_disable . '" ' . $paginate_prev_event . '>&larr;</a>';
             $format_paginate .= '<span>';
 
             $format_paginate .= paginationTabMarker($pages, $EntryCounts['aaCur'], $_REQUEST['modname'], $page_requests, $href_req_pages);
 
             $format_paginate .= '</span>';
-            $format_paginate .= '<a class="paginate_button next '.$paginate_next_disable.'" '.$paginate_next_event.'>&rarr;</a>';
+            $format_paginate .= '<a class="paginate_button next ' . $paginate_next_disable . '" ' . $paginate_next_event . '>&rarr;</a>';
             $format_paginate .= '</div>';
 
             if (isset($_REQUEST['LO_search']) && $_REQUEST['LO_search'] != '' && $_REQUEST['LO_search'] != NULL && count($values) < 50) {
                 $paginationVisibility = 'hidden';
             } elseif (isset($_REQUEST['LO_search']) && ($_REQUEST['LO_search'] == '' || $_REQUEST['LO_search'] != NULL) && (count($values) != 0 && count($values) < 50)) {
                 $paginationVisibility = 'hidden';
-            } 
-            elseif(!isset($_REQUEST['LO_search']) && $_SESSION['AL_RES_COUNT'] < 50) {
+            } elseif (!isset($_REQUEST['LO_search']) && $_SESSION['AL_RES_COUNT'] < 50) {
                 $paginationVisibility = 'hidden';
-            } 
-            else {
+            } else {
                 $paginationVisibility = '';
             }
 
             ##### PREPARE CUSTOM PAGINATION - ENDS #####
-            
+
             echo '<div class="panel-body">';
 
             echo '<div class="row ' . $paginationVisibility . '"><div class="col-md-6"><p class="m-0 p-t-10">' . _showing . ' ' . $EntryCounts['aaIni'] . ' ' . strtolower(_to) . ' ' . $EntryCounts['aaEnd'] . ' ' . _of . ' ' . $EntryCounts['aaTot'] . ' ' . _entries . '</p></div><div class="col-md-6"><div class="pull-right">' . $format_paginate . '</div></div></div>';
-            
+
             echo '<div class="table-responsive opensis-dataTable">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
@@ -2268,7 +3812,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -2277,9 +3821,8 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -2300,8 +3843,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -2419,8 +3961,8 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -2507,7 +4049,14 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
     }
 }
 
-function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false) {
+function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -2556,7 +4105,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = is_countable($group) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -2644,7 +4193,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -2694,7 +4243,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                 }
                 if ($result_count) {
                     array_multisort($values, SORT_DESC, $result);
-//                    print_r($values);
+                    //                    print_r($values);
                     $result = ReindexResults($result);
                     $values = ReindexResults($values);
 
@@ -2819,11 +4368,11 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural " . _wereFound . ".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
                 echo '</div>';
             }
         }
@@ -2876,8 +4425,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -2910,9 +4458,9 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                     echo "<h6 class=\"panel-title\">";
                     if ($singular && $plural && $options['count']) {
                         if ($display_count > 1)
-                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                            echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                         elseif ($display_count == 1)
-                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                            echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                     }
                     if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                         echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -2927,8 +4475,8 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                         echo "<div class=\"heading-elements\">";
                         echo '<div class="form-group">';
                         echo "<INPUT type=hidden id=hidden_field >";
-                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                         echo '</div>'; //.input-group
                         echo '</div>'; //.form-group
                         echo "</div>"; //.heading-elements
@@ -3077,7 +4625,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -3086,9 +4634,8 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -3109,8 +4656,7 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -3192,8 +4738,8 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -3280,9 +4826,30 @@ function ListOutputPeriod($result, $column_names, $singular = '', $plural = '', 
     }
 }
 
-function ListOutputSchedule($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
-//    pritn_r($result);
+function ListOutputSchedule($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
+    if($selectedStudentId == '') $selectedStudentId = UserStudentID();
+    $studataquery = 'select 
+    s.first_name
+    , s.last_name
+    , s.middle_name
+    , s.birthdate
+    , sg.short_name as grade_short
+    from students s
+    inner join student_enrollment e on e.student_id=s.student_id and (e.start_date <= e.end_date or e.end_date is null) and e.syear = ' . UserSyear() . '
+    inner join school_gradelevels sg on sg.id=e.grade_id
+    inner join schools sch on sch.id=e.school_id
+    left join student_address a on (a.student_id=s.student_id and a.type=\'Home Address\')
+    where  s.student_id = \''. $selectedStudentId .'\'';
 
+    $stu_ret = DBGet(DBQuery($studataquery . $student_id));
+    $sinfo = $stu_ret[1];
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -3333,7 +4900,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -3424,7 +4991,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : '';
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -3553,7 +5120,15 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     $output .= str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
                 $output .= "\n";
             }
-            $output = '<table><tr><td><b>Course</b></td><td><b>Period - Teacher</b></td><td><b>Room</b></td><td><b>Term</b></td><td><b>Enrolled</b></td><td><b>Dropped</b></td></tr>';
+
+            $output = '<table>';
+            $output .= '<tr><td>'.$sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME'].'</td></tr>';
+            $output .= '<tr><td>Date of Birth:</td><td>'.str_replace('-', '/', ProperDate($sinfo['BIRTHDATE'])).'</td></tr>';
+            $output .= '<tr><td>Student ID:</td><td>'.$selectedStudentId.'</td></tr>';
+            $output .= '<tr><td>Grade Level:</td><td>'.$sinfo['GRADE_SHORT'].'</td></tr>';
+            $output .= '<tr></tr>';
+            $output .= '<tr>';
+            $output .= '<tr><td><b>Course</b></td><td><b>Period - Teacher</b></td><td><b>Room</b></td><td><b>Term</b></td><td><b>Enrolled</b></td><td><b>Dropped</b></td></tr>';
 
 
             foreach ($result as $item) {
@@ -3580,9 +5155,9 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -3633,8 +5208,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -3664,9 +5238,9 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                 if ($singular && $plural && $options['count']) {
 
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -3682,7 +5256,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -3784,7 +5358,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                     }
                 }
 
-//				
+                //				
                 if ($item['row_color'])
                     $color = $item['row_color'];
                 elseif ($color == '')
@@ -3838,7 +5412,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -3847,9 +5421,8 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -3870,8 +5443,7 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -3972,8 +5544,8 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -4061,7 +5633,14 @@ function ListOutputSchedule($result, $column_names, $singular = '', $plural = ''
     }
 }
 
-function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -4105,7 +5684,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -4196,7 +5775,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -4317,17 +5896,6 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                 $output .= '</table>';
             }
 
-//            foreach ($result as $item) {
-//                foreach ($column_names as $key => $value) {
-//                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-//                        $item[$key] = str_replace(',', ';', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-//                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-//                }
-//                $output .= "\n";
-//            }
-
             header("Cache-Control: public");
             header("Pragma: ");
             header("Content-Type: application/$extension");
@@ -4348,9 +5916,9 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
 
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
@@ -4376,8 +5944,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -4397,8 +5964,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -4427,15 +5993,15 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                     if ($where_message)
                         echo $where_message;
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white legitRipple\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true" . " ><i class=\"icon-file-excel\"></i></a>";
-                    // echo " &nbsp; <A HREF=" . encode_url(str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true") . " ><i class=\"icon-file-excel\"></i></a>";
+                // echo " &nbsp; <A HREF=" . encode_url(str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true") . " ><i class=\"icon-file-excel\"></i></a>";
 
                 echo '</h6>';
                 $colspan = 1;
@@ -4446,7 +6012,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                     echo "<div class=\"heading-elements\">";
                     echo '<div class="form-group">';
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -4458,13 +6024,13 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
             // END SEARCH BOX ----
             echo '</div>'; //.panel-heading
             // SHADOW
-//            if (!isset($_REQUEST['_openSIS_PDF']))
-//                echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
+            //            if (!isset($_REQUEST['_openSIS_PDF']))
+            //                echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
             //echo "<TABLE class=\"table table-bordered table-striped\" align=center>";
-//            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                echo '<THEAD>';
-//            if (!isset($_REQUEST['_openSIS_PDF']))
-//                echo '<TR>';
+            //            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+            //                echo '<THEAD>';
+            //            if (!isset($_REQUEST['_openSIS_PDF']))
+            //                echo '<TR>';
 
             $i = 1;
 
@@ -4472,8 +6038,8 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
             $color = '';
 
-//            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                echo '</THEAD><TBODY>';
+            //            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
+            //                echo '</THEAD><TBODY>';
             // mab - enable add link as first or last
             if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
 
@@ -4526,8 +6092,8 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         echo '<div style="page-break-after: always;"></div><!-- NEW PAGE -->';
                     }
                     //echo "<TR>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD></TD>";
+                    //                    if ($remove && !isset($_REQUEST['_openSIS_PDF']))
+                    //                        echo "<TD></TD>";
 
                     if ($cols) {
                         foreach ($column_names as $key => $value) {
@@ -4571,7 +6137,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -4580,9 +6146,8 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -4603,9 +6168,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             //echo "</TD>";
-                        }
-
-                        else {
+                        } else {
 
                             if ($i < 3) {
                                 //Here to change the ListOutput Header Colour
@@ -4660,7 +6223,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
 
             if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
                 echo '<div class="well">';
-                echo '<h4 class="text-primary m-t-0"><i class="icon-plus3 "></i> '._addNewCertification.'</h4>';
+                echo '<h4 class="text-primary m-t-0"><i class="icon-plus3 "></i> ' . _addNewCertification . '</h4>';
 
                 if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
                     echo button('add', $link['add']['title'], $link['add']['link']);
@@ -4680,10 +6243,10 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                     $i = 0;
                     $j = 0;
                     //echo "<TABLE cellpadding=6 cellspacing=1 width=100% ><TR>";
-//                    if ($link['add']['html']['remove'])
-//                        echo '<TD>' . $link['add']['html']['remove'] . '</TD>';
-//                    else
-//                        echo '<TD>' . button('add') . '</TD>';
+                    //                    if ($link['add']['html']['remove'])
+                    //                        echo '<TD>' . $link['add']['html']['remove'] . '</TD>';
+                    //                    else
+                    //                        echo '<TD>' . button('add') . '</TD>';
 
                     echo '<div class="row">';
                     echo '<div class="col-md-6">';
@@ -4702,15 +6265,15 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                             echo '</div></div><div class="row"><div class="col-md-6">';
                             $i = 0;
                         }
-//                        } else {
-//                            echo '<div class="form-group">';
-//                            echo '<label class="control-label col-md-4 text-right">' . $value . '</label>';
-//                            echo '<div class="col-md-8">' . $link['add']['html'][$key] . '</div>';
-//                            echo '</div>';
+                        //                        } else {
+                        //                            echo '<div class="form-group">';
+                        //                            echo '<label class="control-label col-md-4 text-right">' . $value . '</label>';
+                        //                            echo '<div class="col-md-8">' . $link['add']['html'][$key] . '</div>';
+                        //                            echo '</div>';
                         $j++;
                         if ($j > 5)
                             break;
-//                        }
+                        //                        }
                     }
                     echo '</div>';
                     echo '</div>';
@@ -4732,14 +6295,6 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                 echo '</div>';
             }
             if ($result_count != 0) {
-//                if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                    echo '</TBODY>';
-//                echo "</TABLE>";
-                // SHADOW
-//                if (!isset($_REQUEST['_openSIS_PDF']))
-//                    echo '</TD ></TR></TABLE>';
-//                echo "</TD ></TR>";
-//                echo "</TABLE>";
 
                 if ($options['center'])
                     echo '';
@@ -4768,7 +6323,7 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
                         if ($link['add']['html']['remove']) {
                             echo '<div><div class="pull-right">' . $link['add']['html']['remove'] . '</div><h4></h4></div>';
                         } else {
-                            echo '<div><h4 class="text-primary m-t-0">' . button('add') . ' '._addNewCertification.'</h4></div>';
+                            echo '<div><h4 class="text-primary m-t-0">' . button('add') . ' ' . _addNewCertification . '</h4></div>';
                         }
 
 
@@ -4870,7 +6425,14 @@ function ListOutputStaffCert($result, $column_names, $singular = '', $plural = '
     }
 }
 
-function ListOutputMod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputMod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -4915,7 +6477,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -5004,7 +6566,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -5153,9 +6715,9 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -5179,8 +6741,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -5199,8 +6760,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                     echo $pages;
                     echo '</TD></TR></TABLE>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -5229,7 +6789,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
 
-                    $colspan++;
+                    (isset($colspan)) ? $colspan++ : $colspan = 0;
                 }
                 echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
             } else
@@ -5358,7 +6918,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -5367,9 +6927,8 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -5390,8 +6949,7 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -5545,7 +7103,14 @@ function ListOutputMod($result, $column_names, $singular = '', $plural = '', $li
     }
 }
 
-function ListOutputPrint_Report($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputPrint_Report($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -5589,7 +7154,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -5679,7 +7244,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -5712,7 +7277,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -5821,7 +7386,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
         }
         // END SAVING THE LIST ---
         if ($options['center'])
-        #echo '<CENTER>';
+            #echo '<CENTER>';
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
 
                 if (isset($_REQUEST['_openSIS_PDF']))
@@ -5830,9 +7395,9 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -5856,8 +7421,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -5877,8 +7441,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -5887,7 +7450,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                 } else
                     $repeat_headers = 26;
                 if ($options['print']) {
-                    $html = explode('', strtolower(ob_get_contents()));
+                    $html = explode(' ', strtolower(ob_get_contents()));
                     $html = $html[count($html) - 1];
                     echo '</TD></TR></TABLE>';
                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
@@ -5914,7 +7477,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -6016,7 +7579,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _poweredByOpenSis . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -6052,7 +7615,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -6061,9 +7624,8 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -6084,8 +7646,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($color == Preferences('HIGHLIGHT'))
                                 echo '';
@@ -6239,7 +7800,14 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
     }
 }
 
-function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -6284,12 +7852,9 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
-
-
-
     $side_color = 'bgcolor="#f5f5f5"';
 
     if ($group_count && $result_count) {
@@ -6374,7 +7939,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -6407,7 +7972,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -6515,7 +8080,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
         }
         // END SAVING THE LIST ---
         if ($options['center'])
-        #echo '<CENTER>';
+            #echo '<CENTER>';
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
 
                 if (isset($_REQUEST['_openSIS_PDF']))
@@ -6524,9 +8089,9 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -6550,8 +8115,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -6571,8 +8135,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -6581,7 +8144,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                 } else
                     $repeat_headers = 26;
                 if ($options['print']) {
-                    $html = explode('', strtolower(ob_get_contents()));
+                    $html = explode(' ', strtolower(ob_get_contents()));
                     $html = $html[count($html) - 1];
                     echo '</TD></TR></TABLE>';
                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
@@ -6608,7 +8171,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -6714,11 +8277,11 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentProgressReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentProgressReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentProgressReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentProgressReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentReportCard."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentReportCard."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentReportCard . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentReportCard . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._addDropReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._addDropReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _addDropReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _addDropReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -6754,7 +8317,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -6763,9 +8326,8 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -6786,8 +8348,7 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -6931,7 +8492,14 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
     }
 }
 
-function ListOutputCustom($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputCustom($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -6976,7 +8544,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -7066,7 +8634,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -7099,7 +8667,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -7174,7 +8742,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
             if ($options['save_delimiter'] != 'xml') {
                 $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
-                //$output .= '<td>' . str_replace('&nbsp;', ' ', eregi_replace('<BR>', ' ', ereg_replace('<!--.*-->', '', $value))) . '</td>';
+                    //$output .= '<td>' . str_replace('&nbsp;', ' ', eregi_replace('<BR>', ' ', ereg_replace('<!--.*-->', '', $value))) . '</td>';
                     $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
                 $output .= '</tr>';
                 foreach ($result as $item) {
@@ -7219,9 +8787,9 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -7245,8 +8813,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -7266,8 +8833,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -7276,7 +8842,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                 } else
                     $repeat_headers = 22;
                 if ($options['print']) {
-                    $html = explode('', strtolower(ob_get_contents()));
+                    $html = explode(' ', strtolower(ob_get_contents()));
                     $html = $html[count($html) - 1];
                     echo '</TD></TR></TABLE>';
                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
@@ -7303,7 +8869,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -7391,10 +8957,10 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                         $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
 
                         if (strpos($value, 'LO_field') === false)
-                        //$item[$key] = str_replace(' ', '&nbsp;', ereg_replace("<div onclick='[^']+'>", '', $value));
+                            //$item[$key] = str_replace(' ', '&nbsp;', ereg_replace("<div onclick='[^']+'>", '', $value));
                             $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
                         else
-                        //$item[$key] = ereg_replace("<div onclick='[^']+'>", '', $value);
+                            //$item[$key] = ereg_replace("<div onclick='[^']+'>", '', $value);
                             $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
                     }
                 }
@@ -7448,7 +9014,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -7457,9 +9023,8 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -7480,8 +9045,7 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -7626,7 +9190,14 @@ function ListOutputCustom($result, $column_names, $singular = '', $plural = '', 
 
 ############# Print Catalog function ##############################
 
-function PrintCatalog($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function PrintCatalog($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -7672,7 +9243,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -7762,7 +9333,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -7795,7 +9366,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -7911,9 +9482,9 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -7937,8 +9508,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
+                    } else {
                         for ($i = 1; $i <= 7; $i++) {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
@@ -7958,8 +9528,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -7968,7 +9537,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                 } else
                     $repeat_headers = 26;
                 if ($options['print']) {
-                    $html = explode('', strtolower(ob_get_contents()));
+                    $html = explode(' ', strtolower(ob_get_contents()));
                     $html = $html[count($html) - 1];
                     echo '</TD></TR></TABLE>';
                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
@@ -7995,7 +9564,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -8097,7 +9666,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentAdvancedReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._studentAdvancedReport."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentAdvancedReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentAdvancedReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -8133,7 +9702,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
 
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
@@ -8143,9 +9712,8 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -8166,8 +9734,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -8310,12 +9877,16 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
         }
     }
 }
+############# Print Catalog function End here ##############################
 
-####################Print Catalog Function ENds Here ###########################################################
-#### ------------------------------- List Output For Missing Attn. ---------------------------------------------- ###
-
-function ListOutput_missing_attn($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
-
+function ListOutput_missing_attn($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -8337,14 +9908,14 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
         }
     }
 
-//    if (!isset($options['add'])) {
-//        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
-//            if ($link) {
-//                unset($link['add']);
-//                unset($link['remove']);
-//            }
-//        }
-//    }
+    //    if (!isset($options['add'])) {
+    //        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
+    //            if ($link) {
+    //                unset($link['add']);
+    //                unset($link['remove']);
+    //            }
+    //        }
+    //    }
     // PREPARE LINKS ---
     $result_count = $display_count = count($result);
     $num_displayed = 10000;
@@ -8365,7 +9936,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -8455,7 +10026,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -8615,11 +10186,11 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural " . _wereFound . ".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
                 echo '</div>';
             }
         }
@@ -8642,7 +10213,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     if (ceil($result_count / $num_displayed) <= 10) {
                         for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
                             if ($i != $Request_page) {
-                                if ($ForWindow == 'ForWindow') {
+                                if (isset($ForWindow) && $ForWindow == 'ForWindow') {
                                     $pages .= "<A HREF=" . str_replace('Modules.php', 'ForWindow.php', $PHP_tmp_SELF) . "&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
                                 } else {
                                     $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
@@ -8672,8 +10243,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -8695,47 +10265,47 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
             }
             // END MISC ---
             // WIDTH = 100%
-//            echo '<div class="panel-heading">';
-//            if ($custom_header != false) {
-//                echo $custom_header;
-//            } else {
-//
-//            // SEARCH BOX & MORE HEADERS
-//            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-//                    echo "<h6 class=\"panel-title\">";
-//                if ($singular && $plural && $options['count']) {
-//                    if ($display_count > 1)
-//                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
-//                    elseif ($display_count == 1)
-//                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
-//                }
-//                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-//                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
-//
-//                echo '</h6>';
-//                $colspan = 1;
-//                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
-//                        $_REQUEST['portal_search'] = 'true';
-//                    $tmp_REQUEST = $_REQUEST;
-//                    unset($tmp_REQUEST['LO_search']);
-//                    unset($tmp_REQUEST['page']);
-//                        echo "<div class=\"heading-elements\">";
-//                    echo '<div class="form-group">';
-//                        echo "<INPUT type=hidden id=hidden_field >";
-//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                        echo '</div>'; //.input-group
-//                    echo '</div>'; //.form-group
-//                        echo "</div>"; //.heading-elements
-//                    $colspan++;
-//                }
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//                } else {
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//                }
-//            }
-//            // END SEARCH BOX ----
-//            echo '</div>'; //.panel-heading
+            //            echo '<div class="panel-heading">';
+            //            if ($custom_header != false) {
+            //                echo $custom_header;
+            //            } else {
+            //
+            //            // SEARCH BOX & MORE HEADERS
+            //            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
+            //                    echo "<h6 class=\"panel-title\">";
+            //                if ($singular && $plural && $options['count']) {
+            //                    if ($display_count > 1)
+            //                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+            //                    elseif ($display_count == 1)
+            //                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+            //                }
+            //                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
+            //                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
+            //
+            //                echo '</h6>';
+            //                $colspan = 1;
+            //                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
+            //                        $_REQUEST['portal_search'] = 'true';
+            //                    $tmp_REQUEST = $_REQUEST;
+            //                    unset($tmp_REQUEST['LO_search']);
+            //                    unset($tmp_REQUEST['page']);
+            //                        echo "<div class=\"heading-elements\">";
+            //                    echo '<div class="form-group">';
+            //                        echo "<INPUT type=hidden id=hidden_field >";
+            //                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+            //                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+            //                        echo '</div>'; //.input-group
+            //                    echo '</div>'; //.form-group
+            //                        echo "</div>"; //.heading-elements
+            //                    $colspan++;
+            //                }
+            //                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+            //                } else {
+            //                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
+            //                }
+            //            }
+            //            // END SEARCH BOX ----
+            //            echo '</div>'; //.panel-heading
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
                 echo '<div id="pagerNavPosition" class="clearfix"></div>';
@@ -8766,7 +10336,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     echo "<th " . (($i == 1) ? ' data-toggle="true"' : ' data-hide="phone"') . "><DIV id=LOx$i style='position: relative;'></DIV>";
                     echo "<A class='text-grey-800'";
                     if ($options['sort']) {
-                        if ($ForWindow == 'ForWindow') {
+                        if (isset($ForWindow) == 'ForWindow') {
                             echo "HREF=#";
                         } else {
                             echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
@@ -8872,7 +10442,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -8881,9 +10451,8 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -8904,8 +10473,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -8965,8 +10533,8 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -8984,7 +10552,7 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
                             }
                         ],
                         'iDisplayLength': " . $number_rec . ""
-                        . "});";
+                            . "});";
                         echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                         echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -9008,8 +10576,8 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -9094,11 +10662,16 @@ function ListOutput_missing_attn($result, $column_names, $singular = '', $plural
     }
 }
 
-#### ------------------------------- List Output For Missing Attn. End ---------------------------------------- ###
-#### ------------------------------- List Output For Missing Attn. in Teacher portal -------------------------- ###
+#### ------------------------------- List Output For Missing Attn. End #####
 
-function ListOutput_missing_attn_teach_port($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
-
+function ListOutput_missing_attn_teach_port($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -9120,14 +10693,14 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
         }
     }
 
-//    if (!isset($options['add'])) {
-//        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
-//            if ($link) {
-//                unset($link['add']);
-//                unset($link['remove']);
-//            }
-//        }
-//    }
+    //    if (!isset($options['add'])) {
+    //        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
+    //            if ($link) {
+    //                unset($link['add']);
+    //                unset($link['remove']);
+    //            }
+    //        }
+    //    }
     // PREPARE LINKS ---
     $result_count = $display_count = count($result);
     $num_displayed = 10000;
@@ -9148,7 +10721,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : '';
     if (!is_array($group))
         $group_count = false;
 
@@ -9238,7 +10811,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -9393,19 +10966,6 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                 if (isset($_REQUEST['_openSIS_PDF']))
                     echo " <TR><TD align=center>";
             }
-
-//        if ($options['count'] || $display_zero) {
-//
-//            if (($result_count == 0 || $display_count == 0) && $plural) {
-//                echo '<div class="panel-body">';
-//                echo "<div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div>";
-//                echo '</div>';
-//            } elseif ($result_count == 0 || $display_count == 0) {
-//                echo '<div class="panel-body">';
-//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
-//                echo '</div>';
-//            }
-//        }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
                 if (!$Request_page)
@@ -9425,7 +10985,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                     if (ceil($result_count / $num_displayed) <= 10) {
                         for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
                             if ($i != $Request_page) {
-                                if ($ForWindow == 'ForWindow') {
+                                if (isset($ForWindow) == 'ForWindow') {
                                     $pages .= "<A HREF=" . str_replace('Modules.php', 'ForWindow.php', $PHP_tmp_SELF) . "&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
                                 } else {
                                     $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
@@ -9455,8 +11015,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -9477,48 +11036,6 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                     echo '</TD></TR></TABLE>';
             }
             // END MISC ---
-            // WIDTH = 100%
-//            echo '<div class="panel-heading">';
-//            if ($custom_header != false) {
-//                echo $custom_header;
-//            } else {
-//
-//            // SEARCH BOX & MORE HEADERS
-//            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-//                    echo "<h6 class=\"panel-title\">";
-//                if ($singular && $plural && $options['count']) {
-//                    if ($display_count > 1)
-//                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
-//                    elseif ($display_count == 1)
-//                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
-//                }
-//                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-//                        echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
-//
-//                echo '</h6>';
-//                $colspan = 1;
-//                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
-//                        $_REQUEST['portal_search'] = 'true';
-//                    $tmp_REQUEST = $_REQUEST;
-//                    unset($tmp_REQUEST['LO_search']);
-//                    unset($tmp_REQUEST['page']);
-//                        echo "<div class=\"heading-elements\">";
-//                    echo '<div class="form-group">';
-//                        echo "<INPUT type=hidden id=hidden_field >";
-//                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                        echo '</div>'; //.input-group
-//                    echo '</div>'; //.form-group
-//                        echo "</div>"; //.heading-elements
-//                    $colspan++;
-//                }
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//                } else {
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//                }
-//            }
-//            // END SEARCH BOX ----
-//            echo '</div>'; //.panel-heading
             // SHADOW
             if (!isset($_REQUEST['_openSIS_PDF'])) {
                 echo '<div id="pagerNavPosition" class="clearfix"></div>';
@@ -9549,7 +11066,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                     echo "<th " . (($i == 1) ? ' data-toggle="true"' : ' data-hide="phone"') . "><DIV id=LOx$i style='position: relative;'></DIV>";
                     echo "<A class='text-grey-800'";
                     if ($options['sort']) {
-                        if ($ForWindow == 'ForWindow') {
+                        if (isset($ForWindow) == 'ForWindow') {
                             echo "HREF=#";
                         } else {
                             echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
@@ -9658,7 +11175,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -9667,9 +11184,8 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -9690,8 +11206,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -9754,8 +11269,8 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                 if ($result_count > $number_rec) {
                     echo "<script language='javascript' type='text/javascript'>\n";
                     echo "var table = $('#results').DataTable({"
-                    . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                    . "language: {
+                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                        . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -9773,7 +11288,7 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
                             }
                         ],
                         'iDisplayLength': " . $number_rec . ""
-                    . "});";
+                        . "});";
                     echo "table.on('page', function () { $('#results thead tr th:first-child input[type=checkbox]').prop('checked',false); $('#results tbody tr td:first-child input[type=checkbox]').prop('checked',false); } );";
                     echo "$('.dataTables_length select').select2({
                             minimumResultsForSearch: Infinity,
@@ -9794,8 +11309,8 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -9882,8 +11397,15 @@ function ListOutput_missing_attn_teach_port($result, $column_names, $singular = 
 
 #### ------------------------ List Output For Missing Attn. in Teacher portal End ------------------------------ ###
 
-function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
 
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -9934,7 +11456,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -10024,7 +11546,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -10057,7 +11579,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -10213,8 +11735,8 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                             if (array_key_exists("bgcolor", $t[$h][$n])) {
                                 $bgcolor = array_shift($t[$h][$n]);
                             }
-                            $t[$h][0][FULL_NAME] = $FULL_NAME;
-                            $t[$h][0][bgcolor] = $bgcolor;
+                            $t[$h][0]['FULL_NAME'] = $FULL_NAME;
+                            $t[$h][0]['bgcolor'] = $bgcolor;
                         }
                     }
                 }
@@ -10234,7 +11756,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                     array_multisort($name_sort, $dir);
 
                     for ($h = 1; $h <= count($t); $h++) {
-                        $t[$h][0][FULL_NAME] = $name_sort[$h - 1];
+                        $t[$h][0]['FULL_NAME'] = $name_sort[$h - 1];
                     }
                 }
                 $result = "";
@@ -10308,9 +11830,9 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -10361,8 +11883,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -10393,9 +11914,9 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                 echo "<TR><TD align=left valign=middle>";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">$display_count $plural "._wereFound.".</span></h6>";
+                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span></h6>";
                     elseif ($display_count == 1)
-                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">1 $singular "._wasFound.".</span></h6>";
+                        echo "<h6 class=\"panel-title\"><span class=\"heading-text\">1 $singular " . _wasFound . ".</span></h6>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo "<A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -10408,7 +11929,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle style="white-space:nowrap;">&nbsp;&nbsp;';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
@@ -10554,7 +12075,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -10563,9 +12084,8 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -10586,8 +12106,7 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -10670,8 +12189,8 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -10755,8 +12274,15 @@ function ListOutputGrade_old($result, $column_names, $singular = '', $plural = '
     }
 }
 
-function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
 
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -10807,7 +12333,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -10897,7 +12423,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -11063,9 +12589,9 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -11116,8 +12642,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -11148,9 +12673,9 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                 echo '<h6 class="panel-title">';
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -11164,7 +12689,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     echo '<div class="heading-elements">';
                     echo '<div class="form-group">';
                     echo '<div class="input-group">';
-                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '') . "' placeholder=\""._search."\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._search." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
+                    echo "<INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '') . "' placeholder=\"" . _search . "\" onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '><span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _search . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-elements
@@ -11313,7 +12838,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -11322,9 +12847,8 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -11345,8 +12869,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -11401,8 +12924,8 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -11421,7 +12944,7 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                         ],
                         aaSorting: [],
                         'iDisplayLength': " . $number_rec . ""
-                        . "});";
+                            . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
                                 var newValue = elCheckbox.checked;
@@ -11437,8 +12960,8 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
                         echo "</script>\n";
                     }
                 }
-//                echo "</TD ></TR>";
-//                echo "</TABLE>";
+                //                echo "</TD ></TR>";
+                //                echo "</TABLE>";
 
                 if ($options['center'])
                     echo '';
@@ -11456,8 +12979,8 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -11541,7 +13064,14 @@ function ListOutputGrade($result, $column_names, $singular = '', $plural = '', $
     }
 }
 
-function ListOutputPrint_Institute_Report($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false) {
+function ListOutputPrint_Institute_Report($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -11586,70 +13116,86 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
 
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
-
-
-
     $side_color = 'bgcolor="#f5f5f5"';
 
-    if ($group_count && $result_count) {
+    if ($group_count && $result_count) 
+    {
         $color = 'style=" background-color:#fff; padding:3px 4px 3px 4px;"';
         $group_result = $result;
         unset($result);
         $result[0] = '';
 
-        foreach ($group_result as $item1) {
-            if ($group_count == 1) {
+        foreach ($group_result as $item1) 
+        {
+            if ($group_count == 1) 
+            {
                 if ($color == 'bgcolor="#f5f5f5"')
                     $color = $side_color;
                 else
                     $color = 'bgcolor="#f5f5f5"';
             }
 
-            foreach ($item1 as $item2) {
-                if ($group_count == 1) {
+            foreach ($item1 as $item2) 
+            {
+                if ($group_count == 1) 
+                {
                     $i++;
-                    if (count($group[0]) && $i != 1) {
+                    if (count($group[0]) && $i != 1) 
+                    {
                         foreach ($group[0] as $column)
                             $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
                     }
                     $item2['row_color'] = $color;
                     $result[] = $item2;
-                } else {
-                    if ($group_count == 2) {
+                } 
+                else 
+                {
+                    if ($group_count == 2) 
+                    {
                         if ($color == 'bgcolor="#ffffff"')
                             $color = $side_color;
                         else
                             $color = 'bgcolor="#ffffff"';
                     }
 
-                    foreach ($item2 as $item3) {
-                        if ($group_count == 2) {
+                    foreach ($item2 as $item3) 
+                    {
+                        if ($group_count == 2) 
+                        {
                             $i++;
-                            if (count($group[0]) && $i != 1) {
+                            if (count($group[0]) && $i != 1) 
+                            {
                                 foreach ($group[0] as $column)
                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
                             }
-                            if (count($group[1]) && $i != 1) {
+                            if (count($group[1]) && $i != 1) 
+                            {
                                 foreach ($group[1] as $column)
                                     $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
                             }
                             $item3['row_color'] = $color;
                             $result[] = $item3;
-                        } else {
-                            if ($group_count == 3) {
+                        } 
+                        else 
+                        {
+                            if ($group_count == 3) 
+                            {
                                 if ($color == 'bgcolor="#ffffff"')
                                     $color = $side_color;
                                 else
                                     $color = 'bgcolor="#ffffff"';
                             }
 
-                            foreach ($item3 as $item4) {
-                                if ($group_count == 3) {
+                            foreach ($item3 as $item4) 
+                            {
+                                if ($group_count == 3) 
+                                {
                                     $i++;
-                                    if (count($group[2]) && $i != 1) {
+                                    if (count($group[2]) && $i != 1) 
+                                    {
                                         foreach ($group[2] as $column)
                                             unset($item4[$column]);
                                     }
@@ -11673,25 +13219,32 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
 
 
     // PRINT HEADINGS, PREPARE PDF, AND SORT THE LIST ---
-    if ($_LIST['output'] != false) {
-        if ($result_count != 0) {
+    if ($_LIST['output'] != false) 
+    {
+        if ($result_count != 0) 
+        {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
-            if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') {
+            if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') 
+            {
                 $_REQUEST['LO_search'] = $search_term = str_replace('\\\"', '"', $_REQUEST['LO_search']);
                 $_REQUEST['LO_search'] = $search_term = par_rep_cb('/[^a-zA-Z0-9 _"]*/', '', strtolower($search_term));
 
-                if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') {
+                if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') 
+                {
                     $search_term = par_rep_cb('/"/', '', $search_term);
-                    while ($space_pos = strpos($search_term, ' ')) {
+                    while ($space_pos = strpos($search_term, ' ')) 
+                    {
                         $terms[strtolower(substr($search_term, 0, $space_pos))] = 1;
                         $search_term = substr($search_term, ($space_pos + 1));
                     }
                     $terms[trim($search_term)] = 1;
-                } else {
+                } 
+                else 
+                {
                     $search_term = par_rep_cb('/"/', '', $search_term);
                     $terms[trim($search_term)] = 1;
                 }
@@ -11702,25 +13255,31 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 unset($terms['an']);
                 unset($terms['in']);
 
-                foreach ($result as $key => $value) {
+                foreach ($result as $key => $value) 
+                {
                     $values[$key] = 0;
-                    foreach ($value as $name => $val) {
+                    foreach ($value as $name => $val) 
+                    {
                         $val = par_rep_cb('/[^a-zA-Z0-9 _]+/', '', strtolower($val));
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
-                        foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                        foreach ($terms as $term => $one) 
+                        {
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
-                    if ($values[$key] == 0) {
+                    if ($values[$key] == 0) 
+                    {
                         unset($values[$key]);
                         unset($result[$key]);
                         $result_count--;
                         $display_count--;
                     }
                 }
-                if ($result_count) {
+
+                if ($result_count) 
+                {
                     array_multisort($values, SORT_DESC, $result);
                     $result = ReindexResults($result);
                     $values = ReindexResults($values);
@@ -11733,7 +13292,8 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 }
                 $column_names['RELEVANCE'] = "Relevance";
 
-                if (is_array($group) && count($group)) {
+                if (is_array($group) && count($group)) 
+                {
                     $options['count'] == false;
                     $display_zero = true;
                 }
@@ -11741,8 +13301,10 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
 
             // END SEARCHES ---
 
-            if ($_REQUEST['LO_sort']) {
-                foreach ($result as $sort) {
+            if ($_REQUEST['LO_sort']) 
+            {
+                foreach ($result as $sort) 
+                {
                     if (substr($sort[$_REQUEST['LO_sort']], 0, 4) != '<!--')
                         $sort_array[] = $sort[$_REQUEST['LO_sort']];
                     else
@@ -11753,7 +13315,8 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 else
                     $dir = SORT_ASC;
 
-                if ($result_count > 1) {
+                if ($result_count > 1) 
+                {
                     if (is_int($sort_array[1]) || is_double($sort_array[1]))
                         array_multisort($sort_array, $dir, SORT_NUMERIC, $result);
                     else
@@ -11766,10 +13329,12 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
         }
         // HANDLE SAVING THE LIST ---
 
-        if ($_REQUEST['LO_save'] == '1') {
+        if ($_REQUEST['LO_save'] == '1') 
+        {
             if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
                 $options['save_delimiter'] = 'comma';
-            switch ($options['save_delimiter']) {
+            switch ($options['save_delimiter']) 
+            {
                 case 'comma':
                     $extension = 'csv';
                     break;
@@ -11781,15 +13346,18 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                     break;
             }
             ob_end_clean();
-            if ($options['save_delimiter'] != 'xml') {
+            if ($options['save_delimiter'] != 'xml') 
+            {
                 $output .= '<table><tr>';
                 foreach ($column_names as $key => $value)
-                // $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                    // $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
                     $output .= '<td>' . $value . '</td>';
                 $output .= '</tr>';
-                foreach ($result as $item) {
+                foreach ($result as $item) 
+                {
                     $output .= '<tr>';
-                    foreach ($column_names as $key => $value) {
+                    foreach ($column_names as $key => $value) 
+                    {
                         // $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
                         $output .= '<td>' . $value . '</td>';
                     }
@@ -11797,8 +13365,10 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 }
                 $output .= '</table>';
             }
-            foreach ($result as $item) {
-                foreach ($column_names as $key => $value) {
+            foreach ($result as $item) 
+            {
+                foreach ($column_names as $key => $value) 
+                {
                     if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
                         $item[$key] = str_replace(',', ';', $item[$key]);
                     $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
@@ -11819,20 +13389,24 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
         }
         // END SAVING THE LIST ---
         if ($options['center'])
-            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
+            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) 
+            {
 
                 if (isset($_REQUEST['_openSIS_PDF']))
                     echo " <TR><TD align=center>";
             }
 
-        if ($options['count'] || $display_zero) {
+        if ($options['count'] || $display_zero) 
+        {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural "._wereFound.".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
+                echo "<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>No $plural " . _wereFound . ".</b></td></tr><tr><td colspan=2 ></td></tr></table></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>'._noneWereFound.'.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
+                echo '<div style=text-align:left><table cellpadding=1 cellspacing=0 ><tr><td ></td><td ><b>' . _noneWereFound . '.</b></td></tr><tr><td colspan=2></td></tr></table></div>';
         }
-        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
-            if (!isset($_REQUEST['_openSIS_PDF'])) {
+        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) 
+        {
+            if (!isset($_REQUEST['_openSIS_PDF'])) 
+            {
                 if (!$_REQUEST['page'])
                     $_REQUEST['page'] = 1;
                 if (!$_REQUEST['LO_direction'])
@@ -11842,20 +13416,25 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 if ($stop > $result_count)
                     $stop = $result_count;
 
-                if ($result_count > $num_displayed) {
+                if ($result_count > $num_displayed) 
+                {
                     $where_message = "<SMALL>Displaying $start through $stop</SMALL>";
                     echo "Go to Page ";
-                    if (ceil($result_count / $num_displayed) <= 10) {
-                        for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
+                    if (ceil($result_count / $num_displayed) <= 10) 
+                    {
+                        for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) 
+                        {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
                             else
                                 $pages .= "$i, ";
                         }
                         $pages = substr($pages, 0, -2) . "<BR>";
-                    }
-                    else {
-                        for ($i = 1; $i <= 7; $i++) {
+                    } 
+                    else 
+                    {
+                        for ($i = 1; $i <= 7; $i++) 
+                        {
                             if ($i != $_REQUEST['page'])
                                 $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
                             else
@@ -11874,25 +13453,29 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                     echo '</TD></TR></TABLE>';
                     echo '<BR>';
                 }
-            }
-            else {
+            } 
+            else 
+            {
                 $start = 1;
                 $stop = $result_count;
-                if ($cols > 8 || $_REQUEST['expanded_view']) {
+                if ($cols > 8 || $_REQUEST['expanded_view']) 
+                {
                     $_SESSION['orientation'] = 'landscape';
                     $repeat_headers = 16;
                 } else
                     $repeat_headers = 100;
                 if ($options['print']) {
-                    $html = explode('', strtolower(ob_get_contents()));
+                    $html = explode(' ', strtolower(ob_get_contents()));
                     $html = $html[count($html) - 1];
                     echo '</TD></TR></TABLE>';
                     $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
-                    if ($br % 2 != 0) {
+                    if ($br % 2 != 0) 
+                    {
                         $br++;
                         echo '<BR>';
                     }
-                } else
+                } 
+                else
                     echo '</TD></TR></TABLE>';
             }
             // END MISC ---
@@ -11900,23 +13483,26 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
             echo '<TABLE width=100% border=0 cellspacing=0 cellpadding=0><TR>';
 
             // SEARCH BOX & MORE HEADERS
-            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
+            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search']))
+            {
                 echo '<TD align=center>';
 
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo '</TD>';
                 $colspan = 1;
-                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
+                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) 
+                {
                     $tmp_REQUEST = $_REQUEST;
                     unset($tmp_REQUEST['LO_search']);
                     unset($tmp_REQUEST['page']);
                     echo '<TD height="50" align=right valign=middle>';
-                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
+                    echo "<INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+this.value; return false;} '>&nbsp;&nbsp;<INPUT type=button class='btn_go' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"LO_search\").value;'></TD>";
                     $colspan++;
                 }
                 echo "</TR>";
                 echo '<TR style="height:0;"><TD width=100% align=center colspan=' . $colspan . '><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV></TD></TR></TABLE>';
-            } else
+            } 
+            else
                 echo '<TD width=100% align=right><DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
             // END SEARCH BOX ----
             echo '</TD></TR><TR><TD>';
@@ -11937,7 +13523,8 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                 $i++;
             }
 
-            if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) {
+            if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) 
+            {
                 foreach ($column_names as $key => $value) {
                     if ($_REQUEST['LO_sort'] == $key)
                         $direction = -1 * $_REQUEST['LO_direction'];
@@ -11990,7 +13577,8 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
             for ($i = $start; $i <= $stop; $i++) {
                 $item = $result[$i];
                 if (isset($_REQUEST['_openSIS_PDF']) && $options['print'] && count($item)) {
-                    foreach ($item as $key => $value) {
+                    foreach ($item as $key => $value) 
+                    {
                         $value = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $value);
                         $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
 
@@ -12019,7 +13607,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _poweredByOpenSis . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -12061,7 +13649,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -12070,9 +13658,8 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -12093,8 +13680,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -12245,7 +13831,14 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
     }
 }
 
-function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -12296,12 +13889,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
-
-
-
     $side_color = '';
 
     if ($group_count && $result_count) {
@@ -12386,7 +13976,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -12419,7 +14009,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                         if (strtolower($_REQUEST['LO_search']) == $val)
                             $values[$key] += 25;
                         foreach ($terms as $term => $one) {
-                            if (ereg($term, $val))
+                            if (preg_match($term, $val))
                                 $values[$key] += 3;
                         }
                     }
@@ -12550,9 +14140,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -12603,8 +14193,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -12634,9 +14223,9 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
@@ -12652,7 +14241,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -12797,7 +14386,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -12806,9 +14395,8 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -12829,8 +14417,7 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -12913,8 +14500,8 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -12999,773 +14586,14 @@ function ListOutputStaffPrint($result, $column_names, $singular = '', $plural = 
     }
 }
 
-//function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
-//    if (!isset($options['save']))
-//        $options['save'] = true;
-//    if (!isset($options['print']))
-//        $options['print'] = true;
-//    if (!isset($options['search']))
-//        $options['search'] = true;
-//    if (!isset($options['center']))
-//        $options['center'] = true;
-//    if (!isset($options['count']))
-//        $options['count'] = true;
-//    if (!isset($options['sort']))
-//        $options['sort'] = true;
-//    if (!$link)
-//        $link = array();
-//
-//    if (isset($_REQUEST['page'])) {
-//        if ($_REQUEST['list_type'] == $singular) {
-//            $Request_page = $_REQUEST['page'];
-//        }
-//    }
-//
-//    if (!isset($options['add'])) {
-//        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
-//            if ($link) {
-//                unset($link['add']);
-//                unset($link['remove']);
-//            }
-//        }
-//    }
-//
-//    // PREPARE LINKS ---
-//    $result_count = $display_count = count($result);
-//    $num_displayed = 100000;
-//    $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
-//
-//    $tmp_REQUEST = $_REQUEST;
-//    unset($tmp_REQUEST['page']);
-//    unset($tmp_REQUEST['LO_sort']);
-//    unset($tmp_REQUEST['LO_direction']);
-//    unset($tmp_REQUEST['LO_search']);
-//    unset($tmp_REQUEST['remove_prompt']);
-//    unset($tmp_REQUEST['remove_name']);
-//    unset($tmp_REQUEST['LO_save']);
-//    unset($tmp_REQUEST['PHPSESSID']);
-//
-//
-//
-//    $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
-//    // END PREPARE LINKS ---
-//    // UN-GROUPING
-//    $group_count = count($group);
-//    if (!is_array($group))
-//        $group_count = false;
-//
-//
-//
-//    $side_color = '';
-//
-//    if ($group_count && $result_count) {
-//        $color = '';
-//        $group_result = $result;
-//        unset($result);
-//        $result[0] = '';
-//
-//        foreach ($group_result as $item1) {
-//            if ($group_count == 1) {
-//                if ($color == '')
-//                    $color = $side_color;
-//                else
-//                    $color = '';
-//            }
-//
-//            foreach ($item1 as $item2) {
-//                if ($group_count == 1) {
-//                    $i++;
-//                    if (count($group[0]) && $i != 1) {
-//                        foreach ($group[0] as $column)
-//                            $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
-//                    }
-//                    $item2['row_color'] = $color;
-//                    $result[] = $item2;
-//                } else {
-//                    if ($group_count == 2) {
-//                        if ($color == '')
-//                            $color = $side_color;
-//                        else
-//                            $color = '';
-//                    }
-//
-//                    foreach ($item2 as $item3) {
-//                        if ($group_count == 2) {
-//                            $i++;
-//                            if (count($group[0]) && $i != 1) {
-//                                foreach ($group[0] as $column)
-//                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
-//                            }
-//                            if (count($group[1]) && $i != 1) {
-//                                foreach ($group[1] as $column)
-//                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
-//                            }
-//                            $item3['row_color'] = $color;
-//                            $result[] = $item3;
-//                        } else {
-//                            if ($group_count == 3) {
-//                                if ($color == '')
-//                                    $color = $side_color;
-//                                else
-//                                    $color = '';
-//                            }
-//
-//                            foreach ($item3 as $item4) {
-//                                if ($group_count == 3) {
-//                                    $i++;
-//                                    if (count($group[2]) && $i != 1) {
-//                                        foreach ($group[2] as $column)
-//                                            unset($item4[$column]);
-//                                    }
-//                                    $item4['row_color'] = $color;
-//                                    $result[] = $item4;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            $i = 0;
-//        }
-//        unset($result[0]);
-//        $result_count = count($result);
-//
-//        unset($_REQUEST['LO_sort']);
-//    }
-//    // END UN-GROUPING
-//    $_LIST['output'] = true;
-//
-//
-//    // PRINT HEADINGS, PREPARE PDF, AND SORT THE LIST ---
-//    if ($_LIST['output'] != false) {
-//        if ($result_count != 0) {
-//            $count = 0;
-//            $remove = count($link['remove']['variables']);
-//            $cols = count($column_names);
-//
-//            // HANDLE SEARCHES ---
-//            if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') {
-//                $_REQUEST['LO_search'] = $search_term = str_replace('\\\"', '"', $_REQUEST['LO_search']);
-//                $_REQUEST['LO_search'] = $search_term = par_rep_cb('/[^a-zA-Z0-9 _"]*/', '', strtolower($search_term));
-//
-//                if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') {
-//                    $search_term = par_rep_cb('/"/', '', $search_term);
-//                    while ($space_pos = strpos($search_term, ' ')) {
-//                        $terms[strtolower(substr($search_term, 0, $space_pos))] = 1;
-//                        $search_term = substr($search_term, ($space_pos + 1));
-//                    }
-//                    $terms[trim($search_term)] = 1;
-//                } else {
-//                    $search_term = par_rep_cb('/"/', '', $search_term);
-//                    $terms[trim($search_term)] = 1;
-//                }
-//
-//                unset($terms['of']);
-//                unset($terms['the']);
-//                unset($terms['a']);
-//                unset($terms['an']);
-//                unset($terms['in']);
-//
-//                foreach ($result as $key => $value) {
-//                    $values[$key] = 0;
-//                    foreach ($value as $name => $val) {
-//                        $val = par_rep_cb('/[^a-zA-Z0-9 _]+/', '', strtolower($val));
-//                        if (strtolower($_REQUEST['LO_search']) == $val)
-//                            $values[$key] += 25;
-//                        foreach ($terms as $term => $one) {
-//                            if (ereg($term, $val))
-//                                $values[$key] += 3;
-//                        }
-//                    }
-//                    if ($values[$key] == 0) {
-//                        unset($values[$key]);
-//                        unset($result[$key]);
-//                        $result_count--;
-//                        $display_count--;
-//                    }
-//                }
-//                if ($result_count) {
-//                    print_r($result_count);
-//                    array_multisort($values, SORT_DESC, $result);
-//                    $result = ReindexResults($result);
-//                    $values = ReindexResults($values);
-//
-//                    $last_value = 1;
-//                    $scale = (100 / $values[$last_value]);
-//
-//                    for ($i = $last_value; $i <= $result_count; $i++)
-//                        $result[$i]['RELEVANCE'] = '<!--' . ((int) ($values[$i] * $scale)) . '--><IMG SRC="assets/pixel_grey.gif" width=' . ((int) ($values[$i] * $scale)) . ' height=10>';
-//                }
-//                $column_names['RELEVANCE'] = "Relevance";
-//
-//                if (is_array($group) && count($group)) {
-//                    $options['count'] == false;
-//                    $display_zero = true;
-//                }
-//            }
-//
-//            // END SEARCHES ---
-//
-//            if ($_REQUEST['LO_sort']) {
-//                foreach ($result as $sort) {
-//                    if (substr($sort[$_REQUEST['LO_sort']], 0, 4) != '<!--')
-//                        $sort_array[] = $sort[$_REQUEST['LO_sort']];
-//                    else
-//                        $sort_array[] = substr($sort[$_REQUEST['LO_sort']], 4, strpos($sort[$_REQUEST['LO_sort']], '-->') - 5);
-//                }
-//                if ($_REQUEST['LO_direction'] == -1)
-//                    $dir = SORT_DESC;
-//                else
-//                    $dir = SORT_ASC;
-//
-//                if ($result_count > 1) {
-//                    if (is_int($sort_array[1]) || is_double($sort_array[1]))
-//                        array_multisort($sort_array, $dir, SORT_NUMERIC, $result);
-//                    elseif (VerifyDate_sort($sort_array[1]))
-//                        array_multisort(date_to_timestamp($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'POINTS')
-//                        array_multisort(point_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'PERCENT' || $_REQUEST['LO_sort'] == 'LETTER_GRADE' || $_REQUEST['LO_sort'] == 'GRADE_PERCENT')
-//                        array_multisort(percent_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'BAR1')
-//                        array_multisort(range_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'BAR2')
-//                        array_multisort(rank_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    else
-//                        array_multisort($sort_array, $dir, $result);
-//                    for ($i = $result_count - 1; $i >= 0; $i--)
-//                        $result[$i + 1] = $result[$i];
-//                    unset($result[0]);
-//                }
-//            }
-//        }
-//        // HANDLE SAVING THE LIST ---
-//
-//        if ($_REQUEST['LO_save'] == '1') {
-//            $output = '';
-//            if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
-//                $options['save_delimiter'] = 'comma';
-//            switch ($options['save_delimiter']) {
-//                case 'comma':
-//                    $extension = 'csv';
-//                    break;
-//                case 'xml':
-//                    $extension = 'xml';
-//                    break;
-//                default:
-//                    $extension = 'xls';
-//                    break;
-//            }
-//            ob_end_clean();
-//
-//            foreach ($column_names as $ci => $cd) {
-//                $column_names_mod[$ci] = strip_tags($cd);
-//            }
-////			if($options['save_delimiter']!='xml')
-////			{
-////				foreach($column_names_mod as $key=>$value)
-////					$output .= str_replace('&nbsp;',' ',eregi_replace('<BR>',' ',ereg_replace('<!--.*-->','',$value))) . ($options['save_delimiter']=='comma'?',':"\t");
-////				$output .= "\n";
-////			}
-//
-//            if ($options['save_delimiter'] != 'xml') {
-//
-//                $output = '<table><tr>';
-//                foreach ($column_names_mod as $key => $value)
-//                    if ($key != 'CHECKBOX')
-//                        $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-//                $output .='</tr>';
-//                foreach ($result as $item) {
-//                    $output .='<tr>';
-//                    foreach ($column_names_mod as $key => $value) {
-//                        if ($key != 'CHECKBOX')
-//                            $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-//                    }
-//                    $output .='</tr>';
-//                }
-//                $output .='</table>';
-//            }
-//
-//            foreach ($result as $item) {
-//                foreach ($column_names_mod as $key => $value) {
-//                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-//                        $item[$key] = str_replace(',', ';', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-//                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-//                }
-//                $output .= "\n";
-//            }
-//
-//            header("Cache-Control: public");
-//            header("Pragma: ");
-//            header("Content-Type: text/plain");
-//            header("Content-Type: application/$extension");
-//            $file_name = ProgramTitle() . '.' . $extension;
-//            header("Content-Disposition: inline; filename=\"$file_name\"\n");
-//            if ($options['save_eval'])
-//                eval($options['save_eval']);
-//            echo $output;
-//            exit();
-//        }
-//        // END SAVING THE LIST ---
-//        if ($options['center'])
-//            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
-//
-//                if (isset($_REQUEST['_openSIS_PDF']))
-//                    echo " <TR><TD align=center>";
-//            }
-//
-//        if ($options['count'] || $display_zero) {
-//            if (($result_count == 0 || $display_count == 0) && $plural)
-//                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
-//            elseif ($result_count == 0 || $display_count == 0)
-//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
-//        }
-//        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
-//            if (!isset($_REQUEST['_openSIS_PDF'])) {
-//                if (!$Request_page)
-//                    $Request_page = 1;
-//                if (!$_REQUEST['LO_direction'])
-//                    $_REQUEST['LO_direction'] = 1;
-//                $start = ($Request_page - 1) * $num_displayed + 1;
-//                $stop = $start + ($num_displayed - 1);
-//                if ($stop > $result_count)
-//                    $stop = $result_count;
-//
-//                if ($result_count > $num_displayed) {
-//
-//                    echo $where_message = "<strong><br>
-//									    $start through $stop</strong>";
-//                    echo "<div style=text-align:right;margin-top:-14px;padding-right:15px><strong>Go to Page ";
-//                    if (ceil($result_count / $num_displayed) <= 10) {
-//                        for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
-//                            if ($i != $Request_page) {
-//                                if ($ForWindow == 'ForWindow') {
-//                                    $pages .= "<A HREF=" . str_replace('Modules.php', 'ForWindow.php', $PHP_tmp_SELF) . "&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
-//                                } else {
-//                                    $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
-//                                }
-//                            } else {
-//                                $pages .= "$i, ";
-//                            }
-//                        }
-//                        $pages = substr($pages, 0, -2);
-//                    } else {
-//                        for ($i = 1; $i <= 7; $i++) {
-//                            if ($i != $Request_page)
-//                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
-//                            else
-//                                $pages .= "$i, ";
-//                        }
-//                        $pages = substr($pages, 0, -2) . " ... ";
-//                        for ($i = ceil($result_count / $num_displayed) - 2; $i <= ceil($result_count / $num_displayed); $i++) {
-//                            if ($i != $Request_page)
-//                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
-//                            else
-//                                $pages .= "$i, ";
-//                        }
-//                        $pages = substr($pages, 0, -2) . " &nbsp;<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=" . ($Request_page + 1) . ">Next Page</A><BR>";
-//                    }
-//                    echo $pages;
-//
-//                    echo '</strong></div>';
-//                }
-//            }
-//            else {
-//                $start = 1;
-//                $stop = $result_count;
-//                if ($cols > 8 || $_REQUEST['expanded_view']) {
-//                    $_SESSION['orientation'] = 'landscape';
-//                    $repeat_headers = 16;
-//                } else
-//                    $repeat_headers = 27;
-//                if ($options['print']) {
-//                    $html = explode('<!-- new page -->', strtolower(ob_get_contents()));
-//                    $html = $html[count($html) - 1];
-//                    echo '</TD></TR></TABLE>';
-//                    $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
-//                    if ($br % 2 != 0) {
-//                        $br++;
-//                        echo '<BR>';
-//                    }
-//                } else
-//                    echo '</TD></TR></TABLE>';
-//            }
-//            // END MISC ---
-//            // WIDTH = 100%
-//
-//            echo '<div class="panel-heading">';
-//            // SEARCH BOX & MORE HEADERS
-//            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-//
-//                echo "<h6 class=\"panel-title\">";
-//                if ($singular && $plural && $options['count']) {
-//                    if ($display_count > 1)
-//                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
-//                    elseif ($display_count == 1)
-//                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
-//                }
-//                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-//                    echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
-//
-//                echo '</h6>';
-//                $colspan = 1;
-//                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
-//                    $_REQUEST['portal_search'] = 'true';
-//                    $tmp_REQUEST = $_REQUEST;
-//                    unset($tmp_REQUEST['LO_search']);
-//                    unset($tmp_REQUEST['page']);
-//                    echo "<div class=\"heading-elements\">";
-//                    echo "<div class=\"heading-form\">";
-//                    echo '<div class="form-group">';
-//                    echo "<INPUT type=hidden id=hidden_field >";
-//                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                   // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                   echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                    echo '</div>'; //.input-group
-//                    echo '</div>'; //.form-group
-//                    echo '</div>'; //.heading-form
-//                    echo "</div>"; //.heading-elements
-//                    $colspan++;
-//                }
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//            } else
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//            // END SEARCH BOX ----
-//            echo '</div>'; //.panel-heading
-//            // SHADOW
-//            if (!isset($_REQUEST['_openSIS_PDF'])) {
-//
-//                echo '<div id="pagerNavPosition"></div>';
-//                //echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
-//            }
-//            echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
-//            //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-//            echo '<THEAD>';
-//            //if(!isset($_REQUEST['_openSIS_PDF']))
-//            echo '<TR class="bg-grey-200">';
-//
-//            $i = 1;
-//            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
-//                //THIS LINE IS FOR COLUMN HEADING
-//                echo "<th><DIV id=LOx$i style='position: relative;'></DIV></th>";
-//                $i++;
-//            }
-//
-//            if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                foreach ($column_names as $key => $value) {
-//                    if ($_REQUEST['LO_sort'] == $key)
-//                        $direction = -1 * $_REQUEST['LO_direction'];
-//                    else
-//                        $direction = 1;
-//                    //THIS LINE IS FOR COLUMN HEADING
-//                    echo "<TH><DIV id=LOx$i style='position: relative;'></DIV>";
-//                    echo "<A class='text-grey-800'";
-//                    if ($options['sort']) {
-//                        if ($ForWindow == 'ForWindow') {
-//                            echo "HREF=#";
-//                        } else {
-//                            echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
-//                        }
-//                    }
-//                    echo ">$value</A>";
-//                    if ($i == 1)
-//                        echo "<DIV id=LOy0 style='position: relative;'></DIV>";
-//                    echo "</TH>";
-//                    $i++;
-//                }
-//
-//                echo "</TR>";
-//            }
-//
-//            $color = '';
-//
-//            //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
-//            echo '</THEAD><TBODY>';
-//
-//
-//            // mab - enable add link as first or last
-//            if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
-//
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
-//                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
-//                elseif ($link['add']['html'] && $cols) {
-//                    echo "<TR $color>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
-//                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
-//                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD align=left>" . button('add') . "</TD>";
-//
-//                    foreach ($column_names as $key => $value) {
-//                        echo "<TD align=left >" . $link['add']['html'][$key] . "</TD>";
-//                    }
-//                    echo "</TR>";
-//                    $count++;
-//                }
-//            }
-//
-//
-//            for ($i = $start; $i <= $stop; $i++) {
-//                $item = $result[$i];
-//                if (isset($_REQUEST['_openSIS_PDF']) && $options['print'] && count($item)) {
-//                    foreach ($item as $key => $value) {
-//                        $value = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $value);
-//                        $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
-//
-//                        if (strpos($value, 'LO_field') === false)
-//                            $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
-//                        else
-//                            $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
-//                    }
-//                }
-//
-//                if ($item['row_color'])
-//                    $color = $item['row_color'];
-//                elseif ($color == '')
-//                    $color = $side_color;
-//                else
-//                    $color = '';
-//
-//                if (isset($_REQUEST['_openSIS_PDF']) && $count % $repeat_headers == 0) {
-//                    if ($count != 0) {
-//                        echo '</TABLE><TABLE class="table table-bordered table-striped">';
-//                        echo '<!-- NEW PAGE -->';
-//                    }
-//                    echo "<TR>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD></TD>";
-//
-//                    if ($cols) {
-//                        foreach ($column_names as $key => $value) {
-//                            echo "<TD >" . str_replace(' ', '&nbsp;', $value) . "</TD>";
-//                        }
-//                    }
-//                    echo "</TR>";
-//                }
-//                if ($count == 0)
-//                    $count = $br;
-//
-//                echo "<TR $color>";
-//                $count++;
-//                if ($remove && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $button_title = $link['remove']['title'];
-//
-//                    $button_link = $link['remove']['link'];
-//                    if (count($link['remove']['variables'])) {
-//                        foreach ($link['remove']['variables'] as $var => $val)
-//                            $button_link .= "&$var=" . ($item[$val]);
-//                    }
-//
-//                    echo "<TD $color>" . button('remove', $button_title, $button_link) . "</TD>";
-//                }
-//                if ($cols) {
-//                    foreach ($column_names as $key => $value) {
-//                        if ($link[$key] && !isset($_REQUEST['_openSIS_PDF'])) {
-//                            echo "<TD $color >";
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
-//                            if ($link[$key]['js'] === true) {
-//                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
-//                                if (count($link[$key]['variables'])) {
-//                                    foreach ($link[$key]['variables'] as $var => $val)
-//                                        echo "&$var=" . urlencode($item[$val]);
-//                                }
-//                                echo "\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'";
-//                                if ($link[$key]['extra'])
-//                                    echo ' ' . $link[$key]['extra'];
-//                                echo ">";
-//                            }
-//                            else {
-//                                echo "<A HREF={$link[$key][link]}";
-//                                if (count($link[$key]['variables'])) {
-//                                    foreach ($link[$key]['variables'] as $var => $val)
-//                                        echo "&$var=" . urlencode($item[$val]);
-//                                }
-//                                if ($link[$key]['extra'])
-//                                    echo ' ' . $link[$key]['extra'];
-//                                echo " onclick='grabA(this); return false;'>";
-//                            }
-//                            if ($color == Preferences('HIGHLIGHT'))
-//                                echo '';
-//                            else
-//                                echo '<b>';
-//                            echo $item[$key];
-//                            echo '</b>';
-//                            if (!$item[$key])
-//                                echo '***';
-//                            echo "</A>";
-//                            if ($key == 'FULL_NAME')
-//                                echo '</DIV>';
-//                            echo "</TD>";
-//                        }
-//                        else {
-//                            echo "<TD $color >";
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
-//                            if ($color == Preferences('HIGHLIGHT'))
-//                                echo '';
-//                            echo $item[$key];
-//                            if (!$item[$key])
-//                                echo '&nbsp;';
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV>';
-//                            echo "</TD>";
-//                        }
-//                    }
-//                }
-//                echo "</TR>";
-//            }
-//
-//            if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
-//
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
-//                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
-//                elseif ($link['add']['html'] && $cols) {
-//                    if ($count % 2)
-//                        $color = '';
-//                    else
-//                        $color = $side_color;
-//
-//                    echo "<TR $color>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
-//                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
-//                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD align=left >" . button('add') . "</TD>";
-//
-//                    foreach ($column_names as $key => $value) {
-//                        echo "<TD align=left  valign=top>" . $link['add']['html'][$key] . "</TD>";
-//                    }
-//                    echo "</TR>";
-//                }
-//            }
-//            if ($result_count != 0) {
-//                if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                    echo '</TBODY>';
-//                echo "</TABLE>";
-//                // SHADOW
-//                if (!isset($_REQUEST['_openSIS_PDF'])) {
-//                    //echo '</TD ></TR></TABLE>';
-//
-//
-//                    echo "<script language='javascript' type='text/javascript'>\n";
-//
-//                    
-//                    echo "var pager = new Pager('results',$number_rec);\n";
-//                    echo "pager.init();\n";
-//                    echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-//                    echo "pager.showPage(1);\n";
-//                    echo "</script>\n";
-//                }
-//
-//                if ($options['center'])
-//                    echo '';
-//            }
-//
-//            // END PRINT THE LIST ---
-//        }
-//        if ($result_count == 0) {
-//            // mab - problem with table closing if not opened above - do same conditional?
-//            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0))))
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo '<table cellspacing=8 cellpadding=6 ><tr><TD align=left >' . button('add', $link['add']['title'], $link['add']['link']) . '</td></tr></table>';
-//                elseif (($link['add']['html'] || $link['add']['span']) && count($column_names) && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $color = $side_color;
-//
-//                    if ($options['center'])
-//
-//                    // WIDTH=100%
-//                    // SHADOW
-//                        echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
-//                    if ($link['add']['html']) {
-//                        /* Here also change the colour for left corner */
-//                        echo "<TABLE class=\"table table-bordered table-striped\"><TR><TD class=subtabs></TD>";
-//                        foreach ($column_names as $key => $value) {
-//                            //Here to change the ListOutput Header Colour
-//                            echo "<TD class=subtabs><A><b>" . $value . "</b></A></TD>";
-//                        }
-//                        echo "</TR>";
-//
-//                        echo "<TR >";
-//
-//                        if ($link['add']['html']['remove'])
-//                            echo "<TD >" . $link['add']['html']['remove'] . "</TD>";
-//                        else
-//                            echo "<TD>" . button('add') . "</TD>";
-//
-//                        foreach ($column_names as $key => $value) {
-//                            echo "<TD >" . $link['add']['html'][$key] . "</TD>";
-//                        }
-//                        echo "</TR>";
-//                        echo "</TABLE>";
-//                    } elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TABLE><TR><TD align=center>" . button('add') . $link['add']['span'] . "</TD></TR></TABLE>";
-//
-//                    // SHADOW
-//
-//                    echo "</TD></TR></TABLE>";
-//                    if ($options['center'])
-//                        echo '</CENTER>';
-//                }
-//        }
-//        if ($result_count != 0) {
-//            if ($options['yscroll']) {
-//                echo '<div id="LOy_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
-//                echo '<TABLE cellpadding=6 id=LOy_table>';
-//                $i = 1;
-//
-//                if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $color = $side_color;
-//                    foreach ($result as $item) {
-//                        echo "<TR><TD $color  id=LO_row$i>";
-//                        if ($color == Preferences('HIGHLIGHT'))
-//                            echo '';
-//                        echo $item['FULL_NAME'];
-//                        if (!$item['FULL_NAME'])
-//                            echo '&nbsp;';
-//                        if ($color == Preferences('HIGHLIGHT'))
-//                            echo '';
-//                        echo "</TD></TR>";
-//                        $i++;
-//
-//                        if ($item['row_color'])
-//                            $color = $item['row_color'];
-//                        elseif ($color == '')
-//                            $color = $side_color;
-//                        else
-//                            $color = '';
-//                    }
-//                }
-//                echo '</TABLE>';
-//                echo '</div>';
-//            }
-//
-//            echo '<div id="LOx_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
-//            echo '<TABLE cellpadding=6 id=LOx_table><TR>';
-//            $i = 1;
-//            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
-//                echo "<TD id=LO_col$i></TD>";
-//                $i++;
-//            }
-//
-//            if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                foreach ($column_names as $key => $value) {
-//                    echo '<TD id=LO_col' . $i . '><A class=column_heading><b>' . str_replace('controller', '', $value) . '</b></A></TD>';
-//                    $i++;
-//                }
-//            }
-//            echo '</TR></TABLE>';
-//            echo '</div>';
-//        }
-//    }
-//}
-
-
-function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -13816,7 +14644,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -13906,7 +14734,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -14030,12 +14858,12 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
             foreach ($column_names as $ci => $cd) {
                 $column_names_mod[$ci] = strip_tags($cd);
             }
-			// if($options['save_delimiter']!='xml')
-			// {
-			// 	foreach($column_names_mod as $key=>$value)
-			// 		$output .= str_replace('&nbsp;',' ',eregi_replace('<BR>',' ',ereg_replace('<!--.*-->','',$value))) . ($options['save_delimiter']=='comma'?',':"\t");
-			// 	$output .= "\n";
-			// }
+            // if($options['save_delimiter']!='xml')
+            // {
+            // 	foreach($column_names_mod as $key=>$value)
+            // 		$output .= str_replace('&nbsp;',' ',eregi_replace('<BR>',' ',ereg_replace('<!--.*-->','',$value))) . ($options['save_delimiter']=='comma'?',':"\t");
+            // 	$output .= "\n";
+            // }
 
             if ($options['save_delimiter'] != 'xml') {
 
@@ -14087,9 +14915,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -14140,8 +14968,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -14171,9 +14998,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -14189,9 +15016,9 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                     echo "<div class=\"heading-form\">";
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
-                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
                     // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-form
@@ -14338,7 +15165,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -14347,9 +15174,8 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -14370,8 +15196,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -14427,8 +15252,8 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -14446,7 +15271,7 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
                             }
                         ],
                         'iDisplayLength': " . $number_rec . ""
-                        . "});";
+                            . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
                                 var newValue = elCheckbox.checked;
@@ -14482,8 +15307,8 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -14569,7 +15394,14 @@ function ListOutputExcel($result, $column_names, $singular = '', $plural = '', $
 }
 
 
-function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural = '', $link = false, $EntryCounts = '', $group = false, $options = false, $ForWindow = '') {
+function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural = '', $link = false, $EntryCounts = '', $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -14601,7 +15433,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
     }
 
     // PREPARE LINKS ---
-    $result_count = $display_count = count($result);
+    $result_count = $display_count = (is_countable($result)) ? count($result) : 0;
     $num_displayed = 100000;
     $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
 
@@ -14620,7 +15452,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -14710,7 +15542,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -14812,76 +15644,6 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                 }
             }
         }
-        // HANDLE SAVING THE LIST ---
-
-        // if ($_REQUEST['LO_save'] == '1') {
-        //     $output = '';
-        //     if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
-        //         $options['save_delimiter'] = 'comma';
-        //     switch ($options['save_delimiter']) {
-        //         case 'comma':
-        //             $extension = 'csv';
-        //             break;
-        //         case 'xml':
-        //             $extension = 'xml';
-        //             break;
-        //         default:
-        //             $extension = 'xls';
-        //             break;
-        //     }
-        //     ob_end_clean();
-
-        //     foreach ($column_names as $ci => $cd) {
-        //         $column_names_mod[$ci] = strip_tags($cd);
-        //     }
-        //     // if($options['save_delimiter']!='xml')
-        //     // {
-        //     //  foreach($column_names_mod as $key=>$value)
-        //     //      $output .= str_replace('&nbsp;',' ',eregi_replace('<BR>',' ',ereg_replace('<!--.*-->','',$value))) . ($options['save_delimiter']=='comma'?',':"\t");
-        //     //  $output .= "\n";
-        //     // }
-
-        //     if ($options['save_delimiter'] != 'xml') {
-
-        //         $output = '<table border=\'1\'><tr>';
-        //         foreach ($column_names_mod as $key => $value)
-        //             if ($key != 'CHECKBOX')
-        //                 $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-        //         $output .= '</tr>';
-        //         foreach ($result as $item) {
-        //             $output .= '<tr>';
-        //             foreach ($column_names_mod as $key => $value) {
-        //                 if ($key != 'CHECKBOX')
-        //                     $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-        //             }
-        //             $output .= '</tr>';
-        //         }
-        //         $output .= '</table>';
-        //     }
-
-        //     // foreach ($result as $item) {
-        //     //     foreach ($column_names_mod as $key => $value) {
-        //     //         if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-        //     //             $item[$key] = str_replace(',', ';', $item[$key]);
-        //     //         $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-        //     //         $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-        //     //         $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-        //     //     }
-        //     //     $output .= "\n";
-        //     // }
-
-        //     header("Cache-Control: public");
-        //     header("Pragma: ");
-        //     header("Content-Type: text/plain");
-        //     header("Content-Type: application/$extension");
-        //     $file_name = ProgramTitle() . '.' . $extension;
-        //     header("Content-Disposition: inline; filename=\"$file_name\"\n");
-        //     if ($options['save_eval'])
-        //         eval($options['save_eval']);
-        //     echo $output;
-        //     exit();
-        // }
-        // END SAVING THE LIST ---
         if ($options['center'])
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
 
@@ -14891,9 +15653,9 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -14944,8 +15706,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -14975,11 +15736,11 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     // if ($display_count > 1)
-                    if($_SESSION['AL_RES_COUNT'] > 1)
-                        echo "<span class=\"heading-text\">$_SESSION[AL_RES_COUNT] $plural "._wereFound.".</span>";
+                    if ($_SESSION['AL_RES_COUNT'] > 1)
+                        echo "<span class=\"heading-text\">$_SESSION[AL_RES_COUNT] $plural " . _wereFound . ".</span>";
                     // elseif ($display_count == 1)
-                    elseif($_SESSION['AL_RES_COUNT'] == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                    elseif ($_SESSION['AL_RES_COUNT'] == 1)
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0) {
                     // echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -14997,9 +15758,9 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                     echo "<div class=\"heading-form\">";
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "'>";
-                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
                     // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-form
@@ -15023,8 +15784,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
 
             $href_req_pages = array('users/TeacherPrograms.php?include=grades/InputFinalGrades.php', 'grades/InputFinalGrades.php', 'users/TeacherPrograms.php?include=grades/Grades.php', 'grades/Grades.php', 'users/TeacherPrograms.php?include=grades/ProgressReports.php', 'grades/ProgressReports.php');
 
-            if(empty($EntryCounts) || $EntryCounts == '')
-            {
+            if (empty($EntryCounts) || $EntryCounts == '') {
                 $EntryCounts = array(
                     "aaIni" =>  1,
                     "aaEnd" =>  50,
@@ -15033,8 +15793,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                     "fxRow" =>  50
                 );
 
-                if($result_count < $EntryCounts['aaEnd'])
-                {
+                if ($result_count < $EntryCounts['aaEnd']) {
                     $EntryCounts['aaEnd'] = $result_count;
                 }
             }
@@ -15042,12 +15801,9 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
             $clean_div = floor($EntryCounts['aaTot'] / $EntryCounts['fxRow']);
             $resultant = ($EntryCounts['aaTot'] % $EntryCounts['fxRow']);
 
-            if($resultant == 0)
-            {
+            if ($resultant == 0) {
                 $pages = $clean_div;
-            }
-            else
-            {
+            } else {
                 $pages = ($clean_div + 1);
             }
 
@@ -15057,68 +15813,52 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
             $paginate_prev_event = '';
 
             $page_requests = '?';
-            foreach($_SESSION['PAGE_REQUESTS'] as $one_req_k => $one_req_v)
-            {
-                if(!is_array($one_req_v))
-                {
-                    $page_requests .= $one_req_k.'='.$one_req_v.'&';
+            foreach ($_SESSION['PAGE_REQUESTS'] as $one_req_k => $one_req_v) {
+                if (!is_array($one_req_v)) {
+                    $page_requests .= $one_req_k . '=' . $one_req_v . '&';
                 }
             }
             $page_requests = rtrim($page_requests, '&');
 
-            if($EntryCounts['aaCur'] == 1)
-            {
+            if ($EntryCounts['aaCur'] == 1) {
                 $paginate_prev_disable = 'disabled';
-            }
-            else
-            {
-                if(in_array($_REQUEST['modname'], $href_req_pages))
-                {
-                    $paginate_prev_event = 'href="Modules.php'.$page_requests.'&loadpage='.($EntryCounts['aaCur'] - 1).'"';
-                }
-                else
-                {
-                    $paginate_prev_event = 'onclick="loadDataTablePagination('.($EntryCounts['aaCur'] - 1).')"';
+            } else {
+                if (in_array($_REQUEST['modname'], $href_req_pages)) {
+                    $paginate_prev_event = 'href="Modules.php' . $page_requests . '&loadpage=' . ($EntryCounts['aaCur'] - 1) . '"';
+                } else {
+                    $paginate_prev_event = 'onclick="loadDataTablePagination(' . ($EntryCounts['aaCur'] - 1) . ')"';
                 }
             }
 
-            if($EntryCounts['aaCur'] == $pages)
-            {
+            if ($EntryCounts['aaCur'] == $pages) {
                 $paginate_next_disable = 'disabled';
-            }
-            else
-            {
-                if(in_array($_REQUEST['modname'], $href_req_pages))
-                {
-                    $paginate_next_event = 'href="Modules.php'.$page_requests.'&loadpage='.($EntryCounts['aaCur'] + 1).'"';
-                }
-                else
-                {
-                    $paginate_next_event = 'onclick="loadDataTablePagination('.($EntryCounts['aaCur'] + 1).')"';
+            } else {
+                if (in_array($_REQUEST['modname'], $href_req_pages)) {
+                    $paginate_next_event = 'href="Modules.php' . $page_requests . '&loadpage=' . ($EntryCounts['aaCur'] + 1) . '"';
+                } else {
+                    $paginate_next_event = 'onclick="loadDataTablePagination(' . ($EntryCounts['aaCur'] + 1) . ')"';
                 }
             }
 
             $format_paginate = '';
 
             $format_paginate .= '<div class="dataTables_paginate paging_simple_numbers">';
-            $format_paginate .= '<a class="paginate_button previous '.$paginate_prev_disable.'" '.$paginate_prev_event.'>&larr;</a>';
+            $format_paginate .= '<a class="paginate_button previous ' . $paginate_prev_disable . '" ' . $paginate_prev_event . '>&larr;</a>';
             $format_paginate .= '<span>';
 
             $format_paginate .= paginationTabMarker($pages, $EntryCounts['aaCur'], $_REQUEST['modname'], $page_requests, $href_req_pages);
 
             $format_paginate .= '</span>';
-            $format_paginate .= '<a class="paginate_button next '.$paginate_next_disable.'" '.$paginate_next_event.'>&rarr;</a>';
+            $format_paginate .= '<a class="paginate_button next ' . $paginate_next_disable . '" ' . $paginate_next_event . '>&rarr;</a>';
             $format_paginate .= '</div>';
 
-            if (isset($_REQUEST['LO_search']) && $_REQUEST['LO_search'] != '' && $_REQUEST['LO_search'] != NULL && count($values) < 50) {
+            if (isset($_REQUEST['LO_search']) && $_REQUEST['LO_search'] != '' && $_REQUEST['LO_search'] != NULL && (is_countable($values) && count($values) < 50)) {
                 $paginationVisibility = 'hidden';
-            } elseif (isset($_REQUEST['LO_search']) && ($_REQUEST['LO_search'] == '' || $_REQUEST['LO_search'] != NULL) && (count($values) != 0 && count($values) < 50)) {
+            } elseif (isset($_REQUEST['LO_search']) && ($_REQUEST['LO_search'] == '' || $_REQUEST['LO_search'] != NULL) && (is_countable($values) && count($values) != 0 && count($values) < 50)) {
                 $paginationVisibility = 'hidden';
-            } 
-            elseif(!isset($_REQUEST['LO_search']) && $_SESSION['AL_RES_COUNT'] < 50) {
+            } elseif (!isset($_REQUEST['LO_search']) && $_SESSION['AL_RES_COUNT'] < 50) {
                 $paginationVisibility = 'hidden';
-            } 
-            else {
+            } else {
                 $paginationVisibility = '';
             }
 
@@ -15256,7 +15996,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -15265,9 +16005,8 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -15288,8 +16027,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -15345,8 +16083,8 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -15366,7 +16104,7 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
                             }
                         ],
                         'iDisplayLength': " . $number_rec . ""
-                        . "});";
+                            . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
                                 var newValue = elCheckbox.checked;
@@ -15405,8 +16143,8 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -15493,7 +16231,14 @@ function ListOutputExcelCustomDT($result, $column_names, $singular = '', $plural
 
 
 // modified for Eligibility > Student.php
-function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -15544,7 +16289,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -15634,7 +16379,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -15792,7 +16537,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
         }
         // END SAVING THE LIST ---
         if ($options['center'])
-        #echo '<CENTER>';
+            #echo '<CENTER>';
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
 
                 if (isset($_REQUEST['_openSIS_PDF']))
@@ -15859,8 +16604,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -15923,7 +16667,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
                 echo '<div id="pagerNavPosition" class="clearfix"></div>';
                 //echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
             }
-            
+
             echo '<div class="panel-body">';
             echo '<div class="table-responsive">';
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
@@ -16054,7 +16798,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -16063,9 +16807,8 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -16086,8 +16829,7 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -16171,8 +16913,8 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -16259,7 +17001,14 @@ function ListOutputNew_mod($result, $column_names, $singular = '', $plural = '',
 
 //modified ListOutputNew_mod ends
 
-function ListOutputNew($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputNew($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -16310,7 +17059,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -16400,7 +17149,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -16558,7 +17307,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
         }
         // END SAVING THE LIST ---
         if ($options['center'])
-        #echo '<CENTER>';
+            #echo '<CENTER>';
             if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
 
                 if (isset($_REQUEST['_openSIS_PDF']))
@@ -16568,11 +17317,11 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural) {
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
                 echo '</div>';
             }
         }
@@ -16625,8 +17374,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -16655,9 +17403,9 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -16673,7 +17421,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<INPUT type=text class='form-control'  id=LO_searchNew name=LO_searchNew value='" . (($_REQUEST['LO_searchNew'] && $_REQUEST['LO_searchNew'] != 'Search') ? $_REQUEST['LO_searchNew'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_searchNew=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -16688,12 +17436,9 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
             if (!isset($_REQUEST['_openSIS_PDF'])) {
 
                 echo '<div id="pagerNavPosition"></div>';
-                //echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
             }
             echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
-            //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
             echo '<THEAD>';
-            //if(!isset($_REQUEST['_openSIS_PDF']))
             echo '<TR class="bg-grey-200">';
 
             $i = 1;
@@ -16733,8 +17478,6 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
 
             //if(!isset($_REQUEST['_openSIS_PDF']) && ($stop-$start)>10)
             echo '</THEAD><TBODY>';
-
-
             // mab - enable add link as first or last
             if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
 
@@ -16818,7 +17561,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -16827,9 +17570,8 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -16850,8 +17592,7 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -16931,8 +17672,8 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -17017,7 +17758,14 @@ function ListOutputNew($result, $column_names, $singular = '', $plural = '', $li
     }
 }
 
-function ListOutput_Medical($result, $column_names, $singular = '', $plural = '', $link = false, $dwnl, $group = false, $options = false, $ForWindow = '') {
+function ListOutput_Medical($result, $column_names, $singular = '', $plural = '', $link = false, $dwnl, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -17068,7 +17816,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -17158,7 +17906,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -17323,9 +18071,9 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"panel-body\"><div class=\"alert alert-danger no-border m-b-0\">No $plural "._wereFound.".</div></div>";
+                echo "<div class=\"panel-body\"><div class=\"alert alert-danger no-border m-b-0\">No $plural " . _wereFound . ".</div></div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="panel-body"><div class="alert alert-danger no-border m-b-0">'._noneWereFound.'.</div></div>';
+                echo '<div class="panel-body"><div class="alert alert-danger no-border m-b-0">' . _noneWereFound . '.</div></div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -17376,8 +18124,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -17400,18 +18147,18 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
             // END MISC ---
             // WIDTH = 100%
 
-            echo '<div class="panel-heading">';
+            echo '<div class="panel-heading p-l-0">';
             // SEARCH BOX & MORE HEADERS
             if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                    echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&dwnl=$dwnl&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
+                    echo "&nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"\" data-original-title=\"Download Spreadsheet\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
 
                 echo '</TD>';
                 $colspan = 1;
@@ -17424,7 +18171,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -17567,7 +18314,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -17576,9 +18323,8 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -17599,8 +18345,7 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -17680,8 +18425,8 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -17766,7 +18511,14 @@ function ListOutput_Medical($result, $column_names, $singular = '', $plural = ''
     }
 }
 
-function ListOutputPrintReportMod($result, $column_names) {
+function ListOutputPrintReportMod($result, $column_names)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     $table = '<table   cellpadding="6" width="100%" cellspacing="1" border="1 " style="border-collapse:collapse;white-space:nowrap;" align="center">';
     $table .= '<tbody>';
     $table .= '<tr>';
@@ -17788,7 +18540,14 @@ function ListOutputPrintReportMod($result, $column_names) {
     return $table;
 }
 
-function ListOutputMessagingGroups($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false) {
+function ListOutputMessagingGroups($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '', $custom_header = false)
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -17837,7 +18596,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -17925,7 +18684,8 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            //$remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -18101,7 +18861,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                 echo '</div>';
 
                 echo '<div class="panel-body">';
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
                 echo '</div>';
             } elseif ($result_count == 0 || $display_count == 0) {
 
@@ -18111,7 +18871,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                 echo '</div>';
 
                 echo '<div class="panel-body">';
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
                 echo '</div>';
             }
         }
@@ -18164,8 +18924,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -18198,9 +18957,9 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                     echo "<h6 class=\"panel-title\">";
                     if ($singular && $plural && $options['count']) {
                         if ($display_count > 1)
-                            echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                            echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                         elseif ($display_count == 1)
-                            echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                            echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                     }
                     if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                         echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true class=\" btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -18215,8 +18974,8 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                         echo "<div class=\"heading-elements\">";
                         echo '<div class="form-group">';
                         echo "<INPUT type=hidden id=hidden_field >";
-                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                        echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                        echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                         echo '</div>'; //.input-group
                         echo '</div>'; //.form-group
                         echo "</div>"; //.heading-elements
@@ -18364,7 +19123,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -18373,9 +19132,8 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -18396,8 +19154,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -18479,8 +19236,8 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -18566,770 +19323,14 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
         }
     }
 }
-
-//function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
-//    if (!isset($options['save']))
-//        $options['save'] = true;
-//    if (!isset($options['print']))
-//        $options['print'] = true;
-//    if (!isset($options['search']))
-//        $options['search'] = true;
-//    if (!isset($options['center']))
-//        $options['center'] = true;
-//    if (!isset($options['count']))
-//        $options['count'] = true;
-//    if (!isset($options['sort']))
-//        $options['sort'] = true;
-//    if (!$link)
-//        $link = array();
-//
-//    if (isset($_REQUEST['page'])) {
-//        if ($_REQUEST['list_type'] == $singular) {
-//            $Request_page = $_REQUEST['page'];
-//        }
-//    }
-//
-//    if (!isset($options['add'])) {
-//        if (!AllowEdit() || $_REQUEST['_openSIS_PDF']) {
-//            if ($link) {
-//                unset($link['add']);
-//                unset($link['remove']);
-//            }
-//        }
-//    }
-//
-//    // PREPARE LINKS ---
-//    $result_count = $display_count = count($result);
-//    $num_displayed = 100000;
-//    $extra = "page=$_REQUEST[page]&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']);
-//
-//    $tmp_REQUEST = $_REQUEST;
-//    unset($tmp_REQUEST['page']);
-//    unset($tmp_REQUEST['LO_sort']);
-//    unset($tmp_REQUEST['LO_direction']);
-//    unset($tmp_REQUEST['LO_search']);
-//    unset($tmp_REQUEST['remove_prompt']);
-//    unset($tmp_REQUEST['remove_name']);
-//    unset($tmp_REQUEST['LO_save']);
-//    unset($tmp_REQUEST['PHPSESSID']);
-//
-//
-//
-//    $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
-//    // END PREPARE LINKS ---
-//    // UN-GROUPING
-//    $group_count = count($group);
-//    if (!is_array($group))
-//        $group_count = false;
-//
-//
-//
-//    $side_color = '';
-//
-//    if ($group_count && $result_count) {
-//        $color = '';
-//        $group_result = $result;
-//        unset($result);
-//        $result[0] = '';
-//
-//        foreach ($group_result as $item1) {
-//            if ($group_count == 1) {
-//                if ($color == '')
-//                    $color = $side_color;
-//                else
-//                    $color = '';
-//            }
-//
-//            foreach ($item1 as $item2) {
-//                if ($group_count == 1) {
-//                    $i++;
-//                    if (count($group[0]) && $i != 1) {
-//                        foreach ($group[0] as $column)
-//                            $item2[$column] = str_replace('<!-- <!--', '<!--', '<!-- ' . str_replace('-->', '--><!--', $item2[$column])) . ' -->';
-//                    }
-//                    $item2['row_color'] = $color;
-//                    $result[] = $item2;
-//                } else {
-//                    if ($group_count == 2) {
-//                        if ($color == '')
-//                            $color = $side_color;
-//                        else
-//                            $color = '';
-//                    }
-//
-//                    foreach ($item2 as $item3) {
-//                        if ($group_count == 2) {
-//                            $i++;
-//                            if (count($group[0]) && $i != 1) {
-//                                foreach ($group[0] as $column)
-//                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
-//                            }
-//                            if (count($group[1]) && $i != 1) {
-//                                foreach ($group[1] as $column)
-//                                    $item3[$column] = '<!-- ' . $item3[$column] . ' -->';
-//                            }
-//                            $item3['row_color'] = $color;
-//                            $result[] = $item3;
-//                        } else {
-//                            if ($group_count == 3) {
-//                                if ($color == '')
-//                                    $color = $side_color;
-//                                else
-//                                    $color = '';
-//                            }
-//
-//                            foreach ($item3 as $item4) {
-//                                if ($group_count == 3) {
-//                                    $i++;
-//                                    if (count($group[2]) && $i != 1) {
-//                                        foreach ($group[2] as $column)
-//                                            unset($item4[$column]);
-//                                    }
-//                                    $item4['row_color'] = $color;
-//                                    $result[] = $item4;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            $i = 0;
-//        }
-//        unset($result[0]);
-//        $result_count = count($result);
-//
-//        unset($_REQUEST['LO_sort']);
-//    }
-//    // END UN-GROUPING
-//    $_LIST['output'] = true;
-//
-//
-//    // PRINT HEADINGS, PREPARE PDF, AND SORT THE LIST ---
-//    if ($_LIST['output'] != false) {
-//        if ($result_count != 0) {
-//            $count = 0;
-//            $remove = count($link['remove']['variables']);
-//            $cols = count($column_names);
-//
-//            // HANDLE SEARCHES ---
-//            if ($result_count && $_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') {
-//                $_REQUEST['LO_search'] = $search_term = str_replace('\\\"', '"', $_REQUEST['LO_search']);
-//                $_REQUEST['LO_search'] = $search_term = par_rep_cb('/[^a-zA-Z0-9 _"]*/', '', strtolower($search_term));
-//
-//                if (substr($search_term, 0, 0) != '"' && substr($search_term, -1) != '"') {
-//                    $search_term = par_rep_cb('/"/', '', $search_term);
-//                    while ($space_pos = strpos($search_term, ' ')) {
-//                        $terms[strtolower(substr($search_term, 0, $space_pos))] = 1;
-//                        $search_term = substr($search_term, ($space_pos + 1));
-//                    }
-//                    $terms[trim($search_term)] = 1;
-//                } else {
-//                    $search_term = par_rep_cb('/"/', '', $search_term);
-//                    $terms[trim($search_term)] = 1;
-//                }
-//
-//                unset($terms['of']);
-//                unset($terms['the']);
-//                unset($terms['a']);
-//                unset($terms['an']);
-//                unset($terms['in']);
-//
-//                foreach ($result as $key => $value) {
-//                    $values[$key] = 0;
-//                    foreach ($value as $name => $val) {
-//                        $val = par_rep_cb('/[^a-zA-Z0-9 _]+/', '', strtolower($val));
-//                        if (strtolower($_REQUEST['LO_search']) == $val)
-//                            $values[$key] += 25;
-//                        foreach ($terms as $term => $one) {
-//                            if (ereg($term, $val))
-//                                $values[$key] += 3;
-//                        }
-//                    }
-//                    if ($values[$key] == 0) {
-//                        unset($values[$key]);
-//                        unset($result[$key]);
-//                        $result_count--;
-//                        $display_count--;
-//                    }
-//                }
-//                if ($result_count) {
-//                    array_multisort($values, SORT_DESC, $result);
-//                    $result = ReindexResults($result);
-//                    $values = ReindexResults($values);
-//
-//                    $last_value = 1;
-//                    $scale = (100 / $values[$last_value]);
-//
-//                    for ($i = $last_value; $i <= $result_count; $i++)
-//                        $result[$i]['RELEVANCE'] = '<!--' . ((int) ($values[$i] * $scale)) . '--><IMG SRC="assets/pixel_grey.gif" width=' . ((int) ($values[$i] * $scale)) . ' height=10>';
-//                }
-//                $column_names['RELEVANCE'] = "Relevance";
-//
-//                if (is_array($group) && count($group)) {
-//                    $options['count'] == false;
-//                    $display_zero = true;
-//                }
-//            }
-//
-//            // END SEARCHES ---
-//
-//            if ($_REQUEST['LO_sort']) {
-//                foreach ($result as $sort) {
-//                    if (substr($sort[$_REQUEST['LO_sort']], 0, 4) != '<!--')
-//                        $sort_array[] = $sort[$_REQUEST['LO_sort']];
-//                    else
-//                        $sort_array[] = substr($sort[$_REQUEST['LO_sort']], 4, strpos($sort[$_REQUEST['LO_sort']], '-->') - 5);
-//                }
-//                if ($_REQUEST['LO_direction'] == -1)
-//                    $dir = SORT_DESC;
-//                else
-//                    $dir = SORT_ASC;
-//
-//                if ($result_count > 1) {
-//                    if (is_int($sort_array[1]) || is_double($sort_array[1]))
-//                        array_multisort($sort_array, $dir, SORT_NUMERIC, $result);
-//                    elseif (VerifyDate_sort($sort_array[1]))
-//                        array_multisort(date_to_timestamp($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'POINTS')
-//                        array_multisort(point_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'PERCENT' || $_REQUEST['LO_sort'] == 'LETTER_GRADE' || $_REQUEST['LO_sort'] == 'GRADE_PERCENT')
-//                        array_multisort(percent_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'BAR1')
-//                        array_multisort(range_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    elseif ($_REQUEST['LO_sort'] == 'BAR2')
-//                        array_multisort(rank_to_number($sort_array), $dir, SORT_NUMERIC, $result);
-//                    else
-//                        array_multisort($sort_array, $dir, $result);
-//                    for ($i = $result_count - 1; $i >= 0; $i--)
-//                        $result[$i + 1] = $result[$i];
-//                    unset($result[0]);
-//                }
-//            }
-//        }
-//        // HANDLE SAVING THE LIST ---
-//
-//        if ($_REQUEST['LO_save'] == '1') {
-//            if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
-//                $options['save_delimiter'] = 'comma';
-//            switch ($options['save_delimiter']) {
-//                case 'comma':
-//                    $extension = 'csv';
-//                    break;
-//                case 'xml':
-//                    $extension = 'xml';
-//                    break;
-//                default:
-//                    $extension = 'xls';
-//                    break;
-//            }
-//            ob_end_clean();
-//
-//            foreach ($column_names as $ci => $cd) {
-//                $column_names_mod[$ci] = strip_tags($cd);
-//            }
-////            if ($options['save_delimiter'] != 'xml') {
-////                $output .='<table><tr>';
-////                foreach ($column_names as $key => $value)
-////                    $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-////                $output .='</tr>';
-////                foreach ($result as $item) {
-////                    $output .='<tr>';
-////                    foreach ($column_names as $key => $value) {
-////                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-////                    }
-////                    $output .='</tr>';
-////                }
-////                $output .='</table>';
-////            }
-////            foreach ($result as $item) {
-////                foreach ($column_names_mod as $key => $value) {
-////                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-////                        $item[$key] = str_replace(',', ';', $item[$key]);
-////                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-////                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-////                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-////                }
-////                $output .= "\n";
-////            }
-//            $output = '<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
-//            foreach ($result as $item) {
-//                $output .= '<tr>';
-//                $output .= '<td>' . $item['TITLE'] . '</td>';
-//                $output .= '<td>' . $item['PROFILE'] . '</td>';
-//                $output .= '<td>' . $item['START_DATE'] . '</td>';
-//                $output .= '<td>' . $item['END_DATE'] . '</td>';
-//                $output .= '<td>' . $item['ID'] . '</td>';
-//                $output .= '</tr>';
-//            }
-//            $output .= '</table>';
-//            header("Cache-Control: public");
-//            header("Pragma: ");
-//            header("Content-Type: application/$extension");
-//            header("Content-Disposition: inline; filename=\"" . ProgramTitle() . ".$extension\"\n");
-//            if ($options['save_eval'])
-//                eval($options['save_eval']);
-//            echo $output;
-//            exit();
-//        }
-//        // END SAVING THE LIST ---
-//        if ($options['center'])
-//            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0)))) {
-//
-//                if (isset($_REQUEST['_openSIS_PDF']))
-//                    echo " <TR><TD align=center>";
-//            }
-//
-//        if ($options['count'] || $display_zero) {
-//            if (($result_count == 0 || $display_count == 0) && $plural)
-//                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
-//            elseif ($result_count == 0 || $display_count == 0)
-//                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
-//        }
-//        if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
-//            if (!isset($_REQUEST['_openSIS_PDF'])) {
-//                if (!$Request_page)
-//                    $Request_page = 1;
-//                if (!$_REQUEST['LO_direction'])
-//                    $_REQUEST['LO_direction'] = 1;
-//                $start = ($Request_page - 1) * $num_displayed + 1;
-//                $stop = $start + ($num_displayed - 1);
-//                if ($stop > $result_count)
-//                    $stop = $result_count;
-//
-//                if ($result_count > $num_displayed) {
-//
-//                    echo $where_message = "<strong><br>
-//									    $start through $stop</strong>";
-//                    echo "<div style=text-align:right;margin-top:-14px;padding-right:15px><strong>Go to Page ";
-//                    if (ceil($result_count / $num_displayed) <= 10) {
-//                        for ($i = 1; $i <= ceil($result_count / $num_displayed); $i++) {
-//                            if ($i != $Request_page) {
-//                                if ($ForWindow == 'ForWindow') {
-//                                    $pages .= "<A HREF=" . str_replace('Modules.php', 'ForWindow.php', $PHP_tmp_SELF) . "&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
-//                                } else {
-//                                    $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i&list_type=$singular>$i</A>, ";
-//                                }
-//                            } else {
-//                                $pages .= "$i, ";
-//                            }
-//                        }
-//                        $pages = substr($pages, 0, -2);
-//                    } else {
-//                        for ($i = 1; $i <= 7; $i++) {
-//                            if ($i != $Request_page)
-//                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
-//                            else
-//                                $pages .= "$i, ";
-//                        }
-//                        $pages = substr($pages, 0, -2) . " ... ";
-//                        for ($i = ceil($result_count / $num_displayed) - 2; $i <= ceil($result_count / $num_displayed); $i++) {
-//                            if ($i != $Request_page)
-//                                $pages .= "<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=$i>$i</A>, ";
-//                            else
-//                                $pages .= "$i, ";
-//                        }
-//                        $pages = substr($pages, 0, -2) . " &nbsp;<A HREF=$PHP_tmp_SELF&LO_sort=$_REQUEST[LO_sort]&LO_direction=$_REQUEST[LO_direction]&LO_search=" . urlencode($_REQUEST['LO_search']) . "&page=" . ($Request_page + 1) . ">Next Page</A><BR>";
-//                    }
-//                    echo $pages;
-//
-//                    echo '</strong></div>';
-//                }
-//            }
-//            else {
-//                $start = 1;
-//                $stop = $result_count;
-//                if ($cols > 8 || $_REQUEST['expanded_view']) {
-//                    $_SESSION['orientation'] = 'landscape';
-//                    $repeat_headers = 16;
-//                } else
-//                    $repeat_headers = 27;
-//                if ($options['print']) {
-//                    $html = explode('<!-- new page -->', strtolower(ob_get_contents()));
-//                    $html = $html[count($html) - 1];
-//                    echo '</TD></TR></TABLE>';
-//                    $br = (substr_count($html, '<br>')) + (substr_count($html, '</p>')) + (substr_count($html, '</tr>')) + (substr_count($html, '</h1>')) + (substr_count($html, '</h2>')) + (substr_count($html, '</h3>')) + (substr_count($html, '</h4>')) + (substr_count($html, '</h5>'));
-//                    if ($br % 2 != 0) {
-//                        $br++;
-//                        echo '<BR>';
-//                    }
-//                } else
-//                    echo '</TD></TR></TABLE>';
-//            }
-//            // END MISC ---
-//
-//
-//            echo '<div class="panel-heading">';
-//
-//            // SEARCH BOX & MORE HEADERS
-//            if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
-//                echo "<h6 class=\"panel-title\">";
-//                if ($singular && $plural && $options['count']) {
-//                    if ($display_count > 1)
-//                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
-//                    elseif ($display_count == 1)
-//                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
-//                }
-//                if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-//                    echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
-//
-//                echo '</h6>';
-//                $colspan = 1;
-//                if (!isset($_REQUEST['_openSIS_PDF']) && $options['search']) {
-//                    $_REQUEST['portal_search'] = 'true';
-//                    $tmp_REQUEST = $_REQUEST;
-//                    unset($tmp_REQUEST['LO_search']);
-//                    unset($tmp_REQUEST['page']);
-//                    echo "<div class=\"heading-elements\">";
-//                    echo '<div class="form-group">';
-//                    echo "<INPUT type=hidden id=hidden_field >";
-//                    echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-//                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-//                    echo '</div>'; //.input-group
-//                    echo '</div>'; //.form-group
-//                    echo "</div>"; //.heading-elements
-//                    $colspan++;
-//                }
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//            } else
-//                echo '<DIV id=LOx' . (count($column_names) + (($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0) + (($remove && !isset($_REQUEST['_openSIS_PDF'])) ? 1 : 0)) . ' style="width:0; position: relative; height:0;"></DIV>';
-//            // END SEARCH BOX ----
-//            echo '</div>'; //.panel-heading
-//            // SHADOW
-//            if (!isset($_REQUEST['_openSIS_PDF'])) {
-//
-//                echo '<div id="pagerNavPosition"></div>';
-//                echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
-//            }
-//            echo "<TABLE id='results' class=\"table table-bordered table-striped\" align=center>";
-//            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                echo '<THEAD>';
-//            if (!isset($_REQUEST['_openSIS_PDF']))
-//                echo '<TR>';
-//
-//            $i = 1;
-//            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
-//                //THIS LINE IS FOR COLUMN HEADING
-//                echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV></TD>";
-//                $i++;
-//            }
-//
-//            if ($result_count != 0 && $cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                foreach ($column_names as $key => $value) {
-//                    if ($_REQUEST['LO_sort'] == $key)
-//                        $direction = -1 * $_REQUEST['LO_direction'];
-//                    else
-//                        $direction = 1;
-//                    //THIS LINE IS FOR COLUMN HEADING
-//                    echo "<TD class=subtabs><DIV id=LOx$i style='position: relative;'></DIV>";
-//                    echo "<A ";
-//                    if ($options['sort']) {
-//                        if ($ForWindow == 'ForWindow') {
-//                            echo "HREF=#";
-//                        } else {
-//                            echo "HREF=$PHP_tmp_SELF&page=$_REQUEST[page]&LO_sort=$key&LO_direction=$direction&LO_search=" . urlencode($_REQUEST['LO_search']);
-//                        }
-//                    }
-//                    echo " class=column_heading><b>$value</b></A>";
-//                    if ($i == 1)
-//                        echo "<DIV id=LOy0 style='position: relative;'></DIV>";
-//                    echo "</TD>";
-//                    $i++;
-//                }
-//
-//                echo "</TR>";
-//            }
-//
-//            $color = '';
-//
-//            if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                echo '</THEAD><TBODY>';
-//
-//
-//            // mab - enable add link as first or last
-//            if ($result_count != 0 && $link['add']['first'] && ($stop - $start) >= $link['add']['first']) {
-//
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
-//                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
-//                elseif ($link['add']['html'] && $cols) {
-//                    echo "<TR $color>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
-//                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
-//                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD align=left>" . button('add') . "</TD>";
-//
-//                    foreach ($column_names as $key => $value) {
-//                        echo "<TD align=left >" . $link['add']['html'][$key] . "</TD>";
-//                    }
-//                    echo "</TR>";
-//                    $count++;
-//                }
-//            }
-//
-//
-//            for ($i = $start; $i <= $stop; $i++) {
-//                $item = $result[$i];
-//                if (isset($_REQUEST['_openSIS_PDF']) && $options['print'] && count($item)) {
-//                    foreach ($item as $key => $value) {
-//                        $value = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $value);
-//                        $value = par_rep_cb('/<SELECT.*</SELECT\>/', '', $value);
-//
-//                        if (strpos($value, 'LO_field') === false)
-//                            $item[$key] = str_replace(' ', '&nbsp;', par_rep_cb("/<div onclick='[^']+'>/", '', $value));
-//                        else
-//                            $item[$key] = par_rep_cb("/<div onclick='[^']+'>/", '', $value);
-//                    }
-//                }
-//
-//                if ($item['row_color'])
-//                    $color = $item['row_color'];
-//                elseif ($color == '')
-//                    $color = $side_color;
-//                else
-//                    $color = '';
-//
-//                if (isset($_REQUEST['_openSIS_PDF']) && $count % $repeat_headers == 0) {
-//                    if ($count != 0) {
-//                        echo '</TABLE><TABLE class="table table-bordered table-striped">';
-//                        echo '<!-- NEW PAGE -->';
-//                    }
-//                    echo "<TR>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD></TD>";
-//
-//                    if ($cols) {
-//                        foreach ($column_names as $key => $value) {
-//                            echo "<TD >" . str_replace(' ', '&nbsp;', $value) . "</TD>";
-//                        }
-//                    }
-//                    echo "</TR>";
-//                }
-//                if ($count == 0)
-//                    $count = $br;
-//
-//                echo "<TR $color>";
-//                $count++;
-//                if ($remove && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $button_title = $link['remove']['title'];
-//
-//                    $button_link = $link['remove']['link'];
-//                    if (count($link['remove']['variables'])) {
-//                        foreach ($link['remove']['variables'] as $var => $val)
-//                            $button_link .= "&$var=" . ($item[$val]);
-//                    }
-//
-//                    echo "<TD $color>" . button('remove', $button_title, $button_link) . "</TD>";
-//                }
-//                if ($cols) {
-//                    foreach ($column_names as $key => $value) {
-//                        if ($link[$key] && !isset($_REQUEST['_openSIS_PDF'])) {
-//                            echo "<TD $color >";
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
-//                            if ($link[$key]['js'] === true) {
-//                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
-//                                if (count($link[$key]['variables'])) {
-//                                    foreach ($link[$key]['variables'] as $var => $val)
-//                                        echo "&$var=" . urlencode($item[$val]);
-//                                }
-//                                echo "\",\"\",\"scrollbars=yes,resizable=yes,width=800,height=400\");'";
-//                                if ($link[$key]['extra'])
-//                                    echo ' ' . $link[$key]['extra'];
-//                                echo ">";
-//                            }
-//                            else {
-//                                echo "<A HREF={$link[$key][link]}";
-//                                if (count($link[$key]['variables'])) {
-//                                    foreach ($link[$key]['variables'] as $var => $val)
-//                                        echo "&$var=" . urlencode($item[$val]);
-//                                }
-//                                if ($link[$key]['extra'])
-//                                    echo ' ' . $link[$key]['extra'];
-//                                echo " onclick='grabA(this); return false;'>";
-//                            }
-//                            if ($color == Preferences('HIGHLIGHT'))
-//                                echo '';
-//                            else
-//                                echo '<b>';
-//                            echo $item[$key];
-//                            echo '</b>';
-//                            if (!$item[$key])
-//                                echo '***';
-//                            echo "</A>";
-//                            if ($key == 'FULL_NAME')
-//                                echo '</DIV>';
-//                            echo "</TD>";
-//                        }
-//                        else {
-//                            echo "<TD $color >";
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
-//                            if ($color == Preferences('HIGHLIGHT'))
-//                                echo '';
-//                            echo $item[$key];
-//                            if (!$item[$key])
-//                                echo '&nbsp;';
-//                            if ($key == 'FULL_NAME')
-//                                echo '<DIV>';
-//                            echo "</TD>";
-//                        }
-//                    }
-//                }
-//                echo "</TR>";
-//            }
-//
-//            if ($result_count != 0 && (!$link['add']['first'] || $link['add']['first'] && ($stop - $start) < $link['add']['first'])) {
-//
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add', $link['add']['title'], $link['add']['link']) . "</TD></TR>";
-//                elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo "<TR><TD colspan=" . ($remove ? $cols + 1 : $cols) . " align=left>" . button('add') . $link['add']['span'] . "</TD></TR>";
-//                elseif ($link['add']['html'] && $cols) {
-//                    if ($count % 2)
-//                        $color = '';
-//                    else
-//                        $color = $side_color;
-//
-//                    echo "<TR $color>";
-//                    if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $link['add']['html']['remove'])
-//                        echo "<TD align=left>" . $link['add']['html']['remove'] . "</TD>";
-//                    elseif ($remove && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TD align=left>" . button('add') . "</TD>";
-//
-//                    foreach ($column_names as $key => $value) {
-//                        echo "<TD align=left  valign=top>" . $link['add']['html'][$key] . "</TD>";
-//                    }
-//                    echo "</TR>";
-//                }
-//            }
-//            if ($result_count != 0) {
-//                if (!isset($_REQUEST['_openSIS_PDF']) && ($stop - $start) > 10)
-//                    echo '</TBODY>';
-//                echo "</TABLE>";
-//                // SHADOW
-//                if (!isset($_REQUEST['_openSIS_PDF'])) {
-//                    echo '</TD ></TR></TABLE>';
-//
-//
-//                    $number_rec = 100;                    
-//                    if ($result_count > $number_rec) {
-//                        echo "<script language='javascript' type='text/javascript'>\n";
-//                        echo '$(function(){if($("#results").length>0){';
-//                        
-//                        echo "var pager = new Pager('results',$number_rec);\n";
-//                        echo "pager.init();\n";
-//                        echo "pager.showPageNav('pager', 'pagerNavPosition');\n";
-//                        echo "pager.showPage(1);\n";
-//                        echo '}});';
-//                        echo "</script>\n";
-//                    }
-//                }
-//                echo "</TD ></TR>";
-//                echo "</TABLE>";
-//
-//                if ($options['center'])
-//                    echo '';
-//            }
-//
-//            // END PRINT THE LIST ---
-//        }
-//        if ($result_count == 0) {
-//            // mab - problem with table closing if not opened above - do same conditional?
-//            if (($result_count > $num_displayed) || (($options['count'] || $display_zero) && ((($result_count == 0 || $display_count == 0) && $plural) || ($result_count == 0 || $display_count == 0))))
-//                if ($link['add']['link'] && !isset($_REQUEST['_openSIS_PDF']))
-//                    echo '<table cellspacing=8 cellpadding=6 ><tr><TD align=left >' . button('add', $link['add']['title'], $link['add']['link']) . '</td></tr></table>';
-//                elseif (($link['add']['html'] || $link['add']['span']) && count($column_names) && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $color = $side_color;
-//
-//                    if ($options['center'])
-//
-//                    // WIDTH=100%
-//                    // SHADOW
-//                        echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
-//                    if ($link['add']['html']) {
-//                        /* Here also change the colour for left corner */
-//                        echo "<TABLE class=\"table table-bordered table-striped\"><TR><TD class=subtabs></TD>";
-//                        foreach ($column_names as $key => $value) {
-//                            //Here to change the ListOutput Header Colour
-//                            echo "<TD class=subtabs><A><b>" . $value . "</b></A></TD>";
-//                        }
-//                        echo "</TR>";
-//
-//                        echo "<TR >";
-//
-//                        if ($link['add']['html']['remove'])
-//                            echo "<TD >" . $link['add']['html']['remove'] . "</TD>";
-//                        else
-//                            echo "<TD>" . button('add') . "</TD>";
-//
-//                        foreach ($column_names as $key => $value) {
-//                            echo "<TD >" . $link['add']['html'][$key] . "</TD>";
-//                        }
-//                        echo "</TR>";
-//                        echo "</TABLE>";
-//                    } elseif ($link['add']['span'] && !isset($_REQUEST['_openSIS_PDF']))
-//                        echo "<TABLE><TR><TD align=center>" . button('add') . $link['add']['span'] . "</TD></TR></TABLE>";
-//
-//                    // SHADOW
-//
-//                    echo "</TD></TR></TABLE>";
-//                    if ($options['center'])
-//                        echo '</CENTER>';
-//                }
-//        }
-//        if ($result_count != 0) {
-//            if ($options['yscroll']) {
-//                echo '<div id="LOy_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
-//                echo '<TABLE cellpadding=6 id=LOy_table>';
-//                $i = 1;
-//
-//                if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                    $color = $side_color;
-//                    foreach ($result as $item) {
-//                        echo "<TR><TD $color  id=LO_row$i>";
-//                        if ($color == Preferences('HIGHLIGHT'))
-//                            echo '';
-//                        echo $item['FULL_NAME'];
-//                        if (!$item['FULL_NAME'])
-//                            echo '&nbsp;';
-//                        if ($color == Preferences('HIGHLIGHT'))
-//                            echo '';
-//                        echo "</TD></TR>";
-//                        $i++;
-//
-//                        if ($item['row_color'])
-//                            $color = $item['row_color'];
-//                        elseif ($color == '')
-//                            $color = $side_color;
-//                        else
-//                            $color = '';
-//                    }
-//                }
-//                echo '</TABLE>';
-//                echo '</div>';
-//            }
-//
-//            echo '<div id="LOx_layer" style="position: absolute; top: 0; left: 0; visibility:hidden;">';
-//            echo '<TABLE cellpadding=6 id=LOx_table><TR>';
-//            $i = 1;
-//            if ($remove && !isset($_REQUEST['_openSIS_PDF']) && $result_count != 0) {
-//                echo "<TD id=LO_col$i></TD>";
-//                $i++;
-//            }
-//
-//            if ($cols && !isset($_REQUEST['_openSIS_PDF'])) {
-//                foreach ($column_names as $key => $value) {
-//                    echo '<TD id=LO_col' . $i . '><A class=column_heading><b>' . str_replace('controller', '', $value) . '</b></A></TD>';
-//                    $i++;
-//                }
-//            }
-//            echo '</TR></TABLE>';
-//            echo '</div>';
-//        }
-//    }
-//}
-function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -19378,7 +19379,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -19466,7 +19467,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -19587,30 +19588,30 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
             foreach ($column_names as $ci => $cd) {
                 $column_names_mod[$ci] = strip_tags($cd);
             }
-//            if ($options['save_delimiter'] != 'xml') {
-//                $output .='<table><tr>';
-//                foreach ($column_names as $key => $value)
-//                    $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
-//                $output .='</tr>';
-//                foreach ($result as $item) {
-//                    $output .='<tr>';
-//                    foreach ($column_names as $key => $value) {
-//                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
-//                    }
-//                    $output .='</tr>';
-//                }
-//                $output .='</table>';
-//            }
-//            foreach ($result as $item) {
-//                foreach ($column_names_mod as $key => $value) {
-//                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-//                        $item[$key] = str_replace(',', ';', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-//                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-//                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-//                }
-//                $output .= "\n";
-//            }
+            //            if ($options['save_delimiter'] != 'xml') {
+            //                $output .='<table><tr>';
+            //                foreach ($column_names as $key => $value)
+            //                    $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+            //                $output .='</tr>';
+            //                foreach ($result as $item) {
+            //                    $output .='<tr>';
+            //                    foreach ($column_names as $key => $value) {
+            //                        $output .='<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+            //                    }
+            //                    $output .='</tr>';
+            //                }
+            //                $output .='</table>';
+            //            }
+            //            foreach ($result as $item) {
+            //                foreach ($column_names_mod as $key => $value) {
+            //                    if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+            //                        $item[$key] = str_replace(',', ';', $item[$key]);
+            //                    $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+            //                    $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+            //                    $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+            //                }
+            //                $output .= "\n";
+            //            }
             $output = '<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
             foreach ($result as $item) {
                 $output .= '<tr>';
@@ -19641,9 +19642,9 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -19694,8 +19695,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -19718,19 +19718,19 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
             // END MISC ---
 
 
-            echo '<div class="panel-heading">';
+            echo '<div class="panel-heading p-l-0">';
 
             // SEARCH BOX & MORE HEADERS
             if ($where_message || ($singular && $plural) || (!isset($_REQUEST['_openSIS_PDF']) && $options['search'])) {
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
-                    echo "&nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
+                    echo "&nbsp; <A class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" title=\"\" data-original-title=\"Download Spreadsheet\" HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&$extra&LO_save=1&_openSIS_PDF=true ><i class=\"icon-file-excel\"></i></a>";
 
                 echo '</h6>';
                 $colspan = 1;
@@ -19743,7 +19743,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
                     echo "<div class=\"input-group\"><INPUT type=text class='form-control' id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : 'Search\' style=\'color:BBBBBB\''), "' onfocus='if(this.value==\"Search\") this.value=\"\"; this.style.color=\"000000\";' onblur='if(this.value==\"\") {this.value=\"Search\"; this.style.color=\"BBBBBB\";}' onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo "</div>"; //.heading-elements
@@ -19890,7 +19890,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -19899,9 +19899,8 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -19922,8 +19921,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -19975,8 +19973,8 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                     if ($result_count > $number_rec) {
                         echo "<script language='javascript' type='text/javascript'>\n";
                         echo "var table = $('#results').DataTable({"
-                        . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
-                        . "language: {
+                            . "dom: '<\"datatable-header\"ip><\"datatable-scroll\"t><\"datatable-footer\"ip>',"
+                            . "language: {
                             search: '<span>Filter:</span> _INPUT_',
                             lengthMenu: '<span>Show:</span> _MENU_',
                             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
@@ -19994,7 +19992,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
                             }
                         ],
                         'iDisplayLength': " . $number_rec . ""
-                        . "});";
+                            . "});";
                         echo "datatable.subscribe('checkboxClickEvent', function(oArgs) {
                                 var elCheckbox = oArgs.target;
                                 var newValue = elCheckbox.checked;
@@ -20031,8 +20029,8 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -20119,7 +20117,14 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
     }
 }
 
-function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '')
+{
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -20170,7 +20175,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
     $PHP_tmp_SELF = str_replace('>', '', PreparePHP_SELF($tmp_REQUEST));
     // END PREPARE LINKS ---
     // UN-GROUPING
-    $group_count = count($group);
+    $group_count = (is_countable($group)) ? count($group) : 0;
     if (!is_array($group))
         $group_count = false;
 
@@ -20260,7 +20265,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
     if ($_LIST['output'] != false) {
         if ($result_count != 0) {
             $count = 0;
-            $remove = count($link['remove']['variables']);
+            $remove = (is_countable($link['remove']['variables'])) ? count($link['remove']['variables']) : 0;
             $cols = count($column_names);
 
             // HANDLE SEARCHES ---
@@ -20384,13 +20389,6 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
             foreach ($column_names as $ci => $cd) {
                 $column_names_mod[$ci] = strip_tags($cd);
             }
-            // if($options['save_delimiter']!='xml')
-            // {
-            //  foreach($column_names_mod as $key=>$value)
-            //      $output .= str_replace('&nbsp;',' ',eregi_replace('<BR>',' ',ereg_replace('<!--.*-->','',$value))) . ($options['save_delimiter']=='comma'?',':"\t");
-            //  $output .= "\n";
-            // }
-
             if ($options['save_delimiter'] != 'xml') {
 
                 $output = '<table border=\'1\'><tr>';
@@ -20408,18 +20406,6 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                 }
                 $output .= '</table>';
             }
-
-            // foreach ($result as $item) {
-            //     foreach ($column_names_mod as $key => $value) {
-            //         if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
-            //             $item[$key] = str_replace(',', ';', $item[$key]);
-            //         $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
-            //         $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
-            //         $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
-            //     }
-            //     $output .= "\n";
-            // }
-
             header("Cache-Control: public");
             header("Pragma: ");
             header("Content-Type: text/plain");
@@ -20441,9 +20427,9 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
 
         if ($options['count'] || $display_zero) {
             if (($result_count == 0 || $display_count == 0) && $plural)
-                echo "<div class=\"alert alert-danger no-border\">No $plural "._wereFound.".</div>";
+                echo "<div class=\"alert alert-danger no-border\">No $plural " . _wereFound . ".</div>";
             elseif ($result_count == 0 || $display_count == 0)
-                echo '<div class="alert alert-danger no-border">'._noneWereFound.'.</div>';
+                echo '<div class="alert alert-danger no-border">' . _noneWereFound . '.</div>';
         }
         if ($result_count != 0 || ($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search')) {
             if (!isset($_REQUEST['_openSIS_PDF'])) {
@@ -20494,8 +20480,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
 
                     echo '</strong></div>';
                 }
-            }
-            else {
+            } else {
                 $start = 1;
                 $stop = $result_count;
                 if ($cols > 8 || $_REQUEST['expanded_view']) {
@@ -20525,9 +20510,9 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                 echo "<h6 class=\"panel-title\">";
                 if ($singular && $plural && $options['count']) {
                     if ($display_count > 1)
-                        echo "<span class=\"heading-text\">$display_count $plural "._wereFound.".</span>";
+                        echo "<span class=\"heading-text\">$display_count $plural " . _wereFound . ".</span>";
                     elseif ($display_count == 1)
-                        echo "<span class=\"heading-text\">1 $singular "._wasFound.".</span>";
+                        echo "<span class=\"heading-text\">1 $singular " . _wasFound . ".</span>";
                 }
                 if ($options['save'] && !isset($_REQUEST['_openSIS_PDF']) && $result_count > 0)
                     echo " &nbsp; <A HREF=" . str_replace('Modules.php', 'ForExport.php', 'Modules.php?modname=scheduling/UnfilledRequests.php&search_modfunc=list&next_modname=scheduling/UnfilledRequests.php') . "&$extra&LO_save=1&_openSIS_PDF=true  class=\"btn btn-success btn-xs btn-icon text-white\" data-popup=\"tooltip\" data-placement=\"top\" data-container=\"body\" data-original-title=\"Download Spreadsheet\" title=\"Download Spreadsheet\"><i class=\"icon-file-excel\"></i></a>";
@@ -20543,9 +20528,8 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                     echo "<div class=\"heading-form\">";
                     echo '<div class="form-group">';
                     echo "<INPUT type=hidden id=hidden_field >";
-                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\""._search."\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
-                    // echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
-                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value="._go." onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
+                    echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : '\' style=\'color:BBBBBB\''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                    echo "<span class=input-group-btn><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                     echo '</div>'; //.input-group
                     echo '</div>'; //.form-group
                     echo '</div>'; //.heading-form
@@ -20692,7 +20676,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . ' style="height: 100%; min-height: 100%; position: relative;">';
                             if ($link[$key]['js'] === true) {
-                                echo "<A HREF=# onclick='window.open(\"{$link[$key][link]}";
+                                echo "<A HREF=# onclick='window.open(\"{$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -20701,9 +20685,8 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                                 if ($link[$key]['extra'])
                                     echo ' ' . $link[$key]['extra'];
                                 echo ">";
-                            }
-                            else {
-                                echo "<A HREF={$link[$key][link]}";
+                            } else {
+                                echo "<A HREF={$link[$key]['link']}";
                                 if (count($link[$key]['variables'])) {
                                     foreach ($link[$key]['variables'] as $var => $val)
                                         echo "&$var=" . urlencode($item[$val]);
@@ -20724,8 +20707,7 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
                             if ($key == 'FULL_NAME')
                                 echo '</DIV>';
                             echo "</TD>";
-                        }
-                        else {
+                        } else {
                             echo "<TD $color >";
                             if ($key == 'FULL_NAME')
                                 echo '<DIV id=LOy' . ($count - $br) . '  style="position: relative;">';
@@ -20810,8 +20792,8 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
 
                     if ($options['center'])
 
-                    // WIDTH=100%
-                    // SHADOW
+                        // WIDTH=100%
+                        // SHADOW
                         echo '<TABLE width=100% cellpadding=0 cellspacing=0><TR><TD align=center>';
                     if ($link['add']['html']) {
                         /* Here also change the colour for left corner */
@@ -20898,179 +20880,139 @@ function ListOutputUnscheduleRequests($result, $column_names, $singular = '', $p
 
 function paginationTabMarker($totalPages, $currentPage, $modname, $page_requests, $href_req_pages)
 {
+    global $i;
+    global $output;
+    global $pages;
+    $i = 0;
+    $pages = '';
+    $output = '';
     $opDT = '';
 
-    if($totalPages < 7)
-    {
-        for($ix = 1; $ix <= $totalPages; $ix++)
-        {
+    if ($totalPages < 7) {
+        for ($ix = 1; $ix <= $totalPages; $ix++) {
             $paginate_active = '';
             $paginate_event = '';
 
-            if($currentPage == $ix)
-            {
+            if ($currentPage == $ix) {
                 $paginate_active = 'current';
             }
 
-            if($currentPage != $ix)
-            {
-                if(in_array($modname, $href_req_pages))
-                {
-                    $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$ix.'"';
-                }
-                else
-                {
-                    $paginate_event = 'onclick="loadDataTablePagination('.$ix.')"';
+            if ($currentPage != $ix) {
+                if (in_array($modname, $href_req_pages)) {
+                    $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $ix . '"';
+                } else {
+                    $paginate_event = 'onclick="loadDataTablePagination(' . $ix . ')"';
                 }
             }
 
-            $opDT .= '<a class="paginate_button '.$paginate_active.'" '.$paginate_event.'>'.$ix.'</a>';
+            $opDT .= '<a class="paginate_button ' . $paginate_active . '" ' . $paginate_event . '>' . $ix . '</a>';
         }
-    }
-    else
-    {
-        if($currentPage >= 5 && $currentPage <= ($totalPages - 3))
-        {
+    } else {
+        if ($currentPage >= 5 && $currentPage <= ($totalPages - 3)) {
             $paginate_event = '';
 
-            if(in_array($modname, $href_req_pages))
-            {
-                $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage=1"';
-            }
-            else
-            {
+            if (in_array($modname, $href_req_pages)) {
+                $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=1"';
+            } else {
                 $paginate_event = 'onclick="loadDataTablePagination(1)"';
             }
 
-            $opDT .= '<a class="paginate_button" '.$paginate_event.'>1</a>';
+            $opDT .= '<a class="paginate_button" ' . $paginate_event . '>1</a>';
             $opDT .= '<span class="ellipsis" style="user-select:none;">…</span>';
 
-            for($ix = ($currentPage - 1); $ix <= ($currentPage + 1); $ix++)
-            {
+            for ($ix = ($currentPage - 1); $ix <= ($currentPage + 1); $ix++) {
                 $paginate_active = '';
                 $paginate_event = '';
 
-                if($currentPage == $ix)
-                {
+                if ($currentPage == $ix) {
                     $paginate_active = 'current';
                 }
 
-                if($currentPage != $ix)
-                {
-                    if(in_array($modname, $href_req_pages))
-                    {
-                        $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$ix.'"';
-                    }
-                    else
-                    {
-                        $paginate_event = 'onclick="loadDataTablePagination('.$ix.')"';
+                if ($currentPage != $ix) {
+                    if (in_array($modname, $href_req_pages)) {
+                        $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $ix . '"';
+                    } else {
+                        $paginate_event = 'onclick="loadDataTablePagination(' . $ix . ')"';
                     }
                 }
 
-                $opDT .= '<a class="paginate_button '.$paginate_active.'" '.$paginate_event.'>'.$ix.'</a>';
+                $opDT .= '<a class="paginate_button ' . $paginate_active . '" ' . $paginate_event . '>' . $ix . '</a>';
             }
 
             $opDT .= '<span class="ellipsis" style="user-select:none;">…</span>';
 
             $paginate_event = '';
 
-            if(in_array($modname, $href_req_pages))
-            {
-                $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$totalPages.'"';
-            }
-            else
-            {
-                $paginate_event = 'onclick="loadDataTablePagination('.$totalPages.')"';
+            if (in_array($modname, $href_req_pages)) {
+                $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $totalPages . '"';
+            } else {
+                $paginate_event = 'onclick="loadDataTablePagination(' . $totalPages . ')"';
             }
 
-            $opDT .= '<a class="paginate_button" '.$paginate_event.'>'.$totalPages.'</a>';
-        }
-        else if($currentPage < 5)
-        {
-            for($ix = 1; $ix <= 5; $ix++)
-            {
+            $opDT .= '<a class="paginate_button" ' . $paginate_event . '>' . $totalPages . '</a>';
+        } else if ($currentPage < 5) {
+            for ($ix = 1; $ix <= 5; $ix++) {
                 $paginate_active = '';
                 $paginate_event = '';
 
-                if($currentPage == $ix)
-                {
+                if ($currentPage == $ix) {
                     $paginate_active = 'current';
                 }
 
-                if($currentPage != $ix)
-                {
-                    if(in_array($modname, $href_req_pages))
-                    {
-                        $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$ix.'"';
-                    }
-                    else
-                    {
-                        $paginate_event = 'onclick="loadDataTablePagination('.$ix.')"';
+                if ($currentPage != $ix) {
+                    if (in_array($modname, $href_req_pages)) {
+                        $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $ix . '"';
+                    } else {
+                        $paginate_event = 'onclick="loadDataTablePagination(' . $ix . ')"';
                     }
                 }
 
-                $opDT .= '<a class="paginate_button '.$paginate_active.'" '.$paginate_event.'>'.$ix.'</a>';
+                $opDT .= '<a class="paginate_button ' . $paginate_active . '" ' . $paginate_event . '>' . $ix . '</a>';
             }
 
             $opDT .= '<span class="ellipsis" style="user-select:none;">…</span>';
 
             $paginate_event = '';
 
-            if(in_array($modname, $href_req_pages))
-            {
-                $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$totalPages.'"';
-            }
-            else
-            {
-                $paginate_event = 'onclick="loadDataTablePagination('.$totalPages.')"';
+            if (in_array($modname, $href_req_pages)) {
+                $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $totalPages . '"';
+            } else {
+                $paginate_event = 'onclick="loadDataTablePagination(' . $totalPages . ')"';
             }
 
-            $opDT .= '<a class="paginate_button" '.$paginate_event.'>'.$totalPages.'</a>';
-        }
-        else if($currentPage > ($totalPages - 3))
-        {
+            $opDT .= '<a class="paginate_button" ' . $paginate_event . '>' . $totalPages . '</a>';
+        } else if ($currentPage > ($totalPages - 3)) {
             $paginate_event = '';
 
-            if(in_array($modname, $href_req_pages))
-            {
-                $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage=1"';
-            }
-            else
-            {
+            if (in_array($modname, $href_req_pages)) {
+                $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=1"';
+            } else {
                 $paginate_event = 'onclick="loadDataTablePagination(1)"';
             }
 
-            $opDT .= '<a class="paginate_button" '.$paginate_event.'>1</a>';
+            $opDT .= '<a class="paginate_button" ' . $paginate_event . '>1</a>';
             $opDT .= '<span class="ellipsis" style="user-select:none;">…</span>';
 
-            for($ix = ($totalPages - 3); $ix <= $totalPages; $ix++)
-            {
+            for ($ix = ($totalPages - 3); $ix <= $totalPages; $ix++) {
                 $paginate_active = '';
                 $paginate_event = '';
 
-                if($currentPage == $ix)
-                {
+                if ($currentPage == $ix) {
                     $paginate_active = 'current';
                 }
 
-                if($currentPage != $ix)
-                {
-                    if(in_array($modname, $href_req_pages))
-                    {
-                        $paginate_event = 'href="Modules.php'.$page_requests.'&loadpage='.$ix.'"';
-                    }
-                    else
-                    {
-                        $paginate_event = 'onclick="loadDataTablePagination('.$ix.')"';
+                if ($currentPage != $ix) {
+                    if (in_array($modname, $href_req_pages)) {
+                        $paginate_event = 'href="Modules.php' . $page_requests . '&loadpage=' . $ix . '"';
+                    } else {
+                        $paginate_event = 'onclick="loadDataTablePagination(' . $ix . ')"';
                     }
                 }
 
-                $opDT .= '<a class="paginate_button '.$paginate_active.'" '.$paginate_event.'>'.$ix.'</a>';
+                $opDT .= '<a class="paginate_button ' . $paginate_active . '" ' . $paginate_event . '>' . $ix . '</a>';
             }
         }
     }
 
     return $opDT;
 }
-
-?>

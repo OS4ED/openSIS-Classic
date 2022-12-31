@@ -78,7 +78,7 @@ function ajax_call(url, callback_function, error_function) {
 }
 // --------------------------------------------------- USER ----------------------------------------------------------------------------------- //
 
-function usercheck_init(i) {
+function usercheck_init(i, userid , profileid) {
     var obj = document.getElementById('ajax_output');
     obj.innerHTML = '';
 
@@ -108,8 +108,7 @@ function usercheck_init(i) {
 
     var pqr = i.value;
 
-
-    ajax_call('Validator.php?u=' + i.value + 'user', usercheck_callback, usercheck_error);
+    ajax_call('Validator.php?u=' + i.value + 'user' + '&userid=' + userid + '&profileid=' + profileid, usercheck_callback, usercheck_error);
 }
 
 function usercheck_callback(data) {
@@ -292,7 +291,7 @@ function grab_GradeLevel_error()
     alert('Not working');
 }
 // ------------------------------------------------------ USER ---------------------------------------------------------------------------------- //
-function usercheck_init_staff(i) {
+function usercheck_init_staff(i, userid, profileid) {
 
     var obj = document.getElementById('ajax_output_st');
     obj.innerHTML = '';
@@ -321,7 +320,7 @@ function usercheck_init_staff(i) {
     window.$("#staff_username_flag").val("1");
     window.$("#mod_staff_btn").attr("disabled", false);
 
-    ajax_call('Validator.php?u=' + i.value + 'stud', usercheck_callback_staff);
+    ajax_call('Validator.php?u=' + i.value + 'user'+'&userid='+ userid+'&profileid='+ profileid, usercheck_callback_staff);
 }
 
 function usercheck_init_staff_2(i) {
@@ -368,7 +367,7 @@ function usercheck_callback_staff(data) {
 }
 // ------------------------------------------------------ Student ------------------------------------------------------------------------------ //
 
-function usercheck_init_student(i) {
+function usercheck_init_student(i, userid = '', profileid) {
     var obj = document.getElementById('ajax_output_st');
     obj.innerHTML = '';
 
@@ -394,7 +393,7 @@ function usercheck_init_student(i) {
     }
     window.$("#stu_username_flag").val("1");
     window.$("#mod_student_btn").attr("disabled", false);
-    ajax_call('Validator.php?u=' + i.value + 'stud', usercheck_callback_student, usercheck_error_student);
+    ajax_call('Validator.php?u=' + i.value + 'stud' + '&userid=' + userid + '&profileid=' + profileid, usercheck_callback_student, usercheck_error_student);
 }
 
 function usercheck_callback_student(data) {
@@ -410,20 +409,37 @@ function usercheck_error_student(err) {
 }
 
 
-function usercheck_init_student_Mod(i) {
-    ajax_call('Validator.php?u=' + i.value + 'stud', usercheck_callback_student_Mod, usercheck_error_student_Mod);
+function usercheck_init_student_Mod(i, userid = '', profileid) {
+    ajax_call('Validator.php?u=' + i.value + 'stud&userid=' + userid + '&profileid=' + profileid, usercheck_callback_student_Mod, usercheck_error_student_Mod);
 }
 
 function usercheck_callback_student_Mod(data) {
     var response = data;
     document.getElementById('ajax_output_st').innerHTML = '';
     if (response != 1)
-    {
-        document.getElementById('students[USERNAME]').value = '';
-        document.getElementById('students[PASSWORD]').value = '';
+    { 
+        if (document.getElementById('students[USERNAME]')) {
+            document.getElementById('students[USERNAME]').value = '';
+        }
+        else if (document.getElementById('inputstudents[USERNAME]')) {
+            document.getElementById('inputstudents[USERNAME]').value = '';
+        }
+
+        if (document.getElementById('students[PASSWORD]')) {
+            document.getElementById('students[PASSWORD]').value = '';
+        }
+        else if (document.getElementById('inputstudents[PASSWORD]')) {
+            document.getElementById('inputstudents[PASSWORD]').value = '';
+        }
     }
 
-    var student_username = document.getElementById("students[USERNAME]").value;
+    if (document.getElementById("students[USERNAME]")){
+        var student_username = document.getElementById("students[USERNAME]").value;
+    }
+    else if (document.getElementById("inputstudents[USERNAME]")){
+        var student_username = document.getElementById("inputstudents[USERNAME]").value;
+    }
+
     var student_username_flag = document.getElementById("stu_username_flag").value;
 
     if(student_username != '' && student_username_flag == '0')
@@ -3317,6 +3333,19 @@ function loadDataTablePaginationCallback(check_return)
     window.$("#loading-image").hide();
 
     window.$("#tabs_resp").html(check_return);
+    window.$("#hidden_checkboxes > input").each(function() {
+        let checkboxId = $(this).data('checkbox-hidden-id')
+        window.$("[value= "+checkboxId + "]").each(function() {
+            $(this).attr('checked', true)
+        })
+        window.$("[id= "+checkboxId + "]").each(function() {
+            $(this).attr('checked', true)
+        })
+    })
+
+    if(document.getElementById('checked_all') && document.getElementById('checked_all').value == 'true'){
+        window.$('input[type=checkbox][name=controller]').attr('checked', true)
+    }
 }
 
 function loadDataTablePaginationErrors(exceptions)

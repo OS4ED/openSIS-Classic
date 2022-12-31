@@ -116,10 +116,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                         if ($validate_title[1]['TITLE_EX'] != 0 && $flag != 0) {
                             echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseTitleAlreadyExists."</div>";
                             break;
-                        } else if ($v_break > 0) {
-                            echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseBreakOfAlreadyExists."</div>";
-                            break;
-                        } else {
+                        } 
+                        // else if ($v_break > 0) {
+                        //     echo "<div class=\"alert bg-danger alert-styled-left\">"._unableToSaveDataBecauseBreakOfAlreadyExists."</div>";
+                        //     break;
+                        // } 
+                        else {
                             DBQuery($sql); //update query
                             unset($v_break);
                             unset($break);

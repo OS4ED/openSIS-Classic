@@ -69,7 +69,7 @@ if ($note)
     DrawHeader('<IMG SRC=assets/check.gif>' . $note);
 if ($_REQUEST['modfunc'] != 'delete') {
     $extra['SELECT'] = ',(SELECT count(distinct u.PERSON_ID) FROM students_join_people u,people p WHERE u.STUDENT_ID=s.STUDENT_ID AND p.STAFF_ID=u.PERSON_ID) AS ASSOCIATED';
-    $extra['columns_after'] = array('ASSOCIATED' => '# '.associated);
+    $extra['columns_after'] = array('ASSOCIATED' => '# '._associated);
     Search('student_id', $extra);
     if (UserStudentID()) {
 

@@ -925,7 +925,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
 
 
 CREATE TABLE `staff_field_categories` (
- `id` int(8) NOT NULL DEFAULT '0',
+ `id` int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
  `title` varchar(100) DEFAULT NULL,
  `sort_order` decimal(10,0) DEFAULT NULL,
  `include` varchar(100) DEFAULT NULL,
@@ -1276,10 +1276,12 @@ CREATE TABLE IF NOT EXISTS `mail_group` (
   `user_name` varchar(255) NOT NULL,
   `creation_date` datetime NOT NULL,
  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `school_id` int(11) NOT NULL, 
  `updated_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+ALTER TABLE `mail_group` ADD INDEX `mail_group_ind` (`school_id`) USING BTREE;
 
 
 --
@@ -1291,13 +1293,14 @@ CREATE TABLE IF NOT EXISTS `mail_groupmembers` (
   `group_id` int(11) NOT NULL,
   `user_name` varchar(255) NOT NULL,
   `profile` varchar(255) NOT NULL,
+  `school_id` int(11) NOT NULL,
  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `updated_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;# MySQL returned an empty result set (i.e. zero rows).
 # MySQL returned an empty result set (i.e. zero rows).
 
-
+ALTER TABLE `mail_groupmembers` ADD INDEX `mail_groupmembers_ind` (`school_id`) USING BTREE;
 -- --------------------------------------------------------
 
 --
@@ -1796,7 +1799,6 @@ CREATE INDEX student_report_card_grades_ind3  USING btree ON student_report_card
 
 
 CREATE INDEX student_report_card_grades_ind4  USING btree ON student_report_card_grades(marking_period_id);
-
 
 
 

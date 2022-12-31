@@ -30,34 +30,40 @@ include '../functions/ParamLibFnc.php';
 require_once "../functions/PragRepFnc.php";
 error_reporting(0);
 session_start();
-
-session_start();
 if (clean_param($_REQUEST["db"], PARAM_DATA) == '') {
     header('Location: Step2.php?err=Database name cannot be blank');
     exit;
 } else {
+    $_SESSION['db'] = clean_param($_REQUEST["db"], PARAM_DATA);
 
+    if (isset($_REQUEST["newdb"]))
+        $newdb = clean_param($_REQUEST["newdb"], PARAM_ALPHA);
 
-$_SESSION['db'] = clean_param($_REQUEST["db"], PARAM_DATA);
-$newdb = clean_param($_REQUEST["newdb"], PARAM_ALPHA);
+    if (isset($_REQUEST["purgedb"]))
+        $purgedb = clean_param($_REQUEST["purgedb"], PARAM_ALPHA); // Added variable to check for removing existing data.
 
-$purgedb = clean_param($_REQUEST["purgedb"], PARAM_ALPHA); // Added variable to check for removing existing data.
+    // $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
+    $db = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password']);
+    $database = $_SESSION['db'];
+    $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?";
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('s', $database);
+    $stmt->execute();
+    $stmt->bind_result($data);
 
-$dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
-
-
-if ($dbconn->connect_errno == 0) { 
-	if (!empty($newdb)) {
-            	header('Location: Step2.php?err=Database Exists. Enter a different name to create a new database or use the remove data from existing database checkbox.');
-            	exit;
+    // if ($dbconn->connect_errno == 0) {
+    if ($stmt->fetch()) {
+        if (!empty($newdb)) {
+            header('Location: Step2.php?err=Database Exists. Enter a different name to create a new database or use the remove data from existing database checkbox.');
+            exit;
         }
 
-	if (empty($purgedb)) {
+        $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
 
-
-		$sql = "SHOW TABLES";
-		$num_tables = $dbconn->query($sql); 
-		$rows = $num_tables->num_rows;
+        if (empty($purgedb)) {
+            $sql = "SHOW TABLES";
+            $num_tables = $dbconn->query($sql);
+            $rows = $num_tables->num_rows;
             if ($rows > 0) {
                 header('Location: Step2.php?err=Selected database is not empty. Please select an empty database or use the remove data from existing database checkbox.');
                 exit;
@@ -73,69 +79,70 @@ if ($dbconn->connect_errno == 0) {
                 header('Location: Step3.php');
             }
         } else {
-		// Get tables, loop thru the tables and drop each table.
-		$sql = "SHOW TABLES";
-		$num_tables = $dbconn->query($sql);
+            // Get tables, loop thru the tables and drop each table.
+            $sql = "SHOW TABLES";
+            $num_tables = $dbconn->query($sql);
 
 
-		while ($row = $num_tables->fetch_row()) {
-		    // Drop all tables.
-		    $delete_table = $dbconn->query("DROP TABLE IF EXISTS $row[0]");
+            while ($row = $num_tables->fetch_row()) {
+                // Drop all tables.
+                $delete_table = $dbconn->query("DROP TABLE IF EXISTS $row[0]");
 
-		    // Separate Drop for VIEWs is needed due to mysql syntax for views.
-		    $delete_view = $dbconn->query("DROP VIEW IF EXISTS $row[0]");
+                // Separate Drop for VIEWs is needed due to mysql syntax for views.
+                $delete_view = $dbconn->query("DROP VIEW IF EXISTS $row[0]");
 
-		    // There is currently no way to drop functions without knowing
-		    // the functions name and doing a DROP FUNCTION name
-		    // so we have to modify the mysql file to remove functions first
-		    // before trying to add them or else an error will occur.
+                // There is currently no way to drop functions without knowing
+                // the functions name and doing a DROP FUNCTION name
+                // so we have to modify the mysql file to remove functions first
+                // before trying to add them or else an error will occur.
 
-		    if (!$delete_table) {
-		        echo 'Unable to remove ' . $row[0] . '<br>';
+                if (!$delete_table) {
+                    echo 'Unable to remove ' . $row[0] . '<br>';
+                }
             }
+            // Free result set to clear memory
+            //        mysql_free_result($num_tables);
+            //This begins the add portion
+
+            $myFile = "OpensisSchemaMysqlInc.sql";
+            executeSQL($myFile);
+
+            $myFile = "OpensisProcsMysqlInc.sql";
+            executeSQL($myFile);
+
+            createUpdatedByTriggers();
+            $dbconn->close();
+
+            header('Location: Step3.php');
         }
-        // Free result set to clear memory
-        //        mysql_free_result($num_tables);
-        //This begins the add portion
+    } else {
+        if (empty($newdb)) {
+            header('Location: Step2.php?err=Database does not exist. Enter a different database or use the create a new database checkbox.');
+            exit;
+        } else {
+            $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
+            $sql = "CREATE DATABASE `" . $_SESSION['db'] . "` CHARACTER SET=utf8;";
+            $result = $dbconn->query($sql);
+            if (!$result) {
+                echo "<h2>" . $dbconn->error . "</h2>\n";
+                exit;
+            }
 
-        $myFile = "OpensisSchemaMysqlInc.sql";
-        executeSQL($myFile);
 
-        $myFile = "OpensisProcsMysqlInc.sql";
-         executeSQL($myFile);
+            $myFile = "OpensisSchemaMysqlInc.sql";
+            executeSQL($myFile);
 
-        createUpdatedByTriggers();
-        $dbconn->close();
+            $myFile = "OpensisProcsMysqlInc.sql";
+            executeSQL($myFile);
 
-        header('Location: Step3.php');
+            createUpdatedByTriggers();
+            $dbconn->close();
+
+            // edited installation
+            header('Location: Step3.php');
+        }
     }
-} else { 
-	if (empty($newdb)) {
-		    header('Location: Step2.php?err=Database does not exist. Enter a different database or use the create a new database checkbox.');
-		    exit;
-		} else {
-	    $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
-	    $sql = "CREATE DATABASE `" . $_SESSION['db'] . "` CHARACTER SET=utf8;";
-	    $result = $dbconn->query($sql);
-	    if (!$result) {
-        echo "<h2>" . $dbconn->error . "</h2>\n";
-        exit;
-    }
-
-
-   $myFile = "OpensisSchemaMysqlInc.sql";
-   executeSQL($myFile);
-
-    $myFile = "OpensisProcsMysqlInc.sql";
-     executeSQL($myFile);
-
-    createUpdatedByTriggers();
-    $dbconn->close();
-
-// edited installation
-    header('Location: Step3.php');
-}
-}
+    $stmt->close();
 }
 
 function executeSQL($myFile)

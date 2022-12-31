@@ -60,7 +60,7 @@ if (strtotime($start_date_mod) < strtotime($get_min_start_date[1]['START_DATE'])
 }
 
 if ($_REQUEST['modfunc'] == 'search') {
-    echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . "&day_start=" . strip_tags(trim($_REQUEST[day_start])) . "&day_end=" . strip_tags(trim($_REQUEST[day_end])) . "&month_start=" . strip_tags(trim($_REQUEST[month_start])) . "&month_end=" . strip_tags(trim($_REQUEST[month_end])) . "&year_start=" . strip_tags(trim($_REQUEST[year_start])) . "&year_end=" . strip_tags(trim($_REQUEST[year_end])) . " method=POST>";
+    echo "<FORM class=form-horizontal name=percentform action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST['list_by_day'])) . "&day_start=" . strip_tags(trim($_REQUEST['day_start'])) . "&day_end=" . strip_tags(trim($_REQUEST['day_end'])) . "&month_start=" . strip_tags(trim($_REQUEST['month_start'])) . "&month_end=" . strip_tags(trim($_REQUEST['month_end'])) . "&year_start=" . strip_tags(trim($_REQUEST['year_start'])) . "&year_end=" . strip_tags(trim($_REQUEST['year_end'])) . " method=POST>";
     PopTable('header', _advanced);
     Search('general_info', $extra['grades']);
     if (!isset($extra))
@@ -72,7 +72,7 @@ if ($_REQUEST['modfunc'] == 'search') {
     if (User('PROFILE') == 'admin'){
         echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>'._searchAllSchools.'</label></div></div>';
     }
-    $btn = '<div class="p-l-20">' . Buttons(submit) . '</div>';
+    $btn = '<div class="p-l-20">' . Buttons(_submit) . '</div>';
     PopTable('footer', $btn);
     echo '</FORM>';
 }
@@ -89,7 +89,7 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="panel panel-default">';
     echo '<div class="panel-heading clearfix">';
-    echo "<FORM  name=ada_from id=ada_from onSubmit='return formcheck_ada_dates();' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST[list_by_day])) . " method=POST>";
+    echo "<FORM  name=ada_from id=ada_from onSubmit='return formcheck_ada_dates();' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&list_by_day=" . strip_tags(trim($_REQUEST['list_by_day'])) . " method=POST>";
     $advanced_link = " <A class=\"text-pink\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> "._advanced."</A>";
 
     echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; <INPUT type=submit value='._go.'  class="btn btn-primary"> &nbsp; ' . $advanced_link . '</div></div>';

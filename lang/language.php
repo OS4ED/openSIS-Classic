@@ -1,8 +1,5 @@
 <?php
-
 error_reporting(0);
-
-
 if($_REQUEST['modfunc'] != 'logout'){
     
 include('lang/supportedLanguages.php');

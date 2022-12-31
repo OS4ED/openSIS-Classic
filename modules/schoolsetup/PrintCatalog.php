@@ -26,12 +26,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-#######################################################################################################################
 include('lang/language.php');
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['report']) {
     echo '<style type="text/css">*{font-family:arial; font-size:12px;}</style>';
-
+    echo '<link rel="stylesheet" type="text/css" href="assets/css/export_print.css" />';
     if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM))
         $where = ' AND MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id'];
     $sql = 'select distinct
@@ -48,15 +47,15 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
             echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
             $mark_name_rp = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM school_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM school_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM school_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
             $mark_name_rpt = $mark_name_rp[1]['TITLE'];
-              
-              if ($mark_name_rpt != '') {
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._courseCatalogByTerm.": " . $mark_name_rpt . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." OpenSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+
+            if ($mark_name_rpt != '') {
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _courseCatalogByTerm . ": " . $mark_name_rpt . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _poweredBy . " OpenSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
             } else {
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._courseCatalogByTerm.": "._all."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _courseCatalogByTerm . ": " . _all . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _poweredBy . " openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
             }
 
             echo '<div align="center">';
-            echo '<table border="0" width="97%" align="center"><tr><td><font face=verdana size=-1><b>' . $s_id['SUBJECT'] . '</b></font></td></tr>';
+            echo '<table border="0" width="100%" align="center"><tr><td><font face=verdana size=-1><b>' . $s_id['SUBJECT'] . '</b></font></td></tr>';
             echo '<tr><td align="right"><table border="0" width="97%"><tr><td><font face=verdana size=-1><b>' . $s_id['COURSE_TITLE'] . '</b></font></td></tr>';
 
 
@@ -101,13 +100,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
                     $period_list[$key]['DAYS'] = $cal_days;
                 }
             }
-##############################################List Output Generation##################################################
+            ##############################################List Output Generation##################################################
 
-           $columns = array('SHORT_NAME' => _coursePeriod, 'PERIOD' => _time, 'DAYS' => _days, 'ROOM' => _location, 'TEACHER' => _teacher);
+            $columns = array('SHORT_NAME' => _coursePeriod, 'PERIOD' => _time, 'DAYS' => _days, 'ROOM' => _location, 'TEACHER' => _teacher);
 
 
             echo '<tr><td colspan="2" valign="top" align="right">';
-            PrintCatalog($period_list, $columns, _course, _courses , '', '', array('search' =>false));
+            PrintCatalog($period_list, $columns, _course, _courses, '', '', array('search' => false));
             echo '</td></tr></table></td></tr></table></td></tr>';
 
             ######################################################################################################################
@@ -116,13 +115,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
             echo "<div style=\"page-break-before: always;\"></div>";
         }
     } else
-        echo '<table width=100%><tr><td align=center><font color=red face=verdana size=2><strong>'._noCoursesAreFoundInThisTerm.'</strong></font></td></tr></table>';
-}
-else {
+        echo '<table width=100%><tr><td align=center><font color=red face=verdana size=2><strong>' . _noCoursesAreFoundInThisTerm . '</strong></font></td></tr></table>';
+} else {
     echo '<div class="row">';
     echo '<div class="col-md-6 col-md-offset-3">';
     PopTable('header', _printCatalogByTerm, 'class="panel panel-default"');
-    echo "<FORM id='search' name='search' class='form-horizontal' method=POST action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . ">";
+    echo "<FORM id='search' name='search' class='form-horizontal' method=POST action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . ">";
     $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM school_quarters WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\'  FROM school_semesters WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\'  FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
     unset($options);
     if (count($mp_RET)) {
@@ -131,39 +129,36 @@ else {
                 $mp_RET[$key]['row_color'] = Preferences('HIGHLIGHT');
         }
 
-        $columns = array('TITLE' =>_markingPeriods);
+        $columns = array('TITLE' => _markingPeriods);
         $link = array();
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]";
         $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID', 'mp_name' => 'SHORT_NAME');
         $link['TITLE']['link'] .= "&modfunc=$_REQUEST[modfunc]";
 
-        echo '<div class="form-group"><div class="col-md-12">'.CreateSelect($mp_RET, 'marking_period_id', 'All', _selectTerm, 'Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&marking_period_id=').'</div></div>';
+        echo '<div class="form-group"><div class="col-md-12">' . CreateSelect($mp_RET, 'marking_period_id', 'All', _selectTerm, 'Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&marking_period_id=') . '</div></div>';
     }
     if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM)) {
         $mark_name = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM school_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM school_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM school_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
         $mark_name = $mark_name[1]['SHORT_NAME'];
-        echo '<div class="alert bg-success alert-styled-left">'._reportGeneratedFor.'' . $mark_name . ''._term.'</div>';
+        echo '<div class="alert bg-success alert-styled-left">' . _reportGeneratedFor . ' ' . $mark_name . ' ' . _term . '</div>';
     } else {
-        echo '<div class="alert bg-success alert-styled-left">'._reportGeneratedForAllTerms.'</div>';
+        echo '<div class="alert bg-success alert-styled-left">' . _reportGeneratedForAllTerms . '</div>';
     }
     echo '</form>';
     echo "<FORM name=exp class=no-margin-bottom id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=print&marking_period_id=" . $_REQUEST['marking_period_id'] . "&_openSIS_PDF=true&report=true method=POST target=_blank>";
-    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\''._print.'\'></div>';
+    echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\'' . _print . '\'></div>';
     echo '</form>';
     PopTable('footer');
     echo '</div>'; //.col-md-6.col-md-offset-3
     echo '</div>'; //.row
 }
 
-
-
-
-
-
 ##########functions###################
 
-function CreateSelect($val, $name, $opt, $cap, $link) {
-    $html .= '<label class="control-label text-uppercase"><b>' . $cap . '</b></label>';
+function CreateSelect($val, $name, $opt, $cap, $link)
+{
+
+    $html = '<label class="control-label text-uppercase"><b>' . $cap . '</b></label>';
     $html .= "<select name=" . $name . " id=" . $name . " class=\"form-control\" onChange=\"window.location='" . $link . "' + this.options[this.selectedIndex].value;\">";
     $html .= "<option value=''>" . $opt . "</option>";
 
@@ -178,5 +173,3 @@ function CreateSelect($val, $name, $opt, $cap, $link) {
     $html .= "</select>";
     return $html;
 }
-
-?>

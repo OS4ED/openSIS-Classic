@@ -56,6 +56,23 @@ function formcheck_school_setup_school(this_DET) {
   );
 
   //frmvalidator.addValidation("values[E_MAIL]", "email", "Please enter email in proper format");
+  
+
+  var school_custom_req_ids = document.getElementById("custom_sch_field_ids").value;
+  console.log(school_custom_req_ids);
+  if (school_custom_req_ids != "") {
+    var req_field_ids = school_custom_req_ids.split(","); 
+    var school_custom_req_titles = document.getElementById("custom_sch_field_titles").value;
+    var req_field_titles = school_custom_req_titles.split(",");
+    for (var rt_i = 0; rt_i < req_field_ids.length ; rt_i++) {
+      frmvalidator.addValidation(
+        req_field_ids[rt_i],
+        "req",
+        "Please enter the " + req_field_titles[rt_i]
+      );
+    }
+  }
+
 
   var school_id = document.getElementById("h1").value;
 
@@ -4114,17 +4131,17 @@ function formcheck_add_staff(staff_school_chkbox_id, this_DET) {
   frmvalidator.addValidation(
     "month_values[JOINING_DATE]",
     "req",
-    "Please select the joining date"
+    "Please select the joining date's month"
   );
   frmvalidator.addValidation(
     "day_values[JOINING_DATE]",
     "req",
-    "Please select the joining date"
+    "Please select the joining date's date"
   );
   frmvalidator.addValidation(
     "year_values[JOINING_DATE]",
     "req",
-    "Please select the joining date"
+    "Please select the joining date's year"
   );
 
   var end_date = document.getElementById("end_date_school").value;
@@ -4891,15 +4908,26 @@ function forgotusername() {
   }
 }
 
-function check_update_seat(course_period_id) {
-  var frmvalidator = new Validator("update_seats");
-  //    alert(2);
-  frmvalidator.addValidation(
-    "tables[course_periods][" + course_period_id + "][TOTAL_SEATS]",
-    "req",
-    "Please enter a number"
-  );
-  //    alert(3);
+function check_update_seat(cp_seats,course_period_id,student_count)
+{
+    updated_seats = document.getElementById("tables[course_periods][" + course_period_id + "][TOTAL_SEATS]");
+    if (updated_seats != null)
+    {
+        if (updated_seats.value.trim() == '' || updated_seats.value.trim() == '0')
+        {
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New number of seats cannot be blank/zero.</div>';
+            return false;
+        } else if (updated_seats.value < cp_seats)
+        {
+            document.getElementById('err_message').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New number of seats cannot be lesser than '+cp_seats+'.</div>';
+            return false;
+        } else if (updated_seats.value < (cp_seats+student_count))
+        {
+            document.getElementById('err_message').innerHTML = `<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> New number of seats cannot be lesser than ${cp_seats + student_count} because we have ${student_count} students left to schedule.</div>`;
+            return false;
+        } else
+            return true;
+    }
 }
 
 function formcheck_ada_dates() {

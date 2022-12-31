@@ -31,8 +31,8 @@ include 'lang/language.php';
 if(!$_REQUEST['modfunc'] && !isset($_REQUEST['search_modfunc'])){
     unset($_SESSION['MassDrops.php']);
 }
-//echo "<pre>"; print_r($_REQUEST); echo "</pre>";
-if (isset($_SESSION['student_id']) && ($_SESSION['student_id'] == UserStudentID())) {
+
+if (UserStudentID() != '') {
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
 
     echo '<div class="panel panel-default">';
@@ -98,7 +98,11 @@ if ($_REQUEST['modfunc'] == 'cp_insert') {
         $_SESSION['conflict_cp'] = $parent_c_name;
     }
     DBQuery("DROP TABLE IF EXISTS temp_schedule");
-    echo "<script type=text/javascript>window.location.href='Modules.php?modname=scheduling/Schedule.php&student_id=" . UserStudentID() . "';</script>";
+    $day = $_REQUEST['day_date'];
+    $month   = $_REQUEST['month_date'];
+    $year = $_REQUEST['year_date'];
+    echo "<script type=text/javascript>window.location.href='Modules.php?modname=scheduling/Schedule.php&month_date=$month&day_date=$day&year_date=$year&student_id=" . UserStudentID() . "';</script>";
+
 }
 
 foreach ($_REQUEST as $i => $r) {
@@ -128,7 +132,8 @@ foreach ($_REQUEST as $i => $r) {
         }
     }
 }
-$end_d = implode('-', $end_d);
+$end_darr = isset($end_d) && is_array($end_d) ? $end_d : [];
+$end_d = implode('-', $end_darr);
 //$end_d = date('m-d-Y', strtotime($end_d));
 include '../../RedirectModulesInc.php';
 ini_set('memory_limit', '12000000M');
@@ -292,15 +297,20 @@ if ($_REQUEST['del'] == 'true') {
             unset($_REQUEST['del']);
             unset($_REQUEST['c_id']);
             unset($_REQUEST['cp_id']);
+            $day = $_REQUEST['day_date'];
+            $month   = $_REQUEST['month_date'];
+            $year = $_REQUEST['year_date'];
 
-            echo "<script>window.location.href='Modules.php?modname=scheduling/Schedule.php'</script>";
+            echo "<script>window.location.href='Modules.php?modname=scheduling/Schedule.php&month_date=$month&day_date=$day&year_date=$year'</script>";
+
         }
         unset($_REQUEST['del']);
         unset($_REQUEST['c_id']);
     }
 } else {
-    if (isset($_REQUEST['student_id'])) {
-        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $selectedStudentId = isset($_REQUEST['student_id']) ? $_REQUEST['student_id'] : UserStudentID();
+    if (isset($_REQUEST['student_id']) || UserStudentID()) {
+        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $selectedStudentId . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
         $count_student_RET[1]['NUM'] = $_SESSION['count_stu'];
         if ($count_student_RET[1]['NUM'] > 1) {
@@ -592,8 +602,8 @@ if ($_REQUEST['del'] == 'true') {
                     }
 
                     if ($columns['START_DATE'] || $columns['END_DATE'] || $columns['MARKING_PERIOD_ID']) {
-                        $sql .= MODIFIED_DATE . "='" . DBDate() . "',";
-                        $sql .= MODIFIED_BY . "='" . User('STAFF_ID') . "',";
+                        $sql .= 'MODIFIED_DATE' . "='" . DBDate() . "',";
+                        $sql .= 'MODIFIED_BY' . "='" . User('STAFF_ID') . "',";
                     }
                     $sql = substr($sql, 0, -1) . ' WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\' AND START_DATE=\'' . date('Y-m-d', strtotime($start_date)) . '\'';
                     DBQuery($sql);
@@ -843,12 +853,13 @@ if ($_REQUEST['del'] == 'true') {
 
         $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,1 AS TBL FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,2 AS TBL FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,3 AS TBL FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TBL,SORT_ORDER'));
 
-        $mp = CreateSelect($mp_RET, 'marking_period_id', 'Modules.php?modname=' . $_REQUEST['modname'] . '&marking_period_id=', $_REQUEST['marking_period_id']);
+        $mp = CreateSelect($mp_RET, 'marking_period_id', 'Modules.php?modname=' . $_REQUEST['modname'] . '&day_date=' . $_REQUEST['day_date'] . '&month_date=' . $_REQUEST['month_date'] . '&year_date=' . $_REQUEST['year_date'] .  '&marking_period_id=', $_REQUEST['marking_period_id']);
 
         ###################################################################3
 
         $time = strtotime($date);
         $newformat = date('Y-m-d', $time);
+        $_SESSION['schedule_selected_date'] = $newformat;
 
         echo '<div class="row">';
         echo '<div class="col-md-3">';
@@ -1144,8 +1155,12 @@ function _makeTitle($value, $column = '')
 function _makeAction($value)
 {
     global $THIS_RET;
+    $day = $_REQUEST['day_date'];
+    $month   = $_REQUEST['month_date'];
+    $year = $_REQUEST['year_date'];
     $i = UserStudentId();
-    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&student_id=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID] class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
+    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&student_id=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID]&month_date=$month&day_date=$day&year_date=$year class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
+
     return $rem;
 }
 
@@ -1166,7 +1181,7 @@ function _makePeriodSelect($course_period_id, $column = '')
 {
     global $_openSIS, $THIS_RET, $fy_id;
 
-    $sql = 'SELECT sp.TITLE AS PERIOD,cp.COURSE_PERIOD_ID,cp.PARENT_ID,cp.TITLE,cp.MARKING_PERIOD_ID,COALESCE(cp.TOTAL_SEATS-cp.FILLED_SEATS,0) AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET[COURSE_ID] . '\' ORDER BY sp.SORT_ORDER';
+    $sql = 'SELECT sp.TITLE AS PERIOD,cp.COURSE_PERIOD_ID,cp.PARENT_ID,cp.TITLE,cp.MARKING_PERIOD_ID,COALESCE(cp.TOTAL_SEATS-cp.FILLED_SEATS,0) AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET['COURSE_ID'] . '\' ORDER BY sp.SORT_ORDER';
     $orders_RET = DBGet(DBQuery($sql));
 
     foreach ($orders_RET as $value) {
@@ -1319,13 +1334,13 @@ function _makeDate($value, $column)
         $allow_na = true;
     }
 
-    if ($column == 'END_DATE' && $THIS_RET[END_DATE] != '') {
+    if ($column == 'END_DATE' && $THIS_RET['END_DATE'] != '') {
         $counter++;
-        return '<div style="white-space: nowrap;">' . DateInputAY($value != "" ? $value : "", "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][$column]", $counter . $THIS_RET[COURSE_PERIOD_ID], '', true, $allow_na) . '</div>';
+        return '<div style="white-space: nowrap;">' . DateInputAY($value != "" ? $value : "", "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][$column]", $counter . $THIS_RET['COURSE_PERIOD_ID'], '', true, $allow_na) . '</div>';
     } else {
 
         $counter++;
-        return '<div style="white-space: nowrap;">' . DateInputAY($value != "" ? $value : "", "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][$column]", $counter . $THIS_RET[COURSE_PERIOD_ID], '', true, $allow_na) . '</div>';
+        return '<div style="white-space: nowrap;">' . DateInputAY($value != "" ? $value : "", "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][$column]", $counter . $THIS_RET['COURSE_PERIOD_ID'], '', true, $allow_na) . '</div>';
     }
 }
 
@@ -1403,7 +1418,7 @@ function _makeViewDate($value, $column)
 function _makeLock($value, $column)
 {
     global $THIS_RET;
-    $hidd = "<input type='hidden' name='schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][SCHEDULE_ID]' value='" . $THIS_RET[SCHEDULE_ID] . "'>";
+    $hidd = "<input type='hidden' name='schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][SCHEDULE_ID]' value='" . $THIS_RET['SCHEDULE_ID'] . "'>";
 
     if ($value == 'Y') {
         $img = 'locked';

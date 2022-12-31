@@ -41,13 +41,14 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end'])
 else
     $end_date = DBDate('mysql');
 ####################
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+$selectedStudentId = isset($_REQUEST['student_id']) ? $_REQUEST['student_id'] : UserStudentID();
+if (isset($_REQUEST['student_id']) || UserStudentID()) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $selectedStudentId . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> '._selectedStudent.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST['day_start'] . '&&month_start=' . $_REQUEST['month_start'] . '&&year_start=' . $_REQUEST['year_start'] . '&&period_id=' . $_REQUEST['period_id'] . '&&myclasses=' . $_REQUEST['myclasses'] . '&&chk=1 target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._selectedStudent.'</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">'._selectedStudent.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div></div></div>');
     }
 }
 ####################
@@ -86,19 +87,19 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
 if ($_REQUEST['period_id']) {
     $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND (ac.STATE_CODE=\'A\' OR ac.STATE_CODE=\'H\') AND ap.STUDENT_ID=ssm.STUDENT_ID
-                        AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\'
+                        AND ap.PERIOD_ID=\'' . $_REQUEST['period_id'] . '\'
                         AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
     $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
     if (count($codes_RET) > 1) {
         foreach ($codes_RET as $code) {
             if ($_REQUEST['myclasses'] != '') {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac,course_periods cp
-                        WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
+                        WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST['period_id'] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . '
                         AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
             } else {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
-                        WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
+                        WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST['period_id'] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
             }
 
@@ -108,7 +109,7 @@ if ($_REQUEST['period_id']) {
 } else {
     $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND (ac.STATE_CODE=\'A\' OR ac.STATE_CODE=\'H\') AND ap.STUDENT_ID=ssm.STUDENT_ID
-                        AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\'
+                        AND ap.PERIOD_ID=\'' . $_REQUEST['period_id'] . '\'
                         AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
     $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
     if (count($codes_RET) > 1) {
@@ -226,7 +227,7 @@ if (UserStudentID()) {
 
     //echo '<div class="panel panel-default">';
     PopTable('header', $name_RET[1]['FULL_NAME']);
-    ListOutput($days_RET, $columns, _day, _days);
+    ListOutputWithStudentInfo($days_RET, $columns, _day, _days);
     PopTable('footer');
     //echo '</div>'; //.panel.panel-default
 }

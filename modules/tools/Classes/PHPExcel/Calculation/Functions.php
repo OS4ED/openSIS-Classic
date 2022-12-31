@@ -1027,7 +1027,7 @@ class PHPExcel_Calculation_Functions {
 
 	private static function _ifCondition($condition) {
 		$condition	= self::flattenSingleValue($condition);
-		if (!in_array($condition{0},array('>', '<', '='))) {
+		if (!in_array($condition[0],array('>', '<', '='))) {
 			if (!is_numeric($condition)) { $condition = PHPExcel_Calculation::_wrapResult(strtoupper($condition)); }
 			return '='.$condition;
 		} else {
@@ -5111,19 +5111,19 @@ class PHPExcel_Calculation_Functions {
 
 
 	private static function _uniord($c) {
-		if (ord($c{0}) >=0 && ord($c{0}) <= 127)
-			return ord($c{0});
-		if (ord($c{0}) >= 192 && ord($c{0}) <= 223)
-			return (ord($c{0})-192)*64 + (ord($c{1})-128);
-		if (ord($c{0}) >= 224 && ord($c{0}) <= 239)
-			return (ord($c{0})-224)*4096 + (ord($c{1})-128)*64 + (ord($c{2})-128);
-		if (ord($c{0}) >= 240 && ord($c{0}) <= 247)
-			return (ord($c{0})-240)*262144 + (ord($c{1})-128)*4096 + (ord($c{2})-128)*64 + (ord($c{3})-128);
-		if (ord($c{0}) >= 248 && ord($c{0}) <= 251)
-			return (ord($c{0})-248)*16777216 + (ord($c{1})-128)*262144 + (ord($c{2})-128)*4096 + (ord($c{3})-128)*64 + (ord($c{4})-128);
-		if (ord($c{0}) >= 252 && ord($c{0}) <= 253)
-			return (ord($c{0})-252)*1073741824 + (ord($c{1})-128)*16777216 + (ord($c{2})-128)*262144 + (ord($c{3})-128)*4096 + (ord($c{4})-128)*64 + (ord($c{5})-128);
-		if (ord($c{0}) >= 254 && ord($c{0}) <= 255) //error
+		if (ord($c[0]) >=0 && ord($c[0]) <= 127)
+			return ord($c[0]);
+		if (ord($c[0]) >= 192 && ord($c[0]) <= 223)
+			return (ord($c[0])-192)*64 + (ord($c[1])-128);
+		if (ord($c[0]) >= 224 && ord($c[0]) <= 239)
+			return (ord($c[0])-224)*4096 + (ord($c[1])-128)*64 + (ord($c[2])-128);
+		if (ord($c[0]) >= 240 && ord($c[0]) <= 247)
+			return (ord($c[0])-240)*262144 + (ord($c[1])-128)*4096 + (ord($c[2])-128)*64 + (ord($c[3])-128);
+		if (ord($c[0]) >= 248 && ord($c[0]) <= 251)
+			return (ord($c[0])-248)*16777216 + (ord($c[1])-128)*262144 + (ord($c[2])-128)*4096 + (ord($c[3])-128)*64 + (ord($c[4])-128);
+		if (ord($c[0]) >= 252 && ord($c[0]) <= 253)
+			return (ord($c[0])-252)*1073741824 + (ord($c[1])-128)*16777216 + (ord($c[2])-128)*262144 + (ord($c[3])-128)*4096 + (ord($c[4])-128)*64 + (ord($c[5])-128);
+		if (ord($c[0]) >= 254 && ord($c[0]) <= 255) //error
 			return self::$_errorCodes['value'];
 		return 0;
 	}	//	function _uniord()
@@ -7241,7 +7241,7 @@ class PHPExcel_Calculation_Functions {
 		//	Split the input into its Real and Imaginary components
 		$leadingSign = 0;
 		if (strlen($workString) > 0) {
-			$leadingSign = (($workString{0} == '+') || ($workString{0} == '-')) ? 1 : 0;
+			$leadingSign = (($workString[0] == '+') || ($workString[0] == '-')) ? 1 : 0;
 		}
 		$power = '';
 		$realNumber = strtok($workString, '+-');
@@ -7276,10 +7276,10 @@ class PHPExcel_Calculation_Functions {
 
 
 	private static function _cleanComplex($complexNumber) {
-		if ($complexNumber{0} == '+') $complexNumber = substr($complexNumber,1);
-		if ($complexNumber{0} == '0') $complexNumber = substr($complexNumber,1);
-		if ($complexNumber{0} == '.') $complexNumber = '0'.$complexNumber;
-		if ($complexNumber{0} == '+') $complexNumber = substr($complexNumber,1);
+		if ($complexNumber[0] == '+') $complexNumber = substr($complexNumber,1);
+		if ($complexNumber[0] == '0') $complexNumber = substr($complexNumber,1);
+		if ($complexNumber[0] == '.') $complexNumber = '0'.$complexNumber;
+		if ($complexNumber[0] == '+') $complexNumber = substr($complexNumber,1);
 		return $complexNumber;
 	}
 
@@ -11337,7 +11337,7 @@ class PHPExcel_Calculation_Functions {
 				break;
 			case 'string'	:
 				//	Errors
-				if ((strlen($value) > 0) && ($value{0} == '#')) {
+				if ((strlen($value) > 0) && ($value[0] == '#')) {
 					return $value;
 				}
 				break;
@@ -11392,7 +11392,7 @@ class PHPExcel_Calculation_Functions {
 				break;
 			case 'string'	:
 				//	Errors
-				if ((strlen($value) > 0) && ($value{0} == '#')) {
+				if ((strlen($value) > 0) && ($value[0] == '#')) {
 					return 16;
 				}
 				return 2;

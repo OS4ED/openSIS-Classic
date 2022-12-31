@@ -27,11 +27,14 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
+
+DrawBC(_extracurricular . " > " . ProgramTitle());
+
 echo '<div class="panel">';
 echo '<div class="panel-default">';
-echo '<div class="panel-body">';
+echo '<div class="">';
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));
-if (count($start_end_RET)) {
+if (is_countable($start_end_RET) && count($start_end_RET)) {
     foreach ($start_end_RET as $value) {
         if ($value['TITLE'] == 'START_DAY')
             $START_DAY = $value['VALUE'];
@@ -80,13 +83,13 @@ if (strlen($START_MINUTE) == 1)
     $START_MINUTE = '0' . $START_MINUTE;
 if (strlen($END_MINUTE) == 1)
     $END_MINUTE = '0' . $END_MINUTE;
-$start_date = strtoupper(date('d-M-y', mktime() - ($today - $START_DAY) * 60 * 60 * 24));
-$end_date = strtoupper(date('d-M-y', mktime() + ($END_DAY - $today) * 60 * 60 * 24));
+$start_date = strtoupper(date('d-M-y', mktime(0) - ($today - $START_DAY) * 60 * 60 * 24));
+$end_date = strtoupper(date('d-M-y', mktime(0) + ($END_DAY - $today) * 60 * 60 * 24));
 $current_RET = DBGet(DBQuery('SELECT ELIGIBILITY_CODE,STUDENT_ID FROM eligibility WHERE SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''), array(), array('STUDENT_ID'));
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
 
     $config_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\''), array(), array('TITLE'));
-    if (count($config_RET))
+    if (is_countable($config_RET) && count($config_RET))
         foreach ($config_RET as $title => $value)
             $programconfig[User('STAFF_ID')][$title] = rtrim($value[1]['VALUE'], '_' . UserCoursePeriod());
     else
@@ -105,7 +108,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
     else
         $points_RET = DBGet(DBQuery('SELECT s.STUDENT_ID,\'' . '-1' . '\' AS ASSIGNMENT_TYPE_ID,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL,\'' . '1' . '\' AS FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID' . ($programconfig[User('STAFF_ID')]['ELIGIBILITY_CUMULITIVE'] == 'Y' && $has_quarters[1]['REC_EX'] > 0 ? ' IN (' . GetChildrenMP('SEM', UserMP()) . ')' : '=\'' . UserMP() . '\'') . ') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID) WHERE ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE'), array(), array('STUDENT_ID'));
 
-    if (count($points_RET)) {
+    if (is_countable($points_RET) && count($points_RET)) {
         foreach ($points_RET as $student_id => $student) {
             $total = $total_percent = 0;
             foreach ($student as $partial_points)
@@ -197,13 +200,15 @@ if ($today > $END_DAY || $today < $START_DAY || ($today == $START_DAY && date('G
 }
 else {
     if (count($stu_RET) != 0) {
+        echo '<div class="panel-heading">';
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo '<h5 class="m-t-5">' . ProgramTitle() . '</h5>';
+        echo '<h5 class="text-pink m-b-0">' . ProgramTitle() . '</h5>';
         echo '</div>';
-        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">'._useGradebookGrades.'</A> &nbsp; <INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></div>';
+        echo '<div class="col-md-6 text-right"><A class="btn btn-default" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">'._useGradebookGrades.'</A> &nbsp; <INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></div>';
         echo '</div>';
-        echo '<hr class="m-t-15 m-b-0" />';
+        echo '</div>';
+        echo '<hr class="no-margin" />';
     }
 
     $LO_columns = array('FULL_NAME' =>_student,
@@ -212,7 +217,7 @@ else {
      ) + $columns;
     ListOutput($stu_RET, $LO_columns, _student, _students);
     if (count($stu_RET) != 0)
-        echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></CENTER>';
+        echo '<div class="panel-footer text-center"><INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></div>';
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body

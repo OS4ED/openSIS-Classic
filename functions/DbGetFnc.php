@@ -42,45 +42,38 @@
 	$array[1031806][1] = array('STUDENT_ID'=>'1031806');
 
 	The third parameter should be an array -- ordered by the importance of the index.  So, if you select
-	COURSE_ID,COURSE_WEIGHT,COURSE_PERIOD_ID from course_periods, and choose to index by
+	COURSE_ID,COURSE_WEIGHT,COURSE_PERIOD_ID from COURSE_PERIODS, and choose to index by
 	array('COURSE_ID','COURSE_WEIGHT','COURSE_PERIOD_ID') then you will be returned an array formatted like this:
 	$array[10101][1][402345][1] = array('COURSE_ID'=>'10101','COURSE_WEIGHT'=>'1','COURSE_PERIOD_ID'=>'402345')
 */
-function DBGet($QI,$functions=array(),$index=array())
-{	global $THIS_RET;
+function DBGet($QI, $functions = array(),$index = array())
+{
+	global $THIS_RET;
 
-	$index_count = count($index);
+	$index_count = is_countable($index) ? count($index) : false;
 	$tmp_THIS_RET = $THIS_RET;
 
 	$results = array();
-	while($RET=db_fetch_row($QI))
-	{
+	while ($RET = db_fetch_row($QI)) {
 		$THIS_RET = $RET;
-
-		if($index_count)
-		{
+		if ($index_count) {
 			$ind = '';
-			foreach($index as $col)
-				$ind .= "['".singleQuoteReplace("'","\'",$THIS_RET[$col])."']";
-			eval('$s'.$ind.'++;$this_ind=$s'.$ind.';');
+			foreach ($index as $col)
+				$ind .= "['" . str_replace("'", "\'", $THIS_RET[$col]) . "']";
+			eval('$s' . $ind . '++;$this_ind=$s' . $ind . ';');
+		} else{
+			if(isset($s))$s++; // 1-based if no index specified
+			else $s=1;
 		}
-		else
-			$s++; // 1-based if no index specified
-		foreach($RET as $key=>$value)
-		{
-                    if(strlen($value) == strlen(strip_tags($value)))
-                    $value=  htmlentities($value);
-			if($functions[$key] && function_exists($functions[$key]))
-			{
-				if($index_count)
-					eval('$results'.$ind.'[$this_ind][$key] = $functions[$key]($value,$key);');
+		foreach ($RET as $key => $value) {
+			if ($functions[$key] && function_exists($functions[$key])) {
+				if ($index_count)
+					eval('$results' . $ind . '[$this_ind][$key] = $functions[$key]($value,$key);');
 				else
-					$results[$s][$key] = $functions[$key]($value,$key);
-			}
-			else
-			{
-				if($index_count)
-					eval('$results'.$ind.'[$this_ind][$key] = $value;');
+					$results[$s][$key] = $functions[$key]($value, $key);
+			} else {
+				if ($index_count)
+					eval('$results' . $ind . '[$this_ind][$key] = $value;');
 				else
 					$results[$s][$key] = $value;
 			}
@@ -88,6 +81,6 @@ function DBGet($QI,$functions=array(),$index=array())
 	}
 
 	$THIS_RET = $tmp_THIS_RET;
+
 	return $results;
 }
-?>

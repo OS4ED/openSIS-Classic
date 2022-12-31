@@ -169,6 +169,22 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
         else {
             $sql = "INSERT INTO $table ";
 
+            $go = false;
+            $fields = "CATEGORY_ID,SYSTEM_FIELD,";
+            $values = "'" . $_REQUEST['category_id'] . "','N',";
+            foreach ($columns as $column => $value) {
+                if (trim($value)) {
+                    $value = paramlib_validation($column, $value);
+                    $fields .= $column . ',';
+                    $values .= "'" . str_replace("\'", "''", $value) . "',";
+                    $go = true;
+                }
+            }
+            $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+            if ($go && $flag == 0){
+                DBQuery($sql);
+                $id = mysqli_insert_id($connection);
+            }
             if ($table == 'school_custom_fields') {
                 if ($columns['CATEGORY_ID']) {
                     $_REQUEST['category_id'] = $columns['CATEGORY_ID'];
@@ -185,11 +201,11 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     $columns['DEFAULT_SELECTION'] = '||'.$columns['DEFAULT_SELECTION'].'||';
                 }
 
-                $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'school_custom_fields'"));
-                $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                $id = $id[1]['ID'];
-                $fields = "CATEGORY_ID,SYSTEM_FIELD,";
-                $values = "'" . $_REQUEST['category_id'] . "','N',";
+                // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'school_custom_fields'"));
+                // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                // $id = $id[1]['ID'];
+                // $fields = "CATEGORY_ID,SYSTEM_FIELD,";
+                // $values = "'" . $_REQUEST['category_id'] . "','N',";
                 $_REQUEST['id'] = $id;
 
                 switch ($columns['TYPE']) {
@@ -249,9 +265,9 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 unset($table);
             } elseif ($table == 'student_field_categories') {
 
-                $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'student_field_categories'"));
-                $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                $id = $id[1]['ID'];
+                // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'student_field_categories'"));
+                // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                // $id = $id[1]['ID'];
                 $fields = "";
                 $values = "";
                 $_REQUEST['category_id'] = $id;
@@ -266,20 +282,20 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 }
             }
 
-            $go = false;
+            // $go = false;
 
-            foreach ($columns as $column => $value) {
-                if (trim($value)) {
-                    $value = paramlib_validation($column, $value);
-                    $fields .= $column . ',';
-                    $values .= "'" . str_replace("\'", "''", $value) . "',";
-                    $go = true;
-                }
-            }
-            $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+            // foreach ($columns as $column => $value) {
+            //     if (trim($value)) {
+            //         $value = paramlib_validation($column, $value);
+            //         $fields .= $column . ',';
+            //         $values .= "'" . str_replace("\'", "''", $value) . "',";
+            //         $go = true;
+            //     }
+            // }
+            // $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
-            if ($go && $flag == 0)
-                DBQuery($sql);
+            // if ($go && $flag == 0)
+            //     DBQuery($sql);
         }
         // echo $sql;
         // if ($go && $flag == 0)
@@ -312,7 +328,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 }
 
 if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
-    $sql = "SELECT SCHOOL_ID,CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM school_custom_fields WHERE ID='$_REQUEST[id]'";
+    $sql = "SELECT SCHOOL_ID,CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM school_custom_fields WHERE ID='".$_REQUEST['id']."' ";
     $RET = DBGet(DBQuery($sql));
     $RET = $RET[1];
     $title = $RET['TITLE'];
@@ -331,7 +347,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     
     
     if ($_REQUEST['id'] != 'new')
-        $action .= "&id=" . strip_tags(trim($_REQUEST[id]));
+        $action .= "&id=" . strip_tags(trim($_REQUEST['id']));
         $action .= "&table=school_custom_fields";    
     
     echo "<FORM name=SF1 class=\"form-horizontal\" id=SF1 action=".$action." method=POST>";    
@@ -356,7 +372,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     // You can't change a student field type after it has been created
     // mab - allow changing between select and autos and edits and text
     
-    echo "<input id=custom name=custom type=hidden value=" . strip_tags(trim($_REQUEST[id])) . " />";
+    echo "<input id=custom name=custom type=hidden value=" . strip_tags(trim($_REQUEST['id'])) . " />";
     
     if ($_REQUEST['id'] != 'new') {
         $type_options = array(

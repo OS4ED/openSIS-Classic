@@ -28,9 +28,9 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
-//echo "<pre>"; print_r($_REQUEST); echo "</pre>";
+
 if ($_REQUEST['modfunc'] == 'save') {
-    if (count($_REQUEST['cp_arr'])) {
+    if (is_countable($_REQUEST['cp_arr']) && count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
         
         $extra['DATE'] = GetMP();
@@ -260,7 +260,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     if ($extra['array_function'] && function_exists($extra['array_function']))
                         $extra['array_function']($RET);
 
-                    if (count($_REQUEST['cp_arr']) > 0)
+                    if (is_countable($_REQUEST['cp_arr']) && count($_REQUEST['cp_arr']) > 0)
                         $cr_pr_id = implode(",", $_REQUEST['cp_arr']);
                     else {
                         $cr_pr_id = 0;
@@ -277,7 +277,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>="' . $date . '" OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ("' . $date . '"<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND ("' . $date . '"<=ss.END_DATE OR ss.END_DATE IS NULL)'));
 
-                    if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
+                    if ($get_schedule[1]['TOT'] > 0 && is_countable($RET) && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
                     else
                         $table = '<br><br><b><font style="color:red">'._noStudentsFound.'.</font></b>';
@@ -315,7 +315,7 @@ if (!$_REQUEST['modfunc']) {
         $Search = 'mySearch';
         include('modules/miscellaneous/Export.php');
     } else {
-        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST[next_modname])) . " method=POST>";
+        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=" . strip_tags(trim($_REQUEST['modfunc'])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST['next_modname'])) . " method=POST>";
 
 
         PopTable('header',  _search);
@@ -392,7 +392,7 @@ $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
 echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectsWere.'') . ' '._found.'.</h6>';
-if (count($subjects_RET) > 0) {
+if (is_countable($subjects_RET) && count($subjects_RET) > 0) {
     echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
@@ -465,7 +465,7 @@ function mySearch($extra) {
     ListOutput($course_periods_RET, $LO_columns, ''._coursePeriod.'', ''._coursePeriod.'', array(), array(), array('save' =>true, 'count' =>true, 'search' =>true));
     echo '</div>';
 
-    if (count($course_periods_RET) != 0)
+    if (is_countable($course_periods_RET) && count($course_periods_RET) != 0)
         echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\''._printClassListsForSelectedCoursePeriods.'\'></div>';
     echo "</FORM>";
 }

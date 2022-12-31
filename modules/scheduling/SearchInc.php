@@ -48,7 +48,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             }
             PopTable('header', _findAStudent);
             if ($extra['pdf'] != true)
-                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+                echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=" . strip_tags(trim($_REQUEST['modfunc'])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
             else
                 echo "<FORM name=search class=\"form-horizontal m-b-0\" id=search action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST target=_blank>";
 
@@ -147,9 +147,10 @@ else {
     keepExtraParams($extra);
 
     $students_RET = GetStuList($extra);
+
     if ($_REQUEST['address_group']) {
         // if address_group specified but only one address returned then convert to ungrouped
-        if (count($students_RET) == 1) {
+        if (is_countable($students_RET) && count($students_RET) == 1) {
             $students_RET = $students_RET[key($students_RET)];
             unset($_REQUEST['address_group']);
         } else
@@ -187,15 +188,15 @@ else {
     if (!$extra['columns_before'] && !$extra['columns_after'])
         $columns = $LO_columns;
 
-    if (count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && count($students_RET) == 0) || ($extra['Redirect'] === false && count($students_RET) == 1)) {
+    if (is_countable($students_RET) && count($students_RET) > 1 || $link['add'] || !$link['FULL_NAME'] || $extra['columns_before'] || $extra['columns_after'] || ($extra['BackPrompt'] == false && is_countable($students_RET) && count($students_RET) == 0) || ($extra['Redirect'] === false && is_countable($students_RET) && count($students_RET) == 1)) {
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['expanded_view']);
         
         echo '<div class="panel panel-default">';
         
-        if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && count($students_RET) != 0)
+        if ($_REQUEST['expanded_view'] != 'true' && !UserStudentID() && is_countable($students_RET) && count($students_RET) != 0)
             DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=true><i class=\"icon-square-down-right\"></i> "._expandedView."</A>", $extra['header_right']);
-        elseif (!UserStudentID() && count($students_RET) != 0)
+        elseif (!UserStudentID() && is_countable($students_RET) && count($students_RET) != 0)
             DrawHeader("<A HREF=" . PreparePHP_SELF($tmp_REQUEST) . "&expanded_view=false><i class=\"icon-square-up-left\"></i> "._originalView."</A>", $extra['header_right']);
         DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
         DrawHeader(str_replace('<BR>', '<BR> &nbsp;', substr($_openSIS['SearchTerms'], 0, -4)));
@@ -259,11 +260,11 @@ else {
         BackPrompt(_noStudentsWereFound.'.');
 }
 
-function _make_sections($value) {
-    if ($value != '') {
-        $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
-        return $get[1]['NAME'];
-    } else
-        return '';
-}
+// function _make_sections($value) {
+//     if ($value != '') {
+//         $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+//         return $get[1]['NAME'];
+//     } else
+//         return '';
+// }
 ?>

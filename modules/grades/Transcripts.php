@@ -25,6 +25,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+error_reporting(0);
 include('../../RedirectModulesInc.php');
 
 if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
@@ -79,6 +80,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $total_QP_transcript_qr = 0;
         $total_CGPA = 0;
         $total_CGPA_earned = 0;
+        $total_credit_earn = 0;
         $total_credit_earned = 0;
         $total_CGPA_earned_fy = 0;
         $total_CGPA_earned_qr = 0;
@@ -98,7 +100,8 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
 
             // $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
-            $tquery = "SELECT tg.*, IF(tg.gradelevel IS NULL, CONCAT('O', TRIM((SELECT sg.ID FROM school_gradelevels sg, student_enrollment se WHERE se.STUDENT_ID = tg.STUDENT_ID AND se.SCHOOL_ID = tg.SCHOOL_ID AND se.SYEAR = tg.SYEAR AND se.GRADE_ID = sg.ID ORDER BY se.ID DESC LIMIT 0,1))), CONCAT('H', TRIM(tg.gradelevel))) AS gradelevel_ret FROM transcript_grades tg WHERE student_id = " . $student_id . $gradelevel_addon . " ORDER BY tg.mp_id";
+            // $tquery = "SELECT tg.*, IF(tg.gradelevel IS NULL, CONCAT('O', TRIM((SELECT sg.ID FROM school_gradelevels sg, student_enrollment se WHERE se.STUDENT_ID = tg.STUDENT_ID AND se.SCHOOL_ID = tg.SCHOOL_ID AND se.SYEAR = tg.SYEAR AND se.GRADE_ID = sg.ID ORDER BY se.ID DESC LIMIT 0,1))), CONCAT('H', TRIM(tg.gradelevel))) AS gradelevel_ret FROM transcript_grades tg WHERE student_id = " . $student_id . $gradelevel_addon . " ORDER BY tg.mp_id";
+            $tquery = "SELECT tg.*, IF(tg.MP_SOURCE != 'History', CONCAT('O', TRIM((SELECT sg.ID FROM school_gradelevels sg, student_enrollment se WHERE se.STUDENT_ID = tg.STUDENT_ID AND se.SCHOOL_ID = tg.SCHOOL_ID AND se.SYEAR = tg.SYEAR AND se.GRADE_ID = sg.ID ORDER BY se.ID DESC LIMIT 0,1))), CONCAT('H', TRIM(tg.gradelevel))) AS gradelevel_ret FROM transcript_grades tg WHERE student_id = " . $student_id . $gradelevel_addon . " ORDER BY tg.mp_id";
 
             $TRET = DBGet(DBQuery($tquery));
             $course_html = array(0 => '', 1 => '', 2 => '');
@@ -162,7 +165,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
                         $gradelevel = ($firstrec['GRADELEVEL'] != '' ? $firstrec['GRADELEVEL'] : 'Not Found');
 
-                    $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec[SCHOOL_NAME] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
+                    $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec['SCHOOL_NAME'] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
                     $course_html[$colnum] .= '<p class="m-t-0 m-b-5">'._postedDate.' : ' . $posted_arr[1] . '/' . $posted_arr[0] . '</p>';
                     $course_html[$colnum] .= '<table class="invoice-table table-bordered">';
                     $course_html[$colnum] .= '<thead>';
@@ -173,6 +176,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $course_html[$colnum] .= '<tbody>';
 
                     $cred_attempted = 0;
+                    $this_cred_attempted = 0;
                     $cred_earned = 0;
                     $credit_attempt = 0;
                     $credit_earn = 0;
@@ -180,6 +184,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $cred_earned_sem = 0;
                     $cred_earned_qr = 0;
                     $unweighted_or_not = 0;
+                    $total_CGPA_attemp = 0;
                     $total_QP_value = 0;
                     $total_QP_value_fy = 0;
                     $total_QP_value_qr = 0;
@@ -190,29 +195,29 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $gp_val = $trec['GP_VALUE'];
                         else
                         $gp_val = $trec['WEIGHTING'];
-                    $gradeletter = $trec['GRADE_LETTER'];
+                        $gradeletter = $trec['GRADE_LETTER'];
                         
                         if ($trec['COURSE_PERIOD_ID'] != '') {
                             $grd_scl = DBGet(DBQuery('SELECT GRADE_SCALE_ID FROM course_periods WHERE course_period_id=\'' . $trec['COURSE_PERIOD_ID'] . '\''));
                             if ($grd_scl[1]['GRADE_SCALE_ID'] != '') {
-       
                                 $grade_scl_gpa = DBGet(DBQuery('SELECT GPA_CAL FROM report_card_grade_scales WHERE ID=' . $grd_scl[1]['GRADE_SCALE_ID']));
-         
                                 if ($grade_scl_gpa[1]['GPA_CAL'] == 'Y')
                                     $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-			 else
+                                else
                                     $QP_value = 0.00;
-			 }
+                            }
                             else {
                                 $trec['CREDIT_EARNED'] = $trec['CREDIT_ATTEMPTED'];
                                 $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-         }
+                            }
                         } else {
                             if ($trec['GPA_CAL'] == 'Y')
                                 $QP_value = ($trec['CREDIT_EARNED'] * $gp_val);
-        else 
+                            else 
                                 $QP_value = 0.00;
-        }
+                        }
+
+                        $credit_mp = '';
                         if ($trec['COURSE_PERIOD_ID']) {
                             $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
                             if ($mp_id[1]['MARKING_PERIOD_ID'] != '')
@@ -220,12 +225,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                             else {
                                 $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM student_report_card_grades WHERE COURSE_PERIOD_ID=' . $trec['COURSE_PERIOD_ID']));
                                 $get_mp_tp = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $mp_id[1]['MARKING_PERIOD_ID'].'"'));
-       }
+                            }
                             $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $trec['MP_ID'].'"'));
+                            $credit_mp = $mp_id[1]['MARKING_PERIOD_ID'];
                         } else {
                             $get_mp_tp_m = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID="' . $trec['MP_ID'].'"'));
                             $get_mp_tp[1]['MP_TYPE'] = $get_mp_tp_m[1]['MP_TYPE'];
-           }
+                        }
                         $course_html[$colnum] .= '<tr>';
                         $course_html[$colnum] .= '<td>' . $trec['COURSE_NAME'] . '</td>';
                         $course_html[$colnum] .= '<td>' . sprintf("%01.2f", $trec['CREDIT_ATTEMPTED']) . '</td>';
@@ -235,47 +241,105 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $totqp = ($totqp + $QP_value);
                         $tot_qp = ($tot_qp + $QP_value);
            
-                                      $qtr_gpa = $trec['GPA'];
+                        $qtr_gpa = $trec['GPA'];
                                        
                         $credit_attempt += $trec['CREDIT_ATTEMPTED'];
                                         
                         if ($trec['COURSE_PERIOD_ID']=='' && $trec['GPA_CAL'] == 'Y'){
-                                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                            $this_cred_attempted = $trec['CREDIT_ATTEMPTED'];
                         }else if($trec['COURSE_PERIOD_ID']!= '' && $grade_scl_gpa[1]['GPA_CAL'] == 'Y'){
-                                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                            $cred_attempted += $trec['CREDIT_ATTEMPTED'];
+                            $this_cred_attempted = $trec['CREDIT_ATTEMPTED'];
                         }else{
-                        $cred_attempted += 0.00;
-                                      }
+                            $cred_attempted += 0.00;
+                            $this_cred_attempted = $trec['CREDIT_ATTEMPTED'];
+                        }
                                         
                         if ($trec['COURSE_PERIOD_ID']=='' && $trec['GPA_CAL'] == 'Y'){
-                                            $cred_earned += $trec['CREDIT_EARNED'];
+                            $cred_earned += $trec['CREDIT_EARNED'];
                         }else if($trec['COURSE_PERIOD_ID']!= '' && $grade_scl_gpa[1]['GPA_CAL'] == 'Y'){
-                                            $cred_earned += $trec['CREDIT_EARNED'];
+                            $cred_earned += $trec['CREDIT_EARNED'];
                         }else{
-                        $cred_earned += 0.00;
-                                        }
+                            $cred_earned += 0.00;
+                        }
                                             
                         $credit_earn += $trec['CREDIT_EARNED'];
 
                         if ($get_mp_tp[1]['MP_TYPE'] == 'year' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                $total_QP_value_fy += $QP_value;
-                $cred_earned_fy += $trec['CREDIT_EARNED'];
-                }
+                            $total_QP_value_fy += $QP_value;
+                            $cred_earned_fy += $trec['CREDIT_EARNED'];
+                        }
                         if ($get_mp_tp[1]['MP_TYPE'] == 'semester' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                $total_QP_value += $QP_value;
-                $cred_earned_sem += $trec['CREDIT_EARNED'];
-                }
+                            $total_QP_value += $QP_value;
+                            $cred_earned_sem += $trec['CREDIT_EARNED'];
+                        }
                         if ($get_mp_tp[1]['MP_TYPE'] == 'quarter' && $get_mp_tp[1]['MP_TYPE'] == $get_mp_tp_m[1]['MP_TYPE']) {
-                $total_QP_value_qr += $QP_value;
-                $cred_earned_qr += $trec['CREDIT_EARNED'];
-                }
-                }
+                            $total_QP_value_qr += $QP_value;
+                            $cred_earned_qr += $trec['CREDIT_EARNED'];
+                        }
+
+                        # New credit calculation - Start #
+                        if ($firstrec['MP_ID'] == $credit_mp || $credit_mp == '') {
+                            $temp_credit_arr = array(
+                                'COURSE_PERIOD_ID'  =>  $trec['COURSE_PERIOD_ID'],
+                                'CREDIT_ATTEMPTED'  =>  $trec['CREDIT_ATTEMPTED'],
+                                'CREDIT_EARNED'     =>  $trec['CREDIT_EARNED'],
+                                'GP_VALUE'          =>  $QP_value,
+                                'CRED_ATTEMPTED'    =>  $this_cred_attempted
+                            );
+
+                            if ($credit_mp != '')
+                                $arr_credits[$firstrec['STUDENT_ID']][$firstrec['MP_ID']][$trec['COURSE_PERIOD_ID']][] = $temp_credit_arr;
+                            else
+                                $arr_credits[$firstrec['STUDENT_ID']][$firstrec['MP_ID']]['H'][] = $temp_credit_arr;
+                        }
+                        else {
+                            $get_children_mps = DBGet(DBQuery('SELECT `marking_period_id` FROM `marking_periods` WHERE `parent_id` = \'' . $credit_mp . '\''), array(), array('MARKING_PERIOD_ID'));
+                            $first_layer_children_mps = array_keys($get_children_mps);
+
+                            if (!empty($first_layer_children_mps) && !isset($arr_credits[$firstrec['STUDENT_ID']][$credit_mp][$trec['COURSE_PERIOD_ID']])) {
+                                if (in_array($firstrec['MP_ID'], $first_layer_children_mps)) {
+                                    $temp_credit_arr = array(
+                                        'COURSE_PERIOD_ID'  =>  $trec['COURSE_PERIOD_ID'],
+                                        'CREDIT_ATTEMPTED'  =>  $trec['CREDIT_ATTEMPTED'],
+                                        'CREDIT_EARNED'     =>  $trec['CREDIT_EARNED'],
+                                        'GP_VALUE'          =>  $QP_value,
+                                        'CRED_ATTEMPTED'    =>  $this_cred_attempted
+                                    );
+
+                                    $arr_credits[$firstrec['STUDENT_ID']][$firstrec['MP_ID']][$trec['COURSE_PERIOD_ID']][] = $temp_credit_arr;
+                                }
+                                else {
+                                    foreach ($first_layer_children_mps as $first_layer_one_mp) {
+                                        $second_layer_children_mps =  DBGet(DBQuery('SELECT `marking_period_id` FROM `marking_periods` WHERE `parent_id` = \'' . $first_layer_one_mp . '\''), array(), array('MARKING_PERIOD_ID'));
+                                        $second_layer_children_mps = array_keys($second_layer_children_mps);
+
+                                        if (in_array($firstrec['MP_ID'], $second_layer_children_mps) && !isset($arr_credits[$firstrec['STUDENT_ID']][$first_layer_one_mp][$trec['COURSE_PERIOD_ID']])) {
+                                            $temp_credit_arr = array(
+                                                'COURSE_PERIOD_ID'  =>  $trec['COURSE_PERIOD_ID'],
+                                                'CREDIT_ATTEMPTED'  =>  $trec['CREDIT_ATTEMPTED'],
+                                                'CREDIT_EARNED'     =>  $trec['CREDIT_EARNED'],
+                                                'GP_VALUE'          =>  $QP_value,
+                                                'CRED_ATTEMPTED'    =>  $this_cred_attempted
+                                            );
+
+                                            $arr_credits[$firstrec['STUDENT_ID']][$firstrec['MP_ID']][$trec['COURSE_PERIOD_ID']][] = $temp_credit_arr;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        # New credit calculation - End #
+                    }
 
                     $course_html[$colnum] .= '</tbody>';
                     $crd_ernd+=$cred_earned;
 
                     $total_credit_earned = $total_credit_earned + $cred_earned;
                     $total_credit_earn = $total_credit_earn +  $credit_earn;
+
+                    //$total_credit_earn = $credit_earn == 0 ? 0 : $total_credit_earn +  $credit_earn;
 
                     $total_QP_transcript = $total_QP_transcript + $total_QP_value;
                     $total_QP_transcript_fy = $total_QP_transcript_fy + $total_QP_value_fy;
@@ -287,7 +351,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $total_CGPA_attemted = $total_CGPA_attemted + $cred_attempted;
                     $total_CGPA_attemp = $total_CGPA_attemp + $credit_attempt;
                    
-                    $total_CGPA = $total_CGPA + ($total_QP_value / $qtr_gpa);
+                    //$total_CGPA = $total_CGPA + ($total_QP_value / $qtr_gpa);
+                    $total_CGPA = $qtr_gpa == 0 ? 0 : $total_CGPA + ($total_QP_value / $qtr_gpa);
 
                     $course_html[$colnum] .= '<tfoot>';
                     $course_html[$colnum] .= '<tr>';
@@ -313,6 +378,23 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                 }
             }
+
+            # New credit calculation - Start #
+            $cr_item_tot_qp = $cr_item_total_CGPA_attemted = $cr_item_total_CGPA_attemp = $cr_item_total_credit_earn = 0;
+
+            foreach ($arr_credits as $cr_student_id => $cr_mp_items) {
+                foreach ($cr_mp_items as $cr_mp_id => $one_cp_items) {
+                    foreach ($one_cp_items as $one_cr_node) {
+                        foreach ($one_cr_node as $one_cr_item) {
+                            $cr_item_tot_qp = $cr_item_tot_qp + $one_cr_item['GP_VALUE'];
+                            $cr_item_total_CGPA_attemted = $cr_item_total_CGPA_attemted + $one_cr_item['CRED_ATTEMPTED'];
+                            $cr_item_total_CGPA_attemp = $cr_item_total_CGPA_attemp + $one_cr_item['CREDIT_ATTEMPTED'];
+                            $cr_item_total_credit_earn = $cr_item_total_credit_earn + $one_cr_item['CREDIT_EARNED'];
+                        }
+                    }
+                }
+            }
+            # New credit calculation - End #
             ?>
             <div class="print-wrapper">
                 <div class="print-header m-b-10">
@@ -320,7 +402,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         <h2><?php echo $schoolinfo['TITLE']; ?></h2>
                         <b><?=_address?> :</b> <?php echo (($schoolinfo['ADDRESS'] != '') ? $schoolinfo['ADDRESS'] : '') . ' ' . (($schoolinfo['CITY'] != '') ? ', ' . $schoolinfo['CITY'] : '') . (($schoolinfo['STATE'] != '') ? ', ' . $schoolinfo['STATE'] : '') . (($schoolinfo['ZIPCODE'] != '') ? ', ' . $schoolinfo['ZIPCODE'] : '') ?>
                         <?php if ($schoolinfo['PHONE']) { ?>
-                            <p><b><?=phone?> :</b> <?php echo $schoolinfo['PHONE']; ?></p>
+                            <p><b><?=_phone?> :</b> <?php echo $schoolinfo['PHONE']; ?></p>
                         <?php } ?>
                     </div>
                     <div class="header-right">
@@ -360,20 +442,36 @@ if ($_REQUEST['modfunc'] == 'save') {
                         <table class="table">
                             <tr>
                                 <td class="p-r-30"><?=_cumulativeGpa?></td>
-                                <td><?php echo $tot_qp != 0 ? sprintf("%01.2f", ($tot_qp / $total_CGPA_attemted)) : '0.00'; ?></td>
+                                <td>
+                                    <?php
+                                        // echo $tot_qp != 0 ? sprintf("%01.2f", ($tot_qp / $total_CGPA_attemted)) : '0.00';
+                                        echo $cr_item_tot_qp != 0 ? sprintf("%01.2f", ($cr_item_tot_qp / $cr_item_total_CGPA_attemted)) : '0.00';
+                                    ?>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="p-r-30"><?=_totalCreditAttempted?></td>
-                                <td><?php echo sprintf("%01.2f", $total_CGPA_attemp); ?></td>
+                                <td>
+                                    <?php
+                                        // echo sprintf("%01.2f", $total_CGPA_attemp);
+                                        echo sprintf("%01.2f", $cr_item_total_CGPA_attemp);
+                                    ?>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="p-r-30"><?=_totalCreditEarned?></td>
-                                <td><?php echo sprintf("%01.2f", $total_credit_earn); ?></td>
+                                <td>
+                                    <?php
+                                        // echo sprintf("%01.2f", $total_credit_earn);
+                                        echo sprintf("%01.2f", $cr_item_total_credit_earn);
+                                    ?>
+                                </td>
                             </tr>
                         </table>
                     </div>
                     <?php
                         $total_CGPA_attemp = $total_credit_earn = '';
+                        unset($arr_credits);
                     ?>
                 </div>
 
@@ -484,8 +582,8 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] = '<div class="form-inline">';
         $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="show_photo" id="show_photo" /><span></span> '._includeStudentPicture.'</label></div></div>';
         $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><input type="checkbox" name="incl_mp_grades" id="" checked disabled /><span></span> '._includeMarkingPeriodGrades.'</label></div></div>';
-        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" checked /> '._twoColumnTemplate.'</label></div>';
-        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" /> '._singleColumnTemplate.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input class="styled" type="radio" name="template" id="" value="single" checked/> '._singleColumnTemplate.'</label></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><label class="radio-inline"><input type="radio" class="styled" name="template" id="" value="two" /> '._twoColumnTemplate.'</label></div>';
         $extra['extra_header_left'] .= '</div>';
 
         $extra['extra_header_left'] .= '<h6 class="m-t-20">'._includeGradeLevelsInTranscript.'</h6>';
@@ -599,7 +697,7 @@ function _makeChooseCheckbox($value, $title) {
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
 //    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
 
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
 
 function _convertlinefeed($string) {

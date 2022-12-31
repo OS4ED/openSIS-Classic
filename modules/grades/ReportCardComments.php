@@ -193,7 +193,7 @@ if (!$_REQUEST['modfunc']) {
     $LO_ret = DBGet(DBQuery($sql), $functions);
     foreach ($LO_ret as $ld)
         $report_card_comments[] = $ld['ID'];
-    if (count($report_card_comments) > 0)
+    if (is_countable($report_card_comments) && count($report_card_comments) > 0)
         $report_card_comments = implode(',', $report_card_comments);
     echo "<FORM name=F1 id=F1 class=\"m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=update&course_id=$_REQUEST[course_id]&tab_id=$_REQUEST[tab_id] method=POST>";
         if(UserProfileID() != 2){

@@ -83,18 +83,19 @@ if (!$_REQUEST['modfunc']) {
         if ($_SESSION['MassDrops.php']) {
         echo "<FORM name=ww id=ww action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save method=POST>";
         echo '<div class="panel panel-default">';
-        }
-        else {
-            ShowErr(_youMustChooseACourse);
+    }
+    else {
+        ShowErr(_youMustChooseACourse);
 
-        for_error_sch();
-        }
+    for_error_sch();
+    }
     }
     if ($_REQUEST['search_modfunc'] != 'list')
         unset($_SESSION['MassDrops.php']);
     $extra['SELECT'] = ",CAST(NULL AS CHAR(1)) AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'student\',\'Y\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
     $extra['new'] = true;
 
     if ($_SESSION['MassDrops.php']['course_period_id']) {
@@ -112,7 +113,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="row">';
         echo '<div class="col-md-6 col-md-offset-3">';
-        echo "<FORM class=no-margin-bottom name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
+        echo "<FORM class=no-margin-bottom name=search id=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST['modfunc'])) . "&search_modfunc=list&next_modname=$_REQUEST[next_modname]" . $extra['action'] . " method=POST>";
         PopTable('header', ''._findStudentsToDrop.'');
 
         echo '<div class="form-group">';
@@ -181,6 +182,15 @@ if (!$_REQUEST['modfunc']) {
                 $extra['singular'] = ''._student.'';
             $extra['plural'] = ''._students.'';
 
+            echo '<div id="hidden_checkboxes"></div>';
+            $check_all_arr = array();
+            foreach ($students_RET as $xy) {
+                $check_all_arr[] = $xy['STUDENT_ID'];
+            }
+            $check_all_stu_list = implode(',', $check_all_arr);
+            echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
+            echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
+            
             # Set pagination params
             setPaginationRequisites($_REQUEST['modname'], $_REQUEST['search_modfunc'], $_REQUEST['next_modname'], $columns, $extra['singular'], $extra['plural'], $link, $extra['LO_group'], $extra['options'], 'ListOutputCustomDT', ProgramTitle());
 
@@ -272,7 +282,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=$THIS_RET[STUDENT_ID]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID], \"Y\");' />";
 }
+
+// function _makeChooseCheckbox($value, $title) {
+//     global $THIS_RET;
+//     return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+// }
 
 ?>

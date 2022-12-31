@@ -19,7 +19,25 @@ function par_spt($pattern='',$sub='')
 
 function par_rep_cb($match='',$exp='',$sub='')  
 {
-    return preg_replace_callback($match,$exp,$sub);
+     if($match[0] == '/' && $match[strlen($match) - 1] == '/')
+     {
+         $match = '~'.trim($match, '/').'~';
+     }
+     else
+     {
+          $match = $match;
+     }
+    return preg_replace_callback($match,'exp_match',$sub);
+    //return $sub;
+    //return preg_replace($match,$exp,$sub);
+}
+
+function exp_match($matches)
+{
+  // as usual: $matches[0] is the complete match
+  // $matches[1] the match for the first subpattern
+  // enclosed in '(...)' and so on
+  //return $matches[1].($matches[2]+1);
+  return $matches[0];
 }
 ?>
-

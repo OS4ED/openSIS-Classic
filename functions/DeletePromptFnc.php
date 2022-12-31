@@ -159,7 +159,8 @@ function DeletePromptModContacts($title, $action = 'delete', $close = 'n') {
         return true;
 }
 
-function DeleteMail($title, $action = 'delete', $location, $isTrash = 0) {
+function DeleteMail($title, $action, $location, $isTrash = 0) {
+    if(empty($action)) $action = 'delete';
     $tmp_REQUEST = $_REQUEST;
     unset($tmp_REQUEST['delete_ok']);
 
@@ -189,7 +190,16 @@ function DeletePromptMod($title, $queryString = '', $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', _confirm ." ". (strpos($action, ' ') === false ? ucwords($action) : $action));
-        echo "<CENTER><h4>"._areYouSureYouWantTo." $action "._that." " . (strpos($title, ' ') === false ? ucwords($title) : $title) . "?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value="._ok.">&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&$queryString\");'></FORM></CENTER>";
+        if($_REQUEST['modname']=='scheduling/Schedule.php' && $_REQUEST['day_date'] && $_REQUEST['month_date'] && $_REQUEST['year_date']){
+            $day = $_REQUEST['day_date'];
+            $month   = $_REQUEST['month_date'];
+            $year = $_REQUEST['year_date'];
+
+            echo "<CENTER><h4>"._areYouSureYouWantTo." $action "._that." " . (strpos($title, ' ') === false ? ucwords($title) : $title) . "?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value="._ok.">&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&month_date=$month&day_date=$day&year_date=$year&$queryString\");'></FORM></CENTER>";
+        }
+        else{
+            echo "<CENTER><h4>"._areYouSureYouWantTo." $action "._that." " . (strpos($title, ' ') === false ? ucwords($title) : $title) . "?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value="._ok.">&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value="._cancel." onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&$queryString\");'></FORM></CENTER>";
+        }
         PopTable('footer');
         return false;
     } else
@@ -422,7 +432,7 @@ function DeletePrompt_Sections($title, $action = 'delete') {
         return true;
 }
 
-function DeletePromptBigString($title = '', $queryString = '') {
+function DeletePromptBigString($title = '', $queryString = '', $action = 'delete') {
 
     $tmp_REQUEST = $_REQUEST;
 

@@ -143,7 +143,7 @@ if (basename($_SERVER['PHP_SELF']) != 'index.php') {
     unset($options);
     if (count($schools_RET) && User('PROFILE') == 'admin') {
         $i = 0;
-        $_SESSION[staff_school_chkbox_id] = 0;
+        $_SESSION['staff_school_chkbox_id'] = 0;
         if ($staff['STAFF_ID'])
             $schools = GetUserSchools($staff['STAFF_ID']);
     }
@@ -155,8 +155,15 @@ if ($_REQUEST['profile'] != 'none') {
 
     echo '<div class="col-md-6">';
     echo '<div class="form-group">';
-    echo TextInput($staff['USERNAME'], 'login_authentication[USERNAME]', _username, 'size=25 maxlength=100 class=form-control onkeyup="usercheck_init(this)"');
-    echo '<div id="ajax_output"></div>';
+    echo '<label for="login_authentication[USERNAME]" class="control-label text-right col-lg-4">Username</label>';
+    echo '<div class="col-lg-8">';
+    if (User('PROFILE') == 'admin') {
+        echo TextInput($staff['USERNAME'], 'login_authentication[USERNAME]', '', 'size=25 maxlength=100 class=form-control onkeyup=\"usercheck_init(this, ' . $staff['STAFF_ID'] . ', ' . $staff['PROFILE_ID'] . ')\"');
+        echo '<div id="ajax_output"></div>';
+    }
+    else
+        echo NoInput($staff['USERNAME']);
+    echo '</div>'; //.col-md-8
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-6
 
@@ -299,8 +306,8 @@ function _makeEndInputDate($value, $column) {
 function _makeCheckBoxInput_gen($value, $column) {
     global $THIS_RET;
 
-    $_SESSION[staff_school_chkbox_id] ++;
-    $staff_school_chkbox_id = $_SESSION[staff_school_chkbox_id];
+    $_SESSION['staff_school_chkbox_id'] ++;
+    $staff_school_chkbox_id = $_SESSION['staff_school_chkbox_id'];
     if ($_REQUEST['staff_id'] == 'new') {
         return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
     } else {

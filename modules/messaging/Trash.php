@@ -9,7 +9,7 @@ $userName = User('USERNAME');
 $user_dt = DBGet(DBQuery('SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USERNAME=\'' . $userName . '\''));
 $user_dt = $user_dt[1];
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
-    if (count($_REQUEST['mail']) != 0) {
+    if (is_countable($_REQUEST['mail']) && count($_REQUEST['mail']) != 0) {
         $count = count($_REQUEST['mail']);
         if ($count != 1)
             $row = "messages";
@@ -26,7 +26,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
                 else
                     $recieved[] = $idd[0];
             }
-            if (count($sent) > 0) {
+            if (is_countable($sent) && count($sent) > 0) {
                 $sent = implode(',', $sent);
 
                 $arr = array();
@@ -46,7 +46,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
                     }
                 }
             }
-            if (count($recieved) > 0) {
+            if (is_countable($recieved) && count($recieved) > 0) {
                 $recieved = implode(',', $recieved);
 
                 $arr = array();
@@ -250,7 +250,7 @@ if (!isset($_REQUEST['modfunc'])) {
     unset($key1);
     unset($value1);
     foreach ($trash_info1 as $key1 => $value1) {
-        if (count($trash_info) > 0)
+        if (is_countable($trash_info) && count($trash_info) > 0)
             $trash_info[] = $value1;
         else
             $trash_info[1] = $value1;
@@ -278,7 +278,7 @@ if (!isset($_REQUEST['modfunc'])) {
         $extra['columns_before']['CHECKBOX'] = "<INPUT type=checkbox name=mail[" . $value['MAIL_ID'] . "_" . $value['STATUS'] . "] value=Y>";
         $trash_info[$id] = $extra['columns_before'] + $value;
     }
-    if (count($trash_info) != 0) {
+    if (is_countable($trash_info) && count($trash_info) != 0) {
         if (isset($userName)){
             $custom_header = '<h6 class="panel-title text-pink">'._trash.'</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> '._delete.'</button></div>';
         }

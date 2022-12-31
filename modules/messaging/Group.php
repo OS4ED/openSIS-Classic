@@ -34,7 +34,7 @@ $curProfile = User('PROFILE');
 $userName = User('USERNAME');
 
 if (isset($_REQUEST['msg']) && $_REQUEST['msg'] == 4) {
-    echo '<FONT style=color:green>'._groupIsSuccessfullyDeleted.'. </FONT>';
+    echo "<FONT style=color:green>"._groupIsSuccessfullyDeleted.". </FONT>";
 }
 if (!isset($_REQUEST['modfunc'])) {
 
@@ -43,7 +43,7 @@ if (!isset($_REQUEST['modfunc'])) {
     echo "<div id='students' class='panel panel-default'>";
     $custom_header = "<h6 class=\"panel-title text-pink\">"._groups."</h6><div class=\"heading-elements\"><a href='#' class=\"btn btn-default heading-btn\" onclick='load_link(\"Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group\");'> "._addGroup."</a></div>";
 
-    $select = "SELECT *  from mail_group  WHERE USER_NAME ='$userName'";
+    $select = "SELECT *  from mail_group  WHERE USER_NAME ='$userName' AND SCHOOL_ID= '".UserSchool()."'";
     $link['GROUP_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=groupmember";
     $link['GROUP_NAME']['variables'] = array('group_id' => 'GROUP_ID');
     $columns = array('GROUP_NAME' => _groupName, 'DESCRIPTION' => _description, 'CREATION_DATE' => _createDate, 'MEMBERS' => _members , 'action' => _action);
@@ -89,7 +89,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
     unset($_REQUEST['modfunc']);
 }
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
-    echo "<FORM name=sav class=\"form-horizontal\" id=sav action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=members&groupid=" . strip_tags(trim($_REQUEST[group_id])) . " method=POST>";
+    echo "<FORM name=sav class=\"form-horizontal\" id=sav action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=members&groupid=" . strip_tags(trim($_REQUEST['group_id'])) . " method=POST>";
 
     //PopTable('header', 'Group Members');
     echo '<div class="panel panel-default">';
@@ -166,11 +166,11 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'groupmember') {
                 $groupdesc[$i] = str_replace("'", "\\", $groupdesc[$i]);
         }
     }
-    $gid = $_REQUEST[group_id];
+    $gid = $_REQUEST['group_id'];
     echo '</div>';
     echo '<hr class="m-0" />';
     echo '<div id="members">';
-    $custom_header = '<h6 class="panel-title">' . count($member_list) . ' '._member.'' . (((count($member_list)) > 1) ? ''.s.'' : '') . '</h6><div class="heading-elements"><a class="btn btn-default heading-btn" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=exist_group&group_name=' . $grp . '&desc=' . $groupdesc . '&grp_id=' . $gid . '"> '._addMember.'</a></div>';
+    $custom_header = '<h6 class="panel-title">' . count($member_list) . ' '._member.'' . (((count($member_list)) > 1) ? "s" : '') . '</h6><div class="heading-elements"><a class="btn btn-default heading-btn" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=exist_group&group_name=' . $grp . '&desc=' . $groupdesc . '&grp_id=' . $gid . '"> '._addMember.'</a></div>';
     //ListOutput($member_list, $columns, 'Member', 'Members', '', array(), array('search' => false, 'save' => false), '', $custom_header);
     ListOutputMessagingGroups($member_list, $columns, _member, _members, '', array(), array('search' => false, 'save' => false), '', $custom_header);
     echo '</div>';
@@ -185,7 +185,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
 
     $grp_name = $_REQUEST['group_name'];
 
-    echo "<FORM class=\"form-horizontal\" name=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group_member&search=true&group_id=$grp_name&desc=" . strip_tags(trim($_REQUEST[desc])) . "&grp_id=" . strip_tags(trim($_REQUEST[grp_id])) . " method=POST>";
+    echo "<FORM class=\"form-horizontal\" name=search action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=add_group_member&search=true&group_id=$grp_name&desc=" . strip_tags(trim($_REQUEST['desc'])) . "&grp_id=" . strip_tags(trim($_REQUEST['grp_id'])) . " method=POST>";
     
     echo '<div class="panel panel-default">';
     echo '<div class="panel-heading">';
@@ -282,7 +282,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
         
     }
 
-    echo "<FORM name=Group class=\"form-horizontal\" id=Compose action=Modules.php?modname=messaging/Group.php&modfunc=member_insert&grp_id=" . strip_tags(trim($_REQUEST[grp_id])) . " method=POST >";
+    echo "<FORM name=Group class=\"form-horizontal\" id=Compose action=Modules.php?modname=messaging/Group.php&modfunc=member_insert&grp_id=" . strip_tags(trim($_REQUEST['grp_id'])) . " method=POST >";
 
     PopTable('header', _group);
 
@@ -335,8 +335,8 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'add_group_member') {
                 $stu_id[] = $stulist[1]['STUDENT_ID'];
             }
         }
-        $staff_id = array_filter($staff_id);
-        $stu_id = array_filter($stu_id);
+        $staff_id = is_array($staff_id) ? array_filter($staff_id) : '';
+        $stu_id = is_array($stu_id) ? array_filter($stu_id) : '';
 
         if ($profile != -1) {//search by profile  
             if ($profile == 3) {//students
@@ -731,8 +731,10 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'member_insert') {
             $idProfile = explode(",", $j);
             $member_select = DBGet(DBQuery("Select * from login_authentication,user_profiles where login_authentication.profile_id=user_profiles.id and user_profiles.profile='" . $idProfile[1] . "' and login_authentication.user_id='$idProfile[0]'  "));
 
-            $grp_members = 'INSERT INTO mail_groupmembers(GROUP_ID,USER_NAME,profile) VALUES(\'' . $grp_select[1]['GROUP_ID'] . '\',\'' . $member_select[1]['USERNAME'] . '\',\'' . $member_select[1]['PROFILE_ID'] . '\')';
+            // $grp_members = 'INSERT INTO mail_groupmembers(GROUP_ID,USER_NAME,profile) VALUES(\'' . $grp_select[1]['GROUP_ID'] . '\',\'' . $member_select[1]['USERNAME'] . '\',\'' . $member_select[1]['PROFILE_ID'] . '\')';
 
+            $grp_members = 'INSERT INTO mail_groupmembers(GROUP_ID,USER_NAME,profile,SCHOOL_ID) VALUES(\'' . $grp_select[1]['GROUP_ID'] . '\',\'' . $member_select[1]['USERNAME'] . '\',\'' . $member_select[1]['PROFILE_ID'] . '\',\'' . UserSchool(). '\')';
+            
             $members = DBQuery($grp_members);
             $mem_ins_msg = 'ins';
         }
@@ -765,7 +767,10 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'group_insert') {
         $description = 'N';
 
     if ($_REQUEST['txtGrpName']) {
-        $group = 'INSERT INTO mail_group(GROUP_NAME,DESCRIPTION,USER_NAME,CREATION_DATE) VALUES(\'' . str_replace("'", "''", str_replace("\'", "'", $_REQUEST['txtGrpName'])) . '\',\'' . str_replace("'", "''", str_replace("\\'", "'", $description)) . '\',\'' . $userName . '\',now())';
+        // $group = 'INSERT INTO mail_group(GROUP_NAME,DESCRIPTION,USER_NAME,CREATION_DATE) VALUES(\'' . str_replace("'", "''", str_replace("\'", "'", $_REQUEST['txtGrpName'])) . '\',\'' . str_replace("'", "''", str_replace("\\'", "'", $description)) . '\',\'' . $userName . '\',now())';
+
+        $group = 'INSERT INTO mail_group(GROUP_NAME,DESCRIPTION,USER_NAME,SCHOOL_ID,CREATION_DATE) VALUES(\'' . str_replace("'", "''", str_replace("\'", "'", $_REQUEST['txtGrpName'])) . '\',\'' . str_replace("'", "''", str_replace("\\'", "'", $description)) . '\',\'' . $userName . '\',\'' . UserSchool(). '\',now())';
+
         $group_info = DBQuery($group);
 
         if ($_REQUEST['groups']) {
@@ -778,7 +783,10 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'group_insert') {
 
                 $member_select = DBGet(DBQuery("Select * from login_authentication,user_profiles where login_authentication.profile_id=user_profiles.id and user_profiles.profile='" . $idProfile[1] . "' and login_authentication.user_id='$idProfile[0]'  "));
 
-                $grp_members = 'INSERT INTO mail_groupmembers(GROUP_ID,USER_NAME,profile) VALUES(\'' . $grp_select[1]['GROUP_ID'] . '\',\'' . $member_select[1]['USERNAME'] . '\',\'' . $member_select[1]['PROFILE_ID'] . '\')';
+                // $grp_members = 'INSERT INTO mail_groupmembers(GROUP_ID,USER_NAME,profile) VALUES(\'' . $grp_select[1]['GROUP_ID'] . '\',\'' . $member_select[1]['USERNAME'] . '\',\'' . $member_select[1]['PROFILE_ID'] . '\')';
+                
+                $group = 'INSERT INTO mail_group(GROUP_NAME,DESCRIPTION,USER_NAME,SCHOOL_ID,CREATION_DATE) VALUES(\'' . str_replace("'", "''", str_replace("\'", "'", $_REQUEST['txtGrpName'])) . '\',\'' . str_replace("'", "''", str_replace("\\'", "'", $description)) . '\',\'' . $userName . '\',\'' . UserSchool(). '\',now())';
+                
                 $members = DBGet(DBQuery($grp_members));
             }
         }
@@ -798,20 +806,20 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'members' && $_REQUES
         $gid = $_REQUEST['groupid'];
         $exist_group = DBGet(DBQuery("SELECT * FROM mail_group WHERE USER_NAME='$userName' and group_id!='$gid'"));
         foreach ($exist_group as $id => $value) {
-            if ($exist_group[$id]['GROUP_NAME'] == $_REQUEST[groupname]) {
+            if ($exist_group[$id]['GROUP_NAME'] == $_REQUEST['groupname']) {
                 PopTable('header', _alertMessage);
                 echo "<CENTER><h4>"._groupnameAlreadyExistFor." $userName</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=".ok." onclick='window.location=\"Modules.php?modname=messaging/Group.php\"'></FORM></CENTER>";
                 PopTable('footer');
                 exit;
             }
         }
-        $update = "UPDATE mail_group SET GROUP_NAME='" . str_replace("'", "\\'", $_REQUEST[groupname]) . "' WHERE GROUP_ID=$_REQUEST[groupid]";
+        $update = "UPDATE mail_group SET GROUP_NAME='" . str_replace("'", "\\'", $_REQUEST['groupname']) . "' WHERE GROUP_ID=$_REQUEST[groupid]";
 
         $update_group = DBQuery($update);
     }
     if (isset($_REQUEST['groupdesc']) && $_REQUEST['groupdesc'] != '') {
         if (trim($_REQUEST['groupdesc']) != "")
-            $update = "UPDATE mail_group SET DESCRIPTION='" . str_replace("'", "\\'", $_REQUEST[groupdesc]) . "' WHERE GROUP_ID=$_REQUEST[groupid]";
+            $update = "UPDATE mail_group SET DESCRIPTION='" . str_replace("'", "\\'", $_REQUEST['groupdesc']) . "' WHERE GROUP_ID=$_REQUEST[groupid]";
         else
             $update = "UPDATE mail_group SET DESCRIPTION='N' WHERE GROUP_ID=$_REQUEST[groupid]";
         $update_group = DBQuery($update);
@@ -864,7 +872,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'members' && $_REQUES
         }
     } else {
 
-        $no_of_member = DBGet(DBQuery('SELECT * FROM mail_groupmembers WHERE GROUP_ID=' . $_REQUEST[groupid]));
+    $no_of_member = DBGet(DBQuery('SELECT * FROM mail_groupmembers WHERE GROUP_ID=' . $_REQUEST['groupid']));
         if (count($no_of_member) == 0)
             echo "<script>load_link('Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "')</script>";
         else {

@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-if (WAREHOUSE_PHP == 0) {
+if (!defined('WAREHOUSE_PHP')) {
     define("WAREHOUSE_PHP", 1);
     $staticpath = dirname(__FILE__) . '/';
 
@@ -34,9 +34,9 @@ if (WAREHOUSE_PHP == 0) {
     require_once("DatabaseInc.php");
 
     //Create Default Year Picture Folder
-    if (!file_exists($StudentPicturesPath)) {
-        mkdir($StudentPicturesPath);
-    }
+    // if (!file_exists($StudentPicturesPath)) {
+    //     mkdir($StudentPicturesPath);
+    // }
 
     // Load functions.
     if ($handle = opendir("$openSISPath/functions")) {
@@ -184,4 +184,3 @@ if (WAREHOUSE_PHP == 0) {
 							} 
 
  */
-?>

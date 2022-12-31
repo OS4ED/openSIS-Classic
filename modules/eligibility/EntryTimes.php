@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+error_reporting(E_ALL ^ E_WARNING);
 // GET ALL THE config ITEMS FOR eligibility
 include('../../RedirectModulesInc.php');
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));
@@ -59,14 +60,22 @@ if ($_REQUEST['values']) {
 
     $start = $_REQUEST['values']['START_DAY'] . $_REQUEST['values']['START_HOUR'] . $_REQUEST['values']['START_MINUTE'];
     $end = $_REQUEST['values']['END_DAY'] . $_REQUEST['values']['END_HOUR'] . $_REQUEST['values']['END_MINUTE'];
-    foreach (sqlSecurityFilter($_REQUEST['values']) as $key => $value) {
+
+    $this_REQUEST = $_REQUEST['values'];
+
+    $this_REQUEST['START_HOUR'] = (string)$this_REQUEST['START_HOUR'];
+    $this_REQUEST['END_HOUR'] = (string)$this_REQUEST['END_HOUR'];
+
+    $new_REQUEST = sqlSecurityFilter($this_REQUEST);
+
+    foreach ($new_REQUEST as $key => $value) {
         if($key!='START_TIME' && $key!='END_TIME')
         {
-        if (isset($$key)) {
-            DBQuery('UPDATE program_config SET VALUE=\'' . $value . '\' WHERE PROGRAM=\'eligibility\' AND TITLE=\'' . $key . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'');
-        } else {
-            DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'eligibility\',\'' . $key . '\',\'' . $value . '\')');
-        }
+            if (isset($$key)) {
+                DBQuery('UPDATE program_config SET VALUE=\'' . $value . '\' WHERE PROGRAM=\'eligibility\' AND TITLE=\'' . $key . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'');
+            } else {
+                DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'eligibility\',\'' . $key . '\',\'' . $value . '\')');
+            }
         }
     }
 
@@ -92,7 +101,7 @@ for ($i = 10; $i <= 59; $i++)
     $minute_options[$i] = $i;
 
 $m_options = array('AM' => 'AM', 'PM' => 'PM');
-$START_HOUR = $arr['START_HOUR'];
+$START_HOUR = intval($arr['START_HOUR']);
 if ($arr['START_HOUR'] > 12) {
     $START_HOUR-=12;
     $START_M = 'PM';
@@ -100,7 +109,8 @@ if ($arr['START_HOUR'] > 12) {
 else
     $START_M = 'AM';
 
-$END_HOUR = $arr['END_HOUR'];
+
+$END_HOUR = intval($arr['END_HOUR']);
 if ($arr['END_HOUR'] > 12) {
     $END_HOUR-=12;
     $END_M = 'PM';

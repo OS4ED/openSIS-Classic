@@ -36,7 +36,8 @@ function DeletePromptX($title,$action='delete')
 
 	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
 	{
-		PopTable('header',confirm." ".(!substr(' ',' '.$action)?$action:''));
+		//PopTable('header',_confirm." ".(!substr(' ',' '.$action)?$action:''));
+		PopTable('header',_confirm." ".(trim($action)!=""?$action:''));
 		echo "<CENTER><h4>"._areYouSureYouWantTo." $action that $title?</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=submit name=delete_ok class=\"btn btn-danger\" value="._ok."> <INPUT type=submit class=\"btn btn-primary\" name=delete_cancel value="._cancel."></FORM></CENTER>";
 		PopTable('footer');
 		return '';

@@ -284,7 +284,7 @@ $dbconn->query($qr_staff_create)  or die('<i class="fa fa-exclamation-triangle f
 
 
 $qr_staff_field_qr = "CREATE TABLE IF NOT EXISTS `staff_field_categories_new` (
- `id` int(8) NOT NULL DEFAULT '0',
+ `id` int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
  `title` varchar(100) DEFAULT NULL,
  `sort_order` decimal(10,0) DEFAULT NULL,
  `include` varchar(100) DEFAULT NULL,

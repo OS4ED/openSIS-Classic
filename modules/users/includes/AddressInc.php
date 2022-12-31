@@ -28,10 +28,10 @@
 #***************************************************************************************
 
 
-if (count($_REQUEST['values']['ADDRESS']))
+if (!empty($_REQUEST['values']['ADDRESS']))
     foreach ($_REQUEST['values']['ADDRESS'] as $index => $data)
         $_REQUEST['values']['ADDRESS'][$index] = $data;
-if (count($_REQUEST['values']['EMERGENCY_CONTACT']))
+if (!empty($_REQUEST['values']['EMERGENCY_CONTACT']))
     foreach ($_REQUEST['values']['EMERGENCY_CONTACT'] as $index => $data)
         $_REQUEST['values']['EMERGENCY_CONTACT'][$index] = $data;
 
@@ -411,7 +411,7 @@ function _makeAutoSelectInputX($value, $column, $table, $title, $select, $id = '
     else
         $options = 'maxlength=100';
 
-    if ($value != '---' && count($select) > 1)
+    if ($value != '---' && !empty($select))
         return SelectInput($value, "values[$table]" . ($id ? "[$id]" : '') . "[$column]", $title, $select, 'N/A', '', $div);
     else
         return TextInput($value == '---' ? array('---', '<FONT color=red>---</FONT>') : $value, "values[$table]" . ($id ? "[$id]" : '') . "[$column]", $title, $options, $div);

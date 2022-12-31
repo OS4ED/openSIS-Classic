@@ -68,6 +68,5 @@ $menu['schoolsetup']['parent'] = array(
 $exceptions['schoolsetup'] = array(
 						'schoolsetup/PortalNotes.php'=>true,
 						'schoolsetup/Schools.php?new_school=true'=>true,
-						'schoolsetup/Rollover.php'=>_tru
+						'schoolsetup/Rollover.php'=>'tru'
 					);
-?>

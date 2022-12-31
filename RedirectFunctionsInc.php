@@ -1,4 +1,4 @@
-<?php 
+<?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -26,9 +26,7 @@
 #
 #***************************************************************************************
 session_start();
-	if(!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && strpos($_SERVER['PHP_SELF'],'index.php')===false)
-	{
-		header('Location: ../index.php');
-		exit;
-	}
-?>
+if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && strpos($_SERVER['PHP_SELF'], 'index.php') === false) {
+	header('Location: ../index.php');
+	exit;
+}

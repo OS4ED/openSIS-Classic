@@ -128,16 +128,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
             if ($fields && $values) {
 
 
-                $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
-                $id = $id[1]['AUTO_INCREMENT'];
+                // $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
+                // $id = $id[1]['AUTO_INCREMENT'];
 
                 
                 $start_date=$_REQUEST['year__min'].'-'.$_REQUEST['month__min'].'-'.$_REQUEST['day__min'];
                 $end_date=$_REQUEST['year__max'].'-'.$_REQUEST['month__max'].'-'.$_REQUEST['day__max'];
                 $syear=$_REQUEST['year__min'];
                 $sql = 'INSERT INTO schools (SYEAR' . $fields . ') values(' . $syear . '' . $values . ')';
-
                 DBQuery($sql);
+                $id = mysqli_insert_id($connection);
+                
                 DBQuery('INSERT INTO  staff_school_relationship(staff_id,school_id,syear,start_date) VALUES (' . UserID() . ',' . $id . ',' . $syear. ',"'.date('Y-m-d').'")');
                 $other_admin_details=DBGet(DBQuery('SELECT * FROM login_authentication WHERE PROFILE_ID=0 AND USER_ID!=' . UserID() . ''));
                 if(!empty($other_admin_details))

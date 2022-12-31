@@ -27,10 +27,10 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
 include("Data.php");
 include("Warehouse.php");
-
-$keyword = sqlSecurityFilter($_REQUEST['str']);
+$keyword = $_REQUEST['str'];
 $block_id = $_REQUEST['block_id'];
 if (User('PROFILE') == 'student')
     $user_id = UserStudentID();

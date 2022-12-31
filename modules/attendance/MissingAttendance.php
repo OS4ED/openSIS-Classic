@@ -68,7 +68,7 @@ if ((!UserStudentID() || substr($_REQUEST['modname'], 0, 5) == 'users')) {
     DrawHeader(''._selectedUser.': ' . $RET_Users[1]['FIRST_NAME'] . '&nbsp;' . $RET_Users[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Side.php?modname=' . $_REQUEST['modname'] . '&staff_id=new&From=' . $From . '&to=' . $to . ' ><i class="icon-square-left"></i> '._selectedUser.'</A></span>');
 }
 
-if (count($RET)) {
+if (is_countable($RET) && count($RET)) {
     echo '<div class="panel-body p-b-0"><div class="alert alert-warning alert-styled-left m-b-0"><b>'._warning.'!!</b> - '._teachersHaveMissingAttendanceData.'.</div></div>';
 
     $modname = "users/TeacherPrograms.php?include=attendance/TakeAttendance.php&miss_attn=1&From=$From&to=$to";

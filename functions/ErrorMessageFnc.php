@@ -47,7 +47,7 @@
 // problems.  Also, the error display will be standardized.
 // If a 2ND is sent, the list will not be treated as errors, but shown anyway
 function ErrorMessage($errors, $code = 'error', $options = '') {
-    $errors = array_unique($errors);
+    $errors = is_array($errors) ? array_unique($errors) : [];
     if ($errors) {
         if (count($errors) == 1) {
             if ($code == 'error' || $code == 'fatal' || $code == 'note')
@@ -149,7 +149,7 @@ function ErrorMessage1($errors, $code = 'error') {
             $return .= '</div>';
             $return .= '<div class="col-md-3">';
             $return .= '<div class="version-info">';
-            $return .= 'Version <b>' . $get_app_details[1][VALUE] . '</b>';
+            $return .= 'Version <b>' . $get_app_details[1]['VALUE'] . '</b>';
             $return .= '</div>';
             $return .= '</div>';
             $return .= '</div>';

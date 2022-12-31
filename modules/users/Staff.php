@@ -26,13 +26,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-session_start();
+
 !empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
 include_once("../../functions/PasswordHashFnc.php");
 
-if ($_SESSION['staff_id']== '' && $_REQUEST['staff_id'] != 'new')
-        $_SESSION['staff_id'] = $_REQUEST['staff_id'];
+if ($_SESSION['staff_id'] == '' && $_REQUEST['staff_id'] != 'new')
+    $_SESSION['staff_id'] = $_REQUEST['staff_id'];
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
         $_REQUEST['staff']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
@@ -62,81 +62,83 @@ if ($_REQUEST['month_values']['JOINING_DATE'] != '' && $_REQUEST['day_values']['
 }
 
 $show_title = '';
-                if(UserStaffID() !='')    
-                {
-                    
-                        
-  if ($_REQUEST['v'] && isset($_REQUEST['staff_id'])) {
+if (UserStaffID() != '') {
+
+
+    if ($_REQUEST['v'] && isset($_REQUEST['staff_id'])) {
 
 
 
-                $val = optional_param('v', 0, PARAM_INT);
-              
-                if ($val == 1) {
-                    unset($_SESSION['staff_id']);
-                    $_SESSION['staff_id'] = $_SESSION['staff_order'][1];
-                }
-                if ($val == 2) {
-                    $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
-                     $final_pos = $final_pos - 1;
-                    unset($_SESSION['staff_id']);
-                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
-                }
-                if ($val == 3) {
-                    $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
-                    $final_pos = $final_pos + 1;
-                    unset($_SESSION['staff_id']);
-                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
-                }
-                if ($val == 4) {
-                    unset($_SESSION['staff_id']);
-                    $final_pos = count($_SESSION['staff_order']);
-                    $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
-                }
-                
-            }
-            $val = $_REQUEST['v'];
-                        $count = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
-                         $_SESSION['count_staff'] = $count;
-                        $_SESSION['total_staff'] = count($_SESSION['staff_order']);
-                        $last_stu = count($_SESSION['staff_order']);
-                        $last_stu = $_SESSION['staff_order'][$last_stu];
-                        echo '<div class="row">';
-                        echo '<div class="col-md-12 text-right">';
-                        echo "<p>"._showing." " . (count($_SESSION['staff_order']) > 1 ? $_SESSION['count_staff'] : '1') . " "._showing." " . (count($_SESSION['staff_order']) > 1 ? $_SESSION['total_staff'] : '1') . " &nbsp; ";
+        $val = optional_param('v', 0, PARAM_INT);
 
-                        if (count($_SESSION['staff_order']) > 1) {
-                            if (UserStaffID() != $_SESSION['staff_order'][1]) {
-                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=1&staff_id=" . UserStaffID() . " ><i class=\"icon-first\"></i> "._first."</A></span>";
+        if ($val == 1) {
+            unset($_SESSION['staff_id']);
+            $_SESSION['staff_id'] = $_SESSION['staff_order'][1];
+        }
+        if ($val == 2) {
+            $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+            $final_pos = $final_pos - 1;
+            unset($_SESSION['staff_id']);
+            $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+        }
+        if ($val == 3) {
+            $final_pos = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+            $final_pos = $final_pos + 1;
+            unset($_SESSION['staff_id']);
+            $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+        }
+        if ($val == 4) {
+            unset($_SESSION['staff_id']);
+            $final_pos = count($_SESSION['staff_order']);
+            $_SESSION['staff_id'] = $_SESSION['staff_order'][$final_pos];
+        }
+    }
+    $val = $_REQUEST['v'];
 
-                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=2&staff_id=" . UserStaffID() . " > <i class=\"icon-backward2\"></i> "._previous."</A></span>";
-                            }
-                            if (UserStaffID() != $last_stu) {
+    if(is_array($_SESSION['staff_order']))
+    {
+        $count = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
+    }
+    
+    $_SESSION['count_staff'] = $count;
+    $_SESSION['total_staff'] = (is_countable($_SESSION['staff_order'])) ? count($_SESSION['staff_order']) : 0;
+    $last_stu = (is_countable($_SESSION['staff_order'])) ? count($_SESSION['staff_order']) : 0;
+    $last_stu = $_SESSION['staff_order'][$last_stu];
+    echo '<div class="row">';
+    echo '<div class="col-md-12 text-right">';
+    echo "<p>" . _showing . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['count_staff'] : '1') . " " . _showing . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['total_staff'] : '1') . " &nbsp; ";
 
-                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=3&staff_id=" . UserStaffID() . " >"._next." <i class=\"icon-forward3\"></i></A></span>";
+    if (is_countable($_SESSION['staff_order']) && count($_SESSION['staff_order']) > 1) {
+        if (UserStaffID() != $_SESSION['staff_order'][1]) {
+            echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=1&staff_id=" . UserStaffID() . " ><i class=\"icon-first\"></i> " . _first . "</A></span>";
 
-                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=4&staff_id=" . UserStaffID() . " >"._last." <i class=\"icon-last\"></i></A></span>";
-                            }
-                        }
-                        
-                        echo '</div>';
-                        echo '</div>';
-                        
-                        }
-                        
-                       
+            echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=2&staff_id=" . UserStaffID() . " > <i class=\"icon-backward2\"></i> " . _previous . "</A></span>";
+        }
+        if (UserStaffID() != $last_stu) {
+
+            echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=3&staff_id=" . UserStaffID() . " >" . _next . " <i class=\"icon-forward3\"></i></A></span>";
+
+            echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=users/Staff.php&v=4&staff_id=" . UserStaffID() . " >" . _last . " <i class=\"icon-last\"></i></A></span>";
+        }
+    }
+
+    echo '</div>';
+    echo '</div>';
+}
+
+
 if (isset($_REQUEST['staff_id']) && $_REQUEST['staff_id'] != 'new') {
     $show_title = 'y';
-$_REQUEST['staff_id']=$_SESSION['staff_id'];
+    $_REQUEST['staff_id'] = $_SESSION['staff_id'];
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME FROM staff WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "'"));
     $count_staff_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM staff"));
     if ($count_staff_RET[1]['NUM'] > 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader(''._selectedStaff.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+        DrawHeader('' . _selectedStaff . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> ' . _backToUserList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
         echo '</div>';
     } else {
         echo '<div class="panel panel-default">';
-        DrawHeader(''._selectedStaff.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+        DrawHeader('' . _selectedStaff . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
         echo '</div>';
     }
 }
@@ -146,11 +148,11 @@ if (UserStaffID() != '' && $show_title != 'y' && $title_set_staff != 'y') {
         $count_staff_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM staff"));
         if ($count_staff_RET[1]['NUM'] > 1) {
             echo '<div class="panel panel-default">';
-            DrawHeader(''._selectedStaff.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+            DrawHeader('' . _selectedStaff . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> ' . _backToUserList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
             echo '</div>';
         } else {
             echo '<div class="panel panel-default">';
-            DrawHeader(''._selectedStaff.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+            DrawHeader('' . _selectedStaff . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
             echo '</div>';
         }
     }
@@ -192,7 +194,7 @@ if (User('PROFILE') != 'admin') {
     if (User('PROFILE_ID'))
         $can_edit_RET = DBGet(DBQuery("SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID='" . User('PROFILE_ID') . "' AND MODNAME='users/User.php&category_id=$_REQUEST[category_id]' AND CAN_EDIT='Y'"));
     else {
-        $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')."'"));
+        $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID') . "'"));
         $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
         if ($profile_id_mod != '')
             $can_edit_RET = DBGet(DBQuery("SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID='" . $profile_id_mod . "' AND MODNAME='users/User.php&category_id=$_REQUEST[category_id]' AND CAN_EDIT='Y'"), array(), array('MODNAME'));
@@ -206,7 +208,7 @@ unset($schools);
 if ($_REQUEST['category_id'] == 2 && !isset($_REQUEST['address_id'])) {
     $address_id = DBGet(DBQuery("SELECT STAFF_ADDRESS_ID AS ADDRESS_ID FROM staff_address WHERE STAFF_ID='" . UserStaffID() . "'"));
     $address_id = $address_id[1]['ADDRESS_ID'];
-    if (count($address_id) > 0)
+    if (!empty($address_id))
         $_REQUEST['address_id'] = $address_id;
     else
         $_REQUEST['address_id'] = 'new';
@@ -236,7 +238,7 @@ if ($_REQUEST['category_id'] == 4 && !isset($_REQUEST['certification_id'])) {
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
-if (count($_REQUEST['values']['SCHOOLS'])>0) {
+    if (is_countable($_REQUEST['values']['SCHOOLS']) && count($_REQUEST['values']['SCHOOLS']) > 0) {
         $school_array = $_REQUEST['values']['SCHOOLS'];
         $cur_school = array_keys($school_array);
         if ($_REQUEST['staff_id'] == 'new')
@@ -247,22 +249,22 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
         }
     }
 
-    $password = md5($_REQUEST[staff][PASSWORD]);
-    $ins_profile = $_REQUEST[staff][PROFILE];
+    $password = md5($_REQUEST['staff']['PASSWORD']);
+    $ins_profile = $_REQUEST['staff']['PROFILE'];
     $res_pass_chk = DBQuery('SELECT * FROM login_authentication WHERE PASSWORD = \'' . $password . '\'');
     $num_pass = $res_pass_chk->num_rows;
 
     $day_valid = true;
-    if (count($_POST['staff']) && (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher' || basename($_SERVER['PHP_SELF']) == 'index.php') || $_REQUEST['ajax']) {
+    if (is_countable($_POST['staff']) && count($_POST['staff']) && (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher' || basename($_SERVER['PHP_SELF']) == 'index.php') || $_REQUEST['ajax']) {
         if ($_REQUEST['staff_id'] && $_REQUEST['staff_id'] != 'new') {
             $profile_RET = DBGet(DBQuery("SELECT s.PROFILE,la.PROFILE_ID,la.USERNAME FROM login_authentication la,staff s WHERE la.USER_ID='$_REQUEST[staff_id]' and la.USER_ID=s.STAFF_ID AND la.PROFILE_ID NOT IN (0,3) "));
-            $this_school_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . $_REQUEST[staff_id]));
+            $this_school_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . $_REQUEST['staff_id']));
 
             $this_school_mod = $this_school_RET_mod[1];
 
             $username = $this_school_mod['USERNAME'];
             $password = $this_school_mod['PASSWORD'];
-            $this_school_RET = DBGet(DBQuery("SELECT * FROM staff_school_info   WHERE   STAFF_ID=" . $_REQUEST[staff_id]));
+            $this_school_RET = DBGet(DBQuery("SELECT * FROM staff_school_info   WHERE   STAFF_ID=" . $_REQUEST['staff_id']));
             $this_school = $this_school_RET[1];
             if (isset($_REQUEST['staff']['PROFILE']) && $_REQUEST['staff']['PROFILE'] != $profile_RET[1]['PROFILE_ID']) {
                 if ($_REQUEST['staff']['PROFILE'] == 'admin')
@@ -274,7 +276,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
             }
 
             if ($_REQUEST['staff']['USERNAME'] && $_REQUEST['staff']['USERNAME'] != $profile_RET[1]['USERNAME']) {
-                $existing_staff = DBGet(DBQuery('SELECT ssr.SYEAR FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.USERNAME=\'' . $_REQUEST['staff']['USERNAME'] . '\' AND ssr.SYEAR=(SELECT SYEAR FROM staff_school_relationship WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\')'));
+                $existing_staff = DBGet(DBQuery('SELECT ssr.SYEAR FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.USERNAME=\'' . $_REQUEST['staff']['USERNAME'] . '\' AND ssr.SYEAR=(SELECT SYEAR FROM staff_school_relationship WHERE STAFF_ID=\'' . $_REQUEST['staff_id'] . '\')'));
                 if (count($existing_staff))
                     BackPrompt('A user with that username already exists for the ' . $existing_staff[1]['SYEAR'] . ' school year. Choose a different username and try again.');
             }
@@ -299,25 +301,13 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                 $sql = "UPDATE staff SET ";
 
                 if ($_REQUEST['staff']['PHYSICAL_DISABILITY'] == 'N' && !isset($_REQUEST['staff']['DISABILITY_DESC']))
-                    DBQuery('UPDATE staff SET DISABILITY_DESC=Null WHERE STAFF_ID=' . $_REQUEST[staff_id]);
+                    DBQuery('UPDATE staff SET DISABILITY_DESC=Null WHERE STAFF_ID=' . $_REQUEST['staff_id']);
 
                 if ($username == '' || $password == '' || $this_school['JOINING_DATE'] == '') {
                     echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=SchoolsInfoInc&category_id=3'</script>";
                 }
-//                        if(!isset($_REQUEST['staff']['PHYSICAL_DISABILITY']) && isset($_REQUEST['staff']['DISABILITY_DESC']))
-//                        {
-//                         foreach($_REQUEST['staff'] as $i=>$d)
-//                         {
-//                             if($i!='DISABILITY_DESC')
-//                                 $new_REQUEST[$i]=$d;
-//                         }
-//                         unset($_REQUEST['staff']);
-//                         $_REQUEST['staff']=$new_REQUEST;
-//                         unset($new_REQUEST);
-//                        }
-
                 foreach ($_REQUEST['staff'] as $column_name => $value) {
-                    if ($column_name == 'BIRTHDATE' && $value!='')
+                    if ($column_name == 'BIRTHDATE' && $value != '')
                         $value = date("Y-m-d", strtotime($value));
                     if ($column_name == 'SCHOOLS')
                         continue;
@@ -332,7 +322,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
                             if ($custom_RET[1]['TYPE'] == 'multiple') {
                                 $valueSize = count($value);
-                                if($valueSize == 0) {
+                                if ($valueSize == 0) {
                                     $valueSize = '';
                                 }
                             } else {
@@ -342,7 +332,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                             if ($custom_RET[1]['TYPE'] == 'date') {
                                 if ($value != '') {
                                     $dateValue = explode('-', $value);
-                                    $value = $dateValue[2].'-'.$dateValue[1].'-'.$dateValue[0];
+                                    $value = $dateValue[2] . '-' . $dateValue[1] . '-' . $dateValue[0];
                                 }
                             }
 
@@ -356,7 +346,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                                 else
                                     echo "<div class='alert alert-danger'>Unable to save data, because " . $custom_TITLE . ' is required.</div>';
                                 //$error= true;
-                            }else {
+                            } else {
                                 $custom_id = str_replace("CUSTOM_", "", $column_name);
                                 $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE from staff_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
                                 if ($m_custom_RET) {
@@ -364,7 +354,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
                                     foreach ($value as $m_custom_val) {
                                         if ($m_custom_val)
-                                            $str.="||" . $m_custom_val;
+                                            $str .= "||" . $m_custom_val;
                                     }
                                     if ($str)
                                         $value = $str . "||";
@@ -377,7 +367,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
                     if ($column_name == 'PASSWORD') {
                         if ($value != "") {
-                            $password = str_replace("\'", "''", str_replace("`", "''",($value)));
+                            $password = str_replace("\'", "''", str_replace("`", "''", ($value)));
                             $new_password = GenerateNewHash($password);
                             $sql .= "$column_name='" . $new_password . "',";
                             $execute = 'yes';
@@ -392,9 +382,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
 
                         $flg_cp = 1;
-                    }
-
-                    else {
+                    } else {
                         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
                             $sql .= "$column_name='" . str_replace("'", "\'", str_replace("`", "''", $value)) . "',";
                         } else
@@ -408,14 +396,14 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                     DBQuery($sql);
 
                     if (isset($flg_cp) && $flg_cp == 1) {
-                        $chk_assoc_cp = DBGet(DBQuery('SELECT course_period_id,title,short_name from course_periods WHERE school_id=' . UserSchool() . ' AND syear=' . UserSyear() . ' and teacher_id=' . $_REQUEST[staff_id]));
+                        $chk_assoc_cp = DBGet(DBQuery('SELECT course_period_id,title,short_name from course_periods WHERE school_id=' . UserSchool() . ' AND syear=' . UserSyear() . ' and teacher_id=' . $_REQUEST['staff_id']));
 
-                        $new_tec_name = DBGet(DBQuery("SELECT concat(first_name,' ',last_name)  as name FROM  staff  WHERE STAFF_ID=" . $_REQUEST[staff_id]));
+                        $new_tec_name = DBGet(DBQuery("SELECT concat(first_name,' ',last_name)  as name FROM  staff  WHERE STAFF_ID=" . $_REQUEST['staff_id']));
                         $new_tec_name = $new_tec_name[1]['NAME'];
                         foreach ($chk_assoc_cp as $chk_assoc_cp_k => $chk_assoc_cp_v) {
 
                             $new_title = $chk_assoc_cp_v['SHORT_NAME'] . '-' . $new_tec_name;
-                            $update_cp_title = DBQuery('UPDATE  course_periods SET TITLE=\'' . singleQuoteReplace('', '',$new_title) . '\' WHERE  course_period_id=' . $chk_assoc_cp_v['COURSE_PERIOD_ID']);
+                            $update_cp_title = DBQuery('UPDATE  course_periods SET TITLE=\'' . singleQuoteReplace('', '', $new_title) . '\' WHERE  course_period_id=' . $chk_assoc_cp_v['COURSE_PERIOD_ID']);
 
                             unset($new_title);
                         }
@@ -423,46 +411,14 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
 
                     if ($_FILES['file']['name']) {
-//     $UserPicturesPath='assets/userphotos/';
-//        $target_path=$UserPicturesPath.'/'.$_REQUEST[staff_id].'.JPG';
-//	$destination_path = $UserPicturesPath;	   
-//	$upload= new upload();
-//	$upload->target_path=$target_path;
-//	$upload->deleteOldImage();
-//	$upload->destination_path=$destination_path;
-//	$upload->name=$_FILES["file"]["name"];
-//	$upload->setFileExtension();
-//	$upload->fileExtension;
-//	$upload->validateImage();
-//	if($upload->wrongFormat==1){
-//	$_FILES["file"]["error"]=1;
-//	}
-//
-//	if ($_FILES["file"]["error"] > 0)
-//    {
-//            echo "cannot upload file";
-//    }
-//    	else
-//    {
-//	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
-//	  @fopen($upload->target_path,'r');
-//	  fclose($upload->target_path);
-//      $filename =  $upload->target_path;
-//	  PopTable ('footer');
-//    }   
-                        
-                        $stf_img_info = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . $_REQUEST[staff_id] . ' AND IMG_NAME IS NOT NULL'));
+                        $stf_img_info = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=' . $_REQUEST['staff_id'] . ' AND IMG_NAME IS NOT NULL'));
                         $fileName = $_FILES['file']['name'];
                         $tmpName = $_FILES['file']['tmp_name'];
                         $fileSize = $_FILES['file']['size'];
                         $fileType = $_FILES['file']['type'];
-//                                        $target_path=$StudentPicturesPath.'/'.$last_student_id.'.JPG';
-//	$destination_path = $StudentPicturesPath;	
                         $upload = new upload();
-//	$upload->target_path=$target_path;
                         if (count($stf_img_info) > 0)
                             $upload->deleteOldImage($stf_img_info[1]['STAFF_ID']);
-//	$upload->destination_path=$destination_path;
                         $upload->name = $_FILES["file"]["name"];
                         $upload->setFileExtension();
                         $upload->fileExtension;
@@ -471,31 +427,20 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                             $_FILES["file"]["error"] = 1;
                         }
                         if ($fileSize > 10000000) {
-                            echo "<font style='color:red'><b>"._FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb."</b></font><br>";
-                        } 
+                            echo "<font style='color:red'><b>" . _FileExceedsTheAllowableSizeTryAgainWithAFileLessThen10Mb . "</b></font><br>";
+                        }
                         if ($_FILES["file"]["error"] > 0) {
                             echo "cannot upload file";
                         } else {
-//	  move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
-//	  @fopen($upload->target_path,'r');
-//	  fclose($upload->target_path);
-//          $filename =  $upload->target_path;
-//                            $fp = fopen($tmpName, 'r');
-//                            $content = fread($fp, filesize($tmpName));
+                            if($fp){
+                                $content = fread($fp, filesize($tmpName));
+                            }
                             $content = base64_decode($_REQUEST['imgblob']);
                             $content = addslashes($content);
-                            //fclose($fp);
-
-                            if (!get_magic_quotes_gpc()) {
-                                $fileName = addslashes($fileName);
-                            }
-                        
                             DBQuery('UPDATE staff SET IMG_NAME=\'' . $fileName . '\',IMG_CONTENT=\'' . $content . '\' WHERE STAFF_ID=' . $_REQUEST['staff_id']);
                             //PopTable ('footer');
+                        }
                     }
-                    }
-
-
                     echo $err;
                 }
             }
@@ -531,12 +476,10 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
             unset($_REQUEST['day_staff']);
             unset($_REQUEST['month_staff']);
             unset($_REQUEST['year_staff']);
-            
+
             foreach (sqlSecurityFilter($_REQUEST['staff']) as $column => $value) {
-                if ($column == 'BIRTHDATE' && $value!='')
-                {
+                if ($column == 'BIRTHDATE' && $value != '') {
                     $value = date("Y-m-d", strtotime($value));
-                   
                 }
                 if ($column == 'SCHOOLS')
                     continue;
@@ -556,7 +499,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                             $str = "";
                             foreach ($value as $m_custom_val) {
                                 if ($m_custom_val)
-                                    $str.="||" . $m_custom_val;
+                                    $str .= "||" . $m_custom_val;
                             }
                             if ($str)
                                 $value = $str . "||";
@@ -578,8 +521,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                             $values .= "'" . trim($value) . "',";
                         } else
                             $values .= "'" . trim($value) . "',";
-                    }
-                    else {
+                    } else {
                         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
                             $values .= "'" . str_replace("'", "\'", $value) . "',";
                         } else
@@ -588,7 +530,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                     }
                 }
             }
-         $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+            $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
             if ($error != true) {
                 //echo $sql;exit;
@@ -599,17 +541,17 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                 // possible modification end
 
                 if ($_FILES['file']['name']) {
-//       $UserPicturesPath='assets/userphotos/';
-//        $target_path=$UserPicturesPath.'/'.$staff_id.'.JPG';
-//	$destination_path = $UserPicturesPath;	 
+                    //       $UserPicturesPath='assets/userphotos/';
+                    //        $target_path=$UserPicturesPath.'/'.$staff_id.'.JPG';
+                    //	$destination_path = $UserPicturesPath;	 
                     $fileName = $_FILES['file']['name'];
                     $tmpName = $_FILES['file']['tmp_name'];
                     $fileSize = $_FILES['file']['size'];
                     $fileType = $_FILES['file']['type'];
                     $upload = new upload();
-//	$upload->target_path=$target_path;
-//	$upload->deleteOldImage();
-//	$upload->destination_path=$destination_path;
+                    //	$upload->target_path=$target_path;
+                    //	$upload->deleteOldImage();
+                    //	$upload->destination_path=$destination_path;
                     $upload->name = $_FILES["file"]["name"];
                     $upload->setFileExtension();
                     $upload->fileExtension;
@@ -621,15 +563,11 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                     if ($_FILES["file"]["error"] > 0) {
                         echo "cannot upload file";
                     } else {
-//                        $fp = fopen($tmpName, 'r');
-//                        $content = fread($fp, filesize($tmpName));
+                        //                        $fp = fopen($tmpName, 'r');
+                        //                        $content = fread($fp, filesize($tmpName));
                         $content = base64_decode($_REQUEST['imgblob']);
                         $content = addslashes($content);
-                       // fclose($fp);
-
-                        if (!get_magic_quotes_gpc()) {
-                            $fileName = addslashes($fileName);
-                        }
+                        // fclose($fp);
                         DBQuery('UPDATE staff SET IMG_NAME=\'' . $fileName . '\',IMG_CONTENT=\'' . $content . '\' WHERE STAFF_ID=' . $staff_id);
                         //PopTable('footer');
                     }
@@ -661,12 +599,12 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
                             $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM school_years WHERE school_id=\'' . $school_id . '\''));
                             $usersyear = $user_syear_RET[1]['USERSYEAR'];
-                            $rel_value .="($staff_id,$school_id,$usersyear,'" . date('Y-m-d', strtotime($start_date)) . "','" . $end_date . "'),";
+                            $rel_value .= "($staff_id,$school_id,$usersyear,'" . date('Y-m-d', strtotime($start_date)) . "','" . $end_date . "'),";
                         } else {
                             $day_valid = true;
                             $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM school_years WHERE school_id=\'' . $school_id . '\''));
                             $usersyear = $user_syear_RET[1]['USERSYEAR'];
-                            $rel_value .="($staff_id,$school_id,$usersyear,'0000-00-00','" . $end_date . "'),";
+                            $rel_value .= "($staff_id,$school_id,$usersyear,'0000-00-00','" . $end_date . "'),";
                         }
                     }
                     $rel_value = substr($rel_value, 0, -1);
@@ -707,19 +645,19 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
     if (User('STAFF_ID') == $_REQUEST['staff_id']) {
         unset($_openSIS['User']);
-//        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+        //        echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 }
 
 $extra['SELECT'] = ',LAST_LOGIN';
-$extra['columns_after'] = array('LAST_LOGIN' =>_lastLogin);
+$extra['columns_after'] = array('LAST_LOGIN' => _lastLogin);
 $extra['functions'] = array('LAST_LOGIN' => 'makeLogin');
 
 if (basename($_SERVER['PHP_SELF']) != 'index.php') {
     if ($_REQUEST['staff_id'] == 'new')
-        DrawBC(""._users." > Add a User");
+        DrawBC("" . _users . " > Add a User");
     else
-        DrawBC(""._users." > " . ProgramTitle());
+        DrawBC("" . _users . " > " . ProgramTitle());
     SearchStaff('staff_id', $extra);
 } else
     DrawHeader(_createAccount);
@@ -738,10 +676,10 @@ if ($_REQUEST['modfunc'] == 'delete' && $_REQUEST['include'] != 'FilesInc' && ba
 }
 if ($_REQUEST['modfunc'] == 'delete' && $_REQUEST['include'] == 'FilesInc' && (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')) {
     if (DeletePromptFilesEncoded($_REQUEST['title'], '&include=FilesInc&category_id=7')) {
-        unlink('assets/stafffiles/'.base64_decode($_REQUEST['removefile']));
-        
+        unlink('assets/stafffiles/' . base64_decode($_REQUEST['removefile']));
+
         DBQuery('DELETE FROM user_file_upload WHERE ID=' . $_REQUEST['del']);
-        
+
         unset($_REQUEST['modfunc']);
     }
 }
@@ -758,7 +696,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
             $staff = $staff[1];
 
 
-            $email = $staff[EMAIL];
+            $email = $staff['EMAIL'];
 
 
             echo "<FORM name=staff class=\"form-horizontal\" id=staff action=Modules.php?modname=$_REQUEST[modname]&custom=staff&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&staff_id=" . UserStaffID() . "&modfunc=update method=POST enctype='multipart/form-data'>";
@@ -793,8 +731,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                     $include = 'SchoolsInfoInc';
                     if (User('PROFILE') == 'teacher')
                         $_REQUEST['teacher_view'] = 'y';
-                }
-                elseif ($category['ID'] == '4')
+                } elseif ($category['ID'] == '4')
                     $include = 'CertificationInfoInc';
                 elseif ($category['ID'] == '5')
                     $include = 'ScheduleInc';
@@ -804,7 +741,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                     $include = $category['INCLUDE'];
                 else
                     $include = 'OtherInfoInc';
-                switch ($category['TITLE'] ) {
+                switch ($category['TITLE']) {
                     case 'Demographic Info':
                         $categoryTitle = _demographicInfo;
                         break;
@@ -827,10 +764,11 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                 // // echo "<"
                 // echo "$categoryTitle<br>";
                 if($category['ID'] == '5'){
-                   $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']."&LO_sort=DURATION&LO_direction=1"); 
-                }else{
-                $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']);
-                }
+                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']."&LO_sort=DURATION&LO_direction=1"); 
+                 }else{
+                 $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']);
+                 }
+                
             }
         }
         unset($new_tabs);
@@ -912,31 +850,29 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 }
                 if ($_REQUEST['category_id'] != 1) {
-                    $btn_flag=1;
-                    if(User('PROFILE')=='admin' && $_REQUEST['modname']=='users/Staff.php' && isset($_REQUEST['include']) && $_REQUEST['include']=='ScheduleInc')
-                    $btn_flag=0;
-                    if($btn_flag==1)
-                    echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
+                    $btn_flag = 1;
+                    if (User('PROFILE') == 'admin' && $_REQUEST['modname'] == 'users/Staff.php' && isset($_REQUEST['include']) && $_REQUEST['include'] == 'ScheduleInc')
+                        $btn_flag = 0;
+                    if ($btn_flag == 1)
+                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 }
             } else {
                 if ($_REQUEST['category_id'] != 3) {
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_saveNext, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
                 } else {
-                    if ($_SESSION[staff_school_chkbox_id] != '') {
-                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION[staff_school_chkbox_id] . ', this);"') . '</div></div>';
+                    if ($_SESSION['staff_school_chkbox_id'] != '') {
+                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION['staff_school_chkbox_id'] . ', this);"') . '</div></div>';
                     } else
                         echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'id="mod_staff_btn" class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
-                    unset($_SESSION[staff_school_chkbox_id]);
+                    unset($_SESSION['staff_school_chkbox_id']);
                 }
             }
-        }
-        elseif (User('PROFILE') == 'teacher') {
+        } elseif (User('PROFILE') == 'teacher') {
             if ($_REQUEST['include'] != 'ScheduleInc' && $_REQUEST['include'] != 'SchoolsInfoInc')
-                echo '<div class="panel-footer"><div class="heading-elements">'.SubmitButton(_save, '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"').'</div></div>';
+                echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton(_save, '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0, this);"') . '</div></div>';
         }
         echo '</FORM>';
-    }
-    else
+    } else
     if (!strpos($_REQUEST['include'], '/'))
         include('modules/users/includes/' . $_REQUEST['include'] . '.php');
     else {
@@ -950,7 +886,8 @@ if ($_REQUEST['modfunc'] == 'remove') {
     include('modules/users/includes/CertificationInfoInc.php');
 }
 
-class upload {
+class upload
+{
 
     var $target_path;
     var $destination_path;
@@ -958,34 +895,36 @@ class upload {
     var $fileExtension;
     var $allowExtension = array("jpg", "jpeg", "png", "gif", "bmp");
     var $wrongFormat = 0;
-    var $wrongSize=0;
-    function deleteOldImage($id = '') {
-//if(file_exists($this->target_path))
-//	unlink($this->target_path);
+    var $wrongSize = 0;
+    function deleteOldImage($id = '')
+    {
+        //if(file_exists($this->target_path))
+        //	unlink($this->target_path);
         if ($id != '') {
             DBQuery('UPDATE staff SET IMG_NAME=NULL,IMG_CONTENT=NULL WHERE STAFF_ID=' . $id);
         }
     }
 
-    function setFileExtension() {
+    function setFileExtension()
+    {
         $this->fileExtension = strtolower(substr($this->name, strrpos($this->name, ".") + 1));
     }
 
-    function validateImage() {
+    function validateImage()
+    {
         if (!in_array($this->fileExtension, $this->allowExtension)) {
             $this->wrongFormat = 1;
         }
     }
-    function validateImageSize(){
-if($this->fileSize > 10485760){
-$this->wrongSize=1;
-}
-}
-
-    function get_file_extension($file_name) {
-        return end(explode('.', $file_name));
+    function validateImageSize()
+    {
+        if ($this->fileSize > 10485760) {
+            $this->wrongSize = 1;
+        }
     }
 
+    function get_file_extension($file_name)
+    {
+        return end(explode('.', $file_name));
+    }
 }
-
-?>

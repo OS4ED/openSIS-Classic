@@ -702,8 +702,8 @@ function CheckboxInputWithID($value, $name, $id, $title = '', $checked = '', $ne
         return ($value ? $yes : $no) . ($title != '' ? '<BR><small>' . (strpos(strtolower($title), '<font ') === false ? '<FONT color=' . Preferences('TITLES') . '>' : '') . $title . (strpos(strtolower($title), '<font ') === false ? '</FONT>' : '') . '</small>' : '');
 }
 
-function SelectInput($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true) {
-
+function SelectInput($value, $name, $title, $options, $allow_na = 'N/A', $extra = '', $div = true) {
+    if(empty($title)) $title = '';
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 
@@ -729,7 +729,7 @@ function SelectInput($value, $name, $title = '', $options, $allow_na = 'N/A', $e
             else
                 $return .= '<OPTION value="">' . $allow_na;
         }
-        if (count($options)) {
+        if (is_countable($options) && count($options)) {
             foreach ($options as $key => $val) {
 
                 settype($key, 'string');
@@ -753,7 +753,11 @@ function SelectInput($value, $name, $title = '', $options, $allow_na = 'N/A', $e
     return $return;
 }
 
-function SelectInputDisabledMsg($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true, $msg) {
+function SelectInputDisabledMsg($value, $name, $title, $options, $allow_na, $extra, $div, $msg) {
+    if(empty($title)) $title = '';
+    if(empty($allow_na)) $allow_na = 'N/A';
+    if(empty($extra)) $extra = '';
+    if(empty($div)) $div = true;
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 
@@ -799,7 +803,8 @@ function SelectInputDisabledMsg($value, $name, $title = '', $options, $allow_na 
     return $return;
 }
 
-function SelectInputForCal($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true) {
+function SelectInputForCal($value, $name, $title, $options, $allow_na = 'N/A', $extra = '', $div = true) {
+    if(empty($title)) $title = '';
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 
@@ -840,7 +845,8 @@ function SelectInputForCal($value, $name, $title = '', $options, $allow_na = 'N/
     return $return;
 }
 
-function SelectInput_for_EndInput($value, $name, $title = '', $options, $type_id = '', $allow_na = 'N/A', $extra = '', $div = true) {
+function SelectInput_for_EndInput($value, $name, $title, $options, $type_id = '', $allow_na = 'N/A', $extra = '', $div = true) {
+    if(empty($title)) $title = '';
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 
@@ -1073,9 +1079,9 @@ function DateInputAY($value, $name, $counter = 1, $div_visibility = false) {
     }
 }
 
-function DateInputAY_red($value, $name, $counter = 1, $cp_id) {
+function DateInputAY_red($value, $name, $counter, $cp_id) {
 
-
+    if(empty($counter)) $counter = 1;
     if (AllowEdit() && !$_REQUEST['_openSIS_PDF']) {
         if ($value != '') {
             $month_names = array('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC');
@@ -1239,8 +1245,8 @@ function CheckboxInputSwitchModal($value, $name, $title = '', $checked = '', $ne
         return '<div class="checkbox checkbox-switch ' . $switchery_color . ' switch-' . $size . '"><label><INPUT type=checkbox disabled="disabled" ' . ($value ? 'checked=checked' : '') . '><span></span>' . $title . '</label></div>';
 }
 
-function SelectInputModal($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true) {
-
+function SelectInputModal($value, $name, $title, $options, $allow_na = 'N/A', $extra = '', $div = true) {
+    if(empty($title)) $title = '';
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 

@@ -73,13 +73,13 @@ function load_link_group(the_content, stat) {
         if (stat == '1')
         {
 
-            document.getElementById('divErr').innerHTML = "Member added successfuly.";
+document.getElementById('divErr').innerHTML ="<div class='alert alert-success alert-styled-left'><button type='button' class='close' data-dismiss='alert'><span>×</span><span class='sr-only'>Close</span></button>Member added successfully.</div>";
 
         }
         else if (stat == '2')
         {
 
-            document.getElementById('divErr').innerHTML = "<font style='color:red'>Member deleted successfuly.</font>";
+            document.getElementById('divErr').innerHTML = "<div class='alert alert-danger alert-styled-left'><button type='button' class='close' data-dismiss='alert'><span>×</span><span class='sr-only'>Close</span></button>Member deleted successfully.</div>";
 
         }
 

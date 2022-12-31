@@ -71,7 +71,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             if($teacher['IMG_CONTENT'])
                                 echo '<TR><TD><IMG SRC="data:image/jpeg;base64,' . base64_encode($teacher['IMG_CONTENT']) . '"  width=150 class=pic></TD></TR>';
                         else
-                            echo '<TR><TD><img src="assets/noimage.jpg" width=144></TD></TR>';
+                            echo '<TR><TD><img src="assets/noimage.jpg" width=150></TD></TR>';
                         echo '<TR><TD><FONT size=-1><B>' . $teacher['LAST_NAME'] . '</B><BR>' . $teacher['FIRST_NAME'] . '</FONT></TD></TR>';
                         echo '</TABLE></TD>';
                         $i++;
@@ -107,10 +107,10 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                            if ($size[1] / $size[0] > 144 / 144)
 //                                echo '<TR><TD><IMG SRC="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=144></TD></TR>';
 //                            else
-                         if($StudentPicturesPath!=0)
+                        if($StudentPicturesPath!=0 && trim($stu_img_info[1]['CONTENT']) != '')
                                 echo '<TR><TD><IMG src="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=150 class=pic></TD></TR>';
                         else
-                            echo '<TR><TD><img src="assets/noimage.jpg" width=144></TD></TR>';
+                            echo '<TR><TD><img src="assets/noimage.jpg" width=150></TD></TR>';
                         echo '<TR><TD><FONT size=-1><B>' . $student['LAST_NAME'] . '</B><BR>' . $student['FIRST_NAME'] . '</FONT></TD></TR>';
                         echo '</TABLE></TD>';
 
@@ -208,7 +208,7 @@ function mySearch($type, $extra = '') {
 
     if (($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])) {
 
-        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST[next_modname])) . " method=POST>";
+        echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=" . strip_tags(trim($_REQUEST['modfunc'])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST['next_modname'])) . " method=POST>";
 
         PopTable('header', _search);
 
@@ -261,7 +261,7 @@ function mySearch($type, $extra = '') {
 
         if (User('PROFILE') == 'admin') {
             if ($_REQUEST['teacher_id'])
-                $where .= ' AND cp.TEACHER_ID=\'' . $_REQUEST[teacher_id] . '\'';
+                $where .= ' AND cp.TEACHER_ID=\'' . $_REQUEST['teacher_id'] . '\'';
             if ($_REQUEST['first'])
                 $where .= ' AND UPPER(s.FIRST_NAME) LIKE \'' . strtoupper($_REQUEST['first']) . '%' . '\'';
             if ($_REQUEST['w_course_period_id'])

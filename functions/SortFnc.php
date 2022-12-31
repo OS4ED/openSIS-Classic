@@ -28,17 +28,23 @@
 
 function VerifyDate_sort($date)
 {
-	$vdate = explode("/", $date);
-	if(count($vdate))
-	{
-                        $month = MonthNWSwitch($vdate[0],'tonum');
-                        $day = $vdate[1];
-                        $year = $vdate[2];
-	}
-	else
+    if (strpos(strip_tags($date), '/') !== false) 
+    {
+    	$vdate = explode("/", $date);
+    	if(count($vdate))
+    	{
+            $month = MonthNWSwitch($vdate[0],'tonum');
+            $day = $vdate[1];
+            $year = $vdate[2];
+    	}
+    	else
         {
-	return false;
+            return false;
         }
+    }
+    else
+        return false;
+
 	return checkdate($month,$day,$year);
 }
 

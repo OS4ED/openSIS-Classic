@@ -26,6 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 include('../../RedirectModulesInc.php');
 
 unset($_SESSION["student_id"]);
@@ -34,16 +35,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if ($_REQUEST['day'] != '' && $_REQUEST['month'] != '' && $_REQUEST['year'] != '') {
         $date = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
     }
-    if (count($_REQUEST['month_values'])) {
+    
+    if (isset($_REQUEST['month_values']) && count($_REQUEST['month_values'])) {
         foreach ($_REQUEST['month_values'] as $field_name => $month) {
             if ($month != '') {
                 $_REQUEST['values'][$field_name] = $_REQUEST['year_values'][$field_name] . '-' . $month . '-' . $_REQUEST['day_values'][$field_name];
             }
-            //            if (!VerifyDate($_REQUEST['values'][$field_name])) {
-            //                if ($_REQUEST['values'][$field_name] != '--')
-            //                    $note = '<IMG SRC=assets/warning_button.gif>The date you specified is not valid, so was not used.  The other data was saved.';
-            //                unset($_REQUEST['values'][$field_name]);
-            //            }
         }
     }
 
@@ -173,20 +170,20 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 foreach ($students_m_id as $stu_k => $stu_id) {
 
                     if (in_array($stu_id, $med_stu_id)) {
-                        if ($values[1] . trim() != '')
+                        if ($values[1] != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE STUDENT_ID =' . $stu_id);
-                        if ($values[2] . trim() != '')
+                        if ($values[2] != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE STUDENT_ID  =' . $stu_id);
-                        if ($values[3] . trim() != '')
+                        if ($values[3] != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE STUDENT_ID =' . $stu_id);
                     } else {
                         DBQuery('INSERT INTO medical_info (STUDENT_ID,SYEAR,SCHOOL_ID) VALUES (' . $stu_id . ',' . UserSyear() . ',' . UserSchool() . ')');
 
-                        if ($values[1] . trim() != '')
+                        if ($values[1] != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE STUDENT_ID =' . $stu_id);
-                        if ($values[2] . trim() != '')
+                        if ($values[2]  != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE STUDENT_ID  =' . $stu_id);
-                        if ($values[3] . trim() != '')
+                        if ($values[3]  != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE STUDENT_ID =' . $stu_id);
                     }
                 }
@@ -219,7 +216,6 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         unset($_SESSION['_REQUEST_vars']['modfunc']);
         unset($_SESSION['_REQUEST_vars']['values']);
     } else {
-        // ShowErr('<div class="alert bg-warning alert-styled-left">' . _youMustChooseAtLeastOneFieldAndOneStudent . '.</div>');
         ShowErr(_youMustChooseAtLeastOneFieldAndOneStudent . '.');
         for_error();
     }
@@ -233,12 +229,6 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=save METHOD=POST>";
-
-        //        if ($_REQUEST['category_id']) {
-        //            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\''), array(), array('TYPE'));
-        //        } else {
-        //            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields'), array(), array('TYPE'));
-        //        }
         $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM student_field_categories WHERE ID NOT IN (3,5,7)'));
         $tmp_REQUEST = $_REQUEST;
         unset($tmp_REQUEST['category_id']);
@@ -283,60 +273,9 @@ if (!$_REQUEST['modfunc']) {
         PopTable_wo_header('header', _fieldsToAssign, 'class="panel panel-default"', $panel_header);
         $fields = array();
 
-        $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\''), array(), array('TYPE'));
-        //        if ($_REQUEST[category_id] == 'all') {
-        //
-        //            $arr_g = array(firstName,middleName,'Last Name','Estimated Grad. Date','Ethnicity', 'Common Name', 'Gender', 'Language', 'Email', 'Phone');
-        //            foreach ($arr_g as $v_g) {
-        //                if ($v_g == ''._commonName.'') {
-        //                    $v_g = 'common_name';
-        //                }
-        //                
-        //                if($v_g==''._estimatedGradDate.'' || $v_g==''._estimatedGradDate.'')
-        //                    array_push($fields, '<div class=form-group>' .$v_g.' '. _makeDateInput($v_g) . '</div>');
-        //            else
-        //                array_push($fields, '<div class=form-group>' . _makeTextInput($v_g) . '</div>');
-        //            }
-        //
-        //
-        ////        echo '<div class="col-md-12">';  
-        ////        echo '<span class="heading-text">'._section.'</span><div class="btn-group">';
-        ////        
-        ////        
-        ////        $school_id = UserSchool();
-        ////        $sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\''.$school_id.'\' ORDER BY SORT_ORDER';
-        ////        $QI = DBQuery($sql);
-        ////        $sec_RET = DBGet($QI);
-        ////        unset($options);
-        ////        if(count($sec_RET))
-        ////        {
-        ////                foreach($sec_RET as $value)
-        ////                        $options[$value['ID']] = $value['NAME'];
-        ////        }
-        ////
-        ////        echo _makeSelectInput('SECTION_ID',$options);
-        ////        echo'</div>';  
-        //
-        //
-        //
-        //            $arr_m = array('Physician', 'Physician\'s Phone', 'Preferred Hospital');
-        //
-        //            foreach ($arr_m as $v_m) {
-        //
-        //                if (trim($v_m) == physician) {
-        //                    $v_m_n = 'medical_info[PHYSICIAN]';
-        //                    array_push($fields, '<div class="form-group">' . _makeTextInput($v_m_n) . '</div>');
-        //                }if (trim($v_m) == physicianSPhone) {
-        //                    $v_m_n = 'medical_info[PHYSICIAN_PHONE]';
-        //                    array_push($fields, '<div class="form-group">' . _makeTextInput($v_m_n) . '</div>');
-        //                } else if (trim($v_m) == preferredHospital) {
-        //                    $v_m_n = 'medical_info[PREFERRED_HOSPITAL]';
-        //                    array_push($fields, '<div class="form-group">' . _makeTextInput($v_m_n) . '</div>');
-        //                }
-        //            }
-        //        }
+        $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST['category_id'] . '\''), array(), array('TYPE'));
 
-        if ($_REQUEST[category_id] == 2) {
+        if ($_REQUEST['category_id'] == 2) {
 
             $arr = array(
                 ' ' . _physician . '', '' . _physicianSPhone . '', '' . _preferredHospital . ''
@@ -356,7 +295,7 @@ if (!$_REQUEST['modfunc']) {
             }
         }
 
-        if ($_REQUEST[category_id] == 1 || $_REQUEST[category_id] == '') {
+        if ($_REQUEST['category_id'] == 1 || $_REQUEST['category_id'] == '') {
             $arr = array(
                 _firstName,
                 _middleName,
@@ -399,7 +338,6 @@ if (!$_REQUEST['modfunc']) {
                     foreach ($ethnicity as $key => $value) {
                         $ethnic_option[$value['ETHNICITY_ID']] = $value['ETHNICITY_NAME'];
                     }
-                    // $ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
                     $v_g = $v_g . '_id';
                     array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">' . _ethnicity . '</label><div class="col-lg-8">' . _makeSelectInput($v_g, $ethnic_option) . '</div></div>');
                 } else if ($v_g == '' . _language . '') {
@@ -440,7 +378,7 @@ if (!$_REQUEST['modfunc']) {
             $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=1'), array(), array('TYPE'));
         }
 
-        if ($_REQUEST[category_id] == 6) {
+        if ($_REQUEST['category_id'] == 6) {
             $arr = array(_startDate, _dropDate);
 
             foreach ($arr as $v_g) {
@@ -473,10 +411,10 @@ if (!$_REQUEST['modfunc']) {
                     $options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
             }
             array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'] . '">' . _calendar . '</label><div class="col-lg-8">' . _makeSelectInput('CALENDAR_ID', $options) . '</div></div>');
-            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\''), array(), array('TYPE'));
+            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST['category_id'] . '\''), array(), array('TYPE'));
         }
 
-        if ($_REQUEST[category_id] == 4) {
+        if ($_REQUEST['category_id'] == 4) {
             $arr = array(_date, _comments);
 
             foreach ($arr as $v_g) {
@@ -491,49 +429,28 @@ if (!$_REQUEST['modfunc']) {
                     array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">' . $v_g . '</label><div class="col-lg-8">' . _makeTextareaInput($nm) . '</div></div>');
             }
 
-            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\''), array(), array('TYPE'));
+            $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields WHERE CATEGORY_ID=\'' . $_REQUEST['category_id'] . '\''), array(), array('TYPE'));
         }
 
-        if (count($fields_RET['text'])) {
+        if (!empty($fields_RET['text'])) {
             foreach ($fields_RET['text'] as $field) {
-                //                $title = strtolower(trim($field['TITLE']));
-                //                if (strpos(trim($field['TITLE']), ' ') != 0) {
-                //                    $p1 = substr(trim($field['TITLE']), 0, strpos(trim($field['TITLE']), ' '));
-                //                    $p2 = substr(trim($field['TITLE']), strpos(trim($field['TITLE']), ' ') + 1);
-                //                    $title = strtolower($p1 . '_' . $p2);
-                //                }
-                //                $query = DBGet(DBQuery('SELECT * FROM students LIMIT 0,1'));
-                //                $query = $query[1];
-                //                $f = 0;
-                //                foreach ($query as $k => $v) {
-                //                    if (strtolower($k) == strtolower($title))
-                //                        $f = 1;
-                //                }
-                //                if ($f == 0) {
-                //                    if (trim($title) == 'physician')
-                //                        $title = 'medical_info[PHYSICIAN]';
-                //                    if (trim($title) == 'physician_phone')
-                //                        $title = 'medical_info[PHYSICIAN_PHONE]';
-                //                    else if (trim($title) == 'preferred_hospital')
-                //                        $title = 'medical_info[PREFERRED_HOSPITAL]';
-                //                }
                 array_push($fields, '<div class="form-group">' . TextInput('', 'values[CUSTOM_' . $field['ID'] . ']', $field['TITLE']) . '</div>');
             }
         }
-        if (count($fields_RET['numeric'])) {
+        if (!empty($fields_RET['numeric'])) {
             foreach ($fields_RET['numeric'] as $field)
                 array_push($fields, '<div class="form-group">' . _makeTextInput('CUSTOM_' . $field['ID'], true) . '</div>');
         }
-        if (count($fields_RET['date'])) {
+        if (!empty($fields_RET['date'])) {
             $i = 3;
             foreach ($fields_RET['date'] as $field) {
                 array_push($fields, '<div class="form-group"><label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'] . '">' . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeDateInput('CUSTOM_' . $field['ID'], $i) . '</div></div>');
                 $i++;
             }
         }
-        if (count($fields_RET['select'])) {
+        if (!empty($fields_RET['select'])) {
             foreach ($fields_RET['select'] as $field) {
-                if ($field[TITLE] == 'Ethnicity' || $field[TITLE] == 'Gender' || $field[TITLE] == 'Language') {
+                if ($field['TITLE'] == 'Ethnicity' || $field['TITLE'] == 'Gender' || $field['TITLE'] == 'Language') {
                     $select_options = array();
                     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
                     $options = explode("\r", $field['SELECT_OPTIONS']);
@@ -542,7 +459,7 @@ if (!$_REQUEST['modfunc']) {
                             $select_options[$option] = $option;
                     }
 
-                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field[TITLE], $select_options) . '</div></div>');
+                    array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput($field['TITLE'], $select_options) . '</div></div>');
                 } else {
                     $select_options = array();
                     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
@@ -556,74 +473,17 @@ if (!$_REQUEST['modfunc']) {
                 }
             }
         }
-        if (count($fields_RET['textarea'])) {
+        if (!empty($fields_RET['textarea'])) {
             foreach ($fields_RET['textarea'] as $field) {
                 array_push($fields, '<div class="form-group"><label class="control-label col-lg-4 text-right" for="CUSTOM_' . $field['ID'] . '">' . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextareaInput('CUSTOM_' . $field['ID']) . '</div></div>');
             }
         }
-        /*if (!$_REQUEST['category_id'] || $_REQUEST['category_id'] == '1') {
-
-            $schools_RET = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID!=\'' . UserSchool() . '\''));
-            $options = array(UserSchool() => 'Next grade at current school', '0' => 'Retain', '-1' => 'Do not enroll after this school year');
-            if (count($schools_RET)) {
-                foreach ($schools_RET as $school)
-                    $options[$school['ID']] = $school['TITLE'];
-            }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_SCHOOL', $options) . '</div></div>');
-
-            $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
-            $options = array();
-            if (count($calendars_RET)) {
-                foreach ($calendars_RET as $calendar)
-                    $options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
-            }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Calendar</label><div class="col-lg-8">' . _makeSelectInput('CALENDAR_ID', $options) . '</div></div>');
-        }*/
-
-        /*if ($_REQUEST['category_id'] == '') {
-//         echo '<div class="col-md-12">';  
-//        echo '<span class="heading-text">'._section.'</span><div class="btn-group">';
-//        
-
-            $school_id = UserSchool();
-            $sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\'' . $school_id . '\' ORDER BY SORT_ORDER';
-            $QI = DBQuery($sql);
-            $sec_RET = DBGet($QI);
-            unset($options);
-            if (count($sec_RET)) {
-                foreach ($sec_RET as $value)
-                    $options[$value['ID']] = $value['NAME'];
-            }
-
-//        echo _makeSelectInput('SECTION_ID',$options);
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">'._section.'</label><div class="col-lg-8">' . _makeSelectInput('SECTION_ID', $options) . '</div></div>');
-//        echo'</div>'; 
-
-
-            $grade_level_RET = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER ASC'));
-            $options = array();
-            if (count($grade_level_RET)) {
-                foreach ($grade_level_RET as $grade)
-                    $options[$grade['ID']] = $grade['TITLE'];
-            }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4">'._schoolGradelevel.'</label><div class="col-lg-8">' . _makeSelectInput('GRADE_ID', $options) . '</div></div>');
-        }*/
-
-
-        $radio_count = count($fields_RET['radio']);
+        $radio_count = (is_countable($fields_RET['radio'])) ? count($fields_RET['radio']) : 0;
         if ($radio_count) {
-            //echo '<TABLE cellpadding=5>';
-            //echo '<TR>';
             for ($i = 1; $i <= $radio_count; $i++) {
                 array_push($fields, '<label class="col-lg-4">&nbsp;</label><div class="col-lg-8">' . _makeCheckboxInput('CUSTOM_' . $fields_RET['radio'][$i]['ID'], $fields_RET['radio'][$i]['TITLE']) . '</div>');
-                //if ($i % 5 == 0 && $i != $radio_count)
-                //echo '</TR><TR>';
             }
-            //echo '</TD></TR>';
-            //echo '</TABLE>';
         }
-
-        //$test = array_map('htmlspecialchars', $fields);
 
         $col1html = '<div class="col-md-6">';
         $col2html = '<div class="col-md-6">';
@@ -679,7 +539,8 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.row
 
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');">');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'student\',\'Y\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');">');
     $extra['new'] = true;
 
     Search('student_id', $extra);
@@ -730,8 +591,9 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title = '')
 {
     global $THIS_RET;
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=Y  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID], \"Y\");' />";
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'>";
+    // return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'>";
 }
 
 function _makeTextInput($column, $numeric = false)
@@ -784,8 +646,6 @@ function _makeCustomCheckbox($identifier, $title)
         $returnshape = '';
 
         $returnshape .= '<label for="values[' . $identifier . ']" class="control-label text-right col-lg-4">' . $title . '</label>';
-
-        // $returnshape .= '<div class="col-lg-8"><input style="margin: 10px auto;" type="checkbox" id="values['.$identifier.']" name="values['.$identifier.']" size="25" value="Y"></div>';
 
         $returnshape .= CheckboxInputSwitch('', 'values[' . $identifier . ']', '', '', false, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'id="values[' . $identifier . ']"', ' switch-danger');
 

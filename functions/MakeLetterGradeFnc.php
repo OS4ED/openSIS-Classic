@@ -72,7 +72,7 @@ function _makeLetterGrade($percent,$course_period_id=0,$staff_id=0,$ret='')
 	$does_breakoff = $_openSIS['_makeLetterGrade']['courses'][$course_period_id][1]['DOES_BREAKOFF'];
 	$grade_scale_id = $_openSIS['_makeLetterGrade']['courses'][$course_period_id][1]['GRADE_SCALE_ID'];
 
-	$percent *= 100;
+	$percent = is_numeric($percent) ? $percent * 100 : 0;
        
 		if($programconfig[$staff_id]['ROUNDING']=='UP')
                 {

@@ -270,7 +270,7 @@ if ($_SESSION['PROFILE'] == 'teacher')
     $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
 
 $codes_RET = DBGet(DBQuery('SELECT ID,TITLE,DEFAULT_CODE,STATE_CODE FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
-if (count($codes_RET)) {
+if (is_countable($codes_RET) && count($codes_RET)) {
     foreach ($codes_RET as $code) {
         $extra['SELECT'] .= ",'$code[STATE_CODE]' AS CODE_" . $code['ID'];
         if ($code['DEFAULT_CODE'] == 'Y')
@@ -364,9 +364,9 @@ if ($_REQUEST['table'] == '0') {
 //DrawHeaderHome('<A HREF="Modules.php?modname=miscellaneous/Portal.php">Back to Missing Attendance List</A>');
 //}
 if (isset($_REQUEST['cp_id_miss_attn']))
-    echo "<FORM ACTION=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST[table])) . "&username=" . strip_tags(trim($_REQUEST[username])) . "&From=$From&to=$to&cp_id_miss_attn=" . $_REQUEST['cp_id_miss_attn'] . "&attn=" . strip_tags(trim($_REQUEST[attn])) . " method=POST>";
+    echo "<FORM ACTION=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST['table'])) . "&username=" . strip_tags(trim($_REQUEST['username'])) . "&From=$From&to=$to&cp_id_miss_attn=" . $_REQUEST['cp_id_miss_attn'] . "&attn=" . strip_tags(trim($_REQUEST['attn'])) . " method=POST>";
 else
-    echo "<FORM ACTION=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST[table])) . "&username=" . strip_tags(trim($_REQUEST[username])) . "&From=$From&to=$to&attn=" . strip_tags(trim($_REQUEST[attn])) . " method=POST>";
+    echo "<FORM ACTION=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST['table'])) . "&username=" . strip_tags(trim($_REQUEST['username'])) . "&From=$From&to=$to&attn=" . strip_tags(trim($_REQUEST['attn'])) . " method=POST>";
 
 echo '<div class="panel panel-default">';
 
@@ -426,14 +426,14 @@ $profile_check = $profile_check[1]['PROFILE'];
 
 $btnGo = '';
 if (isset($_REQUEST['cp_id_miss_attn'])) {
-    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
+    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST['cpv_id_miss_attn'])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
 } else
-    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
+    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST['period'])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
 
 
 if ($profile_check == 'admin') {
 
-    if (count($stu_RET) != 0 && count($course_RET) != 0) {
+    if ((is_countable($stu_RET) && count($stu_RET) != 0) && (is_countable($course_RET) && count($course_RET) != 0)) {
 
         DrawHeader(SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
@@ -446,7 +446,7 @@ if ($profile_check == 'admin') {
     }
 } else {
 
-    if (count($stu_RET) != 0 && count($course_RET) != 0) {
+    if ((is_countable($stu_RET) && count($stu_RET) != 0) && (is_countable($course_RET) && count($course_RET) != 0)) {
 
         DrawHeader(SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
@@ -473,8 +473,8 @@ foreach ($categories_RET as $category)
     $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&table=$category[ID]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
 
 
-if (count($categories_RET)) {
-    if (count($course_RET) != 0)
+if (is_countable($categories_RET) && count($categories_RET)) {
+    if (is_countable($course_RET) && count($course_RET) != 0)
         echo '<CENTER>' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]") . '</CENTER>';
     $extra = array('download' =>true, 'search' =>true);
     $singular = _student;
@@ -488,7 +488,7 @@ else {
 if (!$mp_id) {
     echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">'._theSelectedDateIsNotInASchoolQuarter.'.</div></div>';
 } else {
-    if (count($course_RET) != 0) {
+    if (is_countable($course_RET) && count($course_RET) != 0) {
         $posted_date2 = ucfirst(strtolower($_REQUEST['month_date'])) . '-' . $_REQUEST['day_date'] . '-' . $_REQUEST['year_date'];
         if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
             $cur_date = date('Y-m-d', strtotime($posted_date2));
@@ -500,7 +500,7 @@ if (!$mp_id) {
         //echo '</br>';
         echo '<div class="panel-footer">';
         echo '<div class="heading-elements text-right p-r-20">';
-        if (count($stu_RET) > 0 && count($course_RET) > 0) {
+        if ((is_countable($stu_RET) && count($stu_RET) > 0) && (is_countable($course_RET) && count($course_RET) > 0)) {
             echo SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"');
         }
         echo '</div>'; //.heading-elements

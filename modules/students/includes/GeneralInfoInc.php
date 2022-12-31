@@ -35,66 +35,61 @@ include_once('modules/students/includes/FunctionsInc.php');
 <?php
 
 
-$ethnic_option=array();
-$language_option=array();
-$ethnicity=DBGet(DBQuery('SELECT * FROM ethnicity'));
-foreach($ethnicity as $key =>$value)
-{
-	$ethnic_option[$value['ETHNICITY_ID']]=$value['ETHNICITY_NAME'];
+$ethnic_option = array();
+$language_option = array();
+$ethnicity = DBGet(DBQuery('SELECT * FROM ethnicity'));
+foreach ($ethnicity as $key => $value) {
+    $ethnic_option[$value['ETHNICITY_ID']] = $value['ETHNICITY_NAME'];
 }
 //$ethnic_option = array($ethnicity[1]['ETHNICITY_ID'] => $ethnicity[1]['ETHNICITY_NAME'], $ethnicity[2]['ETHNICITY_ID'] => $ethnicity[2]['ETHNICITY_NAME'],$ethnicity[3]['ETHNICITY_ID'] => $ethnicity[3]['ETHNICITY_NAME'],$ethnicity[4]['ETHNICITY_ID'] => $ethnicity[4]['ETHNICITY_NAME'],$ethnicity[5]['ETHNICITY_ID'] => $ethnicity[5]['ETHNICITY_NAME'],$ethnicity[6]['ETHNICITY_ID'] => $ethnicity[6]['ETHNICITY_NAME'],$ethnicity[7]['ETHNICITY_ID'] => $ethnicity[7]['ETHNICITY_NAME'],$ethnicity[8]['ETHNICITY_ID'] => $ethnicity[8]['ETHNICITY_NAME'],$ethnicity[9]['ETHNICITY_ID'] => $ethnicity[9]['ETHNICITY_NAME'],$ethnicity[10]['ETHNICITY_ID'] => $ethnicity[10]['ETHNICITY_NAME'],$ethnicity[11]['ETHNICITY_ID'] => $ethnicity[11]['ETHNICITY_NAME']);
 
 
-$language=DBGet(DBQuery('SELECT * FROM language'));
-foreach($language as $key =>$value)
-{
-	$language_option[$value['LANGUAGE_ID']]=$value['LANGUAGE_NAME'];
+$language = DBGet(DBQuery('SELECT * FROM language'));
+foreach ($language as $key => $value) {
+    $language_option[$value['LANGUAGE_ID']] = $value['LANGUAGE_NAME'];
 }
 echo '<div class="row">';
 echo '<div class="col-md-10">';
 
 echo '<div class="form-horizontal">';
 
-echo '<h5 class="text-primary">'._demographicInformation.'</h5>';
+echo '<h5 class="text-primary">' . _demographicInformation . '</h5>';
 
 //echo '<div class="">';
 //echo '<label class="co-md-3">Name <span class="text-danger">*</span>:</label>';
 if ($_REQUEST['student_id'] == 'new') {
     unset($_SESSION['students_order']);
-    echo '<div class="well m-b-20 clearfix"><h6 class="m-t-0 text-success">'._studentName.'</h6><div class="row"><div class="col-lg-6"><div class="form-group">' . TextInput($student['FIRST_NAME'], 'students[FIRST_NAME]', ''._firstName.' *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group">' . TextInput($student['MIDDLE_NAME'], 'students[MIDDLE_NAME]', ''._middleName.'', 'class=form-control maxlength=50') . '</div></div></div><div class="row"><div class="col-lg-6"><div class="form-group m-b-0">' . TextInput($student['LAST_NAME'], 'students[LAST_NAME]', ''._lastName.' *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group m-b-0">' . SelectInput($student['NAME_SUFFIX'], 'students[NAME_SUFFIX]', 'Suffix', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '') . '</div></div></div></div>';
+    echo '<div class="well m-b-20 clearfix"><h6 class="m-t-0 text-success">' . _studentName . '</h6><div class="row"><div class="col-lg-6"><div class="form-group">' . TextInput($student['FIRST_NAME'], 'students[FIRST_NAME]', '' . _firstName . ' *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group">' . TextInput($student['MIDDLE_NAME'], 'students[MIDDLE_NAME]', '' . _middleName . '', 'class=form-control maxlength=50') . '</div></div></div><div class="row"><div class="col-lg-6"><div class="form-group m-b-0">' . TextInput($student['LAST_NAME'], 'students[LAST_NAME]', '' . _lastName . ' *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group m-b-0">' . SelectInput($student['NAME_SUFFIX'], 'students[NAME_SUFFIX]', ''._suffix.'', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '') . '</div></div></div></div>';
 } else
-    echo '<DIV id=student_name><div class=form-group onclick=\'addHTML("<div class=\"well m-b-20 clearfix\"><h6 class=\"m-t-0 text-success\">Student Name</h6><div class=\"row\"><div class=\"col-lg-6\"><div class=\"form-group\">' . str_replace('"', '\"', TextInput($student['FIRST_NAME'], 'students[FIRST_NAME]', ''._firstName.' *', 'maxlength=50 style="font-size:14px;"', false)) . '</div></div><div class=col-lg-6><div class=form-group>' . str_replace('"', '\"', TextInput($student['LAST_NAME'], 'students[LAST_NAME]', ''._lastName.' *', 'maxlength=50 ', false)) . '</div></div></div><div class=row><div class=col-lg-6><div class=\"form-group m-b-0\">' . str_replace('"', '\"', TextInput($student['MIDDLE_NAME'], 'students[MIDDLE_NAME]', ''._middleName.'', 'size=3 maxlength=50', false)) . '</div></div><div class=col-lg-6><div class=\"form-group m-b-0\">' . str_replace('"', '\"', SelectInput($student['NAME_SUFFIX'], 'students[NAME_SUFFIX]', ''._suffix.'', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '', false)) . '</div></div></div></div>","student_name",true);\'><label class="control-label col-lg-2 text-right">'._studentName.'</label><div class="col-lg-10"><h3 class="m-0 text-success">' . $student['FIRST_NAME'] . ' ' . $student['MIDDLE_NAME'] . ' ' . $student['LAST_NAME'] . ' ' . $student['NAME_SUFFIX'] . '</h3></div></div></DIV>';
+    echo '<DIV id=student_name><div class=form-group onclick=\'addHTML("<div class=\"well m-b-20 clearfix\"><h6 class=\"m-t-0 text-success\">Student Name</h6><div class=\"row\"><div class=\"col-lg-6\"><div class=\"form-group\">' . str_replace('"', '\"', TextInput($student['FIRST_NAME'], 'students[FIRST_NAME]', '' . _firstName . ' *', 'maxlength=50 style="font-size:14px;"', false)) . '</div></div><div class=col-lg-6><div class=form-group>' . str_replace('"', '\"', TextInput($student['LAST_NAME'], 'students[LAST_NAME]', '' . _lastName . ' *', 'maxlength=50 ', false)) . '</div></div></div><div class=row><div class=col-lg-6><div class=\"form-group m-b-0\">' . str_replace('"', '\"', TextInput($student['MIDDLE_NAME'], 'students[MIDDLE_NAME]', '' . _middleName . '', 'size=3 maxlength=50', false)) . '</div></div><div class=col-lg-6><div class=\"form-group m-b-0\">' . str_replace('"', '\"', SelectInput($student['NAME_SUFFIX'], 'students[NAME_SUFFIX]', '' . _suffix . '', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '', false)) . '</div></div></div></div>","student_name",true);\'><label class="control-label col-lg-2 text-right">' . _studentName . '</label><div class="col-lg-10"><h3 class="m-0 text-success">' . $student['FIRST_NAME'] . ' ' . $student['MIDDLE_NAME'] . ' ' . $student['LAST_NAME'] . ' ' . $student['NAME_SUFFIX'] . '</h3></div></div></DIV>';
 //echo '</div>'; //.form-group
 
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._estimatedGradDate.'</label><div class="col-lg-8">' . DateInputAY($student['ESTIMATED_GRAD_DATE'], 'students[ESTIMATED_GRAD_DATE]', '1', false, 'MM/DD/YYYY') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _estimatedGradDate . '</label><div class="col-lg-8">' . DateInputAY($student['ESTIMATED_GRAD_DATE'], 'students[ESTIMATED_GRAD_DATE]', '1', false, 'MM/DD/YYYY') . '</div></div>';
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._gender.'</label><div class="col-lg-8">' . SelectInput($student['GENDER'], 'students[GENDER]', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _gender . '</label><div class="col-lg-8">' . SelectInput($student['GENDER'], 'students[GENDER]', '', array('Male' => 'Male', 'Female' => 'Female'), 'N/A', '') . '</div></div>';
 echo '</div>'; //.col-lg-6
 echo '</div>'; //.row
 
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._ethnicity.'</label><div class="col-lg-8">' . SelectInput($student['ETHNICITY_ID'], 'students[ETHNICITY_ID]', '', $ethnic_option, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _ethnicity . '</label><div class="col-lg-8">' . SelectInput($student['ETHNICITY_ID'], 'students[ETHNICITY_ID]', '', $ethnic_option, 'N/A', '') . '</div></div>';
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group">' . TextInput($student['COMMON_NAME'], 'students[COMMON_NAME]', ''._commonName.'', 'size=10 class=form-control maxlength=10') . '</div>';
+echo '<div class="form-group">' . TextInput($student['COMMON_NAME'], 'students[COMMON_NAME]', '' . _commonName . '', 'size=10 class=form-control maxlength=10') . '</div>';
 echo '</div>'; //.col-lg-6
 echo '</div>'; //.row
 
-if($student['BIRTHDATE'] != '')
-{
+if ($student['BIRTHDATE'] != '') {
     $userDob = $student['BIRTHDATE'];
     $dob = new DateTime($userDob);
     $now = new DateTime(date('Y-m-d'));
     $stu_age = $now->diff($dob);
     // $show_stu_age = '<div class="col-lg-4"><div class="p-t-10 text-right">'._bAge.'</b> '.(($stu_age->y)."yrs").', '.(($stu_age->m)."mo").'</div></div>';
-    $show_stu_age = '<div class="p-t-10 text-right stu_age"><b>Age:</b> '.(($stu_age->y)."yrs").', '.(($stu_age->m)."mo").'</div>';
+    $show_stu_age = '<div class="p-t-10 text-right stu_age"><b>Age:</b> ' . (($stu_age->y) . "yrs") . ', ' . (($stu_age->m) . "mo") . '</div>';
     // $birthay_holder_class = 'col-md-4';
     $birthay_holder_class = 'col-lg-8';
-}
-else
-{
+} else {
     $show_stu_age = '';
     $birthay_holder_class = 'col-lg-8';
 }
@@ -102,9 +97,9 @@ else
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
 //echo '<div class="form-group"><label class="control-label col-lg-4">Date of Birth<span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(isset($student['BIRTHDATE']) && $student['BIRTHDATE']!="" ? date("d-M-Y", strtotime($student['BIRTHDATE'])) : "", 'students[BIRTHDATE]', '2', false, '') . '</div></div>';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._dateOfBirth.'<span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(isset($student['BIRTHDATE']) && $student['BIRTHDATE'] != "" ? $student['BIRTHDATE'] : "", 'students[BIRTHDATE]', '2', false, '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _dateOfBirth . ' <span class="text-danger">*</span></label><div class="col-lg-8">' . DateInputAY(isset($student['BIRTHDATE']) && $student['BIRTHDATE'] != "" ? $student['BIRTHDATE'] : "", 'students[BIRTHDATE]', '2', false, '') . '</div></div>';
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._language.'</label><div class="col-lg-8">' . SelectInput($student['LANGUAGE_ID'], 'students[LANGUAGE_ID]', '', $language_option, 'N/A', '') . '</div></div>';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _language . '</label><div class="col-lg-8">' . SelectInput($student['LANGUAGE_ID'], 'students[LANGUAGE_ID]', '', $language_option, 'N/A', '') . '</div></div>';
 echo '<input type=hidden id=current_date value=' . date('Y-m-d') . '>';
 echo '</div>'; //.col-lg-6
 echo '</div>'; //.row
@@ -115,13 +110,13 @@ if ($_REQUEST['student_id'] == 'new')
     $id_sent = 0;
 else
     $id_sent = UserStudentID();
-echo '<div class="form-group"><label class="control-label col-md-4 text-right">'._email.'</label><div class="col-md-8">' . TextInput($student['EMAIL'], 'students[EMAIL]', '', 'size=100 class=cell_medium maxlength=100 onkeyup=check_email(this,' . $id_sent . ',3); onblur=check_email(this,' . $id_sent . ',3)') . '<div class="help-block" id=email_error></div></div></div>';
+echo '<div class="form-group"><label class="control-label col-md-4 text-right">' . _email . '</label><div class="col-md-8">' . TextInput($student['EMAIL'], 'students[EMAIL]', '', 'size=100 class=cell_medium maxlength=100 onkeyup=check_email(this,' . $id_sent . ',3); onblur=check_email(this,' . $id_sent . ',3)') . '<div class="help-block" id=email_error></div></div></div>';
 echo '</div><div class="col-lg-6">';
-echo '<div class="form-group">' . TextInput($student['PHONE'], 'students[PHONE]', ''._phone.'', 'size=100 class=cell_medium maxlength=100') . '</div>';
+echo '<div class="form-group">' . TextInput($student['PHONE'], 'students[PHONE]', '' . _phone . '', 'size=100 class=cell_medium maxlength=100') . '</div>';
 echo '</div>'; //.col-lg-6
 echo '</div>'; //.row
 #############################################CUSTOM FIELDS###############################
-$fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE,SORT_ORDER FROM custom_fields WHERE SYSTEM_FIELD=\'N\' AND CATEGORY_ID=\'' . $_REQUEST[category_id] . '\' ORDER BY SORT_ORDER,TITLE'));
+$fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE,SORT_ORDER FROM custom_fields WHERE SYSTEM_FIELD=\'N\' AND CATEGORY_ID=\'' . $_REQUEST['category_id'] . '\' ORDER BY SORT_ORDER,TITLE'));
 
 if (UserStudentID()) {
     $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
@@ -263,7 +258,7 @@ echo '</div>'; //.row
 #############################################CUSTOM FIELDS###############################
 
 
-echo '<h5 class="pt-20 text-primary">'._schoolInformation.'</h5>';
+echo '<h5 class="pt-20 text-primary">' . _schoolInformation . '</h5>';
 
 
 echo '<div class="row">';
@@ -276,7 +271,7 @@ if ($_REQUEST['student_id'] == 'new') {
 } else
     echo NoInput(UserStudentID(), _studentId);
 echo '</div></div><div class="col-md-6"><div class="form-group">';
-echo TextInput($student['ALT_ID'], 'students[ALT_ID]', ''._alternateId.'', 'size=10 maxlength=45');
+echo TextInput($student['ALT_ID'], 'students[ALT_ID]', '' . _alternateId . '', 'size=10 maxlength=45');
 echo '</div></div>'; //.col-md-6
 echo '</div>'; //.row
 
@@ -310,7 +305,7 @@ if ($student_id == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollm
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._grade.'<span class="text-danger">*</span></label><div class="col-lg-8">';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _grade . ' <span class="text-danger">*</span></label><div class="col-lg-8">';
 echo SelectInput($student['GRADE_ID'], 'values[student_enrollment][' . $student_id . '][GRADE_ID]', '', $options, '', '') . '</div></div>';
 echo '</div>'; //.col-md-6
 
@@ -342,7 +337,7 @@ if ($student_id == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollm
     unset($student['SECTION_ID']);
 
 echo '<div class="col-md-6">';
-echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._section.'</label><div class="col-lg-8">';
+echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _section . '</label><div class="col-lg-8">';
 echo SelectInput($student['SECTION_ID'], 'values[student_enrollment][' . $enrollment_id . '][SECTION_ID]', '', $options, '', '') . '</div></div>';
 echo '</div>'; //.col-md-6
 echo '</div>'; //.row
@@ -352,19 +347,27 @@ echo '</div>'; //.row
 
 
 
-echo '<h5 class="pt-20 text-primary">'._accessInformation.'</h5>';
+echo '<h5 class="pt-20 text-primary">' . _accessInformation . '</h5>';
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label col-md-4 text-right">'._username.'</label>';
+echo '<label class="control-label col-md-4 text-right">' . _username . '</label>';
 echo '<div class="col-md-8">';
-echo TextInput($student['USERNAME'], 'students[USERNAME]', '', 'onkeyup="usercheck_init_student(this)" onBlur="usercheck_init_student_Mod(this)"');
-echo '<div class="help-block" id="ajax_output_st"></div>';
+if (User('PROFILE') == 'admin') {
+    if ($student['STUDENT_ID'] != '')
+        echo TextInput($student['USERNAME'], 'students[USERNAME]', '', $student['USERNAME'] == '' ? 'onkeyup="usercheck_init_student(this, ' . $student['STUDENT_ID'] . ', 3)" onBlur="usercheck_init_student_Mod(this, ' . $student['STUDENT_ID'] . ', 3)"' : 'onkeyup=\"usercheck_init_student(this, ' . $student['STUDENT_ID'] . ', 3)\" onBlur=\"usercheck_init_student_Mod(this, ' . $student['STUDENT_ID'] . ', 3)\"');
+    else
+        echo TextInput($student['USERNAME'], 'students[USERNAME]', '', $student['USERNAME'] == '' ? 'onkeyup="usercheck_init_student(this, \'\', 3)" onBlur="usercheck_init_student_Mod(this, \'\', 3)"' : 'onkeyup=\"usercheck_init_student(this, \'\', 3)\" onBlur=\"usercheck_init_student_Mod(this, \'\', 3)\"');
+
+    echo '<div class="help-block" id="ajax_output_st"></div>';
+}
+else
+    echo NoInput($student['USERNAME']);
 echo '</div>';
 echo '</div>'; //.form-group
 echo '</div><div class="col-lg-6">';
 echo '<div class="form-group">';
-echo '<label class="control-label text-right col-lg-4">'._password.'</label>';
+echo '<label class="control-label text-right col-lg-4">' . _password . '</label>';
 echo '<div class="col-lg-8">';
 echo TextInput(str_repeat('*', strlen($student['PASSWORD'])), 'students[PASSWORD]', '', 'onkeyup=passwordStrength(this.value)', 'AUTOCOMPLETE = off');
 echo '<p id="passwordStrength" class="help-block"></p>';
@@ -374,12 +377,9 @@ echo '</div>'; //.col-md-6
 echo '</div>'; //.row
 
 
-if($student['USERNAME'] && $student['USERNAME'] != '')
-{
+if ($student['USERNAME'] && $student['USERNAME'] != '') {
     echo '<input id="stu_username_flag" type="hidden" value="1">';
-}
-else
-{
+} else {
     echo '<input id="stu_username_flag" type="hidden" value="0">';
 }
 
@@ -392,7 +392,7 @@ if ($_REQUEST['student_id'] != 'new') {
 
     if (User('PROFILE') == 'admin') {
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._disableStudent.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">' . _disableStudent . '</label><div class="col-lg-8">';
         echo CheckboxInput($student['IS_DISABLE'], 'students[IS_DISABLE]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
         echo '</div></div></div>';
     }
@@ -412,22 +412,21 @@ if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
 
     echo '<div width=150 align="center"><IMG src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=150 class=pic>';
     if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-        echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit class="btn btn-white btn-xs m-t-5"><b>'._changePhoto.'</b></a></div>';
+        echo '<br><a href=Modules.php?modname=students/Upload.php?modfunc=edit class="btn btn-white btn-xs m-t-5"><b>' . _changePhoto . '</b></a></div>';
     else
         echo '';
-}
-else {
+} else {
     if ($_REQUEST['student_id'] != 'new') {
 
-        echo '<div align="center">'._uploadStudentSPhoto.':<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
+        echo '<div align="center">' . _uploadStudentSPhoto . ':<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
-            echo '<label class="fileUpload btn btn-primary btn-xs btn-block m-t-10"><span>'._selectFile.'</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
+            echo '<label class="fileUpload btn btn-primary btn-xs btn-block m-t-10"><span>' . _selectFile . '</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
             echo '<div id="uploadFile"></div>';
         }
     } else {
-        echo '<div align="center">'._uploadStudentSPhoto.':<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
+        echo '<div align="center">' . _uploadStudentSPhoto . ':<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
-            echo '<label class="fileUpload btn_ btn btn-primary btn-block btn-xs"><span>'._selectFile.'</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
+            echo '<label class="fileUpload btn_ btn btn-primary btn-block btn-xs"><span>' . _selectFile . '</span><input id="uploadBtn" type="file" name="file" class="upload" onchange="selectFile(this)" /></label>';
         echo '<div id="uploadFile"></div>';
     }
 }
@@ -440,7 +439,7 @@ echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">'._uploadPhoto.'</h5>';
+echo '<h5 class="modal-title">' . _uploadPhoto . '</h5>';
 echo '</div>';
 
 echo '<div class="modal-body">';
@@ -449,7 +448,7 @@ echo '<div class="image-cropper-container content-group" id=div_img style="heigh
           
       </div>';
 echo '<input type=hidden name=imgblob id=imgblob value=>';
-echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="'._upload.'">';
+echo '<input type="submit" class="btn btn-primary legitRipple" name="upbtn" value="' . _upload . '">';
 echo '</div>'; //.modal-body
 
 echo '</div>'; //.modal-content

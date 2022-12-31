@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 session_start();
-!empty($_SESSION['USERNAME']) or die('Access denied!');
+//!empty($_SESSION['USERNAME']) or die('Access denied!');
 include "functions/ParamLibFnc.php";
 
 $url = validateQueryString(curPageURL());
@@ -36,9 +36,6 @@ if ($url === FALSE) {
 }
 
 include 'RedirectRootInc.php';
-
-error_reporting(E_ERROR);
-
 $start_time = time();
 
 include 'Warehouse.php';
@@ -167,4 +164,3 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo '</BODY>';
     echo '</HTML>';
 }
-?>

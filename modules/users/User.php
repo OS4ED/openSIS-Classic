@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-session_start();
+//session_start();
 !empty($_SESSION['USERNAME']) or die('Access denied!');
 include('../../RedirectModulesInc.php');
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
@@ -71,11 +71,11 @@ if (isset($_REQUEST['staff_id']) && $_REQUEST['staff_id'] != 'new') {
         $count_staff_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM people'));
         if ($count_staff_RET[1]['NUM'] > 1) {
             echo '<div class="panel panel-default">';
-            DrawHeader(''._selectedUser.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true' . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . ' target=body><i class="icon-square-left"></i> '._backToUserList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+            DrawHeader('' . _selectedUser . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=users/User.php&ajax=true&bottom_back=true&return_session=true' . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . ' target=body><i class="icon-square-left"></i> ' . _backToUserList . '</A></span><div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
             echo '</div>';
         } else {
             echo '<div class="panel panel-default">';
-            DrawHeader(''._selectedUser.' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+            DrawHeader('' . _selectedUser . ' : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . $RET[1]['LAST_NAME'], '<div class="btn-group heading-btn"><A HREF=Side.php?staff_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div>');
             echo '</div>';
         }
     }
@@ -119,12 +119,12 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
     if (User('PROFILE') != 'admin') {
         if (User('PROFILE_ID'))
-            $can_edit_RET = DBGet(DBQuery('SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID=\'' . User('PROFILE_ID') . '\' AND MODNAME=\'' . 'users/User.php&category_id=' . $_REQUEST[category_id] . '\' AND CAN_EDIT=\'' . 'Y' . '\''));
+            $can_edit_RET = DBGet(DBQuery('SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID=\'' . User('PROFILE_ID') . '\' AND MODNAME=\'' . 'users/User.php&category_id=' . $_REQUEST['category_id'] . '\' AND CAN_EDIT=\'' . 'Y' . '\''));
         else {
             $profile_id_mod = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE USER_ID='" . User('STAFF_ID')));
             $profile_id_mod = $profile_id_mod[1]['PROFILE_ID'];
             if ($profile_id_mod != '')
-                $can_edit_RET = DBGet(DBQuery('SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID=\'' . $profile_id_mod . '\' AND MODNAME=\'' . 'users/User.php&category_id=' . $_REQUEST[category_id] . '\' AND CAN_EDIT=\'' . 'Y' . '\''), array(), array('MODNAME'));
+                $can_edit_RET = DBGet(DBQuery('SELECT MODNAME FROM profile_exceptions WHERE PROFILE_ID=\'' . $profile_id_mod . '\' AND MODNAME=\'' . 'users/User.php&category_id=' . $_REQUEST['category_id'] . '\' AND CAN_EDIT=\'' . 'Y' . '\''), array(), array('MODNAME'));
         }
         if ($can_edit_RET)
             $_openSIS['allow_edit'] = true;
@@ -136,46 +136,46 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
         $up_go = 'n';
 
         if ($_REQUEST['category_id'] == 1) {
-            
-            
-            
-            if(count($_REQUEST['staff'])>0){
-            
-                  $disp_error = '';
-            if ($_REQUEST['modfunc'] == 'update') {
-                // print_r($_REQUEST);
-                $flag = 0;
-                $qry = 'UPDATE people SET ';
-                // print_r($_REQUEST['people']);
-                foreach ($_REQUEST['staff'] as $in => $d) {
 
-                    $field_id = explode('_', $in);
-                    $field_id = $field_id[1];
-                    $check_stat = DBGet(DBQuery('SELECT TITLE,REQUIRED FROM people_fields WHERE ID=\'' . $field_id . '\' '));
-                    if ($check_stat[1]['REQUIRED'] == 'Y') {
-                        if ($d != '') {
-                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
-                            $flag++;
+
+
+            if (is_countable($_REQUEST['staff']) && count($_REQUEST['staff']) > 0) {
+
+                $disp_error = '';
+                if ($_REQUEST['modfunc'] == 'update') {
+                    // print_r($_REQUEST);
+                    $flag = 0;
+                    $qry = 'UPDATE people SET ';
+                    // print_r($_REQUEST['people']);
+                    foreach ($_REQUEST['staff'] as $in => $d) {
+
+                        $field_id = explode('_', $in);
+                        $field_id = $field_id[1];
+                        $check_stat = DBGet(DBQuery('SELECT TITLE,REQUIRED FROM people_fields WHERE ID=\'' . $field_id . '\' '));
+                        if ($check_stat[1]['REQUIRED'] == 'Y') {
+                            if ($d != '') {
+                                $qry .= ' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                                $flag++;
+                            } else {
+                                $disp_error = '<div class="alert alert-danger">' . $check_stat[1]['TITLE'] . ' is required.</div>';
+                            }
                         } else {
-                            $disp_error = '<div class="alert alert-danger">' . $check_stat[1]['TITLE'] . ' is required.</div>';
-                        }
-                    } else {
-                        if ($d != '')
-                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
-                        else
-                            $qry.=' ' . $in . '=NULL,';
+                            if ($d != '')
+                                $qry .= ' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                            else
+                                $qry .= ' ' . $in . '=NULL,';
 
-                        $flag++;
+                            $flag++;
+                        }
+                    }
+                    if ($flag > 0) {
+
+                        $qry = substr($qry, 0, -1) . ' WHERE STAFF_ID=' . $_REQUEST['staff_id'];
+                        DBQuery($qry);
                     }
                 }
-                if ($flag > 0) {
-
-                    $qry = substr($qry, 0, -1) . ' WHERE STAFF_ID=' . $_REQUEST['staff_id'];
-                    DBQuery($qry);
-                }
             }
-            }
-            if (count($_REQUEST['people']) > 0) {
+            if (is_countable($_REQUEST['people']) && count($_REQUEST['people']) > 0) {
                 $staff_info_sql = "SELECT PROFILE_ID FROM people WHERE STAFF_ID=" . $_REQUEST['staff_id'];
                 $staff_info = DBGet(DBQuery($staff_info_sql));
                 $staff_prof_id = $staff_info[1]['PROFILE_ID'];
@@ -189,12 +189,12 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                 foreach ($_REQUEST['people'] as $pi => $pd) {
 
 
-                    $up_sql.=$pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
+                    $up_sql .= $pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
                     $up_go = 'y';
                 }
                 if ($up_go == 'y') {
                     $up_sql = substr($up_sql, 0, -1);
-                    $up_sql.=" WHERE STAFF_ID=" . $_REQUEST['staff_id'];
+                    $up_sql .= " WHERE STAFF_ID=" . $_REQUEST['staff_id'];
 
                     DBQuery($up_sql);
                 }
@@ -204,6 +204,23 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                 unset($up_go);
             }
             $up_go = 'n';
+            if ($_REQUEST['login_authentication']['USERNAME'] != '') {
+                $usernameExists = DBGet(DBQuery('SELECT * FROM login_authentication WHERE USERNAME=\'' . $_REQUEST['login_authentication']['USERNAME'] . '\''));
+                if ($staff_prof_id == '') {
+                    $staff_info_sql = "SELECT PROFILE_ID FROM people WHERE STAFF_ID=" . $_REQUEST['staff_id'];
+                    $staff_info = DBGet(DBQuery($staff_info_sql));
+                    $staff_prof_id = $staff_info[1]['PROFILE_ID'];
+                }
+                if(count($usernameExists) == 0){
+                    $up_sql = 'UPDATE login_authentication SET USERNAME=\'' . $_REQUEST['login_authentication']['USERNAME'] . '\' WHERE USER_ID=' . $_REQUEST['staff_id'] . ' AND PROFILE_ID = ' . $staff_prof_id;
+                    DBQuery($up_sql);
+                    unset($up_sql);
+                } else {
+                    if($usernameExists[1]['USER_ID'] != $_REQUEST['staff_id'] || $usernameExists[1]['PROFILE_ID'] != $staff_prof_id){
+                        echo '<div class="alert alert-danger">Username already exists.</div>';
+                    }
+                }
+            }
             if ($_REQUEST['login_authentication']['PASSWORD'] != '') {
                 if ($staff_prof_id == '') {
                     $staff_info_sql = "SELECT PROFILE_ID FROM people WHERE STAFF_ID=" . $_REQUEST['staff_id'];
@@ -220,18 +237,18 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
             }
         } else if ($_REQUEST['category_id'] == 2) {
 
-            if (count($_REQUEST['people']) > 0) {
+            if (is_countable($_REQUEST['people']) && count($_REQUEST['people']) > 0) {
 
                 $up_sql = 'UPDATE people SET ';
                 foreach ($_REQUEST['people'] as $pi => $pd) {
 
 
-                    $up_sql.=$pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
+                    $up_sql .= $pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
                     $up_go = 'y';
                 }
                 if ($up_go == 'y') {
                     $up_sql = substr($up_sql, 0, -1);
-                    $up_sql.=" WHERE STAFF_ID=" . $_REQUEST['staff_id'];
+                    $up_sql .= " WHERE STAFF_ID=" . $_REQUEST['staff_id'];
 
                     DBQuery($up_sql);
                 }
@@ -245,16 +262,16 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
 
 
-            if (count($_REQUEST['student_addres']) > 0) {
+            if (is_countable($_REQUEST['student_addres']) && count($_REQUEST['student_addres']) > 0) {
                 $up_sql = 'UPDATE student_address SET ';
                 foreach ($_REQUEST['student_addres'] as $pi => $pd) {
 
-                    $up_sql.=$pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
+                    $up_sql .= $pi . "='" . str_replace("'", "''", str_replace("\'", "'", $pd)) . "',";
                     $up_go = 'y';
                 }
                 if ($up_go == 'y') {
                     $up_sql = substr($up_sql, 0, -1);
-                    $up_sql.=" WHERE PEOPLE_ID=" . $_REQUEST['staff_id'];
+                    $up_sql .= " WHERE PEOPLE_ID=" . $_REQUEST['staff_id'];
 
                     DBQuery($up_sql);
                 }
@@ -283,7 +300,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
                         foreach ($d as $m_custom_val) {
                             if ($m_custom_val)
-                                $str.="||" . $m_custom_val;
+                                $str .= "||" . $m_custom_val;
                         }
                         if ($str)
                             $d = $str . "||";
@@ -293,16 +310,16 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
                     if ($check_stat[1]['REQUIRED'] == 'Y') {
                         if ($d != '') {
-                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                            $qry .= ' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
                             $flag++;
                         } else {
                             $disp_error = '<div class="alert alert-danger">' . $check_stat[1]['TITLE'] . ' is required.</div>';
                         }
                     } else {
                         if ($d != '')
-                            $qry.=' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
+                            $qry .= ' ' . $in . '=\'' . str_replace("'", "''", str_replace("\'", "'", $d)) . '\',';
                         else
-                            $qry.=' ' . $in . '=NULL,';
+                            $qry .= ' ' . $in . '=NULL,';
 
                         $flag++;
                     }
@@ -330,9 +347,9 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
     if (basename($_SERVER['PHP_SELF']) != 'index.php') {
         if ($_REQUEST['staff_id'] == 'new')
-            DrawBC(""._users." > Add a User");
+            DrawBC("" . _users . " > Add a User");
         else
-            DrawBC(""._users." > " . ProgramTitle());
+            DrawBC("" . _users . " > " . ProgramTitle());
         unset($_SESSION['staff_id']);
 
         Search('staff_id', $extra);
@@ -348,7 +365,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
             unset($_SESSION['staff_id']);
             unset($_REQUEST['staff_id']);
             unset($_REQUEST['modfunc']);
-//            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
+            //            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             Search('staff_id', $extra);
         }
     }
@@ -369,8 +386,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
             $staff = $staff[1];
             echo "<FORM class=\"form-horizontal\" name=staff id=staff action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&staff_id=" . UserStaffID() . "&modfunc=update" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . " method=POST >";
-        }
-        elseif (basename($_SERVER['PHP_SELF']) != 'index.php') {
+        } elseif (basename($_SERVER['PHP_SELF']) != 'index.php') {
             $staff = array();
             echo "<FORM name=staff id=staff action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&modfunc=update" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '') . " method=POST>";
         } else
@@ -378,7 +394,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
         if (basename($_SERVER['PHP_SELF']) != 'index.php') {
             if (UserStaffID() && UserStaffID() != User('STAFF_ID') && UserStaffID() != $_SESSION['STAFF_ID'] && User('PROFILE') == 'admin')
-                $delete_button = '<INPUT type=button class="btn btn-danger" value='._delete.' onclick="window.location=\'Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=delete\'">';
+                $delete_button = '<INPUT type=button class="btn btn-danger" value=' . _delete . ' onclick="window.location=\'Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=delete\'">';
         }
 
         if (User('PROFILE_ID') != '')
@@ -405,8 +421,8 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                     $include = $category['INCLUDE'];
                 else
                     $include = 'OtherInfoUserInc';
-                    // echo "$category[TITLE]<br>";
-                switch ($category['TITLE'] ) {
+                // echo "$category[TITLE]<br>";
+                switch ($category['TITLE']) {
                     case 'General Info':
                         $categoryTitle = _generalInfo;
                         break;
@@ -414,7 +430,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
                         $categoryTitle = _addressInfo;
                         break;
                     default:
-                        $categoryTitle = $category['TITLE'] ;
+                        $categoryTitle = $category['TITLE'];
                         break;
                 }
 
@@ -430,8 +446,8 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
         if ($_REQUEST['category_id'])
             $_openSIS['selected_tab'] .= '&category_id=' . $_REQUEST['category_id'];
         if (User('PROFILE_ID') != 4)
-            $_openSIS['selected_tab'] .='&staff_id=' . $_REQUEST['staff_id'];
-        $_openSIS['selected_tab'] .=($_REQUEST['profile'] == 'none' ? '&profile=none' : '');
+            $_openSIS['selected_tab'] .= '&staff_id=' . $_REQUEST['staff_id'];
+        $_openSIS['selected_tab'] .= ($_REQUEST['profile'] == 'none' ? '&profile=none' : '');
 
         //echo '<div class="panel">';
         PopTable('header', $tabs);
@@ -448,11 +464,10 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
 
         $sql = 'SELECT count(s.ID) as schools FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
         $school_admin = DBGet(DBQuery($sql));
-        $submit_btn = SubmitButton(_save, '', 'id="saveUserBtn" class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ', this);"');
+        $submit_btn = SubmitButton(_save, '', 'id="saveUserBtn" class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION['staff_school_chkbox_id'] . ', this);"');
 
         PopTable('footer', $submit_btn);
         echo '</FORM>';
     }
     unset($_SESSION['fn']);
 }
-?>

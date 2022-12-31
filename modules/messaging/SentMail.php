@@ -35,7 +35,7 @@ $userName = User('USERNAME');
 $user_dt = DBGet(DBQuery('SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USERNAME=\'' . $userName . '\''));
 $user_dt = $user_dt[1];
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
-    if (count($_REQUEST['mail']) != 0) {
+    if (is_countable($_REQUEST['mail']) && count($_REQUEST['mail']) != 0) {
         $count = count($_REQUEST['mail']);
         if ($count != 1)
             $row = "messages";

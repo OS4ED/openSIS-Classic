@@ -75,3 +75,94 @@ CREATE TRIGGER `ti_user_file_upload`
     BEFORE INSERT ON user_file_upload
     FOR EACH ROW
         SET NEW.download_id = UUID();
+DROP TRIGGER IF EXISTS `tu_login_authentication`;
+DELIMITER $$
+CREATE TRIGGER `tu_login_authentication` 
+    AFTER UPDATE ON `login_authentication`
+    FOR EACH ROW BEGIN
+
+        UPDATE `msg_inbox` SET `from_user` = REPLACE(`from_user`, OLD.username, NEW.username) WHERE `from_user` = OLD.username;
+
+
+        UPDATE `msg_inbox` SET `to_user` = REPLACE(`to_user`, OLD.username, NEW.username) WHERE `to_user` = OLD.username;
+        UPDATE `msg_inbox` SET `to_user` = REPLACE(`to_user`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_user` LIKE CONCAT ('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_user` = REPLACE(`to_user`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_user` LIKE CONCAT(OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_user` = REPLACE(`to_user`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_user` LIKE CONCAT('%,', OLD.username);
+
+
+        UPDATE `msg_inbox` SET `istrash` = REPLACE (`istrash`, OLD.username, NEW.username) WHERE `istrash` = OLD.username;
+        UPDATE `msg_inbox` SET `istrash` = REPLACE (`istrash`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `istrash` LIKE CONCAT ('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `istrash` = REPLACE (`istrash`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `istrash` LIKE CONCAT(OLD.username, ',%');
+        UPDATE `msg_inbox` SET `istrash` = REPLACE (`istrash`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `istrash` LIKE CONCAT('%,', OLD.username);
+
+
+        UPDATE `msg_inbox` SET `to_multiple_users` = REPLACE(`to_multiple_users`, OLD.username, NEW.username) WHERE `to_multiple_users` = OLD.username;
+        UPDATE `msg_inbox` SET `to_multiple_users` = REPLACE(`to_multiple_users`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_multiple_users` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_multiple_users` = REPLACE(`to_multiple_users`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_multiple_users` LIKE CONCAT(OLD.username, ',%'); 
+        UPDATE `msg_inbox` SET `to_multiple_users` = REPLACE(`to_multiple_users` , CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_multiple_users` LIKE CONCAT('%,', OLD.username);
+ 
+
+        UPDATE `msg_inbox` SET `to_cc` = REPLACE (`to_cc`, OLD.username, NEW.username) WHERE  `to_cc` = OLD.username;
+        UPDATE `msg_inbox` SET `to_cc` = REPLACE (`to_cc`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_cc` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_cc` = REPLACE (`to_cc`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_cc` LIKE CONCAT (OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_cc` = REPLACE (`to_cc`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_cc` LIKE CONCAT('%,', OLD.username);
+
+
+        UPDATE `msg_inbox` SET `to_cc_multiple` = REPLACE(`to_cc_multiple`, OLD.username, NEW.username) WHERE `to_cc_multiple` = OLD.username;
+        UPDATE `msg_inbox` SET `to_cc_multiple` = REPLACE(`to_cc_multiple`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_cc_multiple` LIKE CONCAT ('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_cc_multiple` = REPLACE(`to_cc_multiple`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_cc_multiple` LIKE CONCAT(OLD.username, ',%'); 
+        UPDATE `msg_inbox` SET `to_cc_multiple` = REPLACE(`to_cc_multiple`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_cc_multiple` LIKE CONCAT('%,', OLD.username);  
+
+
+        UPDATE `msg_inbox` SET `to_bcc` = REPLACE(`to_bcc`, OLD.username, NEW.username) WHERE  `to_bcc` = OLD.username;
+        UPDATE `msg_inbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_bcc` LIKE CONCAT('%,', OLD.username,',%');
+        UPDATE `msg_inbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_bcc` LIKE CONCAT(OLD.username, ',%');  
+        UPDATE `msg_inbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_bcc` LIKE CONCAT ('%,', OLD.username);
+
+
+        UPDATE `msg_inbox` SET `to_bcc_multiple` = REPLACE(`to_bcc_multiple`, OLD.username, NEW.username) WHERE `to_bcc_multiple` = OLD.username;
+        UPDATE `msg_inbox` SET `to_bcc_multiple` = REPLACE(`to_bcc_multiple`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_bcc_multiple` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `to_bcc_multiple` = REPLACE(`to_bcc_multiple`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_bcc_multiple` LIKE CONCAT(OLD.username, ',%'); 
+        UPDATE `msg_inbox` SET `to_bcc_multiple` = REPLACE(`to_bcc_multiple`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_bcc_multiple` LIKE CONCAT('%,', OLD.username);
+ 
+
+        UPDATE `msg_inbox` SET `mail_read_unread`= REPLACE(`mail_read_unread`, OLD.username, NEW.username) WHERE `mail_read_unread` = OLD.username;
+        UPDATE `msg_inbox` SET `mail_read_unread`= REPLACE(`mail_read_unread`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `mail_read_unread` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_inbox` SET `mail_read_unread`= REPLACE(`mail_read_unread`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `mail_read_unread` LIKE CONCAT(OLD.username, ',%');  
+        UPDATE `msg_inbox` SET `mail_read_unread`= REPLACE(`mail_read_unread`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `mail_read_unread` LIKE CONCAT('%,', OLD.username);
+
+
+        UPDATE `msg_outbox` SET `from_user` = REPLACE (`from_user`, OLD.username, NEW.username) WHERE `from_user` = OLD.username;
+
+
+        UPDATE `msg_outbox` SET `to_user` = REPLACE(`to_user`, OLD.username, NEW.username) WHERE `to_user` = OLD.username;
+        UPDATE `msg_outbox` SET `to_user` = REPLACE(`to_user`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_user` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_outbox` SET `to_user` = REPLACE(`to_user`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_user` LIKE CONCAT(OLD.username, ',%');  
+        UPDATE `msg_outbox` SET `to_user` = REPLACE(`to_user`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_user` LIKE CONCAT('%,', OLD.username);
+
+
+        UPDATE `msg_outbox` SET `to_cc` = REPLACE(`to_cc`, OLD.username, NEW.username) WHERE  `to_cc` = OLD.username;
+        UPDATE `msg_outbox` SET `to_cc` = REPLACE(`to_cc`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_cc` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_outbox` SET `to_cc` = REPLACE(`to_cc`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_cc` LIKE CONCAT(OLD.username, ',%');
+        UPDATE `msg_outbox` SET `to_cc` = REPLACE(`to_cc`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_cc` LIKE CONCAT('%,', OLD.username);
+ 
+
+        UPDATE `msg_outbox` SET `to_bcc` = REPLACE(`to_bcc`, OLD.username, NEW.username) WHERE `to_bcc` = OLD.username;
+        UPDATE `msg_outbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(',', OLD.username, ','), CONCAT(',', NEW.username, ',')) WHERE `to_bcc` LIKE CONCAT('%,', OLD.username, ',%');
+        UPDATE `msg_outbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(OLD.username, ','), CONCAT(NEW.username, ',')) WHERE `to_bcc` LIKE CONCAT(OLD.username, ',%');  
+        UPDATE `msg_outbox` SET `to_bcc` = REPLACE(`to_bcc`, CONCAT(',', OLD.username), CONCAT(',', NEW.username)) WHERE `to_bcc` LIKE CONCAT('%,', OLD.username);
+ 
+
+        UPDATE `hacking_log` SET `username` = REPLACE(`username`, OLD.username, NEW.username) WHERE `username` = OLD.username;
+
+
+        UPDATE `login_records` SET `user_name` = REPLACE(`user_name`, OLD.username, NEW.username) WHERE `user_name` = OLD.username;
+
+
+        UPDATE `mail_group` SET `user_name` = REPLACE(`user_name`, OLD.username, NEW.username) WHERE `user_name` = OLD.username;
+
+
+        UPDATE `mail_groupmembers` SET `user_name` = REPLACE(`user_name`, OLD.username, NEW.username) WHERE `user_name` =OLD.username;
+
+END$$
+DELIMITER ;

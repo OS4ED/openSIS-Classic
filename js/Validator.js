@@ -192,7 +192,7 @@ function V2validateData(strValidateStr, objValue, strError) {
     }
     case "req":
     case "required": {
-      objValue.value = objValue.value.replace(/\s+/g,' ').trim();
+      objValue.value = objValue.value.trim();
       if (eval(objValue.value.length) == 0) {
         if (!strError || strError.length == 0) {
           strError = objValue.name + " : Required Field";

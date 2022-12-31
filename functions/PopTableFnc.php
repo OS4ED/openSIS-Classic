@@ -95,7 +95,7 @@ function PopTable_wo_header_attn_code($action, $title = 'Search', $div_att = 'cl
         echo '<div class="tabbable">';
         //echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom">';
         if (is_array($title))
-            echo WrapTabs($title, "Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST[table])) . "");
+            echo WrapTabs($title, "Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&table=" . strip_tags(trim($_REQUEST['table'])) . "");
         else
             echo '';
         //echo '</ul>';

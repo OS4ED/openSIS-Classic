@@ -128,6 +128,7 @@ if ($_REQUEST['modfunc'] == 'generate') {
 
         }
         echo '<div id="hidden_checkboxes" />';
+        echo '</div>';
             $check_all_arr=array();
         foreach($alllogs_RET as $xy)
         {
@@ -135,9 +136,10 @@ if ($_REQUEST['modfunc'] == 'generate') {
         }
         $check_all_stu_list=implode(',',$check_all_arr);
         echo'<input type=hidden name=res_length id=res_length value=\''.count($check_all_arr).'\'>';
+        echo'<input type=hidden name=all_stu_res id=all_stu_res value=\''.$check_all_stu_list.'\'>';
+        echo'<input type=hidden name=checked_all id=checked_all value=false>';
         echo '<br>';
         echo'<input type=hidden name=res_len id=res_len value=\''.$check_all_stu_list.'\'>'; 
-echo '</div>';
 //        if (count($alllogs_RET)) {
             echo '<div class="panel panel-default">';
               //$extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');

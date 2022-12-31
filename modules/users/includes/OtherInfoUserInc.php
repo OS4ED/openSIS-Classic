@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../../RedirectIncludes.php');
 include_once('modules/users/includes/FunctionsInc.php');
-$fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM people_fields WHERE CATEGORY_ID=\'' . $_REQUEST[category_id] . '\' ORDER BY SORT_ORDER,TITLE'));
+$fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM people_fields WHERE CATEGORY_ID=\'' . $_REQUEST['category_id'] . '\' ORDER BY SORT_ORDER,TITLE'));
 
 if (UserStaffID()) {
     $custom_RET = DBGet(DBQuery('SELECT * FROM people WHERE STAFF_ID=\'' . UserStaffID() . '\''));

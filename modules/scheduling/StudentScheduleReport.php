@@ -257,7 +257,7 @@ if (!$_REQUEST['modfunc']) {
 
     $stu_id = UserStudentID();
     $RET_show[$stu_id] = DBGet(DBQuery($sql));
-    $date = date(Y . "-" . m . "-" . d);
+    $date = date('Y' . "-" . 'm' . "-" . 'd');
 
     if (!$_REQUEST['sel_mp']) {
         $sel_mp = GetCurrentMP('QTR', $date);
@@ -284,7 +284,7 @@ if (!$_REQUEST['modfunc']) {
 
 
     $mp_string.=' or s.marking_period_id is null';
-    $mp_d = implode(',', $mp_d);
+    $mp_d = is_array($mp_d) ? implode(',', $mp_d) : '';
     if (count($RET_show)) {
         foreach ($RET_show as $student_id => $courses) {
             if (count($RET_show[$stu_id]) > 0)

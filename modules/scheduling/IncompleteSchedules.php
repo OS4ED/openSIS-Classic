@@ -37,7 +37,6 @@ echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) 
 DrawHeader($period_select);
 echo '</FORM>';
 if ($_REQUEST['search_modfunc'] == 'list') {
-
     $mp = GetAllMP('QTR', UserMP());
 
     if (!isset($mp))
@@ -75,7 +74,9 @@ else {
     $students_RET = GetStuList($extra);
     $bad_students[0] = array();
     foreach ($students_RET as $student) {
-        if (count($schedule_RET[$student['STUDENT_ID']]) != count($periods_RET))
+        $check_count1 = is_countable($schedule_RET[$student['STUDENT_ID']]) ? count($schedule_RET[$student['STUDENT_ID']]): 0;
+        // if (count($schedule_RET[$student['STUDENT_ID']]) != count($periods_RET))
+        if ($check_count1 != count($periods_RET))
             $bad_students[] = $student;
     }
     if (!is_array($extra['columns_after'])) {

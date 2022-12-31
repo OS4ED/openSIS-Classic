@@ -94,7 +94,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo "</table >";
                 echo '<BR><BR>';
                 echo '<table border=0>';
-                echo "<tr><td>" . _studentID . ":</td>";
+                echo "<tr><td>" . _studentId . ":</td>";
                 echo "<td>" . $courses[1]['STUDENT_ID'] . "</td></tr>";
                 echo "<tr><td>" . _studentName . ":</td>";
                 echo "<td>" . $courses[1]['FULL_NAME'] . "</td></tr>";

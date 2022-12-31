@@ -34,7 +34,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete')
     {
 	if(!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel'])
 	echo '</FORM>';
-        if($_REQUEST[staff_id]==User('STAFF_ID'))
+        if($_REQUEST['staff_id']==User('STAFF_ID'))
         {
             if(DeletePromptCommon(_comment))            
             {

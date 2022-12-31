@@ -29,8 +29,6 @@
 include('../../../RedirectIncludes.php');
 
 include_once('modules/students/includes/FunctionsInc.php');
-session_start();
-// print_r($_REQUEST);
 #########################################################ENROLLMENT##############################################
 
 if($_SESSION['ERR_TRANS'])
@@ -326,7 +324,7 @@ if ($_REQUEST['student_id'] != 'new') {
 else {
     $id = 'new';
     echo '<div id="students">';
-    ListOutputMod($RET, $columns, enrollmentRecord,enrollmentRecords, $link, array(), array('count' =>false));
+    ListOutputMod($RET, $columns, _enrollmentRecord,_enrollmentRecords, $link, array(), array('count' =>false));
     echo "</div>";
     $next_school = UserSchool();
     $calendar = $calendars_RET[1]['CALENDAR_ID'];
@@ -334,6 +332,3 @@ else {
 }
 //echo '<div class="panel-body">'; // .panel-body start to end in footer
 //echo '<div class="tab-content">'; // .panel-content start to end in footer
-
-
-?>

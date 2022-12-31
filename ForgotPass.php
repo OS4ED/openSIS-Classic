@@ -26,6 +26,7 @@
 #
 #***************************************************************************************
 error_reporting(0);
+
 session_start();
 include("functions/ParamLibFnc.php");
 include("Data.php");
@@ -278,7 +279,9 @@ function db_show_error($sql, $failnote, $additional = '') {
     die();
 }
 
-$log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
+// $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
+
+$log_msg='';
 
 $dir = '';
 if(langDirection()=='rtl') { $dir="rtl"; }else{ $dir="ltr"; }

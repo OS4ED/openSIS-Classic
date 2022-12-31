@@ -7,7 +7,6 @@ if (!isset($_GET['standalone'])) {
 } else {
     require_once '../library/HTMLPurifier.standalone.php';
 }
-error_reporting(E_ALL);
 
 function escapeHTML($string)
 {

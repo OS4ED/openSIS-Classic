@@ -32,9 +32,9 @@ if ($_REQUEST['modfunc'] == 'currenc') {
 
     if ($_REQUEST['values']['CURRENCY']) {
         $currency_info = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND VALUE =\'' . $_REQUEST['values']['CURRENCY'] . '\''));
-        if (count($currency_info[1])) {
+        if (is_countable($currency_info[1]) && count($currency_info[1])) {
             $currency_info_exist = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND SCHOOL_ID =\'' . UserSchool() . '\''));
-            if (count($currency_info_exist[1])) {
+            if (is_countable($currency_info_exist[1]) && count($currency_info_exist[1])) {
 
                 $currency_info_upd = DBQuery('UPDATE program_config SET TITLE=\'' . $currency_info[1]['TITLE'] . '\',VALUE=\'' . $_REQUEST['values']['CURRENCY'] . '\' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'Currency\'');
                 unset($_SESSION['_REQUEST_vars']['modfunc']);

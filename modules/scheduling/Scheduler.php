@@ -250,11 +250,12 @@ if ($function('' . _confirmSchedulerRun . '', '' . _confirmSchedulerRun . '', '
 
     $check_request = DBGet(DBQuery("SELECT REQUEST_ID FROM schedule_requests WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "'"));
     $check_request = $check_request[1]['REQUEST_ID'];
-    if (count($check_request) > 0) {
-        $warn = '' . _followingStudentsCannotBeAccommodatedAsNoMoreSeatsAvailableOrPeriodsConflict . '';
+    if ($check_request > 0) {
+        $warn = _followingStudentsCannotBeAccommodatedAsNoMoreSeatsAvailableOrPeriodsConflict;
     }
+   
 
-    if ($_REQUEST['delete_mode'] == 'Y' || count($check_request) == 0) {
+    if ($_REQUEST['delete_mode'] == 'Y' || $check_request == 0) {
         echo '<script language="javascript">' . "\r";
         echo 'addHTML("<IMG SRC=assets/check.gif> <B>' . _done . '.</B>","percentDIV",true);' . "\r";
         echo '</script>';

@@ -40,7 +40,7 @@ Search('student_id', $extra);
 echo '<div class="panel panel-default">';
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'remove') {
     if (DeletePromptModRequest('request')) {
-        DBQuery('DELETE FROM schedule_requests WHERE REQUEST_ID=\'' . paramlib_validation($colmn = PERIOD_ID, $_REQUEST['id']) . '\'');
+        DBQuery('DELETE FROM schedule_requests WHERE REQUEST_ID=\'' . paramlib_validation($colmn = 'PERIOD_ID', $_REQUEST['id']) . '\'');
         unset($_REQUEST['modfunc']);
         unset($_SESSION['_REQUEST_vars']['modfunc']);
         unset($_SESSION['_REQUEST_vars']['id']);
@@ -116,7 +116,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
             echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._pleaseSelectACourse."" . "</div>";
             unset($_REQUEST['modfunc']);
         } else {
-            $course_id = paramlib_validation($colmn = PERIOD_ID, $_REQUEST['course_id']);
+            $course_id = paramlib_validation($colmn = 'PERIOD_ID', $_REQUEST['course_id']);
             $course_weight = substr($_REQUEST['course'], strpos($_REQUEST['course'], '-') + 1);
             $subject_id = $_REQUEST['subject_id'];
             $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -176,7 +176,7 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
 
         echo '<FORM class=no-margin name=up id=up action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=update method=POST>';
         echo '<div class="panel-body">';
-        ListOutput($requests_RET, $columns,  _request, _requests, $link);
+        ListOutputWithStudentInfo($requests_RET, $columns,  _request, _requests, $link);
         if (!$requests_RET)
             echo '';
         else
@@ -189,7 +189,7 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
 
         echo '<FORM class=no-margin name=up id=up action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=update method=POST>';
         echo '<div class="panel-body">';
-        ListOutput($requests_RET, $columns, _request , _requests, $link);
+        ListOutputWithStudentInfo($requests_RET, $columns, _request , _requests, $link);
         
         echo '<br/>' . SubmitButton(_update, '', 'class="btn btn-primary" onclick=\'formload_ajax("up");\'');
         echo '</div>';

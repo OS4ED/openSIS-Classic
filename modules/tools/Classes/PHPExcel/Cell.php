@@ -663,11 +663,11 @@ class PHPExcel_Cell
 		$strLen = strlen($pString);
 		// Convert column to integer
 		if ($strLen == 1) {
-			return (ord($pString{0}) - 64);
+			return (ord($pString[0]) - 64);
 		} elseif ($strLen == 2) {
-			return $result = ((1 + (ord($pString{0}) - 65)) * 26) + (ord($pString{1}) - 64);
+			return $result = ((1 + (ord($pString[0]) - 65)) * 26) + (ord($pString[1]) - 64);
 		} elseif ($strLen == 3) {
-			return ((1 + (ord($pString{0}) - 65)) * 676) + ((1 + (ord($pString{1}) - 65)) * 26) + (ord($pString{2}) - 64);
+			return ((1 + (ord($pString[0]) - 65)) * 676) + ((1 + (ord($pString[1]) - 65)) * 26) + (ord($pString[2]) - 64);
 		} else {
 			throw new Exception("Column string index can not be " . ($strLen != 0 ? "longer than 3 characters" : "empty") . ".");
 		}

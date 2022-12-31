@@ -279,7 +279,7 @@ $toProfile = '';
 $toArray = array();
 $toArray = explode(',', $_REQUEST["txtToUser"]);
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
-    if (count($_REQUEST['mail']) != 0) {
+    if (is_countable($_REQUEST['mail']) && count($_REQUEST['mail']) != 0) {
         $count = count($_REQUEST['mail']);
         if ($count != 1)
             $row = "messages";
@@ -612,7 +612,7 @@ if (!isset($_REQUEST['modfunc'])) {
         if ($value['MAIL_READ_UNREAD'] != '') {
             $read_user = explode(',', $value['MAIL_READ_UNREAD']);
             if (!in_array($userName, $read_user)) {
-                array_push($key, $value['MAIL_ID']);
+                // array_push($key, $value['MAIL_ID']);
                 $inbox_info[$key]['MAIL_SUBJECT'] = '<div style="color:red;"><b>' . $inbox_info[$key]['MAIL_SUBJECT'] . '</b></div>';
             }
         }
@@ -728,7 +728,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
     $to_av_bcc = array();
     $to_uav_bcc = array();
 
-    if (count($to_array) > 0) {
+    if (is_countable($to_array) && count($to_array) > 0){
         $check_qa = array();
 
         $check_q = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USERNAME IN (' . $toUserstemp . ')'));
@@ -750,7 +750,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         unset($un);
         unset($check_q);
     }
-    if (count($to_cc_array) > 0) {
+    if (is_countable($to_cc_array) && count($to_cc_array) > 0){
         $check_qa = array();
 
         $check_q = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USERNAME IN (' . $toCctemp . ')'));
@@ -767,8 +767,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         unset($un);
         unset($check_q);
     }
-
-    if (count($to_bcc_array) > 0) {
+    if (is_countable($to_bcc_array) && count($to_bcc_array) > 0){
         $check_qa = array();
 
         $check_q = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USERNAME IN (' . $toBcctemp . ')'));
@@ -784,8 +783,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         unset($un);
         unset($check_q);
     }
-
-    if (count($to_av_user) > 0) {
+    if (is_countable($to_av_user) && count($to_av_user) > 0){
         $subject = $_REQUEST['txtSubj'];
 
         if ($subject == '')
@@ -814,9 +812,7 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
                 $content = addslashes($content);
                 fclose($fp);
 
-                if (!get_magic_quotes_gpc()) {
-                    $fileName = addslashes($fileName);
-                }
+                $fileName = addslashes($fileName);
                 if (User('PROFILE') == 'student')
                     DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'intmsg\')');
                 else

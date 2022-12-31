@@ -41,9 +41,9 @@ if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['subject_id']) {
 }
 
 if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
-    PopTable('header', _search );
-    echo "<FORM name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&course_modfunc=search method=POST>";
-    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . strip_tags(trim($_REQUEST['search_term'])) . '"></TD><TD><INPUT type=submit class="btn btn-primary" value='._search.' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
+    PopTable('header', _search);
+    echo "<FORM name=F1 id=F1 action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&modfunc=" . strip_tags(trim($_REQUEST['modfunc'])) . "&course_modfunc=search method=POST>";
+    echo '<TABLE><TR><TD><INPUT type=text class=form-control name=search_term value="' . strip_tags(trim($_REQUEST['search_term'])) . '"></TD><TD><INPUT type=submit class="btn btn-primary" value=' . _search . ' onclick=\'formload_ajax("F1")\';></TD></TR></TABLE>';
     echo '</FORM>';
     PopTable('footer');
 
@@ -57,7 +57,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
         echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID');
-        ListOutput($subjects_RET, array('TITLE' =>_subject), _subject, _subjects , $link, array(), array('search' =>false, 'save' =>_subject));
+        ListOutput($subjects_RET, array('TITLE' => _subject), _subject, _subjects, $link, array(), array('search' => false, 'save' => _subject));
         echo '</div>'; //.panel-white
         echo '</div>'; //.col-md-4
 
@@ -65,7 +65,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
         echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID');
-        ListOutput($courses_RET, array('TITLE' =>_course),  _course, _courses, $link, array(), array('search' =>false, 'save' =>_course));
+        ListOutput($courses_RET, array('TITLE' => _course),  _course, _courses, $link, array(), array('search' => false, 'save' => _course));
         echo '</div>'; //.panel-white
         echo '</div>'; //.col-md-4
 
@@ -73,7 +73,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
         echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID', 'course_period_id' => 'COURSE_PERIOD_ID');
-        ListOutput($periods_RET, array('TITLE' =>_coursePeriod),  _coursePeriod, _coursePeriods, $link, array(), array('search' =>false, 'save' =>_coursePeriod));
+        ListOutput($periods_RET, array('TITLE' => _coursePeriod),  _coursePeriod, _coursePeriods, $link, array(), array('search' => false, 'save' => _coursePeriod));
         echo '</div>'; //.panel-white
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
@@ -103,7 +103,7 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
                     DBQuery('INSERT INTO teacher_reassignment(course_period_id,teacher_id,assign_date,pre_teacher_id,modified_date,modified_by)VALUES(\'' . $id . '\',\'' . $staff_id . '\',\'' . $assign_date . '\',\'' . $pre_staff_id . '\',\'' . $today . '\',\'' . User('STAFF_ID') . '\')');
                     $_SESSION['undo'] = 'DELETE FROM teacher_reassignment WHERE course_period_id=\'' . $id . '\' AND teacher_id=\'' . $staff_id . '\' AND assign_date=\'' . $assign_date . '\'';
                     ####################################Teacher Reassignment New change################################
-                    if(User('PROFILE') == 'admin' && strtotime($assign_date) <= strtotime(date('Y-m-d'))){
+                    if (User('PROFILE') == 'admin' && strtotime($assign_date) <= strtotime(date('Y-m-d'))) {
                         $data_sql = "SELECT period_id,days FROM course_period_var WHERE course_period_id=$id";
                         $data_RET = DBGet(DBQuery($data_sql));
                         foreach ($data_RET as $count => $data) {
@@ -112,16 +112,15 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
                                 $qry = "SELECT short_name FROM school_periods WHERE period_id=$data[PERIOD_ID]";
                                 $period = DBGet(DBQuery($qry));
                                 $period = $period[1];
-                                $p.=$period['SHORT_NAME'];
-                }
+                                $p .= $period['SHORT_NAME'];
+                            }
                             if ($data['DAYS'] != '')
-                                $d.=$data['DAYS'];
+                                $d .= $data['DAYS'];
                         }
                         $cp_data_sql = "SELECT mp,short_name,marking_period_id,teacher_id FROM course_periods WHERE course_period_id=$id";
                         $cp_data_RET = DBGet(DBQuery($cp_data_sql));
                         $cp_data_RET = $cp_data_RET[1];
-                        if($cp_data_RET['MARKING_PERIOD_ID'] != '') 
-                        {
+                        if ($cp_data_RET['MARKING_PERIOD_ID'] != '') {
                             if ($cp_data_RET['MP'] == 'FY')
                                 $table = 'school_years';
                             if ($cp_data_RET['MP'] == 'SEM')
@@ -129,8 +128,8 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
                             if ($cp_data_RET['MP'] == 'QTR')
                                 $table = 'school_quarters';
 
-                            if($table != 'school_years') {
-                                $mp_sql = "SELECT short_name FROM ".$table." WHERE marking_period_id=".$cp_data_RET['MARKING_PERIOD_ID'];
+                            if ($table != 'school_years') {
+                                $mp_sql = "SELECT short_name FROM " . $table . " WHERE marking_period_id=" . $cp_data_RET['MARKING_PERIOD_ID'];
                                 $mp = DBGet(DBQuery($mp_sql));
                                 $mp = $mp[1]['SHORT_NAME'];
                             } else {
@@ -141,12 +140,12 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
                         $teacher_sql = "SELECT first_name,last_name,middle_name FROM staff WHERE staff_id=$staff_id";
                         $teacher_RET = DBGet(DBQuery($teacher_sql));
                         $teacher_RET = $teacher_RET[1];
-                        $teacher.=$teacher_RET['FIRST_NAME'];
+                        $teacher .= $teacher_RET['FIRST_NAME'];
                         if ($teacher_RET['MIDDLE_NAME'] != '')
-                            $teacher.=' ' . $teacher_RET['MIDDLE_NAME'];
-                        $teacher.=' ' . $teacher_RET['LAST_NAME'];
+                            $teacher .= ' ' . $teacher_RET['MIDDLE_NAME'];
+                        $teacher .= ' ' . $teacher_RET['LAST_NAME'];
 
-                        if($mp != '')
+                        if ($mp != '')
                             $title_full = $mp . ' - ' . $cp_data_RET['SHORT_NAME'] . ' - ' . $teacher;
                         else
                             $title_full = $cp_data_RET['SHORT_NAME'] . ' - ' . $teacher;
@@ -158,17 +157,15 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
                     }
                 }
                 $undo_possible = true;
-                // $title_RET = DBGet(DBQuery('SELECT TITLE FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $id . '\''));
-                ####################################Teacher Reassignment New change end#########################################
                 $_SESSION['undo_title'] = $title_RET[1]['TITLE'];
             } else {
-                ShowErrPhp(''._thereIsNoAssociationsInHisCoursePeriodYouCanDeleteItFromSchoolSetUpCourseManager.'');
+                ShowErrPhp('' . _thereIsNoAssociationsInHisCoursePeriodYouCanDeleteItFromSchoolSetUpCourseManager . '');
             }
         } else {
-            ShowErrPhp(''._assignedDateCanNotBeLesserThanTodaysDate.'');
+            ShowErrPhp('' . _assignedDateCanNotBeLesserThanTodaysDate . '');
         }
     } else {
-        ShowErrPhp(''._pleaseEnterProperDate.'');
+        ShowErrPhp('' . _pleaseEnterProperDate . '');
     }
 }
 
@@ -183,7 +180,7 @@ if ($_REQUEST['action'] == 'undo') {
 
 if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') && !$_REQUEST['course_modfunc']) {
     if ($_REQUEST['modfunc'] != 'choose_course')
-        DrawBC(""._scheduling." > " . ProgramTitle());
+        DrawBC("" . _scheduling . " > " . ProgramTitle());
     $sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE';
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
@@ -192,20 +189,20 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
         if (clean_param($_REQUEST['course_period_id'], PARAM_ALPHANUM)) {
             $sql = 'SELECT TITLE,TEACHER_ID,SECONDARY_TEACHER_ID
 						FROM course_periods
-						WHERE COURSE_PERIOD_ID=\'' . $_REQUEST[course_period_id] . '\'';
+						WHERE COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\'';
             $QI = DBQuery($sql);
             $RET = DBGet($QI);
             $RET = $RET[1];
             $title = $RET['TITLE'];
-            
-             $status_bar = '';
-             
+
+            $status_bar = '';
+
             if ($undo_possible == true)
-                $status_bar .='<div class="alert alert-success alert-styled-left">
-                            <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">'._close.'</span></button>
-                            '._teacherReAssignmentDone.' <a href="#" onclick="load_link(\'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&action=undo\')" class="btn-undo alert-link m-l-20">'._undo.'</a>
+                $status_bar .= '<div class="alert alert-success alert-styled-left">
+                            <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">' . _close . '</span></button>
+                            ' . _teacherReAssignmentDone . ' <a href="#" onclick="load_link(\'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&action=undo\')" class="btn-undo alert-link m-l-20">' . _undo . '</a>
                         </div>';
-            echo "<FORM name=F2 id=F2 action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&subject_id=" . strip_tags(trim($_REQUEST[subject_id])) . "&course_id=" . strip_tags(trim($_REQUEST[course_id])) . "&course_period_id=" . strip_tags(trim($_REQUEST[course_period_id])) . " method=POST>";
+            echo "<FORM name=F2 id=F2 action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&subject_id=" . strip_tags(trim($_REQUEST['subject_id'])) . "&course_id=" . strip_tags(trim($_REQUEST['course_id'])) . "&course_period_id=" . strip_tags(trim($_REQUEST['course_period_id'])) . " method=POST>";
             echo $status_bar;
             echo '<div class="panel panel-default">';
             echo '<div class="panel-heading">
@@ -214,14 +211,14 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
                 </div>';
             $header .= '<div class="panel-body">';
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-3"><label class="control-label">'._selectNewTeacher.'</label>';
+            $header .= '<div class="col-md-3"><label class="control-label">' . _selectNewTeacher . '</label>';
             $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff st INNER JOIN staff_school_relationship ssr USING (staff_id) WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROFILE=\'teacher\' AND staff_id <>\'' . $RET['TEACHER_ID'] . '\' AND (IS_DISABLE IS NULL OR IS_DISABLE<>\'Y\')  ORDER BY LAST_NAME,FIRST_NAME '));
             if (count($teachers_RET)) {
                 foreach ($teachers_RET as $teacher)
                     $teachers[$teacher['STAFF_ID']] = $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . ' ' . $teacher['MIDDLE_NAME'];
             }
             $header .= SelectInput('', 're_assignment_teacher', '', $teachers) . '</div>';
-            $header .= '<div class="col-md-3"><label class="control-label">'._assignDate.'</label>';
+            $header .= '<div class="col-md-3"><label class="control-label">' . _assignDate . '</label>';
 
             $header .= DateInputAY('', 're_assignment', 1) . '</div>';
             $header .= '<input type=hidden name=course_period_id value=' . $_REQUEST['course_period_id'] . '><input type=hidden name=re_assignment_pre_teacher value=' . $RET['TEACHER_ID'] . '>';
@@ -234,9 +231,9 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
             $courses_RET = DBGet($QI, array('ASSIGN_DATE' => 'ProperDAte', 'MODIFIED_DATE' => 'ProperDate'));
 
             echo '<div class="table-responsive">';
-            $LO_options = array('save' =>false, 'search' =>false);
-            
-             $columns = array('TEACHER' => _teacher, 'ASSIGN_DATE' => _assignDate, 'PRE_TEACHER_ID' => _previousTeacher, 'MODIFIED_DATE' => _modifiedDate, 'MODIFIED_BY' => _modifiedBy);
+            $LO_options = array('save' => false, 'search' => false);
+
+            $columns = array('TEACHER' => _teacher, 'ASSIGN_DATE' => _assignDate, 'PRE_TEACHER_ID' => _previousTeacher, 'MODIFIED_DATE' => _modifiedDate, 'MODIFIED_BY' => _modifiedBy);
 
             $link = array();
             $link['TITLE']['variables'] = array('course_id' => 'COURSE_ID');
@@ -252,12 +249,12 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' =>false, 'search' =>false);
+    $LO_options = array('save' => false, 'search' => false);
 
-    if (!$_REQUEST['subject_id'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course'){
+    if (!$_REQUEST['subject_id'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {
         echo '<div class="panel panel-default">';
         echo '<div class="panel-body">';
-        echo "<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search><i class=\"icon-search4 position-left\"></i> "._searchCourse."</A>";
+        echo "<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search><i class=\"icon-search4 position-left\"></i> " . _searchCourse . "</A>";
         echo '</div>';
         echo '</div>'; //.panel
     }
@@ -275,7 +272,7 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
 
     echo '<div class="col-md-4">';
     echo '<div class="panel panel-default">';
-    $columns = array('TITLE' =>_subject);
+    $columns = array('TITLE' => _subject);
     $link = array();
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]";
     $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID');
@@ -302,7 +299,7 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
 
         echo '<div class="col-md-4">';
         echo '<div class="panel panel-default">';
-        $columns = array('TITLE' =>_course);
+        $columns = array('TITLE' => _course);
         $link = array();
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&subject_id=$_REQUEST[subject_id]";
         $link['TITLE']['variables'] = array('course_id' => 'COURSE_ID');
@@ -329,7 +326,7 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
 
             echo '<div class="col-md-4">';
             echo '<div class="panel panel-default">';
-            $columns = array('TITLE' =>_coursePeriod);
+            $columns = array('TITLE' => _coursePeriod);
             if ($_REQUEST['modname'] == 'scheduling/Schedule.php')
                 $columns += array('AVAILABLE_SEATS' => 'Available Seats');
             $link = array();
@@ -341,7 +338,5 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
             echo '</div>'; //.col-md-4
         }
     }
-
     echo '</div>';
 }
-?>

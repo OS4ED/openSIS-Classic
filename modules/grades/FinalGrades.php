@@ -43,7 +43,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
         $_REQUEST['modfunc'] = 'save';
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
-    if (count($_REQUEST['mp_arr']) && count($_REQUEST['st_arr'])) {
+    $check_count_mp_arr = is_countable($_REQUEST['mp_arr']) ? count($_REQUEST['mp_arr']): 0;
+    $check_count_st_arr = is_countable($_REQUEST['st_arr']) ? count($_REQUEST['st_arr']): 0;
+    // if (count($_REQUEST['mp_arr']) && count($_REQUEST['st_arr'])) {
+    if ($check_count_mp_arr && $check_count_st_arr) {
         $mp_list = '\'' . implode('\',\'', $_REQUEST['mp_arr']) . '\'';
         $last_mp = end($_REQUEST['mp_arr']);
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
@@ -300,7 +303,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list') {
         $_openSIS['allow_edit'] = true;
 
-        echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . " method=POST>";
+        echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST['include_inactive'])) . " method=POST>";
 
         $attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'0\''));
         //PopTable_wo_header('header');
@@ -379,9 +382,9 @@ if (!$_REQUEST['modfunc']) {
         $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
     }
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    //  $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
-  //  $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+   $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     $extra['new'] = true;
     $extra['options']['search'] = false;
     $extra['force_search'] = true;
@@ -427,18 +430,18 @@ if (!$_REQUEST['modfunc']) {
     }
 }
 
-//function _makeChooseCheckbox($value, $title) {
-//    global $THIS_RET;
-////    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
-//    
-//    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
-//}
-
 function _makeChooseCheckbox($value, $title) {
-    global $THIS_RET;
-    return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
-   // return "<input name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+   global $THIS_RET;
+//    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+   
+   return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
+
+// function _makeChooseCheckbox($value, $title) {
+//     global $THIS_RET;
+//     return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
+//    // return "<input name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+// }
 function _makeTeacher($teacher, $column) {
     return substr($teacher, strrpos(str_replace(' - ', ' ^ ', $teacher), '^') + 2);
 }

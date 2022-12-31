@@ -85,22 +85,30 @@ error_reporting(0);
                                 <form name='step4' id='step4' method="post" action="Ins4.php">
                                     <input type="hidden" id="auname_flag" value="2"/>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="control-label">First Name</label>
                                                 <input type="text" name="fname" id="fname" size="20" tabindex="1" class="form-control" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Last Name</label>
+                                                <input type="text" name="lname" id="lname" size="20" tabindex="2" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="control-label">Middle Name</label>
                                                 <input type="text" id="mname" name="mname" size="20" tabindex="3" class="form-control" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label">Last Name</label>
-                                                <input type="text" name="lname" id="lname" size="20" tabindex="2" class="form-control" />
+                                                <label class="control-label">Email ID</label>
+                                                <input type="text" name="emailid" id="emailid" size="20" tabindex="2" class="form-control" />
                                             </div>
                                         </div>
                                     </div>
@@ -222,6 +230,7 @@ error_reporting(0);
                 var fname = document.getElementById("fname");
                 var lname = document.getElementById("lname");
                 var mname = document.getElementById("mname");
+                var emailid = document.getElementById("emailid");
                 var auname = document.getElementById("auname");
                 var apassword = document.getElementById("apassword");
                 var capassword = document.getElementById("capassword");
@@ -257,6 +266,44 @@ error_reporting(0);
                     {
                         document.getElementById('error').innerHTML = '<span class="text-danger">Max length for Last name is 50 characters.</span>';
                         lname.focus();
+                        return false;
+                    }
+                }
+
+                if (emailid.value == '')
+                {
+                    document.getElementById("error").innerHTML = '<span class="text-danger">Email ID cannot be blank.</span>';
+
+                    emailid.focus();
+                    return false;
+                }
+                else
+                {
+                    if (emailid.value.length > 100)
+                    {
+                        document.getElementById('error').innerHTML = '<span class="text-danger">Max length for Email ID is 100 characters.</span>';
+                        emailid.focus();
+                        return false;
+                    }
+
+                    var atSymbol = emailid.value.indexOf("@");
+                    var dot = emailid.value.indexOf(".");
+
+                    if (atSymbol < 1) {
+                        document.getElementById('error').innerHTML = '<span class="text-danger">Please enter a valid email ID.</span>';
+                        emailid.focus();
+                        return false;
+                    }
+
+                    if (dot <= atSymbol + 2) {
+                        document.getElementById('error').innerHTML = '<span class="text-danger">Please enter a valid email ID.</span>';
+                        emailid.focus();
+                        return false;
+                    }
+
+                    if (dot === emailid.value.length - 1) {
+                        document.getElementById('error').innerHTML = '<span class="text-danger">Please enter a valid email ID.</span>';
+                        emailid.focus();
                         return false;
                     }
                 }

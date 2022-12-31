@@ -88,20 +88,11 @@ $sql = 'SELECT DISTINCT s.STAFF_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FU
 WHERE sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND cp.TEACHER_ID=s.STAFF_ID 
 
 AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND s.PROFILE=\'teacher\'
-			' . (($_REQUEST['period']) ? ' AND cpv.PERIOD_ID=\'' . $_REQUEST[period] . '\'' : '') . '
+			' . (($_REQUEST['period']) ? ' AND cpv.PERIOD_ID=\'' . $_REQUEST['period'] . '\'' : '') . '
 			
 		';
-
-$sql_gradecompleted = 'SELECT DISTINCT s.STAFF_ID,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID FROM staff s,school_periods sp,course_periods cp,course_period_var cpv
-
-WHERE sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND cp.TEACHER_ID=s.STAFF_ID  
-
-AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=' . UserSyear() . ' AND cp.SCHOOL_ID=' . UserSchool() . ' AND s.PROFILE=\'teacher\'
-			' . (($_REQUEST['period']) ? " AND cpv.PERIOD_ID='$_REQUEST[period]'" : '') . '
-AND EXISTS (SELECT \'\' FROM grades_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.MARKING_PERIOD_ID=\'' . $_REQUEST[mp] . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)			
-		';
-
-
+ 
+ $sql_gradecompleted = 'SELECT DISTINCT s.STAFF_ID,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID FROM staff s,school_periods sp,course_periods cp,course_period_var cpv WHERE sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND cp.TEACHER_ID=s.STAFF_ID  AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=' . UserSyear() . ' AND cp.SCHOOL_ID=' . UserSchool() . ' AND s.PROFILE=\'teacher\'' . (($_REQUEST['period']) ? " AND cpv.PERIOD_ID='$_REQUEST[period]'" : '') . ' AND EXISTS (SELECT \'\' FROM grades_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)';
 
 $RET = DBGet(DBQuery($sql), array(), array('STAFF_ID', 'PERIOD_ID'));
 $RET_gradecompleted = DBGet(DBQuery($sql_gradecompleted));

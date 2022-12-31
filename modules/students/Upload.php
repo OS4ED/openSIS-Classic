@@ -91,9 +91,11 @@ if (UserStudentID()) {
             $content = addslashes($content);
             //fclose($fp);
 
-            if (!get_magic_quotes_gpc()) {
-                $fileName = addslashes($fileName);
-            }
+            // if (!get_magic_quotes_gpc()) {
+            //     $fileName = addslashes($fileName);
+            // }
+            $fileName = addslashes($fileName);
+
 
             DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserSchool() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
             $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));

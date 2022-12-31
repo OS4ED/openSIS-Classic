@@ -35,7 +35,7 @@ if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_par
         $error[] = _pleaseTypeThePassword;
         echo ErrorMessage($error, 'Error');
     } else {
-        $column_name = _PASSWORD;
+        $column_name = _password;
         $pass_old = paramlib_validation($column_name, $_REQUEST['old']);
         $pass_new = paramlib_validation($column_name, $_REQUEST['new']);
 

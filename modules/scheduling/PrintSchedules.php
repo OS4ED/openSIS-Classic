@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-//print_r($_REQUEST);
+
 if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 {
     $_REQUEST['search_modfunc'] = 'list';
@@ -36,7 +36,7 @@ if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
 }
 
 if ($_REQUEST['modfunc'] == 'save') {
-    if (count($_REQUEST['st_arr'])) {
+    if (is_countable($_REQUEST['st_arr']) && count($_REQUEST['st_arr'])) {
 
         if ($_REQUEST['_search_all_schools'] == 'Y') {
 
@@ -110,14 +110,17 @@ if ($_REQUEST['modfunc'] == 'save') {
             $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR='. UserSyear().') or sr.MARKING_PERIOD_ID is NULL)';
         }
         else
-        $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') or sr.MARKING_PERIOD_ID is NULL)';
+        $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP($_REQUEST['mp_id']
+        , 'TABLE')), $_REQUEST['mp_id']
+        ) . ') or sr.MARKING_PERIOD_ID is NULL)';
        if ($_REQUEST['_search_all_schools'] == 'Y')
         $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMPAllSchool');
         else
             $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP');
         $extra['group'] = array('STUDENT_ID');
 //        $extra['order']=array('SORT_ORDER','MARKING_PERIOD_ID');
-        $extra['ORDER'] .= ',p_cp.COURSE_PERIOD_ID,cpv.days';
+//        $extra['ORDER'] .= ',p_cp.COURSE_PERIOD_ID,cpv.days';
+        $extra['ORDER'] .= ',sp.SORT_ORDER,sr.MARKING_PERIOD_ID';
         $RET = GetStuList($extra);
 
         foreach ($RET as $ri => $rd) {
@@ -192,7 +195,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 //        }
         // $RET=$RET_new;
 
-        if (count($RET)) {
+        if (is_countable($RET) && count($RET)) {
             $handle = PDFStart();
 
             foreach ($RET as $student_id => $courses) {
@@ -202,7 +205,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
                 echo '<table  border=0>';
-                echo '<tr><td>'._studentID.':</td>';
+                echo '<tr><td>'._studentId.':</td>';
                 echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
                 echo '<tr><td>'._studentName.':</td>';
                 echo '<td>' . $courses[1]['FULL_NAME'] . '</td></tr>';
@@ -216,8 +219,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 }
                 echo '</table>';
 
-//			 print_r($courses);
-                ListOutputPrint_sch($courses, $columns, course, courses, array(), array(), array('center' =>false, 'print' =>false));
+                ListOutputPrint_sch($courses, $columns, _course, _courses, array(), array(), array('center' =>false, 'print' =>false));
                 echo '<div style="page-break-before: always;">&nbsp;</div><!-- NEW PAGE -->';
             }
             PDFStop($handle);
@@ -252,7 +254,9 @@ if (!$_REQUEST['modfunc']) {
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
-    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
+
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
@@ -275,6 +279,7 @@ if (!$_REQUEST['modfunc']) {
 }
 
 function _makeDays($value, $column = '') {
+    $return='';
     foreach (array('U', 'M', 'T', 'W', 'H', 'F', 'S') as $day)
         if (strpos($value, $day) !== false)
             $return .= $day;
@@ -285,14 +290,21 @@ function _makeDays($value, $column = '') {
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
-
-    return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
+    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     
-//   return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
-
-//   return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
-   
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
+
+// function _makeChooseCheckbox($value, $title) {
+//     global $THIS_RET;
+
+//     return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
+    
+// //   return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+
+// //   return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+   
+// }
 
 function get_db_day($day) {
     switch ($day) {

@@ -29,7 +29,7 @@
 include 'modules/grades/DeletePromptX.fnc.php';
 DrawBC(""._gradebook." > " . ProgramTitle());
 if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
-    if (count($_REQUEST['st_arr'])) {
+    if (is_countable($_REQUEST['st_arr']) && count($_REQUEST['st_arr'])) {
         $mp = $_REQUEST['mp'];
         if ($_REQUEST['honor_roll'] != 986) {
 
@@ -140,7 +140,7 @@ if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
              'ALT_ID' =>_alternateId,
              'GRADE_ID' =>_grade,
              'PHONE' =>_phone,
-             'HONOR_ROLL' => honorRoll
+             'HONOR_ROLL' => _honorRoll
             );
             ListOutputPrint_Report($RET, $columns);
         } else {
@@ -198,9 +198,9 @@ if (!$_REQUEST['modfunc']) {
             $mp = $fy;
         }
         if ($_REQUEST['w_course_period_id'])
-            echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&w_course_period_id=" . strip_tags(trim($_REQUEST[w_course_period_id])) . "&_openSIS_PDF=true method=POST target=_blank>";
+            echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST['include_inactive'])) . "&honor_roll=" . strip_tags(trim($_REQUEST['honor_roll'])) . "&mp=$mp&w_course_period_id=" . strip_tags(trim($_REQUEST['w_course_period_id'])) . "&_openSIS_PDF=true method=POST target=_blank>";
         else
-            echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&honor_roll=" . strip_tags(trim($_REQUEST[honor_roll])) . "&mp=$mp&_openSIS_PDF=true method=POST target=_blank>";
+            echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST['include_inactive'])) . "&honor_roll=" . strip_tags(trim($_REQUEST['honor_roll'])) . "&mp=$mp&_openSIS_PDF=true method=POST target=_blank>";
         $extra['header_right'] = SubmitButton(_createHonorRollForSelectedStudents, '', 'class="btn btn-primary"');
 
         $extra['extra_header_left'] = '<div>';
@@ -213,7 +213,8 @@ if (!$_REQUEST['modfunc']) {
     if (!isset($_REQUEST['_openSIS_PDF'])) {
         $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+        // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
+        $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAllDtMod(this,\'st_arr\');"><A>');
     }
     $extra['link'] = array('FULL_NAME' =>false);
     $extra['new'] = true;
@@ -278,8 +279,14 @@ if (!$_REQUEST['modfunc']) {
 }
 
 function _makeChooseCheckbox($value, $title) {
-    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    global $THIS_RET;
+    // return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+    
+    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
 }
+// function _makeChooseCheckbox($value, $title) {
+//     return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+// }
 
 function MyWidgets($item, $mp) {
     global $extra, $THIS_RET;

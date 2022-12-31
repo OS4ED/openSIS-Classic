@@ -27,17 +27,10 @@
 #***************************************************************************************
 
 session_start();
-!empty($_SESSION['USERNAME']) or die('Access denied!');
+//!empty($_SESSION['USERNAME']) or die('Access denied!');
 include "functions/ParamLibFnc.php";
 //include("functions/UrlFnc.php");
 include 'RedirectRootInc.php';
-
-//$url=validateQueryString(curPageURL());
-//if($url===FALSE)
-// {
-// header('Location: index.php');
-// }
-error_reporting(E_ERROR);
 $start_time = time();
 include 'Warehouse.php';
 array_rwalk($_REQUEST,'strip_tags');

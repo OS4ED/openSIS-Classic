@@ -29,7 +29,7 @@
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
-if (count($_REQUEST['mp_arr'])) {
+if (is_countable($_REQUEST['mp_arr']) && count($_REQUEST['mp_arr'])) {
     foreach ($_REQUEST['mp_arr'] as $mp)
         $mp_list .= ",'$mp'";
     $mp_list = substr($mp_list, 1);

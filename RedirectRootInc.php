@@ -25,6 +25,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
 error_reporting(0);
 session_start();
       if(!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && (strpos($_SERVER['PHP_SELF'],'index.php'))===false)
@@ -32,5 +33,3 @@ session_start();
 		header('Location: index.php');
 		exit;
 	}
-   
-?>

@@ -31,7 +31,6 @@ include('lang/language.php');
 
 DrawBC(""._scheduling." > " . ProgramTitle());
 //echo '<div class="panel panel-default">';
- //echo "<pre>"; print_r($_REQUEST); echo "</pre>";
 if ($_REQUEST['subject_id']) {
     $RET = DBGet(DBQuery("SELECT TITLE FROM course_subjects WHERE SUBJECT_ID='" . $_REQUEST['subject_id'] . "'"));
     $header .= "<li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]>Top</A></li><li><A class=\"text-white\" HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=courses&subject_id=$_REQUEST[subject_id]>" . $RET[1]['TITLE'] . '</A></li>';
@@ -77,22 +76,27 @@ if (!$_REQUEST['modfunc'] || ($_REQUEST['modfunc'] == 'courses' && $_REQUEST['st
 }
 // courses ----
 if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
+    if (isset($_REQUEST['mp_id']) && ($_REQUEST['mp_id'] != '')) {
+        $mp_id = $_REQUEST['mp_id'];
+    } else {
+        $mp_id = UserMP();
+    }
     echo '<div class="col-md-6">';
     echo '<div class="panel panel-default">';
-    $get_mp_t = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+    $get_mp_t = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
     $other_mps = array();
     if ($get_mp_t[1]['MP_TYPE'] != 'year') {
         if ($get_mp_t[1]['MP_TYPE'] == 'semester') {
-            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
             $other_mps[] = $get_mp_ids[1]['PARENT_ID'];
         }
         if ($get_mp_t[1]['MP_TYPE'] == 'quarter') {
-            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID,GRANDPARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID,GRANDPARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
             $other_mps[] = $get_mp_ids[1]['PARENT_ID'];
             $other_mps[] = $get_mp_ids[1]['GRANDPARENT_ID'];
         }
     }
-    $QI = "SELECT c.COURSE_ID,c.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS,(SELECT count(*) FROM schedule_requests sr WHERE sr.COURSE_ID=c.COURSE_ID) AS COUNT_REQUESTS FROM courses c,course_periods cp WHERE c.SUBJECT_ID='$_REQUEST[subject_id]' AND c.COURSE_ID=cp.COURSE_ID AND c.SYEAR='" . UserSyear() . "' AND c.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY c.COURSE_ID,c.TITLE ORDER BY c.TITLE";
+    $QI = "SELECT c.COURSE_ID,c.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS,(SELECT count(*) FROM schedule_requests sr WHERE sr.COURSE_ID=c.COURSE_ID) AS COUNT_REQUESTS FROM courses c,course_periods cp WHERE c.SUBJECT_ID='$_REQUEST[subject_id]' AND c.COURSE_ID=cp.COURSE_ID AND c.SYEAR='" . UserSyear() . "' AND c.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . $mp_id . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . $mp_id) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY c.COURSE_ID,c.TITLE ORDER BY c.TITLE";
 
     $QI = DBQuery($QI);
     
@@ -107,27 +111,33 @@ if ($_REQUEST['modfunc'] == 'courses' || $_REQUEST['students'] == 'courses') {
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=course_periods&subject_id=$_REQUEST[subject_id]";
     $link['TITLE']['variables'] = array('course_id' => 'COURSE_ID');
     ListOutput($RET, array('TITLE' =>_course, 'COUNT_REQUESTS' =>_requests, 'OPEN_SEATS' =>_open, 'TOTAL_SEATS' =>_total), _course, _courses, $link, array(), $LO_options);
+    
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }
 // COURSE PERIODS ----
 if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course_periods') {
+    if (isset($_REQUEST['mp_id']) && ($_REQUEST['mp_id'] != '')) {
+        $mp_id = $_REQUEST['mp_id'];
+    } else {
+        $mp_id = UserMP();
+    }
     echo '<div class="col-md-6">';
     echo '<div class="panel panel-default">';
-    $get_mp_t = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+    $get_mp_t = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
     $other_mps = array();
     if ($get_mp_t[1]['MP_TYPE'] != 'year') {
         if ($get_mp_t[1]['MP_TYPE'] == 'semester') {
-            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
             $other_mps[] = $get_mp_ids[1]['PARENT_ID'];
         }
         if ($get_mp_t[1]['MP_TYPE'] == 'quarter') {
-            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID,GRANDPARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP()));
+            $get_mp_ids = DBGet(DBQuery('SELECT PARENT_ID,GRANDPARENT_ID FROM marking_periods WHERE MARKING_PERIOD_ID=' . $mp_id));
             $other_mps[] = $get_mp_ids[1]['PARENT_ID'];
             $other_mps[] = $get_mp_ids[1]['GRANDPARENT_ID'];
         }
     }
-    $QI = "SELECT cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS FROM course_periods cp WHERE cp.COURSE_ID='" . $_REQUEST['course_id'] . "' AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . UserMp() . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . UserMp()) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE ORDER BY cp.TITLE";
+    $QI = "SELECT cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE,sum(cp.TOTAL_SEATS) as TOTAL_SEATS,sum(cp.FILLED_SEATS) as FILLED_SEATS,NULL AS OPEN_SEATS FROM course_periods cp WHERE cp.COURSE_ID='" . $_REQUEST['course_id'] . "' AND cp.SYEAR='" . UserSyear() . "' AND cp.SCHOOL_ID='" . UserSchool() . "' AND " . (count($other_mps) > 0 ? " (cp.MARKING_PERIOD_ID IN (" . $mp_id . "," . implode(',', $other_mps) . ") " : " (cp.MARKING_PERIOD_ID=" . $mp_id) . " OR cp.MARKING_PERIOD_ID IS NULL)  GROUP BY cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE ORDER BY cp.TITLE";
   
     $QI = DBQuery($QI);
   
@@ -143,6 +153,7 @@ if ($_REQUEST['modfunc'] == 'course_periods' || $_REQUEST['students'] == 'course
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=students&students=course_periods&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]";
     $link['TITLE']['variables'] = array('course_period_id' => 'COURSE_PERIOD_ID');
     ListOutput($RET, array('TITLE' =>_periodTeacher, 'OPEN_SEATS' =>_open, 'TOTAL_SEATS' =>_total), _coursePeriod, _coursePeriods, $link, array(), $LO_options);
+    
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
 }

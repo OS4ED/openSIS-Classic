@@ -23,7 +23,7 @@ function db_start() {
     if ($connection === false) {
         switch ($DatabaseType) {
             case 'mysqli':
-                $errormessage = mysqli_error($connection);
+                $errormessage =$connection->err;
                 break;
         }
         db_show_error("", ""._couldNotConnectToDatabase.": $DatabaseServer", $errstring);
@@ -469,9 +469,3 @@ else
         echo '<error>Invalid Credentials.</error>';
     }
 }
-
-
-
-
-?>
-

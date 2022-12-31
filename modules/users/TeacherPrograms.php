@@ -116,6 +116,8 @@ if (UserStaffID()) {
 
         $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,cp.SHORT_NAME as SHOW_TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE,cp.TITLE as COURSE_PERIOD_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND (cp.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') OR cp.MARKING_PERIOD_ID IS NULL) GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
+         if (isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y')
+            echo '<input type="hidden" name="include_inactive" value="Y">';
         if (!$_SESSION['take_mssn_attn']) {
             $period_select = "<div class=\"form-inline\"><div class=\"form-group\"><label class=\"control-label\">"._choosePeriod.":</label><SELECT class=\"form-control\" name=period onChange='this.form.submit();'>";
             $period_select .= "<OPTION value='na' selected>N/A</OPTION>";

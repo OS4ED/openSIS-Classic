@@ -252,7 +252,7 @@ function Widgets($item, $allow_widget = false) {
                 break;
 
             case 'letter_grade':
-                if (count($_REQUEST['letter_grade'])) {
+                if (is_countable($link['remove']['variables']) && count($_REQUEST['letter_grade'])) {
                     $_openSIS['SearchTerms'] .= '<h5 class="help-block">With' . ($_REQUEST['letter_grade_exclude'] == 'Y' ? 'out' : '') . ' Report Card Grade: </h5>';
                     $letter_grades_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grades WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
                     foreach ($_REQUEST['letter_grade'] as $grade => $Y) {
@@ -352,7 +352,7 @@ function Widgets($item, $allow_widget = false) {
                 if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
                     $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
                 $select = "<SELECT name=activity_id class=\"form-control\"><OPTION value=''>Not Specified</OPTION>";
-                if (count($activities_RET)) {
+                if (is_countable($activities_RET) && count($activities_RET)) {
                     foreach ($activities_RET as $activity)
                         $select .= "<OPTION value=$activity[ID]>$activity[TITLE]</OPTION>";
                 }

@@ -101,11 +101,11 @@ if ($_REQUEST['modfunc'] == 'remove') {
 }
 
 if (!$_REQUEST['modfunc']) {
-    echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST[tab_id])) . "&mp_id=$mp_id method=POST>";
+    echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST['tab_id'])) . "&mp_id=$mp_id method=POST>";
     DrawHeader(ProgramTitle(), SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"'));
     echo '<hr class="no-margin"/>';
 
-    $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY POST_END_DATE';
+    $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY SYEAR, POST_END_DATE';
 
     $functions = array('MP_TYPE' => 'makeSelectInput',
         'NAME' => 'makeTextInput',
@@ -160,6 +160,9 @@ function makeDateInput($value, $name) {
     else
         $id = 'new';
 
+    if ($value == '0000-00-00' || $value == '' || $value == NULL)
+        $value = '';
+
     if ($id != 'new')
         return DateInputAY($value, "values[$id][$name]", $id);
     else
@@ -190,7 +193,11 @@ function makeSchoolYearSelectInput($value, $name) {
     else
         $id = 'new';
     $options = array();
-    foreach (range(UserSyear() - 15, UserSyear()) as $year)
+
+    $get_min_year = DBGet(DBQuery('SELECT MIN(`syear`) AS MIN_SYEAR FROM `school_years` WHERE `school_id` = \'' . UserSchool() . '\''));
+    $least_available_syear = $get_min_year[1]['MIN_SYEAR'];
+
+    foreach (range($least_available_syear - 15, UserSyear()) as $year)
         $options[$year] = $year . '-' . ($year + 1);
 
     return SelectInput(trim($value), "values[$id][$name]", '', $options, false);

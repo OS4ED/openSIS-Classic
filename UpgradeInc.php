@@ -27,6 +27,7 @@
 #***************************************************************************************
 include('RedirectRootInc.php');
 error_reporting(0);
+
 if (file_exists("Data.php"))
 {
     include("Data.php");

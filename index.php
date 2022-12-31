@@ -26,15 +26,16 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(1);
-ini_set('session.cookie_httponly', 1);
-include_once("functions/DelDirectoryFnc.php");
-include_once("functions/ParamLibFnc.php");
-require_once("functions/PragRepFnc.php");
-include_once("RemoveBackup.php");
-include('lang/language.php');
-include_once("functions/PasswordHashFnc.php");
+//declare(strict_types=1);
+error_reporting(0);
 
+include_once "functions/DelDirectoryFnc.php";
+include_once "functions/ParamLibFnc.php";
+require_once "functions/PragRepFnc.php";
+include_once "RemoveBackup.php";
+include_once 'lang/language.php';
+include_once "functions/PasswordHashFnc.php";
+session_start();
 $index_commit_in    =   "";
 $index_commit_out   =   "";
 
@@ -44,7 +45,7 @@ if ($url === FALSE) {
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
-    $error[] = ""._eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked."."._pleaseContactTheSchoolAdministration.".";
+    $error[] = "" . _eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked . "." . _pleaseContactTheSchoolAdministration . ".";
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
@@ -54,14 +55,35 @@ if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
 if (isset($_GET['ins']))
     $install = optional_param('ins', '', PARAM_ALPHAEXT);
 
- if ($install == 'comp') {
-     if (is_dir('install')) {
-         $dir = 'install/'; // IMPORTANT: with '/' at the end
-          $remove_directory = delete_directory($dir);
-     }
- }
+if ($install == 'comp') {
+    if (is_dir('install')) {
+        $dir = 'install/'; // IMPORTANT: with '/' at the end
+        $remove_directory = delete_directory($dir);
+    }
+}
 
 require_once('Warehouse.php');
+# CHECKING ES STARTS: IF ES (EVENT SCHEDULER) IS FOUND OFF, IT SHOULD BE TURNED ON
+$check_ES_status = DBGet(DBQuery("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
+if ($check_ES_status) {
+    if ($check_ES_status[1]['VARIABLE_NAME'] == 'event_scheduler' && $check_ES_status[1]['VALUE'] != 'ON') {
+        DBQuery('SET GLOBAL event_scheduler = ON');
+    }
+}
+# CHECKING ES ENDS
+$check_sql_mode = DBGet(DBQuery("SELECT @@GLOBAL.sql_mode"));
+if ($check_sql_mode) {
+    if ($check_sql_mode[1]['@@GLOBAL.SQL_MODE'] != 'NO_ENGINE_SUBSTITUTION') {
+        DBQuery('SET @@GLOBAL.SQL_MODE = "NO_ENGINE_SUBSTITUTION"');
+    }
+}
+
+$check_LBTFC = DBGet(DBQuery("SELECT @@GLOBAL.log_bin_trust_function_creators"));
+if ($check_LBTFC) {
+    if ($check_LBTFC[1]['@@GLOBAL.log_bin_trust_function_creators'] != 1) {
+        DBQuery('SET @@GLOBAL.log_bin_trust_function_creators = 1');
+    }
+}
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
     if ($_SESSION) {
         DBQuery("DELETE FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'");
@@ -77,40 +99,37 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
 
 if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
     db_start();
-    
-    $username = mysqli_real_escape_string($connection,trim(optional_param('USERNAME', '', PARAM_RAW)));
 
-    $arr_cookie_options = array (
-        'expires' => time() + 60*60*24*100,
+    $username = mysqli_real_escape_string($connection, trim(optional_param('USERNAME', '', PARAM_RAW)));
+
+    $arr_cookie_options = array(
+        'expires' => time() + 60 * 60 * 24 * 100,
         'path' => '/',
         'secure' => true,     // or false
         'httponly' => true,    // or false
         'samesite' => 'None' // None || Lax  || Strict
     );
 
-    if($_REQUEST['remember']) 
-    {
+    if ($_REQUEST['remember']) {
         include_once "./AuthCryp.php";
-        
-        $cName='remember_me_name';
-        $cPwd='remember_me_pwd';
-        $cLang='remember_me_lang';
-        
+
+        $cName = 'remember_me_name';
+        $cPwd = 'remember_me_pwd';
+        $cLang = 'remember_me_lang';
+
         setcookie($cName, cryptor($username, 'ENC'), $arr_cookie_options);
-        setcookie($cPwd, cryptor(optional_param('PASSWORD','',PARAM_RAW), 'ENC'), $arr_cookie_options);
-        setcookie($cLang, optional_param('language','',PARAM_RAW), time()+60*60*24*100, "/");
-    }
-    else
-    {
-        setcookie('remember_me_name', 'gone', time()-60*60*24*100, "/");
-        setcookie('remember_me_pwd', 'gone', time()-60*60*24*100, "/");
-        setcookie('remember_me_lang', 'gone', time()-60*60*24*100, "/");
+        setcookie($cPwd, cryptor(optional_param('PASSWORD', '', PARAM_RAW), 'ENC'), $arr_cookie_options);
+        setcookie($cLang, optional_param('language', '', PARAM_RAW), time() + 60 * 60 * 24 * 100, "/");
+    } else {
+        setcookie('remember_me_name', 'gone', time() - 60 * 60 * 24 * 100, "/");
+        setcookie('remember_me_pwd', 'gone', time() - 60 * 60 * 24 * 100, "/");
+        setcookie('remember_me_lang', 'gone', time() - 60 * 60 * 24 * 100, "/");
     }
 
     if ($password == optional_param('PASSWORD', '', PARAM_RAW))
-        $password = str_replace("\'", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
-    $password = str_replace("&", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
-    $password = str_replace("\\", "",(mysqli_real_escape_string($connection,optional_param('PASSWORD', '', PARAM_RAW))));
+        $password = str_replace("\'", "", (mysqli_real_escape_string($connection, optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("&", "", (mysqli_real_escape_string($connection, optional_param('PASSWORD', '', PARAM_RAW))));
+    $password = str_replace("\\", "", (mysqli_real_escape_string($connection, optional_param('PASSWORD', '', PARAM_RAW))));
 
     //verify password and username code
     $login_uniform = [];
@@ -118,14 +137,17 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     if (count($validate_username) > 0) {
         $login_uniform = $validate_username[1];
         $user_password =  $login_uniform['PASSWORD'];
-        $login_status = VerifyHash($password,$user_password);
-        if($login_status==1) {  $login_uniform = $validate_username; }
-        else { $login_uniform = []; }
+        $login_status = VerifyHash($password, $user_password);
+        if ($login_status == 1) {
+            $login_uniform = $validate_username;
+        } else {
+            $login_uniform = [];
+        }
     }
     //end
-    
+
     /*$login_uniform = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));*/
-    
+
     if (count($login_uniform) > 0) {
 
         $login_uniform = $login_uniform[1];
@@ -179,7 +201,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 if ($get_ac_st == $get_tot_st && $get_tot_st != 0)
                     $error_dis = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your opensis account is inactive.";
                 else
-                    $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                    $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
             }
             $loged_staff_id = $login_RET[1]['STAFF_ID'];
             if ($usr_prof == 'teacher' && $loged_staff_id != "") {
@@ -219,7 +241,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 if ($get_ac_st == $get_tot_st && $get_tot_st != 0)
                     $error_dis = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your opensis account is inactive.";
                 else
-                    $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                    $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
             }
             $loged_staff_id = $login_RET[1]['STAFF_ID'];
             $is_inactive = DBGet(DBQuery("SELECT se.ID FROM student_enrollment se,students_join_people sju WHERE sju.STUDENT_ID= se.STUDENT_ID AND sju.PERSON_ID=$loged_staff_id AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=sju.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
@@ -242,7 +264,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $student_RET[1]['PROFILE_ID'] = $login_uniform['PROFILE_ID'];
             }
         }
-        if ($maintain['SYSTEM_MAINTENANCE_SWITCH'] == Y && ( $login_RET || $student_RET)) {
+        if ($maintain['SYSTEM_MAINTENANCE_SWITCH'] == 'Y' && ($login_RET || $student_RET)) {
             if ($login_RET != null)
                 $login = $login_RET[1];
             else
@@ -256,17 +278,15 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if (!$login_RET && !$student_RET) {
 
             //check superadmin login code start
-            $log_as_admin =[];
+            $log_as_admin = [];
             $superadmin_login = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID,PASSWORD FROM login_authentication WHERE PROFILE_ID=0"));
-            foreach($superadmin_login as $val)
-            {
+            foreach ($superadmin_login as $val) {
                 $super_admin_password = $val['PASSWORD'];
                 $super_admin_userid = $val['USER_ID'];
-                $login_status = VerifyHash($password,$super_admin_password);
-                if($login_status==1) 
-                    { 
-                        $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USER_ID=$super_admin_userid AND PROFILE_ID=0"));
-                    }
+                $login_status = VerifyHash($password, $super_admin_password);
+                if ($login_status == 1) {
+                    $log_as_admin = DBGet(DBQuery("SELECT USER_ID,PROFILE_ID FROM login_authentication WHERE USER_ID=$super_admin_userid AND PROFILE_ID=0"));
+                }
             }
             //end
 
@@ -317,26 +337,24 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                     } else {
 
 
-                        $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                        $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
                     }
                 } else {
 
                     //checking user id and password code start
-                    $admin_RET =[];
-                    $admin_RET_Validation = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=la.USER_ID"));  
-                    foreach($admin_RET_Validation as $val)
-                    {
+                    $admin_RET = [];
+                    $admin_RET_Validation = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=la.USER_ID"));
+                    foreach ($admin_RET_Validation as $val) {
                         $user_validate_password = $val['PASSWORD'];
                         $user_validate_id = $val['STAFF_ID'];
-                        $login_status = VerifyHash($password,$user_validate_password);
-                        if($login_status==1) 
-                            { 
-                                $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=$user_validate_id")); 
-                            }
+                        $login_status = VerifyHash($password, $user_validate_password);
+                        if ($login_status == 1) {
+                            $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID,la.PASSWORD FROM staff s,login_authentication la WHERE PROFILE='$username' AND s.STAFF_ID=$user_validate_id"));
+                        }
                     }
                     //end
 
-                    /*$admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));*/ 
+                    /*$admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));*/
 
                     // Uid and Password Checking
 
@@ -352,20 +370,21 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                             $login_RET[1]['FAILED_LOGIN'] = $admin_RET[1]['FAILED_LOGIN'];
                         }
                     } else {
-                        $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                        $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
                     }
                 }
             } else {
-                $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
             }
         } else {
-            $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+            $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
         }
     }
 
     if ($login_RET && $login_RET[1]['IS_DISABLE'] != 'Y') {
         $_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
-        $_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
+        //$_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
+        $_SESSION['LAST_LOGIN'] = isset($login_RET[1]['LAST_LOGIN']) ? $login_RET[1]['LAST_LOGIN'] : '';
 
         $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE SCHOOL_ID=" . $login_RET[1]['CURRENT_SCHOOL_ID']));
         $_SESSION['UserSyear'] = $syear_RET[1]['SYEAR'];
@@ -397,7 +416,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
         $val_max_id = DBGet(DBQuery("SELECT VALUE FROM log_maintain WHERE ID = '" . $row_id_max . "'"));
         $value_max_id = $val_max_id[1]['VALUE'];
-                     ################################## For Inserting into Log tables  ######################################
+        ################################## For Inserting into Log tables  ######################################
 
         if (optional_param('USERNAME', '', PARAM_RAW) != '' && optional_param('PASSWORD', '', PARAM_RAW) != '' && $value_min_id == $value_max_id) {
 
@@ -409,8 +428,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
             $date = date("Y-m-d H:i:s");
-            $fname_ins = singleQuoteReplace("'", "''", $_SESSION[FIRST_NAME]);
-            $lname_ins = singleQuoteReplace("'", "''", $_SESSION[LAST_NAME]);
+            $fname_ins = singleQuoteReplace("'", "''", $_SESSION['FIRST_NAME']);
+            $lname_ins = singleQuoteReplace("'", "''", $_SESSION['LAST_NAME']);
             DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,SCHOOL_ID) values('$_SESSION[UserSyear]','$_SESSION[STAFF_ID]','$fname_ins','$lname_ins','$_SESSION[PROFILE]','$_SESSION[USERNAME]','$date','$_SESSION[FAILED_LOGIN]','$ip','Success',$_SESSION[CURRENT_SCHOOL_ID])");
         }
 
@@ -430,9 +449,12 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             if (count($validate_staff_info) > 0) {
                 $validate_staff_info = $validate_staff_info[1];
                 $staff_info_password =  $validate_staff_info['PASSWORD'];
-                $staff_info_password_status = VerifyHash($password,$staff_info_password);
-                if($staff_info_password_status==1) {  $staff_info = $validate_staff_info; }
-                else { $staff_info = []; }
+                $staff_info_password_status = VerifyHash($password, $staff_info_password);
+                if ($staff_info_password_status == 1) {
+                    $staff_info = $validate_staff_info;
+                } else {
+                    $staff_info = [];
+                }
             }
             //end
 
@@ -473,46 +495,41 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         }
 
 
-                             ############################################For Inserting into Log tables end################################################
+        ############################################For Inserting into Log tables end################################################
         $failed_login = $login_RET[1]['FAILED_LOGIN'];
         if ($admin_RET)
             DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP WHERE USER_ID='" . $admin_RET[1]['STAFF_ID'] . "' AND PROFILE_ID='" . $admin_RET[1]['PROFILE_ID'] . "'");
         else
             DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=0 WHERE USER_ID='" . $login_RET[1]['STAFF_ID'] . "' AND PROFILE_ID='" . $login_RET[1]['PROFILE_ID'] . "'");
-    }
-
-    elseif (($login_RET && $login_RET[1]['IS_DISABLE'] == 'Y') || ($student_RET && $student_RET[1]['IS_DISABLE'] == 'Y')) {
+    } elseif (($login_RET && $login_RET[1]['IS_DISABLE'] == 'Y') || ($student_RET && $student_RET[1]['IS_DISABLE'] == 'Y')) {
         $admin_failed_count = DBGet(DBQuery("SELECT FAIL_COUNT FROM system_preference_misc"));
         $ad_f_cnt = $admin_failed_count[1]['FAIL_COUNT'];
         if (isset($login_RET) && count($login_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $login_RET[1]['FAILED_LOGIN'] < $ad_f_cnt && $login_RET[1]['PROFILE'] != 'admin')
-                $error[] = ""._eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked."."._pleaseContactTheSchoolAdministration.".";
-            else{
-               $check_acess=DBGet(DBQuery('SELECT OPENSIS_ACCESS FROM staff_school_info WHERE STAFF_ID='.$login_RET[1]['STAFF_ID']));
-               if($check_acess[1]['OPENSIS_ACCESS']=='N')
-               $error[] = "You do not have portal access. Contact the school administration to enable it.";    
-               else    
-               $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
+                $error[] = "" . _eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked . "." . _pleaseContactTheSchoolAdministration . ".";
+            else {
+                $check_acess = DBGet(DBQuery('SELECT OPENSIS_ACCESS FROM staff_school_info WHERE STAFF_ID=' . $login_RET[1]['STAFF_ID']));
+                if ($check_acess[1]['OPENSIS_ACCESS'] == 'N')
+                    $error[] = "You do not have portal access. Contact the school administration to enable it.";
+                else
+                    $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
             }
         }
         if (isset($student_RET) && count($student_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $student_RET[1]['FAILED_LOGIN'] < $ad_f_cnt)
-                $error[] = ""._eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked."."._pleaseContactTheSchoolAdministration.".";
+                $error[] = "" . _eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked . "." . _pleaseContactTheSchoolAdministration . ".";
             else
                 $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
         }
-    }
-    elseif ($student_RET) {
+    } elseif ($student_RET) {
 
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-
-
         $date = date("Y-m-d H:i:s");
-        DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,SCHOOL_ID) values('" . $_SESSION['UserSyear'] . "','" . $student_RET[1][STUDENT_ID] . "','" . singleQuoteReplace("'", "''", $student_RET[1][FIRST_NAME]) . "','" . singleQuoteReplace("'", "''", $student_RET[1][LAST_NAME]) . "','Student','" . $student_RET[1][USERNAME] . "','$date','" . $student_RET[1][FAILED_LOGIN] . "','$ip','Success','" . $student_RET[1][SCHOOL_ID] . "')");
+        DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,SCHOOL_ID) values('" . $_SESSION['UserSyear'] . "','" . $student_RET[1]['STUDENT_ID'] . "','" . singleQuoteReplace("'", "''", $student_RET[1]['FIRST_NAME']) . "','" . singleQuoteReplace("'", "''", $student_RET[1]['LAST_NAME']) . "','Student','" . $student_RET[1]['USERNAME'] . "','$date','" . $student_RET[1]['FAILED_LOGIN'] . "','$ip','Success','" . $student_RET[1]['SCHOOL_ID'] . "')");
         $failed_login = $student_RET[1]['FAILED_LOGIN'];
 
         $admin_failed_count = DBGet(DBQuery("SELECT FAIL_COUNT FROM system_preference_misc"));
@@ -529,7 +546,10 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         }
 
         $_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
-        $_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
+         $_SESSION['USERNAME'] = $student_RET[1]['USERNAME'];
+        //$_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
+        $_SESSION['LAST_LOGIN'] = isset($student_RET[1]['LAST_LOGIN']) ? $student_RET[1]['LAST_LOGIN'] : '';
+
         $_SESSION['UserSyear'] = $student_RET[1]['SYEAR'];
         $_SESSION['PROFILE'] = 'student';
         $check_profile_id = ($profile_id != '' ? $profile_id : $student_RET[1]['PROFILE_ID']);
@@ -553,11 +573,10 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP WHERE USER_ID='" . $admin_RET[1]['STAFF_ID'] . "' AND PROFILE_ID='" . $admin_RET[1]['PROFILE_ID'] . "' AND USERNAME='" . $admin_RET[1]['USERNAME'] . "'");
         else
             DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=0 WHERE USER_ID='" . $student_RET[1]['STUDENT_ID'] . "' AND PROFILE_ID='" . $student_RET[1]['PROFILE_ID'] . "' AND USERNAME='" . $student_RET[1]['USERNAME'] . "'");
-    }
-    else {
+    } else {
 
-        $openSIS_uname=mysqli_real_escape_string($connection,trim(optional_param('USERNAME', 0, PARAM_RAW)));
-        DBQuery("UPDATE login_authentication SET FAILED_LOGIN=FAILED_LOGIN+1 WHERE UPPER(USERNAME)=UPPER('" . $openSIS_uname. "')");
+        $openSIS_uname = mysqli_real_escape_string($connection, trim(optional_param('USERNAME', 0, PARAM_RAW)));
+        DBQuery("UPDATE login_authentication SET FAILED_LOGIN=FAILED_LOGIN+1 WHERE UPPER(USERNAME)=UPPER('" . $openSIS_uname . "')");
 
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -568,7 +587,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
         $faillog_time = date("Y-m-d h:i:s");
 
-        $openSIS2_uname=mysqli_real_escape_string($connection,trim(optional_param('USERNAME', 0, PARAM_ALPHAEXT)));
+        $openSIS2_uname = mysqli_real_escape_string($connection, trim(optional_param('USERNAME', 0, PARAM_ALPHAEXT)));
         DBQuery("INSERT INTO login_records (USER_NAME,FAILLOG_TIME,IP_ADDRESS,SYEAR,STATUS) values('" . $openSIS2_uname . "','$faillog_time','$ip','$_SESSION[UserSyear]','Failed')");
 
 
@@ -579,7 +598,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
         $admin_failed_count = DBGet(DBQuery("SELECT FAIL_COUNT FROM system_preference_misc"));
         $ad_f_cnt = $admin_failed_count[1]['FAIL_COUNT'];
-        
+
         $res = DBGet(DBQuery("SELECT USER_ID,FAILED_LOGIN,up.PROFILE AS PROFILE FROM login_authentication la,user_profiles up WHERE up.ID=la.PROFILE_ID AND UPPER(USERNAME)=UPPER('" . $openSIS_uname . "')"));
         $failed_login_staff = $res[1]['FAILED_LOGIN'];
         $failed_login_stu = $res[1]['FAILED_LOGIN'];
@@ -589,18 +608,26 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 if ($check_enrollment[1]['REC_EX'] == 0)
                     DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE STUDENT_ID='" . $res[1]['USER_ID'] . "'");
                 if ($failed_login_stu == $ad_f_cnt)
-                    $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
+                    $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
                 else
-                    $error[] = ""._dueToExcessiveIncorrectLoginAttemptsYourAccountHasBeenDisabled.". "._contactTheSchoolAdministrationToEnableYourAccount.".";
+                    $error[] = "" . _dueToExcessiveIncorrectLoginAttemptsYourAccountHasBeenDisabled . ". " . _contactTheSchoolAdministrationToEnableYourAccount . ".";
             } else
-                $error[] = " "._incorrectUsernameOrPassword.". "._pleaseTryAgain.".";
-
-
+                $error[] = " " . _incorrectUsernameOrPassword . ". " . _pleaseTryAgain . ".";
             $get_rec = DBGet(DBQuery("SELECT COUNT(1) as RECORD FROM students s,student_enrollment se WHERE s.STUDENT_ID='" . $res[1]['USER_ID'] . "' AND s.STUDENT_ID=se.STUDENT_ID AND (se.DROP_CODE='4' OR (se.DROP_CODE IS NULL AND se.END_DATE<='" . date('Y-m-d') . "')) AND (se.END_DATE<='" . date('Y-m-d') . "' OR se.END_DATE IS NULL) AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID ) "));
             if ($get_rec[1]['RECORD'] != 0) {
                 unset($error);
                 $error[] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your opensis account is disabled.";
             }
+        }
+          if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'teacher') {
+//            echo "$ad_f_cnt";
+            if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_staff >= $ad_f_cnt)
+                DBQuery("UPDATE staff SET IS_DISABLE='Y' WHERE staff_id='" . $res[1]['USER_ID'] . "'");
+        }
+        if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'parent') {
+//            echo "$ad_f_cnt";
+            if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_staff >= $ad_f_cnt)
+                DBQuery("UPDATE people SET IS_DISABLE='Y' WHERE staff_id='" . $res[1]['USER_ID'] . "'");
         }
         if ($get_ac_st == $get_tot_st && $get_tot_st != 0) {
             unset($error);
@@ -608,7 +635,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         }
     }
 
-    if ($_REQUEST[staff] == 'na') {
+    if ($_REQUEST['staff'] == 'na') {
         $error[] = "You are not asigned to any school";
     }
     if (UserSyear() != '') {
@@ -627,18 +654,16 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             DBQuery('UPDATE program_config SET VALUE=\'' . date('Y-m-d') . '\' WHERE  TITLE=\'LAST_UPDATE\' AND PROGRAM=\'SeatFill\'  AND SYEAR=' . UserSyear());
         }
     }
-}
-
-else {
+} else {
     if (isset($_REQUEST['USERNAME']) || isset($_REQUEST['PASSWORD'])) {
         if (isset($_POST['USERNAME']) && optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) == '' && isset($_POST['USERNAME'])) {
-            $error[] = ""._pleaseProvideUsernameAndPassword.". "._pleaseTryAgain.".";
+            $error[] = "" . _pleaseProvideUsernameAndPassword . ". " . _pleaseTryAgain . ".";
         }
         if (optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) != '') {
-            $error[] = ""._pleaseProvideUsername.". "._pleaseTryAgain.".";
+            $error[] = "" . _pleaseProvideUsername . ". " . _pleaseTryAgain . ".";
         }
         if (optional_param('USERNAME', '', PARAM_RAW) != '' && optional_param('PASSWORD', '', PARAM_RAW) == '') {
-            $error[] = ""._pleaseProvidePassword.". "._pleaseTryAgain.".";
+            $error[] = "" . _pleaseProvidePassword . ". " . _pleaseTryAgain . ".";
         }
     }
 }
@@ -657,7 +682,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'create_account') {
     if (!$_REQUEST['staff']['USERNAME'])
         Warehouse('footer_plain');
     else {
-        $note[] = ''._yourAccountHasBeenCreated.'.  '._youWillBeNotifiedByEmailWhenItIsVerifiedBySchoolAdministrationAndYouCanLogIn.'.';
+        $note[] = '' . _yourAccountHasBeenCreated . '.  ' . _youWillBeNotifiedByEmailWhenItIsVerifiedBySchoolAdministrationAndYouCanLogIn . '.';
         session_destroy();
     }
 }
@@ -675,18 +700,20 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
     echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<noscript><META http-equiv=REFRESH content="0;url=EnableJavascript.php" /></noscript>';
-    ?>
+?>
     <style type="text/css">
         body {
             padding: 0;
             margin: 0;
         }
+
         .video-container {
             width: 100%;
             height: 100%;
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
         }
+
         .responsive-iframe {
             width: 1px;
             min-width: 100%;
@@ -695,7 +722,7 @@ if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] !
             vertical-align: top;
         }
     </style>
-    <?php
+<?php
 
     echo '</HEAD>';
     echo '<body>';

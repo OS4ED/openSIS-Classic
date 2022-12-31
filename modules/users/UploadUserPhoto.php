@@ -92,9 +92,10 @@ if (UserStaffID()) {
                 $content = base64_decode($_REQUEST['imgblob']);
                 $content = addslashes($content);
 
-                if (!get_magic_quotes_gpc()) {
-                    $fileName = addslashes($fileName);
-                }
+                // if (!get_magic_quotes_gpc()) {
+                //     $fileName = addslashes($fileName);
+                // }
+                $fileName = addslashes($fileName);
                 DBQuery('UPDATE staff SET IMG_NAME=\'' . $fileName . '\',IMG_CONTENT=\'' . $content . '\' WHERE STAFF_ID=' . UserStaffID());
                 $stf_photo = DBGet(DBQuery('SELECT * FROM staff WHERE STAFF_ID=\'' . UserStaffID() . '\' '));
                 echo '<div class="alert alert-success alert-bordered">Staff Photo Uploaded Successfully.</div>';

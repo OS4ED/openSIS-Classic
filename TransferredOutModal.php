@@ -27,8 +27,8 @@
 #
 #***************************************************************************************
 include('RedirectRootInc.php');
-include'ConfigInc.php';
-include 'Warehouse.php';
+include('ConfigInc.php');
+include('Warehouse.php');
 if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
     if ($_POST['button'] == 'Save') {
 
@@ -114,6 +114,7 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
                 $options[$school_array['ID']] = $school_array['TITLE'];
             }
             $res = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE school_id=' . $sch_id . ''));
+            $options1 = array();
             foreach ($res as $res1) {
                 $options1[$res1['ID']] = $res1['TITLE'];
             }

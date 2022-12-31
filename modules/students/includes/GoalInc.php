@@ -38,22 +38,22 @@ else
     $school_id = $urg_sch_id['SCHOOL_ID'];
 
 $i = 0;
-$gid = $_REQUEST[goal_id];
-$tabl = $_REQUEST[tabl];
+$gid = $_REQUEST['goal_id'];
+$tabl = $_REQUEST['tabl'];
 
 if (($_REQUEST['day_tables'] || $_REQUEST['tables']) && ($_POST['day_tables'] || $_REQUEST['ajax'])) {
     foreach ($_REQUEST['day_tables'] as $id => $values) {
         if ($_REQUEST['day_tables'][$id]['START_DATE'] && $_REQUEST['month_tables'][$id]['START_DATE'] && $_REQUEST['year_tables'][$id]['START_DATE']) {
-           // $_REQUEST['tables'][$id]['START_DATE'] = $_REQUEST['day_tables'][$id]['START_DATE'] . '-' . $_REQUEST['month_tables'][$id]['START_DATE'] . '-' . $_REQUEST['year_tables'][$id]['START_DATE'];
-            $_REQUEST['tables'][$id]['START_DATE'] =$_REQUEST['year_tables'][$id]['START_DATE']. '-' . $_REQUEST['month_tables'][$id]['START_DATE'] . '-' .$_REQUEST['day_tables'][$id]['START_DATE'] ;
+            // $_REQUEST['tables'][$id]['START_DATE'] = $_REQUEST['day_tables'][$id]['START_DATE'] . '-' . $_REQUEST['month_tables'][$id]['START_DATE'] . '-' . $_REQUEST['year_tables'][$id]['START_DATE'];
+            $_REQUEST['tables'][$id]['START_DATE'] = $_REQUEST['year_tables'][$id]['START_DATE'] . '-' . $_REQUEST['month_tables'][$id]['START_DATE'] . '-' . $_REQUEST['day_tables'][$id]['START_DATE'];
             $start_date = $_REQUEST['tables'][$id]['START_DATE'];
         } elseif (isset($_REQUEST['day_tables'][$id]['START_DATE']) && isset($_REQUEST['month_tables'][$id]['START_DATE']) && isset($_REQUEST['year_tables'][$id]['START_DATE']))
             $_REQUEST['tables'][$id]['START_DATE'] = '';
 
 
         if ($_REQUEST['day_tables'][$id]['END_DATE'] && $_REQUEST['month_tables'][$id]['END_DATE'] && $_REQUEST['year_tables'][$id]['END_DATE']) {
-//            $_REQUEST['tables'][$id]['END_DATE'] = $_REQUEST['day_tables'][$id]['END_DATE'] . '-' . $_REQUEST['month_tables'][$id]['END_DATE'] . '-' . $_REQUEST['year_tables'][$id]['END_DATE'];
-           $_REQUEST['tables'][$id]['END_DATE'] =$_REQUEST['year_tables'][$id]['END_DATE'] . '-' . $_REQUEST['month_tables'][$id]['END_DATE'] . '-' .$_REQUEST['day_tables'][$id]['END_DATE']  ;
+            //            $_REQUEST['tables'][$id]['END_DATE'] = $_REQUEST['day_tables'][$id]['END_DATE'] . '-' . $_REQUEST['month_tables'][$id]['END_DATE'] . '-' . $_REQUEST['year_tables'][$id]['END_DATE'];
+            $_REQUEST['tables'][$id]['END_DATE'] = $_REQUEST['year_tables'][$id]['END_DATE'] . '-' . $_REQUEST['month_tables'][$id]['END_DATE'] . '-' . $_REQUEST['day_tables'][$id]['END_DATE'];
             $end_date = $_REQUEST['tables'][$id]['END_DATE'];
         } elseif (isset($_REQUEST['day_tables'][$id]['END_DATE']) && isset($_REQUEST['month_tables'][$id]['END_DATE']) && isset($_REQUEST['year_tables'][$id]['END_DATE']))
             $_REQUEST['tables'][$id]['END_DATE'] = '';
@@ -92,9 +92,11 @@ if (clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'delete_goal') {
 
 // UPDATING
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()) {
-    $where = array('student_goal' => 'GOAL_ID',
+    $where = array(
+        'student_goal' => 'GOAL_ID',
         'student_goal_progress' => 'PROGRESS_ID',
-        'course_periods' => 'COURSE_PERIOD_ID');
+        'course_periods' => 'COURSE_PERIOD_ID'
+    );
     foreach ($_REQUEST['tables'] as $table_name => $tables) {
         foreach ($tables as $id => $columns) {
             if ($id != 'new' && $i == 0) {
@@ -124,13 +126,12 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                 $school_start_dt = $school_syear_date[1]['START_DATE'];
                 $school_end_dt = $school_syear_date[1]['END_DATE'];
-               
-                if ($table_name!='student_goal_progress' && ((strtotime($start_date) > strtotime($end_date) && $start_date != "" && $end_date != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($end_date) && $row_s_date[1]['START_DATE'] != "" && $end_date != "") || (strtotime($start_date) > strtotime($row_s_date[1]['END_DATE']) && $start_date != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($row_s_date[1]['END_DATE']) && $row_s_date[1]['START_DATE'] != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt)))) {
-                {
-                    ShowErr(_dataNotSavedBecauseStartAndEndDateIsNotValid);
-                }
+
+                if ($table_name != 'student_goal_progress' && ((strtotime($start_date) > strtotime($end_date) && $start_date != "" && $end_date != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($end_date) && $row_s_date[1]['START_DATE'] != "" && $end_date != "") || (strtotime($start_date) > strtotime($row_s_date[1]['END_DATE']) && $start_date != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($row_s_date[1]['START_DATE']) > strtotime($row_s_date[1]['END_DATE']) && $row_s_date[1]['START_DATE'] != "" && $row_s_date[1]['END_DATE'] != "") || (strtotime($start_date) < strtotime($school_start_dt) || strtotime($start_date) > strtotime($school_end_dt)) || (strtotime($end_date) < strtotime($school_start_dt) || strtotime($end_date) > strtotime($school_end_dt)))) { {
+                        ShowErr(_dataNotSavedBecauseStartAndEndDateIsNotValid);
+                    }
                 } else {
-                       
+
                     if (!is_numeric($table_name)) {
                         $sql = 'UPDATE ' . $table_name . ' SET ';
                     }
@@ -142,21 +143,19 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
 
                             if ((date('Y-m-d', strtotime($_REQUEST['tables'][$id]['START_DATE'])) < date('Y-m-d', strtotime($chk_dt[1]['START_DATE']))) || (date('Y-m-d', strtotime($_REQUEST['tables'][$id]['START_DATE'])) > date('Y-m-d', strtotime($chk_dt[1]['END_DATE'])))) {
-                                echo '<p style=color:red> '._progressEntryDateShouldBeBetweenGoalsStartDate.','._endDate.'</p>';
+                                echo '<p style=color:red> ' . _progressEntryDateShouldBeBetweenGoalsStartDate . ',' . _endDate . '</p>';
 
                                 break;
-                            } 
-                            else
-                                $sql.= 'START_DATE=\'' . str_replace("'", "\'", $_REQUEST['tables'][$id]['START_DATE']) . '\',';
-                        } 
-                        else
-                            $sql.= 'START_DATE=\'' . str_replace("'", "\'", $_REQUEST['tables'][$id]['START_DATE']) . '\',';
+                            } else
+                                $sql .= 'START_DATE=\'' . str_replace("'", "\'", $_REQUEST['tables'][$id]['START_DATE']) . '\',';
+                        } else
+                            $sql .= 'START_DATE=\'' . str_replace("'", "\'", $_REQUEST['tables'][$id]['START_DATE']) . '\',';
                     }
                     if (!is_numeric($table_name)) {
                         foreach ($columns as $column => $value) {
                             if (trim($value) != '') {
                                 $value = paramlib_validation($column, $value);
-                                $sql.= $column . '=\'' . singleQuoteReplace('', '', $value) . '\',';  // linux
+                                $sql .= $column . '=\'' . singleQuoteReplace('', '', $value) . '\',';  // linux
                             }
                         }
                     }
@@ -164,15 +163,15 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     ############################### Date Update Start #################################
 
                     if ((!isset($start_date) && strtotime($row_s_date['START_DATE']) < strtotime($end_date)) || (!isset($start_date) && strtotime($row_s_date['START_DATE']) < strtotime($row_s_date['END_DATE'])))
-                        $sql.='START_DATE=\'' . $row_s_date['START_DATE'] . '\',';
+                        $sql .= 'START_DATE=\'' . $row_s_date['START_DATE'] . '\',';
                     if ((!isset($end_date) && strtotime($start_date) < strtotime($row_s_date['END_DATE'])) || (!isset($end_date) && strtotime($row_s_date['START_DATE']) < strtotime($row_s_date['END_DATE'])))
-                        $sql.='END_DATE=\'' . $row_s_date['END_DATE'] . '\',';
+                        $sql .= 'END_DATE=\'' . $row_s_date['END_DATE'] . '\',';
 
 
                     if ((isset($start_date) && strtotime($start_date) < strtotime($end_date)) || (isset($start_date) && strtotime($start_date) < strtotime($row_s_date['END_DATE'])))
-                        $sql.='START_DATE=\'' . $start_date . '\',';
+                        $sql .= 'START_DATE=\'' . $start_date . '\',';
                     if ((isset($end_date) && strtotime($row_s_date['START_DATE']) < strtotime($end_date)) || (isset($start_date) && strtotime($start_date) < strtotime($end_date)))
-                        $sql.='END_DATE=\'' . $end_date . '\',';
+                        $sql .= 'END_DATE=\'' . $end_date . '\',';
 
                     ################################ Date Update End ##################################
 
@@ -202,22 +201,20 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                 if ($table_name == 'student_goal') {
 
-                    $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'student_goal\''));
-                    $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    // $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'student_goal\''));
+                    // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
                     $fields = 'STUDENT_ID,SCHOOL_ID,SYEAR,START_DATE,END_DATE,';
                     $values = '\'' . UserStudentID() . '\',\'' . UserSchool() . '\',\'' . UserSyear() . '\',\'' . $start_date . '\',\'' . $end_date . '\',';
-                    $_REQUEST['goal_id'] = $id[1]['ID'];
+                    // $_REQUEST['goal_id'] = $id[1]['ID'];
                 } elseif ($table_name == 'student_goal_progress') {
-                    
-
-                    $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'student_goal_progress\''));
-                    $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+                    // $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'student_goal_progress\''));
+                    // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
                     $fields = 'GOAL_ID,STUDENT_ID,START_DATE,';
-                    $values = '\'' . $_REQUEST[hgoal] . '\',\'' . UserStudentID() . '\',\'' . $start_date . '\',';
-                    $_REQUEST['progress_id'] = $id[1]['ID'];
-                    
-                   
-                    $chk_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE from student_goal WHERE goal_id = ' . clean_param($_REQUEST[hgoal], PARAM_INT)));
+                    $values = '\'' . $_REQUEST['hgoal'] . '\',\'' . UserStudentID() . '\',\'' . $start_date . '\',';
+                    // $_REQUEST['progress_id'] = $id[1]['ID'];
+
+
+                    $chk_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE from student_goal WHERE goal_id = ' . clean_param($_REQUEST['hgoal'], PARAM_INT)));
 
                     if ((date('Y-m-d', strtotime($_REQUEST['tables']['new']['START_DATE'])) < date('Y-m-d', strtotime($chk_dt[1]['START_DATE']))) || (date('Y-m-d', strtotime($_REQUEST['tables'][$id]['START_DATE'])) > date('Y-m-d', strtotime($chk_dt[1]['END_DATE'])))) {
                         $flag = 1;
@@ -231,19 +228,22 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     if (isset($value)) {
                         $fields .= $column . ',';
 
-                        $values .= '\'' . str_replace("'", "''", singleQuoteReplace('', '',$value)) . '\','; // linux
+                        $values .= '\'' . str_replace("'", "''", singleQuoteReplace('', '', $value)) . '\','; // linux
 
                         $go = true;
                     }
                 }
-                $sql.='(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
+                $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
                 if ($go) {
                     if ($table_name == 'student_goal_progress') {
                         if ($flag == 1)
-                            ShowErr(''._progressEntryDateShouldBeBetweenGoalsStartDate.''._endDate.'');
-
+                            ShowErr('' . _progressEntryDateShouldBeBetweenGoalsStartDate . '' . _endDate . '');
                         else {
                             DBQuery($sql);
+                            if ($table_name == 'student_goal')
+                                $_REQUEST['goal_id'] = mysqli_insert_id($connection);
+                            else if ($table_name == 'student_goal_progress')
+                                $_REQUEST['progress_id'] = mysqli_insert_id($connection);
                         }
                     } else {
 
@@ -256,8 +256,12 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         } else {
 
                             DBQuery($sql);
+                            if ($table_name == 'student_goal')
+                                $_REQUEST['goal_id'] = mysqli_insert_id($connection);
+                            else if ($table_name == 'student_goal_progress')
+                                $_REQUEST['progress_id'] = mysqli_insert_id($connection);
+                        }
                     }
-                }
                 }
 
 
@@ -287,7 +291,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
 if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'choose_course') && !clean_param($_REQUEST['course_modfunc'], PARAM_NOTAGS)) {
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) != 'choose_course')
-        DrawBC(""._students." > " . ProgramTitle());
+        DrawBC("" . _students . " > " . ProgramTitle());
 
     $sql = 'SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE SCHOOL_ID=\'' . $school_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY START_DATE DESC';
 
@@ -311,7 +315,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
         if ($_REQUEST['progress_id']) {
             if ($_REQUEST['progress_id'] != 'new') {
                 $sql = 'SELECT sg.START_DATE as GOAL_START_DATE,sg.END_DATE as GOAL_END_DATE,sgp.START_DATE,sgp.PROGRESS_NAME,sgp.PROFICIENCY,sgp.PROGRESS_DESCRIPTION FROM student_goal_progress sgp,student_goal sg
-						WHERE sgp.GOAL_ID=sg.GOAL_ID AND sgp.PROGRESS_ID=\'' . $_REQUEST[progress_id] . '\'';
+						WHERE sgp.GOAL_ID=sg.GOAL_ID AND sgp.PROGRESS_ID=\'' . $_REQUEST['progress_id'] . '\'';
                 $QI = DBQuery($sql);
                 $RET = DBGet($QI);
                 $RET = $RET[1];
@@ -323,7 +327,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
 
                 $sql_sel_cp = 'SELECT COURSE_PERIOD_ID
 						FROM student_goal_progress
-						WHERE PROGRESS_ID=\'' . $_REQUEST[progress_id] . '\'';
+						WHERE PROGRESS_ID=\'' . $_REQUEST['progress_id'] . '\'';
                 $QI_sel_cp = DBQuery($sql_sel_cp);
                 $RET_sel_cp = DBGet($QI_sel_cp);
                 $RET_sel = $RET_sel_cp[1];
@@ -333,7 +337,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             } else {
                 $sql = 'SELECT START_DATE as GOAL_START_DATE,END_DATE as GOAL_END_DATE,GOAL_TITLE
 						FROM student_goal
-						WHERE GOAL_ID=\'' . $_REQUEST[goal_id] . '\' ORDER BY GOAL_TITLE';
+						WHERE GOAL_ID=\'' . $_REQUEST['goal_id'] . '\' ORDER BY GOAL_TITLE';
                 $QI = DBQuery($sql);
                 $RET = DBGet($QI);
 
@@ -356,7 +360,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
 
 
 
-                $sql_gid = 'SELECT GOAL_ID FROM student_goal_progress WHERE PROGRESS_ID=\'' . $_REQUEST[progress_id] . '\'';
+                $sql_gid = 'SELECT GOAL_ID FROM student_goal_progress WHERE PROGRESS_ID=\'' . $_REQUEST['progress_id'] . '\'';
                 $res_gid = DBQuery($sql_gid);
                 $row_gid = DBGet($res_gid);
             }
@@ -379,8 +383,8 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             # ---------------------------------------------------------------------------- #
             # ----------------------------- Delete ---------------------------------------- #
 
-            
-            
+
+
 
             # ------------------------------ Delete ---------------------------------------- #
             $header .= '<div class="form-horizontal well">';
@@ -388,47 +392,48 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['PROGRESS_NAME'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_NAME]', _progressPeriodName, 'size=60 maxlength=50') . '</div></div>';
             if (($_REQUEST['progress_id'] != 'new')) {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST[progress_id] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisProgress."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete&gid=" . $row_gid[1]["GOAL_ID"] . "&pid=" . $_REQUEST['progress_id'] . "'><b><i class=\"icon-cross\"></i></b> " . _deleteThisProgress . "</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row
-            
+
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['GOAL_ID'] ? $RET['GOAL_ID'] : $_REQUEST['goal_id'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][GOAL_ID]', _goalTitle, $options, false).'</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['GOAL_ID'] ? $RET['GOAL_ID'] : $_REQUEST['goal_id'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][GOAL_ID]', _goalTitle, $options, false) . '</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
             $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET_sel['COURSE_PERIOD_ID'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][COURSE_PERIOD_ID]', _coursePeriod, $options_cp) . '</div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
             $header .= '</div>'; //.row
             $header .= '<input type="hidden" name="req_progress_id" id="req_progress_id" value="' . $_REQUEST['progress_id'] . '" />';
-            $header .= '<input type="hidden" name="hgoal" value="' . $_REQUEST[goal_id] . '" />';
-            
-            
+            $header .= '<input type="hidden" name="hgoal" value="' . $_REQUEST['goal_id'] . '" />';
+
+
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">'._dateOfEntry.'</label><div class="col-lg-8">' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['progress_id'] . '][START_DATE]', 1) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
-            $options = array('0-10%' => '0-10%',
-             '11-20%' => '11-20%',
-             '21-30%' => '21-30%',
-             '31-40%' => '31-40%',
-             '41-50%' => '41-50%',
-             '51-60%' => '51-60%',
-             '61-70%' => '61-70%',
-             '71-80%' => '71-80%',
-             '81-90%' => '81-90%',
-             '91-100%' => '91-100%',
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-lg-4">' . _dateOfEntry . '</label><div class="col-lg-8">' . DateInputAY($RET['START_DATE'] != "" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['progress_id'] . '][START_DATE]', 1) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            $options = array(
+                '0-10%' => '0-10%',
+                '11-20%' => '11-20%',
+                '21-30%' => '21-30%',
+                '31-40%' => '31-40%',
+                '41-50%' => '41-50%',
+                '51-60%' => '51-60%',
+                '61-70%' => '61-70%',
+                '71-80%' => '71-80%',
+                '81-90%' => '81-90%',
+                '91-100%' => '91-100%',
             );
             $header .= '<div class="col-md-6"><div class="form-group">' . SelectInput($RET['PROFICIENCY'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROFICIENCY]', _proficiencyScale, $options) . '</div></div>';
             $header .= '</div>'; //.row
-            
-            $header .= '<div class="row">';            
-            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-lg-2">'._progressAssessment.'</label><div class="col-lg-10">' . TextAreaInput($RET['PROGRESS_DESCRIPTION'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_DESCRIPTION]', '', 'rows=10 cols=57', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal_progress"></div></div></div>';
+
+            $header .= '<div class="row">';
+            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label text-right col-lg-2">' . _progressAssessment . '</label><div class="col-lg-10">' . TextAreaInput($RET['PROGRESS_DESCRIPTION'], 'tables[student_goal_progress][' . $_REQUEST['progress_id'] . '][PROGRESS_DESCRIPTION]', '', 'rows=10 cols=57', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal_progress"></div></div></div>';
             $header .= '</div>'; //.row
             $header .= '</div>'; //.row
-            
+
             echo $header;
             // DrawHeader($header);
         } elseif ($_REQUEST['goal_id']) {
             if ($_REQUEST['goal_id'] != 'new') {
                 $sql = 'SELECT GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION
 						FROM student_goal
-						WHERE GOAL_ID=\'' . $_REQUEST[goal_id] . '\' and SYEAR=\'' . UserSyear() . '\'';
+						WHERE GOAL_ID=\'' . $_REQUEST['goal_id'] . '\' and SYEAR=\'' . UserSyear() . '\'';
                 $QI = DBQuery($sql);
                 $RET = DBGet($QI);
                 $RET = $RET[1];
@@ -467,27 +472,27 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
             $header .= '<div class="form-horizontal well">';
             $header .= '<div class="row">';
             $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['GOAL_TITLE'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_TITLE]', _goalTitle, 'size=75 maxlength=50') . '</div></div>';
-            
+
             if ($_REQUEST['goal_id'] != 'new') {
                 if (((User('PROFILE') == 'admin') && isset($edit_per_adm[1]['CAN_EDIT'])) || ((User('PROFILE') == 'teacher') && isset($edit_per_teach[1]['CAN_EDIT'])) || ((User('PROFILE') == 'parent') && isset($edit_per_prnt[1]['CAN_EDIT']))) {
-                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> "._deleteThisGoal."</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+                    $header .= "<div class=\"col-md-6 text-right\"><a class=\"btn btn-danger btn-labeled btn-sm\" href='Modules.php?modname=students/Student.php&include=GoalInc&category_id=5&action=delete_goal&gid=" . $_REQUEST['goal_id'] . "'><b><i class=\"icon-cross\"></i></b> " . _deleteThisGoal . "</a></div>"; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
                 }
             }
             $header .= '</div>'; //.row
-            
-            $header .= '<div class="row">';            
-            if ($_REQUEST[goal_id] . trim() != '')
-                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._beginDate.'</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="' . $_REQUEST[goal_id] . '" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
-            else
-                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._beginDate.'</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="new" />' . DateInputAY($RET['START_DATE']!="" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
 
-            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">'._endDate.'</label><div class="col-lg-8">' . DateInputAY($RET['END_DATE']!="" ? $RET['END_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][END_DATE]', 3) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 296
-            $header .= '</div>'; //.row
-            
             $header .= '<div class="row">';
-            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label col-lg-2 text-right">'._goalDescription.'</label><div class="col-lg-10">' . TextAreaInput($RET['GOAL_DESCRIPTION'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_DESCRIPTION]', '', 'rows=10 cols=70', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal"></div></div></div>';
+            if ($_REQUEST['goal_id'] != '')
+                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . _beginDate . '</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="' . $_REQUEST['goal_id'] . '" />' . DateInputAY($RET['START_DATE'] != "" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+            else
+                $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . _beginDate . '</label><div class="col-lg-8"><input type="hidden" name="goalId" id="goalId" value="new" />' . DateInputAY($RET['START_DATE'] != "" ? $RET['START_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][START_DATE]', 2) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 295
+
+            $header .= '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">' . _endDate . '</label><div class="col-lg-8">' . DateInputAY($RET['END_DATE'] != "" ? $RET['END_DATE'] : "", 'tables[' . $_REQUEST['goal_id'] . '][END_DATE]', 3) . '</div></div></div>'; // DateInput is copied from schoolsetup/MarkingPeriods.php line 296
+            $header .= '</div>'; //.row
+
+            $header .= '<div class="row">';
+            $header .= '<div class="col-md-12"><div class="form-group"><label class="control-label col-lg-2 text-right">' . _goalDescription . '</label><div class="col-lg-10">' . TextAreaInput($RET['GOAL_DESCRIPTION'], 'tables[student_goal][' . $_REQUEST['goal_id'] . '][GOAL_DESCRIPTION]', '', 'rows=10 cols=70', 'true', '200px') . '<input type="hidden" name="tabl" id="tabl" value="student_goal"></div></div></div>';
             $header .= '</div>';
-            
+
             $header .= '</div>'; //.form-horizontal
 
             echo $header;
@@ -495,7 +500,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' =>false, 'search' =>false);
+    $LO_options = array('save' => false, 'search' => false);
 
     if (!$_REQUEST['goal_id'] || $_REQUEST['modfunc'] == 'choose_course')
         DrawHeaderHome('Goals', "<A HREF=ForWindow.php?modname=students/Student.php&include=GoalInc&modfunc=$_REQUEST[modfunc]&course_modfunc=search>Search</A>");
@@ -513,7 +518,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     }
 
     echo '<div class="col-md-6">';
-    $columns = array('GOAL_TITLE' =>_goals);
+    $columns = array('GOAL_TITLE' => _goals);
     $link = array();
     $link['GOAL_TITLE']['link'] = "Modules.php?modname=students/Student.php&include=GoalInc";
     $link['GOAL_TITLE']['variables'] = array('goal_id' => 'GOAL_ID');
@@ -526,7 +531,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     echo '</div>';
 
     if ($_REQUEST['goal_id'] && $_REQUEST['goal_id'] != 'new') {
-        $sql_goal = DBQuery('SELECT GOAL_ID FROM student_goal WHERE GOAL_ID=\'' . $_REQUEST[goal_id] . '\' and SYEAR=\'' . UserSyear() . '\'');
+        $sql_goal = DBQuery('SELECT GOAL_ID FROM student_goal WHERE GOAL_ID=\'' . $_REQUEST['goal_id'] . '\' and SYEAR=\'' . UserSyear() . '\'');
         $sql_goal_fetch = DBGet($sql_goal);
 
         $sql = "SELECT PROGRESS_ID,PROGRESS_NAME FROM student_goal_progress WHERE GOAL_ID='" . $sql_goal_fetch[1]['GOAL_ID'] . "' AND STUDENT_ID=" . UserStudentID() . " ORDER BY START_DATE DESC";
@@ -543,7 +548,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
         }
 
         echo '<div class="col-md-6">';
-        $columns = array('PROGRESS_NAME' =>_progresses);
+        $columns = array('PROGRESS_NAME' => _progresses);
         $link = array();
         $link['PROGRESS_NAME']['link'] = "Modules.php?modname=students/Student.php&include=GoalInc&goal_id=$_REQUEST[goal_id]";
         $link['PROGRESS_NAME']['variables'] = array('progress_id' => 'PROGRESS_ID');
@@ -569,4 +574,3 @@ if ($_REQUEST['modname'] == 'scheduling/Courses.php' && $_REQUEST['modfunc'] == 
 
     echo "<script language=javascript>opener.document.getElementById(\"course_div\").innerHTML = \"$course_title</small>\"; window.close();</script>";
 }
-?>

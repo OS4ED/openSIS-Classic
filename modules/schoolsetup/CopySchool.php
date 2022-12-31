@@ -62,12 +62,16 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
      if (Prompt_Copy_School(''._confirmCopySchool.'', ''._areYouSureYouWantToCopyTheDataFor. ' <span class="text-primary">' . GetSchool(UserSchool()) . '</span> '._toANewSchool.'', $table_list)) {
         if (count($_REQUEST['tables'])) {
 
-            $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
-            $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-            $id = $id[1]['ID'];
+            // $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'schools\''));
+            // $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
+            // $id = $id[1]['ID'];
+
+
             $copy_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS SYEAR FROM school_years WHERE school_id=' . UserSchool()));
             $new_sch_syear = $copy_syear_RET[1]['SYEAR'];
-            DBQuery('INSERT INTO schools (ID,SYEAR,TITLE) values(\'' . $id . '\',\'' . $new_sch_syear . '\',\'' . str_replace("'", "''", str_replace("\'", "''", paramlib_validation($col = TITLE, $_REQUEST['title']))) . '\')');
+            DBQuery('INSERT INTO schools (SYEAR,TITLE) values(\'' . $new_sch_syear . '\',\'' . str_replace("'", "''", str_replace("\'", "''", paramlib_validation($col = TITLE, $_REQUEST['title']))) . '\')');
+            $id = mysqli_insert_id($connection);
+
             DBQuery('INSERT INTO school_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID');
             DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
             DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'UPDATENOTIFY\',\'display_school\',"Y")');

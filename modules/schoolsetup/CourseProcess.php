@@ -28,6 +28,7 @@
 #***************************************************************************************
 include('../../RedirectRootInc.php');
 include('../../Warehouse.php');
+
 if(isset($_SESSION['language']) && $_SESSION['language']=='fr'){
     define("_saveContinue","Enregistrer continuer");
 }
@@ -42,10 +43,10 @@ if ($_REQUEST['cp_id'] == '')
     $course_period_id = 'new';
 else
     $course_period_id = $_REQUEST['cp_id'];
-if ($_REQUEST[cp_var_id] == '')
+if ($_REQUEST['cp_var_id'] == '')
     $course_period_var_id = 'n';
 else
-    $course_period_var_id = $_REQUEST[cp_var_id];
+    $course_period_var_id = $_REQUEST['cp_var_id'];
 
 if ($_REQUEST['msg'] == 'conflict') {
     $RET['ROOM'] = $_REQUEST['room_id'];
@@ -212,8 +213,8 @@ switch ($task) {
 
     case 'per_time':
         $cpdays_RET = DBGet(DBQuery("SELECT START_TIME,END_TIME FROM school_periods where period_id=$_REQUEST[period_id]"));
-        echo $_REQUEST[day] . "/" . ProperTime($cpdays_RET[1][START_TIME]) . ' To ' . ProperTime($cpdays_RET[1][END_TIME]);
-        echo '<input type=hidden name=course_period_variable[' . $course_period_id . '][' . $course_period_var_id . '][START_TIME] value="' . $cpdays_RET[1][START_TIME] . '"><input type=hidden name=course_period_variable[' . $course_period_id . '][' . $course_period_var_id . '][END_TIME] value="' . $cpdays_RET[1][END_TIME] . '">';
+        echo $_REQUEST['day'] . "/" . ProperTime($cpdays_RET[1]['START_TIME']) . ' To ' . ProperTime($cpdays_RET[1]['END_TIME']);
+        echo '<input type=hidden name=course_period_variable[' . $course_period_id . '][' . $course_period_var_id . '][START_TIME] value="' . $cpdays_RET[1]['START_TIME'] . '"><input type=hidden name=course_period_variable[' . $course_period_id . '][' . $course_period_var_id . '][END_TIME] value="' . $cpdays_RET[1]['END_TIME'] . '">';
 }
 
 function conv_day($short_date) {

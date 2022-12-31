@@ -118,7 +118,7 @@ function getCSS() {
     if (User('STAFF_ID')) {
         $sql = 'select value from program_user_config where title=\'THEME\' and user_id=' . User('STAFF_ID');
         $data = DBGet(DBQuery($sql));
-        if (count($data[1]))
+        if (is_countable($data[1]) && count($data[1]))
             $css = $data[1]['VALUE'];
     }
     return $css;
@@ -484,7 +484,8 @@ function for_error_sch() {
 # ------------------------------ Solution for screen error in Group scheduling end------------------------------------- #
 ################################### Select input with Disable Onlcik edit feature ##############
 
-function SelectInput_Disonclick($value, $name, $title = '', $options, $allow_na = 'N/A', $extra = '', $div = true) {
+function SelectInput_Disonclick($value, $name, $title, $options, $allow_na = 'N/A', $extra = '', $div = true) {
+    if(empty($title)) $title = '';
     if (Preferences('HIDDEN') != 'Y')
         $div = false;
 
@@ -780,7 +781,9 @@ function gradeAssociation($cp_id) {
 
 ###########################################################################
 
-function singleQuoteReplace($param1 = false, $param2 = false, $param3) {
+function singleQuoteReplace($param1, $param2, $param3) {
+    if(empty($param1))  $param1 = false;
+    if(empty($param2))  $param2 = false;
     return str_replace("'", "''", str_replace("\'", "'", $param3));
 }
 

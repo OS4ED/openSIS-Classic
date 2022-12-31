@@ -92,7 +92,7 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
     echo '</div>'; //.col-md-8
     echo '<div class="col-md-4 form-inline">';
     echo '<div class="input-group">';
-    $groupList = DBGet(DBQuery("SELECT GROUP_ID,GROUP_NAME FROM mail_group where user_name='" . $userName . "'"));
+    $groupList = DBGet(DBQuery("SELECT GROUP_ID,GROUP_NAME FROM mail_group where user_name='" . $userName . "' AND SCHOOL_ID= '".UserSchool()."'"));
     echo "<SELECT name='groups' class=\"form-control\" onChange=\"list_of_groups(this.options[this.selectedIndex].value);\"><OPTION value=''>"._selectGroup."</OPTION>";
     foreach ($groupList as $groupArr) {
         $option = $groupArr['GROUP_NAME'];

@@ -4,6 +4,7 @@ require_once("Data.php");
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,7 +14,9 @@ include 'Warehouse.php';
 //----------------------- modal for event start---------------------//
 // $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 $_REQUEST['event_id'] = mysqli_real_escape_string($connection,optional_param('event_id', '', PARAM_DATA));
-if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST[assignment_id])) {
+$_REQUEST['assignment_id'] = sqlSecurityFilter($_REQUEST['assignment_id']);
+
+if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST['assignment_id'])) {
     if ($_REQUEST['event_id'] != 'new' && isset($_REQUEST['event_id'])) {
         $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,SCHOOL_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));
         $title = $RET[1]['TITLE'];
@@ -27,7 +30,7 @@ if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST
     }
     echo "<FORM name=popform class=\"m-b-0\" id=popform action=Modules.php?modname=schoolsetup/Calendar.php&dd=$_REQUEST[school_date]&modfunc=detail&event_id=$_REQUEST[event_id]&calendar_id=$calendar_id&month=$_REQUEST[month]&year=$_REQUEST[year] METHOD=POST>";
 } else {
-    $RET = DBGet(DBQuery('SELECT TITLE,STAFF_ID,DATE_FORMAT(DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ASSIGNED_DATE,DUE_DATE,DESCRIPTION FROM gradebook_assignments WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\''));
+    $RET = DBGet(DBQuery('SELECT TITLE,STAFF_ID,DATE_FORMAT(DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ASSIGNED_DATE,DUE_DATE,DESCRIPTION FROM gradebook_assignments WHERE ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\''));
     $title = $RET[1]['TITLE'];
     $RET[1]['STAFF_ID'] = GetTeacher($RET[1]['STAFF_ID']);
 }

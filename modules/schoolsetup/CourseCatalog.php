@@ -232,7 +232,7 @@ else {
                 //For Courses
                 if ($_REQUEST['subject_id'] && $_REQUEST['subject_id'] != '') {
 
-                    $sql = 'SELECT COURSE_ID,TITLE FROM courses WHERE SUBJECT_ID=\'' . $_REQUEST[subject_id] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TITLE';
+                    $sql = 'SELECT COURSE_ID,TITLE FROM courses WHERE SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TITLE';
                     $QI = DBQuery($sql);
                     $courses_RET = DBGet($QI);
 
@@ -366,7 +366,7 @@ function CreateList($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_na
     $html = "<b>" . $heading . "</b><br>
         <A HREF=" . str_replace('Modules.php', 'ForExport.php', $PHP_tmp_SELF) . "&create_excel=true&LO_save=1&_openSIS_PDF=true > <IMG SRC=assets/download.png border=0 vspace=0 hspace=0></A>
         <br>";
-    $html .= "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+    $html .= "<table width=100%  style=\" font-size:12px;\" >";
     $html .= "<tr><td  style=\"font-size:15px; font-weight:bold;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentSchedulesReport."</div></td><td align=right style=\"padding-top:10px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr><tr><td colspan=2 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
     ########################################List Output Generation ####################################################
@@ -375,10 +375,10 @@ function CreateList($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_na
 
     if ($_REQUEST['print'] == 'list') {
         echo '<link rel="stylesheet" type="text/css" href="assets/css/export_print.css" />';
-        echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+        echo "<table width=100%  style=\" font-size:12px;\" >";
         echo "<tr><td  style=\"font-size:15px; font-weight:bold;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._courseCatalog."</div></td><td align=right style=\"padding-top:5px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr><tr><td colspan=2 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
     }
-    echo '<style type="text/css">.print-div td{font-size:12px;font-family:arial;}</style><div class="print-div">';
+    echo '<div class="print-div">';
     ListOutputFloat($ret, $columns, ''._course.'', ''._courses.'', '', '', array('search' =>false, 'count' =>false), false);
     echo '</div>';
     //echo "<div style=\"page-break-before: always;\"></div>";

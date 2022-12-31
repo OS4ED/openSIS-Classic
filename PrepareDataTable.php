@@ -28,6 +28,7 @@
 #***************************************************************************************
 
 error_reporting(0);
+
 include 'Warehouse.php';
 include('lang/language.php');
 session_start();
@@ -103,8 +104,8 @@ if($_REQUEST['loadpage'])
     echo "<script>\n";
     echo 'var res_length = document.getElementById(\'res_len\');
         if(res_length) { res_length.value=\'\'; res_length.value=\''.$res_len_set.'\'; }
-        var div_selected_cbx = document.getElementById(\'hidden_checkboxes\');
-        if(div_selected_cbx) { div_selected_cbx.innerHTML = \'\'; }
+        /* var div_selected_cbx = document.getElementById(\'hidden_checkboxes\');
+        if(div_selected_cbx) { div_selected_cbx.innerHTML = \'\'; } */
     ';
     echo "</script>\n";
 
@@ -121,29 +122,25 @@ if($_REQUEST['loadpage'])
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
     
-    if($_SESSION['PEGI_MODS']['modname'] == 'grades/ReportCards.php' || $_SESSION['PEGI_MODS']['modname'] == 'scheduling/PrintSchedules.php' || $_SESSION['PEGI_MODS']['modname'] == 'grades/FinalGrades.php' || $_SESSION['PEGI_MODS']['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_SESSION['PEGI_MODS']['modname'] == 'grades/ProgressReports.php')
-    {
+    switch ($_SESSION['PEGI_MODS']['modname']) {
+        case 'scheduling/PrintSchedules.php':
+        case 'grades/FinalGrades.php':
+        case 'users/TeacherPrograms.php?include=grades/ProgressReports.php':
+        case 'grades/ProgressReports.php':
         return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
-    }
-    else if($_SESSION['PEGI_MODS']['modname'] == 'attendance/AddAbsences.php' || $_SESSION['PEGI_MODS']['modname'] == 'eligibility/AddActivity.php' || $_SESSION['PEGI_MODS']['modname'] == 'scheduling/MassDrops.php')
-    {
-        return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
-    }
-    else if($_SESSION['PEGI_MODS']['modname'] == 'scheduling/MassSchedule.php' || $_SESSION['PEGI_MODS']['modname'] == 'grades/Transcripts.php')
-    {
-        return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
-    }
-    else if($_SESSION['PEGI_MODS']['modname'] == 'scheduling/MassRequests.php')
-    {
-        return "<INPUT type=checkbox name=unused[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);'>";
-    }
-    else if($_SESSION['PEGI_MODS']['modname'] == 'students/AssignOtherInfo.php')
-    {
-        return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'>";
-    }
-    else
-    {
-        return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    
+        case 'scheduling/MassDrops.php':
+            case 'scheduling/MassRequests.php':
+            case 'attendance/AddAbsences.php':
+            case 'eligibility/AddActivity.php':
+            case 'students/AssignOtherInfo.php':
+                return "<input name=unused[$THIS_RET[STUDENT_ID]] value=$THIS_RET[STUDENT_ID]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID], \"Y\");' />";
+    
+            case 'scheduling/MassSchedule.php':
+                return "<input name=unused[$THIS_RET[STUDENT_ID]] value=$THIS_RET[STUDENT_ID]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+            
+            default:
+        return "<input  class='student_label_cbx' name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET['STUDENT_ID'] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
     }
 }
 
@@ -157,5 +154,13 @@ function _makeStateValue($value) {
     else
         return 'Full-Day';
 }
+
+// function _make_sections($value) {
+//     if ($value != '') {
+//         $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+//         return $get[1]['NAME'];
+//     } else
+//         return '';
+// }
 
 ?>

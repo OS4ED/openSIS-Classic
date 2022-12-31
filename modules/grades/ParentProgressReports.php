@@ -117,7 +117,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             $courselist_ret = DBGet(DBQuery('SELECT s.TITLE AS COURSE, s.COURSE_ID, cp.COURSE_PERIOD_ID,cp.TEACHER_ID 
                                                         FROM gradebook_grades g, courses s, course_periods cp, gradebook_assignments ga, schedule sc
                                                         WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID AND sc.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sc.STUDENT_ID=g.STUDENT_ID 
-                                                        AND s.COURSE_ID = cp.COURSE_ID AND ga.assignment_id = g.assignment_id AND ga.marking_period_id in (' . GetAllMP($MP_TYPE, UserMP()) . ')  and  g.STUDENT_ID=\'' . $student[STUDENT_ID] . '\' and s.syear=\'' . UserSyear() . '\' group by cp.COURSE_PERIOD_ID'));
+                                                        AND s.COURSE_ID = cp.COURSE_ID AND ga.assignment_id = g.assignment_id AND ga.marking_period_id in (' . GetAllMP($MP_TYPE, UserMP()) . ')  and  g.STUDENT_ID=\'' . $student['STUDENT_ID'] . '\' and s.syear=\'' . UserSyear() . '\' group by cp.COURSE_PERIOD_ID'));
             if (!empty($courselist_ret[1])) {
                 foreach ($courselist_ret as $courselist => $course) {
                     unset($student_points);
@@ -197,7 +197,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $grades_RET = DBGet(DBQuery($sql), array('ASSIGNED_DATE' => '_removeSpaces', 'ASSIGN_TYP_WG' => '_makeAssnWG', 'DUE_DATE' => '_removeSpaces', 'TITLE' => '_removeSpaces', 'POINTS' => '_makeExtra', 'LETTER_GRADE' => '_makeExtra', 'WEIGHT_GRADE' => '_makeWtg'));
 
                     //			$sum_points = $sum_percent = 0;
-                    if (count($percent_weights)) {
+                    if (is_countable($percent_weights) && count($percent_weights)) {
 
                         foreach ($percent_weights as $assignment_type_id => $percent) {
                             //				$sum_points += $student_points[$assignment_type_id] * $percent_weights[$assignment_type_id] / $total_points[$assignment_type_id];
@@ -212,7 +212,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     //				$sum_points = 0;
                     if ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y') {
                         $assign_typ_wg = array();
-                        $tot_weight_grade = '';
+                        $tot_weight_grade = 0;
                         //                           $sum_points=0;
 
                         if (count($grades_RET)) {
@@ -234,7 +234,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $total_weightage = 0;
                             foreach ($assignment_type_count as $assign_key => $value) {
                                 $total_weightage = $total_weightage + $assign_typ_wg[$assign_key];
-                                if ($tot_weight_grade == '')
+                                if ($tot_weight_grade == 0)
                                     $tot_weight_grade = round((round(($tot_weighted_percent[$assign_key] / $value), 2) * $assign_typ_wg[$assign_key]) / 100, 2);
                                 else
                                     $tot_weight_grade = $tot_weight_grade + (round((round(($tot_weighted_percent[$assign_key] / $value), 2) * $assign_typ_wg[$assign_key]) / 100, 2));
@@ -242,9 +242,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $tot_weight_grade = $tot_weight_grade / 100;
                         }
                     }
-                    $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
+                    // $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
+                    $tot_weight_grade=($total_weightage == 0 ? 0 : ($tot_weight_grade/$total_weightage)*100);
+
+
                     //                            $link['add']['html'] = array('TITLE'=>'<B>Total</B>','LETTER_GRADE'=>'( '.$total_stpoints.' / '.$total_asgnpoints.' ) '._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID'],"%").'%&nbsp;'._makeLetterGrade(($total_stpoints/$total_asgnpoints),$course_period_id,  $course['TEACHER_ID']),'WEIGHT_GRADE'=>$programconfig[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'?_makeLetterGrade($tot_weight_grade,"",$course['TEACHER_ID'],'%').'%&nbsp;'._makeLetterGrade($tot_weight_grade,$course_period_id,$course['TEACHER_ID']):'N/A');
-                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>' . _total . '</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
+                    $total_st_div_agn_points = ($total_asgnpoints == 0 ? 0 : $total_stpoints/$total_asgnpoints);
+                    $link['add']['html'] = array('TITLE' => '<font style="font-size:13;font-weight:bold;"><B>' . _total . '</B></font>', 'POINTS' => '<font style="font-size:13;font-weight:bold;">' . $total_stpoints . ' / ' . $total_asgnpoints . '</font>', 'LETTER_GRADE' => '<font style="font-size:13;font-weight:bold;">' . _makeLetterGrade($total_st_div_agn_points, $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade($total_st_div_agn_points, $course_period_id, $course['TEACHER_ID']) . '</font>', 'WEIGHT_GRADE' => '<font style="font-size:13;font-weight:bold;">' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : 'N/A') . '</font>');
 
 
 
@@ -254,7 +258,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     if ($_REQUEST['list_type'] == 'total') {
                         echo '<table border=0  style=\"font-size:12px;\" >';
-                        echo '<tr><td> ' . _total . ':</td><td>' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade(($total_stpoints / $total_asgnpoints), $course_period_id, $course['TEACHER_ID']) . '</td> </tr>';
+                        echo '<tr><td> ' . _total . ':</td><td>' . _makeLetterGrade($total_st_div_agn_points, $course_period_id, $course['TEACHER_ID'], "%") . '%&nbsp;' . _makeLetterGrade($total_st_div_agn_points, $course_period_id, $course['TEACHER_ID']) . '</td> </tr>';
                         echo '<tr><td> ' . _totalWeightedGrade . ':</td><td>' . ($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT'] == 'Y' ? _makeLetterGrade($tot_weight_grade, "", $course['TEACHER_ID'], '%') . '%&nbsp;' . _makeLetterGrade($tot_weight_grade, $course_period_id, $course['TEACHER_ID']) : '' . _nA . '') . '</td> </tr>';
                         echo '<tr><td></td></tr>';
                         echo '</table>';
@@ -275,14 +279,14 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 if (!$_REQUEST['modfunc']) {
 
-    echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . "&_openSIS_PDF=true method=POST target=_blank>";
+    echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST['include_inactive'])) . "&_openSIS_PDF=true method=POST target=_blank>";
     //echo '<div class="panel">';
     //echo '<div class="panel-body">';
     PopTable('header', _progressReports);
 
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=assigned_date><span></span>' . _assignedDate . '</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=assigned_date id=assigned_date><span></span>' . _assignedDate . '</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
     echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_ec checked><span></span>' . _excludeUngradedECAssignments . '</label></div></div>';
@@ -291,7 +295,7 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=due_date checked><span></span>' . _dueDate . '</label></div></div>';
+    echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=due_date id=due_date checked><span></span>' . _dueDate . '</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
     echo '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox value=Y name=exclude_notdue><span></span>' . _excludeUngradedAssignmentsNotDue . '</label></div></div>';
@@ -300,10 +304,10 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="row">';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=detail name=list_type checked=true>' . _withAssignmentDetails . '</label></div></div>';
+    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=detail name=list_type onclick="assignmentDetails()" checked=true>' . _withAssignmentDetails . '</label></div></div>';
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=total name=list_type>' . _totalsOnly . '</label></div></div>';
+    echo '<div class="form-group"><div class="radio"><label><INPUT class="styled" type=radio value=total name=list_type onclick="totalsOnly()">' . _totalsOnly . '</label></div></div>';
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
 
@@ -324,12 +328,15 @@ function _makeExtra($value, $column)
                     $total_points[$THIS_RET['ASSIGNMENT_TYPE_ID']] += $THIS_RET['TOTAL_POINTS'];
                     $percent_weights[$THIS_RET['ASSIGNMENT_TYPE_ID']] = $THIS_RET['FINAL_GRADE_PERCENT'];
                 }
-                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
+                // return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
+                $outputval = rtrim(rtrim($value,'0'),'.');
+                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . ($outputval == '' ? 0 : $outputval) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
             } else
                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>Excluded</font></TD><TD></TD><TD></TD></TR></TABLE>';
         else {
             $student_points[$THIS_RET['ASSIGNMENT_TYPE_ID']] += $value;
-            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
+            // return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . (rtrim(rtrim($value, '0'), '.') + 0) . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
+            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD><font size=-1>' . rtrim(rtrim($value, '0'), '.') . '</font></TD><TD><font size=-1>&nbsp;/&nbsp;</font></TD><TD><font size=-1>' . $THIS_RET['TOTAL_POINTS'] . '</font></TD></TR></TABLE>';
         }
     } elseif ($column == 'LETTER_GRADE') {
 
@@ -374,3 +381,26 @@ function _makeWtg($value, $column)
     $wtdper = ($THIS_RET['POINTS'] / $THIS_RET['TOTAL_POINTS']) * $THIS_RET['FINAL_GRADE_PERCENT'];
     return (($THIS_RET['LETTERWTD_GRADE'] != -1.00 && $THIS_RET['LETTERWTD_GRADE'] != '' && $THIS_RET['ASSIGN_TYP_WG'] != 'N/A') ? _makeLetterGrade($wtdper, $THIS_RET['COURSE_PERIOD_ID'], $THIS_RET['CP_TEACHER_ID'], '%') . '%' : 'N/A');
 }
+?>
+<script>
+    
+    function totalsOnly(){
+   var assigned_date = document.getElementById("assigned_date");
+   document.getElementById("assigned_date").disabled = true;
+   document.getElementById("due_date").disabled = true;
+   if(assigned_date.checked){
+document.getElementById("assigned_date").checked = false;
+   }
+   var due_date = document.getElementById("due_date");
+   if(due_date.checked){
+document.getElementById("due_date").checked = false;
+   }
+    }
+    
+    function assignmentDetails(){
+        document.getElementById("due_date").checked = true;
+        document.getElementById("due_date").disabled = false;
+        document.getElementById("assigned_date").disabled = false;
+        
+    }
+   </script>

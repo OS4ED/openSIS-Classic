@@ -27,10 +27,11 @@
 #***************************************************************************************
 
 session_start();
-error_reporting(0);
+
 
 include('../../RedirectRootInc.php');
 include '../../Warehouse.php';
+include_once("../../functions/PasswordHashFnc.php");
 
 $category = $_REQUEST['cat'];
 
@@ -52,10 +53,10 @@ if ($category == 'student') {
         }
 
         foreach ($_SESSION['student'] as $key => $value) {
-            if($value=='LANGUAGE')
-                $value='LANGUAGE_ID';
-            if($value=='ETHNICITY')
-                $value='ETHNICITY_ID';
+            if ($value == 'LANGUAGE')
+                $value = 'LANGUAGE_ID';
+            if ($value == 'ETHNICITY')
+                $value = 'ETHNICITY_ID';
             if (!is_array($value) && $value != '') {
                 $array_index[$value] = $temp_array_index[$key];
             }
@@ -73,13 +74,13 @@ if ($category == 'student') {
         $primary = array('PRIMARY_FIRST_NAME', 'PRIMARY_MIDDLE_NAME', 'PRIMARY_LAST_NAME', 'PRIMARY_WORK_PHONE', 'PRIMARY_HOME_PHONE', 'PRIMARY_CELL_PHONE', 'PRIMARY_EMAIL', 'PRIMARY_RELATION');
         $secondary = array('SECONDARY_FIRST_NAME', 'SECONDARY_MIDDLE_NAME', 'SECONDARY_LAST_NAME', 'SECONDARY_WORK_PHONE', 'SECONDARY_HOME_PHONE', 'SECONDARY_CELL_PHONE', 'SECONDARY_EMAIL', 'SECONDARY_RELATION');
 
-        $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'students'"));
-        $student_id[1]['STUDENT_ID'] = $id[1]['AUTO_INCREMENT'];
-        $student_id = $student_id[1]['STUDENT_ID'];
+        // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'students'"));
+        // $student_id[1]['STUDENT_ID'] = $id[1]['AUTO_INCREMENT'];
+        // $student_id = $student_id[1]['STUDENT_ID'];
         $accepted = 0;
         $rejected = 0;
         $records = 0;
-        $err_msg=array();
+        $err_msg = array();
         foreach ($arr_data as $arr_i => $arr_v) {
 
             ///////////////////////////For Students////////////////////////////////////////////////////////////
@@ -88,8 +89,8 @@ if ($category == 'student') {
             if ($arr_i > 0) {
 
 
-                $student_columns = array('STUDENT_ID');
-                $student_values = array($student_id);
+                // $student_columns = array('STUDENT_ID');
+                // $student_values = array($student_id);
                 $check_query = array();
                 $check_query_alt_id = array();
                 $check_query_username = array();
@@ -97,83 +98,72 @@ if ($category == 'student') {
 
                 foreach ($students as $students_v) {
 
-                    if ($arr_v[$array_index[$students_v]] != '') {
+                    if (isset($array_index[$students_v]) && $arr_v[$array_index[$students_v]] != '') {
                         $student_columns[] = $students_v;
-                        if ($students_v == 'BIRTHDATE' || $students_v == 'ESTIMATED_GRAD_DATE' ) {
+                        if ($students_v == 'BIRTHDATE' || $students_v == 'ESTIMATED_GRAD_DATE') {
                             $student_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])) . "'";
-             
-                            
-                        }elseif($students_v == 'LANGUAGE_ID'){
-                            if(is_numeric($arr_v[$array_index[$students_v]]))
-                            {
-                                $student_values[] = "'".$arr_v[$array_index[$students_v]]."'";
+                        } elseif ($students_v == 'LANGUAGE_ID') {
+                            if (is_numeric($arr_v[$array_index[$students_v]])) {
+                                $student_values[] = "'" . $arr_v[$array_index[$students_v]] . "'";
+                            } else {
+                                $lang_id = DBGet(DBQuery('SELECT language_id FROM `language` WHERE LANGUAGE_NAME =\'' . $arr_v[$array_index[$students_v]] . '\''));
+                                $student_values[] = "'" . $lang_id[1]['LANGUAGE_ID'] . "'";
                             }
-                            else
-                            {
-                                $lang_id= DBGet(DBQuery('SELECT language_id FROM `language` WHERE LANGUAGE_NAME =\''. $arr_v[$array_index[$students_v]] . '\''));
-                                $student_values[] = "'".$lang_id[1]['LANGUAGE_ID']."'";
+                        } elseif ($students_v == 'ETHNICITY_ID') {
+                            if (is_numeric($arr_v[$array_index[$students_v]])) {
+                                $student_values[] = "'" . $arr_v[$array_index[$students_v]] . "'";
+                            } else {
+                                $lang_id = DBGet(DBQuery('SELECT ethnicity_id FROM `ethnicity` WHERE ethnicity_name =\'' . $arr_v[$array_index[$students_v]] . '\''));
+                                $student_values[] = "'" . $lang_id[1]['ETHNICITY_ID'] . "'";
                             }
-                        }elseif($students_v == 'ETHNICITY_ID'){
-                            if(is_numeric($arr_v[$array_index[$students_v]]))
-                            {
-                                $student_values[] = "'".$arr_v[$array_index[$students_v]]."'";
-                            }
-                            else
-                            {
-                                $lang_id= DBGet(DBQuery('SELECT ethnicity_id FROM `ethnicity` WHERE ethnicity_name =\''. $arr_v[$array_index[$students_v]] . '\''));
-                                $student_values[] = "'".$lang_id[1]['ETHNICITY_ID']."'";
-                            }
-                        }
-                        else {
+                        } else {
                             $student_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) . "'";
                         }
-                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE' )
-                            
-                             $check_query[] = $students_v . '=' . "'" .($students_v=='BIRTHDATE'?fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])):singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
-
+                        if ($students_v == 'FIRST_NAME' || $students_v == 'LAST_NAME' || $students_v == 'EMAIL' || $students_v == 'BIRTHDATE') {
+                            $check_query[] = $students_v . '=' . "'" . ($students_v == 'BIRTHDATE' ? fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])) : singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])) . "'";
+                    }
                         if ($students_v == 'ALT_ID')
-                            $check_query_alt_id[]= $students_v . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$students_v]]) ). "'";
-
+                            $check_query_alt_id[] = $students_v . '=' . "'" . (singleQuoteReplace("", "", $arr_v[$array_index[$students_v]])) . "'";
                     }
                 }
-          
                 foreach ($login_authentication as $username) {
                     if ($arr_v[$array_index[$username]] != '') {
                         if ($username == 'USERNAME')
-                            $check_query_username[]= $username . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$username]]) ). "'";
+                            $check_query_username[] = $username . '=' . "'" . (singleQuoteReplace("", "", $arr_v[$array_index[$username]])) . "'";
                     }
                 }
-                
-                
+
+
                 if (count($check_query) > 0) {
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" AND ", $check_query)));
                     $check_exist = $check_exist[1]['REC_EXISTS'];
 
-                    if ($check_exist != 0){
-                        $err_msg[0]= 'duplicate student';
+                    if ($check_exist != 0) {
+                        $err_msg[0] = 'duplicate student';
                     }
                 }
-                
+
                 if (count($check_query_alt_id) > 0) {
-                    $check_exist_al= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" ",$check_query_alt_id)));
-                    $check_exist_alt= $check_exist_al[1]['REC_EXISTS'];
-                
-                    if ($check_exist_alt != 0){
-                        $err_msg[1]= 'duplicate alternet id';
+                    $check_exist_al = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM students WHERE ' . implode(" ", $check_query_alt_id)));
+                    $check_exist_alt = $check_exist_al[1]['REC_EXISTS'];
+
+                    if ($check_exist_alt != 0) {
+                        $err_msg[1] = 'duplicate alternet id';
                     }
                 }
 
                 if (count($check_query_username) > 0) {
-                    $check_exist_al_username= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username)));
-                    $check_exist_alt_username= $check_exist_al_username[1]['REC_EXISTS'];
-                
-                    if ($check_exist_alt_username != 0){
-                        $err_msg[2]= 'duplicate username';
+                    $check_exist_al_username = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ", $check_query_username)));
+                    $check_exist_alt_username = $check_exist_al_username[1]['REC_EXISTS'];
+
+                    if ($check_exist_alt_username != 0) {
+                        $err_msg[2] = 'duplicate username';
                     }
                 }
-                
-                if ( $check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
+
+                if ($check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
                     DBQuery('INSERT INTO students (' . implode(',', $student_columns) . ') VALUES (' . implode(',', $student_values) . ')');
+                    $student_id = mysqli_insert_id($connection);
                     unset($student_columns);
                     unset($student_values);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +173,8 @@ if ($category == 'student') {
                     $enrollment_values = array(UserSyear(), UserSchool(), $student_id, $enrollment_code[1]['ID']);
                     $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM school_calendars  WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if ($calendar_id[1]['CALENDAR_ID'] != '') {
-                        $enrollment_columns+=array('CALENDAR_ID');
-                        $enrollment_values+=array($calendar_id[1]['CALENDAR_ID']);
+                        $enrollment_columns += array('CALENDAR_ID');
+                        $enrollment_values += array($calendar_id[1]['CALENDAR_ID']);
                     }
                     foreach ($student_enrollments as $student_enrollments_v) {
                         if ($arr_v[$array_index[$student_enrollments_v]] != '') {
@@ -221,7 +211,7 @@ if ($category == 'student') {
 
                     if ($arr_v[$array_index['PASSWORD']] != '') {
                         $la_columns[] = 'PASSWORD';
-                        $la_values[] = "'" . md5(str_replace("'", "", $arr_v[$array_index['PASSWORD']])) . "'";
+                        $la_values[] = "'" . GenerateNewHash(str_replace("'", "", $arr_v[$array_index['PASSWORD']])) . "'";
                     } else {
                         $la_columns[] = 'PASSWORD';
                         $la_values[] = "' '";
@@ -333,45 +323,39 @@ if ($category == 'student') {
             echo '<div class="row">';
             echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . $rejected . '</div>';
             echo '</div>';
-            
 
 
 
-            if(count($err_msg)==1){
-                $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg=$val;
-               }
+
+            if (count($err_msg) == 1) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg = $val;
+                }
                 echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is '.$msg.' found.</div>';
-                echo '</div>';
-                 
-                
-            }
-            if(count($err_msg)==2){
-                 $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg.= $val.' and ';
-               }
-               $msg=substr($val,0,-5);
-                echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are '.$msg.' found.</div>';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is ' . $msg . ' found.</div>';
                 echo '</div>';
             }
-            if(count($err_msg)==3){
-                  $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg.= $val.' and ';
-               }
-               $msg=substr($val,0,-5);
+            if (count($err_msg) == 2) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg .= $val . ' and ';
+                }
+                $msg = substr($val, 0, -5);
                 echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are '.$msg.' found.</div>';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are ' . $msg . ' found.</div>';
                 echo '</div>';
-            }   
-            
+            }
+            if (count($err_msg) == 3) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg .= $val . ' and ';
+                }
+                $msg = substr($val, 0, -5);
+                echo '<div class="row m-t-10">';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are ' . $msg . ' found.</div>';
+                echo '</div>';
+            }
         }
 
 
@@ -407,7 +391,6 @@ if ($category == 'staff') {
             if (!is_array($value) && $value != '') {
                 $array_index[$value] = $temp_array_index[$key];
             }
-
         }
 
         $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'GENDER', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
@@ -419,31 +402,31 @@ if ($category == 'staff') {
             $staff[] = 'CUSTOM_' . $c['ID'];
         }
 
-        $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'staff'"));
-        $staff_id[1]['STAFF_ID'] = $id[1]['AUTO_INCREMENT'];
-        $staff_id = $staff_id[1]['STAFF_ID'];
+        // $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'staff'"));
+        // $staff_id[1]['STAFF_ID'] = $id[1]['AUTO_INCREMENT'];
+        // $staff_id = $staff_id[1]['STAFF_ID'];
         $accepted = 0;
         $rejected = 0;
         $records = 0;
-        $err_msg=array();
+        $err_msg = array();
         foreach ($arr_data as $arr_i => $arr_v) {
-            
+
             ///////////////////////////For Students////////////////////////////////////////////////////////////
             $staff_columns = array();
             $staff_values = array();
             if ($arr_i > 0) {
 
 
-                $staff_columns = array('STAFF_ID', 'CURRENT_SCHOOL_ID');
-                $staff_values = array($staff_id, UserSchool());
+                $staff_columns = array('CURRENT_SCHOOL_ID');
+                $staff_values = array(UserSchool());
                 $check_query = array();
                 $check_query_alt_id = array();
                 $check_query_username = array();
                 $check_exist = 0;
                 foreach ($staff as $staff_v) {
-
+                    
                     if ($staff_v == 'PROFILE') {
-                        $arr_v[$array_index[$staff_v]]=strtolower($arr_v[$array_index[$staff_v]]);
+                        $arr_v[$array_index[$staff_v]] = strtolower($arr_v[$array_index[$staff_v]]);
                         $profile = DBGet(DBQuery('SELECT * FROM user_profiles WHERE title=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . '\' '));
                         if ($profile[1]['ID'] == '') {
                             $profile_id = '2';
@@ -484,71 +467,65 @@ if ($category == 'staff') {
                     if ($arr_v[$array_index[$staff_v]] != '') {
 
                         $staff_columns[] = $staff_v;
-                        if ($staff_v == 'BIRTHDATE'){
-                            $staff_values[] = "'" .fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]])) . "'";
-                        }else{
-                        $staff_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
-                          }
+                        if ($staff_v == 'BIRTHDATE') {
+                            $staff_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]])) . "'";
+                        } else {
+                            $staff_values[] = "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
+                        }
                         if ($staff_v == 'FIRST_NAME' || $staff_v == 'LAST_NAME' || $staff_v == 'EMAIL')
                             $check_query[] = $staff_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
 
                         if ($staff_v == 'BIRTHDATE')
-                            $check_query[] = $staff_v . '=' . "'" .fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]])) . "'";
+                            $check_query[] = $staff_v . '=' . "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]])) . "'";
 
-                        if($staff_v == 'ALTERNATE_ID')
-                        
-                         $check_query_alt_id[] = $staff_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
+                        if ($staff_v == 'ALTERNATE_ID')
 
+                            $check_query_alt_id[] = $staff_v . '=' . "'" . singleQuoteReplace("", "", $arr_v[$array_index[$staff_v]]) . "'";
                     }
                 }
-                
-                   
+
+
                 foreach ($login_authentication as $username) {
-                
+
                     if ($arr_v[$array_index[$username]] != '') {
 
-                         if ($username == 'USERNAME')
-                            $check_query_username[]= $username . '=' . "'" .(singleQuoteReplace("", "", $arr_v[$array_index[$username]]) ). "'";
- 
-                        }
-                    
-                    
-                   
+                        if ($username == 'USERNAME')
+                            $check_query_username[] = $username . '=' . "'" . (singleQuoteReplace("", "", $arr_v[$array_index[$username]])) . "'";
+                    }
                 }
-                
+
                 if (count($check_query) > 0) {
 
                     $check_exist = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" AND ", $check_query)));
 
                     $check_exist = $check_exist[1]['REC_EXISTS'];
-                if ($check_exist != 0){
-                $err_msg[0]= 'duplicate staff';
+                    if ($check_exist != 0) {
+                        $err_msg[0] = 'duplicate staff';
+                    }
                 }
-                }
-                
-                 if (count($check_query_alt_id) > 0) {
+
+                if (count($check_query_alt_id) > 0) {
                     $check_exist_al = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM staff WHERE ' . implode(" ", $check_query_alt_id)));
 
                     $check_exist_alt = $check_exist_al[1]['REC_EXISTS'];
-                 if ($check_exist_alt != 0){
-                 $err_msg[1]= 'duplicate alternet id';
+                    if ($check_exist_alt != 0) {
+                        $err_msg[1] = 'duplicate alternet id';
+                    }
                 }
-            
-                }
-                
-                 if (count($check_query_username) > 0) {
 
-                    $check_exist_al_username= DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ",$check_query_username)));
-                    $check_exist_alt_username= $check_exist_al_username[1]['REC_EXISTS'];
-                
-                 if ($check_exist_alt_username != 0){
-                 $err_msg[2]= 'duplicate username';
- 
-                 }
-                 }
+                if (count($check_query_username) > 0) {
+
+                    $check_exist_al_username = DBGet(DBQuery('SELECT COUNT(*) as REC_EXISTS FROM login_authentication WHERE ' . implode(" ", $check_query_username)));
+                    $check_exist_alt_username = $check_exist_al_username[1]['REC_EXISTS'];
+
+                    if ($check_exist_alt_username != 0) {
+                        $err_msg[2] = 'duplicate username';
+                    }
+                }
 
                 if ($check_exist == 0 && $check_exist_alt == 0 && $check_exist_alt_username == 0) {
                     DBQuery('INSERT INTO staff (' . implode(',', $staff_columns) . ') VALUES (' . implode(',', $staff_values) . ')');
+                    $staff_id = mysqli_insert_id($connection);
                     unset($staff_columns);
                     unset($staff_values);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -597,10 +574,10 @@ if ($category == 'staff') {
 
                     if ($arr_v[$array_index['PASSWORD']] != '') {
                         $la_columns[] = 'PASSWORD';
-                        $la_values[] = "'" . md5(str_replace("'", "", $arr_v[$array_index['PASSWORD']])) . "'";
+                        $la_values[] = "'" . GenerateNewHash(str_replace("'", "", $arr_v[$array_index['PASSWORD']])) . "'";
                     } else {
                         $la_columns[] = 'PASSWORD';
-                        $la_values[] = "'" . md5(trim(strtolower(str_replace("'", "", str_replace(" ", "", $arr_v[$array_index['FIRST_NAME']]))) . $staff_id)) . "'";
+                        $la_values[] = "'" . GenerateNewHash(trim(strtolower(str_replace("'", "", str_replace(" ", "", $arr_v[$array_index['FIRST_NAME']]))) . $staff_id)) . "'";
                     }
                     DBQuery('INSERT INTO login_authentication (' . implode(',', $la_columns) . ') VALUES (' . implode(',', $la_values) . ')');
                     unset($la_columns);
@@ -668,45 +645,39 @@ if ($category == 'staff') {
             echo '<div class="row m-b-10">';
             echo '<div class="col-xs-10">Number or records rejected:</div><div class="col-xs-2">' . (($rejected > 0) ? '<span class="text-danger">' . $rejected . '</span>' : $rejected) . '</div>';
             echo '</div>';
-            
-            
 
 
-            if(count($err_msg)==1){
-                $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg=$val;
-               }
+
+
+            if (count($err_msg) == 1) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg = $val;
+                }
                 echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is '.$msg.' found.</div>';
-                echo '</div>';
-                 
-                
-            }
-            if(count($err_msg)==2){
-                 $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg.= $val.' and ';
-               }
-               $msg=substr($val,0,-5);
-                echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are '.$msg.' found.</div>';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible cause for rejection is ' . $msg . ' found.</div>';
                 echo '</div>';
             }
-            if(count($err_msg)==3){
-                  $msg='';
-               foreach($err_msg as $key=>$val)
-               {
-                   $msg.= $val.' and ';
-               }
-               $msg=substr($val,0,-5);
+            if (count($err_msg) == 2) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg .= $val . ' and ';
+                }
+                $msg = substr($val, 0, -5);
                 echo '<div class="row m-t-10">';
-                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are '.$msg.' found.</div>';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are ' . $msg . ' found.</div>';
                 echo '</div>';
-            }            
-
+            }
+            if (count($err_msg) == 3) {
+                $msg = '';
+                foreach ($err_msg as $key => $val) {
+                    $msg .= $val . ' and ';
+                }
+                $msg = substr($val, 0, -5);
+                echo '<div class="row m-t-10">';
+                echo '<div class="col-xs-12 text-danger"><i class="icon-info22"></i> Possible causes for rejection are ' . $msg . ' found.</div>';
+                echo '</div>';
+            }
         }
         unset($err_msg);
         unset($arr_data);
@@ -720,11 +691,14 @@ if ($category == 'staff') {
 echo '</div>'; //.panel-body
 echo '<div class="panel-footer text-center"><a href="Modules.php?modname=tools/DataImport.php" class="btn btn-default"><i class="icon-arrow-left8"></i> Back to Data Import Tool</a></div>';
 
-function fromExcelToLinux($excel_time) {
+function fromExcelToLinux($excel_time)
+{
+    if (is_numeric($excel_time)) {
     $ex_date = ($excel_time - 25569) * 86400;
-
     return gmdate("Y-m-d", $ex_date);
-
+} else{
+        $newDateString = date_format(date_create_from_format('M/j/Y', $excel_time), 'Y-m-d');
+        return $newDateString;
+        // return date("Y-m-d", strtotime($excel_time));
+    }
 }
-
-?>

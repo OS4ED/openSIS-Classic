@@ -32,10 +32,10 @@ require_once "functions/PragRepFnc.php";
 function db_start()
 {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType, $connection;
-
+    $connection = new ConnectDBOpensis();
     switch ($DatabaseType) {
         case 'mysqli':
-            $connection = new ConnectDBOpensis();
+
             if ($connection->auto_init == true) {
                 $connection = $connection->init($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
                 mysqli_set_charset($connection, "utf8");
@@ -47,17 +47,18 @@ function db_start()
     if ($connection === false) {
         switch ($DatabaseType) {
             case 'mysqli':
-                $errormessage = mysqli_error($connection);
+                $errormessage = $connection->error;
                 break;
         }
-        db_show_error("", "" . _couldNotConnectToDatabase . ": $DatabaseServer", $errstring);
+        db_show_error("", "" . _couldNotConnectToDatabase . ": $DatabaseServer", $errormessage);
     }
     return $connection;
 }
 
 
 ##### Connection help #####
-$connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName))
+    $connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 
 # ---------- #
 #  Debugger  #
@@ -87,7 +88,8 @@ function DBQuery($sql)
     } else {
         $userId = '';
     }
-    $connection->query("set @userId= $userId;");
+    if (!empty($userId))
+        $connection->query("set @userId= $userId;");
     switch ($DatabaseType) {
         case 'mysqli':
 
@@ -99,6 +101,7 @@ function DBQuery($sql)
             $sql = par_rep("/([,\(=])[\r\n\t ]*''/", '\\1NULL', $sql);
             if (preg_match_all("/'(\d\d-[A-Za-z]{3}-\d{2,4})'/", $sql, $matches)) {
                 foreach ($matches[1] as $match) {
+                    $date_cheker_mod = explode('-', $match);
                     if (strlen($date_cheker_mod[2]) == 4 && $date_cheker_mod[2] < 1970) {
                         $month_names = array('JAN' => '01', 'FEB' => '02', 'MAR' => '03', 'APR' => '04', 'MAY' => '05', 'JUN' => '06', 'JUL' => '07', 'AUG' => '08', 'SEP' => '09', 'OCT' => '10', 'NOV' => '11', 'DEC' => '12');
                         $date_cheker_mod[1] = $month_names[$date_cheker_mod[1]];
@@ -133,7 +136,6 @@ function DBQuery($sql)
                 if ($user_agent[0] == 'Mozilla') {
                     $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
                 }
-
             }
             break;
     }
@@ -184,7 +186,6 @@ function DBQuery_assignment($sql)
                 if ($user_agent[0] == 'Mozilla') {
                     $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
                 }
-
             }
             break;
     }
@@ -233,7 +234,6 @@ function DBQueryMod($sql)
                 if ($user_agent[0] == 'Mozilla') {
                     $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
                 }
-
             }
             break;
     }
@@ -249,16 +249,15 @@ function db_fetch_row($result)
         case 'mysqli':
             $return = $result->fetch_assoc();
             if (is_array($return)) {
-                foreach ($return as $key => $value) {
+                foreach ($return as $key) {
                     if (is_int($key)) {
                         unset($return[$key]);
                     }
-
                 }
             }
             break;
     }
-    return @array_change_key_case($return, CASE_UPPER);
+    return (is_array($return)) ? array_change_key_case($return, CASE_UPPER) : $return;
 }
 
 // returns code to go into SQL statement for accessing the next value of a sequence function db_seq_nextval($seqname)
@@ -319,7 +318,8 @@ function db_properties($table)
         case 'mysqli':
             $result = DBQuery("SHOW COLUMNS FROM $table");
             while ($row = db_fetch_row($result)) {
-                $properties[strtoupper($row['FIELD'])]['TYPE'] = strtoupper($row['TYPE'], strpos($row['TYPE'], '('));
+                //$properties[strtoupper($row['FIELD'])]['TYPE'] = strtoupper($row['TYPE'], strpos($row['TYPE'], '('));
+                $properties[strtoupper($row['FIELD'])]['TYPE'] = strpos(strtoupper($row['TYPE']), '(');
                 if (!$pos = strpos($row['TYPE'], ',')) {
                     $pos = strpos($row['TYPE'], ')');
                 } else {
@@ -333,7 +333,6 @@ function db_properties($table)
                 } else {
                     $properties[strtoupper($row['FIELD'])]['NULL'] = "N";
                 }
-
             }
             break;
     }
@@ -391,16 +390,15 @@ function db_show_error($sql, $failnote, $additional = '')
     echo "<!-- " . _sqlStatement . ": \n\n $sql \n\n -->";
 
     if ($openSISNotifyAddress) {
-        $message = "" . _system . ": $openSISTitle \n";
+        $message = "System : " . $openSISTitle . " \n";
         $message .= "" . _date . ": " . date("m/d/Y h:i:s") . "\n";
-        $message .= "" . _page . ": " . $_SERVER['PHP_SELF'] . ' ' . ProgramTitle() . " \n\n";
+        $message .= " Page : " . $_SERVER['PHP_SELF'] . ' ' . ProgramTitle() . " \n\n";
         $message .= "" . _failureNotice . ":  $failnote \n";
         $message .= "" . _additionalInfo . ": $additional \n";
         $message .= "\n $sql \n";
         $message .= "" . _requestArray . ": \n" . ShowVar($_REQUEST, 'Y', 'N');
         $message .= "\n\n" . _sessionArray . ": \n" . ShowVar($_SESSION, 'Y', 'N');
         mail($openSISNotifyAddress, _openSisDatabaseError, $message);
-
     }
 
     die();
