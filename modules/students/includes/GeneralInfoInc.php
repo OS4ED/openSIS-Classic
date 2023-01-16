@@ -406,7 +406,7 @@ echo '<div class="col-md-2">';
 
 
 if (UserStudentID()) {
-    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND FILE_INFO=\'stuimg\'')); //  AND SYEAR=' . UserSyear() . '
+    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND FILE_INFO=\'stuimg\' AND ID = (SELECT MAX(ID) AS LATEST_UPLOADED_IMG FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3)')); //  AND SYEAR=' . UserSyear() . '
 }
 if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
 

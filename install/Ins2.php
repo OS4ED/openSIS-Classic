@@ -36,11 +36,15 @@ if (clean_param($_REQUEST["db"], PARAM_DATA) == '') {
 } else {
     $_SESSION['db'] = clean_param($_REQUEST["db"], PARAM_DATA);
 
-    if (isset($_REQUEST["newdb"]))
-        $newdb = clean_param($_REQUEST["newdb"], PARAM_ALPHA);
+    if (isset($_REQUEST["data_choice"])){
+        if($_REQUEST["data_choice"] == 'purgedb')
+            $purgedb = clean_param($_REQUEST["data_choice"], PARAM_ALPHA); // Added variable to check for removing existing data.
+        else if($_REQUEST["data_choice"] == 'newdb')
+            $newdb = clean_param($_REQUEST["data_choice"], PARAM_ALPHA);
+    }
 
-    if (isset($_REQUEST["purgedb"]))
-        $purgedb = clean_param($_REQUEST["purgedb"], PARAM_ALPHA); // Added variable to check for removing existing data.
+    // if (isset($_REQUEST["purgedb"]))
+    //     $purgedb = clean_param($_REQUEST["purgedb"], PARAM_ALPHA); // Added variable to check for removing existing data.
 
     // $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     $db = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password']);

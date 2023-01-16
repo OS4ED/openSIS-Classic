@@ -96,15 +96,15 @@ $err .= '<!DOCTYPE html>
     </body>
 </html>';
 //$dbconn = mysqli_connect($_SESSION['host'],$_SESSION['username'],$_SESSION['password'])
-$dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
-
-
-
+try{
+    $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
+    } catch (Exception $e) {
+        // echo 'Caught exception: ', $e->getMessage(), "\n";
+        exit($err);
+    }
 if ($dbconn->connect_errno != 0) {
-
     exit($err);
 } else {
-
     $qr = $dbconn->query("SHOW VARIABLES LIKE 'sql_mode'");
     $res = $qr->fetch_assoc();
     $res_arr = explode(',', $res['Value']);

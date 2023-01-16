@@ -86,6 +86,10 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 
         foreach ($periods_RET as $period)
             $fields_list['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'] . ' Teacher - Room';
+
+        $fields_list = array_merge($fields_list, array('PRIM_STUDENT_RELATION' => 'Primary Relationship', 'PRI_FIRST_NAME' => 'Primary First Name', 'PRI_LAST_NAME' => 'Primary Last Name', 'PRIM_HOME_PHONE' => 'Primary Home Phone', 'PRIM_WORK_PHONE' => 'Primary Work Phone', 'PRIM_CELL_PHONE' => 'Primary Cell/Mobile Phone', 'PRIM_EMAIL' => 'Primary Email', 'PRIM_CUSTODY' => 'Primary Custody of Student', 'PRIM_ADDRESS' => 'Primary Address', 'PRIM_STREET' => 'Primary Street', 'PRIM_CITY' => 'Primary City', 'PRIM_STATE' => 'Primary State', 'PRIM_ZIPCODE' => 'Primary Zip/Postal Code'));
+
+        $fields_list = array_merge($fields_list,  array('SEC_STUDENT_RELATION' => 'Secondary Relationship', 'SEC_FIRST_NAME' => 'Secondary First Name', 'SEC_LAST_NAME' => 'Secondary Last Name', 'SEC_HOME_PHONE' => 'Secondary Home Phone', 'SEC_WORK_PHONE' => 'Secondary Work Phone', 'SEC_CELL_PHONE' => 'Secondary Cell/Mobile Phone', 'SEC_EMAIL' => 'Secondary Email', 'SEC_CUSTODY' => 'Secondary Custody of Student', 'SEC_ADDRESS' => 'Secondary Address', 'SEC_STREET' => 'Secondary Street', 'SEC_CITY' => 'Secondary City', 'SEC_STATE' => 'Secondary State', 'SEC_ZIPCODE' => 'Secondary Zip/Postal Code'));
     }
     $custom_RET = DBGet(DBQuery('SELECT TITLE,ID,TYPE FROM custom_fields WHERE SYSTEM_FIELD !=\'Y\' ORDER BY SORT_ORDER'));
     foreach ($custom_RET as $field) {
@@ -206,6 +210,44 @@ if ($_REQUEST['search_modfunc'] == 'list') {
                     unset($RET[$stu_key]);
             }
         }
+
+        if ($_REQUEST['fields']['PRI_FIRST_NAME'] || $_REQUEST['fields']['PRI_LAST_NAME'] || $_REQUEST['fields']['PRIM_ADDRESS'] || $_REQUEST['fields']['PRIM_STREET'] || $_REQUEST['fields']['PRIM_CITY'] || $_REQUEST['fields']['PRIM_STATE'] || $_REQUEST['fields']['PRIM_ZIPCODE'] || $_REQUEST['fields']['PRIM_STUDENT_RELATION'] || $_REQUEST['fields']['PRIM_HOME_PHONE'] || $_REQUEST['fields']['PRIM_WORK_PHONE'] || $_REQUEST['fields']['PRIM_CELL_PHONE'] || $_REQUEST['fields']['PRIM_EMAIL'] || $_REQUEST['fields']['PRIM_CUSTODY'] || $_REQUEST['fields']['SEC_FIRST_NAME'] || $_REQUEST['fields']['SEC_LAST_NAME'] || $_REQUEST['fields']['SEC_ADDRESS'] || $_REQUEST['fields']['SEC_STREET'] || $_REQUEST['fields']['SEC_CITY'] || $_REQUEST['fields']['SEC_STATE'] || $_REQUEST['fields']['SEC_ZIPCODE'] || $_REQUEST['fields']['SEC_STUDENT_RELATION'] || $_REQUEST['fields']['SEC_HOME_PHONE'] || $_REQUEST['fields']['SEC_WORK_PHONE'] || $_REQUEST['fields']['SEC_CELL_PHONE'] || $_REQUEST['fields']['PRIM_EMAIL'] || $_REQUEST['fields']['PRIM_CUSTODY']) {
+
+            foreach ($RET as $stu_key => $stu_val) {
+                $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . $stu_val['STUDENT_ID'] . ' AND EMERGENCY_TYPE=\'Primary\''));
+                $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . $stu_val['STUDENT_ID'] . ' AND EMERGENCY_TYPE=\'Secondary\''));
+
+                if (!empty($pri_par_id)) {
+                    $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE,sjp.RELATIONSHIP as PRIM_STUDENT_RELATION,p.home_phone as PRIM_HOME_PHONE,p.work_phone as PRIM_WORK_PHONE,p.cell_phone as PRIM_CELL_PHONE, p.email as PRIM_EMAIL, p.custody as PRIM_CUSTODY FROM  student_address sa,people p,students_join_people sjp WHERE  sa.PEOPLE_ID=p.STAFF_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
+                    $contacts_RET = $Stu_prim_address[1];
+                    if ($contacts_RET['PRIM_CUSTODY'] == 'Y')
+                        $contacts_RET['PRIM_CUSTODY'] = 'Yes';
+                    else
+                        $contacts_RET['PRIM_CUSTODY'] = 'No';
+                }
+
+                if (!empty($sec_par_id)) {
+                    $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.type as SA_TYPE,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE,sjp.RELATIONSHIP as SEC_STUDENT_RELATION,sjp.EMERGENCY_TYPE,p.home_phone as SEC_HOME_PHONE,p.work_phone as SEC_WORK_PHONE,p.cell_phone as SEC_CELL_PHONE, p.email as SEC_EMAIL, p.custody as SEC_CUSTODY  FROM student_address sa,people p,students_join_people sjp WHERE p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
+                    foreach ($Stu_sec_address[1] as $ind => $col)
+                        $contacts_RET[$ind] = $col;
+                    if ($contacts_RET['SEC_CUSTODY'] == 'Y')
+                        $contacts_RET['SEC_CUSTODY'] = 'Yes';
+                    else
+                        $contacts_RET['SEC_CUSTODY'] = 'No';
+                }
+
+                // $contacts_RET[1] = $Stu_prim_address[1];
+                // foreach ($Stu_sec_address[1] as $ind => $col)
+                //     $contacts_RET[1][$ind] = $col;
+
+                if (!empty($contacts_RET)) {
+                    foreach ($contacts_RET as $add_key => $add_val) {
+                        $RET[$stu_key][$add_key] = $add_val;
+                    }
+                } else if (empty($contacts_RET) && $f == 1)
+                    unset($RET[$stu_key]);
+            }
+        }
         echo "<br><br>";
 
         if ($extra['array_function'] && function_exists($extra['array_function']))
@@ -253,6 +295,11 @@ if ($_REQUEST['search_modfunc'] == 'list') {
                 'MAIL_ZIPCODE' => _mailingZipcode,
             );
         }
+
+        $fields_list['Primary Contact'] = array('PRIM_STUDENT_RELATION' => 'Relationship', 'PRI_FIRST_NAME' => 'First Name', 'PRI_LAST_NAME' => 'Last Name', 'PRIM_HOME_PHONE' => 'Home Phone', 'PRIM_WORK_PHONE' => 'Work Phone', 'PRIM_CELL_PHONE' => 'Cell/Mobile Phone', 'PRIM_EMAIL' => 'Email', 'PRIM_CUSTODY' => 'Custody of Student', 'PRIM_ADDRESS' => 'Address', 'PRIM_STREET' => 'Street', 'PRIM_CITY' => 'City', 'PRIM_STATE' => 'State', 'PRIM_ZIPCODE' => 'Zip/Postal Code');
+
+        $fields_list['Secondary Contact'] = array('SEC_STUDENT_RELATION' => 'Relationship', 'SEC_FIRST_NAME' => 'First Name', 'SEC_LAST_NAME' => 'Last Name', 'SEC_HOME_PHONE' => 'Home Phone', 'SEC_WORK_PHONE' => 'Work Phone', 'SEC_CELL_PHONE' => 'Cell/Mobile Phone', 'SEC_EMAIL' => 'Email', 'SEC_CUSTODY' => 'Custody of Student', 'SEC_ADDRESS' => 'Address', 'SEC_STREET' => 'Street', 'SEC_CITY' => 'City', 'SEC_STATE' => 'State', 'SEC_ZIPCODE' => 'Zip/Postal Code');
+
         if ($extra['field_names'])
             $fields_list['General'] += $extra['field_names'];
     }

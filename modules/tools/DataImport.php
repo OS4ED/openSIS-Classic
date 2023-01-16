@@ -31,10 +31,10 @@ error_reporting(0);
 $extension_error = '';
 
 if (!extension_loaded('mbstring'))
-    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>mbstring</code></b> extension installed and enabled to use the Data Import Utility. </div>';
+    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>php-mbstring</code></b> extension installed and enabled to use the Data Import Utility. </div>';
 
 if (!extension_loaded('zip'))
-    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>zip</code></b> extension installed and enabled to use the Data Import Utility. </div>';
+    $extension_error .= '<div class="alert alert-danger alert-styled-left">You need to have the <b><code>php-zip</code></b> extension installed and enabled to use the Data Import Utility. </div>';
 
 if ($extension_error != '') {
     echo '<div class="panel">';

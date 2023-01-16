@@ -338,8 +338,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
                             $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
 
-                            $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE,sjp.RELATIONSHIP as PRIM_STUDENT_RELATION,p.home_phone as PRIM_HOME_PHONE,p.work_phone as PRIM_WORK_PHONE,p.cell_phone as PRIM_CELL_PHONE FROM  student_address sa,people p,students_join_people sjp WHERE  sa.PEOPLE_ID=p.STAFF_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
-                            $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.type as SA_TYPE,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE,sjp.RELATIONSHIP as SEC_STUDENT_RELATION,sjp.EMERGENCY_TYPE,p.home_phone as SEC_HOME_PHONE,p.work_phone as SEC_WORK_PHONE,p.cell_phone as SEC_CELL_PHONE  FROM student_address sa,people p,students_join_people sjp WHERE p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
+                            $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE,sjp.RELATIONSHIP as PRIM_STUDENT_RELATION,p.home_phone as PRIM_HOME_PHONE,p.work_phone as PRIM_WORK_PHONE,p.cell_phone as PRIM_CELL_PHONE, p.email as PRIM_EMAIL, p.custody as PRIM_CUSTODY FROM  student_address sa,people p,students_join_people sjp WHERE  sa.PEOPLE_ID=p.STAFF_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
+                            $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.type as SA_TYPE,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE,sjp.RELATIONSHIP as SEC_STUDENT_RELATION,sjp.EMERGENCY_TYPE,p.home_phone as SEC_HOME_PHONE,p.work_phone as SEC_WORK_PHONE,p.cell_phone as SEC_CELL_PHONE, p.email as SEC_EMAIL, p.custody as SEC_CUSTODY FROM student_address sa,people p,students_join_people sjp WHERE p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
 
                             $st_ja_pe = DBGet(DBQuery('select * from students_join_people where  STUDENT_ID=\'' . UserStudentID() . '\' and EMERGENCY_TYPE=\'Secondary\''));
                             $contacts_RET[1] = $Stu_prim_address[1];
@@ -386,6 +386,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 if ($contact['PRIM_CELL_PHONE'] != '') {
                                     echo "<tr><td style='font-weight:bold'>" . _cellPhone . " :</td><td>" . $contact['PRIM_CELL_PHONE'] . "</td></tr>";
                                 }
+                                if ($contact['PRIM_EMAIL'] != '') {
+                                    echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['PRIM_EMAIL'] . "</td></tr>";
+                                }
+                                if ($contact['PRIM_CUSTODY'] != '') {
+                                    echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['PRIM_CUSTODY']=='Y' ? "Yes":"No") . "</td></tr>";
+                                }
                                 echo "</table>";
 
                                 echo "</td><td></td><td valign=top>";
@@ -399,9 +405,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         echo "<tr><td style='font-weight:bold'>" . _firstName . " :</td><td>" . $contact['SEC_FIRST_NAME'] . "</td></tr>";
                                     if ($contact['SEC_LAST_NAME'] != '')
                                         echo "<tr><td style='font-weight:bold'>" . _lastName . " :</td><td>" . $contact['SEC_LAST_NAME'] . "</td></tr>";
-                                    if ($contact['SEC_EMAIL'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
-                                    }
+                                    // if ($contact['SEC_EMAIL'] != '') {
+                                    //     echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
+                                    // }
 
                                     if ($contact['SEC_ADDRESS'] != '') {
                                         echo "<tr><td style='font-weight:bold'>" . _addressLine_1 . " :</td><td>" . $contact['SEC_ADDRESS'] . "</td></tr>";
@@ -431,6 +437,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     }
                                     if ($contact['SEC_CELL_PHONE'] != '') {
                                         echo "<tr><td style='font-weight:bold'>" . _cellPhone . " :</td><td>" . $contact['SEC_CELL_PHONE'] . "</td></tr>";
+                                    }
+                                    if ($contact['SEC_EMAIL'] != '') {
+                                        echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
+                                    }
+                                    if ($contact['SEC_CUSTODY'] != '') {
+                                        echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['SEC_CUSTODY']=='Y' ? "Yes":"No") . "</td></tr>";
                                     }
 
                                     echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";

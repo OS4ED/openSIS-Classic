@@ -105,6 +105,8 @@ include 'Warehouse.php';
 array_rwalk($_REQUEST, 'strip_tags');
 $title_set = '';
 
+$_REQUEST['modname'] = sqlSecurityFilter($_REQUEST['modname']);
+
 if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'student' && substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 5) != 'Atten' && substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 5) != 'users' && clean_param($_REQUEST['modname'], PARAM_NOTAGS) != 'students/AddUsers.php' && $_REQUEST['modname'] != 'tools/Backup.php' && (substr(clean_param($_REQUEST['modname'], PARAM_NOTAGS), 0, 10) != 'attendance' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/StudentSummary.php' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/DailySummary.php' || clean_param($_REQUEST['modname'], PARAM_NOTAGS) == 'attendance/AddAbsences.php')) {
     $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));

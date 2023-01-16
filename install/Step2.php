@@ -106,11 +106,11 @@ if(page && page!="index.php"){
                                             <div class="form-group">
                                                 <label class="control-label">&nbsp;</label>
                                                 <div class="m-t-0">
-                                                    <label class="checkbox-inline"><input type="checkbox" name="purgedb" value="opensis" /> Remove data from existing database</label>
+                                                    <label class="radio-inline"><input type="radio" name="data_choice" value="purgedb" /> Remove data from existing database</label>
                                                     <br>
                                                     <label class="control-label m-0">OR</label>
                                                     <br>
-                                                    <label class="checkbox-inline"><input type="checkbox" name="newdb" value="opensis" /> Create new database</label>
+                                                    <label class="radio-inline"><input type="radio" name="data_choice" value="newdb" /> Create new database</label>
                                                 </div>
                                             </div>
                                         </div>
