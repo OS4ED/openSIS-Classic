@@ -1,7 +1,8 @@
 # openSIS
 Community Edition version 9.0 (12/31/2022)
+Created by [OS4ED](https://www.os4ed.com/)
 
-Created by [openSIS](https://www.opensis.com/) is an easy to use Student Information System for organizing student information and school-related operations to promote efficiency in K-12 and higher education school systems.
+[openSIS](https://www.opensis.com/) is an easy to use Student Information System for organizing student information and school-related operations to promote efficiency in K-12 and higher education school systems.
 
 ## Features
 
