@@ -1,8 +1,8 @@
-# openSIS
-Community Edition version 9.0 (12/31/2022)
+# openSIS Classic
+Community Edition version 9.0 (Rel date: 12/31/2022)
 Created by [OS4ED](https://www.os4ed.com/)
 
-[openSIS](https://www.opensis.com/) is an easy to use Student Information System for organizing student information and school-related operations to promote efficiency in K-12 and higher education school systems.
+openSIS is an easy to use Student Information System for organizing student information and school-related operations to promote efficiency in K-12, trade schools and higher education school systems.
 
 ## Key Features
 
@@ -32,4 +32,4 @@ openSIS Community Edition requires
 
 ## License
 
-openSIS is an Open Source Project licensed under the GNU General Public License, the full license can be found [here](https://github.com/OS4ED/openSIS-Classic/blob/master/docs/License.txt)
+openSIS is an Open Source Project licensed under the GNU General Public License, the full license can be found [here](https://github.com/OS4ED/openSIS-Classic/blob/master/docs/License.txt).
