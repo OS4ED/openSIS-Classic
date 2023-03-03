@@ -430,6 +430,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             $date = date("Y-m-d H:i:s");
             $fname_ins = singleQuoteReplace("'", "''", $_SESSION['FIRST_NAME']);
             $lname_ins = singleQuoteReplace("'", "''", $_SESSION['LAST_NAME']);
+            $ip = sqlSecurityFilter($ip);
             DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,SCHOOL_ID) values('$_SESSION[UserSyear]','$_SESSION[STAFF_ID]','$fname_ins','$lname_ins','$_SESSION[PROFILE]','$_SESSION[USERNAME]','$date','$_SESSION[FAILED_LOGIN]','$ip','Success',$_SESSION[CURRENT_SCHOOL_ID])");
         }
 
@@ -529,6 +530,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         $date = date("Y-m-d H:i:s");
+        $ip = sqlSecurityFilter($ip);
         DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,SCHOOL_ID) values('" . $_SESSION['UserSyear'] . "','" . $student_RET[1]['STUDENT_ID'] . "','" . singleQuoteReplace("'", "''", $student_RET[1]['FIRST_NAME']) . "','" . singleQuoteReplace("'", "''", $student_RET[1]['LAST_NAME']) . "','Student','" . $student_RET[1]['USERNAME'] . "','$date','" . $student_RET[1]['FAILED_LOGIN'] . "','$ip','Success','" . $student_RET[1]['SCHOOL_ID'] . "')");
         $failed_login = $student_RET[1]['FAILED_LOGIN'];
 
@@ -588,6 +590,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $faillog_time = date("Y-m-d h:i:s");
 
         $openSIS2_uname = mysqli_real_escape_string($connection, trim(optional_param('USERNAME', 0, PARAM_ALPHAEXT)));
+        $ip = sqlSecurityFilter($ip);
         DBQuery("INSERT INTO login_records (USER_NAME,FAILLOG_TIME,IP_ADDRESS,SYEAR,STATUS) values('" . $openSIS2_uname . "','$faillog_time','$ip','$_SESSION[UserSyear]','Failed')");
 
 
