@@ -25,6 +25,14 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+
+include 'functions/SqlSecurityFnc.php';
+
+if (isset($_POST['school']))
+    $_POST['school'] = sqlSecurityFilter($_POST['school'], 'no');
+if (isset($_REQUEST['school']))
+    $_REQUEST['school'] = sqlSecurityFilter($_REQUEST['school'], 'no');
+
 $var1 = explode("?", $_SERVER['REQUEST_URI']);
 include("functions/ParamLibFnc.php");
 $url = validateQueryString($var1[1]);
