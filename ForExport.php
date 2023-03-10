@@ -35,6 +35,8 @@ $start_time = time();
 include 'Warehouse.php';
 array_rwalk($_REQUEST,'strip_tags');
 
+$_REQUEST = sqlSecurityFilter($_REQUEST);
+
 if(!isset($_REQUEST['_openSIS_PDF']))
 {
 	Warehouse('header');
@@ -67,13 +69,12 @@ if(optional_param('modname','',PARAM_NOTAGS))
 		}
 	}
 	else
-		
 		$modname = optional_param('modname','',PARAM_NOTAGS);
 
 	
 		if(optional_param('LO_save','',PARAM_INT)!='1' && !isset($_REQUEST['_openSIS_PDF']) && (strpos(optional_param($modname,'',PARAM_NOTAGS),'miscellaneous/')===false || $modname=='miscellaneous/Registration.php' || $modname=='miscellaneous/Export.php' || $modname=='miscellaneous/Portal.php'))
-		$_SESSION['_REQUEST_vars'] = sqlSecurityFilter($_REQUEST);
-                 $_SESSION['_REQUEST_vars'][]=str_replace('+'," ",$_REQUEST['head_html']);
+			$_SESSION['_REQUEST_vars'] = sqlSecurityFilter($_REQUEST);
+		$_SESSION['_REQUEST_vars'][] = str_replace('+'," ",$_REQUEST['head_html']);
 
 	$allowed = false;
 	include 'Menu.php';
