@@ -33,6 +33,10 @@ if(!$_REQUEST['modfunc'] && !isset($_REQUEST['search_modfunc'])){
     unset($_SESSION['MassDrops.php']);
 }
 DrawBC("" . _scheduling . " > " . ProgramTitle());
+
+if (isset($_REQUEST['marking_period_id']))
+    $_REQUEST['marking_period_id'] = sqlSecurityFilter($_REQUEST['marking_period_id']);
+
 unset($sql);
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
@@ -276,7 +280,7 @@ if (UserStudentID()) {
             $QI = ($sql);
             $wk_schedule_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,sp.TITLE FROM school_periods sp WHERE sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID = \'' . UserSchool() . '\' ORDER BY sp.SORT_ORDER'), array('TIME_PERIOD' => '_makeTimePeriod'));
 
-            $mp_start_date = DBGET(DBQuery('SELECT start_date FROM marking_periods WHERE MARKING_PERIOD_ID = ' . $_REQUEST['marking_period_id']));
+            $mp_start_date = DBGET(DBQuery('SELECT start_date FROM marking_periods WHERE MARKING_PERIOD_ID = "' . $_REQUEST['marking_period_id'] . '"'));
 
 
             $sql_week = 'SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID
