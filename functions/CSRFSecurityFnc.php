@@ -6,7 +6,7 @@
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
 #  report cards, eligibility, transcripts, parent portal, 
-#  student portal and more.
+#  student portal and more.   
 #
 #  Visit the openSIS web site at http://www.opensis.com to learn more.
 #  If you have question regarding this system or the license, please send 
@@ -26,35 +26,50 @@
 #
 #***************************************************************************************
 
-session_start();
-include 'RedirectRootInc.php';
-include 'ConfigInc.php';
-include 'Warehouse.php';
+class CSRFSecure {
+    public static function CreateToken() {
+        // Generating a unique token and it's expiration time
+        $token = bin2hex(random_bytes(32));
+        $expiresAt = time() + 60; // Expiration time is set to 1 minute
 
-$REQUEST_title = sqlSecurityFilter($_REQUEST['title']);
+        $_SESSION["_TOKEN"] = $token;
+        $_SESSION["_TOKEN_EXPIRY"] = $expiresAt;
 
-if($REQUEST_title)
-{
-    $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
-    $course_id = sqlSecurityFilter($_REQUEST['course_id']);
-    $subject_id = sqlSecurityFilter($_REQUEST['subject_id']);
-    
-    if($_REQUEST['course_period_id'])
-    {
-        $_SESSION['MassSchedule.php']['course_period_id']=$_REQUEST['course_period_id'];
-        $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));
-        $_SESSION['MassSchedule.php']['gender'] = $gender_res[1]['GENDER_RESTRICTION'];
-        // $_REQUEST['title'] = str_replace('"', '\"', $_REQUEST['title']);
-        if ($gender_res[1]['GENDER_RESTRICTION'] != 'N')
-            $REQUEST_title = $REQUEST_title . ' - Gender : '.($gender_res == 'M' ? 'Male' : 'Female');
+        return $token;
     }
 
-    if($_REQUEST['course_id'])
-        $_SESSION['MassSchedule.php']['course_id']=$course_id;
-    if($_REQUEST['subject_id'])
-        $_SESSION['MassSchedule.php']['subject_id']=$_REQUEST['subject_id'];
-    
-    echo $REQUEST_title;
+    public static function CreateTokenField() {
+    	// Generating a unique token and it's expiration time
+        $token = bin2hex(random_bytes(32));
+        $expiresAt = time() + 60; // Expiration time is set to 1 minute
+
+        $_SESSION["_TOKEN"] = $token;
+        $_SESSION["_TOKEN_EXPIRY"] = $expiresAt;
+        
+    	echo "<input type='hidden' name='TOKEN' value='" . $token . "' />";
+    }
+
+    public static function ValidateToken($token) {
+	    if (!isset($_SESSION["_TOKEN"]) || !isset($_POST["TOKEN"])) {
+	        return false;
+	    }
+	    else {
+	    	if ($_POST["TOKEN"] == $_SESSION["_TOKEN"]) {
+	    		if (time() <= $_SESSION["_TOKEN_EXPIRY"]) {
+	    			unset($_SESSION["_TOKEN"]);
+	    			unset($_SESSION["_TOKEN_EXPIRY"]);
+
+	    			return true;
+	    		}
+	    		else {
+	    			return false;
+	    		}
+	    	}
+	    	else {
+	    		return false;
+	    	}
+	    }
+	}
 }
 
 ?>

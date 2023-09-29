@@ -92,7 +92,16 @@ function AllowEdit($modname = false)
             elseif ($modname == 'grades/Grades.php')
                 return true;
             elseif ($modname == 'grades/InputFinalGrades.php') {
-                $grade_post_date = DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND MARKING_PERIOD_ID=' . UserMP()));
+                if (!empty($_REQUEST['mp'])) {
+                    if (substr($_REQUEST['mp'], 0, 1) == 'E')
+                        $selected_mp = ltrim($_REQUEST['mp'], 'E');
+                    else
+                        $selected_mp = $_REQUEST['mp'];
+                } else {
+                    $selected_mp = UserMP();
+                }
+
+                $grade_post_date = DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND MARKING_PERIOD_ID="' . $selected_mp . '" '));
                 if ($grade_post_date[1]['POST_START_DATE'] != '' && $grade_post_date[1]['POST_END_DATE'] != '') {
                     if (date('Y-m-d') >= $grade_post_date[1]['POST_START_DATE'] && date('Y-m-d') <= $grade_post_date[1]['POST_END_DATE'])
                         return true;

@@ -1,25 +1,48 @@
 <?php
-include('RedirectRootInc.php');
+#**************************************************************************
+#  openSIS is a free student information system for public and non-public 
+#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#
+#  openSIS is  web-based, open source, and comes packed with features that 
+#  include student demographic info, scheduling, grade book, attendance, 
+#  report cards, eligibility, transcripts, parent portal, 
+#  student portal and more.
+#
+#  Visit the openSIS web site at http://www.opensis.com to learn more.
+#  If you have question regarding this system or the license, please send 
+#  an email to info@os4ed.com.
+#
+#  This program is released under the terms of the GNU General Public License as  
+#  published by the Free Software Foundation, version 2 of the License. 
+#  See license.txt.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#***************************************************************************************
+
+include 'RedirectRootInc.php';
 include 'ConfigInc.php';
 include 'Warehouse.php';
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-//$_REQUEST['USERINFO_FIRST_NAME']= _;
-//        $_REQUEST['USERINFO_LAST_NAME']= _;
-//        
-//        $_REQUEST['USERINFO_EMAIL']= _;
-//        $_REQUEST['USERINFO_MOBILE']= _;
-//        $_REQUEST['USERINFO_SADD']= _;
-//        $_REQUEST['USERINFO_CITY'] = _;
-//        $_REQUEST['USERINFO_STATE'] = _;
-//        $_REQUEST['USERINFO_ZIP']= _;
 
-//echo $_REQUEST['USERINFO_FIRST_NAME'];
-//echo '<br>';
-//echo  $_REQUEST['USERINFO_LAST_NAME'];
+if (isset($_REQUEST['ajax']))
+    $_REQUEST['ajax'] = sqlSecurityFilter($_REQUEST['ajax']);
+
+// $_REQUEST['USERINFO_FIRST_NAME']= _;
+// $_REQUEST['USERINFO_LAST_NAME']= _;
+
+// $_REQUEST['USERINFO_EMAIL']= _;
+// $_REQUEST['USERINFO_MOBILE']= _;
+// $_REQUEST['USERINFO_SADD']= _;
+// $_REQUEST['USERINFO_CITY'] = _;
+// $_REQUEST['USERINFO_STATE'] = _;
+// $_REQUEST['USERINFO_ZIP']= _;
+
 if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQUEST['USERINFO_EMAIL'] || $_REQUEST['USERINFO_MOBILE'] || $_REQUEST['USERINFO_SADD'] || $_REQUEST['USERINFO_CITY'] || $_REQUEST['USERINFO_STATE'] || $_REQUEST['USERINFO_ZIP']) {
     $stf_ids = '';
 
@@ -86,10 +109,6 @@ $columns = array(
     'STUFULLNAME' => _associatedStudentSName,
 );
 
-// echo "<pre>";
-// print_r($searched_staffs);
-// echo die();
-
 
 if ($_REQUEST['add_id'] == 'new')
     echo '<FORM name=sel_staff id=sel_staff action="ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=' . $_REQUEST['type'] . '&func=search&nfunc=status&ajax=' . $_REQUEST['ajax'] . '&add_id=new&address_id=' . $_REQUEST['address_id'] . '" METHOD=POST>';
@@ -100,10 +119,6 @@ echo '<span id="sel_err" class="text-danger"></span>';
 
 ListOutput($searched_staffs, $columns, $singular, $plural, false, $group = false, $options, 'ForWindow');
 unset($_REQUEST['func']);
-
-// echo "<pre>";
-// print_r($searched_staffs);
-// echo die();
 
 if (!empty($searched_staffs))
     echo '<div id="select-people-div"><br><input type="button" class="btn btn-primary" value="Select" name="button" onclick="SelectedParent(\'' . $_REQUEST['address_id'] . '\',\'' . $_REQUEST['p_type'] . '\',\'' . $_REQUEST['other_p_erson_id'] . '\')"></div>';

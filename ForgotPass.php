@@ -36,6 +36,9 @@ include("functions/ProperDateFnc.php");
 require_once("functions/PragRepFnc.php");
 include("lang/language.php");
 include("functions/langFnc.php");
+include "functions/CSRFSecurityFnc.php";
+
+$CSRF_TOKEN = CSRFSecure::CreateToken();
 
 
 function DateInputAY($value, $name, $counter = 1, $placeholder = _enterDate) {
@@ -295,8 +298,8 @@ if(langDirection()=='rtl') { $dir="rtl"; }else{ $dir="ltr"; }
         <title>openSIS Student Information System</title>
         <link rel="shortcut icon" href="favicon.ico">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="styles/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="assets/css/login.css">
         <script src='js/Ajaxload.js'></script>
@@ -414,11 +417,17 @@ forgotpassusername_init(this.value);" /><span></span><?=_student?></label>
 
     </div>
     <input type="hidden" id="valid_func" value="N"/>
-    <div id="divErr">
-<?php
-if ($_SESSION['err_msg'] != '')
-    echo $_SESSION['err_msg'];
- unset($_SESSION['err_msg']);
+                                        <div id="divErr">
+                                            <?php
+                                                if ($_SESSION['err_msg'] != '') {
+                                            ?>
+                                                <div class="alert alert-danger" role="alert">   
+                                                    <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
+                                                    <?php echo $_SESSION['err_msg']; ?>
+                                                </div>
+                                            <?php
+                                                }
+                                                unset($_SESSION['err_msg']);
                                             ?>
                                         </div>
 
@@ -442,6 +451,7 @@ if ($_SESSION['err_msg'] != '')
                                                 
                                             </span>
                                         </div>
+                                        <input type="hidden" name="TOKEN" value="<?php echo $CSRF_TOKEN; ?>">
                                         <div class="row">
                                             <div class="col-xs-6">
                                                 <input type="submit" class="btn btn-success btn-lg btn-block" value="<?=_confirm?>" />
@@ -481,6 +491,7 @@ if ($_SESSION['err_msg'] != '')
                                             <span style="display: none" id="uname_calculating_email"><img src="assets/ajax_loader.gif"/></span>
                                             <span id="uname_err_msg_email"></span>
                                         </div>
+                                        <input type="hidden" name="TOKEN" value="<?php echo $CSRF_TOKEN; ?>">
                                         <div class="row">
                                             <div class="col-xs-6">
                                                 <input type="submit" class="btn btn-success btn-lg btn-block" name="save" onClick="return forgotusername();" value="<?=_confirm?>" />

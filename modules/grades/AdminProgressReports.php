@@ -131,7 +131,7 @@ if($_REQUEST['modfunc']=='save')
                                     $fy_mp_id = $school_years[1]['MARKING_PERIOD_ID'];  
                     $courselist_ret = DBGet(DBQuery('SELECT s.TITLE AS COURSE, s.COURSE_ID, cp.COURSE_PERIOD_ID,cp.TEACHER_ID 
                                                     FROM gradebook_grades g, courses s, course_periods cp, gradebook_assignments ga, schedule sc
-                                                        WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID AND sc.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sc.STUDENT_ID=g.STUDENT_ID 
+                                                        WHERE (cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID OR cp.COURSE_ID = ga.COURSE_ID) AND sc.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sc.STUDENT_ID=g.STUDENT_ID 
                                                     AND s.COURSE_ID = cp.COURSE_ID AND ga.assignment_id = g.assignment_id AND (ga.MARKING_PERIOD_ID=\''.UserMP().'\' OR ga.MARKING_PERIOD_ID=\''.$fy_mp_id.'\') and  g.STUDENT_ID=\''.$student['STUDENT_ID'].'\' and s.syear=\''.UserSyear().'\' group by cp.COURSE_PERIOD_ID'));
                     
                     if(!empty($courselist_ret[1])){

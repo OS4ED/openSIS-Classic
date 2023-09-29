@@ -215,7 +215,7 @@ function mySearch($type, $extra = '') {
         $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserSchool() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._teacher.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._teacher.'</label><div class="col-lg-8">';
         echo "<SELECT name=teacher_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $teacher)
             echo "<OPTION value=$teacher[STAFF_ID]>$teacher[FULL_NAME]</OPTION>";
@@ -224,7 +224,7 @@ function mySearch($type, $extra = '') {
 
         $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._subject.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._subject.'</label><div class="col-lg-8">';
         echo "<SELECT name=subject_id class=\"form-control\"><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $subject)
             echo "<OPTION value=$subject[SUBJECT_ID]>$subject[TITLE]</OPTION>";
@@ -235,7 +235,7 @@ function mySearch($type, $extra = '') {
         $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._period.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._period.'</label><div class="col-lg-8">';
         echo "<SELECT name=period_id class=\"form-control\"><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $period)
             echo "<OPTION value=$period[PERIOD_ID]>$period[TITLE]</OPTION>";
@@ -249,7 +249,9 @@ function mySearch($type, $extra = '') {
         echo '</div>'; //.row
 
 
-        echo '<div>';
+        echo '<hr/>';
+
+        echo '<div class="text-right">';
         echo Buttons(_submit, _reset, 'onclick="self_disable(this);"');
         echo '</div>';
         PopTable('footer');

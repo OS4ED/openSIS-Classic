@@ -28,8 +28,11 @@
 #***************************************************************************************
 
 session_start();
+
 include 'RedirectRootInc.php';
-include "functions/ParamLibFnc.php";
+include 'functions/ParamLibFnc.php';
+include 'functions/SqlSecurityFnc.php';
+
 define('students', 'students');
 define('users', 'users');
 define('scheduling', 'scheduling');
@@ -37,6 +40,9 @@ define('grades', 'grades');
 define('attendance', 'attendance');
 define('messaging', 'messaging');
 define('tools', 'tools');
+
+if (isset($_REQUEST['year_id']))
+    $_REQUEST['year_id'] = sqlSecurityFilter($_REQUEST['year_id'], 'no');
 
 $url = validateQueryString(curPageURL());
 if ($url === FALSE) {
@@ -166,7 +172,10 @@ if (!isset($_REQUEST['_openSIS_PDF'])) {
     echo "<BODY>";
 }
 
+echo '<input id="cframe" type="hidden" value="">';
+
 echo '<div id="loading-image"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> ' . _loading . '...</div>';
+
 echo '<div class="navbar navbar-inverse bg-white">
             <div class="navbar-header">
                 <a class="sidebar-control sidebar-main-toggle hidden-xs" data-popup="tooltip" data-placement="bottom" data-container="body" data-original-title="Collapse Menu"><i class="icon-paragraph-justify3"></i></a>

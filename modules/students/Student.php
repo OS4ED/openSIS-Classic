@@ -1293,10 +1293,10 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 $select .= " AND s.ALT_ID = '" . str_replace("'", "''", $_REQUEST['altid']) . "' ";
             }
             if ($_REQUEST['last']) {
-                $select .= " AND LOWER(s.LAST_NAME) LIKE '" . str_replace("'", "''", strtolower(trim($_REQUEST['last']))) . "%' ";
+                $select .= " AND LOWER(s.LAST_NAME) LIKE '" . addslashes(strtolower(trim($_REQUEST['last']))) . "%' ";
             }
             if ($_REQUEST['first']) {
-                $select .= " AND LOWER(s.FIRST_NAME) LIKE '" . str_replace("'", "''", strtolower(trim($_REQUEST['first']))) . "%' ";
+                $select .= " AND LOWER(s.FIRST_NAME) LIKE '" . addslashes(strtolower(trim($_REQUEST['first']))) . "%' ";
             }
             if ($_REQUEST['grade']) {
                 $select .= " AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= '" . str_replace("'", "''", $_REQUEST['grade']) . "') ";

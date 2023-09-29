@@ -366,7 +366,7 @@ function Widgets($item, $allow_widget = false) {
                     $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\' )' . $extra['FROM'];
                     $extra['functions'] += array('MAILING_LABEL' => 'MailingLabel');
                 }
-                if ($_REQUEST[modname] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php') {
+                if ($_REQUEST[modname] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php' || $_REQUEST[modname] == 'grades/ProgressReports.php') {
                     $extra['search'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox name=mailing_labels value=Y><span></span> '._mailingLabels.'</label>';
                 } else {
                     $extra['search'] .= '<div class="form-group">';

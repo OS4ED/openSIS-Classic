@@ -828,3 +828,23 @@ function printViewSchedule(exportFileName, viewMode) {
     // let win = window.open("", "myWindow");
     // win.document.write('<html><head><title>openSIS Student Information System</title><link rel="shortcut icon" href="../favicon.ico"></head><body><iframe src="' + dataSrc + '" style="min-height:100vh;width:100%" frameborder="0"></iframe></body></html>');
 }
+
+function togglePasswordView(thisElement, targetElement) {
+    $(thisElement).toggleClass("fa-eye-slash fa-eye");
+    var inputTarget = document.getElementById(targetElement);
+    if (inputTarget.getAttribute("type") === "password") {
+        inputTarget.setAttribute("type", "text");
+    } else {
+        inputTarget.setAttribute("type", "password");
+    }
+}
+
+function triggerclassListExcel(thisElement, actionValue){
+    thisElement.form.action += "&excelReport=" + actionValue;
+    thisElement.form.submit();
+}
+
+function triggerAdvancedReportExcel(thisElement, actionValue){
+    thisElement.form.action += "&excelReport=" + actionValue;
+    thisElement.form.submit();
+}

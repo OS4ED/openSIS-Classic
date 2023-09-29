@@ -93,8 +93,8 @@ if($_REQUEST['fields']['STAFF_ADDRESS1_PRIMARY'] || $_REQUEST['fields']['STAFF_A
 //             $extra['SELECT'] .= ',sta.staff_address2_primary';
 //        }
     }
-    $extra['FROM'] .= ' ,staff_address sta';
-     $extra['WHERE'] .=' AND sta.STAFF_ID=s.STAFF_ID ';
+    $extra['FROM'] .= ' LEFT JOIN staff_address sta ON sta.STAFF_ID=s.STAFF_ID';
+    // $extra['WHERE'] .=' AND sta.STAFF_ID=s.STAFF_ID ';
 }
 if($_REQUEST['fields']['STAFF_HOME_PHONE'] || $_REQUEST['fields']['STAFF_WORK_PHONE'] || $_REQUEST['fields']['STAFF_MOBILE_PHONE'] || $_REQUEST['fields']['STAFF_WORK_EMAIL'] || $_REQUEST['fields']['STAFF_ZIP_PRIMARY'] || $_REQUEST['fields']['STAFF_PERSONAL_EMAIL'])
 {
@@ -117,8 +117,8 @@ if($_REQUEST['fields']['STAFF_HOME_PHONE'] || $_REQUEST['fields']['STAFF_WORK_PH
 //             $extra['SELECT'] .= ',sta.staff_address2_primary';
 //        }
     }
-    $extra['FROM'] .= ' ,staff_contact st_cont';
-     $extra['WHERE'] .=' AND st_cont.STAFF_ID=s.STAFF_ID ';
+    $extra['FROM'] .= ' LEFT JOIN staff_contact st_cont ON st_cont.STAFF_ID=s.STAFF_ID';
+    // $extra['WHERE'] .=' AND st_cont.STAFF_ID=s.STAFF_ID ';
 }
 
 if($_REQUEST['fields']['STAFF_EMERGENCY_FIRST_NAME'] || $_REQUEST['fields']['STAFF_EMERGENCY_LAST_NAME'] || $_REQUEST['fields']['STAFF_EMERGENCY_RELATIONSHIP'] || $_REQUEST['fields']['STAFF_EMERGENCY_HOME_PHONE'] || $_REQUEST['fields']['STAFF_EMERGENCY_MOBILE_PHONE'] || $_REQUEST['fields']['STAFF_EMERGENCY_WORK_PHONE'] || $_REQUEST['fields']['STAFF_EMERGENCY_EMAIL'])
@@ -134,8 +134,9 @@ if($_REQUEST['fields']['STAFF_EMERGENCY_FIRST_NAME'] || $_REQUEST['fields']['STA
             $extra['SELECT'] .= ',ste.staff_emergency_first_name,ste.staff_emergency_last_name,ste.staff_emergency_relationship,ste.staff_emergency_home_phone,ste.staff_emergency_mobile_phone,ste.staff_emergency_work_phone,ste.staff_emergency_email';
         }
     }
-    $extra['FROM'] .= ' ,staff_emergency_contact ste';
-    $extra['WHERE'] .= ' AND ste.STAFF_ID=s.STAFF_ID';
+
+    $extra['FROM'] .= ' LEFT JOIN staff_emergency_contact ste ON ste.STAFF_ID=s.STAFF_ID';
+    // $extra['WHERE'] .= ' AND ste.STAFF_ID=s.STAFF_ID';
 }
 
 if($_REQUEST['fields']['STAFF_CERTIFICATION_DATE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_EXPIRY_DATE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_CODE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_SHORT_NAME'] || $_REQUEST['fields']['STAFF_CERTIFICATION_NAME'] || $_REQUEST['fields']['STAFF_PRIMARY_CERTIFICATION_INDICATOR'])
@@ -151,8 +152,9 @@ if($_REQUEST['fields']['STAFF_CERTIFICATION_DATE'] || $_REQUEST['fields']['STAFF
             $extra_cert['SELECT'] .= ',stc.staff_certification_date,stc.staff_certification_expiry_date,stc.staff_certification_name,stc.staff_certification_short_name,stc.staff_primary_certification_indicator,staff_certification_code';
         }
     }
-    $extra_cert['FROM'] .= ' ,staff_certification stc';
-    $extra_cert['WHERE'] .= ' AND stc.STAFF_ID=s.STAFF_ID';
+
+    $extra_cert['FROM'] .= ' LEFT JOIN staff_certification stc ON stc.STAFF_ID=s.STAFF_ID';
+    // $extra_cert['WHERE'] .= ' AND stc.STAFF_ID=s.STAFF_ID';
 }
 
 if($_REQUEST['fields']['CATEGORY'] || $_REQUEST['fields']['JOB_TITLE'] || $_REQUEST['fields']['JOINING_DATE'] || $_REQUEST['fields']['END_DATE'])
@@ -373,9 +375,10 @@ if($_REQUEST['search_modfunc']=='list')
                 }
 
                $extra['functions']['BIRTHDATE'] = 'ProperDate';
-$extra['functions']['PRIMARY_LANGUAGE_ID'] ='_makeLanguage';
-$extra['functions']['SECOND_LANGUAGE_ID'] ='_makeLanguage';
-$extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
+               $extra['functions']['PRIMARY_LANGUAGE_ID'] ='_makeLanguage';
+               $extra['functions']['SECOND_LANGUAGE_ID'] ='_makeLanguage';
+               $extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
+               $extra_cert['functions']['STAFF_CERTIFICATION_DATE'] = 'ProperDate';
                 if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
                 {
                     $RET = GetStaffList($extra);
@@ -384,7 +387,7 @@ $extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
                 else
                 {
                     $RET = GetUserStaffList($extra);
-                    $RET_CERT = GetUserStaffList($extra_cert);
+                    // $RET_CERT = GetUserStaffList($extra_cert);
                 }
                      
                     if($extra['array_function'] && function_exists($extra['array_function']))
@@ -398,10 +401,36 @@ $extra['functions']['THIRD_LANGUAGE_ID'] ='_makeLanguage';
 //                    echo "<pre>";
                     echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
                   ListOutputPrint_Report($RET,$columns,$extra['singular']?$extra['singular']:'User',$extra['plural']?$extra['plural']:'users',array(),$extra['LO_group'],$extra['LO_options']);
-                  echo "<br>";
+
+                    echo "<table>";
+                    echo '<tr style="height: 10px;"><td></td></tr>';
+                    echo '</table>';
+                    
                   if($_REQUEST['fields']['STAFF_CERTIFICATION_DATE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_EXPIRY_DATE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_CODE'] || $_REQUEST['fields']['STAFF_CERTIFICATION_SHORT_NAME'] || $_REQUEST['fields']['STAFF_CERTIFICATION_NAME'] || $_REQUEST['fields']['STAFF_PRIMARY_CERTIFICATION_INDICATOR'])
                   {
-                      ListOutputPrint_Report($RET_CERT,$columns_cert,$extra_cert['singular']?$extra_cert['singular']:'User',$extra_cert['plural']?$extra_cert['plural']:'users',array(),$extra_cert['LO_group'],$extra_cert['LO_options']);
+                     if (count($RET) > 0) {
+                        foreach ($RET as $one_staff) {
+                            $extra_cert['WHERE'] .= ' AND s.STAFF_ID = ' . $one_staff['STAFF_ID'];
+                            $RET_CERT = GetUserStaffList($extra_cert);
+
+                            echo "<table>";
+                            echo '<tr><td colspan="2"><b>Certificate Information</b></td></tr>';
+                            echo '<tr><td colspan="2"></td></tr>';
+                            echo '<tr><td>' . _staff . ':</td>';
+                            echo '<td>' . $one_staff['FULL_NAME'] . '</td></tr>';
+                            echo '<tr><td colspan="2"></td></tr>';
+                            echo '</table>';
+
+                            if (count($RET_CERT) == 0) {
+                                echo '<div style=text-align:left><table cellpadding="6" width="100%" cellspacing="1" border="1 " style="border-collapse:collapse" align="center"><tr><td style="text-align: center;font-style: italic;accent-color: ;">No certifications were found.</td></tr></table></div>';
+                            } else {
+                                ListOutputPrint_Report($RET_CERT, $columns_cert, $extra_cert['singular'] ? $extra_cert['singular'] : 'User', $extra_cert['plural'] ? $extra_cert['plural'] : 'users', array(), $extra_cert['LO_group'], $extra_cert['LO_options']);
+                            }
+                            echo "<table>";
+                            echo '<tr style="height: 10px;"><td></td></tr>';
+                            echo '</table>';
+                        }
+                    }
                   }
                   
                     echo "</body></html>";
@@ -601,4 +630,3 @@ foreach ($LANGUAGE_RET as $language_array) {
 }
 return $language[$value];
 }
-?>

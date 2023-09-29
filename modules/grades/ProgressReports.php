@@ -97,8 +97,18 @@ if ($_REQUEST['modfunc'] == 'save') {
                 echo "<td>" . GetMP(UserMP()) . " </td></tr>";
 
 
-                if ($_REQUEST['mailing_labels'] == 'Y')
-                    echo '<tr><TD colspan=2>' . $student['MAILING_LABEL'] . '</TD></TR>';
+                if ($_REQUEST['mailing_labels'] == 'Y') {
+                    $mail_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1,STREET_ADDRESS_2,CITY,STATE,ZIPCODE FROM student_address WHERE TYPE=\'Mail\' AND  STUDENT_ID=' . $student['STUDENT_ID']));
+
+                    if (empty($student['MAILING_LABEL']) && !empty($mail_address) && trim($mail_address[1]['STREET_ADDRESS_1']) != '') {
+                        $student['MAILING_LABEL'] = $mail_address[1]['STREET_ADDRESS_1'] . ($mail_address[1]['STREET_ADDRESS_2'] != '' ? ' ' . $mail_address[1]['STREET_ADDRESS_2'] : ' ') . '<br>' . $mail_address[1]['CITY'] . ', ' . $mail_address[1]['STATE'] . ' ' . $mail_address[1]['ZIPCODE'];
+                    }
+
+                    if (!empty($student['MAILING_LABEL'])) {
+                        echo '<tr><TD colspan=2 height="10"></TD></tr>';
+                        echo '<tr><TD colspan=2>' . $student['MAILING_LABEL'] . '</TD></tr>';
+                    }
+                }
 
                 unset($student_points);
                 unset($total_points);
@@ -235,10 +245,10 @@ if (!$_REQUEST['modfunc']) {
         echo "<FORM class=\"form-inline\" action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST['include_inactive'])) . "&_openSIS_PDF=true&head_html=Student+Progress+Report method=POST target=_blank>";
         Widgets('mailing_labels');
         $extra['extra_header_left'] = '<div class="form-group">';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=assigned_date><span></span>'._assignedDate.'</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_ec checked><span></span>'._excludeUngradedECAssignments.'</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=due_date checked><span></span>'._dueDate.'</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_notdue><span></span>'._excludeUngradedAssignmentsNotDue.'</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=assigned_date><span></span> '._assignedDate.'</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_ec checked><span></span> '._excludeUngradedECAssignments.'</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=due_date checked><span></span> '._dueDate.'</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline checkbox-switch switch-success"><INPUT type=checkbox value=Y name=exclude_notdue><span></span> '._excludeUngradedAssignmentsNotDue.'</label>';
         $extra['extra_header_left'] .= $extra['search'];
         $extra['extra_header_left'] .= '</div>';
         $extra['search'] = '';

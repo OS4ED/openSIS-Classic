@@ -27,8 +27,7 @@
 #***************************************************************************************
 error_reporting(0);
 
-
-include('lang/supportedLanguages.php');
+include 'lang/supportedLanguages.php';
 
 if(isset($_REQUEST['language'])){
     if(in_array($_REQUEST['language'], array_keys($supportedLanguages))){
@@ -46,12 +45,12 @@ if(!isset($langCode2)){
 
 $_SESSION['language'] = $langCode2;
 
-include("lang/lang_".$_SESSION['language'].".php");
+include "lang/lang_" . $_SESSION['language'] . ".php";
 
-include('RedirectRootInc.php');
-include("Data.php");
-include("Warehouse.php");
-// var_dump($_SESSION);
+include 'RedirectRootInc.php';
+include "Data.php";
+include "Warehouse.php";
+
 $cont = db_start();
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 $maintain_qr = DBGet(DBQuery('select system_maintenance_switch from system_preference_misc where system_maintenance_switch=\'Y\''));
@@ -102,9 +101,9 @@ require_once('functions/langFnc.php');
                 <div class="panel-body">
 
                     <div class="row">
-                        <!--                        <div class="col-md-5 text-center school-logo">
-                                                    <img src="assets/images/peach_county_logo.png" width="180" />
-                                                </div>-->
+                        <!-- <div class="col-md-5 text-center school-logo">
+                            <img src="assets/images/peach_county_logo.png" width="180" />
+                        </div> -->
                         <div class="col-md-12">
                             <?php
                             if ($_REQUEST['reason'])
@@ -160,7 +159,7 @@ require_once('functions/langFnc.php');
                                     ?>
                                     <input type="password" class="form-control password" placeholder="<?=_enterPassword?>" id="password" name='PASSWORD' AUTOCOMPLETE='off' value="<?php echo $pwd; ?>">
                                 </div>
-                               <div class="language-selection">
+                                <div class="language-selection">
                                     <i class="icon-earth"></i>
                                         <select class="select-search" name="language" id="language" onchange="window.location = 'index.php?language='+this.value">
                                         <?php
@@ -169,8 +168,8 @@ require_once('functions/langFnc.php');
                                             }
                                         ?>
                                         </select>
-                                    </div>
-                                    <div class="row">
+                                </div>
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group text-center">
                                         <div class="checkbox checkbox-switch switch-success switch-sm">
@@ -186,12 +185,15 @@ require_once('functions/langFnc.php');
                                     </p>
                                                                     </div>
                                 </div>
+                                <?php
+                                    CSRFSecure::CreateTokenField();
+                                ?>
                                 <div class="row">
-                                <div class="col-md-12">
-                                    <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();
+                                    <div class="col-md-12">
+                                        <button name='log' type="submit" class="btn btn-success btn-lg btn-block" onMouseDown="set_ck();
                                             Set_Cookie('dhtmlgoodies_tab_menu_tabIndex', '', -1)"><?=_login?></button>
                                 
-                                </div>
+                                    </div>
                                 </div>
                                 <script type="text/javascript">
                                     document.getElementById("forgotPass").onclick = function() {

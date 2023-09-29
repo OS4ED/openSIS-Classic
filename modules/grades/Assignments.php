@@ -553,6 +553,7 @@ if (!$_REQUEST['modfunc'] && $course_id) {
         DrawHeader($title, $delete_button . '<INPUT type=submit id="setupAssgnTypeBtnOne" class="btn btn-primary" value=' . _save . ' onclick="formcheck_assignments(this);">');
         echo '<div class="panel-body">';
         echo "<INPUT type=hidden name=type_id value='$_REQUEST[assignment_id]' id=type_id>";
+        echo "<INPUT type=hidden value='$_REQUEST[assignment_type_id]' id=assignment_type_id>";
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6"><div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['assignment_id'] . '][TITLE]', '' . _title . ' *', 'size=36') . '</div></div>';
 

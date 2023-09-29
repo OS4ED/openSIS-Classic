@@ -965,7 +965,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 }
                             }
                         }
-                        
+
                         if (($columns['TEACHER_ID'] && $columns['TEACHER_ID'] != $values[1]['TEACHER_ID'])
                             || ($columns['BEGIN_DATE'] && $columns['BEGIN_DATE'] != $values[1]['BEGIN_DATE']) || ($columns['END_DATE'] && $columns['END_DATE'] != $values[1]['END_DATE']) || ($columns['MARKING_PERIOD_ID'] && $columns['MARKING_PERIOD_ID'] != $values[1]['MARKING_PERIOD_ID'])
                         ) {
@@ -1886,6 +1886,13 @@ if ($_REQUEST['modfunc'] == 'detail') {
 
 if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action']) {
     DrawBC("" . _schoolSetup . " > " . ProgramTitle());
+
+    //update filled_seats while clicking the course_period
+    $get_det = DBGet(DBQuery('SELECT TOTAL_SEATS,FILLED_SEATS FROM course_periods WHERE COURSE_PERIOD_ID="' . $_REQUEST['course_period_id'] . '" '));
+    $total_sch_rec = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS TOT_REC FROM schedule WHERE COURSE_PERIOD_ID="' . $_REQUEST['course_period_id'] . '" AND (END_DATE >=  "' . date('Y-m-d') . '" || END_DATE =  \'0000-00-00\' || END_DATE IS NULL)'));
+    if ($get_det[1]['FILLED_SEATS'] != $total_sch_rec[1]['TOT_REC'])
+        DBQuery('UPDATE course_periods SET FILLED_SEATS="' . $total_sch_rec[1]['TOT_REC'] . '" WHERE COURSE_PERIOD_ID="' . $_REQUEST['course_period_id'] . '" ');
+
     $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
@@ -2022,7 +2029,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         if ($_REQUEST['course_period_id'] != 'new' && $RET['AVAILABLE_SEATS'] != $RET['TOTAL_SEATS'])
             $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">' . _primaryTeacher . '</label><div class="col-md-8">' . SelectInputDisabledMsg($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', '', $div, "" . _toChangeTeacherGoToSchoolSetupCoursesTeacherReAssignment . "") . '<input type="hidden" id="hidden_primary_teacher_id" name="hidden_primary_teacher_id" value="' . $RET['TEACHER_ID'] . '"></div></div>';
         else
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">' . _primaryTeacher . '</label><div class="col-md-8">' . SelectInput($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', 'onchange="validate_cp_teacher_fields()"', $div) . '<input type="hidden" id="hidden_primary_teacher_id" name="hidden_primary_teacher_id" value="' . $RET['TEACHER_ID'] . '"></div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">' . _primaryTeacher . '</label><div class="col-md-8">' . SelectInput($RET['TEACHER_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][TEACHER_ID]', '', $teachers, 'N/A', 'onchange="validate_cp_teacher_fields()"', $div) . '<input type="hidden" id="hidden_primary_teacher_id" name="hidden_primary_teacher_id" value="' . $RET['TEACHER_ID'] . '"></div></div>';
         $header .= '</div>'; //.col-sm-6.col-lg-4
         $header .= '</div>'; //.row
 
@@ -2514,7 +2521,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
     echo '</div>'; // .col-md-4
 
     if (clean_param($_REQUEST['subject_id'], PARAM_ALPHANUM) && $_REQUEST['subject_id'] != 'new') {
-        $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY c.TITLE";
+        $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY CAST(c.TITLE AS unsigned)";
         $QI = DBQuery($sql);
         $courses_RET = DBGet($QI);
 
@@ -2551,7 +2558,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
 
             foreach ($periods_RET as $one_CP_k => $one_CP_v) {
                 if ($one_CP_v['MARKING_PERIOD_ID'] == '') {
-                    $mp_DET = DBGet(DBQuery('SELECT GROUP_CONCAT(`marking_period_id`) AS `mp_ids` FROM `marking_periods` WHERE `start_date` >= (SELECT MAX(`start_date`) AS `start_date` FROM `marking_periods` WHERE \'' . $one_CP_v['BEGIN_DATE'] . '\' BETWEEN `start_date` AND `end_date` AND `syear` = \''.UserSyear().'\' AND `school_id`=\''.UserSchool().'\') AND `end_date` <= (SELECT MIN(`end_date`) AS `end_date` FROM `marking_periods` WHERE \'' . $one_CP_v['END_DATE'] . '\' BETWEEN `start_date` AND `end_date` AND `syear` = \''.UserSyear().'\' AND `school_id`=\''.UserSchool().'\')'));
+                    $mp_DET = DBGet(DBQuery('SELECT GROUP_CONCAT(`marking_period_id`) AS `mp_ids` FROM `marking_periods` WHERE `start_date` >= (SELECT MAX(`start_date`) AS `start_date` FROM `marking_periods` WHERE \'' . $one_CP_v['BEGIN_DATE'] . '\' BETWEEN `start_date` AND `end_date` AND `syear` = \'' . UserSyear() . '\' AND `school_id`=\'' . UserSchool() . '\') AND `end_date` <= (SELECT MIN(`end_date`) AS `end_date` FROM `marking_periods` WHERE \'' . $one_CP_v['END_DATE'] . '\' BETWEEN `start_date` AND `end_date` AND `syear` = \'' . UserSyear() . '\' AND `school_id`=\'' . UserSchool() . '\')'));
                     $mp_DET_combined = explode(",", $mp_DET[1]['MP_IDS']);
 
                     if (in_array(UserMP(), $mp_DET_combined)) {

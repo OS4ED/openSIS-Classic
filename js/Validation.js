@@ -3588,20 +3588,26 @@ function formcheck_assignments(this_DET) {
 
   var data = document.getElementsByName(
     "tables[" + assignment_type_id + "][FINAL_GRADE_PERCENT]"
-  )[0];
-  if (data.value == "") {
-    $("#divErr").html(
-      '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent cannot be blank</div>'
-    );
-    return false;
-  }
-  if (data.value <= 0) {
-    $("#divErr").html(
-      '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent should be greater than zero</div>'
-    );
-    data.value = "";
-    data.focus();
-    return false;
+  );
+  if(data.length > 0 ){
+    data = data[0];
+    if (data.value == "") {
+      $("#divErr").html(
+        '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent cannot be blank</div>'
+      );
+      return false;
+    }
+    if (data.value <= 0) {
+      $("#divErr").html(
+        '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Weight Percent should be greater than zero</div>'
+      );
+      data.value = "";
+      data.focus();
+      return false;
+    }
+  } 
+  else {
+    data = data;
   }
 
   if (type_id.trim() == "") {

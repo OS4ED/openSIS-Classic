@@ -761,8 +761,17 @@ function GetStuListAttn(& $extra) {
 ########################validation functions#######################################
 
 function scheduleAssociation($cp_id) {
-    $asso = DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM schedule WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\' LIMIT 0,1'));
-    if ($asso[1]['COURSE_PERIOD_ID'] != '')
+    // $asso = DBGet(DBQuery('SELECT COURSE_PERIOD_ID FROM schedule WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\'  LIMIT 0,1'));
+
+    // if ($asso[1]['COURSE_PERIOD_ID'] != '' )
+    //     return true;
+    # Function used to return true if any schedule record was present irrespective of dropped status.
+    # Modified: Function will only return true if any *ACTIVE* scheduling record is present i.e. the difference between the total number of students scheduled and the total number of students dropped in a Course Period is greater than zero (0).
+
+    $tot_ScheduleStu = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS tot_sche FROM schedule WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\''));
+    $tot_droppedStu = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS tot_drop FROM schedule WHERE COURSE_PERIOD_ID=\'' . $cp_id . '\' AND END_DATE < CURRENT_DATE() '));
+
+    if ($tot_ScheduleStu[1]['TOT_SCHE'] - $tot_droppedStu[1]['TOT_DROP'] > 0)
         return true;
 }
 

@@ -32,7 +32,7 @@ DrawBC(""._users." > " . ProgramTitle());
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
     if (clean_param($_REQUEST['tab'], PARAM_ALPHAMOD) == 'password') {
         //print_r($_REQUEST);exit;
-        $column_name = _PASSWORD;
+        $column_name = 'PASSWORD';
         $pass_current = paramlib_validation($column_name, $_REQUEST['values']['current']);
         $pass_new = paramlib_validation($column_name, $_REQUEST['values']['new']);
         $pass_verify = paramlib_validation($column_name, $_REQUEST['values']['verify']);
@@ -282,13 +282,13 @@ if (!$_REQUEST['modfunc']) {
         if ($note)
             echo ErrorMessage(array($note), 'note');
         echo '<div class="row">';
-        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._currentPassword.'</label><div class="col-md-8"><INPUT placeholder="'._currentPassword.'" type=password class=form-control name=values[current] AUTOCOMPLETE = off></div></div></div>';
+        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._currentPassword.'</label><div class="col-md-8"><div class="stu_age_holder"><INPUT placeholder="'._currentPassword.'" type=password class=form-control id=values[current] name=values[current] AUTOCOMPLETE=off><div class="p-t-10 text-right stu_age"><i id="password_view" class="fa fa-eye-slash cursor-pointer" onClick="togglePasswordView(this, \'values[current]\')"></i></div></div></div></div></div>';
         echo '</div>'; //.row
         echo '<div class="row">';
-        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._newPassword.'</label><div class="col-md-8"><INPUT type=password placeholder="'._newPassword.'" id=new_pass class=form-control name=values[verify] AUTOCOMPLETE = off onkeyup=passwordStrength(this.value);passwordMatch();></div></div></div><div class="col-md-3"><div class="help-block text-white p-10" id=passwordStrength></div></div>';
+        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._newPassword.'</label><div class="col-md-8"><div class="stu_age_holder"><INPUT type=password placeholder="'._newPassword.'" id=new_pass class=form-control name=values[verify] AUTOCOMPLETE=off onkeyup=passwordStrength(this.value);passwordMatch();><div class="p-t-10 text-right stu_age"><i id="password_view" class="fa fa-eye-slash cursor-pointer" onClick="togglePasswordView(this, \'new_pass\')"></i></div></div></div></div></div><div class="col-md-3"><div class="help-block text-white p-10" id=passwordStrength></div></div>';
         echo '</div>'; //.row
         echo '<div class="row">';
-        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._verifyNewPassword.'</label><div class="col-md-8"><INPUT placeholder="'._verifyNewPassword.'" type=password id=ver_pass class=form-control name=values[new] AUTOCOMPLETE = off onkeyup=passwordMatch()></div></div></div><div class="col-md-3"><div class="help-block text-white p-10" id=passwordMatch></div></div>';
+        echo '<div class="col-md-6"><div class="form-group clearfix"><label class="control-label col-md-4">'._verifyNewPassword.'</label><div class="col-md-8"><div class="stu_age_holder"><INPUT placeholder="'._verifyNewPassword.'" type=password id=ver_pass class=form-control name=values[new] AUTOCOMPLETE=off onkeyup=passwordMatch()><div class="p-t-10 text-right stu_age"><i id="password_view" class="fa fa-eye-slash cursor-pointer" onClick="togglePasswordView(this, \'ver_pass\')"></i></div></div></div></div></div><div class="col-md-3"><div class="help-block text-white p-10" id=passwordMatch></div></div>';
         echo '</div>';
     }
 

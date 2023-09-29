@@ -35,6 +35,7 @@ require_once "functions/PragRepFnc.php";
 include "AuthCryp.php";
 include 'functions/SqlSecurityFnc.php';
 include_once("functions/PasswordHashFnc.php");
+include "functions/CSRFSecurityFnc.php";
 
 function db_start() {
     global $DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, $DatabasePort, $DatabaseType;
@@ -123,7 +124,7 @@ function db_fetch_row($result) {
             }
             break;
     }
-    return @array_change_key_case($return, CASE_UPPER);
+    return (is_array($return)) ? array_change_key_case($return, CASE_UPPER) : $return;
 }
 
 // returns code to go into SQL statement for accessing the next value of a sequence function db_seq_nextval($seqname)
@@ -271,16 +272,22 @@ $username_stf_email = sqlSecurityFilter($_REQUEST['username_stf_email']);
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));
 if ($_REQUEST['pass_type_form'] == 'password') {
     if ($_REQUEST['pass_user_type'] == 'pass_student') {
-        if ($_REQUEST['password_stn_id'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Student Id.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['password_stn_id'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Student Id.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['uname'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Username.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['month_password_dob'] == '' || $_REQUEST['day_password_dob'] == '' || $_REQUEST['year_password_dob'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Birthday Properly.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
         }
-        if ($_REQUEST['uname'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
-        }
-        if ($_REQUEST['month_password_dob'] == '' || $_REQUEST['day_password_dob'] == '' || $_REQUEST['year_password_dob'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Birthday Properly.</b></font>';
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
@@ -299,15 +306,21 @@ if ($_REQUEST['pass_type_form'] == 'password') {
         }
     }
     if ($_REQUEST['pass_user_type'] == 'pass_staff') {
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['uname'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Username.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['password_stf_email'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Email Address.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+        }
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
+            echo'<script>window.location.href="ForgotPass.php"</script>';
+        }
 
-        if ($_REQUEST['uname'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
-        }
-        if ($_REQUEST['password_stf_email'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
-        }
 
         if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
 
@@ -323,12 +336,18 @@ if ($_REQUEST['pass_type_form'] == 'password') {
         }
     }
     if ($_REQUEST['pass_user_type'] == 'pass_parent') {
-        if ($_REQUEST['uname'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Username.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['uname'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Username.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['password_stf_email'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Email Address.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
         }
-        if ($_REQUEST['password_stf_email'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
@@ -346,18 +365,25 @@ if ($_REQUEST['pass_type_form'] == 'password') {
         }
     }
 }
+
 if ($_REQUEST['user_type_form'] == 'username') {
     if ($_REQUEST['uname_user_type'] == 'uname_student') {
-        if ($_REQUEST['username_stn_id'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Student Id.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['username_stn_id'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Student Id.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['pass'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Password.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['month_username_dob'] == '' || $_REQUEST['day_username_dob'] == '' || $_REQUEST['year_username_dob'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Birthday Properly.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
         }
-        if ($_REQUEST['pass'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
-        }
-        if ($_REQUEST['month_username_dob'] == '' || $_REQUEST['day_username_dob'] == '' || $_REQUEST['year_username_dob'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Birthday Properly.</b></font>';
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
@@ -392,12 +418,18 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
     }
     if ($_REQUEST['uname_user_type'] == 'uname_staff') {
-        if ($_REQUEST['pass'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['pass'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Password.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['username_stf_email'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Email Address.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
         }
-        if ($_REQUEST['username_stf_email'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
@@ -432,12 +464,18 @@ if ($_REQUEST['user_type_form'] == 'username') {
         }
     }
     if ($_REQUEST['uname_user_type'] == 'uname_parent') {
-        if ($_REQUEST['pass'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Password.</b></font>';
-            echo'<script>window.location.href="ForgotPass.php"</script>';
+        if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
+            if ($_REQUEST['pass'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Password.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
+            if ($_REQUEST['username_stf_email'] == '') {
+                $_SESSION['err_msg'] = 'Please Enter Email Address.';
+                echo'<script>window.location.href="ForgotPass.php"</script>';
+            }
         }
-        if ($_REQUEST['username_stf_email'] == '') {
-            $_SESSION['err_msg'] = '<font color="red"><b>Please Enter Email Address.</b></font>';
+        else {
+            $_SESSION['err_msg'] = 'Invalid attempt! Please try again.';
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
