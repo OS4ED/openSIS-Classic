@@ -890,7 +890,7 @@ function CheckBirthDate(fm, fd, fy) {
 }
 
 function numberOnly(event) {
-  var keynum = event.keyCode || e.which;
+  var keynum = event.keyCode || event.which;
 
   if (
     (keynum > 47 && keynum < 58) ||
@@ -904,7 +904,7 @@ function numberOnly(event) {
   else return false;
 }
 function numberOnlyMod(event, param) {
-  var keynum = event.keyCode || e.which;
+  var keynum = event.keyCode || event.which;
 
   if (keynum != 16) {
     if (
@@ -924,7 +924,7 @@ function numberOnlyMod(event, param) {
   }
 }
 function withoutspace_forgotpass(event) {
-  var keynum = event.keyCode || e.which;
+  var keynum = event.keyCode || event.which;
   if (keynum == 32) return false;
   else return true;
 }

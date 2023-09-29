@@ -133,7 +133,11 @@ if (User('PROFILE') == 'admin') {
         echo '</div>'; //.col-md-6
         echo '</div>'; //.row
     } else {
-        echo '<div class="panel panel-default">';
+        if ($_REQUEST['modname'] == 'users/UserAdvancedReportStaff.php' && $_REQUEST['modfunc'] == 'list') {
+            echo '<div>';
+        } else {
+            echo '<div class="panel panel-default">';
+        }
 
         if (!$_REQUEST['next_modname'])
             $_REQUEST['next_modname'] = 'users/Staff.php';
@@ -216,11 +220,10 @@ if (User('PROFILE') == 'admin') {
             $columns = $extra['columns_before'] + $columns;
         if (is_array($extra['columns_after']))
             $columns += $extra['columns_after'];
-        if (is_array($extra['link']))
+        if (is_array($extra['link'])) {
             $link = $extra['link'];
-        else {
+        } else {
             $link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
-
             $link['FULL_NAME']['variables'] = array('staff_id' => 'STAFF_ID');
         }
 
@@ -239,7 +242,11 @@ if (User('PROFILE') == 'admin') {
         foreach ($staff_RET as $si => $sd)
             $_SESSION['staff_order'][$si] = $sd['STAFF_ID'];
         //print_r($staff_RET);
-        ListOutput($staff_RET, $columns, $singular, $plural, $link, false, $extra['options']);
+        if ($_REQUEST['modname'] == 'users/UserAdvancedReportStaff.php' && $_REQUEST['modfunc'] == 'list') {
+            ListOutput($staff_RET, $columns, $singular, $plural, array(), false, $extra['options']);
+        } else {
+            ListOutput($staff_RET, $columns, $singular, $plural, $link, false, $extra['options']);
+        }
         echo '</div>'; //.panel
     }
 }

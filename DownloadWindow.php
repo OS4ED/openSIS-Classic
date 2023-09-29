@@ -25,16 +25,19 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('RedirectRootInc.php'); 
+
+include 'RedirectRootInc.php';
 include 'Warehouse.php';
 include 'Data.php';
-// include('functions/SqlSecurityFnc.php');
 
-// $down_id = sqlSecurityFilter($_REQUEST['down_id']);
+if (isset($_REQUEST['down_id']))
+    $_REQUEST['down_id'] = sqlSecurityFilter($_REQUEST['down_id']);
+if (isset($_REQUEST['filename']))
+    $_REQUEST['filename'] = sqlSecurityFilter($_REQUEST['filename']);
 
 if(isset($_REQUEST['down_id']) && $_REQUEST['down_id']!='')
 {
-     if ((isset($_REQUEST['studentfile']) && $_REQUEST['studentfile'] == 'Y') || (isset($_REQUEST['userfile']) && $_REQUEST['userfile'] == 'Y'))
+    if ((isset($_REQUEST['studentfile']) && $_REQUEST['studentfile'] == 'Y') || (isset($_REQUEST['userfile']) && $_REQUEST['userfile'] == 'Y'))
         $downfile_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE id=\'' . $_REQUEST['down_id'] . '\''));
     else
         $downfile_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE download_id=\'' . $_REQUEST['down_id'] . '\''));

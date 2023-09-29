@@ -1,0 +1,9 @@
+RewriteEngine on
+
+<ifModule mod_rewrite.c>
+
+Options -Indexes
+
+</IfModule>
+
+RewriteRule \.(sql)$ /messageforcurious [L]

@@ -33,7 +33,7 @@ $QI = DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . U
 $periods_RET = DBGet($QI);
 
 DrawBC(""._scheduling." > " . ProgramTitle());
-echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
+echo "<FORM class='m-0' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 DrawHeader($period_select);
 echo '</FORM>';
 if ($_REQUEST['search_modfunc'] == 'list') {
@@ -58,8 +58,17 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 unset($extra);
 $extra['force_search'] = true;
 $extra['new'] = true;
+
+$extra['search'] .= '<div class="row">';
+$extra['search'] .= '<div class="col-md-6">';
 Widgets('course');
+$extra['search'] .= '</div>'; //.col-md-6
+
+$extra['search'] .= '<div class="col-md-6">';
 Widgets('request');
+$extra['search'] .= '</div>'; //.col-md-6
+$extra['search'] .= '</div>'; //.row
+
 foreach ($periods_RET as $period) {
     $extra['SELECT'] .= ',NULL AS PERIOD_' . $period['PERIOD_ID'];
     $extra['columns_after']['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'];

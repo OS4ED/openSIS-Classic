@@ -57,19 +57,20 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             $_openSIS['User'] = array(1 => array('STAFF_ID' => $course_period['TEACHER_ID'], 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserSchool() . ',', 'SYEAR' => UserSyear()));
             $_SESSION['UserCoursePeriod'] = $course_period['COURSE_PERIOD_ID'];
+            if ($_REQUEST['excelReport'] != 'Y') {
+                echo '<table width="100%" bgcolor="#fff" cellpadding="0" cellspacing="0" border="0"><tbody>';
+                echo '<tr><td>';
 
-            echo '<table width="100%" bgcolor="#fff" cellpadding="0" cellspacing="0" border="0"><tbody>';
-            echo '<tr><td>';
-
-            echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-            echo "<tr><td width=105>" . DrawLogo() . "</td>";
-            echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._teacherClassList."</div></td>";
-            echo "<td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr>";
-            echo "<tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr>";
-            echo "</table>";
-            echo '</td></tr>';
-            echo '<tr><td width="100%">';
-            echo "<table>";
+                echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+                echo "<tr><td width=105>" . DrawLogo() . "</td>";
+                echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._teacherClassList."</div></td>";
+                echo "<td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredBy." openSIS</td></tr>";
+                echo "<tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr>";
+                echo "</table>";
+                echo '</td></tr>';
+                echo '<tr><td width="100%">';
+                echo "<table>";
+            }
             echo '<tr><td>'._teacherName.'</td>';
             echo '<td>' . $course_period['TEACHER'] . '</td></tr>';
             echo '<tr><td>'._courseName.'</td>';
@@ -275,12 +276,18 @@ if ($_REQUEST['modfunc'] == 'save') {
                         $date = date("Y-m-d");
                     }
 
-                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>="' . $date . '" OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ("' . $date . '"<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND ("' . $date . '"<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+                    if ($_REQUEST['include_inactive'] != 'Y') {
+                        $exclude_inactive .= ' AND ("' . $date . '"<=ss.END_DATE OR ss.END_DATE IS NULL)';
+                    }
 
-                    if ($get_schedule[1]['TOT'] > 0 && is_countable($RET) && count($RET) > 0)
-                        $table = ListOutputPrintReportMod($RET, $columns);
-                    else
-                        $table = '<br><br><b><font style="color:red">'._noStudentsFound.'.</font></b>';
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ("' . $date . '"<=ssm.END_DATE OR ssm.END_DATE IS NULL)' . $exclude_inactive));
+
+                    if ($_REQUEST['excelReport'] != 'Y') {
+                        if ($get_schedule[1]['TOT'] > 0 && is_countable($RET) && count($RET) > 0)
+                            $table = ListOutputPrintReportMod($RET, $columns);
+                        else
+                            $table = '<br><br><b><font style="color:red">'._noStudentsFound.'.</font></b>';
+                    }
                     unset($cr_pr_id);
                     unset($date);
                 }
@@ -292,6 +299,99 @@ if ($_REQUEST['modfunc'] == 'save') {
             echo '</td></tr></tbody></table>';
             echo '<br><br>';
             echo "<div style=\"page-break-before: always;\"></div>";
+
+            $temp_RET = array();
+
+            $temp_RET['HEADER']  = array(
+                'Teacher_Name' => $course_period['TEACHER'],
+                'Course_Name'  => $course_period['COURSE_TITLE'],
+                'Course_Period_Name' => GetActualCpName($course_period),
+                'Course_Period_Occurance' => GetPeriodOcc($course_period['COURSE_PERIOD_ID']),
+                'Marking_Period' => GetMP($course_period['MARKING_PERIOD_ID'])
+            );
+            $temp_RET['RESULT'] = $RET;
+            $RET_arr[] = $temp_RET;
+        }
+
+        if ($_REQUEST['excelReport'] == 'Y') {
+            $program_title = $_REQUEST['head_html'];
+
+            $_REQUEST['LO_save'] = '1';
+            $options = array();
+            // $column_names = $_SESSION['PEGI_COLS'];
+            $column_names = $columns;
+
+            // HANDLE SAVING THE LIST ---
+
+            if ($_REQUEST['LO_save'] == '1') {
+                if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
+                    $options['save_delimiter'] = 'comma';
+                switch ($options['save_delimiter']) {
+                    case 'comma':
+                        $extension = 'csv';
+                        break;
+                    case 'xml':
+                        $extension = 'xml';
+                        break;
+                    default:
+                        $extension = 'xls';
+                        break;
+                }
+                ob_end_clean();
+
+                if ($options['save_delimiter'] != 'xml') {
+                    foreach ($RET_arr as $key => $value1) {
+                        $output .= '<table border=\'1\'>';
+                        $output .= '<tr>';
+                        $output .= '<td colspan="' . count($column_names) . '">';
+                        foreach ($value1['HEADER'] as $header_key => $header_value) {
+                            $output .= str_replace('_', ' ', $header_key) . ': ' . $header_value . '<br>';
+                        }
+                        $output .= '</td>';
+                        $output .= '</tr>';
+                        $output .= '<tr>';
+                        foreach ($column_names as $key => $value)
+                            if ($key != 'CHECKBOX')
+                                $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                        $output .= '</tr>';
+                        foreach ($value1['RESULT'] as $item) {
+                            $output .= '<tr>';
+                            foreach ($column_names as $key => $value) {
+                                if ($key != 'CHECKBOX') {
+                                    if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
+                                        $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
+                                    $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                                }
+                            }
+                            $output .= '</tr>';
+                        }
+                        $output .= '<tr></tr>';
+                        $output .= '<tr></tr>';
+                        $output .= '</table>';
+                    }
+                }
+                if ($options['save_delimiter'] == 'xml') {
+                    foreach ($RET_arr as $key => $value)
+                        foreach ($value['RESULT'] as $item) {
+                            foreach ($column_names as $key => $value) {
+                                if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                                    $item[$key] = str_replace(',', ';', $item[$key]);
+                                $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                                $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                                $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                            }
+                            $output .= "\n";
+                        }
+                }
+                header("Cache-Control: public");
+                header("Pragma: ");
+                header("Content-Type: application/$extension");
+                header("Content-Disposition: inline; filename=\"" . $program_title . ".$extension\"\n");
+                if ($options['save_eval'])
+                    eval($options['save_eval']);
+                echo $output;
+                exit();
+            }
         }
         $_SESSION['UserCoursePeriod'] = $PCL_UserCoursePeriod;
         PDFStop($handle);
@@ -310,7 +410,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list' || $_REQUEST['search_modfunc'] == 'select') {
         $_REQUEST['search_modfunc'] = 'select';
 
-        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y><span></span>'._includeInactiveStudents.'</label></div></div>';
+        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y ' . (isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y' ? 'checked' : '') . '><span></span>'._includeInactiveStudents.'</label></div></div>';
 
         $Search = 'mySearch';
         include('modules/miscellaneous/Export.php');
@@ -324,7 +424,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._teacher.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._teacher.'</label><div class="col-lg-8">';
         echo "<SELECT name=teacher_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $teacher)
             echo "<OPTION value=$teacher[STAFF_ID]>$teacher[FULL_NAME]</OPTION>";
@@ -334,7 +434,7 @@ if (!$_REQUEST['modfunc']) {
 
         $RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE"));
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._subject.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._subject.'</label><div class="col-lg-8">';
         echo "<SELECT name=subject_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $subject)
             echo "<OPTION value=$subject[SUBJECT_ID]>$subject[TITLE]</OPTION>";
@@ -345,7 +445,7 @@ if (!$_REQUEST['modfunc']) {
         $RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._period.'</label><div class="col-lg-8">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">'._period.'</label><div class="col-lg-8">';
         echo "<SELECT name=period_id class=form-control><OPTION value=''>"._NA."</OPTION>";
         foreach ($RET as $period)
             echo "<OPTION value=$period[PERIOD_ID]>$period[TITLE]</OPTION>";
@@ -358,7 +458,27 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-        echo '<div>';
+        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM marking_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        echo '<div class="row">';
+        echo '<div class="col-lg-6">';
+        echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Marking Period</label><div class="col-lg-8">';
+        echo "<SELECT name=marking_period_id class=form-control><OPTION value=''>N/A</OPTION>";
+        foreach ($RET as $mp)
+            echo "<OPTION value=$mp[MARKING_PERIOD_ID]>$mp[TITLE]</OPTION>";
+        echo '</SELECT>';
+        echo '</div></div>';
+        echo '</div>'; //.col-lg-6
+        echo '</div>'; //.row   
+
+        echo '<div class="row">';
+        echo '<div class="col-lg-12">';
+        echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> Include Inactive Students</label>';
+        echo '</div>'; //.col-lg-12
+        echo '</div>'; //.row   
+
+        echo '<hr/>';
+
+        echo '<div class="text-right">';
         echo Buttons(_submit, _reset, 'onclick="self_disable(this);"');
         echo '</div>';
         PopTable('footer');
@@ -414,7 +534,10 @@ echo '</div>'; //.modal
 
 function mySearch($extra) {
 
-    echo "<FORM name=exp id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&head_html=Teacher+Class+List&modfunc=save&search_modfunc=list&_openSIS_PDF=true onsubmit=document.forms[0].relation.value=document.getElementById(\"relation\").value; method=POST target=_blank>";
+    echo '</div>'; //. end the common .panel-body
+    echo '<hr class="no-margin">';
+
+    echo "<FORM class='m-b-0' name=exp id=exp action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&head_html=Teacher+Class+List&modfunc=save&search_modfunc=list&_openSIS_PDF=true onsubmit=document.forms[0].relation.value=document.getElementById(\"relation\").value; method=POST target=_blank>";
     echo '<DIV id=fields_div></DIV>';
     DrawHeader('', $extra['header_right']);
     DrawHeader($extra['extra_header_left'], $extra['extra_header_right']);
@@ -426,6 +549,8 @@ function mySearch($extra) {
             $where .= " AND UPPER(s.FIRST_NAME) LIKE '" . strtoupper($_REQUEST['first']) . "%'";
         if ($_REQUEST['w_course_period_id'] && $_REQUEST['w_course_period_id_which'] != 'course')
             $where .= " AND cp.COURSE_PERIOD_ID='" . $_REQUEST['w_course_period_id'] . "'";
+        if ($_REQUEST['marking_period_id'])
+            $where .= " AND cp.MARKING_PERIOD_ID='$_REQUEST[marking_period_id]'";
         if ($_REQUEST['subject_id']) {
             $from .= ",courses c";
             $where .= " AND c.COURSE_ID=cp.COURSE_ID AND c.SUBJECT_ID='" . $_REQUEST['subject_id'] . "'";
@@ -433,9 +558,9 @@ function mySearch($extra) {
         if ($_REQUEST['period_id']) {
             $where .= " AND cpv.PERIOD_ID='" . $_REQUEST['period_id'] . "'";
         }
-        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv$from WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "'$where";
+        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE, cp.MARKING_PERIOD_ID FROM course_periods cp,course_period_var cpv$from WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "'$where";
     } else { // teacher
-        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "' AND cp.TEACHER_ID='" . User('STAFF_ID') . "'";
+        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE, cp.MARKING_PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "' AND cp.TEACHER_ID='" . User('STAFF_ID') . "'";
     }
     $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM school_periods WHERE PERIOD_ID=cpv.PERIOD_ID)';
     $schedule_stu = DBGet(DBQuery($sql));
@@ -449,12 +574,17 @@ function mySearch($extra) {
     }
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    
+    if ($_REQUEST['include_inactive'] != 'Y') {
+        $exclude_inactive .= ' AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)';
+    }
+
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)' . $exclude_inactive));
      
     if ($stu_schedule_qr[1]['TOT'] > 0) {
-        echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . ""._studentIsFound."" : $stu_schedule_qr[1]['TOT'] . " "._studentIsFound.".") . '</div>';
+        echo '<div class="alert alert-success no-border m-l-20 m-r-20">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "" . _studentIsFound . "" : $stu_schedule_qr[1]['TOT'] . " " . _studentsAreFound . ".") . '</div>';
     } else {
-        echo '<div class="alert bg-danger alert-styled-left">'._noStudentFound.'.</div>';
+        echo '<div class="alert alert-danger no-border m-l-20 m-r-20">' . _noStudentFound . '.</div>';
     }
     $course_periods_RET = DBGet(DBQuery($sql), array('COURSE_PERIOD_ID' => '_makeChooseCheckbox', 'STU_COURSE_PERIOD_ID' => '_make_no_student'));
     $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => ''._coursePeriod.'', 'STU_COURSE_PERIOD_ID' => ''._noOfScheduleStudent.'');
@@ -466,7 +596,9 @@ function mySearch($extra) {
     echo '</div>';
 
     if (is_countable($course_periods_RET) && count($course_periods_RET) != 0)
-        echo '<div class="text-right"><INPUT type=submit class="btn btn-primary" value=\''._printClassListsForSelectedCoursePeriods.'\'></div>';
+        echo '<div class="panel-footer text-right"><INPUT type=button class="btn btn-primary m-r-20" value=\'' . _printClassListsForSelectedCoursePeriods . '\' onclick="triggerclassListExcel(this,\'\')" style="margin-right: 10px;"></div><br>';
+        echo '<div class="text-right"><INPUT type=button class="btn btn-success m-r-20" value=\'' . _printExcelClassListsForSelectedCoursePeriods . '\' onclick="triggerclassListExcel(this,\'Y\')" style="margin-right: 10px; margin-bottom: 10px;"></div>';
+    }
     echo "</FORM>";
 }
 
@@ -498,13 +630,18 @@ function GetPeriodOcc($cp_id) {
             }
         } 
     }
-    return implode(',', $period_name);
+    return implode(', ', $period_name);
 }
 
 function _make_no_student($value) {
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    if ($_REQUEST['include_inactive'] != 'Y') {
+        $exclude_inactive .= ' AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)';
+    }
+
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)' . $exclude_inactive));
+
     return $stu_schedule_qr[1]['TOT'];
 }
 

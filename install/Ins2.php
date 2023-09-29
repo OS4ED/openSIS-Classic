@@ -126,7 +126,12 @@ if (clean_param($_REQUEST["db"], PARAM_DATA) == '') {
         } else {
             $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
             $sql = "CREATE DATABASE `" . $_SESSION['db'] . "` CHARACTER SET=utf8;";
-            $result = $dbconn->query($sql);
+            try {
+                $result = $dbconn->query($sql);
+            } catch (Exception $e) {
+                echo 'Caught exception: ', $e->getMessage(), "\n";
+                // exit($err);
+            }
             if (!$result) {
                 echo "<h2>" . $dbconn->error . "</h2>\n";
                 exit;

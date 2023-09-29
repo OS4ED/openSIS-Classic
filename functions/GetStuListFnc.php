@@ -797,12 +797,12 @@ function appendSQL($sql, &$extra)
     if ($_REQUEST['last']) {
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Last Name starts with: </b></font>' . trim($_REQUEST['last']) . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Last Name starts with: </b></font>' . stripslashes(trim($_REQUEST['last'])) . '<BR>';
     }
     if ($_REQUEST['first']) {
         $sql .= ' AND LOWER(s.FIRST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['first']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>First Name starts with: </b></font>' . trim($_REQUEST['first']) . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>First Name starts with: </b></font>' . stripslashes(trim($_REQUEST['first'])) . '<BR>';
     }
     if ($_REQUEST['grade']) {
         $sql .= ' AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= \'' . singleQuoteReplace("'", "\'", $_REQUEST['grade']) . '\')';
@@ -1779,13 +1779,13 @@ function appendSQL_Absence_Summary($sql, &$extra)
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
         $_SESSION['newsql1'] .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Last Name starts with: </b></font>' . trim($_REQUEST['last']) . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Last Name starts with: </b></font>' . stripslashes(trim($_REQUEST['last'])) . '<BR>';
     }
     if ($_REQUEST['first']) {
         $sql .= ' AND LOWER(s.FIRST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['first']))) . '%\' ';
         $_SESSION['newsql1'] .= ' AND LOWER(s.FIRST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['first']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>First Name starts with: </b></font>' . trim($_REQUEST['first']) . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>First Name starts with: </b></font>' . stripslashes(trim($_REQUEST['first'])) . '<BR>';
     }
     if ($_REQUEST['grade']) {
         $sql .= ' AND ssm.GRADE_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST['grade']) . '\' ';

@@ -93,8 +93,6 @@ echo '$(document).ready(function() {
       });';
 echo '</script>';
 
-echo '<input id="cframe" type="hidden" value="">';
-
 $url = validateQueryString(curPageURL());
 if ($url === FALSE) {
     header('Location: index.php');

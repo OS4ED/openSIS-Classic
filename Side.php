@@ -32,6 +32,8 @@ if (isset($_POST['school']))
     $_POST['school'] = sqlSecurityFilter($_POST['school'], 'no');
 if (isset($_REQUEST['school']))
     $_REQUEST['school'] = sqlSecurityFilter($_REQUEST['school'], 'no');
+if (isset($_REQUEST['modcat']))
+    $_REQUEST['modcat'] = sqlSecurityFilter($_REQUEST['modcat'], 'no');
 
 $var1 = explode("?", $_SERVER['REQUEST_URI']);
 include("functions/ParamLibFnc.php");

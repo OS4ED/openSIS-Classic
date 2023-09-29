@@ -41,9 +41,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             $extra['group'] = $extra['LO_group'] = array('ADDRESS_ID');
         }
 
-        echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentAdvancedReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentAdvancedReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
-        echo "<table >";
+        if ($_REQUEST['excelReport'] != 'Y') {
+            echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
+            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . _studentAdvancedReport . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />" . _studentAdvancedReport . "</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+            echo "<table >";
+        }
         include('modules/miscellaneous/Export.php');
     }
 }
@@ -76,7 +78,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call' || isset($_SESSI
     $extra['search'] .= '<div class="form-group"><label>' . _includeCoursesActiveAsOf . '</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
     include('modules/miscellaneous/Export.php');
-    echo '<BR><CENTER><INPUT type=submit value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary"></CENTER>';
+x    echo '<div class="text-center m-t-20"><div><INPUT type=button value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary" onclick="triggerAdvancedReportExcel(this,\'\')"></div><div class="m-t-10"><INPUT type=button value=\'' . _createExcelReportForSelectedStudents . '\' class="btn btn-success" onclick="triggerAdvancedReportExcel(this,\'Y\')"></div></div>';
     echo "</FORM>";
 }
 $modal_flag = 1;

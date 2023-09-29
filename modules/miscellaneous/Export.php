@@ -252,11 +252,80 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 
         if ($extra['array_function'] && function_exists($extra['array_function']))
             $extra['array_function']($RET);
-        echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
+        if ($_REQUEST['excelReport'] != 'Y') {
+            echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
 
-        ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : _student, $extra['plural'] ? $extra['plural'] : students, array(), $extra['LO_group'], $extra['LO_options']);
+            ListOutputPrint_Report($RET, $columns, $extra['singular'] ? $extra['singular'] : _student, $extra['plural'] ? $extra['plural'] : students, array(), $extra['LO_group'], $extra['LO_options']);
 
-        echo "</body></html>";
+            echo "</body></html>";
+        } else {
+            $program_title = $_REQUEST['head_html'];
+
+            $_REQUEST['LO_save'] = '1';
+            $options = array();
+            $column_names = $_SESSION['PEGI_COLS'];
+            $column_names = $columns;
+
+            // HANDLE SAVING THE LIST ---
+
+            if ($_REQUEST['LO_save'] == '1') {
+                if (!$options['save_delimiter'] && Preferences('DELIMITER') == 'CSV')
+                    $options['save_delimiter'] = 'comma';
+                switch ($options['save_delimiter']) {
+                    case 'comma':
+                        $extension = 'csv';
+                        break;
+                    case 'xml':
+                        $extension = 'xml';
+                        break;
+                    default:
+                        $extension = 'xls';
+                        break;
+                }
+                ob_end_clean();
+
+                if ($options['save_delimiter'] != 'xml') {
+                    $output .= '<table border=\'1\'><tr>';
+                    foreach ($column_names as $key => $value)
+                        if ($key != 'CHECKBOX')
+                            $output .= '<td>' . str_replace('&nbsp;', ' ', par_rep_cb('/<BR>/', ' ', par_rep_cb('/<!--.*-->/', '', $value))) . '</td>';
+                    $output .= '</tr>';
+                    foreach ($RET as $item) {
+                        $output .= '<tr>';
+                        foreach ($column_names as $key => $value) {
+                            if ($key != 'CHECKBOX') {
+                                if ($key == 'ATTENDANCE' || $key == 'IGNORE_SCHEDULING')
+                                    $item[$key] = ($item[$key] == '<IMG SRC=assets/check.gif height=15>' ? 'Yes' : 'No');
+                                $output .= '<td>' . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . '</td>';
+                            }
+                        }
+                        $output .= '</tr>';
+                    }
+                    $output .= '</table>';
+                }
+
+                if ($options['save_delimiter'] == 'xml') {
+                    foreach ($RET as $item) {
+                        foreach ($column_names as $key => $value) {
+                            if ($options['save_delimiter'] == 'comma' && !$options['save_quotes'])
+                                $item[$key] = str_replace(',', ';', $item[$key]);
+                            $item[$key] = par_rep_cb('/<SELECT.*SELECTED\>([^<]+)<.*</SELECT\>/', '\\1', $item[$key]);
+                            $item[$key] = par_rep_cb('/<SELECT.*</SELECT\>/', '', $item[$key]);
+                            $output .= ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'xml' ? '<' . str_replace(' ', '', $value) . '>' : '') . par_rep_cb('/<[^>]+>/', '', par_rep_cb("/<div onclick='[^']+'>/", '', par_rep_cb('/ +/', ' ', par_rep_cb('/&[^;]+;/', '', str_replace('<BR>&middot;', ' : ', str_replace('&nbsp;', ' ', $item[$key])))))) . ($options['save_delimiter'] == 'xml' ? '</' . str_replace(' ', '', $value) . '>' . "\n" : '') . ($options['save_quotes'] ? '"' : '') . ($options['save_delimiter'] == 'comma' ? ',' : "\t");
+                        }
+                        $output .= "\n";
+                    }
+                }
+                header("Cache-Control: public");
+                header("Pragma: ");
+                header("Content-Type: application/$extension");
+                header("Content-Disposition: inline; filename=\"" . $program_title . ".$extension\"\n");
+                if ($options['save_eval'])
+                    eval($options['save_eval']);
+                echo $output;
+                exit();
+            }
+        }
     }
 } else {
     if (!$fields_list) {

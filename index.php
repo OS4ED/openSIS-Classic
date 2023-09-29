@@ -97,7 +97,7 @@ if (optional_param('register', '', PARAM_NOTAGS)) {
         header("Location:register.php");
 }
 
-if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW)) {
+if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', PARAM_RAW) && CSRFSecure::ValidateToken(optional_param('TOKEN', '', PARAM_RAW))) {
     db_start();
 
     $username = mysqli_real_escape_string($connection, trim(optional_param('USERNAME', '', PARAM_RAW)));
@@ -623,12 +623,12 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             }
         }
           if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'teacher') {
-//            echo "$ad_f_cnt";
+            //            echo "$ad_f_cnt";
             if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_staff >= $ad_f_cnt)
                 DBQuery("UPDATE staff SET IS_DISABLE='Y' WHERE staff_id='" . $res[1]['USER_ID'] . "'");
         }
         if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'parent') {
-//            echo "$ad_f_cnt";
+            //            echo "$ad_f_cnt";
             if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_staff >= $ad_f_cnt)
                 DBQuery("UPDATE people SET IS_DISABLE='Y' WHERE staff_id='" . $res[1]['USER_ID'] . "'");
         }
@@ -658,15 +658,20 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         }
     }
 } else {
-    if (isset($_REQUEST['USERNAME']) || isset($_REQUEST['PASSWORD'])) {
-        if (isset($_POST['USERNAME']) && optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) == '' && isset($_POST['USERNAME'])) {
-            $error[] = "" . _pleaseProvideUsernameAndPassword . ". " . _pleaseTryAgain . ".";
+    if (isset($_REQUEST['USERNAME']) || isset($_REQUEST['PASSWORD']) || isset($_REQUEST['TOKEN'])) {
+        if (!isset($_POST['TOKEN']) || (isset($_POST['TOKEN']) && optional_param('TOKEN', '', PARAM_RAW) == '') || !CSRFSecure::ValidateToken(optional_param('TOKEN', '', PARAM_RAW))) {
+            $error[] = _invalidLoginPleaseTryAgain;
         }
-        if (optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) != '') {
-            $error[] = "" . _pleaseProvideUsername . ". " . _pleaseTryAgain . ".";
-        }
-        if (optional_param('USERNAME', '', PARAM_RAW) != '' && optional_param('PASSWORD', '', PARAM_RAW) == '') {
-            $error[] = "" . _pleaseProvidePassword . ". " . _pleaseTryAgain . ".";
+        else {
+            if (isset($_POST['USERNAME']) && optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) == '' && isset($_POST['USERNAME'])) {
+                $error[] = "" . _pleaseProvideUsernameAndPassword . ". " . _pleaseTryAgain . ".";
+            }
+            if (optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) != '') {
+                $error[] = "" . _pleaseProvideUsername . ". " . _pleaseTryAgain . ".";
+            }
+            if (optional_param('USERNAME', '', PARAM_RAW) != '' && optional_param('PASSWORD', '', PARAM_RAW) == '') {
+                $error[] = "" . _pleaseProvidePassword . ". " . _pleaseTryAgain . ".";
+            }
         }
     }
 }

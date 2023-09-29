@@ -37,6 +37,9 @@ array_rwalk($_REQUEST,'strip_tags');
 
 $_REQUEST = sqlSecurityFilter($_REQUEST);
 
+if (isset($_REQUEST['include']))
+	$_REQUEST['include'] = sqlSecurityFilter($_REQUEST['include']);
+
 if(!isset($_REQUEST['_openSIS_PDF']))
 {
 	Warehouse('header');

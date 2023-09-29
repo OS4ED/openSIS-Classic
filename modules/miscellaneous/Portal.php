@@ -35,6 +35,9 @@ while (!UserSyear()) {
     session_start();
 }
 
+if (isset($_REQUEST['modname']))
+    $_REQUEST['modname'] = sqlSecurityFilter($_REQUEST['modname']);
+
 $this_portal_toggle = "";
 
 $current_hour = date('H');

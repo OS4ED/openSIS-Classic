@@ -201,10 +201,21 @@ $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
 
     $already_attn_flag = 0;
-    
-    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (".implode(', ',array_keys($_REQUEST['attendance'])).") AND SCHOOL_DATE = '$date' AND PERIOD_ID='".UserPeriod()."'"))) == count($_REQUEST['attendance']) ? true : false;
-       $attendanceAlreadyTakenTwo = DBGet(DBQuery('SELECT * FROM `attendance_completed` WHERE SCHOOL_DATE = \''.$date.'\' AND PERIOD_ID=\''.UserPeriod().'\' AND STAFF_ID = \''.User('STAFF_ID').'\''));
-    if($attendanceAlreadyTaken && count($attendanceAlreadyTakenTwo) == 0) {
+
+    $attendanceIgnoreScheduling = DBGet(DBQuery('SELECT IGNORE_SCHEDULING FROM `school_periods` WHERE  PERIOD_ID=\'' . UserPeriod() . '\' '));
+
+    $cpClauseAddOn = '';
+
+    if ($attendanceIgnoreScheduling[1]['IGNORE_SCHEDULING'] == 'Y') {
+        $cpClauseAddOn = " AND COURSE_PERIOD_ID= '" . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . "'";
+    }
+
+    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (" . implode(', ', array_keys($_REQUEST['attendance'])) . ") AND SCHOOL_DATE = '$date' " . $cpClauseAddOn . " AND PERIOD_ID='" . UserPeriod() . "'"))) == count($_REQUEST['attendance']) ? true : false;
+
+    $attendanceAlreadyTakenTwo = DBGet(DBQuery('SELECT * FROM `attendance_completed` WHERE SCHOOL_DATE = \'' . $date . '\' ' . $cpClauseAddOn . ' AND PERIOD_ID=\'' . UserPeriod() . '\' AND STAFF_ID = \'' . User('STAFF_ID') . '\''));
+
+
+    if ($attendanceAlreadyTaken && count($attendanceAlreadyTakenTwo) == 0) {
         // print_r(ErrorMessage(array('Attendance is already taken for the students on selected day and period.'), 'note'));
         // die;
         $already_attn_flag++;

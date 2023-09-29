@@ -134,7 +134,12 @@ function DBQuery($sql)
             } else {
                 $user_agent = explode('/', $_SERVER['HTTP_USER_AGENT']);
                 if ($user_agent[0] == 'Mozilla') {
-                    $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
+                    // $result = $connection->query($sql) or die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
+                    try {
+                        $result = $connection->query($sql);
+                    } catch (Exception $e) {
+                        die(db_show_error($sql, _dbExecuteFailed, mysqli_error($connection)));
+                    }
                 }
             }
             break;

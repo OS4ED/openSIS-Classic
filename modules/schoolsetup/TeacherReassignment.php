@@ -98,10 +98,20 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
 
                 if ($reassigned) {
                     DBQuery('UPDATE teacher_reassignment SET teacher_id=\'' . $staff_id . '\',pre_teacher_id=\'' . $pre_staff_id . '\',modified_date=\'' . $today . '\',modified_by=\'' . User('STAFF_ID') . '\',updated=\'N\' WHERE course_period_id=\'' . $id . '\' AND assign_date=\'' . $assign_date . '\'');
+
+                    DBQuery('UPDATE missing_attendance SET teacher_id=\'' . $staff_id . '\' WHERE course_period_id=\'' . $id . '\'');
+
                     $_SESSION['undo'] = 'UPDATE teacher_reassignment SET teacher_id=\'' . $pre_staff_id . '\',pre_teacher_id=\'' . $reassigned[1]['PRE_TEACHER_ID'] . '\',modified_date=\'' . $reassigned[1]['MODIFIED_DATE'] . '\',modified_by=\'' . $reassigned[1]['MODIFIED_BY'] . '\',updated=\'' . $reassigned[1]['UPDATED'] . '\' WHERE course_period_id=\'' . $id . '\' AND assign_date=\'' . $assign_date . '\'';
+                    
+                    $_SESSION['undo_mi'] = 'UPDATE missing_attendance SET teacher_id=\'' . $pre_staff_id . '\' WHERE course_period_id=\'' . $id . '\'';
                 } else {
                     DBQuery('INSERT INTO teacher_reassignment(course_period_id,teacher_id,assign_date,pre_teacher_id,modified_date,modified_by)VALUES(\'' . $id . '\',\'' . $staff_id . '\',\'' . $assign_date . '\',\'' . $pre_staff_id . '\',\'' . $today . '\',\'' . User('STAFF_ID') . '\')');
+
+                    DBQuery('UPDATE missing_attendance SET teacher_id=\'' . $staff_id . '\' WHERE course_period_id=\'' . $id . '\'');
+
                     $_SESSION['undo'] = 'DELETE FROM teacher_reassignment WHERE course_period_id=\'' . $id . '\' AND teacher_id=\'' . $staff_id . '\' AND assign_date=\'' . $assign_date . '\'';
+
+                    $_SESSION['undo_mi'] = 'UPDATE missing_attendance SET teacher_id=\'' . $pre_staff_id . '\' WHERE course_period_id=\'' . $id . '\'';
                     ####################################Teacher Reassignment New change################################
                     if (User('PROFILE') == 'admin' && strtotime($assign_date) <= strtotime(date('Y-m-d'))) {
                         $data_sql = "SELECT period_id,days FROM course_period_var WHERE course_period_id=$id";
@@ -172,8 +182,10 @@ if (clean_param($_REQUEST['re_assignment_teacher'], PARAM_NOTAGS) && ($_POST['re
 if ($_REQUEST['action'] == 'undo') {
     DBQuery($_SESSION['undo']);
     DBQuery('UPDATE course_periods set title=\'' . $_SESSION['undo_title'] . '\',teacher_id=\'' . $_SESSION['undo_teacher'] . '\' WHERE course_period_id=\'' . $_REQUEST['course_period_id'] . '\'');
+    DBQuery($_SESSION['undo_mi']);
 
     unset($_SESSION['undo']);
+    unset($_SESSION['undo_mi']);
     unset($_SESSION['undo_teacher']);
     unset($_SESSION['undo_title']);
 }

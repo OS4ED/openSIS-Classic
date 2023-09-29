@@ -145,8 +145,9 @@ foreach ($fields_RET as $field) {
         case 'text':
             echo '<div class="col-md-6">';
             echo '<div class="form-group">';
-            echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'class=form-control', 'students', $field['TITLE']);
-            echo '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . $req . '</label><div class="col-lg-8">';
+            echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'class=form-control', 'students');
+            echo '</div></div>';
             echo '</div>';
             $i++;
             break;

@@ -95,11 +95,10 @@ if (UserStaffID() != '') {
     }
     $val = $_REQUEST['v'];
 
-    if(is_array($_SESSION['staff_order']))
-    {
+    if (is_array($_SESSION['staff_order'])) {
         $count = array_search($_SESSION['staff_id'], $_SESSION['staff_order']);
     }
-    
+
     $_SESSION['count_staff'] = $count;
     $_SESSION['total_staff'] = (is_countable($_SESSION['staff_order'])) ? count($_SESSION['staff_order']) : 0;
     $last_stu = (is_countable($_SESSION['staff_order'])) ? count($_SESSION['staff_order']) : 0;
@@ -432,7 +431,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                         if ($_FILES["file"]["error"] > 0) {
                             echo "cannot upload file";
                         } else {
-                            if($fp){
+                            if ($fp) {
                                 $content = fread($fp, filesize($tmpName));
                             }
                             $content = base64_decode($_REQUEST['imgblob']);
@@ -477,7 +476,12 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             unset($_REQUEST['month_staff']);
             unset($_REQUEST['year_staff']);
 
-            foreach (sqlSecurityFilter($_REQUEST['staff']) as $column => $value) {
+            $staff_arr = array();
+            $staff_arr['FIRST_NAME'] = $_REQUEST['staff']['FIRST_NAME'];
+            $staff_arr['LAST_NAME'] = $_REQUEST['staff']['LAST_NAME'];
+            $result = array_merge(sqlSecurityFilter($_REQUEST['staff']),$staff_arr);
+
+            foreach ($result as $column => $value) {
                 if ($column == 'BIRTHDATE' && $value != '') {
                     $value = date("Y-m-d", strtotime($value));
                 }
@@ -611,8 +615,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                     DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date,end_date)VALUES ($rel_value)");
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'] = $staff_id;
                 } else {
-                    $val = DBGet(DBQuery("SELECT MAX(syear) as syear FROM school_years WHERE school_id='" . UserSchool() . "'"));
-                    DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date) values ('" . $staff_id . "','" . UserSchool() . "','" . $val[1]['SYEAR'] . "','" . date('Y-m-d') . "')");
+                    $val = DBGet(DBQuery("SELECT syear FROM school_years WHERE school_id='" . UserSchool() . "'"));
+                    // DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date) values ('" . $staff_id . "','" . UserSchool() . "','" . $val[1]['SYEAR'] . "','" . date('Y-m-d') . "')");
+
+                    DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date) values ('" . $staff_id . "','" . UserSchool() . "','" . UserSyear() . "','" . date('Y-m-d') . "')");
                 }
             } else {
                 echo "<div class='alert bg-danger alert-styled-left'>Unable to save data, because " . $custom_TITLE . ' is required.</div>';
@@ -763,12 +769,11 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                 // echo "$category[TITLE]<br>";
                 // // echo "<"
                 // echo "$categoryTitle<br>";
-                if($category['ID'] == '5'){
-                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']."&LO_sort=DURATION&LO_direction=1"); 
-                 }else{
-                 $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']);
-                 }
-                
+                if ($category['ID'] == '5') {
+                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID'] . "&LO_sort=DURATION&LO_direction=1");
+                } else {
+                    $tabs[] = array('title' => $categoryTitle, 'link' => "Modules.php?modname=$_REQUEST[modname]&include=$include&custom=staff&category_id=" . $category['ID']);
+                }
             }
         }
         unset($new_tabs);
