@@ -29,13 +29,18 @@
 //declare(strict_types=1);
 error_reporting(0);
 
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Strict');
+
 include_once "functions/DelDirectoryFnc.php";
 include_once "functions/ParamLibFnc.php";
 require_once "functions/PragRepFnc.php";
 include_once "RemoveBackup.php";
 include_once 'lang/language.php';
 include_once "functions/PasswordHashFnc.php";
+
 session_start();
+
 $index_commit_in    =   "";
 $index_commit_out   =   "";
 
@@ -87,7 +92,7 @@ if ($check_LBTFC) {
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
     if ($_SESSION) {
         DBQuery("DELETE FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'");
-        header("Location: $_SERVER[PHP_SELF]?modfunc=logout" . (($_REQUEST['reason']) ? '&reason=' . $_REQUEST['reason'] : ''));
+        // header("Location: $_SERVER[PHP_SELF]?modfunc=logout" . (($_REQUEST['reason']) ? '&reason=' . $_REQUEST['reason'] : ''));
     }
     session_destroy();
 }
@@ -105,9 +110,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     $arr_cookie_options = array(
         'expires' => time() + 60 * 60 * 24 * 100,
         'path' => '/',
-        'secure' => true,     // or false
-        'httponly' => true,    // or false
-        'samesite' => 'None' // None || Lax  || Strict
+        'secure' => true,       // or false
+        'httponly' => true,     // or false
+        'samesite' => 'Strict'  // None || Lax || Strict
     );
 
     if ($_REQUEST['remember']) {
@@ -119,7 +124,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
         setcookie($cName, cryptor($username, 'ENC'), $arr_cookie_options);
         setcookie($cPwd, cryptor(optional_param('PASSWORD', '', PARAM_RAW), 'ENC'), $arr_cookie_options);
-        setcookie($cLang, optional_param('language', '', PARAM_RAW), time() + 60 * 60 * 24 * 100, "/");
+        setcookie($cLang, optional_param('language', '', PARAM_RAW), $arr_cookie_options);
     } else {
         setcookie('remember_me_name', 'gone', time() - 60 * 60 * 24 * 100, "/");
         setcookie('remember_me_pwd', 'gone', time() - 60 * 60 * 24 * 100, "/");
@@ -548,7 +553,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         }
 
         $_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
-         $_SESSION['USERNAME'] = $student_RET[1]['USERNAME'];
+        $_SESSION['USERNAME'] = $student_RET[1]['USERNAME'];
         //$_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
         $_SESSION['LAST_LOGIN'] = isset($student_RET[1]['LAST_LOGIN']) ? $student_RET[1]['LAST_LOGIN'] : '';
 
@@ -622,7 +627,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $error[] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your opensis account is disabled.";
             }
         }
-          if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'teacher') {
+        if ($failed_login_staff != '' && $res[1]['PROFILE'] == 'teacher') {
             //            echo "$ad_f_cnt";
             if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_staff >= $ad_f_cnt)
                 DBQuery("UPDATE staff SET IS_DISABLE='Y' WHERE staff_id='" . $res[1]['USER_ID'] . "'");
@@ -661,8 +666,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     if (isset($_REQUEST['USERNAME']) || isset($_REQUEST['PASSWORD']) || isset($_REQUEST['TOKEN'])) {
         if (!isset($_POST['TOKEN']) || (isset($_POST['TOKEN']) && optional_param('TOKEN', '', PARAM_RAW) == '') || !CSRFSecure::ValidateToken(optional_param('TOKEN', '', PARAM_RAW))) {
             $error[] = _invalidLoginPleaseTryAgain;
-        }
-        else {
+        } else {
             if (isset($_POST['USERNAME']) && optional_param('USERNAME', '', PARAM_RAW) == '' && optional_param('PASSWORD', '', PARAM_RAW) == '' && isset($_POST['USERNAME'])) {
                 $error[] = "" . _pleaseProvideUsernameAndPassword . ". " . _pleaseTryAgain . ".";
             }

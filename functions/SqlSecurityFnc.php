@@ -56,7 +56,7 @@ function sqlSecurityFilter($variableName = '', $dbAvailable = 'yes')
 				}
 
 				if ($checker == 0)
-					return htmlentities($check_3);
+					return htmlentities(htmlspecialchars($check_3));
 				else
 					return '';
 			}
@@ -114,7 +114,7 @@ function sqlSecurityFilter($variableName = '', $dbAvailable = 'yes')
 						else {
 							unset($variable[$onekey]);
 
-							$filter_data[$k_check_3] = htmlentities($v_check_3);
+							$filter_data[$k_check_3] = htmlentities(htmlspecialchars($v_check_3));
 						}
 					}
 				}
@@ -179,7 +179,7 @@ function sqlSecurityFilter($variableName = '', $dbAvailable = 'yes')
 						else {
 							unset($variable->$onekey);
 
-							$filter_data[$k_check_3] = htmlentities($v_check_3);
+							$filter_data[$k_check_3] = htmlentities(htmlspecialchars($v_check_3));
 						}
 					}
 				}
@@ -197,5 +197,3 @@ function sqlSecurityFilter($variableName = '', $dbAvailable = 'yes')
 			break;
 	}
 }
-
-?>
