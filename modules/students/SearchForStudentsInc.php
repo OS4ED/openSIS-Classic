@@ -520,7 +520,9 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
         // $filter_id = $filter_id[1]['AUTO_INCREMENT'];
 
         DBQuery('INSERT INTO filters (FILTER_NAME' . ($_REQUEST['filter_all_school'] == 'Y' ? '' : ',SCHOOL_ID') . ($_REQUEST['filter_public'] == 'Y' ? '' : ',SHOW_TO') . ') VALUES (\'' . singleQuoteReplace("", "", $_REQUEST['filter_name']) . '\'' . ($_REQUEST['filter_all_school'] == 'Y' ? '' : ',' . UserSchool()) . ($_REQUEST['filter_public'] == 'Y' ? '' : ',' . UserID()) . ')');
-        $filter_id = mysqli_insert_id($connection);
+        // $filter_id = mysqli_insert_id($connection);
+
+        $filter_id = DBGet(DBQuery("SELECT MAX(FILTER_ID) AS FILTER_ID FROM filters"))[1]['FILTER_ID'];
 
         $filters = array("last", "first", "stuid", "altid", "addr", "grade", "section", "address_group", "GENDER", "ETHNICITY_ID", "LANGUAGE_ID", "age_from", "age_to", "_search_all_schools", "include_inactive", "mp_comment", "goal_title", "goal_description", "progress_name", "progress_description", "doctors_note_comments", "type", "imm_comments", "med_alrt_title", "reason", "result", "med_vist_comments");
 
@@ -726,13 +728,13 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
         if ($_REQUEST['filter_form'] == 'Y' && $_REQUEST['grade'] != '') {
             echo '<td><div id="toggleGrade_element"><select id="grade" name=grade class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
             foreach ($list as $value)
-                echo '<option value="' . $value['TITLE'] . '" ' . ($value['TITLE'] == $_REQUEST['grade'] ? 'selected' : '') . '>' . $value['TITLE'] . '</option>';
+                echo '<option value="' . $value['ID'] . '" ' . ($value['ID'] == $_REQUEST['grade'] ? 'selected' : '') . '>' . $value['TITLE'] . '</option>';
             echo '</select></div></td>';
             echo '</tr>';
         } else {
             echo '<td><div onclick="divToggle(\'#toggleGrade\');" id="toggleGrade">' . _any . '</div><div style="display:none;" id="toggleGrade_element" class="hide-element"><select id="grade" name=grade class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
             foreach ($list as $value)
-                echo '<option value="' . $value['TITLE'] . '">' . $value['TITLE'] . '</option>';
+                echo '<option value="' . $value['ID'] . '">' . $value['TITLE'] . '</option>';
             echo '</select></div></td>';
             echo '</tr>';
         }

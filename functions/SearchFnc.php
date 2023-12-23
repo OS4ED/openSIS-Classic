@@ -167,7 +167,7 @@ function Search($type, $extra = array(), $search_from_grade = '')
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">' . _grade . '</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">' . _grade . '</OPTION>';
 
             foreach ($list as $value)
-                echo '<OPTION value="' . $value['TITLE'] . '">' . $value['TITLE'] . '</OPTION>';
+                echo '<OPTION value="' . $value['ID'] . '">' . $value['TITLE'] . '</OPTION>';
             echo '</SELECT></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row

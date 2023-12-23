@@ -805,9 +805,11 @@ function appendSQL($sql, &$extra)
             $_openSIS['SearchTerms'] .= '<font color=gray><b>First Name starts with: </b></font>' . stripslashes(trim($_REQUEST['first'])) . '<BR>';
     }
     if ($_REQUEST['grade']) {
-        $sql .= ' AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= \'' . singleQuoteReplace("'", "\'", $_REQUEST['grade']) . '\')';
-        if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Grade: </b></font>' . $_REQUEST['grade'] . '<BR>';
+        $sql .= ' AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE id= \'' . singleQuoteReplace("'", "\'", $_REQUEST['grade']) . '\')';
+        if (!$extra['NoSearchTerms']) {
+            $title = DBGet(DBQuery('SELECT title FROM school_gradelevels WHERE id= \'' . singleQuoteReplace("'", "\'", $_REQUEST['grade']) . '\''));
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>Grade: </b></font>' . $title[1]['TITLE'] . '<BR>';
+	    }
     }
     if ($_REQUEST['addr']) {
         $sql .= ' AND (LOWER(sam.STREET_ADDRESS_1) LIKE \'%' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '%\' OR LOWER(sam.CITY) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '%\' OR LOWER(sam.STATE)=\'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['addr']))) . '\' OR ZIPCODE LIKE \'' . trim(singleQuoteReplace("'", "\'", $_REQUEST['addr'])) . '%\')';

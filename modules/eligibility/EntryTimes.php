@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(E_ALL ^ E_WARNING);
+error_reporting(0);
 // GET ALL THE config ITEMS FOR eligibility
 include('../../RedirectModulesInc.php');
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));

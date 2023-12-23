@@ -28,7 +28,8 @@
 #***************************************************************************************
 include('../../../RedirectIncludes.php');
 
-function _makeTextInput($column, $name, $size, $request = 'students', $title = "") {
+function _makeTextInput($column, $name, $size, $request = 'students', $title = "")
+{
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -39,15 +40,30 @@ function _makeTextInput($column, $name, $size, $request = 'students', $title = "
         $div = true;
         $req = $field['REQUIRED'] == 'Y' && $value[$column] == '' ? array('<FONT color=red>', '</FONT>') : array('', '');
     }
-
-    if ($field['TYPE'] == 'numeric')
-        $value[$column] = str_replace('.00', '', $value[$column]);
+    if ($_REQUEST['modname'] == 'students/PrintStudentInfo.php') {
+        if ($field['TYPE'] == 'numeric')
+            $value[$column] = str_replace('.00', '', $value[$column]);
+        if ($field['TYPE'] == 'multiple')
+            $value[$column] = rtrim(ltrim(str_replace('||', ', ', $value[$column]), ', '), ', ');
+        if ($field['TYPE'] == 'radio' && $value[$column] == 'Y')
+            $value[$column] = str_replace('Y', _yes, $value[$column]);
+        if ($field['TYPE'] == 'codeds') {
+            $codedarr = explode("\n", $field['SELECT_OPTIONS']);
+            foreach ($codedarr as $val) {
+                $parts = explode('|', $val);
+                if ($value[$column] == $parts[0]) {
+                    $value[$column] = $parts[1];
+                }
+            }
+        }
+    }
 
 
     return TextInput($value[$column], $request . '[' . $column . ']', $title, $size, $div);
 }
 
-function _makeDateInput($column, $name, $request = 'students') {//for custom fields
+function _makeDateInput($column, $name, $request = 'students')
+{ //for custom fields
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -62,7 +78,8 @@ function _makeDateInput($column, $name, $request = 'students') {//for custom fie
     return DateInput($value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $div);
 }
 
-function _makeSelectInput($column, $name, $request = 'students', $title = "") {
+function _makeSelectInput($column, $name, $request = 'students', $title = "")
+{
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -78,20 +95,22 @@ function _makeSelectInput($column, $name, $request = 'students', $title = "") {
     $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
     $select_options = explode("\r", $field['SELECT_OPTIONS']);
     if (count($select_options)) {
-        foreach ($select_options as $option)
+        foreach ($select_options as $option) {
             if ($field['TYPE'] == 'codeds') {
                 $option = explode('|', $option);
                 if ($option[0] != '' && $option[1] != '')
                     $options[$option[0]] = $option[1];
             } else
                 $options[$option] = $option;
+        }
     }
 
     //$extra = 'class=cell_medium';
     return SelectInput($value[$column], $request . '[' . $column . ']', $title, $options, 'N/A', $extra, $div);
 }
 
-function _makeAutoSelectInput($column, $name, $request = 'students') {
+function _makeAutoSelectInput($column, $name, $request = 'students')
+{
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -138,7 +157,8 @@ function _makeAutoSelectInput($column, $name, $request = 'students') {
     }
 }
 
-function _makeCheckboxInput($column, $name, $request = 'students') {
+function _makeCheckboxInput($column, $name, $request = 'students')
+{
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -150,7 +170,8 @@ function _makeCheckboxInput($column, $name, $request = 'students') {
     return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['student_id'] == 'new'), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
 }
 
-function _makeTextareaInput($column, $name, $request = 'students') {
+function _makeTextareaInput($column, $name, $request = 'students')
+{
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -215,7 +236,8 @@ function _makeTextareaInput($column, $name, $request = 'students') {
 //     return $m_input;
 // }
 
-function _makeMultipleInput($column, $name, $request = 'students') {
+function _makeMultipleInput($column, $name, $request = 'students')
+{
     global $value, $field, $_openSIS;
 
     if ((AllowEdit() || $_openSIS['allow_edit']) && !$_REQUEST['_openSIS_PDF']) {
@@ -236,19 +258,20 @@ function _makeMultipleInput($column, $name, $request = 'students') {
                 $m_input .= '<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value="">';
                 $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             } else {
-                $m_input.='<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
             }
             $i++;
         }
     } else
         $m_input .= (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
 
-    $m_input.='<p class=help-block>' . $name . '</p>';
+    $m_input .= '<p class=help-block>' . $name . '</p>';
     return $m_input;
 }
 
 // MEDICAL ----
-function _makeType($value, $column) {
+function _makeType($value, $column)
+{
     global $THIS_RET;
 
     if (!$THIS_RET['ID'])
@@ -263,15 +286,15 @@ function _makeType($value, $column) {
         return TextInput($value, 'values[student_immunization][' . $THIS_RET['ID'] . '][TYPE]');
 }
 
-function _makeDate($value, $column = 'MEDICAL_DATE', $counter = 0, $array = '') {//student medical tab
+function _makeDate($value, $column = 'MEDICAL_DATE', $counter = 0, $array = '')
+{ //student medical tab
     if ($array == '') {
         global $THIS_RET, $table;
 
 
         if (!$THIS_RET['ID'])
             $THIS_RET['ID'] = 'new';
-    }
-    else {
+    } else {
         $THIS_RET['ID'] = $array['ID'];
         $table = $array['TABLE'];
     }
@@ -280,7 +303,8 @@ function _makeDate($value, $column = 'MEDICAL_DATE', $counter = 0, $array = '') 
     //return DateInputAY($value!='' ? date("d-M-Y", strtotime($value)) : $value , 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']', $counter);   
 }
 
-function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student enrollment tab
+function _makeEnrollmentDates($column, $counter = 0, $ret_array = '')
+{ //student enrollment tab
     if (count($ret_array) > 0 && $ret_array != '') {
 
         $value = $ret_array[$column];
@@ -292,8 +316,7 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
             $value = $value;
         }
         $id = $ret_array['ID'];
-    }
-    else {
+    } else {
         if ($column == 'START_DATE') {
 
             $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE,SYEAR FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -310,13 +333,16 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
     if ($ret_array['SYEAR'] == UserSyear() || $val_syear == UserSyear()) {
 
         return DateInputAY($value != '' ? $value : '', 'values[student_enrollment][' . $id . '][' . $column . ']', $counter);
-    } else
-        return date('M/d/Y', strtotime($value));
+    } else {
+        // return date('M/d/Y', strtotime($value));
+        return ProperDateAY($value);
+    }
 }
 
 //-------------------- Edit Start --------------------------//
 
-function _makeDate_mod($value, $column = 'MEDICAL_DATE') {//not used anywhere
+function _makeDate_mod($value, $column = 'MEDICAL_DATE')
+{ //not used anywhere
     global $THIS_RET, $table;
 
     if (!$THIS_RET['ID'])
@@ -324,7 +350,8 @@ function _makeDate_mod($value, $column = 'MEDICAL_DATE') {//not used anywhere
     return DateInput($value, 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']');
 }
 
-function _makeDateInput_mod($column, $name, $request = 'students') {//for custom_field_students
+function _makeDateInput_mod($column, $name, $request = 'students')
+{ //for custom_field_students
     global $value, $field;
 
     if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
@@ -380,7 +407,8 @@ function _makeDateInput_mod($column, $name, $request = 'students') {//for custom
 
 //--------------------- Edit End ---------------------------//
 
-function _makeCommentsn($value, $column) {
+function _makeCommentsn($value, $column)
+{
     global $THIS_RET, $table;
 
     if (!$THIS_RET['ID'])
@@ -389,23 +417,25 @@ function _makeCommentsn($value, $column) {
     return TextAreaInput($value, 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']', '', 'rows=8 cols=50');
 }
 
-function _makeLongComments($value, $column) {
+function _makeLongComments($value, $column)
+{
     global $THIS_RET, $table;
 
     if (!$THIS_RET['ID'])
         $THIS_RET['ID'] = 'new';
     if ($THIS_RET['ID'] == 'new' || $value == '') {
         $field = "<textarea rows='1' cols='3' style='visibility:hidden;' id=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . " name=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . ">$value</textarea>";
-        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="'._addComment.'"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">'._enterComment.'</div></a></div>';
+        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="' . _addComment . '"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">' . _enterComment . '</div></a></div>';
         return $field;
     } else {
         $field = "<textarea rows='1' cols='3' style='visibility:hidden;' id=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . " name=" . 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']' . ">$value</textarea>";
-        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="'._addComment.'"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">'._enterComment.'</div></a></div>';
+        $field .= '<div class="text-center"><a href="javascript:void(0);" id="textarea" data-popup="popover" data-placement="left" title="' . _addComment . '"  data-html="true" data-content="<div class=\'form-group\'><div class=\'col-md-12\'><textarea class=\'form-control\' id=' . "values[" . $table . "][" . $THIS_RET["ID"] . "][" . $column . "]" . '  name=' . "values[" . $table . "][" . $THIS_RET['ID'] . "][" . $column . "]" . ' >' . $value . '</textarea></div></div><div class=\'text-center\'><input type=\'submit\' class=\'btn btn-primary\' value=\'Save\'></div>"><i class="icon-comments"></i><br/><div readonly="readonly">' . _enterComment . '</div></a></div>';
         return $field;
     }
 }
 
-function _makeComments($value, $column) {
+function _makeComments($value, $column)
+{
     global $THIS_RET, $table;
 
     if (!$THIS_RET['ID'])
@@ -414,7 +444,8 @@ function _makeComments($value, $column) {
     return TextInput($value, 'values[' . $table . '][' . $THIS_RET['ID'] . '][' . $column . ']');
 }
 
-function _makeAlertComments($value, $column) {
+function _makeAlertComments($value, $column)
+{
     global $THIS_RET, $table;
 
     if (!$THIS_RET['ID'])
@@ -424,7 +455,8 @@ function _makeAlertComments($value, $column) {
 }
 
 // ENROLLMENT
-function _makeStartInputDate($value, $column) {//student enrollment info tab
+function _makeStartInputDate($value, $column)
+{ //student enrollment info tab
     global $THIS_RET;
 
     if ($THIS_RET['ID'])
@@ -436,13 +468,12 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
         if (!$default || DBDate() > $default)
             $default = DBDate();
         $value = $default;
-    }
-    else {
+    } else {
         $add = '<TD>' . button('add') . '</TD>';
         $id = 'new';
     }
 
-//	
+    //	
 
     if ($_REQUEST['student_id'] == 'new')
         $div = false;
@@ -450,22 +481,22 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
         $div = true;
 
     $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
-//          
+    //          
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR']) {
         if ($_REQUEST['student_id'] != 'new')
             return '<TABLE class=LO_field><TR>' . $add . '<TD>' . DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['student_id']) . '</TD></TR></TABLE>';
         else
             return '<TABLE class=LO_field><TR>' . $add . '<TD>' . DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', 0) . '</TD></TR></TABLE>';
-    }
-    else {
+    } else {
         if ($_REQUEST['student_id'] != 'new')
-            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['student_id']) : date('M/d/Y', strtotime($value)) ) . '</TD></TR></TABLE>';
+            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['student_id']) : date('M/d/Y', strtotime($value))) . '</TD></TR></TABLE>';
         else
-            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', 0) : date('M/d/Y', strtotime($value)) ) . '</TD></TR></TABLE>';
+            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', 0) : date('M/d/Y', strtotime($value))) . '</TD></TR></TABLE>';
     }
 }
 
-function _makeStartInputDateenrl($value, $column) {//student enrollment tab
+function _makeStartInputDateenrl($value, $column)
+{ //student enrollment tab
     global $THIS_RET;
 
     if ($THIS_RET['ID'])
@@ -477,8 +508,7 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
         if (!$default || DBDate() > $default)
             $default = DBDate();
         $value = $default;
-    }
-    else {
+    } else {
         $add = '<TD>' . button('add') . '</TD>';
         $id = 'new';
     }
@@ -497,7 +527,8 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
         return date('F/d/Y', strtotime($value));
 }
 
-function _makeStartInputCode($value, $column) {
+function _makeStartInputCode($value, $column)
+{
     global $THIS_RET;
     if ($THIS_RET['ID'])
         $id = $THIS_RET['ID'];
@@ -520,7 +551,8 @@ function _makeStartInputCode($value, $column) {
     }
 }
 
-function _makeEndInputDate($value, $column) {//not used
+function _makeEndInputDate($value, $column)
+{ //not used
     global $THIS_RET;
     $drop_codes = array();
 
@@ -529,7 +561,7 @@ function _makeEndInputDate($value, $column) {//not used
     else
         $id = 'new';
 
-// student_enrollment select create here
+    // student_enrollment select create here
     $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR'])
         return '<TABLE class=LO_field><TR><TD>' . DateInput($value, 'values[student_enrollment][' . $id . '][' . $column . ']') . '</TD></TR></TABLE>';
@@ -541,7 +573,8 @@ function _makeEndInputDate($value, $column) {//not used
     }
 }
 
-function _makeEndInputCode($value, $column) {
+function _makeEndInputCode($value, $column)
+{
     global $THIS_RET;
     $drop_codes = array();
 
@@ -561,7 +594,7 @@ function _makeEndInputCode($value, $column) {
     $type_RET = DBGet(DBQuery('SELECT ID, TYPE FROM student_enrollment_codes WHERE SYEAR=\'' . ($THIS_RET['SYEAR'] != '' ? $THIS_RET['SYEAR'] : UserSyear()) . '\' AND TYPE=\'TrnD\''));
     if (count($type_RET) > 0)
         $type_id = $type_RET[1]['ID'];
-// student_enrollment select create here
+    // student_enrollment select create here
     $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR'])
         return '<TABLE class=LO_field><TR><TD>' . SelectInput_for_EndInput($THIS_RET['DROP_CODE'], 'values[student_enrollment][' . $id . '][DROP_CODE]', '', $drop_codes, $type_id, 'N/A', 'style="max-width:150;"') . '</TD></TR></TABLE>';
@@ -571,7 +604,8 @@ function _makeEndInputCode($value, $column) {
     }
 }
 
-function _makeSchoolInput($value, $column) {
+function _makeSchoolInput($value, $column)
+{
     global $THIS_RET, $schools;
     $schools = array();
     if ($THIS_RET['ID'])
@@ -601,7 +635,8 @@ function _makeSchoolInput($value, $column) {
         return $schools[UserSchool()][1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
 }
 
-function _makeStartInputCodeenrl($value, $column) {
+function _makeStartInputCodeenrl($value, $column)
+{
     global $THIS_RET;
     if ($THIS_RET['ID'])
         $id = $THIS_RET['ID'];
@@ -626,7 +661,8 @@ function _makeStartInputCodeenrl($value, $column) {
     }
 }
 
-function _makeEndInputDateenrl($value, $column) {
+function _makeEndInputDateenrl($value, $column)
+{
     global $THIS_RET;
     $drop_codes = array();
 
@@ -660,7 +696,8 @@ function _makeEndInputDateenrl($value, $column) {
     }
 }
 
-function _makeEndInputCodeenrl($value, $column) {
+function _makeEndInputCodeenrl($value, $column)
+{
     global $THIS_RET;
     $drop_codes = array();
 
@@ -680,7 +717,7 @@ function _makeEndInputCodeenrl($value, $column) {
     if (count($type_RET) > 0)
         $type_id = $type_RET[1]['ID'];
     $option_output = DBGet(DBQuery('SELECT ID,TITLE AS TITLE FROM student_enrollment_codes WHERE SYEAR=\'' . ($THIS_RET['SYEAR'] != '' ? $THIS_RET['SYEAR'] : UserSyear()) . '\' AND (TYPE=\'Drop\' OR TYPE=\'Roll\' OR TYPE=\'TrnE\') AND ID=\'' . $value . '\''));
-// student_enrollment select create here
+    // student_enrollment select create here
     if ($THIS_RET['SYEAR'] == UserSyear())
         return '<TABLE class=LO_field><TR><TD>' . SelectInput_for_EndInput($THIS_RET['DROP_CODE'], 'values[student_enrollment][' . $id . '][DROP_CODE]', '', $drop_codes, $type_id, 'N/A', 'style="max-width:150;"') . '</TD></TR></TABLE>';
     else {
@@ -691,5 +728,3 @@ function _makeEndInputCodeenrl($value, $column) {
         }
     }
 }
-
-?>

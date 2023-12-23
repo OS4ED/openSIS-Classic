@@ -152,7 +152,7 @@ if (User('PROFILE') == 'admin') {
             $extra['functions'] = array('STF_ID' => 'Make Staff All School');
         }
         $extra['SELECT'] .= ',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';
-        $extra['functions'] = array('CATEGORY' => _staffCategory);
+        $extra['functions'] = array('CATEGORY' => 'staffCategory');
 
 
         if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false) {

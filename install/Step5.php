@@ -55,7 +55,7 @@ if (isset($_SESSION['mod']) && $_SESSION['mod']== 'upgrade') {
     }
 
     fclose($fh);
-    $display_text = 'Your system has been successfully upgraded to version 9.0. Please click the button below<br/> to proceed to login with your existing login credentials.
+    $display_text = 'Your system has been successfully upgraded to version 9.1. Please click the button below<br/> to proceed to login with your existing login credentials.
 ';
     echo '<!DOCTYPE html>
         <html lang="en">

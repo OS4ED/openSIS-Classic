@@ -49,8 +49,16 @@ if ($url === FALSE) {
     header('Location: index.php');
 }
 
+if (!defined("_eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked")) {
+    define("_eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked", "Either your account is inactive or your access permission has been revoked");
+}
+
+if (!defined("_pleaseContactTheSchoolAdministration")) {
+    define("_pleaseContactTheSchoolAdministration", "Please contact the school administration");
+}
+
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
-    $error[] = "" . _eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked . "." . _pleaseContactTheSchoolAdministration . ".";
+    $error[] = _eitherYourAccountIsInactiveOrYourAccessPermissionHasBeenRevoked . "." . _pleaseContactTheSchoolAdministration . ".";
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {

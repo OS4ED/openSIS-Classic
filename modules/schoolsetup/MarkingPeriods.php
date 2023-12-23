@@ -26,8 +26,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-//print_r($_REQUEST);
-
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
@@ -99,6 +97,24 @@ if ($_REQUEST['day_tables'] && ($_POST['day_tables'] || $_REQUEST['ajax'])) {
 if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()) {
     $sql_ex = '';
     // ---------------------- Insert & Update Start ------------------------------ //
+
+    if ($_REQUEST['marking_period_id'] !== 'new') {
+        $marking_period_sql = "SELECT START_DATE,END_DATE FROM marking_periods WHERE marking_period_id=$_REQUEST[marking_period_id]";
+        $sql = DBGet(DBQuery($marking_period_sql));
+        foreach ($sql as $markingcolumns) {
+            $endDate = date('Y-m-d', strtotime($_REQUEST['tables'][$_REQUEST['marking_period_id']]['END_DATE']));
+            $startdate = date('Y-m-d', strtotime($_REQUEST['tables'][$_REQUEST['marking_period_id']]['START_DATE']));
+            if ($startdate == $markingcolumns['START_DATE']) {
+                unset($_REQUEST['tables'][$_REQUEST['marking_period_id']]['START_DATE']);
+                
+            }
+            if ($endDate == $markingcolumns['END_DATE']) {
+                unset($_REQUEST['tables'][$_REQUEST['marking_period_id']]['END_DATE']);
+            }
+        }
+    }
+   
+
     foreach ($_REQUEST['tables'] as $id => $columns) {
         if ($table == 'school_years') {
             $chk_tbl = 'school_semesters';
@@ -374,7 +390,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                             }
                                         }
                                     } else {
-                                        $err_msg = "" . _startDateCannotBeAfter . " $nm " . _startDateCannotBeAfter . "";
+                                        $err_msg = _startDateCannotBeAfter . " $nm " . _startDate;
                                         break 2;
                                     }
                                 } else {
@@ -951,7 +967,7 @@ if (!$_REQUEST['modfunc']) {
         if ($RET['DOES_GRADES'] != '')
             $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">' . _graded . '</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div("tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]",' . $_REQUEST['marking_period_id'] . ');') . '</div></div>';
         else
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Graded</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div(\'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]\',\'' . $_REQUEST['marking_period_id'] . '\');') . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._graded.'</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div(\'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]\',\'' . $_REQUEST['marking_period_id'] . '\');') . '</div></div>';
         $header .= '</div>';
         $header .= '</div>'; //.row
 

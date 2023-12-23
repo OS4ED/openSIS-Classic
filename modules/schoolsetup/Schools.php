@@ -232,6 +232,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
 }
 if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
     echo '<div class="alert alert-success alert-styled-left">' . _schoolHasBeenCreatedSuccessfully . '</div>';
+    echo'<script type="text/javascript">
+    window.setTimeout(function() {
+        window.location.href="Modules.php?modname=miscellaneous/portal.php";
+    }, 2000);
+    </script>';
 } else {
     if (!$_REQUEST['modfunc']) {
         if (!$_REQUEST['new_school']) {

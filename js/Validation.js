@@ -738,6 +738,7 @@ function formcheck_school_setup_calender(this_DET) {
 function ValidateDate_SchoolSetup_calender() {
   var frm = document.forms["prompt_form"];
   var elem = frm.elements;
+
   for (var i = 0; i < elem.length; i++) {
     if (elem[i].name == "month__min") {
       sm = elem[i];
@@ -759,6 +760,7 @@ function ValidateDate_SchoolSetup_calender() {
       ey = elem[i];
     }
   }
+
   if (sm.value) {
     switch (sm.value) {
       case "JAN":
@@ -797,6 +799,9 @@ function ValidateDate_SchoolSetup_calender() {
       case "DEC":
         s_m = "12";
         break;
+      default:
+        s_m = sm.value;
+        break;
     }
 
     try {
@@ -804,14 +809,15 @@ function ValidateDate_SchoolSetup_calender() {
 
       if (false == validatedate(s)) {
         document.getElementById("divErr").innerHTML =
-          "<b><font color=red>" +
-          "Please enter correct start date." +
-          "</font></b>";
-        sm.focus();
+          "<div class='alert alert-danger no-border'>" +
+          "Please enter correct Start Date." +
+          "</div>";
+        $("#date_1").focus();
         return false;
       }
     } catch (err) {}
   } else s = "no";
+
   if (em.value) {
     switch (em.value) {
       case "JAN":
@@ -850,15 +856,19 @@ function ValidateDate_SchoolSetup_calender() {
       case "DEC":
         e_m = "12";
         break;
+      default:
+        e_m = em.value;
+        break;
     }
+
     try {
       var e = e_m + "/" + ed.value + "/" + ey.value;
       if (false == validatedate(e)) {
         document.getElementById("divErr").innerHTML =
-          "<b><font color=red>" +
-          "Please enter correct end date." +
-          "</font></b>";
-        em.focus();
+          "<div class='alert alert-danger no-border'>" +
+          "Please enter correct End Date." +
+          "</div>";
+        $("#date_2").focus();
         return false;
       }
     } catch (err) {}
@@ -867,27 +877,37 @@ function ValidateDate_SchoolSetup_calender() {
   if (s != "no" && e != "no") {
     var starDate = new Date(s);
     var endDate = new Date(e);
-    if (starDate > endDate && endDate != "") {
+
+    if (starDate != "" && endDate != "" && (starDate.getTime() > endDate.getTime() || starDate.getTime() === endDate.getTime())) {
       document.getElementById("divErr").innerHTML =
-        "<b><font color=red>" +
-        "Start date cannot be greater than end date." +
-        "</font></b>";
+        "<div class='alert alert-danger no-border'>" +
+        "Start Date cannot be greater than or equal to the End Date." +
+        "</div>";
       return false;
-    } else return true;
+    } else {
+      document.getElementById("divErr").innerHTML = '';
+      return true;
+    }
   } else {
     if (s == "no" && e == "no") {
       document.getElementById("divErr").innerHTML =
-        "<b><font color=red>" +
-        "Start date and end date cannot be blank." +
-        "</font></b>";
+        "<div class='alert alert-danger no-border'>" +
+        "Start Date and End Date cannot be blank." +
+        "</div>";
+      $("#date_1").focus();
     } else {
-      if (s == "no")
+      if (s == "no") {
         document.getElementById("divErr").innerHTML =
-          "<b><font color=red>" + "Start date cannot be blank." + "</font></b>";
-      if (e == "no")
+          "<div class='alert alert-danger no-border'>" + "Start Date cannot be blank." + "</div>";
+        $("#date_1").focus();
+      }
+      if (e == "no") {
         document.getElementById("divErr").innerHTML =
-          "<b><font color=red>" + "End date cannot be blank." + "</font></b>";
+          "<div class='alert alert-danger no-border'>" + "End Date cannot be blank." + "</div>";
+        $("#date_2").focus();
+      }
     }
+
     return false;
   }
 }

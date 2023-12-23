@@ -143,7 +143,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1'] = $address_details[1]['ADDRESS'];
 
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2']) && !isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2']))
-            $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
+            $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2'];
         elseif (isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2']) && $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] != '') {
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_2'];
         } else {
@@ -183,7 +183,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1'] = $address_details[1]['ADDRESS'];
 
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2']) && !isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2']))
-            $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
+            $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_2'];
         elseif (isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2']) && $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'] != '')
             $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'] = $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_2'];
         else
@@ -1184,6 +1184,7 @@ if (!isset($_REQUEST['modfunc'])) {
 
 
 
+
             if ($h_addr[1]['BUS_PICKUP'] == 'N')
                 unset($h_addr[1]['BUS_PICKUP']);
             if ($h_addr[1]['BUS_DROPOFF'] == 'N')
@@ -1259,8 +1260,8 @@ if (!isset($_REQUEST['modfunc'])) {
             echo '</div>'; //.row
 
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _schoolBusPickUp . '</label><div id="PUT_BPU" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_PICKUP'], 'values[student_address][HOME][BUS_PICKUP]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _schoolBusDropOff . '</label><div id="PUT_BDO" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_DROPOFF'], 'values[student_address][HOME][BUS_DROPOFF]', '', 'CHECKED', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _schoolBusPickUp . '</label><div id="PUT_BPU" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_PICKUP'], 'values[student_address][HOME][BUS_PICKUP]', '', $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _schoolBusDropOff . '</label><div id="PUT_BDO" class="col-md-8">' . CheckboxInputMod($h_addr[1]['BUS_DROPOFF'], 'values[student_address][HOME][BUS_DROPOFF]', '',  $new, '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div></div>';
             echo '</div>'; //.row
 
             echo '</FIELDSET>';
@@ -1340,7 +1341,7 @@ if (!isset($_REQUEST['modfunc'])) {
             echo '<FIELDSET><h5 class="text-primary">' . _primaryEmergencyContact . '</h5>';
             echo '<hr/>';
             if (is_countable($qr_ot_stu_asso) && count($qr_ot_stu_asso) > 1)
-                echo "<TR><td> <A HREF=Modules.php?modname=$_REQUEST[modname]&person_id=" . $p_addr[1][CONTACT_ID] . "&modfunc=clearall&relation=primary>" . _removeParent . "</A></TD></tr>";
+                echo "<TR><td> <A HREF=Modules.php?modname=$_REQUEST[modname]&person_id=" . $p_addr[1]['CONTACT_ID'] . "&modfunc=clearall&relation=primary>" . _removeParent . "</A></TD></tr>";
 
             $prim_relation_options = _makeAutoSelect('RELATIONSHIP', 'students_join_people', 'PRIMARY', $p_addr['RELATIONSHIP'], $relation_options);
 
@@ -1447,23 +1448,23 @@ if (!isset($_REQUEST['modfunc'])) {
             if ($h_addr[1]['ADDRESS_ID'] != '' && $p_addr[1]['ADDRESS_ID'] != '') {
                 $extra_sql = '';
                 if ($p_addr[1]['STREET'] != '')
-                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . addslashes($m_addr[1]['STREET']) . '\' ';
+                    $extra_sql = 'AND STREET_ADDRESS_2=\'' . addslashes($p_addr[1]['STREET']) . '\' ';
                 else
                     $extra_sql = 'AND STREET_ADDRESS_2 is NULL ';
 
                 // $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . singleQuoteReplace('', '', $p_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . singleQuoteReplace('', '', $p_addr[1]['ZIPCODE']) . '\' AND TYPE=\'Home Address\' '));
 
-                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\'' . $extra_sql . 'AND CITY=\'' . addslashes($p_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . addslashes($p_addr[1]['ZIPCODE']) . '\' AND student_id = \'' . $_REQUEST['student_id'] . '\' AND TYPE=\'Home Address\' '));
+                $s_prim_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $p_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\''.addslashes($p_addr[1]['ADDRESS']) .  '\' '. $extra_sql . 'AND CITY=\'' . addslashes($p_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($p_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . addslashes($p_addr[1]['ZIPCODE']) . '\' AND student_id = \'' . $_REQUEST['student_id'] . '\' AND TYPE=\'Home Address\' '));
 
 
                 if ($s_prim_address[1]['TOTAL'] != 0)
                     $p_checked = " CHECKED=CHECKED ";
                 else
                     $p_checked = " ";
+            }
 
-                if ($p_addr[1]['ADDRESS_ID'] != 0) {
-                    echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div id="prim_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">' . _sameAsHomeAddress . '</label></div></div></div></div>';
-                }
+            if ($h_addr[1]['ADDRESS_ID'] != 0) {
+                echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div id="prim_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">' . _sameAsHomeAddress . '</label></div></div></div></div>';
             }
             if ($h_addr[1]['ADDRESS_ID'] != 0 && $p_addr[1]['ADDRESS_ID'] == 0) {
                 echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4"></label><div id="prim_same_as" class="col-md-8"><div id="check_addr"><label class="checkbox-inline"><input class="styled" type="checkbox" ' . $p_checked . ' id="prim_addr" name="prim_addr" value="Y">' . _sameAsHomeAddress . '</label></div></div></div></div>';
@@ -1595,7 +1596,7 @@ if (!isset($_REQUEST['modfunc'])) {
 
             echo '<hr/>';
 
-            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . addslashes($s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . addslashes($p_addr[1]['ADDRESS']) . '\'    ' . ($s_addr[1]['STREET'] != '' ? 'AND STREET_ADDRESS_2=\'' . addslashes($s_addr[1]['STREET']) . '\'' : ' ') . '  AND CITY=\'' . addslashes($s_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND STUDENT_ID=' . UserStudentID()));
+            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . addslashes($s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_2=\'' . addslashes($s_addr[1]['STREET']) . '\'' . '  AND CITY=\'' . addslashes($s_addr[1]['CITY']) . '\' AND STATE=\'' . addslashes($s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND STUDENT_ID=' . UserStudentID()));
             if ($s_sec_address[1]['TOTAL'] != 0)
                 $s_checked = " CHECKED=CHECKED ";
             else

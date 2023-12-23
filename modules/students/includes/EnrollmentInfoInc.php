@@ -31,6 +31,21 @@ include('../../../RedirectIncludes.php');
 include_once('modules/students/includes/FunctionsInc.php');
 #########################################################ENROLLMENT##############################################
 
+if ($_REQUEST['action'] == 'forceDrop') {
+    $dropDate = sqlSecurityFilter($_REQUEST['dropDate']);
+
+    if ($dropDate != '') {
+        DBQuery('DELETE FROM attendance_period WHERE STUDENT_ID = ' . UserStudentID() . ' AND COURSE_PERIOD_ID IN (SELECT COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID = ' . UserStudentID() . ' AND SYEAR = ' . UserSyear() . ' AND SCHOOL_ID = ' . UserSchool() . ') AND SCHOOL_DATE >= \'' . $dropDate . '\'');
+
+
+        DBQuery('DELETE FROM attendance_day WHERE STUDENT_ID = ' . UserStudentID() . ' AND SCHOOL_DATE >= \'' . $dropDate . '\'');
+
+        unset($_REQUEST['modfunc']);
+
+        echo '<div class="alert alert-info alert-styled-left">' . str_replace('0000-00-00', '<span class="text-bold">' . ProperDate($dropDate) . '</span>', _attendanceRecordsFromDateHaveBeenDeletedYouCanNowDropTheStudent) . '</div>';
+    }
+}
+
 if($_SESSION['ERR_TRANS'])
 {
     echo $_SESSION['ERR_TRANS'];
@@ -138,7 +153,8 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
 
                                 //SaveData($iu_extra, '', $field_names);
                             } else {
-                                echo '<div class="alert bg-danger alert-styled-left">'._studentCannotBeDroppedBecauseStudentHasGotAttendanceTill.'' . date('m-d-Y', strtotime($max_at_dt)) . '</div>';
+                                echo '<div class="alert alert-danger alert-styled-left">'._studentCannotBeDroppedBecauseStudentHasGotAttendanceTill.'' . ProperDate(date('Y-m-d', strtotime($max_at_dt))) . '</div>';
+                                echo '<div class="alert alert-warning alert-styled-left">' . str_replace('0000-00-00', '<span class="text-bold">' . ProperDate($_REQUEST['values'][$table][$id]['END_DATE']) . '</span>', _deleteTheAttendanceRecordsAfterDateAndProceedWithDroppingTheStudent) . '<a href="javascript:void(0)" onclick="load_link(\'' . PreparePHP_SELF($_REQUEST) . '&action=forceDrop&ajax=true&dropDate=' . $_REQUEST['values'][$table][$id]['END_DATE'] . '\')" class="btn-undo alert-link m-l-20" title="Proceed with caution. This action cannot be undone.">' . _yes . '</a></div>';
                             }
                         } else {
 

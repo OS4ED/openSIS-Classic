@@ -105,7 +105,7 @@ if (UserStaffID() != '') {
     $last_stu = $_SESSION['staff_order'][$last_stu];
     echo '<div class="row">';
     echo '<div class="col-md-12 text-right">';
-    echo "<p>" . _showing . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['count_staff'] : '1') . " " . _showing . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['total_staff'] : '1') . " &nbsp; ";
+    echo "<p>" . _showing . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['count_staff'] : '1') . " " . _of . " " . ((is_countable($_SESSION['staff_order']) ? count($_SESSION['staff_order']) : 0) > 1 ? $_SESSION['total_staff'] : '1') . " &nbsp; ";
 
     if (is_countable($_SESSION['staff_order']) && count($_SESSION['staff_order']) > 1) {
         if (UserStaffID() != $_SESSION['staff_order'][1]) {

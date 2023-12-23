@@ -26,7 +26,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-
+if (User('PROFILE') == 'teacher'){
+    unset($_SESSION['student_id']);
+}
 if (isset($_SESSION['student_id'])) {
     $_REQUEST['stuid'] = $_SESSION['student_id'];
 }
@@ -78,7 +80,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call' || isset($_SESSI
     $extra['search'] .= '<div class="form-group"><label>' . _includeCoursesActiveAsOf . '</label>' . DateInputAY('', 'include_active_date', 1) . '</div>';
     $extra['new'] = true;
     include('modules/miscellaneous/Export.php');
-x    echo '<div class="text-center m-t-20"><div><INPUT type=button value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary" onclick="triggerAdvancedReportExcel(this,\'\')"></div><div class="m-t-10"><INPUT type=button value=\'' . _createExcelReportForSelectedStudents . '\' class="btn btn-success" onclick="triggerAdvancedReportExcel(this,\'Y\')"></div></div>';
+    echo '<div class="text-center m-t-20"><div><INPUT type=button value=\'' . _createReportForSelectedStudents . '\' class="btn btn-primary" onclick="triggerAdvancedReportExcel(this,\'\')"></div><div class="m-t-10"><INPUT type=button value=\'' . _createExcelReportForSelectedStudents . '\' class="btn btn-success" onclick="triggerAdvancedReportExcel(this,\'Y\')"></div></div>';
     echo "</FORM>";
 }
 $modal_flag = 1;

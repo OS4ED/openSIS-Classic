@@ -9,7 +9,7 @@ define("_setCurrency", "Establecer moneda");
 define("_displayClassRank", "Mostrar clasificación de clase");
 define("_displayNotifications", "Mostrar notificaciones");
 define("_save", "Salvar");
-
+define("_select", "Seleccionar");
 // translate
 define("_enterUsername", "Introduzca su nombre de usuario");
 define("_enterPassword", "Entrer Contraseña");
@@ -909,6 +909,8 @@ define("_pleaseSelectAStudentFirst", "Primero seleccione un estudiante");
 define("_removeParent", "Eliminar padre");
 define("_sameAsStudentSHomeAddress", "Igual que la dirección particular del estudiante");
 define("_youCanNotDeleteCommentOfAnotherUser", "No puede eliminar el comentario de otro usuario.");
+define("_attendanceRecordsFromDateHaveBeenDeletedYouCanNowDropTheStudent", "Se eliminaron los registros de asistencia del 0000-00-00. Ahora puede dar de baja al estudiante.");
+define("_deleteTheAttendanceRecordsAfterDateAndProceedWithDroppingTheStudent", "Elimine los registros de asistencia después del 0000-00-00 y proceda a dar de baja al estudiante.");
 define("_theStudentIsAlreadyEnrolledOnThatDateAndCouldNotBeEnrolledASecondTimeOnTheDateYouSpecifiedPleaseFixAndTryEnrollingTheStudentAgain", "El estudiante ya está inscrito en esa fecha y no se pudo inscribir por segunda vez en la fecha que especificó. Por favor arregle e intente inscribir nuevamente al estudiante.");
 define("_cannotUploadFileInvaliedFileType", "No se puede cargar el archivo. Tipo de archivo no válido.");
 define("_cannotUploadFileInvalidPermission", "No se puede cargar el archivo. Permiso no válido");
@@ -1383,6 +1385,7 @@ define("_courseStartDate", "Fecha de inicio del curso");
 define("_courseEndDate", "Fecha de finalización del curso");
 define("_teacherOffice", "Profesor y oficina");
 define("_officeOnly", "Oficina solamente");
+define("_today", "Hoy");
 //EXTRACURRICULAR
 define("_studentScreen", "Pantalla del estudiante");
 define("_addActivity", "Agregar actividad");

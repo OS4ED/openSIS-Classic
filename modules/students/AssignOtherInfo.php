@@ -35,7 +35,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if ($_REQUEST['day'] != '' && $_REQUEST['month'] != '' && $_REQUEST['year'] != '') {
         $date = $_REQUEST['day'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['year'];
     }
-    
+
     if (isset($_REQUEST['month_values']) && count($_REQUEST['month_values'])) {
         foreach ($_REQUEST['month_values'] as $field_name => $month) {
             if ($month != '') {
@@ -485,6 +485,49 @@ if (!$_REQUEST['modfunc']) {
             }
         }
 
+        if (!empty($fields_RET['codeds'])) {
+            foreach ($fields_RET['codeds'] as $field) {
+                $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
+                $select_options = explode("\r", $field['SELECT_OPTIONS']);
+                unset($options);
+                if (count($select_options)) {
+                    foreach ($select_options as $option){
+                        if ($field['TYPE'] == 'codeds') {
+                            $option = explode('|', $option);
+                            if ($option[0] != '' && $option[1] != ''){
+                                $options[$option[0]] = $option[1];
+                            }
+                        } else{
+                            $options[$option] = $option;
+                        }
+                    }
+                }
+                array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeSelectInput('CUSTOM_' . $field['ID'], $options) . '</div></div>');
+            }
+        }
+
+        if (!empty($fields_RET['autos'])) {
+            foreach ($fields_RET['autos'] as $field) {
+
+                array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeAutoSelectInput('CUSTOM_' . $field['ID'], '') . '</div></div>');
+            }
+        }
+
+        if (!empty($fields_RET['edits'])) {
+            foreach ($fields_RET['edits'] as $field) {
+
+                array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeAutoSelectInput('CUSTOM_' . $field['ID'], '') . '</div></div>');
+            }
+        }
+
+        if (!empty($fields_RET['multiple'])) {
+            foreach ($fields_RET['multiple'] as $field) {
+
+                array_push($fields, "<div class=\"form-group\"><label class=\"control-label col-lg-4 text-right\" for=\"CUSTOM_" . $field['ID'] . "\">$field[TITLE]</label><div class=\"col-lg-8\">" . _makeMultipleInput('CUSTOM_' . $field['ID'], '') . '</div></div>');
+            }
+        }
+
+
         $col1html = '<div class="col-md-6">';
         $col2html = '<div class="col-md-6">';
         $item = '';
@@ -653,4 +696,85 @@ function _makeCustomCheckbox($identifier, $title)
     } else {
         return false;
     }
+}
+
+function _makeAutoSelectInput($column, $name, $request = 'students')
+{
+    global $value, $field;
+
+    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+        $value[$column] = $field['DEFAULT_SELECTION'];
+        $div = false;
+        $req = $field['REQUIRED'] == 'Y' ? array('<span class="text-danger">', '</span>') : array('', '');
+    } else {
+        $div = true;
+        $req = $field['REQUIRED'] == 'Y' && ($value[$column] == '' || $value[$column] == '---') ? array('<span class="text-danger">', '</span>') : array('', '');
+    }
+
+    // build the select list...
+    // get the standard selects
+    if ($field['SELECT_OPTIONS']) {
+        $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
+        $select_options = explode("\r", $field['SELECT_OPTIONS']);
+    } else
+        $select_options = array();
+    if (count($select_options)) {
+        foreach ($select_options as $option)
+            if ($option != '')
+                $options[$option] = $option;
+    }
+    // add the 'new' option, is also the separator
+    $options['---'] = '---';
+
+
+    // make sure the current value is in the list
+    if ($value[$column] != '' && !$options[$value[$column]])
+        $options[$value[$column]] = array($value[$column], '<span class=' . ($field['TYPE'] == 'autos' ? 'text-primary' : 'text-success') . '>' . $value[$column] . '</span>');
+
+    if ($value[$column] != '---' && count($options) > 1) {
+
+        if (isset($num_of_cus_field)) {
+            $generated = true;
+        }
+        $extra = '';
+        return SelectInput($value[$column], $request . '[' . $column . ']', '', $options, 'N/A', $extra, $div);
+    } else {
+        if (trim($name) != '')
+            return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', $req[0] . $name . $req[1], $size, $div);
+        else
+            return TextInput($value[$column] == '---' ? array('---', '<span class=text-danger>---</span>') : '' . $value[$column], $request . '[' . $column . ']', '', $size, $div);
+    }
+}
+
+function _makeMultipleInput($column, $name, $request = 'students')
+{
+    global $value, $field, $_openSIS;
+
+    if ((AllowEdit() || $_openSIS['allow_edit']) && !$_REQUEST['_openSIS_PDF']) {
+        $field['SELECT_OPTIONS'] = str_replace("\n", "\r", str_replace("\r\n", "\r", $field['SELECT_OPTIONS']));
+        $select_options = explode("\r", $field['SELECT_OPTIONS']);
+        if (count($select_options)) {
+            foreach ($select_options as $option)
+                $options[$option] = $option;
+        }
+
+        if (count($options) > 12) {
+            $m_input .= '<span color=' . Preferences('TITLES') . '>' . $name . '</span>';
+        }
+
+        $i = 0;
+        foreach ($options as $option) {
+            if ($value[$column] != '') {
+                $m_input .= '<INPUT TYPE=hidden name=' . $request . '[' . $column . '][] value="">';
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+            } else {
+                $m_input .= '<label class=checkbox-inline><INPUT type=checkbox class=styled name=' . $request . '[' . $column . '][] value="' . str_replace('"', '&quot;', $option) . '"' . (strpos($value[$column], '||' . $option . '||') !== false ? ' CHECKED' : '') . '>' . $option . '</label>';
+            }
+            $i++;
+        }
+    } else
+        $m_input .= (($value[$column] != '') ? str_replace('"', '&rdquo;', str_replace('||', ', ', substr($value[$column], 2, -2))) : '-<BR>');
+
+    $m_input .= '<p class=help-block>' . $name . '</p>';
+    return $m_input;
 }

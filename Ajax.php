@@ -142,6 +142,7 @@ if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'studen
         // 'grades/HonorRoll.php',
         'grades/EditReportCardGrades.php',
         // 'grades/GraduationProgress.php', 
+        'grades/HistoricalReportCardGrades.php',
         // For Attendance
         'attendance/AddAbsences.php',
         // 'attendance/DailySummary.php',

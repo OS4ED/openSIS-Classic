@@ -29,7 +29,7 @@
 include('../../RedirectModulesInc.php');
 include('lang/language.php');
 
-
+unset($_SESSION['student_id']);
 // echo "<pre>";print_r($_REQUEST);echo "</pre>";
 // echo "<pre>";print_r($_SESSION['MassRequests.php']);echo "</pre>";
 // exit;

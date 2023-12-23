@@ -60,7 +60,8 @@ $cal_found_qr = DBGet(DBQuery('SELECT count(*) as TOT from school_calendars WHER
 if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found_qr[1]['TOT'] == 0) && User('PROFILE') == 'admin') {
     $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''));
     $fy_RET = $fy_RET[1];
-    if ($_REQUEST['month__min'] == '')
+
+    if ($_REQUEST['month__min'] == '' && $_REQUEST['modfunc'] != 'create')
         echo '<div class="alert alert-danger no-border">' . _noCalendarsWereFound . '</div>';
 
     $message = '<div class="row">';
@@ -151,7 +152,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found
             DBQuery('Update school_calendars SET DEFAULT_CALENDAR=NULL WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'');
         // if ($dup_cal_title[1]['NO'] == 0)
         //     DBQuery('INSERT INTO school_calendars (SYEAR,SCHOOL_ID,TITLE,DEFAULT_CALENDAR,DAYS) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . $cal_title . '\',\'' . $_REQUEST['default'] . '\',\'' . conv_day($_REQUEST['weekdays']) . '\')');
-        if (count($_REQUEST['profiles'])) {
+        if (is_countable($_REQUEST['profiles']) && count($_REQUEST['profiles'])) {
             $profile_sql = 'INSERT INTO calendar_events_visibility(calendar_id,profile_id,profile) VALUES';
             foreach ($_REQUEST['profiles'] as $key => $profile) {
                 if (is_numeric($key)) {

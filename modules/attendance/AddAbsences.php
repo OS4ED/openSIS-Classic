@@ -33,7 +33,6 @@ if (isset($_SESSION['student_id']) && $_SESSION['student_id'] != '') {
     $_REQUEST['search_modfunc'] = 'list';
 }
 
-//print_r($_REQUEST);
 if (!$_REQUEST['month'])
     $_REQUEST['month'] = date("m");
 else
@@ -132,8 +131,8 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
 
                 foreach ($_REQUEST['period'] as $period_id => $yes) {
 
-                    $attn_taken = count($current_RET[$date][$period_id]);
-                    $attn_possible = count($course_periods_RET[$period_id]);
+                    $attn_taken = (is_countable($current_RET[$date][$period_id]) ? count($current_RET[$date][$period_id]) : 0);
+                    $attn_possible = (is_countable($course_periods_RET[$period_id]) ? count($course_periods_RET[$period_id]) : 0);
 
                     if ($attn_possible == $attn_taken) {
                         if ($attn_possible > 0) {
@@ -298,7 +297,7 @@ if (!$_REQUEST['modfunc']) {
             else
                 $disabled = '';
 
-            echo '<td align=left><label class="checkbox-inline"><INPUT type=checkbox name=dates[' . $this_date . '] value=Y' . $disabled . '>' . $i . '</label></td>';
+            echo '<td align=left ' . (trim($disabled) == 'CHECKED' ? 'class="calendar-active" title="' . _today . '"' : '') . '><label class="checkbox-inline"><INPUT type=checkbox name=dates[' . $this_date . '] value=Y' . $disabled . '>' . $i . '</label></td>';
             $skip++;
             if ($skip % 7 == 0 && $i != $last) {
                 echo '</tr><tr>';
@@ -318,9 +317,9 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.panel-body
         echo '</div>'; //.panel
     } elseif ($note)
-        DrawHeader('<IMG SRC=assets/check.gif>' . $note);
+        echo '<div class="alert alert-success alert-styled-left alert-dismissible"><a href="javascript:void(0)" class="close m-r-20" data-dismiss="alert" aria-label="close">&times;</a>' . $note . '</div>';
     if ($error_note)
-        DrawHeader('<IMG SRC=assets/warning_button.gif>' . $error_note);
+        echo '<div class="alert alert-warning alert-styled-left alert-dismissible"><a href="javascript:void(0)" class="close m-r-20" data-dismiss="alert" aria-label="close">&times;</a>' . $error_note . '</div>';
 
 
     $extra['search'] .= '<div class="row">';

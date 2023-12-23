@@ -421,6 +421,10 @@ ul[id*="select2-period-"] {
     border-color: inherit;
 }
 
+.p-11 {
+    padding: 11px !important;
+}
+
 
 @media (max-width: 768px) {
     #navbar-mobile .form-group, #navbar-mobile form {

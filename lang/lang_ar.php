@@ -9,7 +9,7 @@ define("_setCurrency", "تعيين العملة");
 define("_displayClassRank", "عرض رتبة الفصل");
 define("_displayNotifications", "عرض الإخطارات");
 define("_save", "يحفظ");
-
+define("_select", "يختار");
 // translate
 define("_enterUsername", "ادخل اسم المستخدم");
 define("_enterPassword", "أدخل كلمة المرور");
@@ -909,6 +909,8 @@ define("_pleaseSelectAStudentFirst", "الرجاء تحديد طالب أولا�
 define("_removeParent", "إزالة الوالد");
 define("_sameAsStudentSHomeAddress", "نفس عنوان منزل الطالب");
 define("_youCanNotDeleteCommentOfAnotherUser", "لا يمكنك حذف تعليق مستخدم آخر.");
+define("_attendanceRecordsFromDateHaveBeenDeletedYouCanNowDropTheStudent", "تم حذف سجلات الحضور من 0000-00-00. يمكنك الآن إسقاط الطالب.");
+define("_deleteTheAttendanceRecordsAfterDateAndProceedWithDroppingTheStudent", "حذف سجلات الحضور بعد 0000-00-00 ومتابعة إسقاط الطالب.");
 define("_theStudentIsAlreadyEnrolledOnThatDateAndCouldNotBeEnrolledASecondTimeOnTheDateYouSpecifiedPleaseFixAndTryEnrollingTheStudentAgain", "تم تسجيل الطالب بالفعل في ذلك التاريخ ، ولا يمكن تسجيله مرة ثانية في التاريخ الذي حددته. الرجاء الإصلاح ، وحاول تسجيل الطالب مرة أخرى.");
 define("_cannotUploadFileInvaliedFileType", "لا يمكن تحميل الملف. نوع الملف غير صالح.");
 define("_cannotUploadFileInvalidPermission", "لا يمكن تحميل الملف. إذن غير صالح");
@@ -1157,6 +1159,7 @@ define("_findStudentsToDelete", "ابحث عن الطلاب المراد حذف�
 define("_deleteCourseForSelectedStudents", "حذف المقرر الدراسي للطلاب المختارين");
 define("_theAboveStudentHasBeenDeletedFromTheCoursePeriod", "تم حذف الطالب أعلاه من فترة الدورة");
 define("_theAboveStudentsHaveBeenDeletedFromTheCoursePeriod", "تم حذف الطلاب أعلاه من فترة الدورة");
+define("_groupDelete", "حذف المجموعة");
 //*****REPORTS*****//
 define("_noSubjectWasFound", "لم يتم العثور على موضوع.");
 define("_oneSubjectWasFound", "تم العثور على 1 موضوع.");
@@ -1255,7 +1258,6 @@ define("_youAreNotCurrentlyInAMarkingPeriod", "أنت لست في فترة تع�
 define("_thereIsAConflict", "هناك صراع");
 define("_youCannotAddThisCoursePeriod", "لا يمكنك إضافة فترة الدورة هذه");
 define("_officialInformation", "المعلومات الرسمية");
-define("_useLastYearsIfMissing", "استخدم السنوات الماضية إذا كانت مفقودة");
 define("_allTheGradesWithRespectToThisAssignmentWillBeDeleted", "سيتم حذف جميع الدرجات المتعلقة بهذا الواجب");
 define("_doYouStillWishToDeleteTheAssignment", "هل ما زلت ترغب في حذف المهمة");
 define("_duplicateFileFound", "تم العثور على ملف مكرر");
@@ -1265,8 +1267,6 @@ define("_doYouWantToProceed", "هل تريد المتابعة");
 define("_thereIsAlreadyAFileWithTheSameName", "يوجد بالفعل ملف بنفس الاسم");
 define("_addGroupMember", "إضافة عضو المجموعة");
 define("_member", "عضو");
-define("_selectSubject", "حدد الموضوع");
-define("_selectCourse", "حدد دورة");
 define("_noRecordsWereFound", "لم يتم العثور على سجلات");
 define("_present", "الحالي");
 define("_adminOfficeComment", "تعليق الإدارة والمكتب");
@@ -1287,7 +1287,6 @@ define("_averageAbsent", "متوسط الغائب");
 define("_teacherWhoHasntTaken", "المعلم الذي لم يأخذ");
 define("_teachersWhoHaventTaken ", "المعلمين الذين لم يأخذوا ");
 define("_whenDoYouWantToRecalculateTheDailyAttendance", "متى تريد إعادة حساب الحضور اليومي");
-define("_studentsList", "قائمة الطلاب");
 define("_noDuplicatesFound", "لم يتم العثور على تكرارات");
 define("_coursePeriodID", "معرف فترة الدورة");
 define("_attendanceDate", "تاريخ الحضور");
@@ -1379,6 +1378,7 @@ define("_courseStartDate", "تاريخ بدء الدورة");
 define("_courseEndDate", "تاريخ انتهاء الدورة");
 define("_teacherOffice", "المعلم والمكتب");
 define("_officeOnly", "مكتب فقط");
+define("_today", "اليوم");
 //EXTRACURRICULAR
 define("_studentScreen", "شاشة الطالب");
 define("_addActivity", "أضف نشاط");
@@ -1429,7 +1429,6 @@ define("_customFields", "الحقول المخصصة");
 define("_staffFieldCategory", "فئة مجال الموظفين");
 define("_staffFieldCategories", "فئات مجال الموظفين");
 define("_userFieldCategories", "فئات حقول المستخدم");
-define("_tokens", "الرموز");
 define("_youHaveToSelectAtleastOneDateFromTheDateRange", "يجب عليك تحديد تاريخ واحد على الأقل من النطاق الزمني");
 define("_afterYouAreDoneClickMapIt", "بعد الانتهاء ، انقر فوق تعيينها");
 define("_pleaseCreateAOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSisDatabaseBySelectingTheAppropriateFieldsFromTheRightColumn", "يرجى إنشاء علاقة رأس برأس بين الحقول الموجودة في جدول البيانات والحقول الموجودة في قاعدة بيانات OpenSIS عن طريق تحديد الحقول المناسبة من العمود الأيمن");
@@ -1595,7 +1594,6 @@ define("_wed", "الأربعاء");
 define("_thu", "خميس");
 define("_fri", "الجمعة");
 define("_sat", "جلس");
-define("_youMustChooseAtLeastOnePeriodAndOneStudent", "يجب عليك اختيار فترة واحدة وطالب واحد على الأقل");
 define("_tryAgain", "حاول مجددا");
 define("_noAttendanceRecordsWereFound", "لم يتم العثور على سجلات الحضور");
 define("_attendancePossible", "الحضور ممكن");
@@ -1676,11 +1674,9 @@ define("_parents", "آباء");
 define("_availableSchoolFields", "مجالات المدرسة المتاحة");
 define("_creatReportForInstitutes", "إنشاء تقرير للمؤسسات");
 define("_noCustomFieldsWereFound", "لم يتم العثور على حقول مخصصة");
-define("_customFields", "الحقول المخصصة");
 define("_homeroom", "هوميروس");
 define("_secondaryLanguage", "اللغة الثانوية");
 //----------------------------------------------------------------------------------------------------------
-define("_first", "أول");
 define("_disableUser", "تعطيل المستخدم");
 define("_includeDisabledUser", "تضمين مستخدم معطل");
 define("_thisStaffIsNotScheduledToAnyCoursePeriodAndThereforeNoScheduleDataIsAvailable", "لم يتم جدولة فريق العمل هذا في أي فترة دورة ، وبالتالي لا تتوفر بيانات الجدول الزمني ، لم يتم جدولة فريق العمل هذا في أي فترة دورة ، وبالتالي لا تتوفر بيانات الجدول الزمني ، لم يتم تحديد جدول زمني لهؤلاء الموظفين في أي فترة دورة تدريبية ، وبالتالي لا تتوفر بيانات الجدول الزمني");
@@ -1690,7 +1686,6 @@ define("_addNewAddress", "أضف عنوان جديد");
 define("_emergencyContactInformation", "معلومات الاتصال في حالات الطوارئ");
 define("_homeAddress", "عنوان المنزل");
 define("_access", "وصول");
-define("_officialInformation", "المعلومات الرسمية");
 define("_openSisAccessInformation", "معلومات الوصول إلى openSIS");
 define("_updateStaffSPhoto", "تحديث صورة طاقم العمل");
 define("_physicalDisability", "إعاقة جسدية");
@@ -1700,7 +1695,6 @@ define("_birthdaySearch", "بحث عيد الميلاد");
 define("_ageSearch", "بحث العمر");
 define("_advancedFilter", "تصفية متقدم");
 define("_closeAdvancedFilter", "إغلاق عامل التصفية المتقدم");
-define("_didNotRecieve", "لم يستقبل");
 define("_toStudent", "للطالب");
 define("_toPrimaryEmergencyContact", "إلى جهة اتصال الطوارئ الأولية");
 define("_toSecondaryEmergencyContact", "إلى جهة اتصال الطوارئ الثانوية");
@@ -1868,7 +1862,6 @@ define("_alreadyAssociatedWithACoursePeriod", "مرتبطة بالفعل بفت�
 define("_thisCourseIsNotGraded", "هذه الدورة ليست متدرجة.");
 define("_explanationOfCommentCodes", "شرح رموز التعليقات");
 define("_missingGradesOrNoStudentsWereFound", "تم العثور على الدرجات المفقودة أو لم يتم العثور على أي طلاب.");
-define("_noRecordsWereFound", "لم يتم العثور على سجلات.");
 define("_youMustRollCoursesAtTheSameTimeOrBeforeRollingReportCardComments", "يجب أن تقوم بتدوير الدورات التدريبية في نفس الوقت أو قبل عرض تعليقات بطاقة التقرير.");
 define("_noGoalsAndProgressWereFound", "لم يتم العثور على أهداف وتقدم.");
 define("_thatStudentIdIsAlreadyTakenPleaseSelectADifferentOne", "تم استخدام معرف الطالب هذا بالفعل. الرجاء تحديد واحد مختلف.");
@@ -1915,11 +1908,6 @@ define("_newSchoolField", "مجال المدرسة الجديدة");
 define("_newSubject", "موضوع جديد");
 define("_classRoom", "قاعة الدراسة");
 define("_youCanOnlyEnterEligibilityFrom", "يمكنك فقط إدخال الأهلية من ");
-
-
-
-
-
 define("_excluded", "مستبعد");
 define("_eC", "E/C");
 define("_whoHasCompletedAllTheAcademic", "من أكمل جميع الأكاديميين");

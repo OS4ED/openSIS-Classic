@@ -1299,7 +1299,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 $select .= " AND LOWER(s.FIRST_NAME) LIKE '" . addslashes(strtolower(trim($_REQUEST['first']))) . "%' ";
             }
             if ($_REQUEST['grade']) {
-                $select .= " AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE title= '" . str_replace("'", "''", $_REQUEST['grade']) . "') ";
+                $select .= " AND ssm.GRADE_ID IN(SELECT id FROM school_gradelevels WHERE id= '" . str_replace("'", "''", $_REQUEST['grade']) . "') ";
             }
             if ($_REQUEST['addr']) {
                 $select .= " AND (LOWER(a.STREET_ADDRESS_1) LIKE '%" . str_replace("'", "''", strtolower(trim($_REQUEST['addr']))) . "%' OR LOWER(a.CITY) LIKE '" . str_replace("'", "''", strtolower(trim($_REQUEST['addr']))) . "%' OR LOWER(a.STATE)='" . str_replace("'", "''", strtolower(trim($_REQUEST['addr']))) . "' OR ZIPCODE LIKE '" . trim(str_replace("'", "''", $_REQUEST['addr'])) . "%')";
@@ -1603,6 +1603,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         $s_ln = DBGet(DBQuery("SELECT LAST_NAME,FIRST_NAME,s.STUDENT_ID " . $teacher_COMMON . " AND s.STUDENT_ID ='" . UserStudentID() . "'  " . $_SESSION['s'] . " " . $_SESSION['custom_count_sql']));
 
                         $ln = $s_ln[1]['LAST_NAME'] . $s_ln[1]['FIRST_NAME'] . $s_ln[1]['STUDENT_ID'];
+                        if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
+                            $ln = str_replace("'", "\'", $ln);
+                        } else {
+                            $ln = str_replace("'", "\'", $ln);
+                        }
 
                         $s1_id = DBGet(DBQuery("SELECT s.STUDENT_ID " . $teacher_COMMON . $_SESSION['s'] . " " . $_SESSION['custom_count_sql'] . " ORDER BY CONCAT(s.LAST_NAME, s.FIRST_NAME,s.STUDENT_ID) ASC LIMIT 1"));
 
@@ -1716,7 +1721,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 case 'General Info':
                                     $categoryTitle = _generalInfo;
                                     break;
-                                case 'Addresses &amp; Contacts':
+                                case 'Addresses & Contacts':
                                     $categoryTitle = _addressesContacts;
                                     break;
                                 case 'Medical':

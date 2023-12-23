@@ -170,7 +170,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     if ($_REQUEST['month_include_active_date'])
                         $date = $_REQUEST['day_include_active_date'] . '-' . $_REQUEST['month_include_active_date'] . '-' . $_REQUEST['year_include_active_date'];
                     else
-                        $date = DBDate();
+                        $date = DBDate('mysql');
 
                     if ($_REQUEST['fields']['PERIOD_' . $period['PERIOD_ID']] == 'Y')
                         $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(DISTINCT CONCAT(COALESCE(st.FIRST_NAME,\' \'),\' \',COALESCE(st.LAST_NAME,\' \'),\' - \',COALESCE(r.TITLE,\' \'))) FROM staff st,schedule ss,course_periods cp,course_period_var cpv,rooms r WHERE ss.STUDENT_ID=ssm.STUDENT_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND cp.TEACHER_ID=st.STAFF_ID AND cpv.PERIOD_ID=\'' . $period['PERIOD_ID'] . '\' AND (\'' . $date . '\' BETWEEN ss.START_DATE AND ss.END_DATE OR \'' . $date . '\'>=ss.START_DATE AND ss.END_DATE IS NULL) LIMIT 1) AS PERIOD_' . $period['PERIOD_ID'];
@@ -269,7 +269,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     
                     if(isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y')
                     {
-                        $date = DBDate();
+                        $date = DBDate('mysql');
                     }
                     else
                     {
@@ -410,7 +410,7 @@ if (!$_REQUEST['modfunc']) {
     if ($_REQUEST['search_modfunc'] == 'list' || $_REQUEST['search_modfunc'] == 'select') {
         $_REQUEST['search_modfunc'] = 'select';
 
-        $extra['extra_header_left'] .= '<div class="form-group"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y ' . (isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y' ? 'checked' : '') . '><span></span>'._includeInactiveStudents.'</label></div></div>';
+        $extra['extra_header_left'] .= '<div class="form-group m-0"><div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox name=include_inactive value=Y ' . (isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y' ? 'checked' : '') . '><span></span> '._includeInactiveStudents.'</label></div></div>';
 
         $Search = 'mySearch';
         include('modules/miscellaneous/Export.php');
@@ -490,46 +490,48 @@ if (!$_REQUEST['modfunc']) {
  * Modal Start
  */
 $modal_flag=1;
+
 if($_REQUEST['modname']=='scheduling/PrintClassLists.php' && $_REQUEST['modfunc']=='save')
-$modal_flag=0;
+    $modal_flag=0;
+
 if($modal_flag==1)
 {
-echo '<div id="modal_default" class="modal fade">';
-echo '<div class="modal-dialog modal-lg">';
-echo '<div class="modal-content">';
+    echo '<div id="modal_default" class="modal fade">';
+    echo '<div class="modal-dialog modal-lg">';
+    echo '<div class="modal-content">';
 
-echo '<div class="modal-header">';
-echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
-echo '</div>'; //.modal-header
+    echo '<div class="modal-header">';
+    echo '<button type="button" class="close" data-dismiss="modal">×</button>';
+    echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
+    echo '</div>'; //.modal-header
 
-echo '<div class="modal-body">';
-echo '<div id="conf_div" class="text-center"></div>';
-echo '<div class="row" id="resp_table">';
-echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
-$QI = DBQuery($sql);
-$subjects_RET = DBGet($QI);
+    echo '<div class="modal-body">';
+    echo '<div id="conf_div" class="text-center"></div>';
+    echo '<div class="row" id="resp_table">';
+    echo '<div class="col-md-4">';
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $QI = DBQuery($sql);
+    $subjects_RET = DBGet($QI);
 
-echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectsWere.'') . ' '._found.'.</h6>';
-if (is_countable($subjects_RET) && count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
-    echo '<tbody>';
-    foreach ($subjects_RET as $val) {
-        echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+    echo '<h6>' . count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectsWere.'') . ' '._found.'.</h6>';
+    if (is_countable($subjects_RET) && count($subjects_RET) > 0) {
+        echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
+        echo '<tbody>';
+        foreach ($subjects_RET as $val) {
+            echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
+        }
+        echo '</tbody>';
+        echo '</table>';
     }
-    echo '</tbody>';
-    echo '</table>';
-}
-echo '</div>';
-echo '<div class="col-md-4"><div id="course_modal"></div></div>';
-echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
-echo '</div>'; //.row
-echo '</div>'; //.modal-body
+    echo '</div>';
+    echo '<div class="col-md-4"><div id="course_modal"></div></div>';
+    echo '<div class="col-md-4"><div id="cp_modal"></div></div>';
+    echo '</div>'; //.row
+    echo '</div>'; //.modal-body
 
-echo '</div>'; //.modal-content
-echo '</div>'; //.modal-dialog
-echo '</div>'; //.modal
+    echo '</div>'; //.modal-content
+    echo '</div>'; //.modal-dialog
+    echo '</div>'; //.modal
 }
 
 function mySearch($extra) {
@@ -572,7 +574,7 @@ function mySearch($extra) {
     else {
         $cr_pr_id = 0;
     }
-    $date = DBDate();
+    $date = DBDate('mysql');
 
     
     if ($_REQUEST['include_inactive'] != 'Y') {
@@ -582,7 +584,7 @@ function mySearch($extra) {
     $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)' . $exclude_inactive));
      
     if ($stu_schedule_qr[1]['TOT'] > 0) {
-        echo '<div class="alert alert-success no-border m-l-20 m-r-20">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "" . _studentIsFound . "" : $stu_schedule_qr[1]['TOT'] . " " . _studentsAreFound . ".") . '</div>';
+        echo '<div class="alert alert-success no-border m-l-20 m-r-20">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . " " . _studentWasFound : $stu_schedule_qr[1]['TOT'] . " " . _studentsWereFound . ".") . '</div>';
     } else {
         echo '<div class="alert alert-danger no-border m-l-20 m-r-20">' . _noStudentFound . '.</div>';
     }
@@ -591,14 +593,17 @@ function mySearch($extra) {
 
     echo '<INPUT type=hidden name=relation>';
 
-    echo '<div class="panel panel-default">';
-    ListOutput($course_periods_RET, $LO_columns, ''._coursePeriod.'', ''._coursePeriod.'', array(), array(), array('save' =>true, 'count' =>true, 'search' =>true));
-    echo '</div>';
+    ListOutput($course_periods_RET, $LO_columns, ''._coursePeriod.'', ''._coursePeriod.'', array(), array(), array('save' => true, 'count' => false, 'search' => true));
 
-    if (is_countable($course_periods_RET) && count($course_periods_RET) != 0)
-        echo '<div class="panel-footer text-right"><INPUT type=button class="btn btn-primary m-r-20" value=\'' . _printClassListsForSelectedCoursePeriods . '\' onclick="triggerclassListExcel(this,\'\')" style="margin-right: 10px;"></div><br>';
-        echo '<div class="text-right"><INPUT type=button class="btn btn-success m-r-20" value=\'' . _printExcelClassListsForSelectedCoursePeriods . '\' onclick="triggerclassListExcel(this,\'Y\')" style="margin-right: 10px; margin-bottom: 10px;"></div>';
+    if (is_countable($course_periods_RET) && count($course_periods_RET) != 0) {
+        echo '<div class="panel-footer text-right p-r-20">';
+        echo '<div class="btn-group">';
+        echo '<INPUT type=button class="btn btn-primary" value=\'' . _printClassListsForSelectedCoursePeriods . '\' onclick="triggerclassListExcel(this,\'\')">';
+        echo '<button type="button" class="btn btn-success btn-icon text-white p-11" data-popup="tooltip" data-placement="top" data-container="body" title="" data-original-title="' . _printExcelClassListsForSelectedCoursePeriods . '" onclick="triggerclassListExcel(this,\'Y\')"><i class="icon-file-excel"></i></button>';
+        echo '</div>';
+        echo '</div>';
     }
+
     echo "</FORM>";
 }
 
@@ -634,7 +639,7 @@ function GetPeriodOcc($cp_id) {
 }
 
 function _make_no_student($value) {
-    $date = DBDate();
+    $date = DBDate('mysql');
 
     if ($_REQUEST['include_inactive'] != 'Y') {
         $exclude_inactive .= ' AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)';

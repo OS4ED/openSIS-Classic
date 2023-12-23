@@ -26,7 +26,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-error_reporting(E_ALL ^ E_WARNING);
+error_reporting(0);
 include('../../RedirectModulesInc.php');
 DrawBC("" . _extracurricular . " > " . ProgramTitle());
 

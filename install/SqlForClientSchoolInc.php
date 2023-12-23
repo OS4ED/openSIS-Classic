@@ -32,11 +32,11 @@ $text = "
 --
 
 INSERT INTO `app` (`name`, `value`) VALUES
-('version', '9.0'),
-('date', 'December 30, 2022'),
-('build', '20221230001'),
+('version', '9.1'),
+('date', 'December 22, 2023'),
+('build', '20231222001'),
 ('update', '0'),
-('last_updated', 'December 30, 2022');
+('last_updated', 'December 22, 2023');
 
 
 --

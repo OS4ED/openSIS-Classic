@@ -1239,7 +1239,7 @@ function validateQueryString($queryString)
    $query = strip_tags($queryString);
    //$query1=utf8_decode($query);
    $query2 = urldecode($query);
-   if (strpos($query2, 'Transcripts.php') === false && strpos($query2, 'medical alert') === false) {
+   if (strpos($query2, 'Transcripts.php') === false && strpos($query2, 'medical alert') === false && !($_REQUEST['modname'] == 'students/Student.php' && $_REQUEST['search_modfunc'] == 'list')) {
 
       $search  = array("..//", "*", "../", "/.", "<", ">", "alert", "(", ")", "script", "javascript", "///", "union", "%3dalert", "{", "}", "\n", "%22", "%27", " ' ", "%23", "%3C", "%2F", "%", "%3E", "%3D", "%7B", "%7D", "%3F", "%3B", "%25", "%28", "%29", "%2A", "%26");
       $VAL = str_replace($search, "#", $queryString);

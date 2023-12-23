@@ -57,7 +57,7 @@
                             ini_set('max_input_time', '50000');
                             require_once("../functions/PragRepFnc.php");
                             include("CustomClassFnc.php");
-                            echo '';
+                            
                             $mysql_database = $_SESSION['db'];
                             $dbUser = $_SESSION['username'];
                             $dbPass = $_SESSION['password'];
@@ -75,6 +75,8 @@
                             $q2r = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 2</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                             $q2 = $q2r->fetch_assoc();
                             $v = $q2['value'];
+                            $opensis_tab = array();
+                           
                             if ($v == '5.0') {
                                 $opensis_tab = array(
                                     'address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
@@ -207,11 +209,11 @@
                             } else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v == '7.0') {
                                 $dbconn->query('TRUNCATE app');
                                 $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '9.0'),
-                                        ('date', 'December 30, 2022'),
+                                        ('version', '9.1'),
+                                        ('date', 'December 30, 2023'),
                                         ('build', '20221230001'),
                                         ('update', '0'),
-                                        ('last_updated', 'December 30, 2022');";
+                                        ('last_updated', 'December 30, 2023');";
                                 $dbconn->query($app_insert);
 
                                 $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
@@ -338,22 +340,30 @@
 
                                 ### for Keys - Start ###
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_appstart_check`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_missing_attendance_syear`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
 
+                                $dbconn->query('ALTER TABLE `login_authentication` DROP KEY IF EXISTS `idx_login_authentication_username_password`');
                                 $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
 
-                                $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE `students` DROP INDEX IF EXISTS `idx_student_search`');
+                                $dbconn->query('ALTER TABLE students ADD INDEX IF NOT EXISTS `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
-                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX IF NOT EXISTS `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind5`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind6`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb1`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb2`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                 ### for Keys - End ###
@@ -366,11 +376,11 @@
 
                                 $dbconn->query('TRUNCATE app');
                                 $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '9.0'),
-                                        ('date', 'December 30, 2022'),
+                                        ('version', '9.1'),
+                                        ('date', 'December 30, 2023'),
                                         ('build', '20221230001'),
                                         ('update', '0'),
-                                        ('last_updated', 'December 30, 2022');";
+                                        ('last_updated', 'December 30, 2023');";
                                 $dbconn->query($app_insert);
 
                                 $dbconn->query('CREATE TABLE `api_info` (
@@ -379,6 +389,20 @@
                                      `api_secret` varchar(255) CHARACTER SET utf8 NOT NULL,
                                      PRIMARY KEY (`id`)
                                     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;');
+
+                                $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                `user_id` int(11) NOT NULL,
+                                `profile_id` int(11) NOT NULL,
+                                `school_id` int(11) NOT NULL,
+                                `syear` int(11) NOT NULL,
+                                `download_id` varchar(50) NOT NULL,
+                                `name` varchar(255) NOT NULL,
+                                `size` int(11) NOT NULL,
+                                `type` varchar(255) NOT NULL,
+                                `content` longblob NOT NULL,
+                                `file_info` varchar(255) NOT NULL
+                                ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
 
                                 $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
                                 $extra_tab = array();
@@ -443,27 +467,35 @@
 
                                 ### for Keys - Start ###
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_appstart_check`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_missing_attendance_syear`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
 
+                                $dbconn->query('ALTER TABLE `login_authentication` DROP KEY IF EXISTS `idx_login_authentication_username_password`');
                                 $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
 
-                                $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE `students` DROP INDEX IF EXISTS `idx_student_search`');
+                                $dbconn->query('ALTER TABLE students ADD INDEX IF NOT EXISTS `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
-                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX IF NOT EXISTS `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind5`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind6`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb1`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb2`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
@@ -473,12 +505,26 @@
 
                                 $dbconn->query('TRUNCATE app');
                                 $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                    ('version', '9.0'),
-                                    ('date', 'December 30, 2022'),
+                                    ('version', '9.1'),
+                                    ('date', 'December 30, 2023'),
                                     ('build', '20221230001'),
                                     ('update', '0'),
-                                    ('last_updated', 'December 30, 2022');";
+                                    ('last_updated', 'December 30, 2023');";
                                 $dbconn->query($app_insert) or die($dbconn->error);
+
+                                $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                   `user_id` int(11) NOT NULL,
+                                   `profile_id` int(11) NOT NULL,
+                                   `school_id` int(11) NOT NULL,
+                                   `syear` int(11) NOT NULL,
+                                   `download_id` varchar(50) NOT NULL,
+                                   `name` varchar(255) NOT NULL,
+                                   `size` int(11) NOT NULL,
+                                   `type` varchar(255) NOT NULL,
+                                   `content` longblob NOT NULL,
+                                   `file_info` varchar(255) NOT NULL
+                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
 
                                 $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
 
@@ -542,27 +588,35 @@
 
                                 ### for Keys - Start ###
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_appstart_check`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_missing_attendance_syear`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
 
+                                $dbconn->query('ALTER TABLE `login_authentication` DROP KEY IF EXISTS `idx_login_authentication_username_password`');
                                 $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
 
-                                $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE `students` DROP INDEX IF EXISTS `idx_student_search`');
+                                $dbconn->query('ALTER TABLE students ADD INDEX IF NOT EXISTS `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
-                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX IF NOT EXISTS `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind5`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind6`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb1`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb2`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
@@ -571,20 +625,34 @@
                             } else if ($v == '7.3') {
                                 $dbconn->query('TRUNCATE app');
                                 $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '9.0'),
-                                        ('date', 'December 30, 2022'),
+                                        ('version', '9.1'),
+                                        ('date', 'December 30, 2023'),
                                         ('build', '20221230001'),
                                         ('update', '0'),
-                                        ('last_updated', 'December 30, 2022');";
+                                        ('last_updated', 'December 30, 2023');";
                                 $dbconn->query($app_insert) or die($dbconn->error);
 
+                                $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                   `user_id` int(11) NOT NULL,
+                                   `profile_id` int(11) NOT NULL,
+                                   `school_id` int(11) NOT NULL,
+                                   `syear` int(11) NOT NULL,
+                                   `download_id` varchar(50) NOT NULL,
+                                   `name` varchar(255) NOT NULL,
+                                   `size` int(11) NOT NULL,
+                                   `type` varchar(255) NOT NULL,
+                                   `content` longblob NOT NULL,
+                                   `file_info` varchar(255) NOT NULL
+                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
                                 ### for Language - Start ###
 
                                 $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
 
                                 $check_language_arr = $check_language->fetch_assoc();
 
-                                if (count($check_language_arr) > 0) {
+
+                                if (is_countable($check_language_arr) && (count($check_language_arr) > 0)) {
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
 
                                     while ($fetch = $stu_info->fetch_assoc()) {
@@ -610,7 +678,7 @@
 
                                 $check_ethnicity_arr = $check_ethnicity->fetch_assoc();
 
-                                if (count($check_ethnicity_arr) > 0) {
+                                if (is_countable($check_ethnicity_arr) && (count($check_ethnicity_arr) > 0)) {
                                     $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
 
                                     while ($ethn_fetch = $stu_ethn_info->fetch_assoc()) {
@@ -657,27 +725,35 @@
 
                                 ### for Keys - Start ###
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_appstart_check`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_missing_attendance_syear`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
 
+                                $dbconn->query('ALTER TABLE `login_authentication` DROP KEY IF EXISTS `idx_login_authentication_username_password`');
                                 $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
 
-                                $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE `students` DROP INDEX IF EXISTS `idx_student_search`');
+                                $dbconn->query('ALTER TABLE students ADD INDEX IF NOT EXISTS `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
-                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX IF NOT EXISTS `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind5`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind6`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb1`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb2`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
@@ -686,20 +762,33 @@
                             } else if ($v == '7.4' || $v == '7.5' || $v == '7.6' || $v == '8.0') {
                                 $dbconn->query('TRUNCATE app');
                                 $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '9.0'),
-                                        ('date', 'December 30, 2022'),
+                                        ('version', '9.1'),
+                                        ('date', 'December 30, 2023'),
                                         ('build', '20221230001'),
                                         ('update', '0'),
-                                        ('last_updated', 'December 30, 2022');";
+                                        ('last_updated', 'December 30, 2023');";
                                 $dbconn->query($app_insert) or die($dbconn->error);
-
+                                
+                                $dbconn->query('CREATE TABLE IF NOT EXISTS `user_file_upload` (
+                                    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                   `user_id` int(11) NOT NULL,
+                                   `profile_id` int(11) NOT NULL,
+                                   `school_id` int(11) NOT NULL,
+                                   `syear` int(11) NOT NULL,
+                                   `download_id` varchar(50) NOT NULL,
+                                   `name` varchar(255) NOT NULL,
+                                   `size` int(11) NOT NULL,
+                                   `type` varchar(255) NOT NULL,
+                                   `content` longblob NOT NULL,
+                                   `file_info` varchar(255) NOT NULL
+                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
                                 ### for Language - Start ###
 
                                 $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
 
                                 $check_language_arr = $check_language->fetch_assoc();
 
-                                if (count($check_language_arr) > 0) {
+                                if (is_countable($check_language_arr) && (count($check_language_arr) > 0)) {
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
 
                                     while ($fetch = $stu_info->fetch_assoc()) {
@@ -715,17 +804,19 @@
                                                 $dbconn->query('UPDATE students SET language=\'' . $fetchlang['language_id'] . '\' WHERE student_id=' . $fetch['student_id']) or die($dbconn->error);
                                         }
                                     }
+
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                 }
 
                                 ### for Language - End ###
-
+                                
                                 ### for Ethnicity - Start ###
 
                                 $check_ethnicity = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'ethnicity'") or die($dbconn->error);
 
                                 $check_ethnicity_arr = $check_ethnicity->fetch_assoc();
 
-                                if (count($check_ethnicity_arr) > 0) {
+                                if (is_countable($check_ethnicity_arr) && (count($check_ethnicity_arr) > 0)) {
                                     $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
 
                                     while ($ethn_fetch = $stu_ethn_info->fetch_assoc()) {
@@ -747,53 +838,57 @@
                                             }
                                         }
                                     }
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
                                 }
 
+                                
                                 ### for Ethnicity - End ###
 
-                                $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
-                                $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
                                 $dbconn->query('ALTER TABLE `mail_group` ADD `school_id` int(11) NOT NULL');
                                 $dbconn->query('ALTER TABLE `mail_groupmembers` ADD `school_id` int(11) NOT NULL');
                                 $dbconn->query('ALTER TABLE `mail_group` ADD INDEX `mail_group_ind` (`school_id`) USING BTREE');
                                 $dbconn->query('ALTER TABLE `mail_groupmembers` ADD INDEX `mail_groupmembers_ind` (`school_id`) USING BTREE');
 
                                 ### for Functions/Procedures/Triggers/Events - Start ###
-
                                 $this_db = $_SESSION['db'];
 
                                 $SQL_Procs = "OpensisProcsMysqlInc.sql";
                                 $SQL_Trigger = "OpensisTriggerMysqlInc.sql";
-
+            
                                 executeSQL($SQL_Procs, $this_db);
                                 executeSQL($SQL_Trigger, $this_db);
-
                                 ### for Functions/Procedures/Triggers/Events - End ###
 
                                 ### for Keys - Start ###
-
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_appstart_check`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
 
+                                $dbconn->query('ALTER TABLE `missing_attendance` DROP KEY IF EXISTS `idx_missing_attendance_syear`');
                                 $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
 
+                                $dbconn->query('ALTER TABLE `login_authentication` DROP KEY IF EXISTS `idx_login_authentication_username_password`');
                                 $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
 
-                                $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE `students` DROP INDEX IF EXISTS `idx_student_search`');
+                                $dbconn->query('ALTER TABLE students ADD INDEX IF NOT EXISTS `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
 
-                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+                                $dbconn->query('ALTER TABLE student_enrollment ADD INDEX IF NOT EXISTS `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind5`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind5` (`report_card_grade_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `student_report_card_grades_ind6`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `student_report_card_grades_ind6` (`report_card_comment_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb1`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb1` (`student_id`,`course_period_id`,`marking_period_id`)');
 
+                                $dbconn->query('ALTER TABLE `student_report_card_grades` DROP KEY IF EXISTS `idx_srcg_comb2`');
                                 $dbconn->query('ALTER TABLE `student_report_card_grades` ADD KEY `idx_srcg_comb2` (`course_period_id`,`marking_period_id`)');
 
                                 ### for Keys - End ###
-
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
-
+                              
+                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
                                 // $_SESSION['mod'] = 'upgrade';

@@ -140,7 +140,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 					ShowErrPhp('<b>' . _dataNotSavedBecauseDateRangeIsNotValid . '</b>');
 				} else {
 
-					if (count($_REQUEST['profiles']['new'])) {
+					if (is_countable($_REQUEST['profiles']['new']) && count($_REQUEST['profiles']['new'])) {
 						if ($_REQUEST['profiles']['new']['all'] == 'Y')
 							$allschool = 'Y';
 						else

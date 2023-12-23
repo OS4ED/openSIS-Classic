@@ -248,6 +248,7 @@ function Course_Mrinfo_error()
 function Course_Mrinfo_callback(data)
 {
     document.getElementById('more_info_lbl').innerHTML = data;
+    document.getElementById("more_info_lbl").getElementsByClassName("panel-heading")[0].style.display = 'none';
 }
 
 function cleanTempData()

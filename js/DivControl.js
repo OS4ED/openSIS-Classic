@@ -224,14 +224,14 @@ function show_home_error() {
     document.getElementById('divErr').innerHTML = "<b><font color=red>Please provide home address first.</font></b>";
 }
 function set_check_value(val, name) {
-    if (val.checked == false) {
-
-        document.getElementById(name).value = 'N';
-        document.getElementById('IS_EMERGENCY_HIDDEN').value = "N";
+    if(document.getElementById('IS_EMERGENCY_HIDDEN')){
+        if (val.checked == false) {
+            document.getElementById(name).value = 'N';
+            document.getElementById('IS_EMERGENCY_HIDDEN').value = "N";
+        }
+        else
+            document.getElementById('IS_EMERGENCY_HIDDEN').value = "Y";
     }
-    else
-        document.getElementById('IS_EMERGENCY_HIDDEN').value = "Y";
-
 }
 function portal_toggle(id) {
 
@@ -847,4 +847,33 @@ function triggerclassListExcel(thisElement, actionValue){
 function triggerAdvancedReportExcel(thisElement, actionValue){
     thisElement.form.action += "&excelReport=" + actionValue;
     thisElement.form.submit();
+}
+
+function autoset_gradelevel(thisElement) {
+    let selectedMP = thisElement.value;
+    let selectedMPText = thisElement.selectedOptions[0].innerText;
+
+    let gradelevelData = document.getElementById("gradelevelData").innerText;
+
+    let gradelevelDataParsed = JSON.parse(gradelevelData);
+
+    if (gradelevelDataParsed[selectedMP] && Object.keys(gradelevelDataParsed[selectedMP]).length !== 0) {
+        document.getElementById("SMS_GRADE_LEVEL").value = gradelevelDataParsed[selectedMP].grade_level;
+        document.getElementById("SMS_GRADE_LEVEL").readOnly = true;
+
+        if (document.getElementById("gradeLevelHelp")) {
+            window.$("#gradeLevelHelp").html(`<div id="gradeLevelHelp" class="help-block">You cannot change the Grade Level as the student is already in this Grade Level in ${gradelevelDataParsed[selectedMP].school_name} for ${selectedMPText}.</div>`);
+        }
+        else {
+            window.$("#gradeLevelArea").append(`<div id="gradeLevelHelp" class="help-block">You cannot change the Grade Level as the student is already in this Grade Level in ${gradelevelDataParsed[selectedMP].school_name} for ${selectedMPText}.</div>`);
+        }
+    }
+    else {
+        document.getElementById("SMS_GRADE_LEVEL").value = "";
+        document.getElementById("SMS_GRADE_LEVEL").readOnly = false;
+
+        if (document.getElementById("gradeLevelHelp")) {
+            document.getElementById("gradeLevelHelp").remove();
+        }
+    }
 }

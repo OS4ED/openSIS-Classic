@@ -157,7 +157,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 # ---------------- Sql Including Comment ------------------------------- #
 
                 // $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity_id AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language_id AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserSchool() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
-                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, etn.ethnicity_name AS ETHNICITY, s.ethnicity_id, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, lan.language_name AS LANGUAGE, s.language_id, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s LEFT JOIN ethnicity etn ON s.ethnicity_id = etn.ethnicity_id LEFT JOIN language lan ON s.language_id = lan.language_id, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserSchool() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
+                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER,sgs.name AS SECTION_NAME,se.section_id AS SECTION_ID,s.estimated_grad_date AS ESTIMATE_GRADE_DATE, etn.ethnicity_name AS ETHNICITY, s.ethnicity_id, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, lan.language_name AS LANGUAGE, s.language_id, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s LEFT JOIN ethnicity etn ON s.ethnicity_id = etn.ethnicity_id LEFT JOIN language lan ON s.language_id = lan.language_id, student_enrollment se LEFT JOIN school_gradelevel_sections sgs ON se.section_id = sgs.id ,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserSchool() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate', 'ESTIMATE_GRADE_DATE' => 'ProperDate'));
 
 
                 $sql = $sql[1];
@@ -167,8 +167,6 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $sql['PHYSICIAN_PHONO'] = $medical_info[1]['PHYSICIAN_PHONO'];
                 $sql['HOSPITAL'] = $medical_info[1]['HOSPITAL'];
 
-                $medical_note = DBGet(DBQuery('SELECT doctors_note_date AS MCOMNT,doctors_note_comments AS DNOTE FROM student_medical_notes WHERE  STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('MCOMNT' => 'ProperDate'));
-                unset($_openSIS['DrawHeader']);
 
                 echo "<td valign=top width=300>";
                 echo "<table width=100% >";
@@ -189,6 +187,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     echo "<tr><td style='font-weight:bold'>" . _grade . ":</td>";
                     echo "<td>" . $student['GRADE_ID'] . " </td></tr>";
+                    if ($sql['SECTION_ID'] != '') {
+                        echo "<tr><td style='font-weight:bold'>" . _section . ":</td>";
+                        echo "<td>" . $sql['SECTION_NAME'] . "</td></tr>";
+                    }
                     echo "<tr><td style='font-weight:bold'>" . _gender . ":</td>";
                     echo "<td>" . $sql['GENDER'] . "</td></tr>";
                     echo "<tr><td style='font-weight:bold'>" . _ethnicity . ":</td>";
@@ -203,6 +205,10 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     echo "<tr><td style='font-weight:bold'>" . _birthdate . ":</td>";
                     echo "<td>" . $sql['BIRTHDAY'] . "</td></tr>";
+                    if ($sql['ESTIMATE_GRADE_DATE'] != '') {
+                        echo "<tr><td style='font-weight:bold'>" . _estimatedGradDate . ":</td>";
+                        echo "<td>" . $sql['ESTIMATE_GRADE_DATE'] . "</td></tr>";
+                    }
                     if ($sql['LANGUAGE'] != '') {
                         echo "<tr><td style='font-weight:bold'>" . _languageSpoken . ":</td>";
                         echo "<td>" . $sql['LANGUAGE'] . "</td></tr>";
@@ -390,7 +396,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['PRIM_EMAIL'] . "</td></tr>";
                                 }
                                 if ($contact['PRIM_CUSTODY'] != '') {
-                                    echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['PRIM_CUSTODY']=='Y' ? "Yes":"No") . "</td></tr>";
+                                    echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['PRIM_CUSTODY'] == 'Y' ? "Yes" : "No") . "</td></tr>";
                                 }
                                 echo "</table>";
 
@@ -442,7 +448,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                         echo "<tr><td style='font-weight:bold'>" . _email . " :</td><td>" . $contact['SEC_EMAIL'] . "</td></tr>";
                                     }
                                     if ($contact['SEC_CUSTODY'] != '') {
-                                        echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['SEC_CUSTODY']=='Y' ? "Yes":"No") . "</td></tr>";
+                                        echo "<tr><td style='font-weight:bold'>" . _custody . " :</td><td>" . ($contact['SEC_CUSTODY'] == 'Y' ? "Yes" : "No") . "</td></tr>";
                                     }
 
                                     echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
@@ -506,24 +512,24 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 echo "</td><td></td><td valign=top>";
                                 echo "</td></tr>";
                                 echo "<tr><td valign=top colspan=3>";
-//                                foreach ($people_categories_RET as $categories)
-//                                    if (!$categories[1]['CUSTODY'] && !$categories[1]['EMERGENCY'] || $categories[1]['CUSTODY'] == 'Y' && $contact['CUSTODY'] == 'Y' || $categories[1]['EMERGENCY'] == 'Y' && $contact['EMERGENCY'] == 'Y')
-//                                        printCustom($categories, $contact);
+                                //                                foreach ($people_categories_RET as $categories)
+                                //                                    if (!$categories[1]['CUSTODY'] && !$categories[1]['EMERGENCY'] || $categories[1]['CUSTODY'] == 'Y' && $contact['CUSTODY'] == 'Y' || $categories[1]['EMERGENCY'] == 'Y' && $contact['EMERGENCY'] == 'Y')
+                                //                                        printCustom($categories, $contact);
                             }
                         }
                         $address_previous = $address_current;
                     }
 
 
-//                    $contacts_RET2 = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.CUSTODY,sjp.EMERGENCY_TYPE AS EMERGENCY,sjp.RELATIONSHIP AS STUDENT_RELATION FROM people p,students_join_people sjp WHERE p.STAFF_ID=sjp.PERSON_ID AND sjp.STUDENT_ID=' . UserStudentID()));
-//                    foreach ($contacts_RET2 as $contact) {
-                        // echo '<B>' . $contact['FIRST_NAME'] . ' ' . ($contact['MIDDLE_NAME'] ? $contact['MIDDLE_NAME'] . ' ' : '') . $contact['LAST_NAME'] . ($contact['STUDENT_RELATION'] ? ': ' . $contact['STUDENT_RELATION'] : '') . ' &nbsp;</B>';
+                    //                    $contacts_RET2 = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.CUSTODY,sjp.EMERGENCY_TYPE AS EMERGENCY,sjp.RELATIONSHIP AS STUDENT_RELATION FROM people p,students_join_people sjp WHERE p.STAFF_ID=sjp.PERSON_ID AND sjp.STUDENT_ID=' . UserStudentID()));
+                    //                    foreach ($contacts_RET2 as $contact) {
+                    // echo '<B>' . $contact['FIRST_NAME'] . ' ' . ($contact['MIDDLE_NAME'] ? $contact['MIDDLE_NAME'] . ' ' : '') . $contact['LAST_NAME'] . ($contact['STUDENT_RELATION'] ? ': ' . $contact['STUDENT_RELATION'] : '') . ' &nbsp;</B>';
 
 
-//                        foreach ($people_categories_RET as $categories)
-//                            if (!$categories[1]['CUSTODY'] && !$categories[1]['EMERGENCY'] || $categories[1]['CUSTODY'] == 'Y' && $contact['CUSTODY'] == 'Y' || $categories[1]['EMERGENCY'] == 'Y' && $contact['EMERGENCY'] == 'Y')
-//                                printCustom($categories, $contact);
-//                    }
+                    //                        foreach ($people_categories_RET as $categories)
+                    //                            if (!$categories[1]['CUSTODY'] && !$categories[1]['EMERGENCY'] || $categories[1]['CUSTODY'] == 'Y' && $contact['CUSTODY'] == 'Y' || $categories[1]['EMERGENCY'] == 'Y' && $contact['EMERGENCY'] == 'Y')
+                    //                                printCustom($categories, $contact);
+                    //                    }
                 }
 
                 if ($_REQUEST['category']['2'] && ($sql['PHYSICIAN_NAME'] != '' || $sql['PHYSICIAN_PHONO'] != '' || $sql['HOSPITAL'] != '')) {
@@ -535,8 +541,8 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "</td></tr>";
                     echo "<tr><td valign=top colspan=3>";
                     echo "<table width='100%'>";
-//                    echo "<tr><td colspan=\"2\" style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">" . _generalInformation . "</td></tr>";
-			echo "<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
+                    //                    echo "<tr><td colspan=\"2\" style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">" . _generalInformation . "</td></tr>";
+                    echo "<tr><td colspan=2 style=\"height:2px;\"></td></tr>";
                     if ($sql['PHYSICIAN_NAME'] != '') {
                         echo "<tr><td width=21% style='font-weight:bold'>" . _physicianName . ":</td>";
                         echo "<td width=79%>" . $sql['PHYSICIAN_NAME'] . "</td></tr>";
@@ -546,64 +552,63 @@ if ($_REQUEST['modfunc'] == 'save') {
                         echo "<td>" . $sql['PHYSICIAN_PHONO'] . "</td></tr>";
                     }
                     if ($sql['HOSPITAL'] != '') {
-                        echo "<tr><td style='font-weight:bold'>" . _hospitalName . ":</td>";
+                        echo "<tr><td style='font-weight:bold'>" . _preferredMedicalFacility . ":</td>";
                         echo "<td>" . $sql['HOSPITAL'] . "</td></tr>";
                     }
 
-                    foreach ($medical_note as $medical) {
-                        if ($medical['MCOMNT'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>" . _date . ":</td>";
-                            echo "<td align='justify'>" . $medical['MCOMNT'] . "</td></tr>";
-                        }
-                        if ($medical['DNOTE'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>" . _doctorSNote . ":</td>";
-                            echo "<td align='justify'>" . $medical['DNOTE'] . "</td></tr>";
-                        }
-                    }
-                    echo '</table>';
-
-
-                    ########################################################################
+                    ######################## PRINT MEDICAL CUSTOM FIELDS ################################################
                     $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID='2' ORDER BY SORT_ORDER,TITLE"));
                     $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
                     $value = $custom_RET[1];
                     if (count($fields_RET)) {
-                        echo '<TABLE cellpadding=5>';
+                        echo '<table width=34% cellpadding=5>';
                         $i = 1;
                         foreach ($fields_RET as $field) {
                             if (($value['CUSTOM_' . $field['ID']]) != '') {
-                                echo '<TR>';
-                                echo '<td>' . $field['TITLE'] . '</td><td>:</td><td>';
-                                echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'class=cell_medium');
-                                echo '</TD>';
-                                echo '</TR>';
+                                echo "<tr><td valign='top' style='font-weight:bold'>" . $field['TITLE'] . ":</td>";
+                                echo "<td align='justify'>" . $value['CUSTOM_' . $field['ID']] . "</td>";
+                                echo '</tr>';
                             }
                         }
-                        ######################## PRINT MEDICAL CUSTOM FIELDS ################################################
-                        $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID='2' ORDER BY SORT_ORDER,TITLE"));
-                        $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
-                        $value = $custom_RET[1];
-                        if (count($fields_RET)) {
-
-                            $i = 1;
-                            foreach ($fields_RET as $field) {
-                                if (($value['CUSTOM_' . $field['ID']]) != '') {
-                                    echo '<TR>';
-                                    echo "<td style='font-weight:bold'>" . $field['TITLE'] . ':</td><td>';
-                                    echo $value['CUSTOM_' . $field['ID']];
-                                    echo '</TD>';
-                                    echo '</TR>';
-                                }
-                            }
-                        }
-                        echo '</table>';
-                        ####################################################################################################
                     }
+                    echo '</table>';
+                    ####################################################################################################
+
+                    ########################## DOCTORS NOTE TABLE ###########################################
+                    $medical_note = DBGet(DBQuery('SELECT doctors_note_date AS MCOMNT,doctors_note_comments AS DNOTE FROM student_medical_notes WHERE  STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('MCOMNT' => 'ProperDate'));
+                    unset($_openSIS['DrawHeader']);
+                    foreach ($medical_note as $id => $medical) {
+                        $doc_note_col = array(
+                            'DNOTE' => _doctorSNote,
+                            'MCOMNT' => _date,
+                        );
+                    }
+                    ListOutputPrint_Report($medical_note, $doc_note_col, '', '', false, $group = false, $options, 'ForWindow');
+                    echo '</td></tr>';
+                    echo '</table>';
+
+
+                    ########################################################################
+                    // $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID='2' ORDER BY SORT_ORDER,TITLE"));
+                    // $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
+                    // $value = $custom_RET[1];
+                    // if (count($fields_RET)) {
+                    //     echo '<TABLE cellpadding=5>';
+                    //     $i = 1;
+                    //     foreach ($fields_RET as $field) {
+                    //         if (($value['CUSTOM_' . $field['ID']]) != '') {
+                    //             echo '<TR>';
+                    //             echo '<td>' . $field['TITLE'] . '</td><td>:</td><td>';
+                    //             echo _makeTextInput('CUSTOM_' . $field['ID'], '', 'class=cell_medium');
+                    //             echo '</TD>';
+                    //             echo '</TR>';
+                    //         }
+                    //     }
                     #############################################################################
                     echo '<!-- NEW PAGE -->';
                 }
 
-                echo "</td></tr>";
+                echo "</td></tr><br>";
                 echo "<tr><td valign=top colspan=3>";
 
                 # ---------------------------------- Immunization/Physical Record ---------------- #
@@ -611,36 +616,21 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $res_immunization = DBGet(DBQuery("SELECT TYPE,MEDICAL_DATE,COMMENTS FROM student_immunization WHERE student_id='" . $_SESSION['student_id'] . "'"), array('MEDICAL_DATE' => 'ProperDate'));
                 if ($_REQUEST['category']['2'] && count($res_immunization) >= 1) {
                     //------------------------------------------------------------------------------
-
-
-                    echo "<table width=100%>
-				<tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">" . _immunizationPhysicalRecord . "</td></tr>
-				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
-
+                    echo "<table width=24%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">" . _immunizationPhysicalRecord . "</td></tr></table>";
                     foreach ($res_immunization as $row_immunization) {
-                        if ($row_immunization['TYPE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>" . _type . ":</td>";
-                            echo "<td width=79%>" . $row_immunization['TYPE'] . "</td></tr>";
-                        }
-                        if ($row_immunization['MEDICAL_DATE'] != '') {
-                            echo "<tr><td style='font-weight:bold'>" . _date . ":</td>";
-                            echo "<td>" . $row_immunization['MEDICAL_DATE'] . "</td></tr>";
-                        }
-                        if ($row_immunization['COMMENTS'] != '') {
-                            echo "<tr><td valign='top' style='font-weight:bold'>" . _comments . ":</td>";
-                            echo "<td align='justify'>" . $row_immunization['COMMENTS'] . "</td></tr>";
-                        }
-//                        echo "<tr><td colspan=2 style=\"border-bottom:1px dashed #999999;\">&nbsp;</td></tr>";
-                        echo "<tr><td colspan=2 style=\"height:5px;\">&nbsp;</td></tr>";
+                        $immunization_note_col = array(
+                            'TYPE' => _type,
+                            'MEDICAL_DATE' => _date,
+                            'COMMENTS' => _comments,
+                        );
                     }
-
+                    ListOutputPrint_Report($res_immunization, $immunization_note_col, '', '', false, $group = false, $options, 'ForWindow');
+                    echo '</td></tr>';
                     echo '</table>';
-
-
-
-                    echo '<!-- NEW PAGE -->';
                 }
-                echo "</td></tr>";
+
+                echo '<!-- NEW PAGE -->';
+                echo "</td></tr><br>";
                 echo "<tr><td valign=top colspan=3>";
 
 
@@ -651,20 +641,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                 if ($_REQUEST['category']['2'] && count($res_alert) >= 1) {
                     //------------------------------------------------------------------------------
 
-                    echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #9a9a9a; font-weight:bold; color:4a4a4a; font-size:12px;\">" . _medicalAlert . "</td></tr>
-				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
+                    echo "<table width=24%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">" . _medicalAlert . "</td></tr></table>";
 
                     foreach ($res_alert as $row_alert) {
-                        if ($row_alert['TITLE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>" . _medicalAlert . ":</td>";
-                            echo "<td width=79% align='justify'>" . $row_alert['TITLE'] . "</td></tr>";
-                        }
-                        if ($row_alert['ALERT_DATE'] != '') {
-                            echo "<tr><td width=21% style='font-weight:bold'>" . _date . ":</td>";
-                            echo "<td width=79% align='justify'>" . $row_alert['ALERT_DATE'] . "</td></tr>";
-                        }
-                        echo "<tr><td colspan=2 style=\"border-bottom:1px dashed #999999;\">&nbsp;</td></tr>";
+                        $res_alert_col = array(
+                            'TITLE' => _medicalAlert,
+                            'ALERT_DATE' => _date,
+                        );
                     }
+                    ListOutputPrint_Report($res_alert, $res_alert_col, '', '', false, $group = false, $options, 'ForWindow');
+                    echo '</td></tr>';
                     echo '</table>';
 
 
@@ -717,43 +703,36 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     echo '<!-- NEW PAGE -->';
                 }
-                echo "</td></tr>";
+                echo "</td></tr><br>";
 
                 echo "<tr><td valign=top colspan=3>";
 
-
-                $res_comment = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME FROM student_mp_comments,staff s WHERE STUDENT_ID='" . $_SESSION['student_id'] . "'  AND s.STAFF_ID=student_mp_comments.STAFF_ID"), array('COMMENT_DATE' => 'ProperDate'));
-
-                foreach ($res_comment as $row_comment) {
-                    if ($_REQUEST['category']['4'] && $row_comment['COMMENT'] != '') {
-
-                        echo "<table width=100%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px; font-weight:bold;\">" . _comment . "</td></tr>";
-                        if ($row_comment['USER_NAME'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>" . _enteredBy . ":</td>";
-                            echo "<td width=79% align=justify>" . $row_comment['USER_NAME'] . "</td></tr>";
-                        }
-                        if ($row_comment['COMMENT_DATE'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>" . _date . ":</td>";
-                            echo "<td width=79% align=justify>" . $row_comment['COMMENT_DATE'] . "</td></tr>";
-                        }
-                        if ($row_comment['COMMENT'] != '') {
-                            echo "<tr><td width=21% valign='top' style='font-weight:bold'>" . _comment . ":</td>";
-                            echo "<td width=79% align=justify>" . $row_comment['COMMENT'] . "</td></tr>";
-                        }
-
-                        echo '</table>';
-
-                        echo '<!-- NEW PAGE -->';
+                if ($_REQUEST['category']['4'] != '') {
+                    $res_comment = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME FROM student_mp_comments,staff s WHERE STUDENT_ID='" . $_SESSION['student_id'] . "'  AND s.STAFF_ID=student_mp_comments.STAFF_ID"), array('COMMENT_DATE' => 'ProperDate'));
+                    echo "<table width=24%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">" . _comment . "</td></tr></table>";
+                    foreach ($res_comment as $row_comment) {
+                        $res_comment_col = array(
+                            'USER_NAME' => _enteredBy,
+                            'COMMENT_DATE' => _date,
+                            'COMMENT' => _comments,
+                        );
                     }
+                    ListOutputPrint_Report($res_comment, $res_comment_col, '', '', false, $group = false, $options, 'ForWindow');
+                    echo '</td></tr>';
+
+
+                    echo '</table>';
+
+                    echo '<!-- NEW PAGE -->';
                 }
 
                 echo "</td></tr>";
                 if ($_REQUEST['category']['5']) {
                     $res_goal = DBGet(DBQuery("SELECT goal_id AS GOAL,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE student_id='" . $_SESSION['student_id'] . "'"), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
                     if ($res_goal) {
-                      echo "<tr><td><br></td></tr>";
+                        echo "<tr><td><br></td></tr>";
                         echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">" . _goals . "</td></tr>";
-                    echo '<tr><td><br></td></tr>';
+                        echo '<tr><td><br></td></tr>';
                         echo '<table cellpadding="6" width="100%" cellspacing="1" border="1" style="border-collapse:collapse" align="center"><tr><td bgcolor="#d3d3d3">' . _title . '</td><td bgcolor="#d3d3d3">' . _startDate . '</td><td bgcolor="#d3d3d3">' . _endDate . '</td><td bgcolor="#d3d3d3">' . _description . '</td></tr>';
                         foreach ($res_goal as $row_goal) {
                             echo '<tr><td>' . $row_goal['GOAL_TITLE'] . '</td><td>' . $row_goal['START_DATE'] . '</td><td>' . $row_goal['END_DATE'] . '</td><td>' . $row_goal['GOAL_DESCRIPTION'] . '</td></tr>';
@@ -790,7 +769,9 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     echo "<tr><td><br></td></tr>";
                     if (count($stu_enr) > 0)
-                        echo "<table width=24%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">" . _enrollmentInfo . "</td></tr></table>";
+                    $enroll =ucfirst(strtolower(_enrollmentInfo));
+                $enrollment = str_replace(['i'], ['I'],$enroll);
+                        echo "<table width=24%><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">". $enrollment. "</td></tr></table>";
                     echo '<tr><td><br>';
                     ListOutputPrint_Report($stu_enr, $stu_enr_col, '', '', false, $group = false, $options, 'ForWindow');
                     echo '</td></tr>';
@@ -811,8 +792,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                 foreach ($cus_RET as $cus) {
-
-                    $fields_RET = DBGet(DBQuery("SELECT ID,TITLE FROM custom_fields where CATEGORY_ID='" . $cus['ID'] . "'"));
+                    $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS FROM custom_fields where CATEGORY_ID='" . $cus['ID'] . "'"));
                     $b = $cus['ID'];
                     if ($_REQUEST['category'][$b]) {
 
@@ -836,7 +816,6 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                             $i = 1;
                             foreach ($fields_RET as $field) {
-
                                 if (($value['CUSTOM_' . $field['ID']]) != '') {
                                     $date = DBGet(DBQuery("SELECT type,id FROM custom_fields WHERE ID='" . $field['ID'] . "'"));
 

@@ -96,7 +96,7 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
             }
         }
 
-        DrawBC(""._attendance." > " . ProgramTitle());
+        DrawBC("" . _attendance . " > " . ProgramTitle());
         echo "<TABLE width=100% border=0 cellpadding=0 cellspacing=0><TR>";
         echo "<TD bgcolor=#FFFFFF style=border:1;border-style: none none solid none; align=left> &nbsp;";
         echo "<FONT size=-1><IMG SRC=assets/check.gif>";
@@ -105,8 +105,8 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
     }
 }
 
-if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['delete'] != 'true') {
-    DrawBC(""._attendance." > " . ProgramTitle());
+if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['delete'] != 'true' && !$_SESSION['student_id']) {
+    DrawBC("" . _attendance . " > " . ProgramTitle());
 
     $extra['new'] = true;
     Search('student_id', $extra);
@@ -127,9 +127,19 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
     if (count($RET)) {
 
         unset($extra);
+
+        if (isset($_SESSION['student_id'])) {
+            $getstudent = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_SESSION['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">' . _selectedStudent . '' . ' : ' . $getstudent[1]['FIRST_NAME'] . '&nbsp;' . ($getstudent[1]['MIDDLE_NAME'] ? $getstudent[1]['MIDDLE_NAME'] . ' ' : '') . $getstudent[1]['LAST_NAME'] . '&nbsp;' . $getstudent[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements clearfix"><div class="btn-group heading-btn"> <A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">' . _deselect . '</A></div></div></div></div>');
+        }
+
         $extra['SELECT_ONLY'] .= 'ap.COURSE_PERIOD_ID, s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, ap.SCHOOL_DATE, cp.TITLE, ap.PERIOD_ID, sc.START_DATE, sc.END_DATE ';
         $extra['FROM'] .= ' ,attendance_period ap, course_periods cp, schedule sc ';
         $extra['WHERE'] .= ' AND ap.STUDENT_ID=s.STUDENT_ID AND sc.STUDENT_ID=s.STUDENT_ID AND ap.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND ap.COURSE_PERIOD_ID = sc.COURSE_PERIOD_ID AND (sc.END_DATE > \'' . date('Y-m-d') . ' \' OR sc.END_DATE IS NULL OR sc.END_DATE=\'0000-00-00\' ) ';
+
+        if (isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
+            $extra['WHERE'] .= ' AND s.STUDENT_ID =' . $_SESSION['student_id'];
+
         $extra['ORDER_BY'] = ' STUDENT_ID, COURSE_PERIOD_ID, SCHOOL_DATE';
         Widgets('course');
         Widgets('gpa');
@@ -186,7 +196,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
         Widgets('letter_grade');
         $result1 = GetStuList($extra);
 
-        DrawBC(""._attendance." > " . ProgramTitle());
+        DrawBC("" . _attendance . " > " . ProgramTitle());
         echo "$delete_message";
 
         echo "<form action=Modules.php?modname=attendance/DuplicateAttendance.php&modfunc=&search_modfunc=list&next_modname=attendance/DuplicateAttendance.php&delete=true method=POST>";
@@ -217,15 +227,15 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
 
         echo '<div class="panel">';
         echo '<div class="tabbable">';
-        echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">'._studentsList.'</a></li></ul>';
+        echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active" id="tab[]"><a href="javascript:void(0);">' . _studentsList . '</a></li></ul>';
         echo '<div class="table-responsive">';
         echo '<table class="table table-bordered table-striped"><thead>';
         echo "<tr><th><INPUT type=checkbox value=Y name=controller onclick=checkAll(this.form,this.form.controller.checked,'deletecheck');></th>";
-        echo "<th>"._student." ("._studentId.")</th>";
-        echo "<th>"._course." ("._coursePeriodID.")</th>";
-        echo "<th>"._course." "._startDate."</th>";
-        echo "<th>"._course." "._endDate."</th>";
-        echo "<th>"._attendanceDate."</th></tr></thead><tbody>";
+        echo "<th>" . _student . " (" . _studentId . ")</th>";
+        echo "<th>" . _course . " (" . _coursePeriodID . ")</th>";
+        echo "<th>" . _course . " " . _startDate . "</th>";
+        echo "<th>" . _course . " " . _endDate . "</th>";
+        echo "<th>" . _attendanceDate . "</th></tr></thead><tbody>";
 
         $URIcount = 0;
         $count = 0;
@@ -309,7 +319,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $end2 = $end;
         }
         if ($count == 0) {
-            echo '<tr class=odd><td colspan=6><span class="text-alert">'._noDuplicatesFound.'</span></td></tr>';
+            echo '<tr class=odd><td colspan=6><span class="text-alert">' . _noDuplicatesFound . '</span></td></tr>';
             echo '</tbody>';
             echo '</table>';
             echo '</div>'; //.table-responsive
@@ -321,17 +331,16 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             echo '</div>'; //.table-responsive
             echo '</div>'; //.tabbable
             echo '</div>'; //.panel
-            echo '<br><input type=submit class="btn btn-primary" name=submit onclick="self_disable(this);" value='._delete.'>';
+            echo '<br><input type=submit class="btn btn-primary" name=submit onclick="self_disable(this);" value=' . _delete . '>';
         }
 
         echo "</form>";
         $RET = " ";
     } else
-        BackPrompt(noStudentsWereFound.'.');
+        BackPrompt(_noStudentsWereFound . '.');
 }
 
-function _makeTeacher($teacher, $column) {
+function _makeTeacher($teacher, $column)
+{
     return substr($teacher, strrpos(str_replace(' - ', ' ^ ', $teacher), '^') + 2);
 }
-
-?>

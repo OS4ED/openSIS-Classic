@@ -28,10 +28,11 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
-DrawBC(""._gradebook." > " . ProgramTitle());
+DrawBC("" . _gradebook . " > " . ProgramTitle());
 
 echo '<div class="panel panel-default">';
 echo '<div class="panel-body">';
+
 $mp_RET = DBGet(DBQuery('SELECT MP FROM course_periods WHERE course_period_id = \'' . UserCoursePeriod() . '\''));
 if ($mp_RET[1]['MP'] == 'SEM') {
     $sem = GetParentMP('SEM', UserMP());
@@ -50,6 +51,7 @@ if ($mp_RET[1]['MP'] == 'FY') {
 if ($mp_RET[1]['MP'] == 'QTR') {
     $qtr = GetChildrenMP('QTR', UserMP());
 }
+
 // if the UserMP has been changed, the REQUESTed MP may not work
 if (CpvId() != '') {
     $cp_det = DBGet(DBQuery('SELECT cp.BEGIN_DATE,cp.MARKING_PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID=' . CpvId()));
@@ -63,7 +65,8 @@ if ((!$_REQUEST['mp'] || strpos($str = "'" . UserMP() . "','" . $sem . "','" . $
     $full_year_mp = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
     $_REQUEST['mp'] = $full_year_mp[1]['MARKING_PERIOD_ID'];
 }
-$period=sqlSecurityFilter($_REQUEST['period']);
+
+$period = sqlSecurityFilter($_REQUEST['period']);
 if ($period == '')
     $period = CpvId();
 $custom_p = 'n';
@@ -75,11 +78,12 @@ if ($period != '' && $_REQUEST['mp'] != '') {
         $custom_p = 'y';
     }
 }
+
 $course_period_id = UserCoursePeriod();
 if ($course_period_id)
     $course_RET = DBGet(DBQuery('SELECT cp.COURSE_ID,c.TITLE as COURSE_NAME, cp.TITLE, cp.GRADE_SCALE_ID,CREDIT(cp.COURSE_PERIOD_ID,\'' . $_REQUEST['mp'] . '\') AS CREDITS,cp.COURSE_WEIGHT,cp.MARKING_PERIOD_ID FROM course_periods cp, courses c WHERE cp.COURSE_ID = c.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $course_period_id . '\''));  //sg              
 if (!$course_RET[1]['GRADE_SCALE_ID'] && !$_REQUEST['include_inactive']) {
-    echo '<div class="alert bg-warning alert-styled-left">'._youCannotEnterLetterGradesAsGradeScaleIsNotSetForThisCourse.' .</div>';
+    echo '<div class="alert bg-warning alert-styled-left">' . _youCannotEnterLetterGradesAsGradeScaleIsNotSetForThisCourse . ' .</div>';
     $not_graded = true;
     $_REQUEST['use_percents'] = true;
 }
@@ -139,7 +143,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                     $programconfig[User('STAFF_ID')][$title] = $unused_var[0];
                     // $programconfig[User('STAFF_ID')][$title] = rtrim($value[1]['VALUE'],'_'.UserCoursePeriod());
                 }
-            } else
+            }
+        else
             $programconfig[User('STAFF_ID')] = true;
 
         $_openSIS['_makeLetterGrade']['courses'][$course_period_id] = DBGet(DBQuery('SELECT DOES_BREAKOFF,GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . $course_period_id . '\''));
@@ -238,7 +243,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                             }
                             foreach ($assignment_type_count as $assign_key => $value) {
                                 $total_weightage = $total_weightage + $assign_typ_wg[$assign_key];
-                                
+
                                 if ($tot_weight_grade == '')
                                     $tot_weight_grade = round((round(($tot_weighted_percent[$assign_key] / $value), 2) * $assign_typ_wg[$assign_key]) / 100, 2);
                                 else
@@ -292,7 +297,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
 
                             //echo ($total_weightage == 0 ? "XYZ" : ("A"/0));
                             //echo $total_weightage."XYZ";
-                            $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade((intval($total_weightage) == 0 ? 0 : $tot_weight_grade/$total_weightage), $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade((intval($total_weightage) == 0 ? 0 : $tot_weight_grade / $total_weightage), $course_period_id, User('STAFF_ID'), '%') . '%'));
+                            $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade((intval($total_weightage) == 0 ? 0 : $tot_weight_grade / $total_weightage), $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade((intval($total_weightage) == 0 ? 0 : $tot_weight_grade / $total_weightage), $course_period_id, User('STAFF_ID'), '%') . '%'));
                         } else {
                             foreach ($student as $partial_points)
                                 if ($partial_points['PARTIAL_TOTAL'] != 0) {
@@ -504,7 +509,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                 if ($programconfig[User('STAFF_ID')]['WEIGHT'] == 'Y')
                     $points_RET = DBGet(DBQuery('SELECT DISTINCT s.STUDENT_ID,gt.ASSIGNMENT_TYPE_ID,  gt.ASSIGNMENT_TYPE_ID,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date <  (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1
                         )  ) ', '\'0\'', 'ga.POINTS')) . ') AS PARTIAL_TOTAL,    gt.FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . $gg_mp . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID),gradebook_assignment_types gt WHERE gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND gt.COURSE_ID=\'' . $course_id . '\' AND ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE,gt.ASSIGNMENT_TYPE_ID,gt.FINAL_GRADE_PERCENT'), array(), array('STUDENT_ID'));
-              
+
                 else
                     $points_RET = DBGet(DBQuery('SELECT DISTINCT  s.STUDENT_ID,\'-1\' AS ASSIGNMENT_TYPE_ID,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date <  (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1
                         )  ) ', '\'0\'', 'ga.POINTS')) . ') AS PARTIAL_TOTAL,\'1\' AS FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . $gg_mp . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID)   WHERE gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE,FINAL_GRADE_PERCENT'), array(), array('STUDENT_ID'));
@@ -608,7 +613,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'gradebook') {
                                 //-----------------------------------------------------------------//
 
 
-                                $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade($tot_weight_grade/$total_weightage, $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade($tot_weight_grade/$total_weightage, $course_period_id, User('STAFF_ID'), '%') . '%'));
+                                $import_RET[$student_id] = array(1 => array('REPORT_CARD_GRADE_ID' => _makeLetterGrade($tot_weight_grade / $total_weightage, $course_period_id, 0, 'ID'), 'GRADE_PERCENT' => _makeLetterGrade($tot_weight_grade / $total_weightage, $course_period_id, User('STAFF_ID'), '%') . '%'));
                             } else {
                                 foreach ($student as $partial_points)
                                     if ($partial_points['PARTIAL_TOTAL'] != 0) {
@@ -857,8 +862,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
             if ($sql)
                 $sql = 'UPDATE student_report_card_grades SET ' . $sql . ' WHERE STUDENT_ID=\'' . $student_id . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\'';
-        }
-        elseif ($columns['grade'] || $columns['percent'] != '' || $columns['comment']) {
+        } elseif ($columns['grade'] || $columns['percent'] != '' || $columns['comment']) {
             $grade = $percent = '';
             if ($columns['grade'])
                 if (substr($columns['grade'], -1) == '%') {
@@ -867,7 +871,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 } else {
                     $grade = $columns['grade'];
                     $percent = _makePercentGrade($grade, $course_period_id);
-                } elseif ($columns['percent'] != '') {
+                }
+            elseif ($columns['percent'] != '') {
                 $percent = rtrim($columns['percent'], '%') + 0;
                 if ($percent > 999.9)
                     $percent = 999.9;
@@ -923,9 +928,9 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             foreach ($arr_gr as $key1 => $arr_gr11) {
                 //echo $key1;//grade id;
                 $arr_gr11 = array_unique($arr_gr11);
-////                                echo 
+                ////                                echo 
                 rsort($arr_gr11);
-//                              print_r($arr_gr11);
+                //                              print_r($arr_gr11);
                 $new_rank = 1;
                 foreach ($arr_gr11 as $key => $class_rank) {
                     $student_id1 = implode(',', $grade_student_arr[$key1][$class_rank]);
@@ -942,10 +947,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
         if (isset($columns['grade'])) {
             if (!$columns['grade'])
                 $completed = false;
-        }
-
-
-        elseif (isset($columns['percent'])) {
+        } elseif (isset($columns['percent'])) {
             if (!$columns['percent'])
                 $completed = false;
         }
@@ -1060,7 +1062,7 @@ if (CpvId() != '') {
 
         $grade_start_date[1]['POST_END_DATE'] = $grade_end_date[1]['POST_END_DATE'];
         $grade_end_time = strtotime($grade_end_date[1]['POST_END_DATE']);
-        
+
         $current_time = strtotime(date("Y-m-d"));
 
         if ($current_time >= $grade_start_time && $current_time <= $grade_end_time && $grade_start_time != '' && $grade_end_time != '') {
@@ -1119,8 +1121,7 @@ if ($cp_type != 'custom') {
         $mps_select .= "<OPTION value=" . $fy . (($fy == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($fy) . "</OPTION>";
     if (GetMP($fy, 'DOES_EXAM') == 'Y')
         $mps_select .= "<OPTION value=E" . $fy . (('E' . $fy == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($fy) . " Exam</OPTION>";
-}
-else {
+} else {
 
     // if(GetMP($full_year_mp[1]['MARKING_PERIOD_ID'],'DOES_GRADES')=='Y')
     $mps_select .= "<OPTION value=" . $full_year_mp[1]['MARKING_PERIOD_ID'] . (($full_year_mp[1]['MARKING_PERIOD_ID'] == $_REQUEST['mp']) ? ' SELECTED' : '') . ">" . GetMP($full_year_mp[1]['MARKING_PERIOD_ID']) . "</OPTION>";
@@ -1170,8 +1171,6 @@ $extra['GROUP'] .= "student_id";
 
 $extra['functions'] += array('COMMENT' => '_makeComment');
 
-// echo "<br><pre>";
-// print_r($extra);
 $stu_RET = GetStuList($extra);
 
 // echo "<pre>";print_r($import_RET);echo "</pre>";
@@ -1181,6 +1180,7 @@ echo "<FORM class=\"no-margin\" action=Modules.php?modname=" . strip_tags(trim($
 if (!$_REQUEST['_openSIS_PDF']) {
 
     $tmp_REQUEST = $_REQUEST;
+    $tmp_REQUEST_mp = $tmp_REQUEST['mp'];
     if (strstr($tmp_REQUEST['mp'], 'E') != "")
         $tmp_REQUEST['mp'] = str_replace('E', '', $tmp_REQUEST['mp']);
     unset($tmp_REQUEST['include_inactive']);
@@ -1191,6 +1191,7 @@ if (!$_REQUEST['_openSIS_PDF']) {
         $grade_start_time = strtotime($grade_start_date[1]['POST_START_DATE']);
         $grade_end_time = strtotime($grade_end_date[1]['POST_END_DATE']);
     }
+    $tmp_REQUEST['mp'] = $tmp_REQUEST_mp;
     $current_time = strtotime(date("Y-m-d"));
 
     if ($current_time >= $grade_start_time && $current_time <= $grade_end_time && $grade_start_time != '' && $grade_end_time != '') {
@@ -1208,10 +1209,10 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
     echo '<div class="form-group"><div class="form-inline">';
     if (count($stu_RET) != 0) {
-        echo $mps_select . ' &nbsp; ' . SubmitButton(_save, 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"').' &nbsp; &nbsp; ';
+        echo $mps_select . ' &nbsp; ' . SubmitButton(_save, 'submit[save]', 'class="btn btn-primary" onclick="self_disable(this);"') . ' &nbsp; &nbsp; ';
         echo '<input type=hidden name=period value="' . strip_tags(trim($_REQUEST['period'])) . '" />';
     }
-    echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span> '._includeInactiveStudents.'</label>';
+    echo '<label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span> ' . _includeInactiveStudents . '</label>';
     echo '</div></div>';
     $dbf = DBGet(DBQuery('SELECT DOES_BREAKOFF,GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''));
     if ($dbf[1]['DOES_BREAKOFF'] == 'Y') {
@@ -1221,18 +1222,18 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         if (count($get_details1) != count($default_details1)) {
 
-            echo '<div class="alert bg-danger alert-styled-left">'._scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration.'.</div>';
+            echo '<div class="alert bg-danger alert-styled-left">' . _scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration . '.</div>';
         }
     }
 
     if (AllowEdit()) {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span>'._gradeReportingIsOpenForThisMarkingPeriod.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting begins on : ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>' . _theseGradesAreComplete . '.</span>' : '<span>' . _gradeReportingIsOpenForThisMarkingPeriod . '.</span>') . (AllowEdit() ? ' <span>' . _youCanEditTheseGrades . '.</span>' : ' <span class="text-danger">Grade reporting begins on : ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'not open yet') {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span class="text-danger">'._gradeReportingIsNotOpenForThisMarkingPeriod.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting starts on: ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . ' and ends on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>' . _theseGradesAreComplete . '.</span>' : '<span class="text-danger">' . _gradeReportingIsNotOpenForThisMarkingPeriod . '.</span>') . (AllowEdit() ? ' <span>' . _youCanEditTheseGrades . '.</span>' : ' <span class="text-danger">Grade reporting starts on: ' . date("M d, Y ", strtotime($grade_start_date[1]['POST_START_DATE'])) . ' and ends on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'closed') {
-        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>'._theseGradesAreComplete.'.</span>' : '<span class="text-danger">'._theseGradesAreComplete.'.</span>') . (AllowEdit() ? ' <span>'._youCanEditTheseGrades.'.</span>' : ' <span class="text-danger">Grade reporting ended for this marking period on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
+        echo '<p class="alert alert-info alert-bordered">' . ($current_completed ? '<span>' . _theseGradesAreComplete . '.</span>' : '<span class="text-danger">' . _theseGradesAreComplete . '.</span>') . (AllowEdit() ? ' <span>' . _youCanEditTheseGrades . '.</span>' : ' <span class="text-danger">Grade reporting ended for this marking period on : ' . date("M d, Y ", strtotime($grade_end_date[1]['POST_END_DATE'])) . '.</span>') . '</p>';
     } else if ($grade_status == 'not set yet') {
-        echo '<div class="alert bg-danger alert-styled-left">'._gradeReportingDateHasNotSetForThisMarkingPeriod.'.</div>';
+        echo '<div class="alert bg-danger alert-styled-left">' . _gradeReportingDateHasNotSetForThisMarkingPeriod . '.</div>';
     }
 
     # Letting user know if they have weighted the course period but have not set any
@@ -1269,40 +1270,37 @@ if (!$_REQUEST['_openSIS_PDF']) {
     if (AllowEdit() && count($stu_RET) != 0) {
         echo '<ul class="nav nav-pills nav-xs nav-pills-bordered">';
         if ($_REQUEST['use_percents'] != 'true')
-            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=true&period=" . CpvId() . ">"._assignPercents."</A></li>";
+            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=true&period=" . CpvId() . ">" . _assignPercents . "</A></li>";
         elseif ($not_graded != true)
-            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=false&period=" . CpvId() . ">"._assignLetters."</A></li>";
+            $gb_header = "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&mp=$_REQUEST[mp]&use_percents=false&period=" . CpvId() . ">" . _assignLetters . "</A></li>";
 
         if (substr($_REQUEST['mp'], 0, 1) != 'E') {
             if ($cp_type != 'custom')
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=$_REQUEST[mp]&use_percents=true&period=$_REQUEST[period]>"._getGradebookGrades."</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=$_REQUEST[mp]&use_percents=true&period=$_REQUEST[period]>" . _getGradebookGrades . "</A></li>";
             else
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=" . ($_REQUEST['mp'] == '' ? $full_year_mp[1]['MARKING_PERIOD_ID'] : $_REQUEST['mp']) . "&custom_cp=y&use_percents=true&period=$_REQUEST[period]>"._getGradebookGrades."</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=gradebook&mp=" . ($_REQUEST['mp'] == '' ? $full_year_mp[1]['MARKING_PERIOD_ID'] : $_REQUEST['mp']) . "&custom_cp=y&use_percents=true&period=$_REQUEST[period]>" . _getGradebookGrades . "</A></li>";
 
             if ($cp_type != 'custom') {
                 if (GetMP($_REQUEST['mp'], 'PA_ID') != -1) {
-                    $extra_sql = GetMP($_REQUEST['mp'], 'PA_ID') ."='" . ParentMP($_REQUEST['mp']) . "'";
+                    $extra_sql = GetMP($_REQUEST['mp'], 'PA_ID') . "='" . ParentMP($_REQUEST['mp']) . "'";
                 } else {
                     $extra_sql = "";
                 }
-                if($extra_sql == "")
-                {
+                if ($extra_sql == "") {
                     $this_sql = "";
+                } else {
+                    $this_sql = "AND " . $extra_sql;
                 }
-                else
-                {
-                    $this_sql = "AND ".$extra_sql;
-                }
-                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM ". GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' ". $this_sql ." ORDER BY START_DATE DESC LIMIT 1"));
-                
+                $prev_mp = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,START_DATE FROM " . GetMP($_REQUEST['mp'], 'TABLE') . " WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' AND START_DATE<'" . GetMP($_REQUEST['mp'], 'START_DATE') . "' " . $this_sql . " ORDER BY START_DATE DESC LIMIT 1"));
+
                 $cp_mp = DBGet(DBQuery("SELECT MP FROM course_periods WHERE COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
             }
             $cp_mp = $cp_mp[1]['MP'];
             $prev_mp = $prev_mp[1];
-            
-            if ($cp_mp !='FY' && $cp_type != 'custom' && $prev_mp) {
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] "._grades."</A></li>";
-                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] "._comments."</A></li>";
+
+            if ($cp_mp != 'FY' && $cp_type != 'custom' && $prev_mp) {
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=grades&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=true&period=$_REQUEST[period]>Get $prev_mp[TITLE] " . _grades . "</A></li>";
+                $gb_header .= "<li><A HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=comments&mp=$_REQUEST[mp]&prev_mp=$prev_mp[MARKING_PERIOD_ID]&use_percents=false&period=$_REQUEST[period]>Get $prev_mp[TITLE] " . _comments . "</A></li>";
             }
         }
         if ($cp_type != 'custom')
@@ -1310,34 +1308,38 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         if (substr($_REQUEST['mp'], 0, 1) == 'E')
             $bar = ' | ';
-        $gb_header .= "<li><A class=\"text-danger\" HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=clearall&mp=$_REQUEST[mp]&use_percents=$_REQUEST[use_percents]&period=$_REQUEST[period]><i class=\"fa fa-times\"></i> "._clearAll."</A></li>";
+        $gb_header .= "<li><A class=\"text-danger\" HREF=Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&modfunc=clearall&mp=$_REQUEST[mp]&use_percents=$_REQUEST[use_percents]&period=$_REQUEST[period]><i class=\"fa fa-times\"></i> " . _clearAll . "</A></li>";
         $gb_header .= '</ul>';
     }
     echo $gb_header;
-}
-else {
+} else {
 
     DrawHeader($course_title);
     DrawHeader(GetMP(UserMP()));
 }
 
-$columns = array('FULL_NAME' =>_student,
- 'STUDENT_ID' =>_studentId,
+$columns = array(
+    'FULL_NAME' => _student,
+    'STUDENT_ID' => _studentId,
 );
 if ($_REQUEST['include_inactive'] == 'Y')
-    $columns += array('ACTIVE' =>_schoolStatus,
-     'ACTIVE_SCHEDULE' =>_courseStatus,
+    $columns += array(
+        'ACTIVE' => _schoolStatus,
+        'ACTIVE_SCHEDULE' => _courseStatus,
     );
 if ($_REQUEST['use_percents'] != 'true')
-    $columns += array('GRADE_PERCENT' =>_percent,
-     'REPORT_CARD_GRADE' =>_assignGrade,
+    $columns += array(
+        'GRADE_PERCENT' => _percent,
+        'REPORT_CARD_GRADE' => _assignGrade,
     );
 elseif ($not_graded)
-    $columns += array('GRADE_PERCENT' =>_assignPercent,
-);
+    $columns += array(
+        'GRADE_PERCENT' => _assignPercent,
+    );
 else
-    $columns += array('REPORT_CARD_GRADE' =>_grade,
-     'GRADE_PERCENT' =>_assignPercent,
+    $columns += array(
+        'REPORT_CARD_GRADE' => _grade,
+        'GRADE_PERCENT' => _assignPercent,
     );
 
 
@@ -1348,21 +1350,16 @@ if (substr($_REQUEST['mp'], 0, 1) != 'E' && GetMP($_REQUEST['mp'], 'DOES_COMMENT
     for ($i = 1; $i <= $max_current_commentsB; $i++)
         $columns += array('CB' . $i => 'Comment ' . $i);
     if (count($commentsB_select) && AllowEdit() && !isset($_REQUEST['_openSIS_PDF']))
-        $columns += array('CB' . $i =>_addComment);
-    $columns += array('COMMENT' =>_comment);
+        $columns += array('CB' . $i => _addComment);
+    $columns += array('COMMENT' => _comment);
 }
 
 
-if(isset($_SESSION['GGG_FLAG']) && $_SESSION['GGG_FLAG'] == 1)
-{
-    foreach($stu_RET as $one_ret_key => $one_ret)
-    {
-        if(isset($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT']) && $import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT'] != '')
-        {
-            $this_letter_grade = "<b>". _makeLetterGrade(($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT']/100)) ."</b>";
-        }
-        else
-        {
+if (isset($_SESSION['GGG_FLAG']) && $_SESSION['GGG_FLAG'] == 1) {
+    foreach ($stu_RET as $one_ret_key => $one_ret) {
+        if (isset($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT']) && $import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT'] != '') {
+            $this_letter_grade = "<b>" . _makeLetterGrade(($import_RET[$one_ret['STUDENT_ID']][1]['GRADE_PERCENT'] / 100)) . "</b>";
+        } else {
             $this_letter_grade = "";
         }
 
@@ -1376,7 +1373,7 @@ if(isset($_SESSION['GGG_FLAG']) && $_SESSION['GGG_FLAG'] == 1)
 
 // echo "<pre>";print_r($stu_RET);echo "</pre>";
 
-ListOutput($stu_RET, $columns,  _student, _students, false, false, array('yscroll' =>true));
+ListOutput($stu_RET, $columns,  _student, _students, false, false, array('yscroll' => true));
 
 
 
@@ -1387,7 +1384,8 @@ echo "</FORM>";
 echo '</div>'; //.panel-body
 echo '</div>'; //.panel
 
-function _makeGrade($value, $column) {
+function _makeGrade($value, $column)
+{
     global $THIS_RET, $current_RET, $import_RET, $grades_RET, $grades_select, $student_count, $tabindex;
     $tc_grade = 'n';
     if ($column == 'REPORT_CARD_GRADE') {
@@ -1429,6 +1427,7 @@ function _makeGrade($value, $column) {
                         $tgs_total = $tgs_total[1]['RET_EX'];
                         $tgs_ac_total = DBGet(DBQuery('SELECT COUNT(*) as RET_EX FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND PROGRAM=\'Gradebook\' AND VALUE LIKE \'%_' . UserCoursePeriod() . '\' AND VALUE IS NOT NULL'));
                         $tgs_ac_total = $tgs_ac_total[1]['RET_EX'];
+                        $id='';
                         if ($tgs_ac_total == $tgs_total) {
                             foreach ($get_details as $i => $d) {
                                 $unused_var = explode('_', $d['VALUE']);
@@ -1456,16 +1455,14 @@ function _makeGrade($value, $column) {
                 $select = '';
 
             $return = SelectInput($select, 'values[' . $THIS_RET['STUDENT_ID'] . '][grade]', '', $extra_select + $grades_select, false, 'tabindex=' . $tabindex, $div);
-        }
-        else {
+        } else {
             if ($import_RET[$THIS_RET['STUDENT_ID']])
                 $select = $import_RET[$THIS_RET['STUDENT_ID']][1]['REPORT_CARD_GRADE_ID'];
             else
                 $select = $current_RET[$THIS_RET['STUDENT_ID']][1]['REPORT_CARD_GRADE_ID'];
             $return = '<b>' . $grades_RET[$select][1]['TITLE'] . '</b>';
         }
-    }
-    elseif ($column == 'GRADE_PERCENT') {
+    } elseif ($column == 'GRADE_PERCENT') {
         if ($import_RET[$THIS_RET['STUDENT_ID']])
             $select = $import_RET[$THIS_RET['STUDENT_ID']][1]['GRADE_PERCENT'];
         else {
@@ -1485,13 +1482,14 @@ function _makeGrade($value, $column) {
             $return = $select == '' ? '' : ($select + 0) . '%';
         }
         if ($_REQUEST['modfunc'] == 'clearall')
-            $return = '<input type="hidden" name="values[' . $THIS_RET[STUDENT_ID] . '][percent]" value="" />';
+            $return = '<input type="hidden" name="values[' . $THIS_RET['STUDENT_ID'] . '][percent]" value="" />';
     }
 
     return $return;
 }
 
-function _makePercent($value, $column) {
+function _makePercent($value, $column)
+{
     global $THIS_RET, $current_RET, $grades_RET, $student_count, $tabindex, $import_RET;
 
     if ($column == 'GRADE_PERCENT') {
@@ -1504,8 +1502,7 @@ function _makePercent($value, $column) {
                 $return = TextInput($current_RET[$THIS_RET['STUDENT_ID']][1]['GRADE_PERCENT'] == '' ? '' : (_makeLetterGrade($current_RET[$THIS_RET['STUDENT_ID']][1]['GRADE_PERCENT'] / 100, "", User('STAFF_ID'), "%") + 0) . '%', "values[$THIS_RET[STUDENT_ID]][percent]", '', (0 ? 'readonly ' : '') . 'size=6 maxlength=6 tabindex=' . $tabindex, !$current_RET[$THIS_RET['STUDENT_ID']][1]['DIV']);
         } else
             $return = $current_RET[$THIS_RET['STUDENT_ID']][1]['GRADE_PERCENT'] == '' ? '' : (_makeLetterGrade($current_RET[$THIS_RET['STUDENT_ID']][1]['GRADE_PERCENT'] / 100, "", User('STAFF_ID'), "%") + 0) . '%';
-    }
-    elseif ($column == 'REPORT_CARD_GRADE') {
+    } elseif ($column == 'REPORT_CARD_GRADE') {
         if ($current_RET[$THIS_RET['STUDENT_ID']][1]['REPORT_CARD_GRADE_ID'] == '' && $import_RET[$THIS_RET['STUDENT_ID']]) {
             $return = '<b>' . $grades_RET[$import_RET[$THIS_RET['STUDENT_ID']][1]['REPORT_CARD_GRADE_ID']][1]['TITLE'] . '</b>';
         } else
@@ -1516,7 +1513,8 @@ function _makePercent($value, $column) {
 
 $table = 'student_report_card_comments';
 
-function _makeComment($value, $column) {
+function _makeComment($value, $column)
+{
     global $THIS_RET, $current_RET, $import_comments_RET, $tabindex;
     $table = 'student_report_card_comments';
 
@@ -1538,7 +1536,8 @@ function _makeComment($value, $column) {
     return $return;
 }
 
-function _makeCommentsA($value, $column) {
+function _makeCommentsA($value, $column)
+{
     global $THIS_RET, $current_commentsA_RET, $import_commentsA_RET, $commentsA_select, $tabindex;
 
     if ($import_commentsA_RET[$THIS_RET['STUDENT_ID']][$value]) {
@@ -1562,7 +1561,8 @@ function _makeCommentsA($value, $column) {
     return $return;
 }
 
-function _makeCommentsB($value, $column) {
+function _makeCommentsB($value, $column)
+{
     global $THIS_RET, $current_commentsB_RET, $import_commentsB_RET, $commentsB_RET, $max_current_commentsB, $commentsB_select, $tabindex;
 
     if ($import_commentsB_RET[$THIS_RET['STUDENT_ID']][$value]) {
@@ -1586,12 +1586,14 @@ function _makeCommentsB($value, $column) {
     return $return;
 }
 
-function _makeAssnWG($value, $column) {
+function _makeAssnWG($value, $column)
+{
     global $THIS_RET, $student_points, $total_points, $percent_weights;
     return ($THIS_RET['ASSIGN_TYP_WG'] != 'N/A' ? ($value * 100) . ' %' : $THIS_RET['ASSIGN_TYP_WG']);
 }
 
-function _makeExtra($value, $column) {
+function _makeExtra($value, $column)
+{
     global $THIS_RET, $student_points, $total_points, $percent_weights;
 
     if ($column == 'POINTS') {

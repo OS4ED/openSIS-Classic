@@ -38,9 +38,9 @@ if (isset($_REQUEST['student_id'])) {
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     echo '<div class="panel panel-default">';
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+        DrawHeader(''._selectedStudent.': ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> '._backToStudentList.'</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeader(''._selectedStudent.':: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
+        DrawHeader(''._selectedStudent.': ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">'._deselect.'</A></div>');
     }
     echo '</div>';
 }
@@ -207,56 +207,56 @@ if (UserStudentID()) {
         $stu_val['STUDENT_ID'] = $student_id;
         $stu_val['MARKING_PERIOD_ID'] = $mp_id;
         $res = DBGet(DBQuery('SELECT
-    SUM(srcg.weighted_gp/s.reporting_gp_scale) AS sum_weighted_factors,  COUNT(*) AS count_weighted_factors,                        
-    SUM(srcg.unweighted_gp/srcg.gp_scale) AS sum_unweighted_factors, 
-    COUNT(*) AS count_unweighted_factors,
-   IF(ISNULL( sum(srcg.unweighted_gp) ),  (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'),
-                      IF(ISNULL( sum(srcg.weighted_gp) ), (select SUM(sg.unweighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'),
-                         ( (select SUM(sg.unweighted_gp*sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')+ (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'))/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')
+            SUM(srcg.weighted_gp/s.reporting_gp_scale) AS sum_weighted_factors,  COUNT(*) AS count_weighted_factors,                        
+            SUM(srcg.unweighted_gp/srcg.gp_scale) AS sum_unweighted_factors, 
+            COUNT(*) AS count_unweighted_factors,
+            IF(ISNULL( sum(srcg.unweighted_gp) ),  (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'),
+            IF(ISNULL( sum(srcg.weighted_gp) ), (select SUM(sg.unweighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'),
+            ( (select SUM(sg.unweighted_gp*sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')+ (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\'))/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')
                         )
-      ) AS gpa,
-
-   (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' 
-                                                   AND sg.gpa_cal=\'Y\' AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) AS weighted_gpa,
-    (select SUM(sg.unweighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\'
-                                                     AND sg.gpa_cal=\'Y\' AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) unweighted_gpa,
-    eg.short_name AS grade_level_short FROM student_report_card_grades srcg
-  INNER JOIN schools s ON s.id=srcg.school_id
-
-  LEFT JOIN enroll_grade eg on eg.student_id=srcg.student_id AND eg.syear=srcg.syear AND eg.school_id=srcg.school_id
-  WHERE  srcg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND srcg.gp_scale<>0 AND srcg.gpa_cal=\'Y\' AND srcg.course_period_id IS NULL AND srcg.marking_period_id NOT LIKE \'E%\'
-  GROUP BY srcg.marking_period_id,eg.short_name'));
-
+            ) AS gpa,
+            (select SUM(sg.weighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' 
+                AND sg.gpa_cal=\'Y\' AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) AS weighted_gpa,
+            (select SUM(sg.unweighted_gp*sg.credit_earned) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND sg.gpa_cal=\'Y\')/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND sg.student_id=\'' . $stu_val['STUDENT_ID'] . '\'
+                AND sg.gpa_cal=\'Y\' AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) unweighted_gpa,
+            eg.short_name AS grade_level_short FROM student_report_card_grades srcg
+            INNER JOIN schools s ON s.id=srcg.school_id
+            LEFT JOIN enroll_grade eg on eg.student_id=srcg.student_id AND eg.syear=srcg.syear AND eg.school_id=srcg.school_id
+            WHERE  srcg.student_id=\'' . $stu_val['STUDENT_ID'] . '\' AND srcg.gp_scale<>0 AND srcg.gpa_cal=\'Y\' AND srcg.course_period_id IS NULL AND srcg.marking_period_id NOT LIKE \'E%\'
+            GROUP BY srcg.marking_period_id,eg.short_name'));
 
         $stu_stat = DBGet(DBQuery('SELECT COUNT(*) AS COUNT FROM student_gpa_calculated WHERE marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND student_id=\'' . $stu_val['STUDENT_ID'] . '\''));
 
         if ($stu_stat[1]['COUNT'] == 0)
-            DBQuery('INSERT INTO student_gpa_calculated (student_id,marking_period_id)
-      VALUES(\'' . $stu_val['STUDENT_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\')');
-
-
+            DBQuery('INSERT INTO student_gpa_calculated (student_id,marking_period_id) VALUES(\'' . $stu_val['STUDENT_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\')');
 
         DBQuery('UPDATE student_gpa_calculated g
-    INNER JOIN (
-	SELECT s.student_id,
-		SUM(s.weighted_gp/sc.reporting_gp_scale)/COUNT(*) AS cum_weighted_factor,
-		SUM(s.unweighted_gp/s.gp_scale)/COUNT(*) AS cum_unweighted_factor
-	FROM student_report_card_grades s
-	INNER JOIN schools sc ON sc.id=s.school_id
-	
-	WHERE s.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND s.course_period_id IS NULL AND s.gpa_cal=\'Y\' AND 
-	s.student_id=\'' . $stu_val['STUDENT_ID'] . '\') gg ON gg.student_id=g.student_id
-    SET g.cum_unweighted_factor=gg.cum_unweighted_factor
-    WHERE g.student_id=\'' . $stu_val['STUDENT_ID'] . '\'');
+            INNER JOIN (
+        	SELECT s.student_id,
+        		SUM(s.weighted_gp/sc.reporting_gp_scale)/COUNT(*) AS cum_weighted_factor,
+        		SUM(s.unweighted_gp/s.gp_scale)/COUNT(*) AS cum_unweighted_factor
+        	FROM student_report_card_grades s
+        	INNER JOIN schools sc ON sc.id=s.school_id
+        	WHERE s.marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND s.course_period_id IS NULL AND s.gpa_cal=\'Y\' AND 
+        	s.student_id=\'' . $stu_val['STUDENT_ID'] . '\') gg ON gg.student_id=g.student_id
+            SET g.cum_unweighted_factor=gg.cum_unweighted_factor
+            WHERE g.student_id=\'' . $stu_val['STUDENT_ID'] . '\'');
 
         $stu_gpa_cal = DBGet(DBQuery('SELECT COUNT(*) AS COUNT FROM student_gpa_calculated WHERE marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND student_id=\'' . $stu_val['STUDENT_ID'] . '\''));
-        if ($stu_gpa_cal[1]['COUNT'] != 0) {
 
-            DBQuery('UPDATE student_gpa_calculated SET gpa=\'' . $res[1]['GPA'] . '\', weighted_gpa=\'' . $res[1]['WEIGHTED_GPA'] . '\',unweighted_gpa=\'' . $res[1]['UNWEIGHTED_GPA'] . '\' WHERE marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND student_id=\'' . $stu_val['STUDENT_ID'] . '\'');
+        if ($stu_gpa_cal[1]['COUNT'] != 0) {
+            $forceGradeLevel = '';
+
+            if (isset($_REQUEST['mp_id']) && $_REQUEST['mp_id'] != '' && isset($_REQUEST['SMS_GRADE_LEVEL']) && $_REQUEST['SMS_GRADE_LEVEL'] != '') {
+                $checkMPType = DBGet(DBQuery('SELECT mp_source FROM marking_periods WHERE marking_period_id = ' . $_REQUEST['mp_id']));
+
+                if ($checkMPType[1]['MP_SOURCE'] == 'History')
+                    $forceGradeLevel = $_REQUEST['SMS_GRADE_LEVEL'];
+            }
+
+            DBQuery('UPDATE student_gpa_calculated SET gpa=\'' . $res[1]['GPA'] . '\', weighted_gpa=\'' . $res[1]['WEIGHTED_GPA'] . '\',unweighted_gpa=\'' . $res[1]['UNWEIGHTED_GPA'] . '\'' . ($forceGradeLevel != '' ? ',grade_level_short=\'' . $forceGradeLevel . '\'' : '') . ' WHERE marking_period_id=\'' . $stu_val['MARKING_PERIOD_ID'] . '\' AND student_id=\'' . $stu_val['STUDENT_ID'] . '\'');
         } else
-            DBQuery('INSERT INTO student_gpa_calculated(student_id,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short)
-      VALUES(\'' . $stu_val['STUDENT_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\',\'' . $res[1]['GPA'] . '\',\'' . $res[1]['WEIGHTED_GPA'] . '\',
-        \'' . $res[1]['unweighted_gpa'] . '\',\'' . $res[1]['GRADE_LEVEL_SHORT'] . '\')');
+            DBQuery('INSERT INTO student_gpa_calculated(student_id,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short) VALUES(\'' . $stu_val['STUDENT_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\',\'' . $stu_val['MARKING_PERIOD_ID'] . '\',\'' . $res[1]['GPA'] . '\',\'' . $res[1]['WEIGHTED_GPA'] . '\',\'' . $res[1]['unweighted_gpa'] . '\',\'' . $res[1]['GRADE_LEVEL_SHORT'] . '\')');
 
 
         unset($stu_val);
@@ -339,13 +339,39 @@ if (UserStudentID()) {
         echo '<div class="panel">';
         echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=update&tab_id=" . strip_tags(trim($_REQUEST['tab_id'])) . "&mp_id=$mp_id method=POST>";
 
-        $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=25  class=form-control');
+        $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=25  class=form-control', false);
 
+        $preSelectedGradeLevel = '';
+
+        if ($mp_id != '0') {
+            $findMP = DBGet(DBQuery('SELECT mp_source, syear, school_id FROM marking_periods WHERE marking_period_id = ' . $mp_id));
+
+            if ($findMP[1]['MP_SOURCE'] == 'openSIS') {
+                $findStudentGradelevel = DBGet(DBQuery('SELECT * FROM enroll_grade WHERE syear = ' . $findMP[1]['SYEAR'] . ' AND school_id = ' . $findMP[1]['SCHOOL_ID'] . ' AND student_id = ' . UserStudentID()));
+
+                if (!empty($findStudentGradelevel)) {
+                    $schoolinfo = DBGET(DBQUERY('SELECT * FROM schools WHERE ID = ' . $findMP[1]['SCHOOL_ID']));
+                    $schoolinfo = $schoolinfo[1];
+
+                    $preSelectedGradeLevel = NoInput($findStudentGradelevel[1]['SHORT_NAME']);
+                    
+                    $preSelectedGradeLevel .= '<div class="help-block">You cannot change the Grade Level as the student is already in this Grade Level in ' . $schoolinfo['TITLE'] . ' for ' . $gmp[$mp_id]['schoolyear'] . '.</div>';
+                }
+            }
+        }
+
+        if ($preSelectedGradeLevel != '')
+            $sms_grade_level = $preSelectedGradeLevel;
+
+        $stu_img_info = [];
+        if (UserStudentID()) {
+            $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND FILE_INFO=\'stuimg\' AND ID = (SELECT MAX(ID) AS LATEST_UPLOADED_IMG FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3)'));
+        }
 
         echo '<div class="panel-body alpha-grey">';
 
         echo '<div class="media">';
-        echo '<div class="media-left"><div class="profile-thumb"><img src="assets/images/placeholder.jpg" class="img-circle" alt=""></div></div>';
+        echo '<div class="media-left"><div class="profile-thumb"><img src="' . (count($stu_img_info) > 0 && $stu_img_info[1]['CONTENT'] != '' ? 'data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) : 'assets/images/placeholder.jpg') . '" class="img-circle" alt=""></div></div>';
         echo '<div class="media-body">';
         echo '<h1 class="no-margin-top">' . $displayname . '</h1>';
         echo '<div class="row">';
@@ -384,7 +410,23 @@ if (UserStudentID()) {
                     $hist_mpoptions[$hmp['MARKING_PERIOD_ID']] = formatSyear($hmp['SYEAR']) . ' | ' . $hmp['TITLE'];
                 }
 
-                $new_MP_RET_OPT = '<select name="new_sms" class="form-control">';
+                $yearGradelevelInfo = [];
+
+                foreach ($MPRET as $oneSchoolMp) {
+                    $yearGradelevelInfo[$oneSchoolMp['MARKING_PERIOD_ID']] = [];
+
+                    $gradelevelInfo = DBGet(DBQuery('SELECT eg.short_name, eg.title, s.title AS school_name FROM `enroll_grade` eg LEFT JOIN schools s ON eg.school_id = s.id WHERE eg.`student_id` = ' . UserStudentID() . ' AND eg.syear = ' . $oneSchoolMp['SYEAR']));
+
+                    if (count($gradelevelInfo) > 0) {
+                        $yearGradelevelInfo[$oneSchoolMp['MARKING_PERIOD_ID']]['grade_level'] = $gradelevelInfo[1]['SHORT_NAME'];
+                        $yearGradelevelInfo[$oneSchoolMp['MARKING_PERIOD_ID']]['school_name'] = $gradelevelInfo[1]['SCHOOL_NAME'];
+                    }
+                }
+
+                $yearGradelevelInfoJSON = json_encode($yearGradelevelInfo);
+
+                $new_MP_RET_OPT = '<select name="new_sms" class="form-control" onchange="autoset_gradelevel(this)">';
+                $new_MP_RET_OPT .= '<option value="0" disabled selected>' . _select . '</option>';
                 
                 if (count($MPRET) > 0) {
                     $new_MP_RET_OPT .= '<option value="0" disabled>▼ ' . _schoolMarkingPeriods . '</option>';
@@ -406,9 +448,9 @@ if (UserStudentID()) {
 
                 echo '<div class="form-group">';
                 // echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . $new_MP_RET_OPT . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">'._schoolName.'</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">'._gradeLevel.'</label>' . $sms_grade_level . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.':</label>' . $new_MP_RET_OPT . '<div id="gradelevelData" class="hidden">' . $yearGradelevelInfoJSON . '</div></div>';
+                echo '<div class="col-md-4"><label class="control-label">'._schoolName.':</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                echo '<div id="gradeLevelArea" class="col-md-4"><label class="control-label">'._gradeLevel.':</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
             }
         } else {
@@ -427,7 +469,7 @@ if (UserStudentID()) {
             }
             echo '<div class="form-group clearfix">';
             echo '<div class="col-md-4"><label class="control-label">'._gradeLevel.':</label>' . $sms_grade_level . '</div>';
-            echo '<div class="col-md-4"><label class="control-label">'._selectMarkingPeriod.':</label>' . $mpselect . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">'.ucwords(strtolower(_selectMarkingPeriod)).':</label>' . $mpselect . '</div>';
             echo '<div class="col-md-4"><label class="control-label">'._schoolName.':</label>' . TextInput($school_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</div>';
             echo '</div>';
             
@@ -452,7 +494,7 @@ if (UserStudentID()) {
             );
             $LO_columns = array(
                 'COURSE_CODE' =>_code,
-                'COURSE_TITLE' =>_courseName,
+                'COURSE_TITLE' => str_replace(':', '', _courseName),
                 'GRADE_PERCENT' =>_percentage,
                 'GRADE_LETTER' =>_letterGrade,
                 'GP' =>_gpValue,
@@ -511,14 +553,14 @@ function makeTextInput($value, $name) {
     elseif ($name == 'COURSE_CODE')
         $extra = 'size=10 maxlength=20 class=form-control';
     elseif ($name == 'GRADE_PERCENT')
-        $extra = 'size=6 maxlength=6 class=form-control onkeydown="return numberOnlyMod(event);"';
+        $extra = 'size=6 maxlength=6 class=form-control ' . (trim($value) != '' ? 'onkeydown=\"return numberOnlyMod(event);\"' : 'onkeydown="return numberOnlyMod(event);"');
     elseif ($name == 'GRADE_LETTER')
         $extra = 'size=5 maxlength=5 class=form-control';
     elseif ($name == 'GP_SCALE' || $name == 'CREDIT_ATTEMPTED' || $name == 'CREDIT_EARNED')
-        $extra = 'size=6 maxlength=6 class=form-control onkeydown="return numberOnlyMod(event);"';
+        $extra = 'size=6 maxlength=6 class=form-control ' . (trim($value) != '' ? 'onkeydown=\"return numberOnlyMod(event);\"' : 'onkeydown="return numberOnlyMod(event);"');
     elseif ($name == 'GP') {
         $name = 'UNWEIGHTED_GP';
-        $extra = 'size=5 maxlength=5 class=form-control onkeydown="return numberOnlyMod(event);"';
+        $extra = 'size=5 maxlength=5 class=form-control ' . (trim($value) != '' ? 'onkeydown=\"return numberOnlyMod(event);\"' : 'onkeydown="return numberOnlyMod(event);"');
     } else
         $extra = 'size=10 maxlength=10 class=form-control';
 

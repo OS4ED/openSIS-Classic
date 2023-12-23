@@ -3572,7 +3572,7 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
                             echo "<div class=\"heading-elements\">";
                             echo '<div class="form-group">';
                             echo "<INPUT type=hidden id=hidden_field value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "'>";
-                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value='" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? $_REQUEST['LO_search'] : ''), "' placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
+                            echo "<div class=\"input-group\"><INPUT type=text class='form-control'  id=LO_search name=LO_search value=\"" . (($_REQUEST['LO_search'] && $_REQUEST['LO_search'] != 'Search') ? stripslashes($_REQUEST['LO_search']) : ''), "\" placeholder=\"" . _search . "\" onKeyUp='fill_hidden_field(\"hidden_field\",this.value)' onkeypress='if(event.keyCode==13){document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value; return false;} '>";
                             echo "<span class=\"input-group-btn\"><INPUT type=button class='btn btn-primary' value=" . _go . " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&LO_search=\"+document.getElementById(\"hidden_field\").value;'></span>";
                             echo '</div>'; //.input-group
                             echo '</div>'; //.form-group
@@ -3666,9 +3666,9 @@ function ListOutputCustomDT($result, $column_names, $singular = '', $plural = ''
             $format_paginate .= '<a class="paginate_button next ' . $paginate_next_disable . '" ' . $paginate_next_event . '>&rarr;</a>';
             $format_paginate .= '</div>';
 
-            if (isset($_REQUEST['LO_search']) && $_REQUEST['LO_search'] != '' && $_REQUEST['LO_search'] != NULL && count($values) < 50) {
+            if (isset($_REQUEST['LO_search']) && $_REQUEST['LO_search'] != '' && $_REQUEST['LO_search'] != NULL && (is_countable($values) && count($values) < 50)) {
                 $paginationVisibility = 'hidden';
-            } elseif (isset($_REQUEST['LO_search']) && ($_REQUEST['LO_search'] == '' || $_REQUEST['LO_search'] != NULL) && (count($values) != 0 && count($values) < 50)) {
+            } elseif (isset($_REQUEST['LO_search']) && ($_REQUEST['LO_search'] == '' || $_REQUEST['LO_search'] != NULL) && (is_countable($values) && count($values) != 0 && count($values) < 50)) {
                 $paginationVisibility = 'hidden';
             } elseif (!isset($_REQUEST['LO_search']) && $_SESSION['AL_RES_COUNT'] < 50) {
                 $paginationVisibility = 'hidden';

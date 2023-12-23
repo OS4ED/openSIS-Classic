@@ -52,7 +52,8 @@ if ((isset($_REQUEST['teacher_view']) && ($_REQUEST['teacher_view'] != 'y')) || 
         }
 
         if (($start_date != '' && VerifyDate(date('d-M-Y', strtotime($start_date)))) || ($end_date != '' && VerifyDate(date('d-M-Y', strtotime($end_date)))) || ($start_date == '' && $end_date == '')) {
-            if (is_array($school) && in_array(UserSchool(),$school)) {
+            // if (is_array($school) && in_array(UserSchool(),$school)) {
+            if ((is_array($school) && in_array(UserSchool(),$school)) || (isset($_REQUEST['values']['SCHOOLS'][$school['SCHOOL_ID']]) && $_REQUEST['values']['SCHOOLS'][$school['SCHOOL_ID']] == 'Y' && $_REQUEST['day_values']['START_DATE'][$school['SCHOOL_ID']])) {
                 $schools_each_staff = DBGet(DBQuery('SELECT SCHOOL_ID,START_DATE,END_DATE FROM staff_school_relationship WHERE staff_id=\'' . $_REQUEST['staff_id'] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=' . $school['SCHOOL_ID']));
                 if ($schools_each_staff[1]['START_DATE'] == '')
                     DBQuery('UPDATE staff_school_relationship SET START_DATE=\'0000-00-00\' WHERE staff_id=\'' . $_REQUEST['staff_id'] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=' . $school['SCHOOL_ID']);
@@ -894,7 +895,7 @@ if (!$_REQUEST['modfunc']) {
                 echo '<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
                 echo '<input type=hidden name=res_len id=res_len value=\'' . $check_all_stu_list . '\'>';
 
-                ListOutputStaffPrintSchoolInfo($school_admin, $columns, _schoolRecord, _schoolRecords, array(), array(), array('search' => false));
+                ListOutputStaffPrintSchoolInfo($school_admin, $columns, _schoolRecord, _schoolRecords, array(), array(), array('search' => false, 'sort' => false));
             }
         }
     } else

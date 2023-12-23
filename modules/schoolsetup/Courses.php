@@ -2123,7 +2123,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
         $header .= '<div class="form-group clearfix"><div class="col-md-12"><label class="radio-inline"><input type=radio name=date_range value=mp id=preset onchange=mp_range_toggle(this);  ' . ($RET['MARKING_PERIOD_ID'] ? ' checked' : '') . '> ' . _markingPeriod . '</label> <label class="radio-inline"><input type=radio name=date_range value=dr id=custom onchange=mp_range_toggle(this); ' . ($RET['BEGIN_DATE'] ? ' checked' : '') . '> ' . _customDateRange . '</label></div></div>';
 
         $header .= '<DIV id=mp_range style=display:' . ($RET['MARKING_PERIOD_ID'] ? 'block' : 'none') . ' class="clearfix"><div class="col-md-4">' . SelectInput($RET['MARKING_PERIOD_ID'], 'tables[course_periods][' . $_REQUEST['course_period_id'] . '][MARKING_PERIOD_ID]', '', $options, 'N/A', 'id=marking_period', $div) . '</div></DIV>';
-        $header .= '<DIV id=date_range style=display:' . ($RET['BEGIN_DATE'] ? 'block' : 'none') . ' class="clearfix"><div class="col-md-4"><div class="form-group"><label class="control-label text-right col-md-2">' . _begins . '</label><div class="col-md-10">' . DateInputAY($RET['BEGIN_DATE'], 'begin', 1, ($_REQUEST['conflict'] == 'y' ? true : false), '') . '</div></div></div><div class="col-md-4"><div class="form-group"><label class="control-label text-right col-md-2">' . _ends . '</label><div class="col-md-10">' . DateInputAY($RET['END_DATE'], 'end', 2, ($_REQUEST['conflict'] == 'y' ? true : false), '') . '</div></div></div></DIV>';
+        $header .= '<DIV id=date_range style=display:' . ($RET['BEGIN_DATE'] ? 'block' : 'none') . ' class="clearfix"><div class="col-md-4"><div class="form-group"><label class="control-label text-right col-md-4">' . _begins . '</label><div class="col-md-8">' . DateInputAY($RET['BEGIN_DATE'], 'begin', 1, ($_REQUEST['conflict'] == 'y' ? true : false), '') . '</div></div></div><div class="col-md-4"><div class="form-group"><label class="control-label text-right col-md-4">' . _ends . '</label><div class="col-md-8">' . DateInputAY($RET['END_DATE'], 'end', 2, ($_REQUEST['conflict'] == 'y' ? true : false), '') . '</div></div></div></DIV>';
         $header .= '</div>'; //.col-md-12
         $header .= '<hr/>';
 
@@ -2700,14 +2700,17 @@ function _makeMonths($link, $begin_date, $end_date)
     }
     $days = date('t', $_REQUEST['month']);
 
+    if (date('j', $_REQUEST['month']) == date('t', $_REQUEST['month'])) {
+        $_REQUEST['month'] = strtotime('first day of next month', $_REQUEST['month']);
+    }
     $last_day_end = date('t', $end_date);
-    $begin = strtotime(date('Y-m-1', $begin_date)) . "<br>";
+    $begin = strtotime(date('Y-m-01', $begin_date)) . "<br>";
     $end = strtotime(date('Y-m-' . $last_day_end, $end_date));
     $prev = $_REQUEST['month'] - $one_day * 30;
     $next = $_REQUEST['month'] + $one_day * $days;
     $prev_month_f = strtotime(date('Y-m-d', $next));
     $prev_month_f = strtotime('Previous Month', $prev_month_f);
-    $html .= '<ul class="pagination pagination-flat">';
+    $html = '<ul class="pagination pagination-flat">';
     if ($link != '') {
         if ($prev >= $begin) {
             $prev_month_f = strtotime('Previous Month', $prev_month_f);
