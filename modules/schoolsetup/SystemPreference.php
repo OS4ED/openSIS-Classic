@@ -61,7 +61,7 @@ echo '</div>';
 echo '<div class="col-md-8">';
 
 if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference') {
-    if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
+    if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == _Save) && clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
 
         $sql = 'UPDATE system_preference SET ';
         foreach ($_REQUEST['values'] as $column => $value) {
@@ -74,7 +74,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         }
         $sql = substr($sql, 0, -1) . ' WHERE SCHOOL_ID=\'' . UserSchool() . '\'';
         DBQuery($sql);
-    } elseif ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'insert') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
+    } elseif ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'insert') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == _Save) && clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
 
         $sql = 'INSERT INTO system_preference SET ';
         foreach ($_REQUEST['values'] as $column => $value) {
