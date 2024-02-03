@@ -1632,11 +1632,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()
 
 
 if ($_REQUEST['modfunc'] == 'detail') {
-    if ($_POST['button'] == 'Save' && $_REQUEST['mode'] == 'add') {
+    if ($_POST['button'] == _save && $_REQUEST['mode'] == 'add') {
         $conflict = VerifyBlockedSchedule($_REQUEST['values'], $_REQUEST['course_period_id'], 'cpv');
         $_SESSION['block_schedule_err'] = $conflict;
     }
-    if ($_POST['button'] == 'Save' && $_REQUEST['mode'] == 'edit') {
+    if ($_POST['button'] == _save && $_REQUEST['mode'] == 'edit') {
         //print_r($_REQUEST);
         $title_val = DBGet(DBQuery("SELECT PERIOD_ID,ROOM_ID FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'"));
 
@@ -1653,7 +1653,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
         $_SESSION['block_schedule_err'] = $conflict;
     }
 
-    if ($_POST['button'] == 'Save' && $conflict === true) {
+    if ($_POST['button'] == _save && $conflict === true) {
 
         if ($_REQUEST['mode'] == 'add') {
             $chek_assoc = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id'] . ' AND (START_DATE<=\'' . date('Y-m-d') . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' OR END_DATE>=\'' . date('Y-m-d') . '\' ))'));
