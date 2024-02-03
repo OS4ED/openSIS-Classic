@@ -41,7 +41,7 @@ $name = $DatabaseName;
 $user = $DatabaseUsername;
 $pass = $DatabasePassword;
 $port = $DatabasePort;
-if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
+if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == _backup)) {
 
     $print_form = 0;
     $date_time = date("m-d-Y");
