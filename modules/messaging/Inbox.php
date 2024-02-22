@@ -521,7 +521,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
                 //          }
                 //         for($i=0;$i<(count($attach));$i++)
                 //         {
-                echo "<a href='DownloadWindow.php?down_id=" . $img['ID'] . "'>" . $img['NAME'] . "</a>";
+                echo "<a href='DownloadWindow.php?down_id=" . $img['DOWNLOAD_ID'] . "'>" . $img['NAME'] . "</a>";
 
                 echo '<br>&nbsp;&nbsp;&nbsp;<br>';
             }
