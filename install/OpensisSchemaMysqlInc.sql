@@ -1309,6 +1309,7 @@ ALTER TABLE `mail_groupmembers` ADD INDEX `mail_groupmembers_ind` (`school_id`) 
 
 CREATE TABLE IF NOT EXISTS `msg_inbox` (
   `mail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `mail_uuid` varchar(50) NOT NULL,
   `to_user` varchar(211) NOT NULL,
   `from_user` varchar(211) NOT NULL,
   `mail_Subject` varchar(211) NULL,

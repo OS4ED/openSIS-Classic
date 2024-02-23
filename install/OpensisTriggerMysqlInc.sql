@@ -139,6 +139,13 @@ CREATE TRIGGER `ti_user_file_upload`
     BEFORE INSERT ON user_file_upload
     FOR EACH ROW
         SET NEW.download_id = UUID();
+
+DROP TRIGGER IF EXISTS `ti_msg_inbox`;
+CREATE TRIGGER `ti_mail_uuid`
+    BEFORE INSERT ON msg_inbox
+    FOR EACH ROW
+        SET NEW.mail_uuid = UUID();
+
 DROP TRIGGER IF EXISTS `tu_login_authentication`;
 DELIMITER $$
 CREATE TRIGGER `tu_login_authentication` 
