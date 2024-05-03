@@ -1256,13 +1256,13 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         if (!empty($list_assignment_types)) {
             foreach ($list_assignment_types as $at_key => $at_val) {
-                if ($at_val['FINAL_GRADE_PERCENT'] != '' && number_format($at_val['FINAL_GRADE_PERCENT']) != 0)
+                if ($at_val['FINAL_GRADE_PERCENT'] != '' && number_format($at_val['FINAL_GRADE_PERCENT'],2) != 0)
                     array_push($total_assignment_type_weightage_arr, $at_val['FINAL_GRADE_PERCENT']);
             }
 
             $total_assignment_type_weightage = array_sum($total_assignment_type_weightage_arr);
 
-            if ($total_assignment_type_weightage == 0)
+            if ($total_assignment_type_weightage != 1)
                 echo '<div class="alert alert-warning alert-styled-left">' . _coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes . '</div>';
         }
     }
