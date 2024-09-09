@@ -438,7 +438,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             } else {
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
-
+            
 
             $date = date("Y-m-d H:i:s");
             $fname_ins = singleQuoteReplace("'", "''", $_SESSION['FIRST_NAME']);
