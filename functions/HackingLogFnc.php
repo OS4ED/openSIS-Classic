@@ -49,7 +49,7 @@ function HackingLog()
 	} else {
 		$ip = $_SERVER['REMOTE_ADDR'];
 	}
-
+	$ip = sqlSecurityFilter($ip);
 	if ($openSISNotifyAddress)
 		mail($openSISNotifyAddress, 'HACKING ATTEMPT', "INSERT INTO hacking_log (HOST_NAME,IP_ADDRESS,LOGIN_DATE,VERSION,PHP_SELF,DOCUMENT_ROOT,SCRIPT_NAME,MODNAME,USERNAME) values('$_SERVER[SERVER_NAME]','$ip','" . date('Y-m-d') . "','$openSISVersion','$_SERVER[PHP_SELF]','$_SERVER[DOCUMENT_ROOT]','$_SERVER[SCRIPT_NAME]','$_REQUEST[modname]','" . User('USERNAME') . "')");
 
@@ -60,6 +60,7 @@ function HackingLog()
 		} else {
 			$ip = $_SERVER['REMOTE_ADDR'];
 		}
+		$ip = sqlSecurityFilter($ip);
 		$access = 'c09heEQ1czZmcng0eG14dk4va0l0dz09';
 		$url = 'dkZDQUNOTUhXaWF6dkYwNTlDNEpSQT09';
 
