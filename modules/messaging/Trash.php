@@ -80,7 +80,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'delete') {
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
     PopTable('header', _messageDetails);
     $mail_id = $_REQUEST['mail_id'];
-    $mail_body = "select mail_body,to_user,from_user,mail_datetime,mail_attachment from msg_inbox where mail_id='$mail_id'";
+    $mail_body = "select mail_body,to_user,from_user,mail_datetime,mail_attachment from msg_inbox where mail_uuid='$mail_id'";
     $mail_body_info = DBGet(DBQuery($mail_body));
     foreach ($mail_body_info as $k => $v) {
         echo "<table width='100%' style='width:650px'>
@@ -271,7 +271,7 @@ if (!isset($_REQUEST['modfunc'])) {
         $columns = $LO_columns;
     }
     $link['MAIL_SUBJECT']['link'] = "Modules.php?modname=messaging/Trash.php&modfunc=body";
-    $link['MAIL_SUBJECT']['variables'] = array('mail_id' => 'MAIL_ID');
+    $link['MAIL_SUBJECT']['variables'] = array('mail_id' => 'MAIL_UUID');
     $link['remove']['link'] = "Modules.php?modname=messaging/Trash.php&modfunc=delete";
 
     foreach ($trash_info as $id => $value) {

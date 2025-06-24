@@ -432,7 +432,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
     $mail_id = $_REQUEST['mail_id'];
-    $mail_body = "select mail_body,mail_attachment,mail_Subject,from_user,mail_datetime,to_cc_multiple,to_multiple_users,to_bcc_multiple,mail_read_unread from msg_inbox where mail_id='$mail_id'";
+    $mail_body = "select mail_body,mail_attachment,mail_Subject,from_user,mail_datetime,to_cc_multiple,to_multiple_users,to_bcc_multiple,mail_read_unread from msg_inbox where mail_uuid='$mail_id'";
 
     $mail_body_info = DBGet(DBQuery($mail_body));
     $sub = $mail_body_info[1]['MAIL_SUBJECT'];
@@ -521,7 +521,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
                 //          }
                 //         for($i=0;$i<(count($attach));$i++)
                 //         {
-                echo "<a href='DownloadWindow.php?down_id=" . $img['ID'] . "'>" . $img['NAME'] . "</a>";
+                echo "<a href='DownloadWindow.php?down_id=" . $img['DOWNLOAD_ID'] . "'>" . $img['NAME'] . "</a>";
 
                 echo '<br>&nbsp;&nbsp;&nbsp;<br>';
             }
@@ -637,7 +637,7 @@ if (!isset($_REQUEST['modfunc'])) {
         $columns = $LO_columns;
     }
     $link['MAIL_SUBJECT']['link'] = "Modules.php?modname=messaging/Inbox.php&modfunc=body";
-    $link['MAIL_SUBJECT']['variables'] = array('mail_id' => 'MAIL_ID');
+    $link['MAIL_SUBJECT']['variables'] = array('mail_id' => 'MAIL_UUID');
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=trash";
     $options['search'] = 'asdad';
 
