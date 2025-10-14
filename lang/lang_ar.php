@@ -1964,4 +1964,7 @@ define("_outOf", "بعيدا عن المكان");
 define("_entries", "إدخالات");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "لا يمكن الحذف لأن تعليقات بطاقة التقرير مرتبطة");
 define('_reportCardGradingScale','مقياس تقييم بطاقة التقرير');
+define("_noStudentIsAssociatedWithTheParentForTheCurrentDate", "لا يوجد طالب مرتبط بالوالد في التاريخ الحالي.");
+define("_eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate", "إما أن الطالب لم يعد نشطًا أو يبدأ الدراسة في تاريخ مستقبلي.");
+define("_pleaseContactTheSchoolAdministrationForMoreInformation", "يرجى التواصل مع إدارة المدرسة لمزيد من المعلومات.");
 ?>
