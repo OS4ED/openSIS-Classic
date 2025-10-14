@@ -491,8 +491,35 @@ if ($_REQUEST['del'] == 'true') {
                                     } else {
                                         $start_date_msg = "enroll";
                                     }
+                                } elseif ($column == 'END_DATE') {
+                                    $value = paramlib_validation($column, $value);
+                                    $end_date_time = strtotime($value);
+                                    $stu_end_date_sql = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE SYEAR = \'' . UserSyear() . '\' AND STUDENT_ID = \'' . UserStudentID() . '\' ORDER BY ID DESC LIMIT 1'));
+                                    $cp_end_date_sql = DBGet(DBQuery('SELECT END_DATE FROM course_periods WHERE SYEAR = \'' . UserSyear() . '\' AND COURSE_PERIOD_ID = \'' . $course_period_id . '\''));
+                                    $stu_end_date = $stu_end_date_sql[1]['END_DATE'];
+                                    $cp_end_date = $cp_end_date_sql[1]['END_DATE'];
+
+                                    // Compare and find the minimum date
+                                    if($stu_end_date !='' && $cp_end_date !=''){
+                                        $min_end_date = (strtotime($stu_end_date) < strtotime($cp_end_date)) ? $stu_end_date : $cp_end_date;
+                                    } else if($stu_end_date ==''){
+                                        $min_end_date = $cp_end_date;
+                                    } else if($cp_end_date ==''){
+                                        $min_end_date = $stu_end_date;
+                                    }
+                                    
+                                   if (strtotime($value) >= ($edt_fetch_start_t) && strtotime($value) <= strtotime($min_end_date)) {
+                                        $sql .= $column . '=\'' . str_replace("\'", "''", date('Y-m-d', strtotime($value))) . '\',';
+                                        $tot_cp .= $course_period_id . ',';
+                                    } elseif (strtotime($value) < ($edt_fetch_start_t)) {
+                                        $end_date_msg = "drop";
+                                    } elseif (strtotime($value) > strtotime($min_end_date)) {
+                                        $end_date_msg = "ending";
+                                    } else {
+                                        $end_date_msg = "invalid";
+                                    }
                                 } else {
-                                    if ($start_date_msg != "enroll" && $start_date_msg != "strat") {
+                                    if (($start_date_msg != "enroll" && $start_date_msg != "start") || ($end_date_msg != "ending" && $end_date_msg != "drop")) {
                                         $updateValue = str_replace("\'", "''", $column === 'SCHEDULER_LOCK' ? $value : date('Y-m-d', strtotime($value)));
                                         $sql .= $column . '=\'' . $updateValue . '\',';
                                     }
@@ -977,51 +1004,66 @@ if ($_REQUEST['del'] == 'true') {
         }
 
         if ($start_date_msg == "start") {
-            echo "<b style='color:red'>" . _enrolledDateCannotBeAfterDroppedDate . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _enrolledDateCannotBeAfterDroppedDate . '</div>';
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "enroll") {
-            echo "<b style='color:red'>" . _courseEnrolledDateCannotBeBeforeStudentsSchoolStartDate . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _courseEnrolledDateCannotBeBeforeStudentsSchoolStartDate . '</div>';
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "re_enroll") {
-            echo "<b style='color:red'>" . _courseEnrolledDateCannotBeBeforeStudentsCourseStartDate . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _courseEnrolledDateCannotBeBeforeStudentsCourseStartDate . '</div>';
 
             unset($start_date_msg);
         }
 
         if ($start_date_msg == "prev_schdl_error") {
-            echo "<b style='color:red'>" . _courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule . '</div>';
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "dropped_schdl_error") {
 
-            echo "<b style='color:red'>" . _youCannotModifyTheScheduleEnrolledDateAsItsClashingWithOtherDroppedCourse . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _youCannotModifyTheScheduleEnrolledDateAsItsClashingWithOtherDroppedCourse . '</div>';
 
             unset($start_date_msg);
         }
         if ($start_date_msg == "error") {
-            echo "<b style='color:red'>" . _courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _courseEnrolledDateCannotBeBeforeDropdateOfPreviousSchedule . '</div>';
 
             unset($start_date_msg);
         }
         if ($end_date_msg == "end") {
-            echo "<b style='color:red'>" . _pleaseEnterProperDroppedDateDroppedDateMustBeGreaterThanStartDate . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _pleaseEnterProperDroppedDateDroppedDateMustBeGreaterThanStartDate . '</div>';
 
             unset($end_date_msg);
         }
 
         if ($sch_lock_msg == "end") {
-            echo "<b style='color:red'>" . _thisScheduleIsLockedDroppedDateCanNotBeChanged . "</b>";
+            echo '<div class="alert alert-danger no-border">' . _thisScheduleIsLockedDroppedDateCanNotBeChanged . '</div>';
 
             unset($sch_lock_msg);
         }
+        if ($end_date_msg == "ending") {
+            echo '<div class="alert alert-danger no-border">Course schedule end date cannot be after the course period or student enrollment end date.</div>';
+
+            unset($end_date_msg);
+        }
+        if ($end_date_msg == "drop") {
+           echo '<div class="alert alert-danger no-border">Course schedule end date must be on or after the schedule start date.</div>';
+
+            unset($end_date_msg);
+        }
+        if ($end_date_msg == "invalid") {
+           echo '<div class="alert alert-danger no-border">Invalid date input. Please check the selected date and try again.</div>';
+
+            unset($end_date_msg);
+        }
         if ($end_date_msg == "attn" && strtotime($end_d) < strtotime($_SESSION['last_attendance'])) {
 
-            echo "<b style='color:red'>" . _courseCannotBeDroppedBecauseStudentHasGotAttendanceTill . " " . $_SESSION['last_attendance'] . ".</b>";
+            echo '<div class="alert alert-danger no-border">' . _courseCannotBeDroppedBecauseStudentHasGotAttendanceTill . ' ' . $_SESSION['last_attendance'] . '.</div>';
 
             unset($end_date_msg);
         }

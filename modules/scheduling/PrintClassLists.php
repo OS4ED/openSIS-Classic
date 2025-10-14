@@ -119,6 +119,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                      'NAME_SUFFIX' =>_suffix,
                      'STUDENT_ID' =>_studentId,
                      'GENDER' =>_gender,
+                     'ETHNICITY_ID' => _ethnicity,
                      'GRADE_ID' =>_grade,
                      'SECTION_ID' =>_section,
                      'SCHOOL_ID' =>_school,
@@ -216,6 +217,19 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
 
                     $RET = GetStuList($extra);
+                    
+                    $i = 1;
+                    foreach ($RET as $value) {
+                        if ($RET[$i]['LANGUAGE_ID'] != '') {
+                            $sql_language = DBGet(DBQuery("SELECT language_name FROM language WHERE language_id=" . $RET[$i]['LANGUAGE_ID']));
+                            $RET[$i]['LANGUAGE_ID'] = $sql_language[1]['LANGUAGE_NAME'];
+                        }
+                        if ($RET[$i]['ETHNICITY_ID'] != '') {
+                            $sql_ethinicity = DBGet(DBQuery("SELECT ethnicity_name FROM ethnicity WHERE ethnicity_id=" . $RET[$i]['ETHNICITY_ID']));
+                            $RET[$i]['ETHNICITY_ID'] = $sql_ethinicity[1]['ETHNICITY_NAME'];
+                        }
+                        $i = $i + 1;
+                    }
                     
                     $list_attr = DBGet(DBQuery("SHOW COLUMNS FROM `students` "));
                     foreach ($list_attr as $data) {

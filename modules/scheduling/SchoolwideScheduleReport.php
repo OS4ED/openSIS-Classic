@@ -105,22 +105,25 @@ $get_school_days = DBGet(DBQuery("SELECT days FROM `school_calendars` WHERE `sye
 $schooling_days = $get_school_days[1]['DAYS'];
 $schooling_days_arr = str_split($schooling_days);
 
-$first_day_name =   GetDaysNames(array_values($schooling_days_arr)[0]);
-$end_day_name   =   GetDaysNames(end($schooling_days_arr));
-$this_week      =   GetCurrentWeekDates($first_day_name, $end_day_name, $this_day);
+$first_day_name = GetDaysNames(array_values($schooling_days_arr)[0]);
+$end_day_name   = GetDaysNames(end($schooling_days_arr));
 
-$first_day_of_week = array_values($this_week)[0];
-
-
-if(isset($_REQUEST['modfunc']) && isset($_REQUEST['take_date']) && $_REQUEST['take_date'] != '')
-{
-    $changed_date = $_REQUEST['take_date'];
-    $todays_date = date("Y-m-d", strtotime($changed_date));
+if (isset($_REQUEST['take_date']) && $_REQUEST['take_date'] != '') {
+    $todays_date = date("Y-m-d", strtotime($_REQUEST['take_date']));
+} else {
+    $todays_date = date("Y-m-d");
 }
-else
-{
-    $todays_date = date("Y-m-d", strtotime($first_day_of_week));
-}
+
+$this_week = GetCurrentWeekDates($first_day_name, $end_day_name, date('l', strtotime($todays_date)), $todays_date);
+
+$week_start = reset($this_week);
+$week_end   = end($this_week);
+$prev_week_date = date('Y-m-d', strtotime($week_start . ' -7 days'));
+$next_week_date = date('Y-m-d', strtotime($week_start . ' +7 days'));
+
+
+// Keep compatibility with your existing variable name
+$first_day_of_week = $week_start;
 
 $todays_date_letter = GetDaysShortNames(date('l', strtotime($todays_date)));
 // echo $todays_date.' - '.$first_day_name.' - '.$end_day_name;
@@ -209,9 +212,17 @@ else
 echo '<div class="panel">';
 echo '<form id="ssrfrm" action="Modules.php?modname='.$_REQUEST['modname'].'&modfunc=date_changed" method="post">';
 
-echo '<input id="take_date" name="take_date" type="hidden" value="'.$first_day_of_week.'">';
+echo '<input id="take_date" name="take_date" type="hidden" value="' . $todays_date . '">';
+
 
 echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a href="javascript:void(0);">'._schoolwideScheduleReport.'</a></li></ul>';
+
+echo '<div class="p-t-10">';
+echo '<a href="Modules.php?modname=' . $_REQUEST['modname'] . '&take_date=' . $prev_week_date . '" class="m-l-20"><i class="fa fa-chevron-left"></i> Prev</a> ';
+echo '<strong class="m-l-10 m-r-10">' . date('M d, Y', strtotime($week_start)) . ' - ' . date('M d, Y', strtotime($week_end)) . '</strong> ';
+echo '<a href="Modules.php?modname=' . $_REQUEST['modname'] . '&take_date=' . $next_week_date . '">Next <i class="fa fa-chevron-right"></i></a>';
+echo '</div>';
+
 
 echo '<div class="panel-heading '.$pb.'"><h6 class="panel-title">';
 echo '<span class="heading-text">'.$show_subject_count.'</span>';
@@ -344,76 +355,41 @@ echo '</div>';
 echo '</form>';
 echo '</div>';
 
-// echo $startdate = date('Y-m-d', strtotime('Sunday next week'));
-// echo "<br>";
-// echo $startdate = date('Y-m-d', strtotime('Friday next week'));
-
-function GetCurrentWeekDates($firstDay, $lastDay, $toDay)
+function GetCurrentWeekDates($firstDay, $lastDay, $toDay, $baseDate = null)
 {
-    // if (date('D') != 'Mon') {
-    //     $startdate = date('Y-m-d', strtotime('last Monday'));
-    // } else {
-    //     $startdate = date('Y-m-d');
-    // }
-
-	//always next saturday
-    // if (date('D') != 'Sat') {
-    //     $enddate = date('Y-m-d', strtotime('next Saturday'));
-    // } else {
-    //     $enddate = date('Y-m-d');
-    // }
-
-    // if($firstDay == 'Sunday' && $lastDay != 'Saturday')
-    // {
-    //     $startdate = date('Y-m-d', strtotime($firstDay.' last week'));
-    // }
-    // else
-    // {
-    //     $startdate = date('Y-m-d', strtotime($firstDay.' this week'));
-    // }
-
-    // if($firstDay == 'Sunday' && $lastDay == 'Saturday')
-    // {
-    //     $enddate = date('Y-m-d', strtotime($lastDay.' next week'));
-    // }
-    // else
-    // {
-    //     $enddate = date('Y-m-d', strtotime($lastDay.' this week'));
-    // }
-
-    if($toDay == 'Sunday')
-    {
-        if($firstDay != 'Sunday')
-        {
-            $startdate = date('Y-m-d', strtotime($firstDay.' next week'));
-        }
-        else
-        {
-            $startdate = date('Y-m-d', strtotime($firstDay.' this week'));
-        }
-
-        $enddate = date('Y-m-d', strtotime($lastDay.' next week'));
-    }
-    else
-    {
-        if($firstDay != 'Sunday')
-        {
-            $startdate = date('Y-m-d', strtotime($firstDay.' this week'));
-        }
-        else
-        {
-            $startdate = date('Y-m-d', strtotime($firstDay.' last week'));
-        }
-
-        $enddate = date('Y-m-d', strtotime($lastDay.' this week'));
+    if ($baseDate === null || $baseDate == '') {
+        $baseDate = date('Y-m-d');
     }
 
+    // Map day names to indices (0=Sun..6=Sat)
+    $map = array(
+        'Sunday'    => 0,
+        'Monday'    => 1,
+        'Tuesday'   => 2,
+        'Wednesday' => 3,
+        'Thursday'  => 4,
+        'Friday'    => 5,
+        'Saturday'  => 6
+    );
+
+    $firstIdx = $map[$firstDay];
+    $lastIdx  = $map[$lastDay];
+
+    $baseTs  = strtotime($baseDate);
+    $baseIdx = (int) date('w', $baseTs); // 0..6
+
+    // Start of week (date for firstDay) that CONTAINS $baseDate
+    $back    = ($baseIdx - $firstIdx + 7) % 7;
+    $startTs = strtotime("-{$back} days", $baseTs);
+
+    // End of week (inclusive) for lastDay
+    $forward = ($lastIdx - $firstIdx + 7) % 7;
+    $endTs   = strtotime("+{$forward} days", $startTs);
+
+    // Build dates inclusive of both ends
     $DateArray = array();
-    $timestamp = strtotime($startdate);
-    while ($startdate < $enddate) {
-        $startdate = date('Y-m-d', $timestamp);
-        $DateArray[] = $startdate;
-        $timestamp = strtotime('+1 days', strtotime($startdate));
+    for ($ts = $startTs; $ts <= $endTs; $ts = strtotime('+1 day', $ts)) {
+        $DateArray[] = date('Y-m-d', $ts);
     }
     return $DateArray;
 }

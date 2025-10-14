@@ -42,7 +42,11 @@ if ($_REQUEST['modfunc'] == 'save') {
         $columns = array('DAYS' => 'Days', 'DURATION' => 'Time', 'PERIOD_TITLE' => 'Period - Teacher', 'ROOM' => 'Room/Location', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'COURSE_TITLE' => 'Course');
         $extra['SELECT'] .= ',c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sg.TITLE AS GRD_LVL,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, " to ", sp.END_TIME) AS DURATION,r.TITLE AS ROOM';
         $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c, school_gradelevels sg, course_periods p_cp,course_period_var cpv,school_periods sp,rooms r ';
-        $extra['WHERE'] .= ' AND cpv.PERIOD_ID=sp.PERIOD_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.GRADE_ID=sg.ID AND (\'' . $date . '\' BETWEEN sr.START_DATE AND sr.END_DATE ' . $date_extra . ')';
+        $extra['WHERE'] .= ' AND cpv.PERIOD_ID=sp.PERIOD_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.GRADE_ID=sg.ID';
+
+        if ($_REQUEST['include_inactive'] == 'Y') {
+            $extra['WHERE'] .= '  AND (\'' . $date . '\' BETWEEN sr.START_DATE AND sr.END_DATE ' . $date_extra . ') ';
+        }
         if ($_REQUEST['mp_id'])
             $extra['WHERE'] .= ' AND sr.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($_REQUEST['mp_id'], 'TABLE')), $_REQUEST['mp_id']) . ' OR sr.MARKING_PERIOD_ID is null )';
         $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP', 'DAYS' => '_makeDays');
@@ -126,21 +130,32 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                         ////////////new////////////
 
-                        $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
+            //             $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
+			// FROM school_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
+			// WHERE cp.syear=\'' . UserSyear() . '\'
+			// AND s.syear=\'' . UserSyear() . '\'
+			// AND s.student_id=\'' . $courses[1]['STUDENT_ID'] . '\'
+			// AND s.course_period_id=cp.course_period_id
+			// AND sp.period_id=cpv.period_id
+            //             AND cp.course_period_id=cpv.course_period_id
+            //             AND r.room_id=cpv.room_id
+            //             AND s.start_date<=\'' . date('Y-m-d') . '\'
+            //             AND (s.end_date IS NULL OR s.end_date>=\'' . date('Y-m-d') . '\')
+			// AND cpv.days like \'' . '%' . $value . '%' . '\'
+			// AND s.school_id=\'' . UserSchool() . '\'
+			
+			// AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
+
+            $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
 			FROM school_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
 			AND s.student_id=\'' . $courses[1]['STUDENT_ID'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
-                        AND cp.course_period_id=cpv.course_period_id
-                        AND r.room_id=cpv.room_id
-                        AND s.start_date<=\'' . date('Y-m-d') . '\'
-                        AND (s.end_date IS NULL OR s.end_date>=\'' . date('Y-m-d') . '\')
-			AND cpv.days like \'' . '%' . $value . '%' . '\'
-			AND s.school_id=\'' . UserSchool() . '\'
-			
-			AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
+            AND cp.course_period_id=cpv.course_period_id
+            AND r.room_id=cpv.room_id
+            AND s.school_id=\'' . UserSchool() . '\'AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
 
 
                         foreach ($r_ch as $mp_k => $mp_v) {
@@ -227,25 +242,96 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel">';
     
     # ---------------------------------------- Marking period selection Start ------------------------------------------ #
-    $RET1 = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM marking_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY MARKING_PERIOD_ID"));
-    $link = 'Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&sel_mp=';
+    // $RET1 = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM marking_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY MARKING_PERIOD_ID"));
+    // $link = 'Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&sel_mp=';
     
-    echo '<div class="panel-heading">';
-    echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">'._pleaseSelectTheMarkingPeriod.' :</span>';
-    echo "<SELECT name=sel_mp id=sel_mp class=form-control onChange=\"window.location='".$link."' + this.options[this.selectedIndex].value;\">";
-    if (count($RET1)) {
-        if ($_REQUEST['sel_mp'])
-            $mp = $_REQUEST['sel_mp'];
-        else {
-            $mp = UserMP();
+    // echo '<div class="panel-heading">';
+    // echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">'._pleaseSelectTheMarkingPeriod.' :</span>';
+    // echo "<SELECT name=sel_mp id=sel_mp class=form-control onChange=\"window.location='".$link."' + this.options[this.selectedIndex].value;\">";
+    // if (count($RET1)) {
+    //     if ($_REQUEST['sel_mp'])
+    //         $mp = $_REQUEST['sel_mp'];
+    //     else {
+    //         $mp = UserMP();
+    //     }
+    //     foreach ($RET1 as $quarter) {
+    //         echo "<OPTION value=$quarter[MARKING_PERIOD_ID]" . ($mp === $quarter['MARKING_PERIOD_ID'] ? ' SELECTED' : '') . ">" . $quarter['TITLE'] . "</OPTION>";
+    //     }
+    // }
+    // echo "</SELECT>";
+    // echo '</div> &nbsp;</div>';
+    // echo '</div>';
+
+    ##################################################################
+
+    $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . "'"));
+    
+    $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+
+    $uarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+
+    $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,1 AS TBL FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,2 AS TBL FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,3 AS TBL FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TBL,SORT_ORDER'));
+
+    $mp = CreateSelect($mp_RET, 'marking_period_id', 'Modules.php?modname=' . $_REQUEST['modname'] . '&day_date=' . $_REQUEST['day_date'] . '&month_date=' . $_REQUEST['month_date'] . '&year_date=' . $_REQUEST['year_date'] .  '&marking_period_id=', $_REQUEST['marking_period_id']);
+
+    ###################################################################3
+    if (!$_REQUEST['marking_period_id'])
+        $_REQUEST['marking_period_id'] = UserMP();
+    
+    if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) {
+        while (!VerifyDate($date = $_REQUEST['day_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['year_date'])) {
+            $_REQUEST['day_date']--;
         }
-        foreach ($RET1 as $quarter) {
-            echo "<OPTION value=$quarter[MARKING_PERIOD_ID]" . ($mp === $quarter['MARKING_PERIOD_ID'] ? ' SELECTED' : '') . ">" . $quarter['TITLE'] . "</OPTION>";
+    } else {
+        $min_date = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        if ($min_date[1]['MIN_DATE'] && DBDate('postgres') < $min_date[1]['MIN_DATE']) {
+            $date = $min_date[1]['MIN_DATE'];
+            $_REQUEST['day_date'] = date('d', strtotime($date));
+            $_REQUEST['month_date'] = strtoupper(date('m', strtotime($date)));
+            $_REQUEST['year_date'] = date('Y', strtotime($date));
+            $first_visit = 'yes';
+        } else {
+            $_REQUEST['day_date'] = date('d');
+            $_REQUEST['month_date'] = date('m');
+            $_REQUEST['year_date'] = date('Y');
+            $date = $_REQUEST['year_date'] . '-' . $_REQUEST['month_date'] . '-' . $_REQUEST['day_date'];
+            $first_visit = 'yes';
         }
     }
-    echo "</SELECT>";
-    echo '</div> &nbsp;</div>';
-    echo '</div>';
+    
+    $time = strtotime($date);
+    $newformat = date('Y-m-d', $time);
+   
+    echo '<div class="panel-heading">';
+    echo '<div class="row">';
+    echo '<div class="col-md-3">';
+    echo '<div class="form-group" id="filter"><label class="control-label">' . _date . '</label>' . PrepareDateSchedule($newformat, '_date', false, array('submit' => true)) . '</div>';
+    echo '</div>'; //col-md-3
+
+    ?>
+        <script>
+            $("#filter :input").change(function(e) {
+                const date = e.target.value.split("-")
+                const markingPeriodId = $("#marking_period_id").val();
+                const location='Modules.php?modname=<?php echo $_REQUEST['modname'] ?>&marking_period_id=' + markingPeriodId + '&month_date='+date[1]+'&day_date='+date[2]+'&year_date='+date[0];
+                // console.log(location)
+                window.location=location
+                // +'&month_date=8&day_date=12&year_date=2020'
+            });
+        </script>
+    <?php
+
+    echo '<div class="col-md-3">';
+    echo '<div class="form-group"><label class="control-label">' . _markingPeriod . '</label>' . $mp . '</div>';
+    echo '</div>'; //.col-md-3
+
+    echo '<div class="col-md-3">';
+    echo '<div class="form-group"><label class="control-label">&nbsp;</label><div class="checkbox"><label><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '>' . _includeInactiveCourses . '</label></div></div>';
+    echo '</div>'; //.col-md-3
+    echo '</div>'; //.row
+    echo '</div>'; //.panel-heading
+
+    echo '<div class="form-group">' . SubmitButton(_save, '', 'class="btn btn-primary" onclick=\'formload_ajax("modify");self_disable(this);\'') . '</div>';
     
     echo '<hr class="no-margin" />';
     
@@ -253,13 +339,33 @@ if (!$_REQUEST['modfunc']) {
 
     ###################################################################################################################
 
-    $sql = "SELECT CONCAT(s.LAST_NAME,', ',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, ' to ', sp.END_TIME) AS DURATION,r.TITLE AS ROOM FROM students s,student_enrollment ssm LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,rooms r,school_periods sp WHERE ssm.STUDENT_ID=s.STUDENT_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND '" . DBDate() . "'>ssm.START_DATE)) AND ssm.STUDENT_ID='" . UserStudentID() . "' AND s.STUDENT_ID = '" . UserStudentID() . "' AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ('" . DBDate() . "' BETWEEN sr.START_DATE AND sr.END_DATE OR sr.END_DATE IS NULL) ORDER BY FULL_NAME,sp.SORT_ORDER";
+    // $sql = "SELECT CONCAT(s.LAST_NAME,', ',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, ' to ', sp.END_TIME) AS DURATION,r.TITLE AS ROOM FROM students s,student_enrollment ssm LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,rooms r,school_periods sp WHERE ssm.STUDENT_ID=s.STUDENT_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND '" . DBDate() . "'>ssm.START_DATE)) AND ssm.STUDENT_ID='" . UserStudentID() . "' AND s.STUDENT_ID = '" . UserStudentID() . "' AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ('" . DBDate() . "' BETWEEN sr.START_DATE AND sr.END_DATE OR sr.END_DATE IS NULL) ORDER BY FULL_NAME,sp.SORT_ORDER";
+
+    // $stu_id = UserStudentID();
+    // $RET_show[$stu_id] = DBGet(DBQuery($sql));
+
+
+    $sql = "SELECT CONCAT(s.LAST_NAME,', ',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, ' to ', sp.END_TIME) AS DURATION,r.TITLE AS ROOM FROM students s,student_enrollment ssm LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,rooms r,school_periods sp WHERE ssm.STUDENT_ID=s.STUDENT_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserSchool() . "' AND ssm.STUDENT_ID='" . UserStudentID() . "' AND s.STUDENT_ID = '" . UserStudentID() . "' AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID ";
+
+    if ($_REQUEST['include_inactive'] != 'Y') {
+        $sql .= ' AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN sr.START_DATE AND sr.END_DATE OR (sr.END_DATE IS NULL AND sr.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\')) ';
+    }
+
+    if (clean_param($_REQUEST['marking_period_id'], PARAM_INT)) {
+        $mp_id = $_REQUEST['marking_period_id'];
+    }
+
+    if (!isset($_REQUEST['marking_period_id'])) {
+        $mp_id = UserMP();
+    }
+    $sql .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_Mod(GetMPTable(GetMP($mp_id, 'TABLE')), $mp_id) . ')  OR sr.MARKING_PERIOD_ID IS NULL)';
+    $sql .= ' GROUP BY p_cp.COURSE_PERIOD_ID ORDER BY FULL_NAME,sp.SORT_ORDER';
 
     $stu_id = UserStudentID();
     $RET_show[$stu_id] = DBGet(DBQuery($sql));
     $date = date('Y' . "-" . 'm' . "-" . 'd');
 
-    if (!$_REQUEST['sel_mp']) {
+    if (!$_REQUEST['marking_period_id']) {
         $sel_mp = GetCurrentMP('QTR', $date);
         if (!$sel_mp) {
             $sel_mp = GetCurrentMP('SEM', $date);
@@ -268,7 +374,7 @@ if (!$_REQUEST['modfunc']) {
             }
         }
     } else
-        $sel_mp = $_REQUEST['sel_mp'];
+        $sel_mp = $_REQUEST['marking_period_id'];
     $sql_mp_detail = 'SELECT title, start_date, end_date, parent_id, grandparent_id from marking_periods WHERE marking_period_id = \'' . $sel_mp . '\'';
     $res_mp_detail = DBQuery($sql_mp_detail);
     $row_mp_detail = DBGet($res_mp_detail);
@@ -311,21 +417,32 @@ if (!$_REQUEST['modfunc']) {
                 foreach ($ar as $day => $value) {
                     $counter = 0;
 
-                    $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
+            //         $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
+			// FROM school_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
+			// WHERE cp.syear=\'' . UserSyear() . '\'
+			// AND s.syear=\'' . UserSyear() . '\'
+			// AND s.student_id=\'' . $courses[1]['STUDENT_ID'] . '\'
+			// AND s.course_period_id=cp.course_period_id
+			// AND sp.period_id=cpv.period_id
+            //             AND cp.course_period_id=cpv.course_period_id
+            //             AND r.room_id=cpv.room_id
+            //             AND s.start_date<=\'' . date('Y-m-d') . '\'
+            //             AND (s.end_date IS NULL OR s.end_date>=\'' . date('Y-m-d') . '\')
+			// AND cpv.days like \'' . '%' . $value . '%' . '\'
+			// AND s.school_id=\'' . UserSchool() . '\'
+			
+			// AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
+
+            $r_ch = DBGet(DBQuery('SELECT cp.title AS cp_title, cp.short_name, r.title as room, sp.start_time, sp.end_time,cp.marking_period_id as title ,sp.sort_order
 			FROM school_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
 			AND s.student_id=\'' . $courses[1]['STUDENT_ID'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
-                        AND cp.course_period_id=cpv.course_period_id
-                        AND r.room_id=cpv.room_id
-                        AND s.start_date<=\'' . date('Y-m-d') . '\'
-                        AND (s.end_date IS NULL OR s.end_date>=\'' . date('Y-m-d') . '\')
-			AND cpv.days like \'' . '%' . $value . '%' . '\'
-			AND s.school_id=\'' . UserSchool() . '\'
-			
-			AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
+            AND cp.course_period_id=cpv.course_period_id
+            AND r.room_id=cpv.room_id
+            AND s.school_id=\'' . UserSchool() . '\'AND ' . $mp_string . ' ) GROUP BY cpv.course_period_id  order by sp.sort_order'));
 
 
                     foreach ($r_ch as $mp_k => $mp_v) {
@@ -439,6 +556,33 @@ function _makeDays($value, $column) {
 
 function _makeChooseCheckbox($value, $title) {
     return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
+}
+
+function CreateSelect($val, $name, $link = '', $mpid)
+{
+
+    if ($link != '') {
+        $html .= "<select class=\"form-control\" name=" . $name . " id=" . $name . " onChange=\"window.location='" . $link . "' + this.options[this.selectedIndex].value;\">";
+    } else {
+        $html .= "<select class=\"form-control\" name=" . $name . " id=" . $name . " >";
+    }
+
+    foreach ($val as $key => $value) {
+
+        if (!isset($mpid) && (UserMP() == $value[strtoupper($name)])) {
+            $html .= "<option selected value=" . UserMP() . ">" . $value['TITLE'] . "</option>";
+        } else {
+            if ($value[strtoupper($name)] == $_REQUEST[$name]) {
+                $html .= "<option selected value=" . $value[strtoupper($name)] . ">" . $value['TITLE'] . "</option>";
+            } else {
+                $html .= "<option value=" . $value[strtoupper($name)] . ">" . $value['TITLE'] . "</option>";
+            }
+
+        }
+    }
+
+    $html .= "</select>";
+    return $html;
 }
 
 ?>

@@ -577,12 +577,14 @@ function checkAllDtMod(elem, name, staticValue = undefined) {
                 if (staticValue === undefined) value = all_stu_ids[i];
                 $('#hidden_checkboxes').append("<input type=hidden name='" + name + "[" + all_stu_ids[i] + "]' value='" + value + "' data-checkbox-hidden-id='" + all_stu_ids[i] + "' />");
                 if (document.getElementById(all_stu_ids[i])) {
-                    document.getElementById(all_stu_ids[i]).checked = true;
+                    // document.getElementById(all_stu_ids[i]).checked = true;
+                    document.querySelector('input[name="unused[' + all_stu_ids[i] + ']"]').checked = true;
                 }
             } else {
                 $('[data-checkbox-hidden-id=' + all_stu_ids[i] + ']').remove();
                 if (document.getElementById(all_stu_ids[i])) {
-                    document.getElementById(all_stu_ids[i]).checked = false;
+                    // document.getElementById(all_stu_ids[i]).checked = false;
+                    document.querySelector('input[name="unused[' + all_stu_ids[i] + ']"]').checked = false;
                 }
             }
         }
@@ -592,12 +594,14 @@ function checkAllDtMod(elem, name, staticValue = undefined) {
                 if (document.getElementById(unique_id[i])) {
                     if (staticValue === undefined) value = unique_id[i];
                     $('#hidden_checkboxes').append("<input type=hidden name='" + name + "[" + unique_id[i] + "]' value='" + value + "' data-checkbox-hidden-id='" + unique_id[i] + "' />");
-                    document.getElementById(unique_id[i]).checked = true;
+                    // document.getElementById(unique_id[i]).checked = true;
+                    document.querySelector('input[name="unused[' + unique_id[i] + ']"]').checked = true;
                 }
             } else {
                 if (document.getElementById(unique_id[i])) {
                     $('[data-checkbox-hidden-id=' + unique_id[i] + ']').remove();
-                    document.getElementById(unique_id[i]).checked = false;
+                    // document.getElementById(unique_id[i]).checked = false;
+                    document.querySelector('input[name="unused[' + unique_id[i] + ']"]').checked = false;
                 }
             }
         }

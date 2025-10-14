@@ -386,19 +386,23 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
     if (isset($_REQUEST['cp_id_miss_attn'])) {
         $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $_REQUEST['cp_id_miss_attn'] . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
-        $period_select = '<label class="control-label">'._choosePeriod.':</label>
-        <SELECT class="form-control" name=period onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&period=\'+this.options[selectedIndex].value">';
+        $period_select = '<label class="control-label">' . _choosePeriod . ':</label>
+        <SELECT class="form-control" name="cpv_id_miss_attn" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&cp_id_miss_attn=' . $_REQUEST['cp_id_miss_attn'] . '&cpv_id_miss_attn=\'+this.options[selectedIndex].value">';
+        
         $period_select .= "<OPTION value='' selected>N/A</OPTION>";
-        $fi = array();
+
+        $days_arr = array("Monday" => 'M', "Tuesday" => 'T', "Wednesday" => 'W', "Thursday" => 'H', "Friday" => 'F', "Saturday" => 'S', "Sunday" => 'U');
+        $date1 = isset($redate) ? ucfirst(date("l", strtotime($redate))) : '';
+        $d = isset($days_arr[$date1]) ? $days_arr[$date1] : '';
+
         foreach ($RET as $period) {
-            $date1 = ucfirst(date("l", strtotime($redate)));
+            $selected = ($_REQUEST['cpv_id_miss_attn'] == $period['ID']) ? 'SELECTED' : '';
+            $short_name = $period['SHORT_NAME'];
+            $mp_short = ($period['MARKING_PERIOD_ID'] != $fy_id) ? ' ' . GetMP($period['MARKING_PERIOD_ID'], 'SHORT_NAME') : '';
+            $day_str = (strlen($period['DAYS']) < 5) ? ' ' . $period['DAYS'] : '';
+            $title = $period['COURSE_TITLE'];
 
-
-            $fi = str_split($period['DAYS']);
-
-            $days_arr = array("Monday" => 'M', "Tuesday" => 'T', "Wednesday" => 'W', "Thursday" => 'H', "Friday" => 'F', "Saturday" => 'S', "Sunday" => 'U');
-            $d = $days_arr[$date1];
-            $period_select .= "<OPTION value=$period[ID]" . (($_REQUEST['cpv_id_miss_attn'] == $period['ID']) ? ' SELECTED' : '') . ">" . $period['SHORT_NAME'] . ($period['MARKING_PERIOD_ID'] != $fy_id ? ' ' . GetMP($period['MARKING_PERIOD_ID'], 'SHORT_NAME') : '') . (strlen($period['DAYS']) < 5 ? ' ' . $period['DAYS'] : '') . ' - ' . $period['COURSE_TITLE'] . "</OPTION>";
+            $period_select .= "<OPTION value='{$period['ID']}' $selected>$short_name$mp_short$day_str - $title</OPTION>";
         }
         $period_select .= "</SELECT>";
     } else {

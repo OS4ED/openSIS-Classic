@@ -280,7 +280,7 @@ if (UserStudentID()) {
             $QI = ($sql);
             $wk_schedule_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,sp.TITLE FROM school_periods sp WHERE sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID = \'' . UserSchool() . '\' ORDER BY sp.SORT_ORDER'), array('TIME_PERIOD' => '_makeTimePeriod'));
 
-            $mp_start_date = DBGET(DBQuery('SELECT start_date FROM marking_periods WHERE MARKING_PERIOD_ID = "' . $_REQUEST['marking_period_id'] . '"'));
+            $mp_start_date = DBGET(DBQuery('SELECT start_date FROM marking_periods WHERE MARKING_PERIOD_ID = ' . $_REQUEST['marking_period_id']));
 
 
             $sql_week = 'SELECT acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID
@@ -394,6 +394,8 @@ if (UserStudentID()) {
 
             $calendar_RET = DBGet(DBQuery('SELECT SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $month, $last, $year)) . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''), array(), array('SCHOOL_DATE'));
 
+            $calenderEvents = DBGet(DBQuery("SELECT title , school_date FROM calendar_events WHERE SCHOOL_DATE BETWEEN '" . date('Y-m-d', $time) . "' AND '" . date('Y-m-d', mktime(0, 0, 0, $month, $last, $year)) . "' AND SYEAR = '2024' AND CALENDAR_ID = 0"));
+
             $skip = date("N", $time) - 1;
 
             //echo '<div class="panel-body">';
@@ -439,7 +441,7 @@ if (UserStudentID()) {
                     }
                 }
 
-                $sql .= 'AND s.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id, 'TABLE')), $mp_id) . ') 
+                $sql .= 'AND (s.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id, 'TABLE')), $mp_id) . ') OR s.MARKING_PERIOD_ID IS NULL)
                 ORDER BY sp.SORT_ORDER,s.MARKING_PERIOD_ID';
 
 
@@ -462,7 +464,7 @@ if (UserStudentID()) {
                         $counter_schedule_RET = 1;
                         foreach ($schedule_RET as $cp_link) {
                             $cp_link['START_TIME'] = date("g:i A", strtotime($cp_link['START_TIME']));
-                            echo "<p style='word-break: break-all;'><img class=\"m-r-10\" src=\"assets/dot.png\"><a class=\"text-primary\" HREF=# title=Details onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&date=$date&marking_period_id=$_REQUEST[marking_period_id]&period=$cp_link[PERIOD_ID]\",\"blank\",\"width=600,height=450,scrollbars=1\"); return false;'>" . $cp_link['START_TIME'] . ' - ' . $cp_link['TITLE'] . "</a></p>";
+                            echo "<p style='word-break: break-all;'><img class=\"m-r-10\" src=\"assets/dot.gif\"><a class=\"text-primary\" HREF=# title=Details onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&date=$date&marking_period_id=$_REQUEST[marking_period_id]&period=$cp_link[PERIOD_ID]\",\"blank\",\"width=600,height=450,scrollbars=1\"); return false;'>" . $cp_link['START_TIME'] . ' - ' . $cp_link['TITLE'] . "</a></p>";
                             if ($counter_schedule_RET != $count_schedule_RET) {
                                 echo "<br>";
                                 $counter_schedule_RET++;
@@ -471,8 +473,13 @@ if (UserStudentID()) {
                         echo '</div>';
                     } else
                         echo '<div class="text-muted mt-10">' . _scheduleNotAvailable . '</div>';
-                } else
-                    echo '<font class=text-danger>' . _holiday . '</font>';
+                } else { 
+                    foreach( $calenderEvents as $events){
+                        $dbDay = date('d', strtotime($events['SCHOOL_DATE']));
+                            if ($dbDay == $i)
+                            echo '<font class=text-danger>' . $events['TITLE'] . '</font>';
+                    }
+                }
                 echo "</TD>";
                 $return_counter++;
 

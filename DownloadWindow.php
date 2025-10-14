@@ -37,10 +37,10 @@ if (isset($_REQUEST['filename']))
 
 if(isset($_REQUEST['down_id']) && $_REQUEST['down_id']!='')
 {
-    if ((isset($_REQUEST['studentfile']) && $_REQUEST['studentfile'] == 'Y') || (isset($_REQUEST['userfile']) && $_REQUEST['userfile'] == 'Y'))
-        $downfile_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE id=\'' . $_REQUEST['down_id'] . '\''));
-    else
+    if (isset($_REQUEST['down_id']) && $_REQUEST['down_id'] != '')
         $downfile_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE download_id=\'' . $_REQUEST['down_id'] . '\''));
+    else
+        $downfile_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE id=\'' . $_REQUEST['down_id'] . '\''));
     header("Cache-Control: public");
     header("Pragma: ");
     header("Expires: 0"); 

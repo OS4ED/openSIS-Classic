@@ -166,16 +166,16 @@ if (UserStudentID()) {
 
 
 
-        $gquery = 'SELECT mp.syear, mp.marking_period_id as mp_id, mp.title as mp_name, mp.post_end_date as posted, sgc.grade_level_short as grade_level, 
+        $gquery = 'SELECT mp.syear,mp.mp_source, mp.marking_period_id as mp_id, mp.title as mp_name, mp.post_end_date as posted, sg.title as grade_level, 
        sgc.weighted_gpa, sgc.unweighted_gpa
-       FROM marking_periods mp, student_gpa_calculated sgc, schools s
+       FROM marking_periods mp, student_gpa_calculated sgc, schools s, school_gradelevels sg, student_enrollment se
        WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.school_id and
-             mp.mp_source != "History" and sgc.student_id = ' . $student_id . ' 
-       AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
+        s.id = mp.school_id and sgc.student_id=se.student_id and se.syear=mp.syear and sg.id=se.grade_id and
+        mp.mp_source != "History" and sgc.student_id = ' . $student_id . ' AND mp.school_id = \'' . UserSchool() . '\' AND sgc.marking_period_id IN (SELECT marking_period_id FROM student_report_card_grades WHERE student_id = ' . $student_id . ' AND syear = ' . UserSyear() . ' AND course_period_id IS NOT NULL) order by mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
 
+        if(is_countable($GRET) && count($GRET) > 1){
         $last_posted = null;
         $gmp = array(); //grade marking_periods
         $grecs = array();  //grade records
@@ -216,6 +216,11 @@ if (UserStudentID()) {
 
         $mpselect .= '</FORM>';
 
+        $stu_img_info = [];
+        if (UserStudentID()) {
+            $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND FILE_INFO=\'stuimg\' AND ID = (SELECT MAX(ID) AS LATEST_UPLOADED_IMG FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3)'));
+        }
+
 
 
         echo '<div class="panel panel-default">';
@@ -225,7 +230,7 @@ if (UserStudentID()) {
 
         echo '<div class="panel-body alpha-grey">';
         echo '<div class="media">';
-        echo '<div class="media-left"><div class="profile-thumb"><img src="assets/images/placeholder.jpg" class="img-circle" alt=""></div></div>';
+        echo '<div class="media-left"><div class="profile-thumb"><img src="' . (count($stu_img_info) > 0 && $stu_img_info[1]['CONTENT'] != '' ? 'data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) : 'assets/images/placeholder.jpg') . '" class="img-circle" alt=""></div></div>';
         echo '<div class="media-body">';
         echo '<h1 class="no-margin-top">' . $displayname . '</h1>';
         echo '<div class="row">';
@@ -240,7 +245,9 @@ if (UserStudentID()) {
         echo '</div>'; //.row
         echo '</div>'; //.col-md-4
 
-        $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=15 maxlength=3 class=form-control');
+        // $grade_level = DBQuery(DBGet(""));
+
+        $sms_grade_level = TextInput($gmp[$mp_id]['grade_level'], "SMS_GRADE_LEVEL", "", 'size=15 maxlength=3 class=form-control disabled');
 
         if ($mp_id == "0") {
             $syear = UserSyear();
@@ -304,7 +311,10 @@ if (UserStudentID()) {
             $sql = 'SELECT ID,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
                     IF(ISNULL(UNWEIGHTED_GP),  WEIGHTED_GP,UNWEIGHTED_GP ) AS GP,WEIGHTED_GP as WEIGHTED_GP,
                     GP_SCALE,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY, COURSE_PERIOD_ID
-                       FROM student_report_card_grades WHERE STUDENT_ID = ' . $student_id . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
+                       FROM student_report_card_grades WHERE STUDENT_ID = ' . $student_id . ' AND COURSE_PERIOD_ID IS NOT NULL AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
+
+                    //    echo $sql;
+
 
             //build forms based on tab selected
             if ($_REQUEST['tab_id'] == 'grades' || $_REQUEST['tab_id'] == '') {
@@ -315,7 +325,7 @@ if (UserStudentID()) {
                     'WEIGHTED_GP' => 'makeCheckboxInput',
                     'GP_SCALE' => 'makeTextInput',
                 );
-                $LO_columns = array('COURSE_TITLE' =>_courseName,
+                $LO_columns = array('COURSE_TITLE' =>str_replace(':', '', _courseName),
                     'GRADE_PERCENT' =>_percentage,
                     'GRADE_LETTER' =>_letterGrade,
                     'GP' =>_gpValue,
@@ -335,7 +345,7 @@ if (UserStudentID()) {
                     'CREDIT_EARNED' => 'makeTextInput',
                     'CREDIT_CATEGORY' => 'makeTextInput'
                 );
-                $LO_columns = array('COURSE_TITLE' =>_courseName,
+                $LO_columns = array('COURSE_TITLE' =>str_replace(':', '', _courseName),
                     'CREDIT_ATTEMPTED' =>_creditAttempted,
                     'CREDIT_EARNED' =>_creditEarned,
                     'CREDIT_CATEGORY' =>_creditCategory,
@@ -350,26 +360,38 @@ if (UserStudentID()) {
             $link['remove']['variables'] = array('id' => 'ID');
             // $link['add']['html']['remove'] = button('add');
             $LO_ret = DBGet(DBQuery($sql), $functions);
+            $singular = _course;
+            $plural = _courses;
 
             //PopTable_wo_header('header');
 
-            ListOutputWithStudentInfo($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>true, 'download' =>true, 'search' =>true));
+            ListOutputWithStudentInfo($LO_ret, $LO_columns, $singular, $plural, $link, array(), array('count' =>true, 'download' =>true, 'search' =>true));
             //PopTable('footer');
         }
 
 
         echo '<div class="panel-footer text-right p-r-20">';
-        if (!$LO_ret) {
-            echo SubmitButton(_removeMarkingPeriod, 'removemp', 'class="btn btn-primary"');
-            echo '&nbsp;';
-        }
+        // if (!$LO_ret) {
+        //     echo SubmitButton(_removeMarkingPeriod, 'removemp', 'class="btn btn-primary"');
+        //     echo '&nbsp;';
+        // }
         echo SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"');
 
         echo '</div>';
 
         echo '</div>'; //.panel
         echo '</FORM>';
+    }else{
+        echo '<div class="panel panel-default">';
+        echo '<div class="panel-body">';
+        echo '<div class="alert alert-danger  m-b-0">'._noRecordsWereFound.'</div>';
+        echo '</div>';
+        echo '</div>';
+
+        echo '</div>'; //.panel
     }
+
+}
 }
 
 function makeTextInput($value, $name) {

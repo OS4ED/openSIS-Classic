@@ -210,7 +210,10 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel-body">';
     echo '<div id="div_margin" class="tab-content">';
     echo "<div class=\"table-responsive\">";
-    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>false, 'download' =>false, 'search' =>false));
+    
+
+    // ListOutputMod($LO_ret, $LO_columns, '', '', $link, array(), array('count' =>false, 'download' =>false, 'search' =>false));
+    ListOutputMod($LO_ret, $LO_columns, '', '', $link, array());
     echo "</div>"; //.table-responsive
     echo "</div>"; //.tab-content
 

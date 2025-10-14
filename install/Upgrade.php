@@ -404,6 +404,8 @@
                                 `file_info` varchar(255) NOT NULL
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
 
+                                 $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+
                                 $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
                                 $extra_tab = array();
                                 // $fetch1 = $stu_info->fetch_assoc();
@@ -495,8 +497,6 @@
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
-
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
                                 // $_SESSION['mod'] = 'upgrade';
@@ -525,6 +525,8 @@
                                    `content` longblob NOT NULL,
                                    `file_info` varchar(255) NOT NULL
                                  ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                  $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
 
                                 $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
 
@@ -616,8 +618,6 @@
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
-
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
                                 // $_SESSION['mod'] = 'upgrade';
@@ -645,6 +645,8 @@
                                    `content` longblob NOT NULL,
                                    `file_info` varchar(255) NOT NULL
                                  ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                  $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
                                 ### for Language - Start ###
 
                                 $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
@@ -753,8 +755,6 @@
 
                                 ### for Keys - End ###
 
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
-
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
                                 // $_SESSION['mod'] = 'upgrade';
@@ -782,6 +782,8 @@
                                    `content` longblob NOT NULL,
                                    `file_info` varchar(255) NOT NULL
                                  ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+
+                                  $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
                                 ### for Language - Start ###
 
                                 $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
@@ -888,7 +890,7 @@
 
                                 ### for Keys - End ###
                               
-                                $dbconn->query('ALTER TABLE `user_file_upload` ADD IF NOT EXISTS `download_id` VARCHAR(50) NOT NULL AFTER `syear`');
+                               
                                 $_SESSION['mod'] = 'upgrade';
                                 header('Location: Step5.php');
                                 // $_SESSION['mod'] = 'upgrade';

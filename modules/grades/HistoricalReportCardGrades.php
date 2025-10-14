@@ -445,11 +445,18 @@ if (UserStudentID()) {
                 }
 
                 $new_MP_RET_OPT .= '</select>';
+                $curerntSchool = DBGet(DBQuery("SELECT title FROM schools WHERE id = ".UserSchool()));
 
                 echo '<div class="form-group">';
                 // echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.'</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
                 echo '<div class="col-md-4"><label class="control-label">'._newMarkingPeriod.':</label>' . $new_MP_RET_OPT . '<div id="gradelevelData" class="hidden">' . $yearGradelevelInfoJSON . '</div></div>';
-                echo '<div class="col-md-4"><label class="control-label">'._schoolName.':</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                // echo '<div class="col-md-4"><label class="control-label">'._schoolName.':</label>' . TextInput($historyschool[1]['school_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                $schoolName = $historyschool[1]['school_name'] == "" ? $curerntSchool[1]['TITLE'] : $historyschool[1]['school_name'];
+                echo '
+                <div class="col-md-4">
+                    <label class="control-label">' . _schoolName . ':</label>
+                    <input type="text" id="inputSCHOOL_NAME" name="SCHOOL_NAME" value="' . htmlspecialchars($schoolName) . '" size="35" class="form-control" />
+                </div>';
                 echo '<div id="gradeLevelArea" class="col-md-4"><label class="control-label">'._gradeLevel.':</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
             }

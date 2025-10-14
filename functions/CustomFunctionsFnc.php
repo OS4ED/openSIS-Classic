@@ -797,6 +797,9 @@ function singleQuoteReplace($param1, $param2, $param3) {
 }
 
 function isDateInMarkingPeriodWorkingDates($marking_period, $date){
+    if (empty($marking_period)) {
+        return true;
+    }
     $markingPeriodHasDate = DBGet(DBQuery("SELECT * FROM `marking_periods` WHERE `marking_period_id` = '$marking_period' AND ('$date' BETWEEN `start_date` AND `end_date`)"));
 
     if(count($markingPeriodHasDate) === 0) return false;

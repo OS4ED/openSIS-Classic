@@ -60,6 +60,32 @@ function db_start()
 if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName))
     $connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 
+    if ($connection) {
+        $result = $connection->query("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'");
+        if($result && mysqli_num_rows($result) === 0){
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                if (strtolower($row['Value']) !== 'on') {
+                $connection->query("SET GLOBAL event_scheduler = ON");
+                }
+            }
+            $result = mysqli_query($conn, "SELECT @@GLOBAL.sql_mode AS sql_mode");
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                if (strtoupper($row['sql_mode']) !== 'NO_ENGINE_SUBSTITUTION') {
+                $connection->query("SET @@GLOBAL.sql_mode = 'NO_ENGINE_SUBSTITUTION'");
+                }
+            }
+            $result = mysqli_query($conn, "SELECT @@GLOBAL.log_bin_trust_function_creators AS lbtfc");
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                if ((int)$row['lbtfc'] !== 1) {
+                $connection->query("SET @@GLOBAL.log_bin_trust_function_creators = 1");
+                }
+            }
+        }   
+    }
+
 # ---------- #
 #  Debugger  #
 # ---------- #

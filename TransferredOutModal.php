@@ -30,7 +30,7 @@ include('RedirectRootInc.php');
 include('ConfigInc.php');
 include('Warehouse.php');
 if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
-    if ($_POST['button'] == 'Save') {
+    if ($_POST['button'] == _save) {
 
         if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
             $drop_code = $_REQUEST['drop_code'];

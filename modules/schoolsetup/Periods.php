@@ -74,6 +74,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  school_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' and period_id<>\'' . $id . '\'';
                     $periods = DBGET(DBQuery($sql));
 
+                    $end_time = array();
+
                     for ($i = 1; $i <= count($periods); $i++) {
                         $shortname[$i] = strtoupper(str_replace(' ', '', $periods[$i]['SHORT_NAME']));
                         $p_title[$i] = strtoupper(str_replace(' ', '', $periods[$i]['TITLE']));
