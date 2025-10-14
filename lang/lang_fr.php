@@ -1974,4 +1974,8 @@ define("_outOf", "hors de");
 define("_entries", "entrées");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "Impossible de supprimer car les commentaires de la fiche de rapport sont associés");
 define('_reportCardGradingScale','Échelle de notation du bulletin scolaire');
+
+define("_noStudentIsAssociatedWithTheParentForTheCurrentDate", "Aucun étudiant n'est associé au parent à la date actuelle.");
+define("_eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate", "Soit l'étudiant n'est plus actif, soit il commence l'école à une date ultérieure.");
+define("_pleaseContactTheSchoolAdministrationForMoreInformation", "Veuillez contacter l'administration de l'école pour plus d'informations.");
 ?>
