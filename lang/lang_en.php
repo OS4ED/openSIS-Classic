@@ -1970,6 +1970,10 @@ define("_entries", "entries");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "Can not delete because Report Card Comments are associated");
 define('_reportCardGradingScale','Report Card Grading Scale');
 
+define("_noStudentIsAssociatedWithTheParentForTheCurrentDate", "No student is associated with the parent for the current date.");
+define("_eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate", "Either the student is no longer active or starting school in a future date.");
+define("_pleaseContactTheSchoolAdministrationForMoreInformation", "Please contact the school administration for more information.");
+
 // some constant are not define so it give a fatal error
 define('ID', 'ID');
 define('TITLE', 'TITLE');
