@@ -1981,4 +1981,8 @@ define("_outOf", "fuera de");
 define("_entries", "entradas");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "No se puede eliminar porque los comentarios de la boleta de calificaciones están asociados");
 define('_reportCardGradingScale','Escala de calificación de la tarjeta de calificaciones');
+
+define("_noStudentIsAssociatedWithTheParentForTheCurrentDate", "Ningún estudiante está asociado con el padre para la fecha actual.");
+define("_eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate", "O bien el estudiante ya no está activo o comenzará la escuela en una fecha futura.");
+define("_pleaseContactTheSchoolAdministrationForMoreInformation", "Comuníquese con la administración de la escuela para obtener más información.");
 ?>
