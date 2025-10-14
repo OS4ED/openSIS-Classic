@@ -265,6 +265,7 @@ if (clean_param($_REQUEST['modname'], PARAM_NOTAGS)) {
             } else {
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
+
             $ip = sqlSecurityFilter($ip);
 
             echo "" . _youReNotAllowedToUseThisProgram . "! " . _thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured . ".";

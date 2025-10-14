@@ -1537,6 +1537,31 @@ function formcheck_student_student(this_DET) {
     "req",
     "Please enter a valid birthdate"
   );
+  frmvalidator.setAddnlValidationFunction(validateBirthdate);
+  function validateBirthdate() {
+  
+    var day = document.getElementById("daySelect_date_2").value.padStart(2, '0');
+    var month = document.getElementById("monthSelect_date_2").value.padStart(2, '0');
+    var year = document.getElementById("yearSelect_date_2").value;
+  
+    var birthdateStr = year + '-' + month + '-' + day;
+    var birthdate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    var errorDiv = document.getElementById("divErr");
+    errorDiv.innerHTML = "";
+    errorDiv.style.display = "none";
+  
+    if (birthdate > today) {
+      errorDiv.innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Birthdate cannot be a future date.</div>';
+      errorDiv.style.display = "block";
+      document.getElementById("date_2").focus();
+      return false;
+    }
+  
+    return true;
+  }
 
   if (
     document.getElementById("current_date") &&
@@ -3638,8 +3663,8 @@ function formcheck_assignments(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[new][TITLE]",
-      "maxlen=50",
-      "Max length for title is 50"
+      "maxlen=100",
+      "Max length for title is 100"
     );
     frmvalidator.addValidation(
       "tables[new][POINTS]",
@@ -3664,8 +3689,8 @@ function formcheck_assignments(this_DET) {
     );
     frmvalidator.addValidation(
       "tables[" + type_id + "][TITLE]",
-      "maxlen=50",
-      "Max length for title is 50"
+      "maxlen=100",
+      "Max length for title is 100"
     );
     frmvalidator.addValidation(
       "tables[" + type_id + "][POINTS]",
@@ -4169,6 +4194,32 @@ function formcheck_add_staff(staff_school_chkbox_id, this_DET) {
     "req",
     "Please select the joining date's year"
   );
+
+  frmvalidator.setAddnlValidationFunction(validateBirthdateForStaff);
+  function validateBirthdateForStaff() {
+  
+    var day = document.getElementById("daySelect_date_1").value.padStart(2, '0');
+    var month = document.getElementById("monthSelect_date_1").value.padStart(2, '0');
+    var year = document.getElementById("yearSelect_date_1").value;
+  
+    var birthdate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    var errorDiv = document.getElementById("divErr");
+    errorDiv.innerHTML = "";
+    errorDiv.style.display = "none";
+  
+    if (birthdate > today) {
+      errorDiv.innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Birthdate cannot be a future date.</div>';
+      errorDiv.style.display = "block";
+      document.getElementById("date_1").focus();
+      return false;
+    }
+    return true;
+  }
+
+
 
   var end_date = document.getElementById("end_date_school").value;
   end_date = end_date.split("-");

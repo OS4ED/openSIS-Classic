@@ -1822,7 +1822,7 @@ define("_cannotAddActivityWithSameTitle", "Cannot add activity with same title")
 define("_startDateOrEndDateCannotBeBlank", "Start date or End date cannot be blank");
 define("_scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration", "Score Breakoff Points setup is incomplete,Please set Score Breakoff Points from configuration");
 define("_gradeReportingDateHasNotSetForThisMarkingPeriod", "Grade reporting date has not set for this marking period");
-define("_coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "Course Period is configured as weighted but no weights are assigned to the Assignment Types.");
+define("_theGradebookConfigurationOfTheCoursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "The gradebook configuration of the Course Period is configured as weighted but no weights are assigned to the Assignment Types.");
 define("_messageBodyCannotBeEmpty", "Message body cannot be empty");
 define("_messageNotSentAsNoUsersWereFound", "Message not sent as no users were found");
 define("_unableToDeleteGoalPleaseDeleteProgressesFirst", "Unable to delete Goal. Please delete Progresses first.");
@@ -1968,6 +1968,7 @@ define("_cannotGeneratePagination", "Cannot generate pagination!");
 define("_outOf", "out of");
 define("_entries", "entries");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "Can not delete because Report Card Comments are associated");
+define('_reportCardGradingScale','Report Card Grading Scale');
 
 // some constant are not define so it give a fatal error
 define('ID', 'ID');

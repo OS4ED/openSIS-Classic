@@ -1253,17 +1253,24 @@ if (!$_REQUEST['_openSIS_PDF']) {
 
         $total_assignment_type_weightage = 0;
         $total_assignment_type_weightage_arr = array();
+        $totaldueassigment = array();
 
         if (!empty($list_assignment_types)) {
             foreach ($list_assignment_types as $at_key => $at_val) {
-                if ($at_val['FINAL_GRADE_PERCENT'] != '' && number_format($at_val['FINAL_GRADE_PERCENT']) != 0)
-                    array_push($total_assignment_type_weightage_arr, $at_val['FINAL_GRADE_PERCENT']);
+                // if ($at_val['FINAL_GRADE_PERCENT'] != '' && number_format($at_val['FINAL_GRADE_PERCENT']) != 0){
+                // array_push($total_assignment_type_weightage_arr, $at_val['FINAL_GRADE_PERCENT']);
+                // }
+                if ($at_val['FINAL_GRADE_PERCENT'] === null || trim($at_val['FINAL_GRADE_PERCENT']) === '' ||
+                    floatval($at_val['FINAL_GRADE_PERCENT']) == 0
+                ) {
+                    $empty_grade_percent_count++;
+                }    
             }
 
-            $total_assignment_type_weightage = array_sum($total_assignment_type_weightage_arr);
-
-            if ($total_assignment_type_weightage == 0)
-                echo '<div class="alert alert-warning alert-styled-left">' . _coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes . '</div>';
+            // $total_assignment_type_weightage = array_sum($total_assignment_type_weightage_arr);
+            // $total_assignment_type_weightage == 0 && this part of the condition close for empty checking condition.
+            if ($empty_grade_percent_count > 0)
+                echo '<div class="alert alert-warning alert-styled-left">' . _theGradebookConfigurationOfTheCoursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes . '</div>';
         }
     }
 

@@ -1833,7 +1833,7 @@ define("_cannotAddActivityWithSameTitle", "No se puede agregar actividad con el 
 define("_startDateOrEndDateCannotBeBlank", "La fecha de inicio o la fecha de finalización no pueden estar en blanco");
 define("_scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration", "La configuración de los puntos de interrupción de la puntuación está incompleta, establezca los puntos de interrupción de la puntuación desde la configuración");
 define("_gradeReportingDateHasNotSetForThisMarkingPeriod", "La fecha del informe de calificaciones no se ha establecido para este período de calificaciones");
-define("_coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "El período del curso está configurado como ponderado, pero no se asignan pesos a los tipos de tareas.");
+define("_theGradebookConfigurationOfTheCoursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "La configuración del libro de calificaciones del período del curso está configurada como ponderada, pero no se asignan ponderaciones a los tipos de tareas.");
 define("_messageBodyCannotBeEmpty", "El cuerpo del mensaje no puede estar vacío");
 define("_messageNotSentAsNoUsersWereFound", "Mensaje no enviado porque no se encontraron usuarios");
 define("_unableToDeleteGoalPleaseDeleteProgressesFirst", "No se puede eliminar el objetivo. Por favor, elimine los progresos primero.");
@@ -1980,4 +1980,5 @@ define("_cannotGeneratePagination", "No se puede generar la paginación!");
 define("_outOf", "fuera de");
 define("_entries", "entradas");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "No se puede eliminar porque los comentarios de la boleta de calificaciones están asociados");
+define('_reportCardGradingScale','Escala de calificación de la tarjeta de calificaciones');
 ?>

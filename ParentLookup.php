@@ -79,20 +79,20 @@ if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQ
 
     $searched_staffs = DBGet(DBQuery($sql . $sql_where), array('BUTTON' => 'makeChooseCheckbox'));
 
-    foreach ($searched_staffs as $key => $value) {
-        $stf_usrname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $value['STAFF_ID'] . ' AND PROFILE_ID=4'));
-        $searched_staffs[$key]['USERNAME'] = $stf_usrname[1]['USERNAME'];
-    }
+    // foreach ($searched_staffs as $key => $value) {
+    //     $stf_usrname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $value['STAFF_ID'] . ' AND PROFILE_ID=4'));
+    //     $searched_staffs[$key]['USERNAME'] = $stf_usrname[1]['USERNAME'];
+    // }
 } else {
     $sql = 'SELECT stf.STAFF_ID AS BUTTON , stf.STAFF_ID,CONCAT(stf.FIRST_NAME," ",stf.LAST_NAME) AS FULLNAME, CONCAT(s.FIRST_NAME," ",s.LAST_NAME) AS STUFULLNAME,stf.PROFILE,stf.EMAIL FROM people stf left outer join students_join_people sju on stf.STAFF_ID=sju.PERSON_ID left outer join students s on s.STUDENT_ID = sju.STUDENT_ID  WHERE  s.STUDENT_ID!=' . UserStudentID() . '  AND stf.FIRST_NAME<>\'\' AND stf.LAST_NAME<>\'\' AND sju.PERSON_ID NOT IN (SELECT PERSON_ID FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ') Group by stf.STAFF_ID';
 
     $searched_staffs = DBGet(DBQuery($sql), array('BUTTON' => 'makeChooseCheckbox'));
 
-    foreach ($searched_staffs as $key => $value) {
-        $stf_usrname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $value['STAFF_ID'] . ' AND PROFILE_ID=4'));
+    // foreach ($searched_staffs as $key => $value) {
+    //     $stf_usrname = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $value['STAFF_ID'] . ' AND PROFILE_ID=4'));
 
-        $searched_staffs[$key]['USERNAME'] = $stf_usrname[1]['USERNAME'];
-    }
+    //     $searched_staffs[$key]['USERNAME'] = $stf_usrname[1]['USERNAME'];
+    // }
 }
 
 $singular = _user;

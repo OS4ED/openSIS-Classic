@@ -494,7 +494,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
             $i++;
             if ($value)
                 echo "<tr class=" . $class . "><td class=" . $class . ">" . $value . "</td><td><div id='" . preg_replace('/[()\/]/', '', $value) . "'></div></td><td class=" . $class . ">" . SelectInput($valuee, 'staff[' . $value . ']', '', $options, 'N/A', ' onchange=drawmapping(this.value,' . 'k' . $i . ',' . preg_replace('/[()\/]/', '', $value) . ');') . "</td></tr>";
-            echo "<input type='hidden' name='student_map_value[]' id=k$i>";
+            echo "<input type='hidden' name='staff_map_value[]' id=k$i>";
         }
         
         echo '</table>';
@@ -508,7 +508,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         $staff_keys = array_keys($_REQUEST['staff']);
         $staff_keys_string = implode(',', $staff_keys);
         $staff_values = implode(',', $_REQUEST['staff']);
-        echo "<script>ajax_mapping('" . $staff_keys_string . "','" . $staff_values . "','staff');</script>";
+        // echo "<script>ajax_mapping('" . $staff_keys_string . "','" . $staff_values . "','staff');</script>";
         echo '<form action="Modules.php?modname='.$_REQUEST['modname'].'&action=process&page_display=STAFF_INFO" name="STAFF_INFO_CONFIRM" method="POST">';
         echo '<div class="panel panel-default">';
         
@@ -600,8 +600,11 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         echo '</div>'; //.row
 
         $_SESSION['staff'] = $_POST['staff_map_value'];
-
-        echo "<script>ajax_progress('staff');</script>";
+        ?>
+        <script type="text/javascript">
+            ajax_progress('staff');
+        </script>
+    <?php
     }
 }
 else {

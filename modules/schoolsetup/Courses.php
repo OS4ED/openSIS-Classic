@@ -72,27 +72,27 @@ if (isset($_SESSION['seat_error'])) {
 }
 if ($_REQUEST['error'] == 'Blocked_assoc') {
 
-    echo "<font color=red><b>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></font>";
+    echo "<div class='alert alert-danger'>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</div>";
     unset($_REQUEST['error']);
     $msgFlag = 1;
 }
 if ($_REQUEST['error'] == 'Blocked_period_room') {
-    echo "<font color=red><b>" . _cannotModifyPeriodOrRoomAsThisCoursePeriodHasAssociation . "</b></font>";
+    echo "<div class='alert alert-danger'>" . _cannotModifyPeriodOrRoomAsThisCoursePeriodHasAssociation . "</div>";
     unset($_REQUEST['error']);
 }
 if ($_REQUEST['course_period_id'] == 'new') {
-    if ($_REQUEST['schedule_type'] == 'fixed' && $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS'] != 0 && $_REQUEST['tables']['course_period_var']['new']['ROOM_ID'] != '') {
+    if ($_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'FIXED' && $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS'] != 0 && $_REQUEST['tables']['course_period_var']['new']['ROOM_ID'] != '') {
         $get_seat = DBGet(DBQuery('SELECT CAPACITY FROM rooms WHERE ROOM_ID=' . $_REQUEST['tables']['course_period_var']['new']['ROOM_ID']));
         if ($get_seat[1]['CAPACITY'] < $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS']) {
             $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS'] = $get_seat[1]['CAPACITY'];
-            echo '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapacityHenceRoomCapacityTakenAsTotalSeat . '</font>';
+            echo '<div class="alert alert-danger">' . _totalSeatsCannotBeMoreThanRoomCapacityHenceRoomCapacityTakenAsTotalSeat . '</div>';
         }
     }
     if ($_REQUEST['tables']['course_periods']['new']['SCHEDULE_TYPE'] == 'VARIABLE' && $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS'] != 0 && $_REQUEST['course_period_variable']['new']['ROOM_ID'] != '') {
         $get_seat = DBGet(DBQuery('SELECT CAPACITY FROM rooms WHERE ROOM_ID=' . $_REQUEST['course_period_variable']['new']['ROOM_ID']));
         if ($get_seat[1]['CAPACITY'] < $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS']) {
             $_REQUEST['tables']['course_periods']['new']['TOTAL_SEATS'] = $get_seat[1]['CAPACITY'];
-            echo '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapacityHenceRoomCapacityTakenAsTotalSeat . '</font>';
+            echo '<div class="alert alert-danger">' . _totalSeatsCannotBeMoreThanRoomCapacityHenceRoomCapacityTakenAsTotalSeat . '</div>';
         }
     }
 }
@@ -122,7 +122,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
                 $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'] = $get_seat[1]['CAPACITY'];
             }
 
-            echo '<font color=red>' . _totalSeatsCannotBeGreaterThanRoomCapacityChangeTheCapacityInSchoolSetup . '-> ' . _totalSeatsCannotBeGreaterThanRoomCapacityChangeTheCapacityInSchoolSetup . '</font>';
+            echo '<div class="alert alert-danger">' . _totalSeatsCannotBeGreaterThanRoomCapacityChangeTheCapacityInSchoolSetup . '<i class="icon-arrow-right13 m-l-1 m-r-1"></i>' . _rooms . '</div>';
         }
     }
 
@@ -167,7 +167,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
                 $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'] = $get_seat[1]['CAPACITY'];
             }
 
-            echo '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapcity . '</font>';
+            echo '<div class="alert alert-danger">' . _totalSeatsCannotBeGreaterThanRoomCapacityChangeTheCapacityInSchoolSetup . '<i class="icon-arrow-right13 m-l-1 m-r-1"></i>' . _rooms . '</div>';
         }
     }
 
@@ -195,7 +195,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
                     $_REQUEST['tables']['course_periods'][$_REQUEST['course_period_id']]['TOTAL_SEATS'] = $get_seat[1]['CAPACITY'];
                 }
 
-                echo '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapcity . '</font>';
+                echo '<div class="alert alert-danger">' . _totalSeatsCannotBeGreaterThanRoomCapacityChangeTheCapacityInSchoolSetup . '<i class="icon-arrow-right13 m-l-1 m-r-1"></i>' . _rooms . '</div>';
             }
         }
     }
@@ -211,18 +211,18 @@ if ($_REQUEST['course_period_id'] != 'new') {
             $check_asociation = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE course_period_id=' . $_REQUEST['course_period_id'] . ' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' OR END_DATE=\'\' OR END_DATE<\'' . date('Y-m-d') . '\') '));
             if ($check_asociation[1]['REC_EX'] > 0) {
                 if ($_REQUEST['mode'] == 'add') {
-                    $_SESSION['seat_error'] = '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapcity . '</font>';
+                    $_SESSION['seat_error'] = '<div class="alert alert-danger">' . _totalSeatsCannotBeMoreThanRoomCapcity.'</div>';
                     echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&month=' . date(strtotime($_REQUEST['meet_date'])) . '"; window.close();</script>';
                 }
                 if ($_REQUEST['mode'] == 'edit') {
                     $old_room = DBGet(DBQuery('SELECT ROOM_ID FROM course_period_var WHERE ID=' . $_REQUEST['cpv_id']));
                     $_REQUEST['values']['ROOM_ID'] = $old_room[1]['ROOM_ID'];
-                    $_SESSION['seat_error'] = '<font color=red>Total seats cannot be more than room capcity.</font>';
+                    $_SESSION['seat_error'] = '<div class="alert alert-danger">Total seats cannot be more than room capcity.</div>';
                     echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&month=' . date(strtotime($_REQUEST['meet_date'])) . '"; window.close();</script>';
                 }
             } else {
                 DBQuery('UPDATE course_periods SET TOTAL_SEATS=' . $get_seat[1]['CAPACITY'] . ' WHERE COURSE_PERIOD_ID=' . $_REQUEST['course_period_id']);
-                $_SESSION['seat_error'] = '<font color=red>' . _totalSeatsCannotBeMoreThanRoomCapcity . '</font>';
+                $_SESSION['seat_error'] ='<div class="alert alert-danger">' . _totalSeatsCannotBeMoreThanRoomCapacityHenceRoomCapacityTakenAsTotalSeat . '</div>';
                 echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=' . $_REQUEST['course_id'] . '&course_period_id=' . $_REQUEST['course_period_id'] . '&month=' . date(strtotime($_REQUEST['meet_date'])) . '"; window.close();</script>';
             }
         }
@@ -248,7 +248,7 @@ if ($_REQUEST['course_period_id'] != 'new') {
             DBQuery($sql_parent);
         } else {
             if ($msgFlag == '') {
-                echo "<font color=red><b>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></font>";
+                echo "<div class='alert alert-danger'" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></div>";
                 $msgFlag = 1;
             }
         }
@@ -309,16 +309,16 @@ if ($_REQUEST['action'] == 'delete') {
                 $update_title_sql = "UPDATE course_periods SET title='" . str_replace("'", "''", trim($title_full)) . "' WHERE course_period_id=$_REQUEST[course_period_id]";
                 DBQuery($update_title_sql);
             } else {
-                echo '<font color=red>' . _unableToDeleteDataCoursePeriodShouldHaveAtleastOnePeriod . '</font>';
+                echo '<div class="alert alert-danger">' . _unableToDeleteDataCoursePeriodShouldHaveAtleastOnePeriod . '</div>';
             }
             unset($_REQUEST['action']);
         }
     } else {
-        echo '<font color=red>' . _unableToDeleteCoursePeriodBecauseItHasAssociation . '</font>';
+        echo '<div class="alert alert-danger"class="alert alert-danger">' . _unableToDeleteCoursePeriodBecauseItHasAssociation . '</div>';
     }
 }
 if (isset($_SESSION['conflict'])) {
-    echo '<font color=red>' . $_SESSION['conflict'] . '</font>';
+    echo '<div class="alert alert-danger">' . $_SESSION['conflict'] . '</div>';
     $_REQUEST['tables'] = $_SESSION['tables'];
     $_REQUEST['conflict'] = 'y';
     unset($_SESSION['conflict']);
@@ -363,7 +363,7 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
         echo '<div class="panel panel-white">';
         $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
         $link['TITLE']['variables'] = array('subject_id' => 'SUBJECT_ID', 'course_id' => 'COURSE_ID', 'course_period_id' => 'COURSE_PERIOD_ID');
-        ListOutput($periods_RET, array('TITLE' => '' . _coursePeriod . ''), '' . _coursePeriod . '', '' . _coursePeriods . '', $link, array(), array('search' => false, 'save' => false));
+        ListOutput($periods_RET, array('TITLE' => '' . _coursePeriod . ''), '' . _coursePeriod . '', '' . _coursePeriods . '', $link, array(), array('search' => false, '' => false));
         echo '</div>'; //.panel-white
         echo '</div>'; //.col-md-4
         echo '</div>'; //.row
@@ -485,7 +485,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 $columns['ID'] = $period['ID'];
                                 $conflict = VerifyVariableSchedule_Update($columns);
                                 if ($conflict !== true) {
-                                    echo '<font color=red>' . $conflict . '</font>';
+                                    echo '<div class="alert alert-danger">' . $conflict . '</div>';
 
                                     $not_pass_update = true;
                                     break 2;
@@ -497,7 +497,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 $columns['SELECT_DAYS'] = $period['DAYS'];
                                 $conflict = VerifyVariableSchedule_Update($columns);
                                 if ($conflict !== true) {
-                                    echo '<font color=red>' . $conflict . '</font>';
+                                    echo '<div class="alert alert-danger">' . $conflict . '</div>';
 
                                     $not_pass_update = true;
                                     break 2;
@@ -531,7 +531,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                                 if ($value != '')
                                                     $days_upsql .= $column . " = '" . $value . "',";
                                                 else
-                                                    $day_blank_error = '<font color=red>' . _dayCannotBeBlank . '</font>';
+                                                    $day_blank_error = '<div class="alert alert-danger">' . _dayCannotBeBlank . '</div>';
 
                                                 $up_day = true;
                                             } else {
@@ -547,7 +547,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                             $check_cp = $check_cp[1];
                                             if (($period['DAYS'] != '' && $check_cp['DAYS'] != $period['DAYS']) || ($period['ROOM_ID'] != '' && $check_cp['ROOM_ID'] != $period['ROOM_ID']) || ($period['PERIOD_ID'] != '' && $check_cp['PERIOD_ID'] != $period['PERIOD_ID'])) {
                                                 if ($msgFlag == '') {
-                                                    $assoc_err = "<font color=red><b>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></font>";
+                                                    $assoc_err = "<div class='alert alert-danger'>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></div>";
                                                     $msgFlag = 1;
                                                 }
                                             }
@@ -584,7 +584,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             $columns['SELECT_DAYS'] = $period['DAYS'];
                             $conflict = VerifyVariableSchedule_Update($columns);
                             if ($conflict !== true) {
-                                echo '<font color=red>' . $conflict . '</font>';
+                                echo '<div class="alert alert-danger">' . $conflict . '</div>';
 
                                 $not_pass_update = true;
                                 break 2;
@@ -598,7 +598,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                             }
                         }
                         if ($period['DAYS'] != '' && ($period['START_TIME'] == '' || $period['END_TIME'] == '' || $period['PERIOD_ID'] == '' || $period['ROOM_ID'] == '')) {
-                            $msg = '<font color=red>Please enter valid data</font>';
+                            $msg = '<div class="alert alert-danger">Please enter valid data</div>';
                             unset($_REQUEST['course_period_variable']);
                             echo $msg;
                             unset($msg);
@@ -692,19 +692,19 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
             //                        }
             if (isset($columns['BEGIN_DATE']) && $columns['BEGIN_DATE'] != '' && isset($columns['END_DATE']) && $columns['END_DATE'] != '') {
                 if (strtotime($columns['BEGIN_DATE']) < strtotime($school_fy_bdate)) {
-                    echo '<font color=red><b>' . _beginDateCannotBeLessThanFullYearBeginDate . '</b></font>';
+                    echo '<div class="alert alert-danger"' . _beginDateCannotBeLessThanFullYearBeginDate . '</div>';
                     $not_pass_update = true;
                     break 2;
                 }
 
                 if (strtotime($columns['END_DATE']) > strtotime($school_fy_edate)) {
-                    echo '<font color=red><b>' . _endDateCannotBeGreaterThanFullYearEndDate . '</b></font>';
+                    echo '<div class="alert alert-danger"' . _endDateCannotBeGreaterThanFullYearEndDate . '</div>';
                     $not_pass_update = true;
                     break 2;
                 }
             }
             if (strtotime($columns['BEGIN_DATE']) > strtotime($columns['END_DATE'])) {
-                echo '<font color=red><b>' . _beginDateCannotBeGreaterThanEndDate . '</b></font>';
+                echo '<div class="alert alert-danger"' . _beginDateCannotBeGreaterThanEndDate . '</div>';
                 $not_pass_update = true;
                 break 2;
             }
@@ -873,7 +873,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                                     $conflict = VerifyVariableSchedule_Update($col);
                                     if ($conflict !== true) {
-                                        echo '<font color=red>' . $conflict . '</font>';
+                                        echo '<div class="alert alert-danger">' . $conflict . '</div>';
                                         $not_pass_update = true;
                                         break 4;
                                     }
@@ -939,7 +939,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         $period_value .= $pd_id[1]['SHORT_NAME'];
                         $conflict = VerifyFixedSchedule($col, $col_var, $update = true);
                         if ($conflict !== true) {
-                            echo '<font color=red>' . $conflict . '</font>';
+                            echo '<div class="alert alert-danger">' . $conflict . '</div>';
                             $_SESSION['tables'] = $_REQUEST['tables'];
                             break 2;
                         }
@@ -992,7 +992,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 $col_bl['MARKING_PERIOD_ID'] = $columns['MARKING_PERIOD_ID'];
                             $conflict = VerifyBlockedSchedule($col_bl, $_REQUEST['course_period_id'], 'cp', true);
                             if ($conflict !== true) {
-                                echo '<font color=red>' . $conflict . '</font>';
+                                echo '<div class="alert alert-danger">' . $conflict . '</div>';
 
                                 break 2;
                             }
@@ -1063,7 +1063,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                 }
                                 if ($column == 'DOES_ATTENDANCE' && scheduleAssociation($id) && $value != '') {
                                     if ($msgFlag == '') {
-                                        $assoc_err = "<font color=red><b>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></font>";
+                                        $assoc_err = "<div class='alert alert-danger'" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</div>";
                                         $msgFlag = 1;
                                     }
                                 }
@@ -1221,7 +1221,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                         if (((isset($columns['GRADE_SCALE_ID']) && $columns['GRADE_SCALE_ID'] != $cp_gdr_teach_id[1]['GRADE_SCALE_ID']) || (isset($columns['TEACHER_ID']) && $columns['TEACHER_ID'] != $cp_gdr_teach_id[1]['TEACHER_ID'])) && $not_pass_update == false) {
                             if ($msgFlag == '') {
-                                $assoc_err = "<font color=red><b> " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </b></font>";
+                                $assoc_err = "<div class='alert alert-danger' " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </div>";
                                 $msgFlag = 1;
                             }
                         }
@@ -1230,7 +1230,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                         $cp_gdr_teach_id = DBGet(DBQuery('SELECT * FROM course_periods cp, course_period_var cpv WHERE cp.course_period_id=' . $id . ' AND cp.course_period_id=cpv.course_period_id'));
                         if (((isset($columns['ROOM_ID']) && $columns['ROOM_ID'] != $cp_gdr_teach_id[1]['ROOM_ID']) || (isset($columns['PERIOD_ID']) && $columns['PERIOD_ID'] != $cp_gdr_teach_id[1]['PERIOD_ID']) || (isset($columns['DAYS']) && $columns['DAYS'] != $cp_gdr_teach_id[1]['DAYS']) || (isset($columns['MARKING_PERIOD_ID']) && $columns['MARKING_PERIOD_ID'] != $cp_gdr_teach_id[1]['MARKING_PERIOD_ID']))) {
                             if ($msgFlag == '') {
-                                $assoc_err = "<font color=red><b>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</b></font>";
+                                $assoc_err = "<div class='alert alert-danger'" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</div>";
                                 $msgFlag = 1;
                             }
                         }
@@ -1240,7 +1240,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                         if ((isset($columns['DOES_BREAKOFF']) && ($columns['DOES_BREAKOFF'] != $cp_gdr_teach_id[1]['DOES_BREAKOFF'])) || (isset($columns['DOES_HONOR_ROLL']) && ($columns['DOES_HONOR_ROLL'] != $cp_gdr_teach_id[1]['DOES_HONOR_ROLL'])) || (isset($columns['HALF_DAY']) && ($columns['HALF_DAY'] != $cp_gdr_teach_id[1]['HALF_DAY'])) || (isset($columns['DOES_CLASS_RANK']) && ($columns['DOES_CLASS_RANK'] != $cp_gdr_teach_id[1]['HALF_DAY'])) && $not_pass_update == false) {
                             if ($msgFlag == '') {
-                                $assoc_err = "<font color=red><b> " . _cannotModifyThisCoursePeriodAsItHasAssociation . "  </b></font>";
+                                $assoc_err = "<div class='alert alert-danger'> " . _cannotModifyThisCoursePeriodAsItHasAssociation . "  </div>";
                                 $msgFlag = 1;
                             }
                         }
@@ -1281,7 +1281,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                             }
                                             if ($col == 'PERIOD_ID' && $data != '' && $not_pass_update == false) {
                                                 if ($msgFlag == '') {
-                                                    $error = "<font color=red><b> Cannot Modify this course period as it has association. </b></font>";
+                                                    $error = "<div class='alert alert-danger'> Cannot Modify this course period as it has association. </div>";
                                                     $msgFlag = 1;
                                                 }
                                             }
@@ -1289,7 +1289,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                                 $schedule_days_check = DBGet(DBQuery("SELECT DAYS FROM course_period_var WHERE ID='" . $period['ID'] . "'"));
                                                 if ($schedule_days_check[1]['DAYS'] != $data) {
                                                     if ($msgFlag == '') {
-                                                        $error = "<font color=red><b> " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </b></font>";
+                                                        $error = "<div class='alert alert-danger'> " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </div>";
                                                         $msgFlag = 1;
                                                     }
                                                 }
@@ -1299,7 +1299,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                                                 $schedule_days_check = DBGet(DBQuery("SELECT ROOM_ID FROM course_period_var WHERE ID='" . $period['ID'] . "'"));
                                                 if ($schedule_days_check[1]['ROOM_ID'] != $data) {
                                                     if ($msgFlag == '') {
-                                                        $error = "<font color=red><b> " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </b></font>";
+                                                        $error = "<div class='alert alert-danger'> " . _cannotModifyThisCoursePeriodAsItHasAssociation . " </div>";
                                                         $msgFlag = 1;
                                                     }
                                                 }
@@ -1325,7 +1325,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                     }
                 }
                 if ($tot_seat == 'error') {
-                    echo "<font color=red><b>" . _cannotModifySeatsAsItHasAssociation . " </b></font>";
+                    echo "<div class='alert alert-danger'" . _cannotModifySeatsAsItHasAssociation . " </div>";
                 }
             } else {
 

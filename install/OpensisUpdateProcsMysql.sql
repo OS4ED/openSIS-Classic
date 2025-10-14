@@ -452,6 +452,10 @@ DELIMITER ;
 DROP FUNCTION IF EXISTS `isDateInMarkingPeriodWorkingDates`;
 DELIMITER $$
 CREATE FUNCTION `isDateInMarkingPeriodWorkingDates`(`marking_period` INT(10), `date` DATE) RETURNS TINYINT(1) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+    IF marking_period IS NULL THEN
+            RETURN TRUE;
+        END IF;
+
     IF NOT EXISTS(
         SELECT *
         FROM `marking_periods`

@@ -62,7 +62,7 @@ if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
-    $error[] = "No student is associated with the parent. Please contact the school administration.";
+    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
 }
 
 if (isset($_GET['ins']))
@@ -76,27 +76,6 @@ if ($install == 'comp') {
 }
 
 require_once('Warehouse.php');
-# CHECKING ES STARTS: IF ES (EVENT SCHEDULER) IS FOUND OFF, IT SHOULD BE TURNED ON
-$check_ES_status = DBGet(DBQuery("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
-if ($check_ES_status) {
-    if ($check_ES_status[1]['VARIABLE_NAME'] == 'event_scheduler' && $check_ES_status[1]['VALUE'] != 'ON') {
-        DBQuery('SET GLOBAL event_scheduler = ON');
-    }
-}
-# CHECKING ES ENDS
-$check_sql_mode = DBGet(DBQuery("SELECT @@GLOBAL.sql_mode"));
-if ($check_sql_mode) {
-    if ($check_sql_mode[1]['@@GLOBAL.SQL_MODE'] != 'NO_ENGINE_SUBSTITUTION') {
-        DBQuery('SET @@GLOBAL.SQL_MODE = "NO_ENGINE_SUBSTITUTION"');
-    }
-}
-
-$check_LBTFC = DBGet(DBQuery("SELECT @@GLOBAL.log_bin_trust_function_creators"));
-if ($check_LBTFC) {
-    if ($check_LBTFC[1]['@@GLOBAL.log_bin_trust_function_creators'] != 1) {
-        DBQuery('SET @@GLOBAL.log_bin_trust_function_creators = 1');
-    }
-}
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
     if ($_SESSION) {
         DBQuery("DELETE FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'");
@@ -238,7 +217,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
                 $max_syear = $max_syear[1]['SYEAR'];
                 if ($max_syear == '') {
-                    $error[] = "No student is associated with the parent. Please contact the school administration.";
+                    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
                     session_destroy();
                     header("location:index.php?modfunc=logout&dis=assoc_mis");
                 }
@@ -331,6 +310,22 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                             }
                         }
                         if ($usr_prof == 'parent') {
+                            $parent_max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_unchk['USER_ID']));
+                            $parent_max_syear = $parent_max_syear[1]['SYEAR'];
+
+                            if ($parent_max_syear == '') {
+                                $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
+                                session_destroy();
+                                header("location:index.php?modfunc=logout&dis=assoc_mis");
+                            }
+
+                            $parent_is_inactive = DBGet(DBQuery('SELECT se.ID FROM student_enrollment se,students_join_people sju WHERE sju.STUDENT_ID= se.STUDENT_ID AND sju.PERSON_ID=' . $login_unchk['USER_ID'] . ' AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=sju.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)'));
+
+                            if (!$parent_is_inactive) {
+                                session_destroy();
+                                header("location:index.php?modfunc=logout&dis=assoc_mis");
+                            }
+
                             $login_RET = DBGet(DBQuery("SELECT PROFILE,STAFF_ID AS STAFF_ID,CURRENT_SCHOOL_ID AS CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,PROFILE_ID,IS_DISABLE FROM people WHERE STAFF_ID=" . $login_unchk['USER_ID'])); //pinki             
                             if (count($login_RET) > 0) {
                                 $login_RET[1]['USERNAME'] = $login_unchk['USERNAME'];
@@ -399,7 +394,11 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         //$_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
         $_SESSION['LAST_LOGIN'] = isset($login_RET[1]['LAST_LOGIN']) ? $login_RET[1]['LAST_LOGIN'] : '';
 
-        $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE SCHOOL_ID=" . $login_RET[1]['CURRENT_SCHOOL_ID']));
+        // $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE SCHOOL_ID=" . $login_RET[1]['CURRENT_SCHOOL_ID']));
+        $syear_RET=DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE CURDATE() BETWEEN START_DATE AND END_DATE AND SCHOOL_ID=".$login_RET[1]['CURRENT_SCHOOL_ID']));
+        if($syear_RET[1]['SYEAR'] == ''){
+            $syear_RET=DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE CURDATE() > END_DATE AND SCHOOL_ID=".$login_RET[1]['CURRENT_SCHOOL_ID']));
+        }
         $_SESSION['UserSyear'] = $syear_RET[1]['SYEAR'];
         $_SESSION['UserSchool'] = $login_RET[1]['CURRENT_SCHOOL_ID'];
         $_SESSION['PROFILE_ID'] = $login_RET[1]['PROFILE_ID'];
@@ -438,7 +437,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             } else {
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
-            
+
 
             $date = date("Y-m-d H:i:s");
             $fname_ins = singleQuoteReplace("'", "''", $_SESSION['FIRST_NAME']);

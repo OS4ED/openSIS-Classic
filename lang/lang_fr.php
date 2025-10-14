@@ -1828,7 +1828,7 @@ define("_cannotAddActivityWithSameTitle", "Impossible d'ajouter l'activité avec
 define("_startDateOrEndDateCannotBeBlank", "Date de début ou de fin ne peut pas être vide");
 define("_scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration", "Score Breakoff Points configuration est incomplète, RÉGLER Points Score cassage de configuration");
 define("_gradeReportingDateHasNotSetForThisMarkingPeriod", "date de clôture de qualité n'a pas fixé pour cette période de notation");
-define("_coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "La période de cours est configurée comme pondérée, mais aucune pondération n'est attribuée aux types de devoirs.");
+define("_theGradebookConfigurationOfTheCoursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "La configuration du carnet de notes de la période de cours est configurée comme pondérée, mais aucune pondération n'est attribuée aux types de devoirs.");
 define("_messageBodyCannotBeEmpty", "Le corps du message ne peut pas être vide");
 define("_messageNotSentAsNoUsersWereFound", "Message non envoyé comme aucun utilisateur n'a été trouvé");
 define("_unableToDeleteGoalPleaseDeleteProgressesFirst", "Impossible de supprimer l'objectif. S'il vous plaît supprimer Progresse premier.");
@@ -1973,4 +1973,5 @@ define("_cannotGeneratePagination", "Impossible de générer la pagination!");
 define("_outOf", "hors de");
 define("_entries", "entrées");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "Impossible de supprimer car les commentaires de la fiche de rapport sont associés");
+define('_reportCardGradingScale','Échelle de notation du bulletin scolaire');
 ?>

@@ -86,10 +86,17 @@ if ($_REQUEST['modfunc'] == 'save') {
         $total_CGPA_earned_qr = 0;
         $total_CGPA_attemted = 0;
         $tot_qp = 0;
+
+        $recToSRCG = DBGet(DBQuery("SELECT count(*) AS cntrow FROM student_report_card_grades WHERE student_id='" . $student_id."'"));
+        
+        $total_rec_count = $recToSRCG[1]['CNTROW'];
+
         if (User('PROFILE') == 'admin' || UserStudentID() == $student_id) {
 
             $stu_ret = DBGet(DBQuery($studataquery . $student_id), array('BIRTHDATE' => 'ProperDate'));
             $sinfo = $stu_ret[1];
+
+        if ($total_rec_count > 0) {
 
             $gradelevel_addon = '';
 
@@ -570,6 +577,25 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             </div>
             <?php
+        }
+        else {
+            ?>
+            <div class="f-s-15">
+                    <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
+                    <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
+                    <p class="m-t-5 m-b-0"><b><?= _dateOfBirth ?> :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
+                    <p class="m-t-5 m-b-0"><b><?= _studentId ?> :</b><?php echo $student_id ?></p>
+                    <p class="m-t-5 m-b-0"><b><?= _gradeLevel ?> :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
+                </div>
+            <?php
+            echo '<table class="invoice-table table-bordered">';
+                echo '<tbody>';
+                echo '<tr>';
+                echo '<td colspan="5"><p class="text-center f-s-13" style="font-style: italic;">No grades were found for this student <strong>' . $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . '</strong></p></td>';
+                echo '</tr>';
+                echo '</tbody>';
+                echo '</table>';
+        }
         }
     }
     PDFStop($handle);

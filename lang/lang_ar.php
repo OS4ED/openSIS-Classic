@@ -1823,7 +1823,7 @@ define("_cannotAddActivityWithSameTitle", "لا يمكن إضافة نشاط ب�
 define("_startDateOrEndDateCannotBeBlank", "لا يمكن أن يكون تاريخ البدء أو تاريخ الانتهاء فارغين");
 define("_scoreBreakoffPointsSetupIsIncompletePleaseSetScoreBreakoffPointsFromConfiguration", "إعداد نقاط كسر النقاط غير مكتمل ، يرجى تعيين نقاط كسر النقاط من التكوين");
 define("_gradeReportingDateHasNotSetForThisMarkingPeriod", "لم يتم تحديد تاريخ تقرير التقدير لفترة التصحيح هذه");
-define("_coursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "يتم تكوين فترة الدورة التدريبية على أنها مرجحة ولكن لم يتم تعيين أوزان لأنواع الواجب.");
+define("_theGradebookConfigurationOfTheCoursePeriodIsConfiguredAsWeightedButNoWeightsAreAssignedToTheAssignmentTypes", "تم تكوين تكوين دفتر الدرجات لفترة الدورة التدريبية على أنه مرجح ولكن لا يتم تعيين أي أوزان لأنواع الواجبات.");
 define("_messageBodyCannotBeEmpty", "لا يمكن ترك نص الرسالة فارغًا");
 define("_messageNotSentAsNoUsersWereFound", "لم يتم إرسال الرسالة حيث لم يتم العثور على مستخدمين");
 define("_unableToDeleteGoalPleaseDeleteProgressesFirst", "تعذر حذف الهدف. الرجاء حذف التقدم أولا.");
@@ -1963,4 +1963,5 @@ define("_cannotGeneratePagination", "لا يمكن توليد ترقيم الص�
 define("_outOf", "بعيدا عن المكان");
 define("_entries", "إدخالات");
 define("_cannotDeleteBecauseReportCardCommentsAreAssociated", "لا يمكن الحذف لأن تعليقات بطاقة التقرير مرتبطة");
+define('_reportCardGradingScale','مقياس تقييم بطاقة التقرير');
 ?>
