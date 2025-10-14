@@ -263,12 +263,12 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
     // DISPLAY THE MENU
     $LO_options = array('save' => false, 'search' => false);
 
-    if (!$_REQUEST['subject_id'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {
+    if (!$_REQUEST['subject_id']) {
         echo '<div class="panel panel-default">';
-        echo '<div class="panel-body">';
-        echo "<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search><i class=\"icon-search4 position-left\"></i> " . _searchCourse . "</A>";
+        echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search method=POST>";
+        DrawHeader(_courses, '<div class="form-group"><div class="input-group"><INPUT placeholder="' . _searchCourse . '" type=text class=form-control name=search_term value="' . $_REQUEST['search_term'] . '"><span class="input-group-btn"><INPUT type=submit class="btn btn-primary" value=' . _search . ' onclick=\'formload_ajax("F1");\'></span></div></div>');
+        echo '</FORM>';
         echo '</div>';
-        echo '</div>'; //.panel
     }
 
     echo '<div class="row">';

@@ -237,6 +237,9 @@ if ($_REQUEST['course_period_id'] != 'new') {
         if ($chek_assoc[1]['REC_EX'] == 0) {
             $sql_parent = "UPDATE course_periods SET PARENT_ID=" . $_REQUEST['w_course_period_id'] . " WHERE COURSE_PERIOD_ID=" . $_REQUEST['course_period_id'];
             DBQuery($sql_parent);
+        } else {
+            echo "<div class='alert alert-danger'>" . _cannotModifyThisCoursePeriodAsItHasAssociation . "</div>";
+            $msgFlag = 1;
         }
     }
 
