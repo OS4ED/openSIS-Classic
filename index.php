@@ -62,7 +62,7 @@ if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
-    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
+    $error[] = _noStudentIsAssociatedWithTheParentForTheCurrentDate . _eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate . _pleaseContactTheSchoolAdministrationForMoreInformation;
 }
 
 if (isset($_GET['ins']))
@@ -217,7 +217,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
                 $max_syear = $max_syear[1]['SYEAR'];
                 if ($max_syear == '') {
-                    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
+                    $error[] = _noStudentIsAssociatedWithTheParentForTheCurrentDate . _eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate . _pleaseContactTheSchoolAdministrationForMoreInformation;
                     session_destroy();
                     header("location:index.php?modfunc=logout&dis=assoc_mis");
                 }
