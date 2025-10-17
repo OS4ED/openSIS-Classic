@@ -87,10 +87,11 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == _backup)) {
     $fname = $Export_FileName;
     header('Location: '.$Export_FileName);
     // unlink($Export_FileName);
-    // header('Content-Type: application/octet-stream');
+    header('Content-Type: application/octet-stream');
     // header("Content-Transfer-Encoding: Binary");
-    // header("Content-disposition: attachment; filename=\"" . $fname . "\"");
-    // //$content= file_get_contents($Export_FileName);
+    header("Content-disposition: attachment; filename=\"" . $fname . "\"");
+    // $content= file_get_contents($Export_FileName);
+    header('Content-Length: ' . filesize($fname));
     // echo $content;
     exit;
 }
