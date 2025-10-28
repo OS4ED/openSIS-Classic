@@ -62,7 +62,7 @@ if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
-    $error[] = _noStudentIsAssociatedWithTheParentForTheCurrentDate . _eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate . _pleaseContactTheSchoolAdministrationForMoreInformation;
+    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
 }
 
 if (isset($_GET['ins']))
@@ -76,6 +76,45 @@ if ($install == 'comp') {
 }
 
 require_once('Warehouse.php');
+# CHECKING ES STARTS: IF ES (EVENT SCHEDULER) IS FOUND OFF, IT SHOULD BE TURNED ON
+$check_ES_status = DBGet(DBQuery("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
+
+if ($check_ES_status) {
+
+    if ($check_ES_status[1]['VARIABLE_NAME'] == 'event_scheduler' && $check_ES_status[1]['VALUE'] != 'ON') {
+
+        DBQuery('SET GLOBAL event_scheduler = ON');
+
+    }
+
+}
+
+# CHECKING ES ENDS
+
+$check_sql_mode = DBGet(DBQuery("SELECT @@GLOBAL.sql_mode"));
+
+if ($check_sql_mode) {
+
+    if ($check_sql_mode[1]['@@GLOBAL.SQL_MODE'] != 'NO_ENGINE_SUBSTITUTION') {
+
+        DBQuery('SET @@GLOBAL.SQL_MODE = "NO_ENGINE_SUBSTITUTION"');
+
+    }
+
+}
+ 
+$check_LBTFC = DBGet(DBQuery("SELECT @@GLOBAL.log_bin_trust_function_creators"));
+
+if ($check_LBTFC) {
+
+    if ($check_LBTFC[1]['@@GLOBAL.log_bin_trust_function_creators'] != 1) {
+
+        DBQuery('SET @@GLOBAL.log_bin_trust_function_creators = 1');
+
+    }
+
+}
+ 
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
     if ($_SESSION) {
         DBQuery("DELETE FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'");
@@ -217,7 +256,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
                 $max_syear = $max_syear[1]['SYEAR'];
                 if ($max_syear == '') {
-                    $error[] = _noStudentIsAssociatedWithTheParentForTheCurrentDate . _eitherTheStudentIsNoLongerActiveOrStartingSchoolInAFutureDate . _pleaseContactTheSchoolAdministrationForMoreInformation;
+                    $error[] = "No student is associated with the parent for the current date. Either the student is no longer active or starting school in a future date. Please contact the school administration for more information.";
                     session_destroy();
                     header("location:index.php?modfunc=logout&dis=assoc_mis");
                 }
@@ -437,7 +476,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             } else {
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
-            
+
 
             $date = date("Y-m-d H:i:s");
             $fname_ins = singleQuoteReplace("'", "''", $_SESSION['FIRST_NAME']);

@@ -387,7 +387,7 @@ if (User('PROFILE') != 'teacher') {
             $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
     }
 
-    echo "<SELECT class=\"select\" name=mp onChange='this.form.submit();'>";
+    echo "<SELECT class=\"select\" name=mp id=head_frm_mp_id onChange='this.form.submit();'>";
     if (count($RET)) {
         if (!UserMP())
             $_SESSION['UserMP'] = $RET[1]['MARKING_PERIOD_ID'];

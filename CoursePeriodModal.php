@@ -1,10 +1,30 @@
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+#**************************************************************************
+#  openSIS is a free student information system for public and non-public 
+#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#
+#  openSIS is  web-based, open source, and comes packed with features that 
+#  include student demographic info, scheduling, grade book, attendance, 
+#  report cards, eligibility, transcripts, parent portal, 
+#  student portal and more.
+#
+#  Visit the openSIS web site at http://www.opensis.com to learn more.
+#  If you have question regarding this system or the license, please send 
+#  an email to info@os4ed.com.
+#
+#  This program is released under the terms of the GNU General Public License as  
+#  published by the Free Software Foundation, version 2 of the License. 
+#  See license.txt.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#***************************************************************************************
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
@@ -41,15 +61,29 @@ elseif(isset($_SESSION['language']) && $_SESSION['language']=='es'){
     define("_time","Time");
 }
 
-if ($_POST['button'] == 'Clear & Exit') {
+    // if ($_POST['button'] == _clearExit) {
+    //     $chek_assoc = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID=' .$cp_id . ' AND (START_DATE<=\'' . date('Y-m-d') . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' OR END_DATE>=\'' . date('Y-m-d') . '\' ))'));
+    //     if ($chek_assoc[1]['REC_EX'] == 0) {
+    //         DBQuery("DELETE FROM course_period_var WHERE course_period_id=$cp_id AND  course_period_date='" . $meet_date . "' and id='" . $cpv_id . "'");
+    //         unset($_REQUEST['values']);
+    //         unset($_SESSION['_REQUEST_vars']['values']);
+    //         echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $subject_id . '&course_id=' . $course_id . '&course_period_id=' . $cp_id . '&month=' . date(strtotime($meet_date)) . '"; window.close();</script>';
+    //     } else {
+    //         echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&error=Blocked_assoc&subject_id=' . $subject_id . '&course_id=' . $course_id . '&course_period_id=' . $cp_id . '&month=' . date(strtotime($meet_date)) . '"; window.close();</script>';
+    //     }
+    // }
+   
+    if (isset($_REQUEST['button']) && $_REQUEST['button'] == _clearExit) {
         $chek_assoc = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID=' .$cp_id . ' AND (START_DATE<=\'' . date('Y-m-d') . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' OR END_DATE>=\'' . date('Y-m-d') . '\' ))'));
         if ($chek_assoc[1]['REC_EX'] == 0) {
-            DBQuery("DELETE FROM course_period_var WHERE course_period_id=$cp_id AND  course_period_date='" . $meet_date . "' and id='" . $cpv_id . "'");
+        DBQuery("DELETE FROM course_period_var WHERE course_period_id=$cp_id AND course_period_date='" . $meet_date . "' AND id='" . $id . "'");
             unset($_REQUEST['values']);
             unset($_SESSION['_REQUEST_vars']['values']);
-            echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $subject_id . '&course_id=' . $course_id . '&course_period_id=' . $cp_id . '&month=' . date(strtotime($meet_date)) . '"; window.close();</script>';
+        echo "<SCRIPT language=javascript>window.location.href='Modules.php?modname=" . $_REQUEST['modname'] . "&subject_id=$subject_id&course_id=$course_id&course_period_id=$cp_id&month=" . strtotime($meet_date) . "';</script>";
+
         } else {
-            echo '<SCRIPT language=javascript>window.location.href = "Modules.php?modname=' . $_REQUEST['modname'] . '&error=Blocked_assoc&subject_id=' . $subject_id . '&course_id=' . $course_id . '&course_period_id=' . $cp_id . '&month=' . date(strtotime($meet_date)) . '"; window.close();</script>';
+        echo "<SCRIPT language=javascript>window.location.href='Modules.php?modname=" . $_REQUEST['modname'] . "&error=Blocked_assoc&subject_id=$subject_id&course_id=$course_id&course_period_id=$cp_id&month=" . strtotime($meet_date) . "';</script>";
+
         }
     }
     else {
@@ -101,7 +135,8 @@ if ($_POST['button'] == 'Clear & Exit') {
         echo '&nbsp;';
         if ($_REQUEST['mode'] == 'edit')
           //  echo '<INPUT type=button name=button class="btn btn-primary" value=Clear1 & Exit onclick="formload_ajax(\'popform\');"> &nbsp ';
-      echo ' &nbsp; <INPUT type=button name=button class="btn btn-default" value='._clearExit.'  onclick="BlockModalPeriod(\''.$subject_id.'\','.$course_id.',\''.$cp_id.'\',\''.$calendar_id.'\',\''.$meet_date.'\',\'edit\',\''.$id.'\')";> &nbsp ';
+           
+            echo '&nbsp; <input type="button" class="btn btn-default" value="'._clearExit.'" onclick="ClearExit(\''.$subject_id.'\','.$course_id.',\''.$cp_id.'\',\''.$calendar_id.'\',\''.$meet_date.'\',\''.$id.'\',\''._clearExit.'\')"> &nbsp ';
         
         else
             echo ' &nbsp; <INPUT type=submit name=button class="btn btn-default" value='._close.' onclick="window.close();">';
