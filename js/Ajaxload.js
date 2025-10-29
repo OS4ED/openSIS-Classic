@@ -3236,8 +3236,28 @@ function BlockModalPeriod(subject_id, course_id, course_period_id, calendar_id, 
     $('#modal_default_block_cp').modal('show');
     ajax_call('CoursePeriodModal.php?subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + course_period_id + '&calendar_id=' + calendar_id + '&meet_date=' + date + '&mode=' + mode + '&id=' + id + '&add=' + add1, CalendarModalCallback, chooseCpModalError);
 
-
 }
+
+function ClearExit(subject_id, course_id, cp_id, calendar_id, meet_date, id, clearExitValue) {
+   ajax_call('CoursePeriodModal.php?button=' + encodeURIComponent(clearExitValue) + '&subject_id=' + subject_id + '&course_id=' + course_id + '&course_period_id=' + cp_id + '&calendar_id=' + calendar_id + '&meet_date=' + meet_date + '&id=' + id, 
+   function(response) {
+           $('#modal_default_block_cp').modal('hide');
+           console.log('Course Period Date cleared successfully!');
+           const newUrl =
+                'Modules.php?modname=schoolsetup/Courses.php' +
+                '&subject_id=' + subject_id +
+                '&course_id=' + course_id +
+                '&course_period_id=' + cp_id +
+                '&month=' + Math.floor(new Date(meet_date).getTime() / 1000);
+            setTimeout(function () {
+                window.location.href = newUrl;
+            }, 200);
+       },
+       function(error) {
+           console.warn('Error clearing schedule: ' + error);
+       }, CalendarModalCallback, chooseCpModalError);
+}
+
 
 function MassScheduleModal(id, table)
 {
@@ -3359,4 +3379,22 @@ function loadDataTablePaginationErrors(exceptions)
 function generateDataTableSpreadsheet()
 {
     window.open("ExportDataTable.php", '_blank');
+}
+
+function saveMarkingPeriod()
+{
+    ajax_call('SaveMarkingPeriod.php', saveMarkingPeriodCallback, saveMarkingPeriodError);
+}
+function saveMarkingPeriodCallback(data) {
+
+    var obj = document.getElementById('head_frm_mp_id');
+    if (obj) {
+        obj.innerHTML = data;
+    } else {
+        console.warn("Dropdown element not found: #head_frm_mp_id");
+    }
+}
+
+function saveMarkingPeriodError(err) {
+    console.warn("Error: " + err);
 }

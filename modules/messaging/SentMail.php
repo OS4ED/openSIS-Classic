@@ -189,11 +189,16 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
 
 
 if (!isset($_REQUEST['modfunc'])) {
+    if (User('PROFILE') == 'student')
+    $user_id = UserStudentID();
+    else
+    $user_id = UserID();
     //PopTable('header', 'Sent Message');
     echo "<FORM name=sav id=sav action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=trash method=POST>";
     $link = array();
     $extra = array();
-    $outbox = "SELECT CASE WHEN to_cc is null THEN to_user ELSE concat( to_user, ' ', to_cc ) END AS TO1, msg_outbox.* FROM msg_outbox where from_user='$userName' AND istrash is NULL order by(mail_id) desc";
+    // $outbox = "SELECT CASE WHEN to_cc is null THEN to_user ELSE concat( to_user, ' ', to_cc ) END AS TO1, msg_outbox.* FROM msg_outbox where from_user='$userName' AND istrash is NULL order by(mail_id) desc";
+    $outbox = "SELECT CASE WHEN to_cc is null THEN to_user ELSE concat( to_user, ' ', to_cc ) END AS TO1, msg_outbox.* FROM msg_outbox JOIN login_authentication lg ON msg_outbox.from_user = lg.username where from_user='$userName' AND lg.user_id = " . $user_id . " AND lg.profile_id = " .User('PROFILE_ID') . " AND istrash is NULL order by(mail_id) desc";
     $outbox_info = DBGet(DBQuery($outbox));
     foreach ($outbox_info as $id => $value) {
         if (trim($outbox_info[$id]['TO_GRPNAME']) != "") {

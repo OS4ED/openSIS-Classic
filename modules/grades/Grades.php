@@ -118,7 +118,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS POINTS';
     $extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS COMMENT';
     $extra['FROM'] = ',gradebook_assignments ga,gradebook_assignment_types gt';
-    $extra['WHERE'] = 'AND (ga.due_date>=ssm.start_date OR ga.due_date IS NULL) AND ((ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') OR ga.COURSE_PERIOD_ID=\'' . $course_period_id . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND ga.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\' ');
+    $extra['WHERE'] = 'AND (ga.due_date>=ssm.start_date OR ga.due_date IS NULL) AND ((ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') OR ga.COURSE_PERIOD_ID=\'' . $course_period_id . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND ga.ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\' ');
     $extra['GROUP'] = Preferences('ASSIGNMENT_SORTING', 'Gradebook');
     $extra['ORDER_BY'] = Preferences('ASSIGNMENT_SORTING', 'Gradebook') . " DESC";
     $extra['functions'] = array('POINTS' => '_makeExtraStuCols', 'LETTER_GRADE' => '_makeExtraStuCols', 'COMMENT' => '_makeExtraStuCols');
@@ -306,7 +306,7 @@ foreach ($assignments_RET as $id => $assignment)
     $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
 $assignment_select .= '</SELECT>';
 echo '<div class="">';
-echo "<FORM class='m-b-0' action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST['student_id'])) . "&cpv_id=" . CpvId() . "&include_inactive=" . $_REQUEST['include_inactive'] . " method=POST>";
+echo "<FORM class='m-b-0' action=Modules.php?modname=" . strip_tags(trim($_REQUEST['modname'])) . "&student_id=" . strip_tags(trim($_REQUEST['student_id'])) . "&cpv_id=" . CpvId() . "&include_inactive=" . $_REQUEST['include_inactive'] . " method=POST>";
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
@@ -620,7 +620,11 @@ function _makeWtg($assignment_id, $column)
                     //echo $tot_weight_grade .'= '.$tot_weight_grade.' + (round((round(('.$tot_weighted_percent[$assign_key].' / '.$value.'), 2) * '.$assign_typ_wg[$assign_key].') / 100, 2))----old<br/><br/>';
                 }
             }
-            $tot_weight_grade = $tot_weight_grade / 100;
+            if ($tot_weight_grade == '') {
+                $tot_weight_grade = 0;
+            } else {
+                $tot_weight_grade = $tot_weight_grade / 100;
+            }
 
             //$tot_weight_grade=$tot_weight_grade/100;
             // if($total_percent!=0)
@@ -629,7 +633,7 @@ function _makeWtg($assignment_id, $column)
             $total = 0;
 
         if ($tot_weight_grade != '' && $total_weightage != '')
-            $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
+            $tot_weight_grade = $total_weightage == 0 ? 0 : (($tot_weight_grade / $total_weightage) * 100);
         else
             $tot_weight_grade = 0;
 
@@ -637,8 +641,10 @@ function _makeWtg($assignment_id, $column)
         // return (($THIS_RET['STUDENT_ID']['flag']==1) ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
 
         // return (($THIS_RET_STUDENT_ID_flag==1) ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
-
+        if($tot_weight_grade !=0 && $tot_weight_grade != '')
         return (_makeLetterGrade($tot_weight_grade, "", User('STAFF_ID'), '%') . '% <B>' . _makeLetterGrade($tot_weight_grade, "", User('STAFF_ID'), '') . '</B>');
+        else
+            return _notGraded;
 
         // $ppercent= _makeLetterGrade($total,"",User('STAFF_ID'),"%");
         // if($points_RET[$THIS_RET['STUDENT_ID']][1]['PARTIAL_POINTS']!='')

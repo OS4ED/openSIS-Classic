@@ -1705,7 +1705,7 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             unset($o_addr[1]['BUS_NO']);
 
         echo '<FIELDSET><h5 class="text-primary">' . _additionalContact . '</h5>'; // open 3e
-        $qr_ot_stu_asso = DBGet(DBQuery('select * from students_join_people where person_id=\'' . $s_addr[1]['CONTACT_ID'] . '\''));
+        $qr_ot_stu_asso = DBGet(DBQuery('select * from students_join_people where person_id=\'' . $o_addr[1]['PERSON_ID'] . '\''));
         if (count($qr_ot_stu_asso) > 1)
             echo "<A HREF=Modules.php?modname=$_REQUEST[modname]&person_id=" . $o_addr[1][CONTACT_ID] . "&modfunc=clearall&relation=Other >" . _removeParent . "</A>";
 
@@ -1716,11 +1716,20 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
             echo '</div>'; //.row
 
             echo '<hr/>';
+            if (empty($sec_relation_options) || !is_array($sec_relation_options)) {
+                $sec_relation_options = [];
+            }
 
             //            echo '<div class="row">';
             //            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">'._relationshipToStudent.'</label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $relation_options) . '<span class="input-group-btn"><input type="button" class="btn btn-primary" name="lookup" value="Lookup" onclick="javascript:window.open(\'ForWindow.php?modname=' . $_REQUEST['modname'] . '&modfunc=lookup&type=other&ajax=' . $_REQUEST['ajax'] . '&add_id=' . $o_addr[1]['PERSON_ID'] . '&address_id=' . $_REQUEST['address_id'] . '\',\'blank\',\'resizable=yes,scrollbars=yes,width=600,height=600\');return false;"></span></div></div></div></div>';
             //            echo '</div>'; //.row
-            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">' . _relationshipToStudent . '<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=' . _lookup . ' onclick=modal_parenttype(\'other\',\'' . $o_addr[1][PERSON_ID] . '\');></span></div></div></div></div>';
+
+            // echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">' . _relationshipToStudent . '<span class=text-danger> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type=button  data-toggle="modal"  name=lookup class=btn btn-primary value=' . _lookup . ' onclick=modal_parenttype(\'other\',\'' . $o_addr[1][PERSON_ID] . '\');></span></div></div></div></div>';
+
+            echo '<div class="row">';
+            echo '<div class="col-md-8"><div class="form-group"><label class="control-label text-right col-md-3">' . _relationshipToStudent . '<span class="text-danger"> *</span></label><div class="col-md-9"><div class="input-group">' . _makeAutoSelectInputX($o_addr[1]['RELATIONSHIP'], 'RELATIONSHIP', 'people', 'OTHER', '', $sec_relation_options) . '<span class="input-group-btn"><input type="button" data-toggle="modal" name="lookup" class="btn btn-primary" value="' . _lookup . '" onclick="modal_parenttype(\'other\', \'' . $o_addr[1]['PERSON_ID'] . '\')"></span></div></div></div></div>';
+            echo '</div>'; //.row
+            
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _firstName . '<span class=text-danger> *</span></label><div class="col-md-8"><DIV id=person_f_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['FIRST_NAME'], 'people', 'FIRST_NAME', 'OTHER', '', '')) . '","person_f_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['FIRST_NAME'] . '</div></DIV></div></div></div>';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label text-right col-md-4">' . _lastName . '<span class=text-danger> *</span></label><div class="col-md-8"><DIV id=person_l_' . $o_addr[1]['PERSON_ID'] . '><div class="form-control" onclick=\'addHTML("' . str_replace('"', '\"', _makePeopleInput($o_addr[1]['LAST_NAME'], 'people', 'LAST_NAME', 'OTHER', '', '')) . '","person_l_' . $o_addr[1]['PERSON_ID'] . '",true);\'>' . $o_addr[1]['LAST_NAME'] . '</div></DIV></div></div></div>';

@@ -78,7 +78,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                         break;
                     } else if ($custom_RET[1]['TYPE'] == 'numeric' && (!is_numeric($value) && $value != '')) {
                         $custom_TITLE = $custom_RET[1]['TITLE'];
-                        echo "<div class='alert alert-danger'>". ucfirst(_unableToSaveDataBecause) ." " . $custom_TITLE . ' '. isNumericType.'</div>';
+                        echo "<div class='alert alert-danger'>". ucfirst(_unableToSaveDataBecause) ." " . $custom_TITLE . ' '. _isNumericType.'</div>';
                         $error = true;
                     } else {
                         $m_custom_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE FROM school_custom_fields WHERE ID='" . $custom_id . "' AND TYPE='multiple'"));
@@ -108,8 +108,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
             }
             $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . UserSchool() . '\'';
            
-            if ($error != 1)
+            if ($error != 1){
                 DBQuery($sql);
+             echo "<script>window.location.replace(window.location.href);</script>";
+            }
             // echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             $note[] = _thisSchoolHasBeenModified; //This school has been modified.
             $_REQUEST['modfunc'] = '';

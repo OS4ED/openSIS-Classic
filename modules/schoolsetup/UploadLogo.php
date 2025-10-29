@@ -160,6 +160,7 @@ if (UserSchool()) {
             echo '<div align=center><IMG SRC="data:image/jpeg;base64,' . base64_encode($sch_img_info[1]['CONTENT']) . '" height=100 width=100 class=pic></div><div class=break></div>';
 //fclose($upload->target_path);
 //      $filename =  $upload->target_path;
+            echo '<div class="m-t-10"></div>';
             echo '<div align=center><input type=button class=btn_medium value=Done onclick=\'load_link("Modules.php?modname=schoolsetup/Schools.php");\'></div>';
             PopTable('footer');
         }

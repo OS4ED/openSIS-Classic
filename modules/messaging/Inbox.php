@@ -32,6 +32,10 @@ include('../../RedirectModulesInc.php');
 
 DrawBC("" . _messaging . " > " . ProgramTitle());
 
+if (User('PROFILE') == 'student')
+    $user_id = UserStudentID();
+else
+    $user_id = UserID();
 //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
     echo '<div class="alert bg-success alert-styled-left">' . _messageDeletedSucessfully . '</div>';
@@ -63,10 +67,6 @@ if ($_REQUEST['button'] == 'Send') {
             echo "<script type='text/javascript'>load_link('Modules.php?modname=messaging/Inbox.php&failed_user=Y');</script>";
         }
     }
-    if (User('PROFILE') == 'student')
-        $user_id = UserStudentID();
-    else
-        $user_id = UserID();
 
     $username_user = DBGet(DBQuery('SELECT USERNAME FROM login_authentication WHERE USER_ID=' . $user_id . ' AND PROFILE_ID=' . User('PROFILE_ID')));
     $username_user = $username_user[1]['USERNAME'];
@@ -436,7 +436,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
     echo '<div class="panel-body">';
     $mail_id = sqlSecurityFilter($_REQUEST['mail_id']);
     // $mail_body = "select mail_body,mail_attachment,mail_Subject,from_user,mail_datetime,to_cc_multiple,to_multiple_users,to_bcc_multiple,mail_read_unread from msg_inbox where mail_id='$mail_id'";
-    $mail_body = "SELECT mi.mail_body,mi.mail_attachment,mi.mail_Subject, mi.from_user, mi.mail_datetime, mi.to_cc_multiple,mi.to_multiple_users,mi.to_bcc_multiple,mi.mail_read_unread FROM msg_inbox mi JOIN login_authentication lg ON mi.to_user = lg.username WHERE mi.mail_id = '$mail_id' AND lg.profile_id = " . UserProfileID() . " AND lg.user_id = " . UserID();
+    $mail_body = "SELECT mi.mail_body,mi.mail_attachment,mi.mail_Subject, mi.from_user, mi.mail_datetime, mi.to_cc_multiple,mi.to_multiple_users,mi.to_bcc_multiple,mi.mail_read_unread FROM msg_inbox mi JOIN login_authentication lg ON mi.to_user = lg.username WHERE mi.mail_id = '$mail_id' AND lg.profile_id = " . User('PROFILE_ID') . " AND lg.user_id = " . $user_id;
 
     $mail_body_info = DBGet(DBQuery($mail_body));
     $sub = $mail_body_info[1]['MAIL_SUBJECT'];
@@ -606,7 +606,8 @@ if (!isset($_REQUEST['modfunc'])) {
         $to_user_id = 'null';
 
     echo "<FORM class=\"no-margin\" name=sav id=sav action=Modules.php?modname=$_REQUEST[modname]&modfunc=trash method=POST>";
-    $inbox = "select * from msg_inbox mi, login_authentication lg where mi.to_user=lg.username and mi.mail_id in($to_user_id) and lg.user_id=".UserID()." order by(mi.mail_id)desc";
+    // $inbox = "select * from msg_inbox where mail_id in($to_user_id) order by(mail_id)desc";
+    $inbox = "select * from msg_inbox mi, login_authentication lg where mi.to_user=lg.username and mi.mail_id in($to_user_id) and lg.user_id=". $user_id." order by(mi.mail_id)desc";
     $inbox_info = DBGet(DBQuery($inbox));
 
     foreach ($inbox_info as $key => $value) {

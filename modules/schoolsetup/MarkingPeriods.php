@@ -1170,3 +1170,7 @@ if (!$_REQUEST['modfunc']) {
 
     echo '</div>';
 }
+?>
+<script>
+saveMarkingPeriod();
+</script>
