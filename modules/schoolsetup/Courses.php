@@ -2331,13 +2331,11 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
                 $header .= "<TD  title='" . ProperDate($date) . "' width=\"14.2%\" class=" . ($periods[$cpblocked_RET[$date][1]['PERIOD_ID']] || $calendar_RET[$date1][1]['MINUTES'] == '999' ? 'calendar_active' : 'calendar_holiday') . " valign=top>
                                 <table width=100%><tr><td width=5 valign=top>$i</td><td width=95 align=right></TD></TR>";
                 $header .= "</td></tr><tr><TD colspan=2 height=40 valign=top>";
+                if ($date >= $begin && $date <= $end) {
 
-                if (in_array(date('D', $day_time), $caldays) && $date >= $begin && $date <= $end) {
-
-                    $block_periods = DBGet(DBQuery("SELECT * FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "'                                    
-                                                              AND course_period_date='" . $date . "'"));
-                    $header .= '<p style="font-size: 70%;"><b>' . $periods[$cpblocked_RET[$date][1]['PERIOD_ID']] . '</b></p>';
-                    $header .= '<p style="font-size: 70%;">' . $rooms[$cpblocked_RET[$date][1]['ROOM_ID']] . '</p>';
+                    $block_periods = DBGet(DBQuery("SELECT * FROM course_period_var WHERE course_period_id='" . $_REQUEST['course_period_id'] . "' AND course_period_date='" . $date . "'"));
+                    // $header .= '<p style="font-size: 70%;"><b>' . $periods[$cpblocked_RET[$date][1]['PERIOD_ID']] . '</b></p>';
+                    // $header .= '<p style="font-size: 70%;">' . $rooms[$cpblocked_RET[$date][1]['ROOM_ID']] . '</p>';
 
                     if ($cpblocked_RET[$date][1]['PERIOD_ID'] == '' && AllowEdit()) {
 
@@ -2348,6 +2346,8 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
                         }
                     } else {
                         foreach ($block_periods as $ind => $data) {
+                            $header .= '<p style="font-size: 70%;"><b>' . $periods[$data['PERIOD_ID']] . '</b></p>';
+                            $header .= '<p style="font-size: 70%;">' . $rooms[$data['ROOM_ID']] . '</p>';
                             $header .= '<table><tr><td style="font-size: 70%;">' . _attendance . ' : ' . ($data['DOES_ATTENDANCE'] == 'Y' ? 'Yes' : 'No') . '</td></tr>';
                             if (AllowEdit()) {
                                 // $header .= '<tr><td valign=bottom align=left>' . button('edit', '', "# onclick='javascript:window.open(\"ForWindow.php?modname=$_REQUEST[modname]&modfunc=detail&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&mode=edit&calendar_id=$_REQUEST[calendar_id]&id=$data[ID]&meet_date=$date\",\"blank\",\"width=600,height=400\"); return false;'") . "</td></tr></table>";

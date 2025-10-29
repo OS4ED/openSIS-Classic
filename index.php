@@ -76,45 +76,6 @@ if ($install == 'comp') {
 }
 
 require_once('Warehouse.php');
-# CHECKING ES STARTS: IF ES (EVENT SCHEDULER) IS FOUND OFF, IT SHOULD BE TURNED ON
-$check_ES_status = DBGet(DBQuery("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'"));
-
-if ($check_ES_status) {
-
-    if ($check_ES_status[1]['VARIABLE_NAME'] == 'event_scheduler' && $check_ES_status[1]['VALUE'] != 'ON') {
-
-        DBQuery('SET GLOBAL event_scheduler = ON');
-
-    }
-
-}
-
-# CHECKING ES ENDS
-
-$check_sql_mode = DBGet(DBQuery("SELECT @@GLOBAL.sql_mode"));
-
-if ($check_sql_mode) {
-
-    if ($check_sql_mode[1]['@@GLOBAL.SQL_MODE'] != 'NO_ENGINE_SUBSTITUTION') {
-
-        DBQuery('SET @@GLOBAL.SQL_MODE = "NO_ENGINE_SUBSTITUTION"');
-
-    }
-
-}
- 
-$check_LBTFC = DBGet(DBQuery("SELECT @@GLOBAL.log_bin_trust_function_creators"));
-
-if ($check_LBTFC) {
-
-    if ($check_LBTFC[1]['@@GLOBAL.log_bin_trust_function_creators'] != 1) {
-
-        DBQuery('SET @@GLOBAL.log_bin_trust_function_creators = 1');
-
-    }
-
-}
- 
 if (optional_param('modfunc', '', PARAM_ALPHAEXT) == 'logout') {
     if ($_SESSION) {
         DBQuery("DELETE FROM log_maintain WHERE SESSION_ID = '" . $_SESSION['X'] . "'");

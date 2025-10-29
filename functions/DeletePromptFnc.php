@@ -147,9 +147,9 @@ function DeletePromptModContacts($title, $action = 'delete', $close = 'n') {
         echo '<BR>';
         PopTable('header', _confirm ." ". (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
         if ($close == 'n') {
-            $req_mod_name = strip_tags(trim($_REQUEST[modname]));
-            $req_addr_id = strip_tags(trim($_REQUEST[address_id]));
-            $req_per_id = strip_tags(trim($_REQUEST[person_id]));
+            $req_mod_name = strip_tags(trim($_REQUEST['modname']));
+            $req_addr_id = strip_tags(trim($_REQUEST['address_id']));
+            $req_per_id = strip_tags(trim($_REQUEST['person_id']));
             echo "<CENTER><h4>"._areYouSureYouWantTo." $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value="._ok.">&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value="._cancel." onclick='window.location=\"Modules.php?modname=$req_mod_name&include=AddressInc&address_id=$req_addr_id&person_id=$req_per_id&con_info=old\"'></FORM></CENTER>";
         }if ($close == 'y')
             echo "<CENTER><h4>"._areYouSureYouWantTo." $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value="._ok.">&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value="._cancel." onclick='window.close();'></FORM></CENTER>";
