@@ -1,5 +1,5 @@
 # openSIS Classic
-Community Edition version 9.0 (Rel date: 12/31/2022)
+Community Edition version 9.2 (Rel date: 27/10/2025)
 Created by [OS4ED](https://www.os4ed.com/)
 
 openSIS is an easy to use Student Information System for organizing student information and school-related operations to promote efficiency in K-12, trade schools and higher education school systems.
