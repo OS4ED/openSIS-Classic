@@ -795,7 +795,7 @@ DELIMITER ;
 --
 
 SET @@GLOBAL.event_scheduler = ON;
-SET GLOBAL log_bin_trust_function_creators = 1;
+-- SET GLOBAL log_bin_trust_function_creators = 1;
 SET @@GLOBAL.SQL_MODE = "NO_ENGINE_SUBSTITUTION";
 
 --
