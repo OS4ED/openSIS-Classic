@@ -63,6 +63,7 @@ if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName
     if ($connection) {
         $result = $connection->query("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'");
         if($result && mysqli_num_rows($result) === 0){
+            /*
             if ($result && mysqli_num_rows($result) > 0) {
                 $row = mysqli_fetch_assoc($result);
                 if (strtolower($row['Value']) !== 'on') {
@@ -83,6 +84,7 @@ if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName
                 // $connection->query("SET @@GLOBAL.log_bin_trust_function_creators = 1");
                 }
             }
+            */
         }   
     }
 
