@@ -190,7 +190,7 @@ function executeSQL($myFile)
     $dbconn = createConnection($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     
     // Enable function creation with binary logging
-    $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
+    // $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
     
     $sql = file_get_contents($myFile);
     $sqllines = par_spt("/[\n]/", $sql);
