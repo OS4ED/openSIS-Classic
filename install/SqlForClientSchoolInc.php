@@ -215,7 +215,9 @@ ALTER TABLE  `user_profiles` AUTO_INCREMENT=1;
 
 INSERT INTO `user_profiles` (`id`, `profile`, `title`, `last_updated`, `updated_by`) VALUES (1,'admin','Administrator','2019-07-28 08:26:33',NULL),(2,'teacher','Teacher','2019-07-28 08:26:33',NULL),(3,'student','Student','2019-07-28 08:26:33',NULL),(4,'parent','Parent','2019-07-28 08:26:33',NULL),(5,'admin','Admin Asst','2019-07-28 08:26:33',NULL);";
 
-$dbconn = new mysqli($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db'],$_SESSION['port']);
+$dbconn = mysqli_init();
+$dbconn->ssl_set(NULL, NULL, NULL, NULL, NULL);
+$dbconn->real_connect($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db'],$_SESSION['port'], null, MYSQLI_CLIENT_SSL);
 if ($dbconn && !$dbconn->connect_errno) {
     $dbconn->query("SET SESSION sql_mode = ''");
 }
