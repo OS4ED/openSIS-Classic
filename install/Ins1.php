@@ -101,7 +101,7 @@ try{
     $dbconn->ssl_set(NULL, NULL, NULL, NULL, NULL);
     $dbconn->real_connect($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port'], null, MYSQLI_CLIENT_SSL);
     } catch (Exception $e) {
-        // echo 'Caught exception: ', $e->getMessage(), "\n";
+        echo 'Caught exception: ', $e->getMessage(), "\n";
         exit($err);
     }
 if ($dbconn->connect_errno != 0) {
