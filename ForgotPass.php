@@ -65,7 +65,9 @@ function db_start() {
 
     switch ($DatabaseType) {
         case 'mysqli':
-            $connection = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+            $connection = mysqli_init();
+            $connection->ssl_set(NULL, NULL, NULL, NULL, NULL);
+            $connection->real_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, 3306, null, MYSQLI_CLIENT_SSL);
             break;
     }
 

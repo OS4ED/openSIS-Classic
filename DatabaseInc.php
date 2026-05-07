@@ -57,13 +57,13 @@ function db_start()
 
 
 ##### Connection help #####
+/*
 if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName))
     $connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 
     if ($connection) {
         $result = $connection->query("SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler'");
         if($result && mysqli_num_rows($result) === 0){
-            /*
             if ($result && mysqli_num_rows($result) > 0) {
                 $row = mysqli_fetch_assoc($result);
                 if (strtolower($row['Value']) !== 'on') {
@@ -84,9 +84,9 @@ if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName
                 // $connection->query("SET @@GLOBAL.log_bin_trust_function_creators = 1");
                 }
             }
-            */
         }   
     }
+*/
 
 # ---------- #
 #  Debugger  #
