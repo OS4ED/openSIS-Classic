@@ -34,7 +34,9 @@ class ConnectDBOpensis
     {
         $user_agent = explode('/', isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
         if (isset($user_agent[0]) && $user_agent[0] == 'Mozilla') {
-            $conn = new mysqli($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
+            $conn = mysqli_init();
+            $conn->ssl_set(NULL, NULL, NULL, NULL, NULL);
+            $conn->real_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName, 3306, null, MYSQLI_CLIENT_SSL);
             // Disable strict mode to ensure compatibility
             if ($conn && !$conn->connect_errno) {
                 $conn->query("SET SESSION sql_mode = ''");

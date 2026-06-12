@@ -40,10 +40,12 @@ if (empty($_SESSION['server']) && !empty($_POST['sess_server'])) {
 
 // Helper function to create mysqli connection with strict mode disabled
 function createConnection($server, $username, $password, $database = '', $port = 3306) {
+    $conn = mysqli_init();
+    $conn->ssl_set(NULL, NULL, NULL, NULL, NULL);
     if ($database != '') {
-        $conn = new mysqli($server, $username, $password, $database, $port);
+        $conn->real_connect($server, $username, $password, $database, $port, null, MYSQLI_CLIENT_SSL);
     } else {
-        $conn = new mysqli($server, $username, $password, '', $port);
+        $conn->real_connect($server, $username, $password, '', $port, null, MYSQLI_CLIENT_SSL);
     }
     if ($conn && !$conn->connect_errno) {
         $conn->query("SET SESSION sql_mode = ''");
@@ -188,7 +190,7 @@ function executeSQL($myFile)
     $dbconn = createConnection($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     
     // Enable function creation with binary logging
-    $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
+    // $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
     
     $sql = file_get_contents($myFile);
     $sqllines = par_spt("/[\n]/", $sql);
@@ -223,7 +225,7 @@ function createUpdatedByTriggers()
     $dbconn = createConnection($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     
     // Enable trigger/function creation with binary logging
-    $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
+    // $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
 
     if ($result = $dbconn->query("SELECT DISTINCT TABLE_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS

@@ -32,7 +32,9 @@ session_start();
 
 // Helper function to create mysqli connection with strict mode disabled
 function createConnectionIns3($server, $username, $password, $database = '', $port = 3306) {
-    $conn = new mysqli($server, $username, $password, $database, $port);
+    $conn = mysqli_init();
+    $conn->ssl_set(NULL, NULL, NULL, NULL, NULL);
+    $conn->real_connect($server, $username, $password, $database, $port, null, MYSQLI_CLIENT_SSL);
     if ($conn && !$conn->connect_errno) {
         $conn->query("SET SESSION sql_mode = ''");
     }
@@ -106,7 +108,7 @@ function executeSQL($myFile)
     $dbconn = createConnectionIns3($_SESSION['server'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db'],$_SESSION['port']);
     
     // Enable trigger/function creation with binary logging
-    $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
+    // $dbconn->query("SET GLOBAL log_bin_trust_function_creators = 1");
     
     $sql = file_get_contents($myFile);
     $sqllines = par_spt("/[\n]/",$sql);
