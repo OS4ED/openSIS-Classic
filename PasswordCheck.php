@@ -275,7 +275,8 @@ function db_show_error($sql,$failnote,$additional='')
 }
 
 $usrid = sqlSecurityFilter($_GET['usrid']);
-$prof_id = sqlSecurityFilter($_GET['prof_id']);
+// $prof_id = sqlSecurityFilter($_GET['prof_id']);
+$prof_id = (int)($_GET['prof_id'] ?? 0);
 
 $res_pass_chk = DBGet(DBQuery("SELECT * FROM login_authentication WHERE PASSWORD = '".md5($_GET['password'])."' AND USERNAME!='".$usrid."' AND PROFILE_ID!='".$prof_id."'"));
 if($res_pass_chk[1]['USER_ID']!='')

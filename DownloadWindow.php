@@ -31,10 +31,11 @@ include 'Warehouse.php';
 include 'Data.php';
 
 // Prevent Directory Traversal by sanitizing filename parameters
- if (User('PROFILE') == 'student')
-    $user_id = UserStudentID();
-    else
-    $user_id = UserID();
+if (User('PROFILE') == 'student')
+    $user_id = (int) UserStudentID();
+else
+    $user_id = (int) UserID();
+
 function sanitize_filename($filename) {
     // Fully decode URL encoding to handle double/triple encoding attacks (e.g., %252e%252e%252f)
     // Loop until no more decoding occurs

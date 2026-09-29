@@ -33,11 +33,12 @@ include 'Warehouse.php';
 
 if($_REQUEST['title'])
 {
-    $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
+    // $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
+    $cp_id = (int)($_REQUEST['course_period_id'] ?? 0);
 
-    if($_REQUEST['course_period_id'])
+    if ($cp_id > 0)
     {
-    $_SESSION['MassDrops.php']['course_period_id']=$_REQUEST['course_period_id'];
+    $_SESSION['MassDrops.php']['course_period_id']=$cp_id;
     $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));
     $_SESSION['MassDrops.php']['gender'] = $gender_res[1]['GENDER_RESTRICTION'];
 //        $_REQUEST['title'] = str_replace('"', '\"', $_REQUEST['title']);

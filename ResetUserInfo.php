@@ -263,10 +263,12 @@ function db_show_error($sql, $failnote, $additional = '') {
 
 $user_info = sqlSecurityFilter($_REQUEST['user_info']);
 $uname = sqlSecurityFilter($_REQUEST['uname']);
-$password_stn_id = sqlSecurityFilter($_REQUEST['password_stn_id']);
+// $password_stn_id = sqlSecurityFilter($_REQUEST['password_stn_id']);
+$password_stn_id = (int)($_REQUEST['password_stn_id'] ?? 0);
 $password_stf_email = sqlSecurityFilter($_REQUEST['password_stf_email']);
 $pass = sqlSecurityFilter($_REQUEST['pass']);
-$username_stn_id = sqlSecurityFilter($_REQUEST['username_stn_id']);
+// $username_stn_id = sqlSecurityFilter($_REQUEST['username_stn_id']);
+$username_stn_id = (int)($_REQUEST['username_stn_id'] ?? 0);
 $username_stf_email = sqlSecurityFilter($_REQUEST['username_stf_email']);
 
 $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"));

@@ -35,11 +35,15 @@ $REQUEST_title = sqlSecurityFilter($_REQUEST['title']);
 
 if($REQUEST_title)
 {
-    $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
-    $course_id = sqlSecurityFilter($_REQUEST['course_id']);
-    $subject_id = sqlSecurityFilter($_REQUEST['subject_id']);
+    // $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
+    // $course_id = sqlSecurityFilter($_REQUEST['course_id']);
+    // $subject_id = sqlSecurityFilter($_REQUEST['subject_id']);
     
-    if($_REQUEST['course_period_id'])
+    $cp_id = (int)($_REQUEST['course_period_id'] ?? 0);
+    $course_id = (int)($_REQUEST['course_id'] ?? 0);
+    $subject_id = (int)($_REQUEST['subject_id'] ?? 0);
+    
+    if ($cp_id > 0)
     {
         $_SESSION['MassSchedule.php']['course_period_id']=$_REQUEST['course_period_id'];
         $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$cp_id));

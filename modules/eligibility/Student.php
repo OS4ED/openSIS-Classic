@@ -82,7 +82,8 @@ if ($_REQUEST['search_modfunc'] != 'list') {
 }
 if ($_REQUEST['modfunc'] == 'add' || $_REQUEST['student_id']) {
     if ($_REQUEST['student_id']){
-        $student_id=sqlSecurityFilter($_REQUEST['student_id']);
+        // $student_id=sqlSecurityFilter($_REQUEST['student_id']);
+        $student_id = (int)($_REQUEST['student_id'] ?? 0);
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));
     }else
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));

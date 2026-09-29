@@ -31,14 +31,16 @@ include 'Warehouse.php';
 include 'Data.php';
 
 $email = sqlSecurityFilter($_REQUEST['email']);
-$id = sqlSecurityFilter($_REQUEST['id']);
-$type = sqlSecurityFilter($_REQUEST['type']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+// $type = sqlSecurityFilter($_REQUEST['type']);
+$id = (int)($_REQUEST['id'] ?? 0);
+$type = (int)($_REQUEST['type'] ?? 0);
 
         if(isset($_REQUEST['email']) && $_REQUEST['email']!='')
         {
             if($type=='3')
             {
-                if($_REQUEST['id']==0)
+                if($id==0)
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\''));
                 else
         $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$email.'\' AND STUDENT_ID!='.$id));    
@@ -48,7 +50,7 @@ $type = sqlSecurityFilter($_REQUEST['type']);
             }
             if($type=='2')
             {
-                if($_REQUEST['id']==0)
+                if($id==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM staff WHERE EMAIL=\''.$email.'\''));
                 else
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM staff WHERE EMAIL=\''.$email.'\' AND STAFF_ID!='.$id));    
@@ -59,7 +61,7 @@ $type = sqlSecurityFilter($_REQUEST['type']);
             
             if($type=='4')
             {
-                if($_REQUEST['id']==0)
+                if($id==0)
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM people WHERE EMAIL=\''.$email.'\''));
                 else
         $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX  FROM people WHERE EMAIL=\''.$email.'\' AND STAFF_ID!='.$id));    

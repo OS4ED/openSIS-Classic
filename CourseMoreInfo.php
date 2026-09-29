@@ -30,7 +30,8 @@ include 'RedirectRootInc.php';
 include 'ConfigInc.php';
 include 'Warehouse.php';
 
-$id = sqlSecurityFilter($_REQUEST['id']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+$id = (int)($_REQUEST['id'] ?? 0);
 
 $sql = 'SELECT
             s.COURSE_ID,s.COURSE_PERIOD_ID,

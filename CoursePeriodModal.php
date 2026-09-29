@@ -30,13 +30,22 @@ include'ConfigInc.php';
 include 'Warehouse.php';
 // include('functions/SqlSecurityFnc.php');
 
-$cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
-$meet_date = sqlSecurityFilter($_REQUEST['meet_date']);
-$cpv_id = sqlSecurityFilter($_REQUEST['cpv_id']);
-$subject_id = sqlSecurityFilter($_REQUEST['subject_id']);
-$course_id = sqlSecurityFilter($_REQUEST['course_id']);
-$id = sqlSecurityFilter($_REQUEST['id']);
-$calendar_id = sqlSecurityFilter($_REQUEST['calendar_id']);
+// $cp_id = sqlSecurityFilter($_REQUEST['course_period_id']);
+// $meet_date = sqlSecurityFilter($_REQUEST['meet_date']);
+// $cpv_id = sqlSecurityFilter($_REQUEST['cpv_id']);
+// $subject_id = sqlSecurityFilter($_REQUEST['subject_id']);
+// $course_id = sqlSecurityFilter($_REQUEST['course_id']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+// $calendar_id = sqlSecurityFilter($_REQUEST['calendar_id']);
+
+$cp_id       = (int)($_REQUEST['course_period_id'] ?? 0);
+$meet_date   = sqlSecurityFilter($_REQUEST['meet_date'] ?? '');
+$cpv_id      = (int)($_REQUEST['cpv_id'] ?? 0);
+$subject_id  = (int)($_REQUEST['subject_id'] ?? 0);
+$course_id   = (int)($_REQUEST['course_id'] ?? 0);
+$id          = (int)($_REQUEST['id'] ?? 0);
+$calendar_id = (int)($_REQUEST['calendar_id'] ?? 0);
+
 if(isset($_SESSION['language']) && $_SESSION['language']=='fr'){
     define("_classRoom","Salle de cours");
     define("_period","Période");
