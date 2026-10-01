@@ -30,11 +30,13 @@ include 'Warehouse.php';
 include 'Data.php';
 // include('functions/SqlSecurityFnc.php');
 
-$email = sqlSecurityFilter($_REQUEST['email']);
-$p_id = sqlSecurityFilter($_REQUEST['p_id']);
+// $email = sqlSecurityFilter($_REQUEST['email']);
+$email = mysqli_real_escape_string($connection, $_REQUEST['email'] ?? '');
+// $p_id = sqlSecurityFilter($_REQUEST['p_id']);
+$p_id = (int)($_REQUEST['p_id'] ?? 0);
 
 if (isset($_REQUEST['email']) && $_REQUEST['email'] != '') {
-    if ($_REQUEST['p_id'] == 0) {
+    if ($p_id == 0) {
         $result = DBGet(DBQuery('SELECT STAFF_ID FROM people WHERE EMAIL=\'' . $email . '\''));
         $res_stf = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE EMAIL=\'' . $email . '\''));
         $res_stu = DBGet(DBQuery('SELECT STUDENT_ID FROM students WHERE EMAIL=\'' . $email . '\''));

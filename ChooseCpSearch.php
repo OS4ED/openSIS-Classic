@@ -31,7 +31,8 @@ include 'RedirectRootInc.php';
 include 'ConfigInc.php';
 include 'Warehouse.php';
 
-$id = sqlSecurityFilter($_REQUEST['id']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+$id = (int)($_REQUEST['id'] ?? 0);
 
 if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods') {
 

@@ -33,7 +33,8 @@ include 'Data.php';
 $table_name = sqlSecurityFilter($_REQUEST['table_name']);
 $field_name = sqlSecurityFilter($_REQUEST['field_name']);
 $val = sqlSecurityFilter($_REQUEST['val']);
-$id = sqlSecurityFilter($_REQUEST['id']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+$id = (int)($_REQUEST['id'] ?? 0);
 $msg = sqlSecurityFilter($_REQUEST['msg']);
 $field_id = sqlSecurityFilter($_REQUEST['field_id']);
 

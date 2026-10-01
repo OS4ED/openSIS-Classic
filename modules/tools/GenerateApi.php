@@ -29,7 +29,9 @@
 
 include('../../RedirectModulesInc.php');
 
-$id = sqlSecurityFilter($_REQUEST['id']);
+// $id = sqlSecurityFilter($_REQUEST['id']);
+// ID is numeric; normalize before using it in SQL.
+$id = (int)($_REQUEST['id'] ?? 0);
 // Security fix: Cast ID to integer to prevent SQL injection (CVE-2025-26186)
 // The ID field is a numeric primary key, so casting to int ensures only valid integers are used
 $id = isset($id) ? (int)$id : 0;

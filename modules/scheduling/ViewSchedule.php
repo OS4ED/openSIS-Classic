@@ -35,7 +35,8 @@ if(!$_REQUEST['modfunc'] && !isset($_REQUEST['search_modfunc'])){
 DrawBC("" . _scheduling . " > " . ProgramTitle());
 
 if (isset($_REQUEST['marking_period_id']))
-    $_REQUEST['marking_period_id'] = sqlSecurityFilter($_REQUEST['marking_period_id']);
+    // $_REQUEST['marking_period_id'] = sqlSecurityFilter($_REQUEST['marking_period_id']);
+    $_REQUEST['marking_period_id'] = (int)($_REQUEST['marking_period_id'] ?? 0);
 
 unset($sql);
 $extra['search'] .= '<div class="row">';
@@ -115,7 +116,8 @@ if (UserStudentID()) {
     $tmp_REQUEST = $_REQUEST;
 
     if (clean_param($_REQUEST['marking_period_id'], PARAM_INT)) {
-        $mp_id = $_REQUEST['marking_period_id'];
+        // $mp_id = $_REQUEST['marking_period_id'];
+        $mp_id = (int)($_REQUEST['marking_period_id'] ?? 0);
     }
 
     if (!isset($_REQUEST['marking_period_id'])) {
@@ -503,6 +505,7 @@ if (UserStudentID()) {
         $day = get_db_day($full_day);
         $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
         $fy_id = $fy_id[1]['MARKING_PERIOD_ID'];
+        $period_id = (int)($_REQUEST['period'] ?? 0);
 
         $sql = 'SELECT s.ID AS SCHEDULE_ID,
 				s.COURSE_ID,s.COURSE_PERIOD_ID,
@@ -519,7 +522,7 @@ if (UserStudentID()) {
                                 AND r.ROOM_ID=cpv.ROOM_ID
 				AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
                                                                         AND (POSITION(\'' . $day . '\' IN cpv.days)>0 or cpv.days IS NULL)
-                                                                        AND sp.PERIOD_ID=\'' . $_REQUEST['period'] . '\'
+                                                                        AND sp.PERIOD_ID=\'' . $period_id . '\'
 				AND s.STUDENT_ID=\'' . UserStudentID() . '\'
 				AND s.SYEAR=\'' . UserSyear() . '\' AND s.SCHOOL_ID = \'' . UserSchool() . '\' AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) ';
 
