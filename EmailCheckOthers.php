@@ -30,7 +30,8 @@ include 'RedirectRootInc.php';
 include 'Warehouse.php';
 include 'Data.php';
 
-$email = sqlSecurityFilter($_REQUEST['email']);
+// $email = sqlSecurityFilter($_REQUEST['email']);
+$email = mysqli_real_escape_string($connection, $_REQUEST['email'] ?? '');
 // $id = sqlSecurityFilter($_REQUEST['id']);
 // $type = sqlSecurityFilter($_REQUEST['type']);
 $id = (int)($_REQUEST['id'] ?? 0);

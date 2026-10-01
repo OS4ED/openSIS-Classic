@@ -275,11 +275,11 @@ $log_msg = DBGet(DBQuery("SELECT MESSAGE FROM login_message WHERE DISPLAY='Y'"))
 if ($_REQUEST['pass_type_form'] == 'password') {
     if ($_REQUEST['pass_user_type'] == 'pass_student') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['password_stn_id'] == '') {
+            if ($password_stn_id == '') {
                 $_SESSION['err_msg'] = 'Please Enter Student Id.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['uname'] == '') {
+            if ($uname == '') {
                 $_SESSION['err_msg'] = 'Please Enter Username.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -293,9 +293,20 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
-        if ($_REQUEST['password_stn_id'] != '' && $_REQUEST['uname'] != '' && $_REQUEST['month_password_dob'] != '' && $_REQUEST['day_password_dob'] != '' && $_REQUEST['year_password_dob'] != '') {
-            $stu_dob = $_REQUEST['year_password_dob'] . '-' . $_REQUEST['month_password_dob'] . '-' . $_REQUEST['day_password_dob'];
-            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.USERNAME=\'' . $uname . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $password_stn_id . ' AND la.PROFILE_ID=3'));
+        if ($password_stn_id != '' && $uname != '' && $_REQUEST['month_password_dob'] != '' && $_REQUEST['day_password_dob'] != '' && $_REQUEST['year_password_dob'] != '') {
+            // $stu_dob = $_REQUEST['year_password_dob'] . '-' . $_REQUEST['month_password_dob'] . '-' . $_REQUEST['day_password_dob'];
+            // $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.USERNAME=\'' . $uname . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $password_stn_id . ' AND la.PROFILE_ID=3'));
+
+            $month = (int)($_REQUEST['month_password_dob'] ?? 0);
+            $day   = (int)($_REQUEST['day_password_dob']   ?? 0);
+            $year  = (int)($_REQUEST['year_password_dob']  ?? 0);
+            $stu_dob = sprintf('%04d-%02d-%02d', $year, $month, $day);
+            $stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la
+                WHERE la.USER_ID=s.STUDENT_ID
+                AND la.USERNAME=\'' . $uname . '\'
+                AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\'
+                AND s.STUDENT_ID=' . $password_stn_id . '
+                AND la.PROFILE_ID=3'));
 
             if ($stu_info[1]['STUDENT_ID'] == '') {
                 $_SESSION['err_msg'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
@@ -304,16 +315,19 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             } else {
                 $flag = 'stu_pass';
                 $_SESSION['PageAccess'] = $flag;
+                // *** Bind the verified identity to the session ***
+                $_SESSION['verified_user_id']    = (int)$stu_info[1]['STUDENT_ID'];
+                $_SESSION['verified_profile_id'] = 3;
             }
         }
     }
     if ($_REQUEST['pass_user_type'] == 'pass_staff') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['uname'] == '') {
+            if ($uname == '') {
                 $_SESSION['err_msg'] = 'Please Enter Username.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['password_stf_email'] == '') {
+            if ($password_stf_email == '') {
                 $_SESSION['err_msg'] = 'Please Enter Email Address.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -324,7 +338,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
         }
 
 
-        if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
+        if ($password_stf_email != '' && $uname != '') {
 
             $stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la  WHERE la.USER_ID=s.STAFF_ID AND la.USERNAME=\'' . $uname . '\' AND s.EMAIL=\'' . $password_stf_email . '\' AND la.PROFILE_ID IN (SELECT ID FROM user_profiles WHERE ID NOT IN (0,3,4))'));
 
@@ -334,16 +348,18 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             } else {
                 $flag = 'stf_pass';
                 $_SESSION['PageAccess'] = $flag;
+                $_SESSION['verified_user_id']    = (int)$stf_info[1]['STAFF_ID'];
+                $_SESSION['verified_profile_id'] = (int)$stf_info[1]['PROFILE_ID'];
             }
         }
     }
     if ($_REQUEST['pass_user_type'] == 'pass_parent') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['uname'] == '') {
+            if ($uname == '') {
                 $_SESSION['err_msg'] = 'Please Enter Username.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['password_stf_email'] == '') {
+            if ($password_stf_email == '') {
                 $_SESSION['err_msg'] = 'Please Enter Email Address.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -353,7 +369,7 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
-        if ($_REQUEST['password_stf_email'] != '' && $_REQUEST['uname'] != '') {
+        if ($password_stf_email != '' && $uname != '') {
 
             $par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la  WHERE la.USER_ID=p.STAFF_ID AND la.USERNAME=\'' . $uname . '\' AND p.EMAIL=\'' . $password_stf_email . '\' AND la.PROFILE_ID = 4'));
 
@@ -363,6 +379,8 @@ if ($_REQUEST['pass_type_form'] == 'password') {
             } else {
                 $flag = 'par_pass';
                 $_SESSION['PageAccess'] = $flag;
+                $_SESSION['verified_user_id']    = (int)$par_info[1]['STAFF_ID'];
+                $_SESSION['verified_profile_id'] = 4;
             }
         }
     }
@@ -371,11 +389,11 @@ if ($_REQUEST['pass_type_form'] == 'password') {
 if ($_REQUEST['user_type_form'] == 'username') {
     if ($_REQUEST['uname_user_type'] == 'uname_student') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['username_stn_id'] == '') {
+            if ($username_stn_id == '') {
                 $_SESSION['err_msg'] = 'Please Enter Student Id.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['pass'] == '') {
+            if ($pass == '') {
                 $_SESSION['err_msg'] = 'Please Enter Password.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -389,14 +407,18 @@ if ($_REQUEST['user_type_form'] == 'username') {
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
-        if ($_REQUEST['username_stn_id'] != '' && $_REQUEST['pass'] != '' && $_REQUEST['month_username_dob'] != '' && $_REQUEST['day_username_dob'] != '' && $_REQUEST['year_username_dob'] != '') {
-            $stu_dob = $_REQUEST['year_username_dob'] . '-' . $_REQUEST['month_username_dob'] . '-' . $_REQUEST['day_username_dob'];
+        if ($username_stn_id != '' && $pass != '' && $_REQUEST['month_username_dob'] != '' && $_REQUEST['day_username_dob'] != '' && $_REQUEST['year_username_dob'] != '') {
+            // $stu_dob = $_REQUEST['year_username_dob'] . '-' . $_REQUEST['month_username_dob'] . '-' . $_REQUEST['day_username_dob'];
+            $month = (int)($_REQUEST['month_username_dob'] ?? 0);
+            $day   = (int)($_REQUEST['day_username_dob']   ?? 0);
+            $year  = (int)($_REQUEST['year_username_dob']  ?? 0);
+            $stu_dob = sprintf('%04d-%02d-%02d', $year, $month, $day);
             /*$stu_info = DBGet(DBQuery('SELECT s.* FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND s.STUDENT_ID=' . $username_stn_id . ''));*/
 
             //code started for match password & birthdate & student id 
             $get_stu_info = DBGet(DBQuery('SELECT la.PASSWORD FROM students s,login_authentication la  WHERE la.USER_ID=s.STUDENT_ID  AND s.BIRTHDATE=\'' . date('Y-m-d', strtotime($stu_dob)) . '\' AND la.PROFILE_ID=3 AND s.STUDENT_ID=' . $username_stn_id . ''));
             $student_old_password = $get_stu_info[1]['PASSWORD'];
-            $entered_password =  $_REQUEST['pass'];
+            $entered_password =  $pass;
             $password_match_status = VerifyHash($entered_password,$student_old_password);
             
             if($password_match_status==1)
@@ -421,11 +443,11 @@ if ($_REQUEST['user_type_form'] == 'username') {
     }
     if ($_REQUEST['uname_user_type'] == 'uname_staff') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['pass'] == '') {
+            if ($pass == '') {
                 $_SESSION['err_msg'] = 'Please Enter Password.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['username_stf_email'] == '') {
+            if ($username_stf_email == '') {
                 $_SESSION['err_msg'] = 'Please Enter Email Address.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -435,14 +457,14 @@ if ($_REQUEST['user_type_form'] == 'username') {
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
-        if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
+        if ($username_stf_email != '' && $pass != '') {
             /*$stf_info = DBGet(DBQuery('SELECT s.* FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND s.EMAIL=\'' . $username_stf_email . '\''));*/
 
             //code started for match password & EMAIL
             $get_stf_info = DBGet(DBQuery('SELECT la.PASSWORD FROM staff s,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PROFILE_ID IN ("0","1","2","5") AND s.EMAIL=\'' . $username_stf_email . '\''));
             
             $stf_old_password = $get_stf_info[1]['PASSWORD'];
-            $stf_entered_password =  $_REQUEST['pass'];
+            $stf_entered_password =  $pass;
             $stf_password_match_status = VerifyHash($stf_entered_password,$stf_old_password);
             
             if($stf_password_match_status==1)
@@ -467,11 +489,11 @@ if ($_REQUEST['user_type_form'] == 'username') {
     }
     if ($_REQUEST['uname_user_type'] == 'uname_parent') {
         if (CSRFSecure::ValidateToken($_REQUEST['TOKEN'])) {
-            if ($_REQUEST['pass'] == '') {
+            if ($pass == '') {
                 $_SESSION['err_msg'] = 'Please Enter Password.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
-            if ($_REQUEST['username_stf_email'] == '') {
+            if ($username_stf_email == '') {
                 $_SESSION['err_msg'] = 'Please Enter Email Address.';
                 echo'<script>window.location.href="ForgotPass.php"</script>';
             }
@@ -481,13 +503,13 @@ if ($_REQUEST['user_type_form'] == 'username') {
             echo'<script>window.location.href="ForgotPass.php"</script>';
         }
 
-        if ($_REQUEST['username_stf_email'] != '' && $_REQUEST['pass'] != '') {
+        if ($username_stf_email != '' && $pass != '') {
             /*$par_info = DBGet(DBQuery('SELECT p.* FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PASSWORD=\'' . md5($_REQUEST['pass']) . '\' AND p.EMAIL=\'' . $username_stf_email . '\' '));*/
 
             //code started for match password & EMAIL
             $get_par_info = DBGet(DBQuery('SELECT la.PASSWORD FROM people p,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID=4 AND p.EMAIL=\'' . $username_stf_email . '\' '));
             $par_old_password = $get_par_info[1]['PASSWORD'];
-            $par_entered_password =  $_REQUEST['pass'];
+            $par_entered_password =  $pass;
             $par_password_match_status = VerifyHash($par_entered_password,$par_old_password);
 
             if($par_password_match_status==1)
@@ -512,17 +534,44 @@ if ($_REQUEST['user_type_form'] == 'username') {
     }
 }
 if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
-    $get_vals = explode(",", $user_info);
+    
+    // *** Require valid PageAccess BEFORE doing anything else ***
+    if (
+        $_SESSION['PageAccess'] !== 'stu_pass' &&
+        $_SESSION['PageAccess'] !== 'stf_pass' &&
+        $_SESSION['PageAccess'] !== 'par_pass'
+    ) {
+        $_SESSION['err_msg_mod'] = '<font color="red" ><b>Invalid attempt! Please try again.</b></font>';
+        echo'<script>window.location.href="ForgotPass.php"</script>';
+        exit;
+    }
+
     $flag = 'submited_value';
 
-    $get_vals[0] = cryptor($get_vals[0], 'DEC', '');
-    $get_vals[1] = cryptor($get_vals[1], 'DEC', '');
+    // $get_vals = explode(",", $user_info);
+    // $get_vals[0] = cryptor($get_vals[0], 'DEC', '');
+    // $get_vals[1] = cryptor($get_vals[1], 'DEC', '');
+
+    $get_vals = explode(",", $user_info);
+    $user_id    = (int) cryptor($get_vals[0] ?? '', 'DEC', '');
+    $profile_id = (int) cryptor($get_vals[1] ?? '', 'DEC', '');
+
+     // *** Also verify that the decrypted user_id/profile_id is the SAME one that was verified earlier ***
+    if (
+        !isset($_SESSION['verified_user_id']) ||
+        (int)$_SESSION['verified_user_id'] !== $user_id ||
+        (int)$_SESSION['verified_profile_id'] !== $profile_id
+    ) {
+        $_SESSION['err_msg_mod'] = '<font color="red" ><b>Invalid attempt! Please try again.</b></font>';
+        echo'<script>window.location.href="ForgotPass.php"</script>';
+        exit;
+    }
 
     /*$get_info = DBGet(DBQuery('SELECT COUNT(*) AS EX_REC FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' AND password=\'' . md5($_REQUEST['ver_pass']) . '\' '));*/
 
     //code started for match password 
     $total_password = 0;
-    $all_users = DBGet(DBQuery('SELECT * FROM login_authentication WHERE user_id!=\'' . $get_vals[0] . '\' AND profile_id!=\'' . $get_vals[1] . '\' '));
+    $all_users = DBGet(DBQuery('SELECT * FROM login_authentication WHERE user_id != ' . $user_id . ' AND profile_id != ' . $profile_id));
         foreach($all_users as $val)
             {
                 $user_ex_password = $val['PASSWORD'];
@@ -539,7 +588,8 @@ if ($_REQUEST['new_pass'] != '' && $_REQUEST['ver_pass'] != '') {
     if($total_password!=0) {
         $_SESSION['err_msg_mod'] = '<font color="red" ><b>Incorrect login credential.</b></font>';
     } else { 
-        DBQuery('UPDATE login_authentication SET password=\'' . GenerateNewHash($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
+        // DBQuery('UPDATE login_authentication SET password=\'' . GenerateNewHash($_REQUEST['ver_pass']) . '\' WHERE user_id=\'' . $get_vals[0] . '\' AND profile_id=\'' . $get_vals[1] . '\' ');
+        DBQuery('UPDATE login_authentication SET password=\'' . GenerateNewHash($_REQUEST['ver_pass']) . '\' WHERE user_id = ' . $user_id . ' AND profile_id = ' . $profile_id);
         $_SESSION['conf_msg'] = '<font color="red" ><b>Password updated successfully.</b></font>';
          unset($_SESSION['PageAccess']);
         echo'<script>window.location.href="index.php"</script>';
@@ -668,7 +718,7 @@ if ($_SESSION['PageAccess']!= 'stu_pass' && $_SESSION['PageAccess']!= 'stf_pass'
                                 <!--                                <label class="control-label">Enter new password</label>-->
                                 <input type="password" name="new_pass" id="new_pass" class="form-control" placeholder="Enter new password" AUTOCOMPLETE="off" onkeyup="forgotpasswordStrength(this.value);
                 passwordMatch();
-                forgotpassvalidate_password(this.value, <?php echo json_encode(htmlspecialchars($_REQUEST['uname'] ?? '', ENT_QUOTES, 'UTF-8')); ?>,<?php
+                forgotpassvalidate_password(this.value, <?php echo json_encode(htmlspecialchars($uname ?? '', ENT_QUOTES, 'UTF-8')); ?>,<?php
                                 if ($flag == 'stu_pass')
                                     echo 3;
                                 else if ($flag == 'stf_pass')

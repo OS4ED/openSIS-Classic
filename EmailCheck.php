@@ -30,7 +30,8 @@ include 'Warehouse.php';
 include 'Data.php';
 // include('functions/SqlSecurityFnc.php');
 
-$email = sqlSecurityFilter($_REQUEST['email']);
+// $email = sqlSecurityFilter($_REQUEST['email']);
+$email = mysqli_real_escape_string($connection, $_REQUEST['email'] ?? '');
 // $p_id = sqlSecurityFilter($_REQUEST['p_id']);
 $p_id = (int)($_REQUEST['p_id'] ?? 0);
 
