@@ -27,7 +27,25 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
+if ($_REQUEST['school_info_id'] != 'new') {
+    if ($_SESSION['PROFILE'] != 'admin') {
+        $user_auth_check = DBGet(DBQuery("SELECT user_id FROM login_authentication WHERE USERNAME='" . $_SESSION['USERNAME'] . "' AND PROFILE_ID=" . $_SESSION['PROFILE_ID'] . ""));
 
+        $own_user_id = isset($user_auth_check[1]['USER_ID'])
+            ? $user_auth_check[1]['USER_ID']
+            : '';
+        $selected_user_id = UserStaffID();
+
+        if (
+            $own_user_id === '' ||
+            $selected_user_id === '' ||
+            (string) $selected_user_id !== (string) $own_user_id
+        ) {
+            http_response_code(403);
+            exit('You are not authorized to change this password.');
+        }
+    }
+}
 if ((isset($_REQUEST['teacher_view']) && ($_REQUEST['teacher_view'] != 'y')) || (!isset($_REQUEST['teacher_view']) && isset($_REQUEST['values']))) {
     $sql_school_admin = 'SELECT ssr.SCHOOL_ID FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
     $school_admin = DBGet(DBQuery($sql_school_admin));

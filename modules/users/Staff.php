@@ -30,8 +30,13 @@
 include('../../RedirectModulesInc.php');
 include_once("../../functions/PasswordHashFnc.php");
 
-if ($_SESSION['staff_id'] == '' && $_REQUEST['staff_id'] != 'new')
-    $_SESSION['staff_id'] = $_REQUEST['staff_id'];
+if ($_SESSION['staff_id'] == '' && $_REQUEST['staff_id'] != 'new'){
+    $user_auth_check = DBGet(DBQuery("SELECT user_id FROM login_authentication WHERE USERNAME='".$_SESSION['USERNAME']."' AND PROFILE_ID=".$_SESSION['PROFILE_ID'].""));
+    if(isset($_REQUEST['staff_id']) && $_REQUEST['staff_id']== $user_auth_check)
+        $_SESSION['staff_id'] = $_REQUEST['staff_id'];
+    else
+        $_SESSION['staff_id'] = '';
+}
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
         $_REQUEST['staff']['CUSTOM_' . $custom_id] = $_REQUEST['year_CUSTOM_' . $custom_id] . '-' . MonthFormatter($_REQUEST['month_CUSTOM_' . $custom_id]) . '-' . $_REQUEST['day_CUSTOM_' . $custom_id];
