@@ -31,10 +31,12 @@ $conn_string = $_SESSION['conn'];
 
 // Helper function to create mysqli connection with strict mode disabled
 function createConnectionSelectDb($server, $username, $password, $database = '', $port = 3306) {
+    $conn = mysqli_init();
+    $conn->ssl_set(NULL, NULL, NULL, NULL, NULL);
     if ($database != '') {
-        $conn = new mysqli($server, $username, $password, $database, $port);
+        $conn->real_connect($server, $username, $password, $database, $port, null, MYSQLI_CLIENT_SSL);
     } else {
-        $conn = new mysqli($server, $username, $password);
+        $conn->real_connect($server, $username, $password, '', $port, null, MYSQLI_CLIENT_SSL);
     }
     if ($conn && !$conn->connect_errno) {
         $conn->query("SET SESSION sql_mode = ''");

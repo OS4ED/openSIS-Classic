@@ -718,8 +718,8 @@ DELIMITER ;
 -- EVENT: SET EVENT SCHEDULER ON TEMPORARILY. TO DO IT PERMANENTLY, YOU NEED TO SET THE MYSQL CONFIG
 --
 
-SET @@GLOBAL.event_scheduler = ON;
-SET GLOBAL log_bin_trust_function_creators = 1;
+-- SET @@GLOBAL.event_scheduler = ON;
+-- SET GLOBAL log_bin_trust_function_creators = 1;
 
 --
 -- EVENT: ES_HANDLER_MISSING_ATTENDANCE

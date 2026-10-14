@@ -57,6 +57,7 @@ function db_start()
 
 
 ##### Connection help #####
+/*
 if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName))
     $connection = mysqli_connect($DatabaseServer, $DatabaseUsername, $DatabasePassword, $DatabaseName);
 
@@ -80,11 +81,12 @@ if (!empty($DatabaseServer) && !empty($DatabaseUsername) && !empty($DatabaseName
             if ($result && mysqli_num_rows($result) > 0) {
                 $row = mysqli_fetch_assoc($result);
                 if ((int)$row['lbtfc'] !== 1) {
-                $connection->query("SET @@GLOBAL.log_bin_trust_function_creators = 1");
+                // $connection->query("SET @@GLOBAL.log_bin_trust_function_creators = 1");
                 }
             }
         }   
     }
+*/
 
 # ---------- #
 #  Debugger  #
