@@ -42,7 +42,7 @@ $un = strtoupper($un);
 switch ($_GET['validate'])
 {
     case 'pass':
-		$res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".$_GET['stfid']."' AND profile_id=0");
+		$res_pass_chk = DBQuery("SELECT * FROM login_authentication WHERE password = '".md5($_GET['password'])."' AND user_id!='".(int)($_GET['stfid'] ?? 0)."' AND profile_id=0");
 		$num_pass = $res_pass_chk->num_rows;
         if($num_pass==0)
         {
@@ -69,7 +69,7 @@ switch ($_GET['validate'])
 		if($usr == 'user')
 		{
 			if (trim($userid) != '')
-				$result = DBGet(DBQuery("SELECT username FROM login_authentication WHERE NOT(user_id = '" . $userid . "' AND profile_id = '".$profileid."')"));
+				$result = DBGet(DBQuery("SELECT username FROM login_authentication WHERE NOT(user_id = '" . (int)$userid . "' AND profile_id = '".(int)$profileid."')"));
 			else
 				$result = DBGet(DBQuery("SELECT username FROM login_authentication"));
 			 
@@ -97,7 +97,7 @@ switch ($_GET['validate'])
 		else
 		{
 			if (trim($userid) != '')
-				$result = DBGet(DBQuery("SELECT username FROM login_authentication WHERE NOT(user_id = '" . $userid . "' AND profile_id = '".$profileid."')"));
+				$result = DBGet(DBQuery("SELECT username FROM login_authentication WHERE NOT(user_id = '" . (int)$userid . "' AND profile_id = '".(int)$profileid."')"));
 			else
 				$result = DBGet(DBQuery("SELECT username FROM login_authentication"));
 			

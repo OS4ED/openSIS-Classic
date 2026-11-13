@@ -33,7 +33,11 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
     if ($_POST['button'] == _save) {
 
         if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
-            $drop_code = $_REQUEST['drop_code'];
+            $drop_code = (int)$_REQUEST['drop_code'];
+            // Security: the following numeric IDs are concatenated raw into SQL below; int-cast them.
+            $_REQUEST['student_id'] = (int)$_REQUEST['student_id'];
+            $_REQUEST['TRANSFER']['SCHOOL'] = (int)$_REQUEST['TRANSFER']['SCHOOL'];
+            $_REQUEST['TRANSFER']['Grade_Level'] = (int)$_REQUEST['TRANSFER']['Grade_Level'];
 
             $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
 

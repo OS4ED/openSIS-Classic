@@ -30,6 +30,10 @@ error_reporting(0);
 include('RedirectRootInc.php');
 include 'Warehouse.php';
 include 'Data.php';
+// Security: these request params are concatenated raw into SQL below. They are numeric IDs,
+// so rebuild the student list as an integer-only quoted list and int-cast the marking period.
+$_REQUEST['students'] = implode("','", array_map('intval', preg_split('/[^0-9]+/', (string)($_REQUEST['students'] ?? ''), -1, PREG_SPLIT_NO_EMPTY)));
+$_REQUEST['mp'] = (int)($_REQUEST['mp'] ?? 0);
 DBQuery('Create Table TEMP_SRCG AS SELECT * FROM student_report_card_grades  WHERE SYEAR=\'' . UserSyear() . '\'  AND COURSE_PERIOD_ID IS NOT NULL AND STUDENT_ID IN (\'' . $_REQUEST['students'] . '\') AND MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\'');
 DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\'  AND COURSE_PERIOD_ID IS NOT NULL AND STUDENT_ID IN (\'' . $_REQUEST['students'] . '\') AND MARKING_PERIOD_ID=\'' . $_REQUEST['mp'] . '\'');
 DBQuery('INSERT INTO `student_report_card_grades`(`syear`, `school_id`, `student_id`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`,`gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`,`course_code`, `course_title`, `id`) SELECT `syear`, `school_id`, `student_id`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`,`gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`, `course_code`,`course_title`, `id` FROM TEMP_SRCG ');
