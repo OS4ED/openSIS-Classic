@@ -375,7 +375,7 @@ $api_secret= mysqli_real_escape_string($connection, optional_param('api_secret',
 $validate= DBGet(DBQuery('SELECT * FROM api_info WHERE API_KEY=\''.$api_key.'\' AND API_SECRET=\''.$api_secret.'\''));
 if(count($validate) > 0)
 {
-    $syear=mysqli_real_escape_string($connection,strtolower(optional_param('sch_year', '', PARAM_RAW)));
+    $syear=optional_param('sch_year', 0, PARAM_INT);
     
     $all_stf_ids=DBGet(DBQuery('SELECT GROUP_CONCAT(DISTINCT(STAFF_ID)) as STAFF_IDS FROM staff_school_relationship WHERE STAFF_ID IS NOT NULL AND SYEAR = '.$syear));
     

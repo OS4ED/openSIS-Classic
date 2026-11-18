@@ -374,7 +374,7 @@ $api_secret= mysqli_real_escape_string($connection, optional_param('api_secret',
 $validate= DBGet(DBQuery('SELECT * FROM api_info WHERE API_KEY=\''.$api_key.'\' AND API_SECRET=\''.$api_secret.'\''));
 if(count($validate) > 0)
 {
-    $syear=mysqli_real_escape_string($connection,strtolower(optional_param('sch_year', '', PARAM_RAW)));
+    $syear=optional_param('sch_year', 0, PARAM_INT);
     $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM school_years WHERE SYEAR = '.$syear));
 //    $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM school_years WHERE SCHOOL_ID=1 AND SYEAR = '.$syear));
     $data=array();
